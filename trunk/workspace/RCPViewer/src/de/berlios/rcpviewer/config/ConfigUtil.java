@@ -56,7 +56,8 @@ public class ConfigUtil {
 	
     // main method that creates an implementation of a config element
     private static Object instantiateClass( IConfigurationElement elem ) throws Exception {
-        assert elem != null;
+        if (elem == null)
+			throw new RuntimeException("configuration element must not be null");
 
         String bundleId = elem.getDeclaringExtension().getNamespace();
         Bundle bundle = Platform.getBundle( bundleId );
