@@ -6,4 +6,6 @@ Bundle-Version: 0.1.0
 Bundle-ClassPath: lib/ecs.jar
 Bundle-Localization: plugin
 Eclipse-AutoStart: true
-Require-Bundle: de.berlios.rcpviewer
+Require-Bundle: 
+ de.berlios.rcpviewer,
+ de.berlios.rcpviewer.nakedobjects
