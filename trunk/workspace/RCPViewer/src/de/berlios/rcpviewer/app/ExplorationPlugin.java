@@ -4,16 +4,14 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nakedobjects.NakedObjects;
 import org.nakedobjects.container.configuration.Configuration;
 import org.nakedobjects.container.configuration.ConfigurationFactory;
 import org.nakedobjects.container.configuration.ConfigurationPropertiesLoader;
-import org.nakedobjects.example.exploration.JavaExplorationContext;
 import org.nakedobjects.object.NakedObject;
 import org.nakedobjects.object.defaults.LoadedObjectsHashtable;
 import org.nakedobjects.object.defaults.LocalReflectionFactory;
@@ -46,21 +44,23 @@ import de.berlios.rcpviewer.config.ConfigUtil;
  */
 public class ExplorationPlugin extends AbstractUIPlugin {
 	
-    private static final Logger LOG = Logger.getLogger(ExplorationPlugin.class);
 	
 	// static fields
-	private static ExplorationPlugin plugin = null;
+    private static final Logger LOG = Logger.getLogger(ExplorationPlugin.class);
 	
+
 	// instance fields
 	private NakedObject rootObject = null;
+	private RCPApplicationContext applicationContext= new RCPApplicationContext();		
 	
 	
 	/**
 	 * Returns the shared instance (effectively a singleton as defined so in
 	 * the manifest file)
 	 */
-	public static ExplorationPlugin getDefault() {
-		return plugin;
+	public static ExplorationPlugin getDefault() {		
+		Plugin plugin= Platform.getPlugin("de.berlios.rcpviewer");
+		return (ExplorationPlugin)plugin;
 	}
 	
 	/**
@@ -68,7 +68,6 @@ public class ExplorationPlugin extends AbstractUIPlugin {
 	 */
 	public ExplorationPlugin() {
 		super();
-		plugin = this;
 	}
 
 	/**
@@ -88,21 +87,6 @@ public class ExplorationPlugin extends AbstractUIPlugin {
 		int numFixtures = fixtures.length;
 		if ( numFixtures == 0 ) throw new Exception( "No fixtures defined" );
 		
-		// logging - continue to use log4j-based NO logging rather than 
-		// RCP default - expect properties file in root of plugin - perhaps 
-		// better to look for to in root of dependent bundles ..?
-		URL logUrl = context.getBundle().getResource( "/log4j.properties"); 
-		Properties logProps = null;
-		if ( logUrl != null ) {
-			logProps = ConfigurationPropertiesLoader.loadProperties( logUrl, false );
-		}
-        if ( logProps != null && logProps.size() > 0) {
-			PropertyConfigurator.configure( logProps );
-
-        } else {
-            BasicConfigurator.configure();  
-        }
-        Logger.getRootLogger().setLevel(Level.WARN);
 		
 		// NO configuration - again this should propbably come from the
 		// dependent bundle root rather than this one
@@ -117,9 +101,8 @@ public class ExplorationPlugin extends AbstractUIPlugin {
 		}
         NakedObjects.setConfiguration(configuration);
         ConfigurationFactory.setConfiguration(configuration);
-        PropertyConfigurator.configure(
-				ConfigurationFactory.getConfiguration().getProperties("log4j"));
-        Logger log = Logger.getLogger("Naked Objects");
+
+		Logger log = Logger.getLogger("Naked Objects");
         log.info(AboutNakedObjects.getName());
         log.info(AboutNakedObjects.getVersion());
         log.info(AboutNakedObjects.getBuildId());
@@ -169,6 +152,7 @@ public class ExplorationPlugin extends AbstractUIPlugin {
         NakedObjects.setObjectManager(objectManager);
         container.setObjectManger(objectManager);
 		
+		//@TODO the default spec loader must be replaced by a loader that is Eclipse-aware
         new NakedObjectSpecificationLoaderImpl();
 		
         LocalReflectionFactory reflectionFactory = new LocalReflectionFactory();
@@ -191,12 +175,11 @@ public class ExplorationPlugin extends AbstractUIPlugin {
 		
 		// equivalent to 'Exploration.start() but no viewer to display
         ClientSession.setSession( new SimpleSession() );
-		JavaExplorationContext appContext = new JavaExplorationContext();
         String[] classes = builder.getClasses();
         for (int i = 0, num = classes.length; i < numFixtures ; i++) {
-			appContext.addClass(classes[i]);
+			applicationContext.addClass(classes[i]);
         }
-		rootObject = PojoAdapter.createNOAdapter( appContext );
+		rootObject = PojoAdapter.createNOAdapter( applicationContext);
 		
         /* here for reference only:
         SkylarkViewer viewer = new SkylarkViewer();
@@ -211,7 +194,6 @@ public class ExplorationPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		plugin = null;
 	}
 
 	
