@@ -8,7 +8,6 @@ import de.berlios.rcpviewer.views.ClassBar;
 
 /**
  * Auto-generated
- * (changed by Dan, testing SVN update access)
  * 
  * @author Mike
  */
