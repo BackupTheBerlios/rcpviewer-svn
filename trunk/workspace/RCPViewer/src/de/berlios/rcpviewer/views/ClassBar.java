@@ -26,7 +26,8 @@ public class ClassBar extends ViewPart {
 	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createPartControl(Composite parent) {
-		assert parent != null;
+		if (parent == null)
+			throw new RuntimeException("parent is null");
 		
 		GridLayout layout = new GridLayout();
 		layout.horizontalSpacing = 0;
@@ -48,7 +49,8 @@ public class ClassBar extends ViewPart {
                 Enumeration elements = ((InternalCollection) attribute).elements();
                 while (elements.hasMoreElements()) {
 					Object focus = elements.nextElement();
-					assert focus instanceof NakedObject;
+					if ((focus instanceof NakedObject) == false)
+						throw new RuntimeException("Object is not a NakedObject:"+focus.getClass().getName());
 					addButton( parent, (NakedObject)focus );
                 }
 			}
@@ -66,10 +68,13 @@ public class ClassBar extends ViewPart {
 	}
 	
 	private void addButton( Composite parent, NakedObject obj ) {
-		assert parent != null;
-		assert obj != null;
-		
-		assert obj.getObject() instanceof NakedClass;
+		if (parent == null)
+			throw new RuntimeException("parent is null");
+		if (obj == null)
+			throw new RuntimeException("obj is null");
+		if ((obj.getObject() instanceof NakedClass) == false)
+			throw new RuntimeException("Not an instance of NakedClass:"+obj.getObject().getClass().getName());
+
 		NakedClass cls = (NakedClass)obj.getObject();
 		
 		Label label = new Label( parent, SWT.CENTER );
