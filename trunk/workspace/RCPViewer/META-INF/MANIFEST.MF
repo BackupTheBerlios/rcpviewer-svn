@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RCP Viewer Plug-in
+Bundle-SymbolicName: de.berlios.rcpviewer; singleton=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: RCPViewer.jar,
+ lib/no.jar,
+ lib/junit.jar,
+ lib/log4j-1.2.9.jar
+Bundle-Activator: de.berlios.rcpviewer.app.ExplorationPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-AutoStart: true
+Export-Package: org.nakedobjects.reflector.java.fixture,
+ org.nakedobjects.application,
+ org.nakedobjects.application.control,
+ org.nakedobjects.application.valueholder
