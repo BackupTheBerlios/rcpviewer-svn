@@ -8,6 +8,8 @@ import de.berlios.rcpviewer.views.ClassBar;
 
 /**
  * Auto-generated
+ * (changed by Dan, testing SVN update access)
+ * 
  * @author Mike
  */
 public class DefaultPerspective implements IPerspectiveFactory {
@@ -29,7 +31,6 @@ public class DefaultPerspective implements IPerspectiveFactory {
                 editorArea);
         left.addView( ClassBar.ID );
 		layout.getViewLayout( ClassBar.ID ).setCloseable( false );  // for now
-		
 		
 	}
 }
