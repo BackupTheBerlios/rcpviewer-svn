@@ -1,0 +1,19 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: org.apache.log4j
+Bundle-Vendor: jakarta.apache.org
+Bundle-GlobalName: org.apache.log4j
+Bundle-SymbolicName: org.apache.log4j
+Bundle-Version: 1.2.6
+Bundle-ClassPath: 
+ log4j-1.2.8.jar,
+ ./bin/
+Bundle-Activator: org.apache.log4j.internal.Log4JPlugin
+Eclipse-AutoStart: true
+Manifest-Version: 1.0
+Provide-Package: 
+ org.apache.log4j
+Export-Package: 
+ org.apache.log4j 
+Require-Bundle: 
+ org.eclipse.core.runtime.compatibility
+ 
