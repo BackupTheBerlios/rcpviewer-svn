@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="com.ibm.developerworks.google"
+   name="Google Plug-in"
+   version="1.0.0"
+   provider-name=""
+   class="com.ibm.developerworks.google.GooglePlugin">
+
+   <runtime>
+      <library name="Google.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+   </requires>
+   
+	<extension id="GoogleApplication" 
+		point="org.eclipse.core.runtime.applications"> 
+		
+		<application> 
+	    	<run class="com.ibm.developerworks.google.GoogleApplication"/> 
+		</application> 
+		
+	</extension>  
+
+	<extension point="org.eclipse.ui.perspectives"> 
+	
+		<perspective 
+			id="com.ibm.developerworks.google.GooglePerspective" 
+			name="Google" 
+			class="com.ibm.developerworks.google.GooglePerspective"/> 
+
+	</extension>   
+
+</plugin>
