@@ -29,7 +29,8 @@ class RCPViewerApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor 
         configurer.setShowCoolBar(false);
         configurer.setShowStatusLine(false);
 		Object obj = ExplorationPlugin.getDefault().getRootObject().getObject();
-		assert obj instanceof ApplicationContext;
+		if ((obj instanceof ApplicationContext) == false)
+			throw new RuntimeException("Root object must be an instance of ApplicationContext");
 		String title = ((ApplicationContext)obj).name();
 		if ( title == null ) title = BACKUP_TITLE;
         configurer.setTitle( title ) ;
