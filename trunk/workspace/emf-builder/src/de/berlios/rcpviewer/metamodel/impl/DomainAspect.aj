@@ -17,13 +17,13 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 //	 * pick out instantiating of a Pojo annotated with @DomainObject.
 //	 */
 //	public pointcut instantiatePojo(Object pojo): 
-//		execution((@ADomainObject *..*).new(..)) && this(pojo);
+//		execution((@Domain *..*).new(..)) && this(pojo);
 //
 //	/**
 //	 * pick out invoking any public method on a Pojo annotated with @DomainObject.
 //	 */
 //	public pointcut invokePublicMethodOnPojo(Object pojo): 
-//		execution(public * (@ADomainObject *..*).*(..)) && this(pojo);
+//		execution(public * (@Domain *..*).*(..)) && this(pojo);
 //
 //	/**
 //	 * TODO: want to use as perthis pointcut, but doesn't seem to work?
