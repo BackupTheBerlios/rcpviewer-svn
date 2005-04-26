@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import de.berlios.rcpviewer.metamodel.annotations.*;
+import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;

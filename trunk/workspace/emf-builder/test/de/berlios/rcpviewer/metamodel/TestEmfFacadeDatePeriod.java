@@ -5,6 +5,8 @@ package de.berlios.rcpviewer.metamodel;
 
 import java.util.Date;
 import de.berlios.rcpviewer.metamodel.annotations.*;
+import de.berlios.rcpviewer.progmodel.standard.Value;
+import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
  * An application-defined value object (datatype)

@@ -6,11 +6,6 @@ import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.annotations.Derived;
-import de.berlios.rcpviewer.metamodel.annotations.LowerBoundOf;
-import de.berlios.rcpviewer.metamodel.annotations.Ordered;
-import de.berlios.rcpviewer.metamodel.annotations.Unique;
-import de.berlios.rcpviewer.metamodel.annotations.UpperBoundOf;
 import de.berlios.rcpviewer.progmodel.IProgrammingModel;
 import de.berlios.rcpviewer.progmodel.IProgrammingModelAware;
 

@@ -9,6 +9,7 @@ import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.Util;
 import de.berlios.rcpviewer.metamodel.annotations.*;
 import de.berlios.rcpviewer.progmodel.IProgrammingModel;
+import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
  * Concrete implementation of {@link IProgrammingModel} for interpreting

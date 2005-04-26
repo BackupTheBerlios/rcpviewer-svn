@@ -1,6 +1,8 @@
 package de.berlios.rcpviewer.metamodel;
 
 import de.berlios.rcpviewer.metamodel.annotations.*;
+import de.berlios.rcpviewer.progmodel.standard.Domain;
+import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 
 /**

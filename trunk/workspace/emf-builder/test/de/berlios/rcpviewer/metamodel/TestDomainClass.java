@@ -4,12 +4,12 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
-import de.berlios.rcpviewer.metamodel.annotations.Derived;
-import de.berlios.rcpviewer.metamodel.annotations.LowerBoundOf;
-import de.berlios.rcpviewer.metamodel.annotations.Ordered;
-import de.berlios.rcpviewer.metamodel.annotations.Unique;
-import de.berlios.rcpviewer.metamodel.annotations.UpperBoundOf;
+import de.berlios.rcpviewer.progmodel.standard.Derived;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
+import de.berlios.rcpviewer.progmodel.standard.Ordered;
+import de.berlios.rcpviewer.progmodel.standard.Unique;
+import de.berlios.rcpviewer.progmodel.standard.UpperBoundOf;
 
 import junit.framework.TestCase;
 
