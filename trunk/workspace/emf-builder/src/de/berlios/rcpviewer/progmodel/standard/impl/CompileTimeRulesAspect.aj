@@ -1,4 +1,5 @@
-package de.berlios.rcpviewer.metamodel.impl;
+package de.berlios.rcpviewer.progmodel.standard.impl;
+
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 /**
