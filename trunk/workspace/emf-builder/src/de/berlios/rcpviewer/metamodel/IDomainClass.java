@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.EClass;
  * 
  * @author Dan Haywood
  */
-public interface IDomainClass {
+public interface IDomainClass<T> {
 
-	public Class getJavaClass();
+	public Class<T> getJavaClass();
 	
 	public EClass getEClass();
 
@@ -264,4 +264,12 @@ public interface IDomainClass {
 	 * @return whether this (multiplicity-many) attribute is ordered
 	 */
 	public boolean isOrdered(EAttribute eAttribute);
+
+	/**
+	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
+	 * wrapping a pojo of the type represented by this domain class.
+	 * 
+	 * @return
+	 */
+	public IDomainObject<T> createTransient();
 }

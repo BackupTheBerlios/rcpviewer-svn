@@ -41,14 +41,6 @@ public final class DomainClassRegistry {
 		return Collections.unmodifiableCollection(domainClassesByClazz.values());
 	}
 	
-	public IDomainObject getDomainObjectFor(Object pojo) {
-		DomainAspect domainAspect = DomainAspect.aspectOf(pojo);
-		if (domainAspect == null) {
-			return null;
-		}
-		return domainAspect.getDomainObject();
-	}
-	
 	/**
 	 * creates a {@link DomainClass} for the supplied {@link Class} if not present,
 	 * provided that the class in question implements DomainObject (else
@@ -59,13 +51,13 @@ public final class DomainClassRegistry {
 	 * @param clazz
 	 * @return corresponding {@link DomainClass}
 	 */
-	public DomainClass register(final Class clazz) {
+	public DomainClass<?> register(final Class<?> clazz) {
 		// TODO: for some reason, not working even though AspectJ says that
 		// the introduction will be applied???
 //		if (!DomainObject.class.isAssignableFrom(clazz)) {
 //			return null;
 //		}
-		DomainClass domainClass = lookup(clazz);
+		DomainClass<?> domainClass = lookup(clazz);
 		if (domainClass == null) {
 			domainClass = new DomainClass(clazz);
 			domainClassesByClazz.put(clazz, domainClass);

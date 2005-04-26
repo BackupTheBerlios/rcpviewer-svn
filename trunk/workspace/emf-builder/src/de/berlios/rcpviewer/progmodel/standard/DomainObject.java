@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 
 /**
  * Wrapper for a POJO that also knows its {@link IDomainClass}.
@@ -12,9 +13,9 @@ import de.berlios.rcpviewer.metamodel.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public final class DomainObject implements IDomainObject {
+public final class DomainObject<T> implements IDomainObject {
 
-	public DomainObject(final IDomainClass domainClass, final Object pojo) {
+	public DomainObject(final IDomainClass domainClass, final T pojo) {
 		this.domainClass = domainClass;
 		this.pojo = pojo;
 	}
@@ -24,9 +25,29 @@ public final class DomainObject implements IDomainObject {
 		return domainClass;
 	}
 	
-	private final Object pojo;
-	public Object getPojo() {
+	private final T pojo;
+	public T getPojo() {
 		return pojo;
+	}
+
+	private boolean persistent;
+	public boolean isPersistent() {
+		return persistent;
+	}
+
+	public void persist() {
+		if (isPersistent()) {
+			throw new IllegalStateException("Already persisted.");
+		}
+		InMemoryObjectStore.instance().persist(this.title(), this);
+		persistent = true;
+	}
+	
+	/**
+	 * For the title we just return the toString.
+	 */
+	public String title() {
+		return pojo.toString();
 	}
 
 }

@@ -1,8 +1,7 @@
-package de.berlios.rcpviewer.progmodel.standard.impl;
+package de.berlios.rcpviewer.facade;
 
 import de.berlios.rcpviewer.progmodel.standard.Domain;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
-
 
 /**
  * TODO: implementing DomainMarker is a work-around; the annotation should be enough.
@@ -13,22 +12,13 @@ public class Department implements DomainMarker {
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
+	
+	private int rank;
+	public int getRank() {
+		return rank;
+	}
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 	
-	/**
-	 * Expect the programming model aspect to intercept.
-	 *
-	 */
-	public void save() {
-		
-	}
-	
-	/**
-	 * Used as the title.
-	 */
-	public String toString() {
-		return name;
-	}
 }

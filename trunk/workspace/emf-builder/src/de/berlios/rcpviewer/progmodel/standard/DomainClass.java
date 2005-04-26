@@ -6,8 +6,11 @@ import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.progmodel.IProgrammingModel;
 import de.berlios.rcpviewer.progmodel.IProgrammingModelAware;
+import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.session.local.Session;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,7 +28,7 @@ import java.util.List;
  * 
  * @author Dan Haywood
  */
-public final class DomainClass 
+public final class DomainClass<T> 
 		implements IDomainClass,
 				   IProgrammingModelAware,
 				   EmfFacadeAware {
@@ -39,7 +42,7 @@ public final class DomainClass
 	public final static String ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE = 
 							"de.berlios.rcpviewer.metamodel.writeOnly";
 	
-	public DomainClass(final Class javaClass) {
+	public DomainClass(final Class<T> javaClass) {
 		this.javaClass = javaClass;
 		Package javaPackage = javaClass.getPackage();
 		this.eClass = EcoreFactory.eINSTANCE.createEClass();
@@ -62,8 +65,8 @@ public final class DomainClass
 
 	}
 
-	private final Class javaClass;
-	public Class getJavaClass() {
+	private final Class<T> javaClass;
+	public Class<T> getJavaClass() {
 		return javaClass;
 	}
 	
@@ -315,6 +318,19 @@ public final class DomainClass
 		return this.eClass.getEAllAttributes().contains(eAttribute);
 	}
 
+	public IDomainObject createTransient() {
+		try {
+			Object pojo = getJavaClass().newInstance();
+			IDomainObject domainObject = 
+				Session.instance().getDomainObjectFor(pojo);
+			return domainObject;
+		} catch(IllegalAccessException ex) {
+			throw new ProgrammingModelException("Cannot instantiate", ex);
+		} catch(InstantiationException ex) {
+			throw new ProgrammingModelException("Cannot instantiate", ex);
+		}
+	}
+
 	// DEPENDENCY INJECTION
 	
 	private IProgrammingModel programmingModel;
@@ -365,5 +381,6 @@ public final class DomainClass
 				"EAttribute '" + eAttribute + "' not part of this DomainClass");
 		}
 	}
+
 
 }

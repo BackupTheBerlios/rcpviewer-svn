@@ -3,6 +3,7 @@ import org.aspectj.lang.*;
 import org.aspectj.runtime.*;
 import junit.framework.TestCase;
 import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.session.local.Session;
 
 
 public class TestDomainAspect extends TestCase {
@@ -12,7 +13,7 @@ public class TestDomainAspect extends TestCase {
 	 */
 	public void testPojoWrappedInDomainObject() {
 		Department d = new Department();
-		IDomainObject obj = DomainClassRegistry.instance().getDomainObjectFor(d);
+		IDomainObject obj = Session.instance().getDomainObjectFor(d);
 		assertNotNull(obj);
 		
 		Object pojo = obj.getPojo();
@@ -24,7 +25,7 @@ public class TestDomainAspect extends TestCase {
 	 */
 	public void testDomainObjectHasCorrectClass() {
 		Department d = new Department();
-		IDomainObject obj = DomainClassRegistry.instance().getDomainObjectFor(d);
+		IDomainObject obj = Session.instance().getDomainObjectFor(d);
 		IDomainClass dc = obj.getDomainClass();
 		assertSame(Department.class, dc.getJavaClass());
 	}
@@ -33,7 +34,7 @@ public class TestDomainAspect extends TestCase {
 	 */
 	public void testCanGetDomainObjectFromDomainClassRegistry() {
 		Department d = new Department();
-		IDomainObject obj = DomainClassRegistry.instance().getDomainObjectFor(d);
+		IDomainObject obj = Session.instance().getDomainObjectFor(d);
 		IDomainClass dc = obj.getDomainClass();
 		assertSame(Department.class, dc.getJavaClass());
 	}

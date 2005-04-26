@@ -10,7 +10,33 @@ package de.berlios.rcpviewer.metamodel;
  * 
  * @author Dan Haywood
  */
-public interface IDomainObject {
+public interface IDomainObject<T> {
+	
 	public IDomainClass getDomainClass();
-	public Object getPojo();
+	
+	public T getPojo();
+	
+	/**
+	 * Whether this object has been persisted.
+	 * @return
+	 */
+	public boolean isPersistent();
+	
+	/**
+	 * Persist this object.
+	 *
+	 * @throws IllegalStateException if already persisted.
+	 */
+	public void persist();
+	
+	/**
+	 * Distinguishable representation of the domain object in the UI.
+	 * 
+	 * <p>
+	 * TODO: should this be required to be unique.  If not, how
+	 * 
+	 * @return
+	 */
+	public String title();
+
 }
