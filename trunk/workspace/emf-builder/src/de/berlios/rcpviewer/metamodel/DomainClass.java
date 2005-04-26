@@ -1,13 +1,6 @@
 package de.berlios.rcpviewer.metamodel;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
-import org.eclipse.emf.ecore.util.EcoreEList;
-import org.eclipse.emf.ecore.util.EcoreSwitch;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import de.berlios.rcpviewer.metamodel.annotations.Derived;
 import de.berlios.rcpviewer.metamodel.annotations.LowerBoundOf;
@@ -15,18 +8,10 @@ import de.berlios.rcpviewer.metamodel.annotations.Ordered;
 import de.berlios.rcpviewer.metamodel.annotations.Unique;
 import de.berlios.rcpviewer.metamodel.annotations.UpperBoundOf;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-//import de.berlios.rcpviewer.metamodel.impl.ActionImpl;
-//import de.berlios.rcpviewer.metamodel.impl.AttributeImpl;
-//import de.berlios.rcpviewer.metamodel.impl.LinkImpl;
+import java.util.List;
 
 
 /**
@@ -194,32 +179,33 @@ public final class DomainClass
 	
 
 	/**
-	 * TODO: not yet doing anything. 
+	 *  
 	 */
 	private void identifyUnSettableAttributes() {
-		
+	
 		Method[] methods = javaClass.getMethods();
-		for(int i=0; i<methods.length; i++) {
-			if (!getProgrammingModel().isUnSettableAttribute(methods[i])) {
+		boolean hasIsUnsetMethod = false;
+		boolean hasUnsetMethod = false;
+		for(EAttribute eAttribute: allAttributes()) {
+			for(int i=0; i<methods.length; i++) {
+				if (getProgrammingModel().isIsUnsetMethodFor(methods[i], eAttribute)) {
+					hasIsUnsetMethod = true;
+					break;
+				}
+			}
+			if (!hasIsUnsetMethod) {
 				continue;
 			}
-						
-			String attributeName = getProgrammingModel().deriveAttributeName(methods[i]);
-			EAttribute eAttribute = getEAttributeNamed(attributeName);
-			if (eAttribute == null) {
-				logWarning("isUnsetXxx found without getXxx or isXxx for '" + attributeName + "'");
-				return;
+			for(int i=0; i<methods.length; i++) {
+				if (getProgrammingModel().isUnsetMethodFor(methods[i], eAttribute)) {
+					hasUnsetMethod = true;
+					break;
+				}
 			}
-
-			if (!eAttribute.isChangeable()) {
-				logWarning("isUnsetXxx found on unchangeable attribute '" + attributeName + "'");
-				return;
+			if (!hasUnsetMethod) {
+				continue;
 			}
-			if (eAttribute == null) {
-				logWarning("unsetXxx found without setXxx for '" + attributeName + "'");
-				return;
-			}
-			
+			// has noth an IsUnset and an unset method for this attribute
 			eAttribute.setUnsettable(true);
 		}
 	}
@@ -266,16 +252,14 @@ public final class DomainClass
 	}
 
 	public EAttribute getEAttributeNamed(String attributeName) {
-		for(Iterator iter = getEClass().getEAllAttributes().iterator();
-		    iter.hasNext(); ) {
-			EAttribute eAttribute = (EAttribute)iter.next();
+		for(EAttribute eAttribute: allAttributes() ) {
 			if (eAttribute.getName().equals(attributeName)) {
 				return eAttribute;
 			}
 		}
 		return null;
 	}
-
+	
 	public boolean isWriteOnly(EAttribute eAttribute) {
 		return eAttribute.getEAnnotation(ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE) != null;
 	}
@@ -310,6 +294,18 @@ public final class DomainClass
 
 	public boolean isOrdered(EAttribute eAttribute) {
 		return eAttribute.isOrdered();
+	}
+
+	public List<EAttribute> allAttributes() {
+		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
+		eAttributes.addAll(getEClass().getEAllAttributes());
+		return eAttributes;
+	}
+	
+	public List<EAttribute> attributes() {
+		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
+		eAttributes.addAll(getEClass().getEAttributes());
+		return eAttributes;
 	}
 
 	public boolean containsAttribute(EAttribute eAttribute) {

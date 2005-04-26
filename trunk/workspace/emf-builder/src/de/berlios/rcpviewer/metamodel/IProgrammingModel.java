@@ -2,6 +2,8 @@ package de.berlios.rcpviewer.metamodel;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.emf.ecore.EAttribute;
+
 /**
  * Encapsulates set of rules for interpreting a set of classes (M1 level
  * model) such that - for example - an EMF can be built.
@@ -155,6 +157,8 @@ public interface IProgrammingModel {
 
 	public boolean representsAttribute(Method method);
 
-	public boolean isUnSettableAttribute(Method method);
+	public boolean isIsUnsetMethodFor(Method method, EAttribute attribute);
+
+	public boolean isUnsetMethodFor(Method method, EAttribute attribute);
 	
 }

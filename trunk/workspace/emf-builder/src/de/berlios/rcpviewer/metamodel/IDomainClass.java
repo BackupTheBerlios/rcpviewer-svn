@@ -1,4 +1,7 @@
 package de.berlios.rcpviewer.metamodel;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 
@@ -9,6 +12,25 @@ public interface IDomainClass {
 	public EClass getEClass();
 
 	public int getNumberOfAttributes();
+
+	/**
+	 * Convenience method returning a type-safe iterable List over all 
+	 * EAttributes known to  the underlying EClass.
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> allAttributes();
+	
+	/**
+	 * Convenience method returning a type-safe iterable List over EAttributes 
+	 * defined within the underlying EClass.
+	 * 
+	 * <p>
+	 * Inherited attributes are not included in the iteration.
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> attributes();
 
 	/**
 	 * Since EClass (as of EMF 2.0) doesn't expose, we provide as a convenience.

@@ -1,6 +1,9 @@
 package de.berlios.rcpviewer.metamodel;
 
 import java.lang.reflect.Method;
+
+import org.eclipse.emf.ecore.EAttribute;
+
 import de.berlios.rcpviewer.metamodel.annotations.*;
 
 /**
@@ -336,9 +339,36 @@ public final class ProgrammingModel implements IProgrammingModel {
 				isValueType(method.getReturnType());
 	}
 
-	// TODO
-	public boolean isUnSettableAttribute(Method method) {
-		return false;
+	public boolean isIsUnsetMethodFor(Method method, EAttribute attribute) {
+		if (method.getParameterTypes().length != 0) {
+			return false;
+		}
+		Class returnType = method.getReturnType();
+		if (!returnType.equals(boolean.class)) {
+			return false;
+		}
+		String attributeName = attribute.getName();
+		String isUnsetMethodName = "isUnset" + Util.titleCase(attributeName);
+		if (!method.getName().equals(isUnsetMethodName)) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean isUnsetMethodFor(Method method, EAttribute attribute) {
+		if (method.getParameterTypes().length != 0) {
+			return false;
+		}
+		Class returnType = method.getReturnType();
+		if (!returnType.equals(void.class)) {
+			return false;
+		}
+		String attributeName = attribute.getName();
+		String unsetMethodName = "unset" + Util.titleCase(attributeName);
+		if (!method.getName().equals(unsetMethodName)) {
+			return false;
+		}
+		return true;
 	}
 	
 }

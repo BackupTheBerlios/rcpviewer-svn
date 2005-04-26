@@ -71,24 +71,6 @@ public class TestDomainClass extends TestCase {
 			this.surname = surname;
 		}
 	}
-	public static class CustomerWithPrimitiveAttribute {
-		private int age;
-		public int getAge() {
-			return age;
-		}
-		public void setAge(int age) {
-			this.age = age;
-		}
-	}
-	public static class CustomerWithClassBasedAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-		public void setSurname(String surname) {
-			this.surname = surname;
-		}
-	}
 	public static class CustomerWithNonDerivedReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
@@ -169,6 +151,53 @@ public class TestDomainClass extends TestCase {
 		@Ordered(false)
 		public String getSurname() {
 			return surname;
+		}
+	}
+	public static class CustomerWithUnsettableAttribute {
+		private int age;
+		public boolean isUnsetAge() {
+			return age == -1;
+		}
+		public void unsetAge() {
+			age = -1;
+		}
+		public int getAge() {
+			return age;
+		}
+		public void setAge(int age) {
+			this.age = age;
+		}
+	}
+	public static class CustomerWithOnlyIsUnsetForAttribute {
+		private int age;
+		/**
+		 * Not having unsetXxx means this attribute isn't unsettable.
+		 * @return
+		 */
+		public boolean isUnsetAge() {
+			return age == -1;
+		}
+		public int getAge() {
+			return age;
+		}
+		public void setAge(int age) {
+			this.age = age;
+		}
+	}
+	public static class CustomerWithOnlyUnsetForAttribute {
+		private int age;
+		/**
+		 * Not having isUnsetXxx means this attribute isn't unsettable.
+		 * @return
+		 */
+		public void unsetAge() {
+			age = -1;
+		}
+		public int getAge() {
+			return age;
+		}
+		public void setAge(int age) {
+			this.age = age;
 		}
 	}
 
@@ -372,16 +401,21 @@ public class TestDomainClass extends TestCase {
 		// TODO
 	}
 
-	public void incompletetestWhetherEAttributeIsUnsettableForPrimitiveAttribute() {
-		domainClass = new DomainClass(CustomerWithPrimitiveAttribute.class);
+	public void testWhetherEAttributeIsUnsettableWhenIs() {
+		domainClass = new DomainClass(CustomerWithUnsettableAttribute.class);
+		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
+		assertTrue(eAttribute.isUnsettable());
+	}
+
+	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
+		domainClass = new DomainClass(CustomerWithOnlyIsUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 	}
-
-	public void incompletetestWhetherEAttributeIsUnsettableForClassBasedAttribute() {
-		domainClass = new DomainClass(CustomerWithClassBasedAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isUnsettable());
+	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
+		domainClass = new DomainClass(CustomerWithOnlyUnsetForAttribute.class);
+		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
+		assertFalse(eAttribute.isUnsettable());
 	}
 
 	
