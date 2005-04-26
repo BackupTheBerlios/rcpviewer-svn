@@ -6,6 +6,8 @@ import de.berlios.rcpviewer.metamodel.annotations.*;
 /**
  * Concrete implementation of {@link IProgrammingModel} for interpreting
  * a POJO model (with rcpviewer annotations).
+ * 
+ * TODO: should move into a de.berlios.rcpviewer.progmodel.default package, along with DomainClass and all the various annotations.
  *
  */
 public final class ProgrammingModel implements IProgrammingModel {

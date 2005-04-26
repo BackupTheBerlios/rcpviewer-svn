@@ -30,8 +30,12 @@ import java.util.Set;
 
 
 /**
- * Akin to {@link java.lang.Class}.
- * TODO: need some logic to ensure that the namespace of members is unique.
+ * Represents a class in the meta model, akin to {@link java.lang.Class} and
+ * wrapping an underlying EMF EClass.
+ * 
+ * TODO: should delegate much more to ProgrammingModel
+ * TODO: should be part of the implementation of a specific programming model 
+ * TODO: should implement the choreography of interacting with the underlying POJOs (or this could be done by DomainObject).
  */
 public final class DomainClass 
 		implements IDomainClass,
@@ -41,6 +45,8 @@ public final class DomainClass
 	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates 
 	 * that the EAttribute is write-only (has a mutator, no accessor).
+	 * 
+	 * TODO: apparently this should be a URI.
 	 */
 	public final static String ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE = 
 							"de.berlios.rcpviewer.metamodel.writeOnly";
