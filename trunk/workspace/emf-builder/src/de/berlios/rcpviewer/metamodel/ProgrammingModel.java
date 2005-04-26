@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.metamodel.annotations.*;
+import de.berlios.rcpviewer.progmodel.IProgrammingModel;
 
 /**
  * Concrete implementation of {@link IProgrammingModel} for interpreting

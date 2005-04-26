@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.impl;
 
 import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.progmodel.*;
 
 /**
  * TODO: convert to use the generic container approach used in DSFA

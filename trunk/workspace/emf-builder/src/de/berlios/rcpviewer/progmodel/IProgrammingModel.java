@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.progmodel;
 
 import java.lang.reflect.Method;
 

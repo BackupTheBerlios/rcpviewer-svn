@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.ArrayList;
 
+import de.berlios.rcpviewer.progmodel.IProgrammingModel;
+
 import junit.framework.TestCase;
 
 public class TestProgrammingModel extends TestCase {
