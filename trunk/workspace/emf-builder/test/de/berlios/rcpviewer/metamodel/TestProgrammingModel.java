@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import de.berlios.rcpviewer.progmodel.IProgrammingModel;
+import de.berlios.rcpviewer.progmodel.standard.ProgrammingModel;
 
 import junit.framework.TestCase;
 

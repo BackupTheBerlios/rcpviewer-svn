@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.metamodel.impl;
 import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.progmodel.standard.*;
 import de.berlios.rcpviewer.metamodel.annotations.*;
 
 /**

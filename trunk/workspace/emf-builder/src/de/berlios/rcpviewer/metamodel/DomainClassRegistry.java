@@ -2,6 +2,8 @@ package de.berlios.rcpviewer.metamodel;
 
 import de.berlios.rcpviewer.metamodel.annotations.*;
 import de.berlios.rcpviewer.metamodel.impl.*;
+import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;

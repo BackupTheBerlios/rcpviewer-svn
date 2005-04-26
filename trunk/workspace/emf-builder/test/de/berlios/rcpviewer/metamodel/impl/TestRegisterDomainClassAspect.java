@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.metamodel.impl;
 
 import junit.framework.TestCase;
 import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 public class TestRegisterDomainClassAspect extends TestCase {
 

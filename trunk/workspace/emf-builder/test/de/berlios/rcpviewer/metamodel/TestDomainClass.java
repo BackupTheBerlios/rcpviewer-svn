@@ -9,6 +9,7 @@ import de.berlios.rcpviewer.metamodel.annotations.LowerBoundOf;
 import de.berlios.rcpviewer.metamodel.annotations.Ordered;
 import de.berlios.rcpviewer.metamodel.annotations.Unique;
 import de.berlios.rcpviewer.metamodel.annotations.UpperBoundOf;
+import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 import junit.framework.TestCase;
 

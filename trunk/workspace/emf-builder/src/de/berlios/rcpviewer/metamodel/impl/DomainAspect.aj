@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.metamodel;
 import de.berlios.rcpviewer.metamodel.annotations.*;
+import de.berlios.rcpviewer.progmodel.standard.*;
 
 /**
  * A <i>perthis</i> aspect that wraps each POJO and creates a corresponding 
