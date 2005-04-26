@@ -1,6 +1,5 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.progmodel;
 
-import de.berlios.rcpviewer.progmodel.IProgrammingModel;
 
 /**
  * Objects that require an {@link IProgrammingModel} should implement this interface;

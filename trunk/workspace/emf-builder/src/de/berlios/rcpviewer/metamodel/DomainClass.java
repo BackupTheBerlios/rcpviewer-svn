@@ -8,6 +8,7 @@ import de.berlios.rcpviewer.metamodel.annotations.Ordered;
 import de.berlios.rcpviewer.metamodel.annotations.Unique;
 import de.berlios.rcpviewer.metamodel.annotations.UpperBoundOf;
 import de.berlios.rcpviewer.progmodel.IProgrammingModel;
+import de.berlios.rcpviewer.progmodel.IProgrammingModelAware;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
