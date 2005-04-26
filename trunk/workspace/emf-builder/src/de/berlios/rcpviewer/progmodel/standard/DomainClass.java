@@ -11,7 +11,7 @@ import de.berlios.rcpviewer.progmodel.IProgrammingModelAware;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.util.List;
 
 
@@ -22,6 +22,8 @@ import java.util.List;
  * TODO: should delegate much more to ProgrammingModel
  * TODO: should be part of the implementation of a specific programming model 
  * TODO: should implement the choreography of interacting with the underlying POJOs (or this could be done by DomainObject).
+ * 
+ * @author Dan Haywood
  */
 public final class DomainClass 
 		implements IDomainClass,

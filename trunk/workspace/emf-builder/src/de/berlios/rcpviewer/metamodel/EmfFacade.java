@@ -19,6 +19,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  * <p>
  * Stateless class; an alternative design would have been a collection of 
  * static methods.
+ * 
+ * @author Dan Haywood
  */
 public class EmfFacade {
 

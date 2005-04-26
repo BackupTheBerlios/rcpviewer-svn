@@ -9,6 +9,8 @@ import de.berlios.rcpviewer.progmodel.standard.*;
  * TODO: actually, a simpler design still would be to look for @Injected 
  *       attribute and provide by intercepting the getter 
  *       (type 3 DI, I think it's called)
+ *       
+ * @author Dan Haywood
  */
 aspect DependencyInjectionAspect 
 	implements IProgrammingModelAware,

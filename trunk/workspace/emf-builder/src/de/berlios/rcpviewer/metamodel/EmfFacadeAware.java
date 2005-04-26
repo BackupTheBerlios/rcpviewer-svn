@@ -6,6 +6,7 @@ package de.berlios.rcpviewer.metamodel;
  * 
  * TODO: probably replace with a @Injected annotation.
  *
+ * @author Dan Haywood
  */
 public interface EmfFacadeAware {
 

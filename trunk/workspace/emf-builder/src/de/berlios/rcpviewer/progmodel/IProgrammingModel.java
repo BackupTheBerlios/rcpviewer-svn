@@ -12,7 +12,9 @@ import org.eclipse.emf.ecore.EAttribute;
  * Implementation note: this is a pluggable implementation because (a) it
  * it is easily tested, and (b) because it might be rather neat to be pluggable.
  * 
- * TODO: at time of writing, only the accessor stuff is in use.
+ * TODO: at time of writing, only the attribute stuff is in use.
+ * 
+ * @author Dan Haywood
  */
 public interface IProgrammingModel {
 

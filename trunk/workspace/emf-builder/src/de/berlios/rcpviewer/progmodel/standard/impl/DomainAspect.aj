@@ -6,6 +6,11 @@ import de.berlios.rcpviewer.progmodel.standard.*;
 /**
  * A <i>perthis</i> aspect that wraps each POJO and creates a corresponding 
  * {@link IDomainObject}.
+ * 
+ * TODO: at some point should be able to factor out advice into an abstract
+ * aspect in the progmodel.impl package.
+ * 
+ * @author Dan Haywood
  */
 public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	
@@ -16,7 +21,7 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 
 	// THIS STUFF IS COMMENTED OUT SINCE NOT SURE IF ANNOTATIONS ARE TRIPPING US UP...
 //	/**
-//	 * pick out instantiating of a Pojo annotated with @DomainObject.
+//	 * pick out instantiating of a Pojo annotated with @Domain
 //	 */
 //	public pointcut instantiatePojo(Object pojo): 
 //		execution((@Domain *..*).new(..)) && this(pojo);

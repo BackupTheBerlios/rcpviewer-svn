@@ -9,9 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Register class, working out its structure.
+ * Registery of all discovered {@link DomainClass}es.
  * 
- * TODO: may not be needed, since can go to EMF (see {@link EmfFacade})
+ * <p>
+ * An alternative way of getting hold of classes is via EMF, see
+ * {@link EmfFacade}.  However, usually it is easier to deal in
+ * {@link DomainClass}es rather than EMF <tt>EClass</tt>es.
+ * 
+ * @author Dan Haywood
  */
 public final class DomainClassRegistry {
 	

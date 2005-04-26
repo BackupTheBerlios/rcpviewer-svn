@@ -9,6 +9,8 @@ import java.lang.annotation.*;
  * 
  * <p>
  * Consumed reflectively for building meta-model.
+ * 
+ * @author Dan Haywood
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

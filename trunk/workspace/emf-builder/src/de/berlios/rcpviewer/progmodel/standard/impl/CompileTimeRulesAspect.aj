@@ -3,7 +3,9 @@ package de.berlios.rcpviewer.progmodel.standard.impl;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 /**
- * Enforces various rules at compile-time. 
+ * Enforces various rules at compile-time.
+ * 
+ * @author Dan Haywood
  */
 aspect CompileTimeRulesAspect {
 

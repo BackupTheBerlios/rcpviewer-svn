@@ -16,6 +16,7 @@ import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
  * 
  * TODO: should move into a de.berlios.rcpviewer.progmodel.default package, along with DomainClass and all the various annotations.
  *
+ * @author Dan Haywood
  */
 public final class ProgrammingModel implements IProgrammingModel {
 

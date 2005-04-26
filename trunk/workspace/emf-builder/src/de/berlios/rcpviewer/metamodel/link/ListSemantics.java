@@ -9,6 +9,8 @@ import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
  * TODO: not yet in use, but part of the supporting structure for interpreting 
  * pojos.
  * TODO: convert to an enum.
+ * 
+ * @author Dan Haywood
  */
 public class ListSemantics extends LinkSemantics {
 	/**

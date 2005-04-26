@@ -16,6 +16,7 @@ import java.lang.annotation.*;
  * can't have null as a default, would need to provide a "do-everything"
  * comparator class.
  * 
+ * @author Dan Haywood
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

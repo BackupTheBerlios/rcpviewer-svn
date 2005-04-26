@@ -5,6 +5,8 @@ import java.lang.annotation.*;
  * Persistable and visualisable domain object.
  * 
  * Consumed by AspectJ, hence only source retention policy.
+ * 
+ * @author Dan Haywood
  */
 @Retention(RetentionPolicy.SOURCE)
 @Inherited

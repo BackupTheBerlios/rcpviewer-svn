@@ -7,6 +7,7 @@ package de.berlios.rcpviewer.progmodel;
  * 
  * TODO: probably replace with a @Injected annotation.
  *
+ * @author Dan Haywood
  */
 public interface IProgrammingModelAware {
 

@@ -7,6 +7,8 @@ import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
  * 
  * TODO: not yet in use, but part of the supporting structure for interpreting 
  * pojos.
+ * 
+ * @author Dan Haywood
  */
 public abstract class LinkSemantics {
 

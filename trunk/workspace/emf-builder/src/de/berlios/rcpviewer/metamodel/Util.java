@@ -5,6 +5,8 @@ package de.berlios.rcpviewer.metamodel;
  * Locally used utility methods for manipulating method names etc.
  * 
  * TODO: need some tests for this.
+ * 
+ * @author Dan Haywood
  */
 public final class Util {
 	

@@ -12,7 +12,9 @@ import java.lang.annotation.*;
  * Runtime retention policy since read reflectively.
  * 
  * TODO: not yet in use; the idea is though that this annotation will be
- * used as part of working out links in the metamodel. 
+ * used as part of working out links in the metamodel.
+ * 
+ * @author Dan Haywood
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

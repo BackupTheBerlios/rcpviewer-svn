@@ -6,6 +6,8 @@ import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
  * Enumeration of different constraints applicable to {@link LinkSemanticsType}s.
  * 
  * TODO: this stuff not yet being used, to be used for derivation of links
+ *
+ * @author Dan Haywood
  */
 public enum Constraint {
 	INDEXED,    // cf java.util.List 

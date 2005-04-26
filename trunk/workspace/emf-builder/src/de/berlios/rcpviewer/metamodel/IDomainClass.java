@@ -1,10 +1,24 @@
 package de.berlios.rcpviewer.metamodel;
-import java.util.Iterator;
+
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 
+/**
+ * Represents a class in the meta model, akin to {@link java.lang.Class} and
+ * wrapping an underlying EMF EClass.
+ * 
+ * <p>
+ * There are a number of responsibilities that (objects implementing) this 
+ * interface and the related {@link IDomainObject} interface provide over and
+ * above EMF.  Specifically, IDomainClass/IDomainObject are responsible for
+ * defining the choreography of interactions between the UI layer and the
+ * pojos: a bunch of "know-how-tos".  The EMF meta-model mostly provides the
+ * "know-whats" of the structure of classes and their attributes.
+ * 
+ * @author Dan Haywood
+ */
 public interface IDomainClass {
 
 	public Class getJavaClass();

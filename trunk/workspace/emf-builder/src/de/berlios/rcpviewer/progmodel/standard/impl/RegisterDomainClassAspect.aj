@@ -7,9 +7,12 @@ import de.berlios.rcpviewer.progmodel.standard.*;
  * Registers {@link DomainClass}es as they are loaded with the
  * {@link DomainClassRegistry}.
  * 
- * TODO: not sure if this is needed because the DomainClassRegistry itself 
- * might not be needed.  However, this would make a nice <T> aspect for 
- * registration of any sort of class.
+ * TODO: at some point should be able to factor out advice into an abstract
+ * aspect in the progmodel.impl package.
+ * 
+ * TODO: make into a <T> aspect.
+ * 
+ * @author Dan Haywood
  */
 aspect RegisterDomainClassAspect {
 

@@ -10,7 +10,10 @@ import de.berlios.rcpviewer.metamodel.IDomainObject;
 
 /**
  * Powertype describing the different sorts of {@link de.berlios.rcpviewer.metamodel.LinkSemantics}.
+ * 
  * TODO: make into an enum
+ * 
+ * @author Dan Haywood
  */
 public final class LinkSemanticsType {
 	
