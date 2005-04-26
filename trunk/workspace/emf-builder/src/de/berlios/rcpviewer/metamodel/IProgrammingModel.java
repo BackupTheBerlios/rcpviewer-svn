@@ -154,5 +154,7 @@ public interface IProgrammingModel {
 	public boolean isLinkPairCompatible(final Method associator, final Method dissociator);
 
 	public boolean representsAttribute(Method method);
+
+	public boolean isUnSettableAttribute(Method method);
 	
 }

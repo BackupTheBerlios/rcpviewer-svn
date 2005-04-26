@@ -23,6 +23,7 @@ aspect DependencyInjectionAspect
 		aware.setProgrammingModel(getProgrammingModel());
 	}
 	
+	
 	pointcut initializeEmfFacadeAware(EmfFacadeAware aware):
 		execution(EmfFacadeAware+.new(..)) && 
 		this(aware) &&
@@ -56,5 +57,6 @@ aspect DependencyInjectionAspect
 	public void setEmfFacade(EmfFacade emfFacade) {
 		this.emfFacade = emfFacade;
 	}
+
 
 }

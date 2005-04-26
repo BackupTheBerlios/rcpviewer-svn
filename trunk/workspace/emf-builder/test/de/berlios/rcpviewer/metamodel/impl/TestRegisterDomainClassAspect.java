@@ -48,4 +48,7 @@ public class TestRegisterDomainClassAspect extends TestCase {
 		DomainClass d = DomainClassRegistry.instance().lookup(Department.class);
 		assertNotNull(d);
 	}
+
+
+
 }

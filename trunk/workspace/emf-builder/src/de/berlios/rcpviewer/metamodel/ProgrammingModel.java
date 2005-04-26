@@ -333,6 +333,11 @@ public final class ProgrammingModel implements IProgrammingModel {
 		return (isAccessor(method) || isMutator(method)) &&
 				isValueType(method.getReturnType());
 	}
+
+	// TODO
+	public boolean isUnSettableAttribute(Method method) {
+		return false;
+	}
 	
 }
 

@@ -23,35 +23,70 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 public class EmfFacade {
 
 	private final ResourceSet resourceSet;
-	public final Map<Class,EClassifier> coreDataTypes; 
+	public final Map<Class,EDataTypeData> coreDataTypes; 
 
+	final static class EDataTypeData {
+		private final EDataType eDataType;
+		public EDataType getEDataType() {
+			return eDataType;
+		}
+		private final boolean isUnsettable;
+		public boolean getIsUnsettable() {
+			return isUnsettable;
+		}
+		EDataTypeData(EClassifier eClassifier, boolean isUnsettable) {
+			this.eDataType = (EDataType)eClassifier;
+			this.isUnsettable = isUnsettable; 
+		}
+	}
 	public EmfFacade() {
 		// seems to cause the core package registry to get populated
 		EcoreFactory.eINSTANCE.createEPackage();
 		resourceSet = new ResourceSetImpl();
-		coreDataTypes = new HashMap<Class,EClassifier>() {
+		coreDataTypes = new HashMap<Class,EDataTypeData>() {
 			{
-				put(java.math.BigDecimal.class, getEcorePackage().getEClassifier("EBigDecimal"));
-				put(java.math.BigInteger.class, getEcorePackage().getEClassifier("EBigInteger"));
-				put(boolean.class, getEcorePackage().getEClassifier("EBoolean"));
-				put(java.lang.Boolean.class, getEcorePackage().getEClassifier("EBooleanObject"));
-				put(byte.class, getEcorePackage().getEClassifier("EByte"));
-				put(byte[].class, getEcorePackage().getEClassifier("EByteArray"));
-				put(java.lang.Byte.class, getEcorePackage().getEClassifier("EByteObject"));
-				put(char.class, getEcorePackage().getEClassifier("EChar"));
-				put(java.lang.Character.class, getEcorePackage().getEClassifier("ECharacterObject"));
-				put(java.util.Date.class, getEcorePackage().getEClassifier("EDate"));
-				put(double.class, getEcorePackage().getEClassifier("EDouble"));
-				put(java.lang.Double.class, getEcorePackage().getEClassifier("EDoubleObject"));
-				put(float.class, getEcorePackage().getEClassifier("EFloat"));
-				put(java.lang.Float.class, getEcorePackage().getEClassifier("EFloatObject"));
-				put(int.class, getEcorePackage().getEClassifier("EInt"));
-				put(java.lang.Integer.class, getEcorePackage().getEClassifier("EIntegerObject"));
-				put(long.class, getEcorePackage().getEClassifier("ELong"));
-				put(java.lang.Long.class, getEcorePackage().getEClassifier("ELongObject"));
-				put(short.class, getEcorePackage().getEClassifier("EShort"));
-				put(java.lang.Short.class, getEcorePackage().getEClassifier("EShortObject"));
-				put(java.lang.String.class, getEcorePackage().getEClassifier("EString"));
+				put(java.math.BigDecimal.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EBigDecimal"), true));
+				put(java.math.BigInteger.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EBigInteger"), true));
+				put(boolean.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EBoolean"), false));
+				put(java.lang.Boolean.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EBooleanObject"), true));
+				put(byte.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EByte"), true));
+				put(byte[].class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EByteArray"), true));
+				put(java.lang.Byte.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EByteObject"), true));
+				put(char.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EChar"), false));
+				put(java.lang.Character.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("ECharacterObject"), false));
+				put(java.util.Date.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EDate"), true));
+				put(double.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EDouble"), false));
+				put(java.lang.Double.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EDoubleObject"), true));
+				put(float.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EFloat"), false));
+				put(java.lang.Float.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EFloatObject"), true));
+				put(int.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EInt"), false));
+				put(java.lang.Integer.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EIntegerObject"), true));
+				put(long.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("ELong"), false));
+				put(java.lang.Long.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("ELongObject"), true));
+				put(short.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EShort"), false));
+				put(java.lang.Short.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EShortObject"), true));
+				put(java.lang.String.class, 
+						new EDataTypeData(getEcorePackage().getEClassifier("EString"), true));
 			}
 		};
 	}
@@ -101,9 +136,9 @@ public class EmfFacade {
 	}
 
 	public EDataType getEDataTypeFor(Class<?> javaDataType) {
-		EClassifier builtInDataType = coreDataTypes.get(javaDataType);
-		if (builtInDataType != null && builtInDataType instanceof EDataType) {
-			return (EDataType)builtInDataType;
+		EDataTypeData builtInDataTypeData = coreDataTypes.get(javaDataType); 
+		if (builtInDataTypeData != null) {
+			return builtInDataTypeData.getEDataType();
 		}
 		
 		Package javaPackage = javaDataType.getPackage();
@@ -125,6 +160,35 @@ public class EmfFacade {
 		ePackage.getEClassifiers().add(eDataType);
 		
 		return eDataType;
+	}
+
+	/**
+	 * Whether the EDataType corresponding to the java dataType is unsettable.
+	 * 
+	 * <p>
+	 * Some built-ins are, some are not.  If the datatype is a user-defined datatype,
+	 * then assumes is unsettable.
+	 * 
+	 * 
+	 * @param javaDataType
+	 * @return
+	 */
+	public boolean isIsUnsettableFor(Class<?> javaDataType) {
+		EDataTypeData builtInDataTypeData = coreDataTypes.get(javaDataType); 
+		if (builtInDataTypeData != null) {
+			return builtInDataTypeData.getIsUnsettable();
+		}
+		
+		Package javaPackage = javaDataType.getPackage();
+		EPackage ePackage = getEPackageFor(javaPackage);
+		for(Object eClassifierAsObject: ePackage.getEClassifiers()) {
+			EClassifier eClassifier = (EClassifier)eClassifierAsObject;
+			if (eClassifier.getInstanceClass() == javaDataType) {
+				return true;
+			}
+		}
+		
+		throw new IllegalArgumentException("Not a built-in, and is not a Value");
 	}
 
 }
