@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.metamodel.impl;
 import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
-import de.berlios.rcpviewer.metamodel.annotations.*;
 
 /**
  * Registers {@link DomainClass}es as they are loaded with the
@@ -19,7 +18,7 @@ aspect RegisterDomainClassAspect {
 	 */ 
 	pointcut classForName():
 		call(Class Class.forName(..)) && 
-		!within(RegisterDomainObjectAspect);
+		!within(*..RegisterDomainObjectAspect);
 
 	/**
 	 * pick out classloading (subclasses of) pojo annotated with {@link @ADomainObject}

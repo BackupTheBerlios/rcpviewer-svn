@@ -1,5 +1,5 @@
 package de.berlios.rcpviewer.metamodel.impl;
-import de.berlios.rcpviewer.metamodel.annotations.*;
+import de.berlios.rcpviewer.progmodel.standard.*;
 
 /**
  * Enforces various rules at compile-time. 
