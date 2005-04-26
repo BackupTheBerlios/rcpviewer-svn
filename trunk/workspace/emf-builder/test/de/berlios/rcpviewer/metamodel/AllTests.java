@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.metamodel;
 
+import de.berlios.rcpviewer.progmodel.standard.TestDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.TestProgrammingModel;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
