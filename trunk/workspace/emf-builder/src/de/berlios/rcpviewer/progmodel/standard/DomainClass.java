@@ -35,15 +35,6 @@ public final class DomainClass<T>
 				   IProgrammingModelAware,
 				   EmfFacadeAware,
 				   IWrapperAware {
-
-	/**
-	 * Presence of an EAnnotation with this source on an EAttribute indicates 
-	 * that the EAttribute is write-only (has a mutator, no accessor).
-	 * 
-	 * TODO: apparently this should be a URI.
-	 */
-	public final static String ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE = 
-							"de.berlios.rcpviewer.metamodel.writeOnly";
 	
 	public DomainClass(final Class<T> javaClass) {
 		this.javaClass = javaClass;
@@ -80,7 +71,7 @@ public final class DomainClass<T>
 
 	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
 	
-	
+
 	/**
 	 * 
 	 * @param methods
@@ -95,7 +86,7 @@ public final class DomainClass<T>
 			if (!getProgrammingModel().representsAttribute(methods[i])) {
 				continue;
 			}
-						
+			
 			EAttribute eAttribute = EcoreFactory.eINSTANCE.createEAttribute();
 			Class<?> dataType = getProgrammingModel().accessorType(methods[i]);
 			EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
@@ -103,6 +94,11 @@ public final class DomainClass<T>
 			String attributeName = getProgrammingModel().deriveAttributeName(methods[i]);
 			eAttribute.setName(attributeName);
 			eClass.getEStructuralFeatures().add(eAttribute);
+
+			putMethodNameIn(
+					methodAnnotationFor(eAttribute), 
+					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
+					methods[i].getName());
 			
 			eAttribute.setChangeable(false); // if find a mutator, make changeable
 			Derived derivedAnnotation = methods[i].getAnnotation(Derived.class);
@@ -175,12 +171,14 @@ public final class DomainClass<T>
 				eClass.getEStructuralFeatures().add(eAttribute);
 
 				EAnnotation eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
-				eAnnotation.setSource(ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE);
+				eAnnotation.setSource(Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 				eAnnotation.setEModelElement(eAttribute);
-//				EAnnotation justChecking = eAttribute.getEAnnotation(ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE);
-//				assert justChecking != null;
-//				assert eAnnotation == justChecking;
-			} 
+			}
+			
+			putMethodNameIn(
+					methodAnnotationFor(eAttribute), 
+					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
+					methods[i].getName());
 			
 //			eAttribute.setDefaultValueLiteral(defaultValueAsString); // TODO: read from annotation
 		}
@@ -193,29 +191,41 @@ public final class DomainClass<T>
 	private void identifyUnSettableAttributes() {
 	
 		Method[] methods = javaClass.getMethods();
-		boolean hasIsUnsetMethod = false;
-		boolean hasUnsetMethod = false;
+		Method isUnsetMethod = null;
+		Method unsetMethod = null;
 		for(EAttribute eAttribute: allAttributes()) {
 			for(int i=0; i<methods.length; i++) {
 				if (getProgrammingModel().isIsUnsetMethodFor(methods[i], eAttribute)) {
-					hasIsUnsetMethod = true;
+					isUnsetMethod = methods[i];
 					break;
 				}
 			}
-			if (!hasIsUnsetMethod) {
+			if (isUnsetMethod == null) {
 				continue;
 			}
 			for(int i=0; i<methods.length; i++) {
 				if (getProgrammingModel().isUnsetMethodFor(methods[i], eAttribute)) {
-					hasUnsetMethod = true;
+					unsetMethod = methods[i];
 					break;
 				}
 			}
-			if (!hasUnsetMethod) {
+			if (unsetMethod == null) {
 				continue;
 			}
-			// has noth an IsUnset and an unset method for this attribute
+			// has both an IsUnset and an unset method for this attribute
 			eAttribute.setUnsettable(true);
+			
+			putMethodNameIn(
+					methodAnnotationFor(eAttribute), 
+					Constants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
+					isUnsetMethod.getName());
+			
+			putMethodNameIn(
+					methodAnnotationFor(eAttribute), 
+					Constants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
+					isUnsetMethod.getName());
+			
+
 		}
 	}
 	
@@ -270,7 +280,7 @@ public final class DomainClass<T>
 	}
 	
 	public boolean isWriteOnly(EAttribute eAttribute) {
-		return eAttribute.getEAnnotation(ANNOTATION_SOURCE_WRITE_ONLY_ATTRIBUTE) != null;
+		return eAttribute.getEAnnotation(Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 	}
 
 	public boolean isChangeable(EAttribute eAttribute) {
@@ -336,6 +346,34 @@ public final class DomainClass<T>
 			throw new ProgrammingModelException("Cannot instantiate", ex);
 		}
 	}
+
+	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
+		EAnnotation eAnnotation = 
+			eModelElement.getEAnnotation(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+		if (eAnnotation != null) {
+			return eAnnotation;
+		}
+		eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
+		eAnnotation.setSource(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+		eAnnotation.setEModelElement(eModelElement);
+		return eAnnotation;
+	}
+	
+	EAnnotation putMethodNameIn(EAnnotation eAnnotation, String methodKey, String methodName) {
+		if (eAnnotation == null) {
+			return null;
+		}
+		eAnnotation.getDetails().put(methodKey, methodName);
+		return eAnnotation;
+	}
+	
+	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
+		if (eAnnotation == null) {
+			return null;
+		}
+		return (String)eAnnotation.getDetails().get(methodKey);
+	}
+	
 
 	/**
 	 * Setting up for AspectJ introduction of logging infrastructure.

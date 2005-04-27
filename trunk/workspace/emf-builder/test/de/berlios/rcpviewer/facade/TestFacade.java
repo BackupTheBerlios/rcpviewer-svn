@@ -2,6 +2,8 @@ package de.berlios.rcpviewer.facade;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EAttribute;
+
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
@@ -359,5 +361,40 @@ public class TestFacade extends AbstractTestCase  {
 		assertSame(domainObject2, domainObject);
 	}
 
+
+	public void testCanSetAttribute() {
+		IDomainClass<Department> domainClass = 
+			DomainClassRegistry.instance().register(Department.class);
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
+		domainObject.set(nameAttribute, "HR");
+		assertEquals("HR", domainObject.getPojo().getName());
+	}
+
+	public void testCannotSetAttributeToInvalidValue() {
+		IDomainClass<Department> domainClass = 
+			DomainClassRegistry.instance().register(Department.class);
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
+		try {
+			domainObject.set(nameAttribute, new Integer(1));
+			fail("Expected IllegalArgumentException to have been thrown");
+		} catch(IllegalArgumentException ex) {
+			// expected.
+		}
+	}
+
+	public void testCanGetAttribute() {
+		IDomainClass<Department> domainClass = 
+			DomainClassRegistry.instance().register(Department.class);
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		domainObject.getPojo().setName("HR");
+		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
+		String value = (String)domainObject.get(nameAttribute);
+		assertEquals("HR", value);
+	}
 
 }
