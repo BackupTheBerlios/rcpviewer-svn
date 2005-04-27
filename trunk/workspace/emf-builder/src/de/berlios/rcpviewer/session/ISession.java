@@ -90,9 +90,21 @@ public interface ISession {
 	 */
 	void reset();
 
-	void attach(IDomainObject<?> domainObject);
-
+	/**
+	 * Attach the pojo wrapped in the supplied domainObject to the session.
+	 * 
+	 * @param domainObject
+	 * @throws IllegalArgumentException if the pojo was already attached.
+	 */
 	void attach(Department pojo);
+
+	/**
+	 * Attach the pojo wrapped in the supplied domainObject to the session.
+	 * 
+	 * @param domainObject
+	 * @throws IllegalArgumentException if the pojo was already attached.
+	 */
+	void attach(IDomainObject<?> domainObject);
 
 	/**
 	 * Returns all attached objects of the supplied class.
