@@ -3,6 +3,8 @@ package de.berlios.rcpviewer.impl;
 import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
+import de.berlios.rcpviewer.progmodel.standard.impl.*;
+import de.berlios.rcpviewer.session.*;
 
 /**
  * TODO: convert to use the generic container approach used in DSFA
@@ -14,7 +16,8 @@ import de.berlios.rcpviewer.progmodel.standard.*;
  */
 aspect DependencyInjectionAspect 
 	implements IProgrammingModelAware,
-	           EmfFacadeAware { 
+	           EmfFacadeAware,
+	           IWrapperAware { 
 
 	declare precedence: *, DependencyInjectionAspect;
 
@@ -38,12 +41,24 @@ aspect DependencyInjectionAspect
 	}
 	
 
+	pointcut initializeWrapperAware(IWrapperAware aware):
+		execution(IWrapperAware+.new(..)) && 
+		this(aware) &&
+		!within(DependencyInjectionAspect);
+	
+	before(IWrapperAware aware): initializeWrapperAware(aware) {
+		aware.setWrapper(getWrapper());
+	}
+	
+
+
 	/**
 	 * TODO: configure via Spring
 	 */
 	{
 		setProgrammingModel(new ProgrammingModel());
 		setEmfFacade(new EmfFacade());
+		setWrapper(new Wrapper());
 	}
 		
 	private IProgrammingModel programmingModel;
@@ -60,6 +75,14 @@ aspect DependencyInjectionAspect
 	}
 	public void setEmfFacade(EmfFacade emfFacade) {
 		this.emfFacade = emfFacade;
+	}
+	
+	private IWrapper wrapper;
+	public IWrapper getWrapper() {
+		return wrapper;
+	}
+	public void setWrapper(IWrapper wrapper) {
+		this.wrapper = wrapper;
 	}
 
 

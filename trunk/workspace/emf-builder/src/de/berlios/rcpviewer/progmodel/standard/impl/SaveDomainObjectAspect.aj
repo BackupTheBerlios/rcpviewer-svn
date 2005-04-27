@@ -9,7 +9,7 @@ public aspect SaveDomainObjectAspect {
 	
 	before(DomainMarker domainMarker): saveDomainObject(domainMarker) {
 		IDomainObject domainObject = 
-			Session.instance().getDomainObjectFor(domainMarker);
+			Session.instance().getWrapper().getDomainObjectFor(domainMarker);
 		domainObject.persist();
 	}
 

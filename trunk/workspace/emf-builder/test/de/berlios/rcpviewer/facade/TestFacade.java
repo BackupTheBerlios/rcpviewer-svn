@@ -115,7 +115,7 @@ public class TestFacade extends TestCase {
 		Department dept2 = 
 			(Department)InMemoryObjectStore.instance().findByTitle(Department.class, "HR");
 		assertSame(dept2, dept);
-		IDomainObject domainObject2 = Session.instance().getDomainObjectFor(dept2);
+		IDomainObject domainObject2 = Session.instance().getWrapper().getDomainObjectFor(dept2);
 		assertSame(domainObject2, domainObject);
 	}
 }

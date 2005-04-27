@@ -326,7 +326,7 @@ public final class DomainClass<T>
 		try {
 			Object pojo = getJavaClass().newInstance();
 			IDomainObject domainObject = 
-				Session.instance().getDomainObjectFor(pojo);
+				Session.instance().getWrapper().getDomainObjectFor(pojo);
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
