@@ -272,4 +272,59 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public IDomainObject<T> createTransient();
+
+	/**
+	 * Whether the attribute is unsettable.
+	 * 
+	 * <p>
+	 * <p>
+	 * This is a convenience function that should return the same as
+	 * <tt>eAttribute.isUnsettable()</tt>.
+	 * 
+	 * <p>
+     * The definition of <i>changeable</i>, according to the EMF documentation, 
+     * is as follows:
+     * <p>
+     * <i>
+     * A feature that is declared to be unsettable has a notion of an explicit 
+     * unset or no-value state. For example, a boolean attribute that is not 
+     * unsettable can take on one of two values: true or false. If, instead, 
+     * the attribute is declared to be unsettable, it can then have any of 
+     * three values: true, false, or unset.
+     * 
+     * <p>
+     * The get method on a feature that is not set will return its default 
+     * value, but for an unsettable feature, there is a distinction between 
+     * this state and when the feature has been explicitly set to the default 
+     * value. Since the unset state is outside of the set of allowed values, 
+     * we need to generate additional methods to put a feature in the unset 
+     * state and to determine if it is in that state. For example, if the 
+     * pages attribute in class Book is declared to be unsettable, then we'll 
+     * get two more generated methods:
+     * 
+     * <p>
+     * <code>
+     * boolean isSetPages();<br>
+     * void unsetPages();
+     * </code>
+     * 
+     * <p>
+     * in addition to the original two:
+     * <p>
+     * <code>
+     * int getPages();<br>
+     * void setPages(int value);
+     * </code>
+     * 
+     * <p>
+     * The isSet method returns true if the feature has been explicitly set. 
+     * The unset method changes an attribute that has been set back to its 
+     * unset state.
+     * 
+     * </i>
+     * 
+	 * @param attribute
+	 * @return whether the attribute is unsettable.
+	 */
+	public boolean isUnsettable(EAttribute attribute);
 }

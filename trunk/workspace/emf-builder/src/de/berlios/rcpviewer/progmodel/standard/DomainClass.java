@@ -302,6 +302,10 @@ public final class DomainClass<T>
 		return eAttribute.isOrdered();
 	}
 
+	public boolean isUnsettable(EAttribute eAttribute) {
+		return eAttribute.isUnsettable();
+	}
+
 	public List<EAttribute> allAttributes() {
 		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
 		eAttributes.addAll(getEClass().getEAllAttributes());
@@ -381,6 +385,7 @@ public final class DomainClass<T>
 				"EAttribute '" + eAttribute + "' not part of this DomainClass");
 		}
 	}
+
 
 
 }

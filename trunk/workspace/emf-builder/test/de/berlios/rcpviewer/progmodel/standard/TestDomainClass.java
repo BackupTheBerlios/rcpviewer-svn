@@ -407,17 +407,20 @@ public class TestDomainClass extends TestCase {
 		domainClass = new DomainClass(CustomerWithUnsettableAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
+		assertTrue(domainClass.isUnsettable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
 		domainClass = new DomainClass(CustomerWithOnlyIsUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
+		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
 		domainClass = new DomainClass(CustomerWithOnlyUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
+		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 
 	
