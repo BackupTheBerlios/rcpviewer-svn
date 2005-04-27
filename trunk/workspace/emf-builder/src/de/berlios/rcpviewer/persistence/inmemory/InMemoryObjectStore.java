@@ -46,7 +46,6 @@ public final class InMemoryObjectStore implements IObjectStore {
 		return pojoByTitle;
 	}
 	public Object findByTitle(Class<?> javaClass, String title) {
-		
 		return pojoByTitleFor(javaClass).get(title);
 	}
 

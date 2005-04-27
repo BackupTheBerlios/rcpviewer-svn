@@ -39,7 +39,7 @@ public final class DomainObject<T> implements IDomainObject {
 		if (isPersistent()) {
 			throw new IllegalStateException("Already persisted.");
 		}
-		InMemoryObjectStore.instance().persist(this.title(), this);
+		InMemoryObjectStore.instance().persist(this.title(), pojo);
 		persistent = true;
 	}
 	
