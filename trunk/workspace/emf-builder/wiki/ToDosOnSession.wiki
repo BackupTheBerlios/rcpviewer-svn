@@ -1,0 +1,3 @@
+Things to sort out on Eclipse:/de.berlios.rcpviewer.session.ISession et al
+
+* should be able to instantiate directly using ~~new()~~ and an aspect should then kick in to delegate to the ISession.

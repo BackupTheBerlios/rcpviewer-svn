@@ -13,7 +13,7 @@ public class TestDomainAspect extends TestCase {
 	 */
 	public void testPojoWrappedInDomainObject() {
 		Department d = new Department();
-		IDomainObject obj = Session.instance().getWrapper().getDomainObjectFor(d);
+		IDomainObject obj = Session.instance().getWrapper().wrapped(d);
 		assertNotNull(obj);
 		
 		Object pojo = obj.getPojo();
@@ -25,7 +25,7 @@ public class TestDomainAspect extends TestCase {
 	 */
 	public void testDomainObjectHasCorrectClass() {
 		Department d = new Department();
-		IDomainObject obj = Session.instance().getWrapper().getDomainObjectFor(d);
+		IDomainObject obj = Session.instance().getWrapper().wrapped(d);
 		IDomainClass dc = obj.getDomainClass();
 		assertSame(Department.class, dc.getJavaClass());
 	}
@@ -34,7 +34,7 @@ public class TestDomainAspect extends TestCase {
 	 */
 	public void testCanGetDomainObjectFromDomainClassRegistry() {
 		Department d = new Department();
-		IDomainObject obj = Session.instance().getWrapper().getDomainObjectFor(d);
+		IDomainObject obj = Session.instance().getWrapper().wrapped(d);
 		IDomainClass dc = obj.getDomainClass();
 		assertSame(Department.class, dc.getJavaClass());
 	}

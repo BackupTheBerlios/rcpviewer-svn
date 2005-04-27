@@ -23,7 +23,7 @@ public interface IWrapper {
 	 * @param pojo
 	 * @return
 	 */
-	IDomainObject getDomainObjectFor(Object pojo);
+	IDomainObject wrapped(Object pojo);
 
 
 }

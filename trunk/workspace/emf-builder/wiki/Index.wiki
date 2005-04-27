@@ -23,6 +23,8 @@ Should auto-build by itself; if have problems, try removing and then re-adding t
 
 1 To Do
 * [ToDosOnProgrammingModel]
+* [ToDosOnSession]
+* [ToDosOnMetaModel]
 
 1 Scratch Notes
 * [ScratchNotes]

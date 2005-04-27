@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
+import de.berlios.rcpviewer.session.local.Session;
 
 /**
  * Wrapper for a POJO that also knows its {@link IDomainClass}.
@@ -39,7 +40,7 @@ public final class DomainObject<T> implements IDomainObject {
 		if (isPersistent()) {
 			throw new IllegalStateException("Already persisted.");
 		}
-		InMemoryObjectStore.instance().persist(this.title(), pojo);
+		Session.instance().persist(this);
 		persistent = true;
 	}
 	

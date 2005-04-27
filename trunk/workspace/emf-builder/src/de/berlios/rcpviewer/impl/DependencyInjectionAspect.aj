@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.impl;
 
+import de.berlios.rcpviewer.persistence.*;
+import de.berlios.rcpviewer.persistence.inmemory.*;
 import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
@@ -17,7 +19,8 @@ import de.berlios.rcpviewer.session.*;
 aspect DependencyInjectionAspect 
 	implements IProgrammingModelAware,
 	           EmfFacadeAware,
-	           IWrapperAware { 
+	           IWrapperAware, 
+	           IObjectStoreAware { 
 
 	declare precedence: *, DependencyInjectionAspect;
 
@@ -50,6 +53,14 @@ aspect DependencyInjectionAspect
 		aware.setWrapper(getWrapper());
 	}
 	
+	pointcut initializeObjectStoreAware(IObjectStoreAware aware):
+		execution(IObjectStoreAware+.new(..)) && 
+		this(aware) &&
+		!within(DependencyInjectionAspect);
+	
+	before(IObjectStoreAware aware): initializeObjectStoreAware(aware) {
+		aware.setObjectStore(getObjectStore());
+	}
 
 
 	/**
@@ -59,6 +70,7 @@ aspect DependencyInjectionAspect
 		setProgrammingModel(new ProgrammingModel());
 		setEmfFacade(new EmfFacade());
 		setWrapper(new Wrapper());
+		setObjectStore(new InMemoryObjectStore());
 	}
 		
 	private IProgrammingModel programmingModel;
@@ -85,5 +97,12 @@ aspect DependencyInjectionAspect
 		this.wrapper = wrapper;
 	}
 
+	private IObjectStore objectStore;
+	public IObjectStore getObjectStore() {
+		return objectStore;
+	}
+	public void setObjectStore(IObjectStore objectStore) {
+		this.objectStore = objectStore;
+	}
 
 }

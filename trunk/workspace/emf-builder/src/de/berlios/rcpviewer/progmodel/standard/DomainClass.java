@@ -10,6 +10,8 @@ import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.progmodel.IProgrammingModel;
 import de.berlios.rcpviewer.progmodel.IProgrammingModelAware;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.session.IWrapper;
+import de.berlios.rcpviewer.session.IWrapperAware;
 import de.berlios.rcpviewer.session.local.Session;
 
 import java.lang.reflect.Method;
@@ -31,7 +33,8 @@ import java.util.List;
 public final class DomainClass<T> 
 		implements IDomainClass,
 				   IProgrammingModelAware,
-				   EmfFacadeAware {
+				   EmfFacadeAware,
+				   IWrapperAware {
 
 	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates 
@@ -325,8 +328,7 @@ public final class DomainClass<T>
 	public IDomainObject createTransient() {
 		try {
 			Object pojo = getJavaClass().newInstance();
-			IDomainObject domainObject = 
-				Session.instance().getWrapper().getDomainObjectFor(pojo);
+			IDomainObject domainObject = getWrapper().wrapped(pojo);
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
@@ -334,6 +336,13 @@ public final class DomainClass<T>
 			throw new ProgrammingModelException("Cannot instantiate", ex);
 		}
 	}
+
+	/**
+	 * Setting up for AspectJ introduction of logging infrastructure.
+	 * @param message
+	 */
+	private void logWarning(String message) {}
+	
 
 	// DEPENDENCY INJECTION
 	
@@ -353,14 +362,17 @@ public final class DomainClass<T>
 		this.emfFacade = emfFacade;
 	}
 
-	/**
-	 * Setting up for AspectJ introduction of logging infrastructure.
-	 * @param message
-	 */
-	private void logWarning(String message) {}
-	
+	private IWrapper wrapper;
+	public IWrapper getWrapper() {
+		return wrapper;
+	}
+	public void setWrapper(IWrapper wrapper) {
+		this.wrapper = wrapper;
+	}
+
 	// DEPENDENCY INJECTION END
 
+	
 	/**
 	 * Cross-cutting validation of any eAttributes passed to us in the
 	 * various convenience methods.
