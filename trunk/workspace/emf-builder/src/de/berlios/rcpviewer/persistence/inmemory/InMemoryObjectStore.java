@@ -9,20 +9,6 @@ import de.berlios.rcpviewer.progmodel.standard.impl.DomainAspect;
 
 public final class InMemoryObjectStore implements IObjectStore {
 
-	private static InMemoryObjectStore instance;
-	
-	/**
-	 * TODO: should instead be provided via Dependency Injection.
-	 * 
-	 * @return
-	 */
-	public synchronized static IObjectStore instance() {
-		if (instance == null) {
-			instance = new InMemoryObjectStore();
-		}
-		return instance;
-	}
-	
 	/**
 	 * TODO: this design doesn't deal with polymorphism.
 	 * 
@@ -51,7 +37,6 @@ public final class InMemoryObjectStore implements IObjectStore {
 
 	public void reset() {
 		pojoByTitleByType.clear();
-		instance = null;
 	}
 	
 

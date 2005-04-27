@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.facade;
 
 import java.util.List;
 
+import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
@@ -14,8 +15,7 @@ import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.local.Session;
 import junit.framework.TestCase;
 
-public class TestFacade extends TestCase 
-						implements IObjectStoreAware {
+public class TestFacade extends AbstractTestCase  {
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -25,7 +25,7 @@ public class TestFacade extends TestCase
 		super.tearDown();
 		
 		getObjectStore().reset();
-		Session.instance().reset();
+		getSession().reset();
 	}
 
 	/**
@@ -39,14 +39,14 @@ public class TestFacade extends TestCase
 			DomainClassRegistry.instance().register(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		assertNotNull(domainObject);
 		assertSame(domainObject.getDomainClass(), domainClass);
 		Department pojo = domainObject.getPojo();
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
-		assertTrue(Session.instance().isAttached(domainObject));
-		assertTrue(Session.instance().isAttached(domainObject.getPojo()));
+		assertTrue(getSession().isAttached(domainObject));
+		assertTrue(getSession().isAttached(domainObject.getPojo()));
 	}
 
 	/**
@@ -65,8 +65,8 @@ public class TestFacade extends TestCase
 		Department pojo = domainObject.getPojo();
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
-		assertFalse(Session.instance().isAttached(domainObject));
-		assertFalse(Session.instance().isAttached(domainObject.getPojo()));
+		assertFalse(getSession().isAttached(domainObject));
+		assertFalse(getSession().isAttached(domainObject.getPojo()));
 	}
 
 
@@ -90,12 +90,12 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
-		assertTrue(Session.instance().isAttached(domainObject));
-		assertTrue(Session.instance().isAttached(domainObject.getPojo()));
-		Session.instance().detach(domainObject);
-		assertFalse(Session.instance().isAttached(domainObject));
-		assertFalse(Session.instance().isAttached(domainObject.getPojo()));
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		assertTrue(getSession().isAttached(domainObject));
+		assertTrue(getSession().isAttached(domainObject.getPojo()));
+		getSession().detach(domainObject);
+		assertFalse(getSession().isAttached(domainObject));
+		assertFalse(getSession().isAttached(domainObject.getPojo()));
 	}
 
 	
@@ -103,25 +103,25 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
-		assertTrue(Session.instance().isAttached(domainObject));
-		assertTrue(Session.instance().isAttached(domainObject.getPojo()));
-		Session.instance().detach(domainObject.getPojo());
-		assertFalse(Session.instance().isAttached(domainObject));
-		assertFalse(Session.instance().isAttached(domainObject.getPojo()));
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		assertTrue(getSession().isAttached(domainObject));
+		assertTrue(getSession().isAttached(domainObject.getPojo()));
+		getSession().detach(domainObject.getPojo());
+		assertFalse(getSession().isAttached(domainObject));
+		assertFalse(getSession().isAttached(domainObject.getPojo()));
 	}
 	
 	public void testCanReAttachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
-		Session.instance().detach(domainObject);
-		assertFalse(Session.instance().isAttached(domainObject));
-		assertFalse(Session.instance().isAttached(domainObject.getPojo()));
-		Session.instance().attach(domainObject);
-		assertTrue(Session.instance().isAttached(domainObject));
-		assertTrue(Session.instance().isAttached(domainObject.getPojo()));
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		getSession().detach(domainObject);
+		assertFalse(getSession().isAttached(domainObject));
+		assertFalse(getSession().isAttached(domainObject.getPojo()));
+		getSession().attach(domainObject);
+		assertTrue(getSession().isAttached(domainObject));
+		assertTrue(getSession().isAttached(domainObject.getPojo()));
 	}
 	
 	
@@ -129,13 +129,13 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
-		Session.instance().detach(domainObject);
-		assertFalse(Session.instance().isAttached(domainObject));
-		assertFalse(Session.instance().isAttached(domainObject.getPojo()));
-		Session.instance().attach(domainObject.getPojo());
-		assertTrue(Session.instance().isAttached(domainObject));
-		assertTrue(Session.instance().isAttached(domainObject.getPojo()));
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		getSession().detach(domainObject);
+		assertFalse(getSession().isAttached(domainObject));
+		assertFalse(getSession().isAttached(domainObject.getPojo()));
+		getSession().attach(domainObject.getPojo());
+		assertTrue(getSession().isAttached(domainObject));
+		assertTrue(getSession().isAttached(domainObject.getPojo()));
 	}
 
 	
@@ -143,11 +143,11 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
-		Session.instance().detach(domainObject);
-		assertFalse(Session.instance().isAttached(domainObject));
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		getSession().detach(domainObject);
+		assertFalse(getSession().isAttached(domainObject));
 		try {
-			Session.instance().detach(domainObject);
+			getSession().detach(domainObject);
 			fail("Expected IllegalArgumentException");
 		} catch(IllegalArgumentException ex) {
 			// expected
@@ -159,10 +159,10 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
-		assertTrue(Session.instance().isAttached(domainObject));
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		assertTrue(getSession().isAttached(domainObject));
 		try {
-			Session.instance().attach(domainObject);
+			getSession().attach(domainObject);
 			fail("Expected IllegalArgumentException");
 		} catch(IllegalArgumentException ex) {
 			// expected
@@ -179,34 +179,34 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> deptDomainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
 		
 		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		itDeptDomainObject.getPojo().setName("IT");
 
 		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 
 
 		IDomainClass<Employee> employeeDomainClass = 
 			DomainClassRegistry.instance().register(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
-			(IDomainObject<Employee>)Session.instance().createTransient(employeeDomainClass);
+			(IDomainObject<Employee>)getSession().createTransient(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
 		clarkKent.setFirstName("Clark");
 		clarkKent.setSurname("Kent");
 		
 		IDomainObject<Employee> loisLaneEmployeeDomainObject = 
-			(IDomainObject<Employee>)Session.instance().createTransient(employeeDomainClass);
+			(IDomainObject<Employee>)getSession().createTransient(employeeDomainClass);
 		Employee loisLane = loisLaneEmployeeDomainObject.getPojo();
 		loisLane.setFirstName("Lois");
 		loisLane.setSurname("Lane");
 		
 		List<IDomainObject<?>> departmentDomainObjects = 
-			Session.instance().footprintFor(deptDomainClass);
+			getSession().footprintFor(deptDomainClass);
 		assertEquals(3, departmentDomainObjects.size());
 		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));
 		assertTrue(departmentDomainObjects.contains(itDeptDomainObject));
@@ -221,21 +221,21 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> deptDomainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
 		
 		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		itDeptDomainObject.getPojo().setName("IT");
 
 		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 
-		Session.instance().detach(itDeptDomainObject);
+		getSession().detach(itDeptDomainObject);
 
 		List<IDomainObject<?>> departmentDomainObjects = 
-			Session.instance().footprintFor(deptDomainClass);
+			getSession().footprintFor(deptDomainClass);
 		assertEquals(2, departmentDomainObjects.size());
 		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));
 		assertFalse(departmentDomainObjects.contains(itDeptDomainObject)); // not in footprint
@@ -251,19 +251,19 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> deptDomainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
 		
 		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		itDeptDomainObject.getPojo().setName("IT");
 
 		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(deptDomainClass);
+			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 
 		List<IDomainObject<?>> departmentDomainObjects = 
-			Session.instance().footprintFor(deptDomainClass);
+			getSession().footprintFor(deptDomainClass);
 		try {
 			departmentDomainObjects.remove(itDeptDomainObject);
 			fail("Expected UnsupportedOperationException");
@@ -279,7 +279,7 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		assertFalse(domainObject.isPersistent());
 	}
 
@@ -291,7 +291,7 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.persist();
 		assertTrue(domainObject.isPersistent());
 	}
@@ -308,7 +308,7 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.getPojo().save();
 		assertTrue(domainObject.isPersistent());
 	}
@@ -320,7 +320,7 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = domainClass.createTransient();
-		assertFalse(Session.instance().isAttached(domainObject));
+		assertFalse(getSession().isAttached(domainObject));
 		try {
 			domainObject.persist();
 			fail("IllegalArgumentException should have been thrown.");
@@ -334,7 +334,7 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.persist();
 		try {
 			domainObject.persist();
@@ -348,28 +348,16 @@ public class TestFacade extends TestCase
 		IDomainClass<Department> domainClass = 
 			DomainClassRegistry.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)Session.instance().createTransient(domainClass);
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		Department dept = domainObject.getPojo();
 		dept.setName("HR"); // name is used in Department's toString() -> title
 		domainObject.persist();
 		Department dept2 = 
 			(Department)getObjectStore().findByTitle(Department.class, "HR");
 		assertSame(dept2, dept);
-		IDomainObject domainObject2 = Session.instance().getWrapper().wrapped(dept2);
+		IDomainObject domainObject2 = getSession().getWrapper().wrapped(dept2);
 		assertSame(domainObject2, domainObject);
 	}
 
-
-	// DEPENDENCY INJECTION START //
-
-	private IObjectStore objectStore;
-	public IObjectStore getObjectStore() {
-		return objectStore;
-	}
-	public void setObjectStore(IObjectStore objectStore) {
-		this.objectStore = objectStore;
-	}
-	
-	// DEPENDENCY INJECTION END //
 
 }

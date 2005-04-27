@@ -7,6 +7,7 @@ import de.berlios.rcpviewer.progmodel.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
 import de.berlios.rcpviewer.progmodel.standard.impl.*;
 import de.berlios.rcpviewer.session.*;
+import de.berlios.rcpviewer.session.local.*;
 
 /**
  * TODO: convert to use the generic container approach used in DSFA
@@ -16,11 +17,7 @@ import de.berlios.rcpviewer.session.*;
  *       
  * @author Dan Haywood
  */
-aspect DependencyInjectionAspect 
-	implements IProgrammingModelAware,
-	           EmfFacadeAware,
-	           IWrapperAware, 
-	           IObjectStoreAware { 
+aspect DependencyInjectionAspect { 
 
 	declare precedence: *, DependencyInjectionAspect;
 
@@ -28,27 +25,22 @@ aspect DependencyInjectionAspect
 		execution(IProgrammingModelAware+.new(..)) && 
 		this(aware) &&
 		!within(DependencyInjectionAspect);
-	
 	before(IProgrammingModelAware aware): initializeProgrammingModelAware(aware) {
 		aware.setProgrammingModel(getProgrammingModel());
 	}
-	
-	
+
 	pointcut initializeEmfFacadeAware(EmfFacadeAware aware):
 		execution(EmfFacadeAware+.new(..)) && 
 		this(aware) &&
 		!within(DependencyInjectionAspect);
-	
 	before(EmfFacadeAware aware): initializeEmfFacadeAware(aware) {
 		aware.setEmfFacade(getEmfFacade());
 	}
-	
 
 	pointcut initializeWrapperAware(IWrapperAware aware):
 		execution(IWrapperAware+.new(..)) && 
 		this(aware) &&
 		!within(DependencyInjectionAspect);
-	
 	before(IWrapperAware aware): initializeWrapperAware(aware) {
 		aware.setWrapper(getWrapper());
 	}
@@ -57,11 +49,17 @@ aspect DependencyInjectionAspect
 		execution(IObjectStoreAware+.new(..)) && 
 		this(aware) &&
 		!within(DependencyInjectionAspect);
-	
 	before(IObjectStoreAware aware): initializeObjectStoreAware(aware) {
 		aware.setObjectStore(getObjectStore());
 	}
 
+	pointcut initializeSessionAware(ISessionAware aware):
+		execution(ISessionAware+.new(..)) && 
+		this(aware) &&
+		!within(DependencyInjectionAspect);
+	before(ISessionAware aware): initializeSessionAware(aware) {
+		aware.setSession(getSession());
+	}
 
 	/**
 	 * TODO: configure via Spring
@@ -71,6 +69,9 @@ aspect DependencyInjectionAspect
 		setEmfFacade(new EmfFacade());
 		setWrapper(new Wrapper());
 		setObjectStore(new InMemoryObjectStore());
+		// TODO: currently not injecting because attempting to instantiate a
+		// Session inside this aspect creates an aspectBound error....
+		// setSession(Session.instance());
 	}
 		
 	private IProgrammingModel programmingModel;
@@ -103,6 +104,14 @@ aspect DependencyInjectionAspect
 	}
 	public void setObjectStore(IObjectStore objectStore) {
 		this.objectStore = objectStore;
+	}
+	
+	private ISession session;
+	public ISession getSession() {
+		return session;
+	}
+	public void setSession(ISession session) {
+		this.session = session;
 	}
 
 }

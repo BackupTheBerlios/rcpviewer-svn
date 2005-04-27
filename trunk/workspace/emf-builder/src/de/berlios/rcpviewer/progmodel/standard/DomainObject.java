@@ -2,8 +2,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.session.local.Session;
+import de.berlios.rcpviewer.session.*;
 
 /**
  * Wrapper for a POJO that also knows its {@link IDomainClass}.
@@ -14,7 +13,7 @@ import de.berlios.rcpviewer.session.local.Session;
  * 
  * @author Dan Haywood
  */
-public final class DomainObject<T> implements IDomainObject {
+public final class DomainObject<T> implements IDomainObject /*, ISessionAware */ {
 
 	public DomainObject(final IDomainClass domainClass, final T pojo) {
 		this.domainClass = domainClass;
@@ -40,7 +39,7 @@ public final class DomainObject<T> implements IDomainObject {
 		if (isPersistent()) {
 			throw new IllegalStateException("Already persisted.");
 		}
-		Session.instance().persist(this);
+		getSession().persist(this);
 		persistent = true;
 	}
 	
@@ -50,5 +49,17 @@ public final class DomainObject<T> implements IDomainObject {
 	public String title() {
 		return pojo.toString();
 	}
+
+	// DEPENDENCY INJECTION START
+	
+	private ISession session;
+	public ISession getSession() {
+		return de.berlios.rcpviewer.session.local.Session.instance();
+	}
+	public void setSession(ISession session) {
+		this.session = session;
+	}
+
+	// DEPENDENCY INJECTION END
 
 }
