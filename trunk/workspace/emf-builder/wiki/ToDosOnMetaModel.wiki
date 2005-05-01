@@ -1,6 +1,5 @@
 Dan's todos for the metamodel.
 
-* reverse lookup from EClass to DomainClass (use EAnnotation to hold name)
 * recursively build ancestor classes
 * operations
 * links

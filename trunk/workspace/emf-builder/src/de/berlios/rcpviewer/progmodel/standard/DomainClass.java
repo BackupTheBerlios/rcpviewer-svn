@@ -37,18 +37,10 @@ public final class DomainClass<T>
 				   IWrapperAware {
 	
 	public DomainClass(final Class<T> javaClass) {
+		
 		this.javaClass = javaClass;
-		Package javaPackage = javaClass.getPackage();
-		this.eClass = EcoreFactory.eINSTANCE.createEClass();
-		eClass.setInstanceClass(javaClass);
-		eClass.setName(javaClass.getSimpleName());
 
-		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(javaPackage.getName());
-		if (ePackage == null) {
-			ePackage = EcoreFactory.eINSTANCE.createEPackage();
-			ePackage.getEClassifiers().add(this.eClass);
-			ePackage.setName(javaPackage.getName());
-		}
+		identifyClass();
 
 		Method[] methods = javaClass.getMethods();
 
@@ -64,7 +56,7 @@ public final class DomainClass<T>
 		return javaClass;
 	}
 	
-	private final EClass eClass;
+	private EClass eClass;
 	public EClass getEClass() {
 		return eClass;
 	}
@@ -72,6 +64,26 @@ public final class DomainClass<T>
 	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
 	
 
+	/**
+	 * TODO: should also identify class hierarchy
+	 */
+	private void identifyClass() {
+		Package javaPackage = javaClass.getPackage();
+		this.eClass = EcoreFactory.eINSTANCE.createEClass();
+		
+		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(javaPackage.getName());
+		if (ePackage == null) {
+			ePackage = EcoreFactory.eINSTANCE.createEPackage();
+			ePackage.getEClassifiers().add(this.eClass);
+			ePackage.setName(javaPackage.getName());
+		}
+
+		eClass.setInstanceClass(javaClass);
+		eClass.setName(javaClass.getSimpleName());
+	}
+
+
+	
 	/**
 	 * 
 	 * @param methods
@@ -171,7 +183,7 @@ public final class DomainClass<T>
 				eClass.getEStructuralFeatures().add(eAttribute);
 
 				EAnnotation eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
-				eAnnotation.setSource(Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
+				eAnnotation.setSource(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 				eAnnotation.setEModelElement(eAttribute);
 			}
 			
@@ -280,7 +292,7 @@ public final class DomainClass<T>
 	}
 	
 	public boolean isWriteOnly(EAttribute eAttribute) {
-		return eAttribute.getEAnnotation(Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
+		return eAttribute.getEAnnotation(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 	}
 
 	public boolean isChangeable(EAttribute eAttribute) {
@@ -349,12 +361,12 @@ public final class DomainClass<T>
 
 	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
 		EAnnotation eAnnotation = 
-			eModelElement.getEAnnotation(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+			eModelElement.getEAnnotation(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_SOURCE_METHOD_NAMES);
 		if (eAnnotation != null) {
 			return eAnnotation;
 		}
 		eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
-		eAnnotation.setSource(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+		eAnnotation.setSource(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_SOURCE_METHOD_NAMES);
 		eAnnotation.setEModelElement(eModelElement);
 		return eAnnotation;
 	}

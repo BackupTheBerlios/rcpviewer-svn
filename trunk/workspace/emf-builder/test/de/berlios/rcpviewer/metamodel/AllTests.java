@@ -11,10 +11,10 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.metamodel");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestProgrammingModel.class);
 		suite.addTestSuite(TestDomainClassRegistry.class);
 		suite.addTestSuite(TestDomainClass.class);
 		suite.addTestSuite(TestEmfFacade.class);
+		suite.addTestSuite(TestDomainObject.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -2,11 +2,17 @@ package de.berlios.rcpviewer.metamodel;
 
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainAspect;
+import de.berlios.rcpviewer.metamodel.Constants;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EClass;
+
+import sun.security.krb5.internal.crypto.d;
 
 /**
  * Registery of all discovered {@link DomainClass}es.
@@ -38,7 +44,7 @@ public final class DomainClassRegistry {
 	}
 	
 	public Collection classes() {
-		return Collections.unmodifiableCollection(domainClassesByClazz.values());
+		return Collections.unmodifiableCollection(domainClassesByjavaClass.values());
 	}
 	
 	/**
@@ -60,7 +66,7 @@ public final class DomainClassRegistry {
 		DomainClass<?> domainClass = lookup(clazz);
 		if (domainClass == null) {
 			domainClass = new DomainClass(clazz);
-			domainClassesByClazz.put(clazz, domainClass);
+			domainClassesByjavaClass.put(clazz, domainClass);
 		}
 		return domainClass;
 	}
@@ -70,8 +76,8 @@ public final class DomainClassRegistry {
 	 * @param clazz
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
-	public DomainClass lookup(final Class clazz) {
-		return (DomainClass)domainClassesByClazz.get(clazz);
+	public DomainClass lookup(final Class javaClass) {
+		return (DomainClass)domainClassesByjavaClass.get(javaClass);
 	}
 
 	/**
@@ -79,7 +85,7 @@ public final class DomainClassRegistry {
 	 * uses this to determine any links.
 	 */
 	public void done() {
-//		for(DomainClass dc: domainClassesByClazz.values()) {
+//		for(DomainClass dc: domainClassesByjavaClass.values()) {
 //			dc.identifyLinks();
 //		}
 		
@@ -90,14 +96,18 @@ public final class DomainClassRegistry {
 	 * for testing purposes
 	 */
 	public void clear() {
-		domainClassesByClazz.clear();
+		domainClassesByjavaClass.clear();
 	}
 	
 	public int size() {
-		return domainClassesByClazz.keySet().size();
+		return domainClassesByjavaClass.keySet().size();
 	}
 
-	private final Map<Class, DomainClass> domainClassesByClazz = new HashMap<Class, DomainClass>();
+	private final Map<Class, DomainClass> domainClassesByjavaClass = new HashMap<Class, DomainClass>();
+	public IDomainClass domainClassFor(EClass eClass) {
+		Class javaClass = eClass.getInstanceClass();
+		return DomainClassRegistry.instance().lookup(javaClass);
+	}
 	
 
 

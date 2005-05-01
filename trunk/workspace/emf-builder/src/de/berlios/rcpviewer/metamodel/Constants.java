@@ -68,4 +68,24 @@ public final class Constants {
 		LinkSemanticsType.SIMPLE_REF.getJavaType();
 
 	
+	/**
+	 * Presence of an EAnnotation with this source on an EAttribute indicates 
+	 * that the EAttribute is write-only (has a mutator, no accessor).
+	 */
+	public final static String ANNOTATION_ATTRIBUTE_WRITE_ONLY = 
+							"http://rcpviewer.berlios.de/metamodel/attribute/writeOnly";
+	
+	/**
+	 * Access to the (names of the) accessor/mutator/isUnset/unset methods for
+	 * an attribute, or equivalent methods for an operation.
+	 */
+	public static final String ANNOTATION_SOURCE_METHOD_NAMES = 
+		"http://rcpviewer.berlios.de/metamodel/methodNames";;
+
+	/**
+	 * Access to any annotations pertaining to the {@link IDomainClass}/EClass.
+	 */
+	public static final String ANNOTATION_SOURCE_CLASS = 
+		"http://rcpviewer.berlios.de/metamodel/class/";;
+
 }

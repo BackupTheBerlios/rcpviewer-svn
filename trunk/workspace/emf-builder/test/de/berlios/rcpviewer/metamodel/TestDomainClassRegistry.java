@@ -1,5 +1,10 @@
 package de.berlios.rcpviewer.metamodel;
 
+import org.eclipse.emf.ecore.EClass;
+
+import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+import de.berlios.rcpviewer.progmodel.standard.TestDomainClass.CustomerWithNoAttributes;
+import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import junit.framework.TestCase;
 
 public class TestDomainClassRegistry extends TestCase {
@@ -28,6 +33,16 @@ public class TestDomainClassRegistry extends TestCase {
 		assertTrue(registries[0] != registries[1]);
 	}
 
+
+	public void testGetDomainClassFromEClass() {
+		IDomainClass<Department> domainClass = 
+			DomainClassRegistry.instance().register(Department.class);
+
+		EClass eClass = domainClass.getEClass();
+		IDomainClass reverseDomainClass = DomainClassRegistry.instance().domainClassFor(eClass);
+		assertNotNull(reverseDomainClass);
+		assertSame(reverseDomainClass, domainClass);
+	}
 
 
 

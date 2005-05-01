@@ -7,20 +7,6 @@ public final class Constants {
 
 
 	/**
-	 * Presence of an EAnnotation with this source on an EAttribute indicates 
-	 * that the EAttribute is write-only (has a mutator, no accessor).
-	 */
-	public final static String ANNOTATION_ATTRIBUTE_WRITE_ONLY = 
-							"http://rcpviewer.berlios.de/metamodel/attribute/writeOnly";
-	
-	/**
-	 * Access to the (names of the) accessor/mutator/isUnset/unset methods for
-	 * an attribute, or equivalent methods for an operation.
-	 */
-	public static final String ANNOTATION_SOURCE_METHOD_NAMES = 
-		"http://rcpviewer.berlios.de/metamodel/methodNames";;
-
-	/**
 	 * Key to EAnnotation details representing (names of) methods to access or
 	 * otherwise modify the value of an attribute.
 	 * 
@@ -55,6 +41,8 @@ public final class Constants {
 	 * Holds key to the unset method (applicable only if isUnsettable is true).
 	 */
 	public static final String ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY = "unset";
+
+	public static final String ANNOTATION_CLASS_NAME = "className";
 
 
 }
