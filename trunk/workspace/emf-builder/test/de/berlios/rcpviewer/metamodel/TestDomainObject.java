@@ -126,5 +126,6 @@ public class TestDomainObject extends AbstractTestCase  {
 		String value = (String)domainObject.get(nameAttribute);
 		assertEquals("HR", value);
 	}
+	
 
 }

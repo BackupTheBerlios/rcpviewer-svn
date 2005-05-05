@@ -1,21 +1,26 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.impl.EOperationImpl;
 
+import de.berlios.rcpviewer.progmodel.standard.Constants;
 import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.progmodel.IProgrammingModel;
-import de.berlios.rcpviewer.progmodel.IProgrammingModelAware;
+import de.berlios.rcpviewer.metamodel.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
-import de.berlios.rcpviewer.session.local.Session;
+import de.berlios.rcpviewer.progmodel.standard.Constants;
+import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import java.util.List;
 
@@ -32,13 +37,13 @@ import java.util.List;
  */
 public final class DomainClass<T> 
 		implements IDomainClass,
-				   IProgrammingModelAware,
 				   EmfFacadeAware,
 				   IWrapperAware {
 	
 	public DomainClass(final Class<T> javaClass) {
 		
 		this.javaClass = javaClass;
+		this.namingConventions = new NamingConventions();
 
 		identifyClass();
 
@@ -47,9 +52,15 @@ public final class DomainClass<T>
 		identifyAccessors();
 		identifyMutators();
 		identifyUnSettableAttributes();
-		identifyActions();
+		identifyOperations();
 
 	}
+
+	private final NamingConventions namingConventions;
+	public NamingConventions getNamingConventions() {
+		return namingConventions;
+	}
+
 
 	private final Class<T> javaClass;
 	public Class<T> getJavaClass() {
@@ -82,9 +93,15 @@ public final class DomainClass<T>
 		eClass.setName(javaClass.getSimpleName());
 	}
 
-
 	
 	/**
+	 * 
+	 * <p>
+	 * <h3>Implementation Note</h3>
+	 * <p>
+	 * Seems possible to add using either <tt>eClass.getEAttributes()</tt> or
+	 * <tt>eClass.getEStructuralFeatures()</tt>, but latter is correct.  Note 
+	 * this is not symmetric with {@link #identifyOperations()}.
 	 * 
 	 * @param methods
 	 * @param attributesByName
@@ -95,25 +112,26 @@ public final class DomainClass<T>
 		// search for accessors of value types
 		// initially all attributes start off read-only
 		for(int i=0; i<methods.length; i++) {
-			if (!getProgrammingModel().representsAttribute(methods[i])) {
+			final Method method = methods[i];
+			if (!isAttribute(methods[i])) {
 				continue;
 			}
 			
 			EAttribute eAttribute = EcoreFactory.eINSTANCE.createEAttribute();
-			Class<?> dataType = getProgrammingModel().accessorType(methods[i]);
+			Class<?> dataType = methods[i].getReturnType();
 			EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
 			eAttribute.setEType(eDataType);
-			String attributeName = getProgrammingModel().deriveAttributeName(methods[i]);
+			String attributeName = getNamingConventions().deriveAttributeName(method);
 			eAttribute.setName(attributeName);
 			eClass.getEStructuralFeatures().add(eAttribute);
 
-			putMethodNameIn(
+			putAnnotationDetail(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
-					methods[i].getName());
+					method.getName());
 			
 			eAttribute.setChangeable(false); // if find a mutator, make changeable
-			Derived derivedAnnotation = methods[i].getAnnotation(Derived.class);
+			Derived derivedAnnotation = method.getAnnotation(Derived.class);
 			boolean whetherDerived = derivedAnnotation != null;
 			
 			eAttribute.setDerived(whetherDerived);
@@ -122,7 +140,7 @@ public final class DomainClass<T>
 
 			// TODO: should check that the datatype supports lower bounds
 			LowerBoundOf lowerBoundOfAnnotation = 
-				methods[i].getAnnotation(LowerBoundOf.class);
+				method.getAnnotation(LowerBoundOf.class);
 			if (lowerBoundOfAnnotation != null) {
 				eAttribute.setLowerBound(lowerBoundOfAnnotation.value());
 			} else {
@@ -131,18 +149,18 @@ public final class DomainClass<T>
 
 			// TODO: should check that the datatype supports upper bounds
 			UpperBoundOf upperBoundOfAnnotation = 
-				methods[i].getAnnotation(UpperBoundOf.class);
+				method.getAnnotation(UpperBoundOf.class);
 			if (upperBoundOfAnnotation != null) {
 				int upperBound = upperBoundOfAnnotation.value();
 				eAttribute.setUpperBound(upperBound);
 				if (upperBound > 1) {
 					Unique uniqueAnnotation = 
-						methods[i].getAnnotation(Unique.class);
+						method.getAnnotation(Unique.class);
 					if (uniqueAnnotation != null) {
 						eAttribute.setUnique(uniqueAnnotation.value());
 					}
 					Ordered orderedAnnotation = 
-						methods[i].getAnnotation(Ordered.class);
+						method.getAnnotation(Ordered.class);
 					if (orderedAnnotation != null) {
 						eAttribute.setOrdered(orderedAnnotation.value());
 					}
@@ -157,37 +175,42 @@ public final class DomainClass<T>
 	 * searches for mutators of value types; either update existing attribute
 	 * (ie read/write) or create new (write-only) 
      *
-     * TODO
+	 * <p>
+	 * <h3>Implementation Note</h3>
+	 * <p>
+	 * Seems possible to add using either <tt>eClass.getEAttributes()</tt> or
+	 * <tt>eClass.getEStructuralFeatures()</tt>, but latter is correct.  Note 
+	 * this is not symmetric with {@link #identifyOperations()}.
+	 * 
 	 */
 	private void identifyMutators() {
 
 		Method[] methods = javaClass.getMethods();
 
 		for(int i=0; i<methods.length; i++) {
-			if (!getProgrammingModel().isMutator(methods[i])) {
+			final Method method = methods[i];
+			if (!getNamingConventions().isMutator(method)) {
 				continue;
 			}
 
-			String attributeName = getProgrammingModel().deriveAttributeName(methods[i]);
+			String attributeName = getNamingConventions().deriveAttributeName(method);
 			EAttribute eAttribute = getEAttributeNamed(attributeName);
 
 			if (eAttribute != null) {
 				eAttribute.setChangeable(true);
 			} else {
 				eAttribute = EcoreFactory.eINSTANCE.createEAttribute();
-				Class<?> dataType = getProgrammingModel().mutatorType(methods[i]);
+				Class<?> dataType = methods[i].getParameterTypes()[0];
 				EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
 				eAttribute.setEType(eDataType);
 				eAttribute.setName(attributeName);
 
 				eClass.getEStructuralFeatures().add(eAttribute);
 
-				EAnnotation eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
-				eAnnotation.setSource(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
-				eAnnotation.setEModelElement(eAttribute);
+				setAnnotation(eAttribute, de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
 			
-			putMethodNameIn(
+			putAnnotationDetail(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
 					methods[i].getName());
@@ -205,9 +228,9 @@ public final class DomainClass<T>
 		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;
 		Method unsetMethod = null;
-		for(EAttribute eAttribute: allAttributes()) {
+		for(EAttribute eAttribute: attributes()) {
 			for(int i=0; i<methods.length; i++) {
-				if (getProgrammingModel().isIsUnsetMethodFor(methods[i], eAttribute)) {
+				if (getNamingConventions().isIsUnsetMethodFor(methods[i], eAttribute)) {
 					isUnsetMethod = methods[i];
 					break;
 				}
@@ -216,7 +239,7 @@ public final class DomainClass<T>
 				continue;
 			}
 			for(int i=0; i<methods.length; i++) {
-				if (getProgrammingModel().isUnsetMethodFor(methods[i], eAttribute)) {
+				if (getNamingConventions().isUnsetMethodFor(methods[i], eAttribute)) {
 					unsetMethod = methods[i];
 					break;
 				}
@@ -227,63 +250,72 @@ public final class DomainClass<T>
 			// has both an IsUnset and an unset method for this attribute
 			eAttribute.setUnsettable(true);
 			
-			putMethodNameIn(
+			putAnnotationDetail(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 			
-			putMethodNameIn(
+			putAnnotationDetail(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
-			
-
 		}
 	}
 	
-
-
-
-	/**
-	 * TODO
-	 */
-	private void identifyActions() {
-		Method[] methods = javaClass.getMethods();
-
-//		for(int i=0; i<methods.length; i++) {
-//			if (!getProgrammingModel().isAction(methods[i]))
-//				continue;
-//		}
+	private boolean isAttribute(Method method) {
+		return (getNamingConventions().isAccessor(method) || 
+				getNamingConventions().isMutator(method)) &&
+				getNamingConventions().isValueType(method.getReturnType());
 	}
 
-	
-
-
 	/**
-	 * Invoked by {@link DomainClassRegistry} when it is informed that all 
-	 * classes have been registered (@link DomainClassRegistry#done()}.
-	 * 
-	 * TODO.
+	 * indicates whether supplied accessor and mutator methods are compatible, 
+	 * that is, that they have the same type and the same name.
+	 *
+	 * <p>
+	 * TODO: not actually used, but should be overloaded to also check for
+	 * unset and isUnset methods.  
+	 *
+	 * @param accessor
+	 * @param mutator
+	 * @return
 	 */
-	void identifyLinks() {
-
-		Method[] methods = javaClass.getMethods();
-		for(int i=0; i<methods.length; i++) {
-			
-//			if (!getProgrammingModel().isLink(methods[i])) // simple or composite.
-//				continue;
-			
-			// TODO: resolveProxies
-
+	private final boolean areAttributeMethodsCompatible(final Method accessor, final Method mutator) {
+		getNamingConventions().assertAccessor(accessor);  // TODO: precondition aspect
+		getNamingConventions().assertMutator(mutator);  // TODO: precondition aspect
+		// check return type of accessor to the type 
+		// of the first parameter of the mutator
+		if (!accessor.getReturnType().equals(mutator.getParameterTypes()[0])) {
+			return false;
 		}
+		String accessorName = getNamingConventions().deriveAttributeName(accessor);
+		String mutatorName = getNamingConventions().deriveAttributeName(mutator);
+		if (!accessorName.equals(mutatorName)) {
+			return false;
+		}
+		return true;
 	}
 
 	public int getNumberOfAttributes() {
-		return getEClass().getEAttributes().size();
+		return getEClass().getEAllAttributes().size();
 	}
 
+	public List<EAttribute> attributes() {
+		return attributes(true);
+	}
+
+	public List<EAttribute> attributes(boolean includeInherited) {
+		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
+		EList attributes = includeInherited?
+								getEClass().getEAllAttributes():
+								getEClass().getEAttributes();
+		eAttributes.addAll(attributes);
+		return eAttributes;
+	}
+
+	
 	public EAttribute getEAttributeNamed(String attributeName) {
-		for(EAttribute eAttribute: allAttributes() ) {
+		for(EAttribute eAttribute: attributes() ) {
 			if (eAttribute.getName().equals(attributeName)) {
 				return eAttribute;
 			}
@@ -292,7 +324,7 @@ public final class DomainClass<T>
 	}
 	
 	public boolean isWriteOnly(EAttribute eAttribute) {
-		return eAttribute.getEAnnotation(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
+		return eAttribute.getEAnnotation(de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 	}
 
 	public boolean isChangeable(EAttribute eAttribute) {
@@ -331,21 +363,280 @@ public final class DomainClass<T>
 		return eAttribute.isUnsettable();
 	}
 
-	public List<EAttribute> allAttributes() {
-		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
-		eAttributes.addAll(getEClass().getEAllAttributes());
-		return eAttributes;
-	}
-	
-	public List<EAttribute> attributes() {
-		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
-		eAttributes.addAll(getEClass().getEAttributes());
-		return eAttributes;
-	}
-
 	public boolean containsAttribute(EAttribute eAttribute) {
 		return this.eClass.getEAllAttributes().contains(eAttribute);
 	}
+
+	// ATTRIBUTE SUPPORT: END
+
+	// OPERATION SUPPORT: START
+
+	/**
+	 * TODO
+	 * 
+	 * <p>
+	 * <h3>Implementation Note</h3>
+	 * <p>
+	 * Unlike attributes (see {@link #identifyAccessors()}, should add 
+	 * operations using <tt>eClass.getEOperations()</tt>.
+	 * 
+	 * <p>
+	 * TODO: EMF support lower and upper bounds, also ordered and unique?  
+	 * not yet exposing them (what would they mean?)
+	 */
+	private void identifyOperations() {
+		Method[] methods = javaClass.getMethods();
+
+		eachMethod: 
+		for(int i=0; i<methods.length; i++) {
+			final Method method = methods[i];
+			if ((method.getModifiers() & Method.PUBLIC) != Method.PUBLIC) {
+				continue;
+			}
+			if (method.getAnnotation(Programmatic.class) != null) {
+				continue;
+			}
+			if (getNamingConventions().isReserved(method)) {
+				continue;
+			}
+			Class<?> returnType = method.getReturnType();
+			if (!getNamingConventions().isValueType(returnType) &&
+				!getNamingConventions().isReferenceType(returnType) &&
+				!getNamingConventions().isVoid(returnType)) {
+				continue;
+			}
+			
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			for(Class<?> parameterType: parameterTypes) {
+				if (!getNamingConventions().isValueType(parameterType) &&
+					!getNamingConventions().isReferenceType(parameterType)) {
+					continue eachMethod;
+				}
+			}
+			
+			EOperation eOperation = EcoreFactory.eINSTANCE.createEOperation();
+			eOperation.setName(method.getName());
+			for(Class<?> parameterType: parameterTypes) {
+				EDataType dataType = getEmfFacade().getEDataTypeFor(parameterType);
+				EParameter eParameter = EcoreFactory.eINSTANCE.createEParameter();
+				eOperation.getEParameters().add(eParameter);
+				eParameter.setEType(dataType);
+			}
+
+			Class<?> dataType = methods[i].getReturnType();
+			// EMF does not have a built-in classifier for Void
+			if (!getNamingConventions().isVoid(dataType)) { // HACK
+				EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
+				eOperation.setEType(eDataType);
+			}
+
+			if ((methods[i].getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
+				setAnnotation(eOperation, Constants.ANNOTATION_OPERATION_STATIC);
+			}
+			
+			
+			eClass.getEOperations().add(eOperation);
+
+			// these are supported by EMF, but not (yet) by our metamodel.
+//			eOperation.setLowerBound(..);
+//			eOperation.setUpperBound(..);
+//			eOperation.setOrdered(..);
+//			eOperation.setUnique(..);
+//			eOperation.setOrdered(..);
+
+		
+			
+			putAnnotationDetail(
+					methodAnnotationFor(eOperation), 
+					Constants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
+					methods[i].getName());
+			
+		}
+	}
+
+	public List<EOperation> operations() {
+		return operations(OperationKind.ALL, true);
+	}
+
+	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited) {
+		List<EOperation> eOperations = new ArrayList<EOperation>();
+		EList operations = includeInherited?
+								getEClass().getEAllOperations():
+								getEClass().getEOperations();
+		for(Iterator iter = operations.iterator(); iter.hasNext(); ) {
+			EOperation eOperation = (EOperation)iter.next();
+			switch(operationKind) {
+				case INSTANCE:
+					if (!isStatic(eOperation)) {
+						eOperations.add(eOperation);
+					}
+					break;
+				case STATIC:
+					if (isStatic(eOperation)) {
+						eOperations.add(eOperation);
+					}
+					break;
+				case ALL:
+					eOperations.add(eOperation);
+			}
+		}
+		return eOperations;
+	}
+
+
+	public EOperation getEOperationNamed(String operationName) {
+		for(EOperation eOperation: operations() ) {
+			if (eOperation.getName().equals(operationName)) {
+				return eOperation;
+			}
+		}
+		return null;
+	}
+
+	public boolean containsOperation(EOperation eOperation) {
+		return this.eClass.getEAllOperations().contains(eOperation);
+	}
+		
+	public boolean isStatic(EOperation eOperation) {
+		return eOperation.getEAnnotation(Constants.ANNOTATION_OPERATION_STATIC) != null;
+	}
+
+	public boolean isParameterAValue(EOperation operation, int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		return parameter.getEType() instanceof EDataType;
+	}
+
+	public EDataType getEDataTypeFor(EOperation operation, int parameterPosition) {
+		if (!isParameterAValue(operation, parameterPosition)) {
+			throw new IllegalArgumentException("Parameter does not represent a value.");
+		}
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		return (EDataType)parameter.getEType();
+	}
+
+	public boolean isParameterAReference(EOperation operation, int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		return parameter.getEType() instanceof EClass;
+	}
+
+	public IDomainClass getDomainClassFor(EOperation operation, int parameterPosition) {
+		if (!isParameterAReference(operation, parameterPosition)) {
+			throw new IllegalArgumentException("Parameter does not represent a reference.");
+		}
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		EClass eClass = (EClass)parameter.getEType();
+		return DomainClassRegistry.instance().domainClassFor(eClass);
+	}
+
+
+	// OPERATION SUPPORT: END
+
+
+	// LINKS SUPPORT: START
+
+	/**
+	 * Invoked by {@link DomainClassRegistry} when it is informed that all 
+	 * classes have been registered (@link DomainClassRegistry#done()}.
+	 * 
+	 * TODO.
+	 */
+	void identifyLinks() {
+
+		Method[] methods = javaClass.getMethods();
+		for(int i=0; i<methods.length; i++) {
+			
+//			if (!getProgrammingModel().isLink(methods[i])) // simple or composite.
+//				continue;
+			
+			// TODO: resolveProxies
+
+		}
+	}
+	
+
+
+	/**
+	 * indicates whether supplied associator and dissociator are compatible,
+	 * that is, that they have the same type and the same name. 
+	 * @param associator
+	 * @param dissociator
+	 * @return
+	 */
+	private final boolean isLinkPairCompatible(final Method associator, final Method dissociator) {
+		getNamingConventions().assertAssociator(associator); // TODO: precondition aspect
+		getNamingConventions().assertDissociator(dissociator);  // TODO: precondition aspect
+		if (!linkType(associator).equals(linkType(dissociator))) {
+			return false;
+		}
+		String deriveLinkNameForAssociator = getNamingConventions().deriveLinkName(associator);
+		String deriveLinkNameForDissociator = getNamingConventions().deriveLinkName(dissociator);
+		if (!deriveLinkNameForAssociator.equals(deriveLinkNameForDissociator)) {
+			return false;
+		}
+		return true;
+	}
+
+
+
+	/**
+	 * TODO: this isn't used an needs to change - the type is instead picked
+	 * up from an annotation.
+	 * 
+	 * @param associator or dissociator method
+	 * 
+	 * @return The type of the associator or dissociator (the type of its first argument).
+	 */
+	private final Class linkType(final Method associatorOrDissociator) {
+		if (associatorOrDissociator == null) {
+			throw new AssertionError("null associator/dissociator method");
+		}
+		if (!getNamingConventions().isAssociator(associatorOrDissociator) &&
+			!getNamingConventions().isDissociator(associatorOrDissociator)  ) {
+			throw new AssertionError("not an associator/dissociator method");
+		}
+		return associatorOrDissociator.getParameterTypes()[0];
+	}
+
+	
+
+	// LINKS SUPPORT: END
+
+	// ANNOTATION SUPPORT: START
+
+	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
+		EAnnotation eAnnotation = 
+			eModelElement.getEAnnotation(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+		if (eAnnotation != null) {
+			return eAnnotation;
+		}
+		return setAnnotation(eModelElement, Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+	}
+	
+	EAnnotation putAnnotationDetail(EAnnotation eAnnotation, String key, String value) {
+		if (eAnnotation == null) {
+			return null;
+		}
+		eAnnotation.getDetails().put(key, value);
+		return eAnnotation;
+	}
+	
+	String getAnnotationDetail(EAnnotation eAnnotation, String key) {
+		if (eAnnotation == null) {
+			return null;
+		}
+		return (String)eAnnotation.getDetails().get(key);
+	}
+	
+	private EAnnotation setAnnotation(EModelElement eModelElement, String annotationSource) {
+		EAnnotation eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
+		eAnnotation.setSource(annotationSource);
+		eAnnotation.setEModelElement(eModelElement);
+		return eAnnotation;
+	}
+
+	// ANNOTATION SUPPORT: END
+	
+	// DOMAIN OBJECT SUPPORT: START
 
 	public IDomainObject createTransient() {
 		try {
@@ -359,34 +650,9 @@ public final class DomainClass<T>
 		}
 	}
 
-	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
-		EAnnotation eAnnotation = 
-			eModelElement.getEAnnotation(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_SOURCE_METHOD_NAMES);
-		if (eAnnotation != null) {
-			return eAnnotation;
-		}
-		eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
-		eAnnotation.setSource(de.berlios.rcpviewer.metamodel.Constants.ANNOTATION_SOURCE_METHOD_NAMES);
-		eAnnotation.setEModelElement(eModelElement);
-		return eAnnotation;
-	}
-	
-	EAnnotation putMethodNameIn(EAnnotation eAnnotation, String methodKey, String methodName) {
-		if (eAnnotation == null) {
-			return null;
-		}
-		eAnnotation.getDetails().put(methodKey, methodName);
-		return eAnnotation;
-	}
-	
-	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
-		if (eAnnotation == null) {
-			return null;
-		}
-		return (String)eAnnotation.getDetails().get(methodKey);
-	}
-	
+	// DOMAIN OBJECT SUPPORT: END
 
+	
 	/**
 	 * Setting up for AspectJ introduction of logging infrastructure.
 	 * @param message
@@ -396,14 +662,6 @@ public final class DomainClass<T>
 
 	// DEPENDENCY INJECTION
 	
-	private IProgrammingModel programmingModel;
-	public IProgrammingModel getProgrammingModel() {
-		return programmingModel;
-	}
-	public void setProgrammingModel(IProgrammingModel programmingModel) {
-		this.programmingModel = programmingModel;
-	}
-
 	private EmfFacade emfFacade;
 	public EmfFacade getEmfFacade() {
 		return emfFacade;
@@ -424,30 +682,75 @@ public final class DomainClass<T>
 
 	
 	/**
-	 * Cross-cutting validation of any eAttributes passed to us in the
-	 * various convenience methods.
+	 * Cross-cutting validation of any eAttributes or eOperations 
+	 * passed to us in the various convenience methods.
 	 * 
-	 * don't worry about the red squigglies: AJDT has not yet taught the
+	 * <p>
+	 * Don't worry about the red squigglies: AJDT has not yet taught the
 	 * Java editor about inner aspects.
 	 */
-	// 
-	private static aspect EnsureAttributeBelongsToDomainClassAspect {
+	private static aspect EnsureMemberBelongsToDomainClassAspect {
 
-		pointcut convenienceMethod(DomainClass domainClass, EAttribute eAttribute):
+		pointcut convenienceMethodForAttribute(DomainClass domainClass, EAttribute eAttribute):
 			execution(* *..DomainClass+.*(EAttribute, ..)) &&
 			!execution(* *..DomainClass+.containsAttribute(EAttribute)) &&
 			this(domainClass) && args(eAttribute, ..);
 		
 		before(DomainClass domainClass, EAttribute eAttribute): 
-			convenienceMethod(domainClass, eAttribute) {
+			convenienceMethodForAttribute(domainClass, eAttribute) {
 			if (domainClass.containsAttribute(eAttribute)) {
 				return;
 			}
 			throw new IllegalArgumentException(
 				"EAttribute '" + eAttribute + "' not part of this DomainClass");
 		}
+
+		pointcut convenienceMethodForOperation(DomainClass domainClass, EOperation eOperation):
+			execution(* *..DomainClass+.*(EOperation, ..)) &&
+			!execution(* *..DomainClass+.containsOperation(EOperation)) &&
+			this(domainClass) && args(eOperation, ..);
+		
+		before(DomainClass domainClass, EOperation eOperation): 
+			convenienceMethodForOperation(domainClass, eOperation) {
+			if (domainClass.containsOperation(eOperation)) {
+				return;
+			}
+			throw new IllegalArgumentException(
+				"EOperation '" + eOperation + "' not part of this DomainClass");
+		}
+
 	}
 
+	/**
+	 * Cross-cutting validation of any convenience methods on operations that
+	 * take a second int (being the parameter position). 
+	 * 
+	 * <p>
+	 * Don't worry about the red squigglies: AJDT has not yet taught the
+	 * Java editor about inner aspects.
+	 */
+	private static aspect EnsureParameterPositionIsInRangeAspect {
 
+		declare precedence: EnsureMemberBelongsToDomainClassAspect, 
+							EnsureParameterPositionIsInRangeAspect;
+	
+		pointcut convenienceMethodForParameter(EOperation eOperation, int parameterPosition):
+			execution(* *..DomainClass+.*(EOperation, int)) &&
+			args(eOperation, parameterPosition);
+		
+		before(EOperation eOperation, int parameterPosition): 
+			convenienceMethodForParameter(eOperation, parameterPosition) {
+			int numberOfParametersForOperation = eOperation.getEParameters().size();  
+			if (numberOfParametersForOperation == 0) {
+				throw new IllegalArgumentException(
+					"EOperation '" + eOperation + "' takes no parameters");
+			}
+			if (parameterPosition < 0 ||
+			    parameterPosition >= numberOfParametersForOperation) {
+				throw new IllegalArgumentException(
+					"EOperation '" + eOperation + "': 0 <= parameterPosition < " + numberOfParametersForOperation);
+			}
+		}
+	}
 
 }

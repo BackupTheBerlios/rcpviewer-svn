@@ -27,6 +27,11 @@ public class EmfFacade {
 	private final ResourceSet resourceSet;
 	public final Map<Class,EDataTypeData> coreDataTypes; 
 
+	/**
+	 * Wraps an EDataType to allow additional semantics to be provided.
+	 * @author Dan Haywood
+	 *
+	 */
 	final static class EDataTypeData {
 		private final EDataType eDataType;
 		public EDataType getEDataType() {
@@ -45,6 +50,11 @@ public class EmfFacade {
 		// seems to cause the core package registry to get populated
 		EcoreFactory.eINSTANCE.createEPackage();
 		resourceSet = new ResourceSetImpl();
+		
+//		for(Object eClassifier: getEcorePackage().getEClassifiers()) {
+//			System.out.println(((EClassifier)eClassifier).toString());
+//		}
+		
 		coreDataTypes = new HashMap<Class,EDataTypeData>() {
 			{
 				put(java.math.BigDecimal.class, 
@@ -138,9 +148,9 @@ public class EmfFacade {
 	}
 
 	public EDataType getEDataTypeFor(Class<?> javaDataType) {
-		EDataTypeData builtInDataTypeData = coreDataTypes.get(javaDataType); 
-		if (builtInDataTypeData != null) {
-			return builtInDataTypeData.getEDataType();
+		EDataTypeData coreDataTypeData = coreDataTypes.get(javaDataType); 
+		if (coreDataTypeData != null) {
+			return coreDataTypeData.getEDataType();
 		}
 		
 		Package javaPackage = javaDataType.getPackage();
@@ -153,7 +163,7 @@ public class EmfFacade {
 		}
 		
 		if (!ValueMarker.class.isAssignableFrom(javaDataType)) {
-			throw new IllegalArgumentException("Not a built-in, and is not a Value");
+			throw new IllegalArgumentException("Java datatype '" + javaDataType + "' is not a built-in, and is not a Value");
 		}
 		EDataType eDataType = EcoreFactory.eINSTANCE.createEDataType();
 		eDataType.setInstanceClass(javaDataType);

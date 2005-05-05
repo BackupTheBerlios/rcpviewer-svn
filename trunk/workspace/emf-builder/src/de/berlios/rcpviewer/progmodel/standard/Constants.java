@@ -5,6 +5,26 @@ public final class Constants {
 	private Constants() {
 	}
 
+	/**
+	 * Access to any annotations pertaining to the {@link IDomainClass}/EClass.
+	 */
+	public static final String ANNOTATION_SOURCE_CLASS = 
+		"http://rcpviewer.berlios.de/progmodel/standard/class";
+
+	/**
+	 * Access to the (names of the) accessor/mutator/isUnset/unset methods for
+	 * an attribute, or equivalent methods for an operation.
+	 */
+	public static final String ANNOTATION_SOURCE_METHOD_NAMES = 
+		"http://rcpviewer.berlios.de/progmodel/standard/methodNames";
+
+
+	/**
+	 * Presence of an EAnnotation with this source on an EAttribute indicates 
+	 * that the EAttribute is write-only (has a mutator, no accessor).
+	 */
+	public final static String ANNOTATION_ATTRIBUTE_WRITE_ONLY = 
+		"http://rcpviewer.berlios.de/progmodel/standard/attribute/writeOnly";
 
 	/**
 	 * Key to EAnnotation details representing (names of) methods to access or
@@ -42,7 +62,17 @@ public final class Constants {
 	 */
 	public static final String ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY = "unset";
 
-	public static final String ANNOTATION_CLASS_NAME = "className";
+	/**
+	 * Key to EAnnotation details representing (name of) underlying method that
+	 * represents an operation.
+	 */
+	public static final String ANNOTATION_OPERATION_METHOD_NAME_KEY = "invoke";
 
+	/**
+	 * Presence of an EAnnotation with this source on an EOperation indicates 
+	 * that the EOperation is static
+	 */
+	public static final String ANNOTATION_OPERATION_STATIC = 
+		"http://rcpviewer.berlios.de/progmodel/standard/operation/static";
 
 }

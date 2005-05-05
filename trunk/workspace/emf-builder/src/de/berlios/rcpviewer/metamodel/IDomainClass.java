@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EParameter;
+
 import de.berlios.rcpviewer.session.ISession;
 
 /**
@@ -26,26 +30,22 @@ public interface IDomainClass<T> {
 	
 	public EClass getEClass();
 
-	public int getNumberOfAttributes();
-
 	/**
 	 * Convenience method returning a type-safe iterable List over all 
-	 * EAttributes known to  the underlying EClass.
-	 * 
-	 * @return
-	 */
-	public List<EAttribute> allAttributes();
-	
-	/**
-	 * Convenience method returning a type-safe iterable List over EAttributes 
-	 * defined within the underlying EClass.
-	 * 
-	 * <p>
-	 * Inherited attributes are not included in the iteration.
+	 * EAttributes (whether inherited or not) known to the underlying EClass.
 	 * 
 	 * @return
 	 */
 	public List<EAttribute> attributes();
+	
+	/**
+	 * Overloaded version of {@link #attributes()} to indicate whether to
+	 * include inherited attributes or not.
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> attributes(boolean includeInherited);
+
 
 	/**
 	 * Since EClass (as of EMF 2.0) doesn't expose, we provide as a convenience.
@@ -323,6 +323,37 @@ public interface IDomainClass<T> {
 
 
 	/**
+	 * Convenience method returning a type-safe iterable List over all 
+	 * EOperations (whether static or instance, and whether inherited or not)
+	 * known to the underlying EClass.
+	 * 
+	 * @return
+	 */
+	public List<EOperation> operations();
+	
+	/**
+	 * Overloaded version of {@link #operations()} to indicate whether to
+	 * return instance vs static vs all operations, and whether to include
+	 * inherited operations or not.
+	 * 
+	 * @return
+	 */
+	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited);
+
+
+	public EOperation getEOperationNamed(String operationName);
+
+	/**
+	 * Whether the operation is for an instance of this class, or for the 
+	 * class itself.
+	 *  
+	 * @param eOperation
+	 * @return false if an instance operation, true if a class operation. 
+	 */
+	public boolean isStatic(EOperation eOperation);
+
+
+	/**
 	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
 	 * wrapping a pojo of the type represented by this domain class.
 	 * 
@@ -335,5 +366,72 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public IDomainObject<T> createTransient();
+
+	/**
+	 * Indicates whether the specified parameter of the operation (of this domain 
+	 * class) is a value.
+	 *  
+	 * <p>
+	 * If so, use {@link #getEDataTypeFor(EOperation, int)} to obtain the
+	 * parameter's actual type (as a {@link EDataType}).
+	 * 
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters. 
+	 * 
+	 * @param operation
+	 * @param parameterPosition from 0 to n-1
+	 * @return
+	 */
+	public boolean isParameterAValue(EOperation operation, int parameterPosition);
+
+
+	/**
+	 * Returns the {@link EDataType} of the specified parameter of the operation.
+	 * 
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters; the parameter must be a value 
+	 * (see {@link #isParameterAValue(EOperation, int)}.
+	 * 
+	 * @param operation
+	 * @param parameterPosition from 0 to n-1
+	 * @return
+	 */
+	public EDataType getEDataTypeFor(EOperation operation, int parameterPosition);
+
+
+	/**
+	 * Indicates whether the specified parameter of the operation (of this domain 
+	 * class) is a reference to another domain object.
+	 *  
+	 * <p>
+	 * If so, use {@link #getDomainClassFor(EOperation, int)} to obtain the
+	 * parameter's actual type (as an {@link IDomainClass}).
+	 * 
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters. 
+	 *
+	 * @param operation
+	 * @param parameterPosition from 0 to n-1
+	 * @return
+	 */
+	public boolean isParameterAReference(EOperation operation, int parameterPosition);
+
+
+	/**
+	 * Returns the {@link IDomainClass} of the specified parameter of the operation.
+	 * 
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters; the parameter must be a reference 
+	 * (see {@link #isParameterAReference(EOperation, int)}.
+	 * 
+	 * @param operation
+	 * @param parameterPosition from 0 to n-1
+	 * @return
+	 */
+	public IDomainClass getDomainClassFor(EOperation operation, int parameterPosition);
 
 }

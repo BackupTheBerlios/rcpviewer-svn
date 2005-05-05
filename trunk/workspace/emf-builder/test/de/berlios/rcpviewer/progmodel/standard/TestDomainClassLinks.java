@@ -16,10 +16,7 @@ import de.berlios.rcpviewer.progmodel.standard.UpperBoundOf;
 
 import junit.framework.TestCase;
 
-public class TestDomainClass extends AbstractTestCase {
-
-	public static class CustomerWithNoAttributes {
-	}
+public class TestDomainClassLinks extends AbstractTestCase {
 
 	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
@@ -30,23 +27,6 @@ public class TestDomainClass extends AbstractTestCase {
 		super.tearDown();
 	}
 	
-	public void testGetJavaClass() {
-		domainClass = new DomainClass(CustomerWithNoAttributes.class);
-		assertSame(CustomerWithNoAttributes.class, domainClass.getJavaClass());
-	}
 
-	public void testGetEClass() {
-		domainClass = new DomainClass(CustomerWithNoAttributes.class);
-		EClass eClass = domainClass.getEClass();
-		assertNotNull(eClass);
-		assertSame(eClass.getInstanceClass(), CustomerWithNoAttributes.class);
-		assertEquals("CustomerWithNoAttributes", eClass.getName());
-		EPackage ePackage = eClass.getEPackage();
-		assertNotNull(ePackage);
-		assertEquals(
-				CustomerWithNoAttributes.class.getPackage().getName(), 
-				ePackage.getName());
-	}
-
-	
+	public void testDummy(){} 
 }

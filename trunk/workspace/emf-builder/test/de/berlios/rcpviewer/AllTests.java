@@ -3,7 +3,7 @@ package de.berlios.rcpviewer;
 import de.berlios.rcpviewer.metamodel.TestDomainClassRegistry;
 import de.berlios.rcpviewer.metamodel.TestEmfFacade;
 import de.berlios.rcpviewer.progmodel.standard.TestDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.TestProgrammingModel;
+import de.berlios.rcpviewer.progmodel.standard.TestNamingConventions;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

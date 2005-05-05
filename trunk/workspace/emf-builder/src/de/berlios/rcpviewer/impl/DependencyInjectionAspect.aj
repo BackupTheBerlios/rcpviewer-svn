@@ -21,14 +21,6 @@ aspect DependencyInjectionAspect {
 
 	declare precedence: *, DependencyInjectionAspect;
 
-	pointcut initializeProgrammingModelAware(IProgrammingModelAware aware):
-		execution(IProgrammingModelAware+.new(..)) && 
-		this(aware) &&
-		!within(DependencyInjectionAspect);
-	before(IProgrammingModelAware aware): initializeProgrammingModelAware(aware) {
-		aware.setProgrammingModel(getProgrammingModel());
-	}
-
 	pointcut initializeEmfFacadeAware(EmfFacadeAware aware):
 		execution(EmfFacadeAware+.new(..)) && 
 		this(aware) &&
@@ -65,7 +57,6 @@ aspect DependencyInjectionAspect {
 	 * TODO: configure via Spring
 	 */
 	{
-		setProgrammingModel(new ProgrammingModel());
 		setEmfFacade(new EmfFacade());
 		setWrapper(new Wrapper());
 		setObjectStore(new InMemoryObjectStore());
@@ -74,14 +65,6 @@ aspect DependencyInjectionAspect {
 		// setSession(Session.instance());
 	}
 		
-	private IProgrammingModel programmingModel;
-	public IProgrammingModel getProgrammingModel() {
-		return programmingModel;
-	}
-	public void setProgrammingModel(IProgrammingModel programmingModel) {
-		this.programmingModel = programmingModel;
-	}
-
 	private EmfFacade emfFacade;
 	public EmfFacade getEmfFacade() {
 		return emfFacade;

@@ -1,5 +1,6 @@
 Dan's todos for the metamodel.
 
+* tset isUnset/unset of attributes.
 * recursively build ancestor classes
 * operations
 * links

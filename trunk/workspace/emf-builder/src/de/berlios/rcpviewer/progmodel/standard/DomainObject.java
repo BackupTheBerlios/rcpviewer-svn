@@ -72,11 +72,11 @@ public final class DomainObject<T> implements IDomainObject /*, ISessionAware */
 	}
 	
 	EAnnotation putMethodNameIn(EAnnotation eAnnotation, String methodKey, String methodName) {
-		return getDomainClassImpl().putMethodNameIn(eAnnotation, methodKey, methodName);
+		return getDomainClassImpl().putAnnotationDetail(eAnnotation, methodKey, methodName);
 	}
 	
 	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
-		return getDomainClassImpl().getMethodNameFrom(eAnnotation, methodKey);
+		return getDomainClassImpl().getAnnotationDetail(eAnnotation, methodKey);
 	}
 	
 
