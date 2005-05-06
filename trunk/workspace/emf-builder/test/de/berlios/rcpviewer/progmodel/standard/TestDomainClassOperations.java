@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.*;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 public class TestDomainClassOperations extends AbstractTestCase {

@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EOperationImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import de.berlios.rcpviewer.progmodel.standard.Constants;
 import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
@@ -93,21 +92,21 @@ public class DomainClass<T>
 	
 	private Map<Class<?>, Object> adaptersByClass = new HashMap<Class<?>, Object>();
 	/**
-	 * Extension object pattern.
+	 * Extension object pattern - getting an extension.
 	 * 
 	 * @param adapterClass
-	 * @return
+	 * @return adapter (extension) that will implement the said class.
 	 */
 	public Object getAdapter(Class adapterClass) {
 		return adaptersByClass.get(adapterClass);
 	}
 	/**
-	 * Protected visibility so that subclass implementations can populate.
+	 * Extension object pattern - adding an extension.
 	 * 
 	 * @param adapterClass
 	 * @param adapter
 	 */
-	protected void setAdapter(Class<?> adapterClass, Object adapter) {
+	public void setAdapter(Class adapterClass, Object adapter) {
 		if (!adapterClass.isAssignableFrom(adapter.getClass())) {
 			throw new IllegalArgumentException(
 				"Adapter '" + adapter + "' does not implement " +
@@ -139,28 +138,8 @@ public class DomainClass<T>
 
 		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
 		
-		doIdentifyClass();
-	}
-
-	/**
-	 * Hook for subclasses to perform additional analysis of class.
-	 * 
-	 * <p>
-	 * Typically implementations will set adapters.
-	 */
-	protected void doIdentifyClass() {
-		ImageUrlAt imageUrlAt = javaClass.getAnnotation(ImageUrlAt.class);
-		if (imageUrlAt != null) {
-			URL imageUrl;
-			try {
-				imageUrl = new URL(imageUrlAt.value());
-				this.setAdapter(ImageDescriptor.class, 
-				        ImageDescriptor.createFromURL(imageUrl));
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block - should log.
-				e.printStackTrace();
-			}
-		}
+		MetaModel.instance().haveExtensionsAnalyze(this);
+		
 	}
 
 	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {

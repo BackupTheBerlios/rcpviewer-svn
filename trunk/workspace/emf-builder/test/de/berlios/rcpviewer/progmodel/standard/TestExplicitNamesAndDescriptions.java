@@ -9,8 +9,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.progmodel.rcpviewer.RcpViewerExtension;
 import de.berlios.rcpviewer.progmodel.standard.Derived;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
 import de.berlios.rcpviewer.progmodel.standard.Ordered;
 import de.berlios.rcpviewer.progmodel.standard.Unique;
@@ -95,6 +95,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
 	
 	public void testDomainClassThatIsExplicitlyNamed() {
+		MetaModel.instance().addExtension(new RcpViewerExtension());
 		domainClass = new DomainClass(ProspectiveSale.class);
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());

@@ -8,7 +8,6 @@ import org.eclipse.emf.ecore.EPackage;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.standard.Derived;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
 import de.berlios.rcpviewer.progmodel.standard.Ordered;
 import de.berlios.rcpviewer.progmodel.standard.Unique;

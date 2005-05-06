@@ -2,8 +2,6 @@ package de.berlios.rcpviewer.metamodel;
 
 import org.eclipse.emf.ecore.EClass;
 
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
-import de.berlios.rcpviewer.progmodel.standard.TestDomainClass.CustomerWithNoAttributes;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import junit.framework.TestCase;
 
@@ -14,23 +12,23 @@ public class TestMetaModel extends TestCase {
 		super.tearDown();
 	}
 	
-	public void testRegistryCreated() {
+	public void testMetaModelCreated() {
 		assertNotNull(MetaModel.instance());
 	}
 	
-	public void testOneRegistryPerThread() throws InterruptedException {
-		final MetaModel[] registries = new MetaModel[2];
-		for (int i = 0; i<registries.length; i++) {
+	public void testOneMetaModelPerThread() throws InterruptedException {
+		final MetaModel[] metaModels = new MetaModel[2];
+		for (int i = 0; i<metaModels.length; i++) {
 			final int j = i;
 			Thread t = new Thread() {
 				public void run() {
-					registries[j] = MetaModel.instance();
+					metaModels[j] = MetaModel.instance();
 				}
 			};
 			t.start();
 			t.join();
 		}
-		assertTrue(registries[0] != registries[1]);
+		assertTrue(metaModels[0] != metaModels[1]);
 	}
 
 
@@ -43,7 +41,5 @@ public class TestMetaModel extends TestCase {
 		assertNotNull(reverseDomainClass);
 		assertSame(reverseDomainClass, domainClass);
 	}
-
-
 
 }

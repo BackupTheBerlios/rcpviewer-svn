@@ -4,9 +4,11 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainAspect;
 import de.berlios.rcpviewer.metamodel.Constants;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
@@ -37,6 +39,24 @@ public final class MetaModel {
 		return registryForThisThread.get();
 	}
 
+	private List<IMetaModelExtension> extensions = new ArrayList<IMetaModelExtension>();
+	public void addExtension(IMetaModelExtension extension) {
+		extensions.add(extension);
+	}
+	/**
+	 * Only {@link DomainClass} should call this.
+	 * 
+	 * <p>
+	 * TODO: move DomainClass back into this package, and then lower visibility?
+	 * 
+	 * @param domainClass
+	 */
+	public void haveExtensionsAnalyze(IDomainClass<?> domainClass) {
+		for(IMetaModelExtension extension: extensions) {
+			extension.analyze(domainClass);
+		}
+	}
+	
 	/**
 	 * managed using {@link Container}
 	 */

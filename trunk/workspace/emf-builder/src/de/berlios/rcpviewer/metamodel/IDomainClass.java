@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.session.ISession;
 
@@ -51,7 +52,7 @@ public interface IDomainClass<T> {
 
 
 	/**
-	 * Allows arbitrary extensions to be attached to this domain object.
+	 * Obtain an arbitrary extensions attached to this domain object.
 	 * 
 	 * <p>
 	 * This is an instance of the Extension Object pattern, used widely
@@ -60,11 +61,29 @@ public interface IDomainClass<T> {
 	 * 
 	 * <p>
 	 * Programming models implementations that wish to provide additional 
-	 * semantics (usually UI-related) can do so by populating the hash. 
+	 * semantics (usually UI-related) can do so by populating the hash.
+	 *  
+	 * <p>
+	 * Usage:
+	 * <code>
+	 * MyAdapter myAdapter = (MyAdapter)someDomainClass.getAdapter(MyAdapter.class);
+	 * </code>
+	 * 
+	 * @param adapterClass
+	 * @return object that implements said class.
+	 */
+	public Object getAdapter(Class<?> adapterClass);
+
+	/**
+	 * Allows arbitrary extensions to be attached to this domain object.
+	 *
+	 * @see #getAdapter(Class).
+	 * 
 	 * @param adapterClass
 	 * @return
 	 */
-	public Object getAdapter(Class adapterClass);
+	public void setAdapter(Class<?> adapterClass, Object adapter);
+
 
 	/**
 	 * Returns the description of this class (if any).
