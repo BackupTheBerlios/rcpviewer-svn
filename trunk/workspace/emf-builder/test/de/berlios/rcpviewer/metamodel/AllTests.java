@@ -9,7 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.metamodel");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestDomainClassRegistry.class);
+		suite.addTestSuite(TestMetaModel.class);
 		suite.addTestSuite(TestEmfFacade.class);
 		suite.addTestSuite(TestDomainObject.class);
 		//$JUnit-END$

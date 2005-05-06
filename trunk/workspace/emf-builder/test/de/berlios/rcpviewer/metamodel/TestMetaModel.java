@@ -7,24 +7,24 @@ import de.berlios.rcpviewer.progmodel.standard.TestDomainClass.CustomerWithNoAtt
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import junit.framework.TestCase;
 
-public class TestDomainClassRegistry extends TestCase {
+public class TestMetaModel extends TestCase {
 
 	public void tearDown() throws Exception {
-		DomainClassRegistry.instance().clear();
+		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	
 	public void testRegistryCreated() {
-		assertNotNull(DomainClassRegistry.instance());
+		assertNotNull(MetaModel.instance());
 	}
 	
 	public void testOneRegistryPerThread() throws InterruptedException {
-		final DomainClassRegistry[] registries = new DomainClassRegistry[2];
+		final MetaModel[] registries = new MetaModel[2];
 		for (int i = 0; i<registries.length; i++) {
 			final int j = i;
 			Thread t = new Thread() {
 				public void run() {
-					registries[j] = DomainClassRegistry.instance();
+					registries[j] = MetaModel.instance();
 				}
 			};
 			t.start();
@@ -36,10 +36,10 @@ public class TestDomainClassRegistry extends TestCase {
 
 	public void testGetDomainClassFromEClass() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 
 		EClass eClass = domainClass.getEClass();
-		IDomainClass reverseDomainClass = DomainClassRegistry.instance().domainClassFor(eClass);
+		IDomainClass reverseDomainClass = MetaModel.instance().domainClassFor(eClass);
 		assertNotNull(reverseDomainClass);
 		assertSame(reverseDomainClass, domainClass);
 	}

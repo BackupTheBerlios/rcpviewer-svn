@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer;
 
-import de.berlios.rcpviewer.metamodel.TestDomainClassRegistry;
+import de.berlios.rcpviewer.metamodel.TestMetaModel;
 import de.berlios.rcpviewer.metamodel.TestEmfFacade;
 import de.berlios.rcpviewer.progmodel.standard.TestDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.TestNamingConventions;

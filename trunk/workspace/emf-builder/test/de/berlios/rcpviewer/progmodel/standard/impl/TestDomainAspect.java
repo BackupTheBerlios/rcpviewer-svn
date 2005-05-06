@@ -33,7 +33,7 @@ public class TestDomainAspect extends AbstractTestCase {
 
 	/**
 	 */
-	public void testCanGetDomainObjectFromDomainClassRegistry() {
+	public void testCanGetDomainObjectFromMetaModel() {
 		Department d = new Department();
 		IDomainObject obj = getSession().getWrapper().wrapped(d);
 		IDomainClass dc = obj.getDomainClass();

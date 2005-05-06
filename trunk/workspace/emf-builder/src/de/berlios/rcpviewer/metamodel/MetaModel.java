@@ -24,23 +24,23 @@ import sun.security.krb5.internal.crypto.d;
  * 
  * @author Dan Haywood
  */
-public final class DomainClassRegistry {
+public final class MetaModel {
 	
 	// TODO: should convert this into an aspect.
-	private static ThreadLocal<DomainClassRegistry> registryForThisThread = 
-			new ThreadLocal<DomainClassRegistry>() {
-		protected synchronized DomainClassRegistry initialValue() {
-			return new DomainClassRegistry();
+	private static ThreadLocal<MetaModel> registryForThisThread = 
+			new ThreadLocal<MetaModel>() {
+		protected synchronized MetaModel initialValue() {
+			return new MetaModel();
 		}
 	};
-	public static DomainClassRegistry instance() {
+	public static MetaModel instance() {
 		return registryForThisThread.get();
 	}
 
 	/**
 	 * managed using {@link Container}
 	 */
-	public DomainClassRegistry() {
+	public MetaModel() {
 	}
 	
 	public Collection classes() {
@@ -106,7 +106,7 @@ public final class DomainClassRegistry {
 	private final Map<Class, DomainClass> domainClassesByjavaClass = new HashMap<Class, DomainClass>();
 	public IDomainClass domainClassFor(EClass eClass) {
 		Class javaClass = eClass.getInstanceClass();
-		return DomainClassRegistry.instance().lookup(javaClass);
+		return MetaModel.instance().lookup(javaClass);
 	}
 	
 

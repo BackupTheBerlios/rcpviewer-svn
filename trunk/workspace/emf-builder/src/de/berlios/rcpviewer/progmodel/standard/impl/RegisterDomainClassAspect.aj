@@ -5,7 +5,7 @@ import de.berlios.rcpviewer.progmodel.standard.*;
 
 /**
  * Registers {@link DomainClass}es as they are loaded with the
- * {@link DomainClassRegistry}.
+ * {@link MetaModel}.
  * 
  * TODO: at some point should be able to factor out advice into an abstract
  * aspect in the progmodel.impl package.
@@ -35,7 +35,7 @@ aspect RegisterDomainClassAspect {
 	 * register pojo's class
 	 */
 	after() returning(Class javaClass): classForName() {
-		getDomainClassRegistry().register(javaClass);
+		getMetaModel().register(javaClass);
 	}
 	
 
@@ -47,12 +47,12 @@ aspect RegisterDomainClassAspect {
 	 */
 	after(): loadPojo() {
 		Class javaClass = thisJoinPointStaticPart.getSignature().getDeclaringType();
-		DomainClass domainClass = getDomainClassRegistry().register(javaClass);
+		DomainClass domainClass = getMetaModel().register(javaClass);
 	}
 
 
-	public DomainClassRegistry getDomainClassRegistry() {
-		return DomainClassRegistry.instance();
+	public MetaModel getMetaModel() {
+		return MetaModel.instance();
 	}
 
 }

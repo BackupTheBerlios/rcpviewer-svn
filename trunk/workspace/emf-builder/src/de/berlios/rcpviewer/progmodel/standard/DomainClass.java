@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.impl.EOperationImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.progmodel.standard.Constants;
-import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
@@ -139,6 +139,16 @@ public class DomainClass<T>
 
 		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
 		
+		doIdentifyClass();
+	}
+
+	/**
+	 * Hook for subclasses to perform additional analysis of class.
+	 * 
+	 * <p>
+	 * Typically implementations will set adapters.
+	 */
+	protected void doIdentifyClass() {
 		ImageUrlAt imageUrlAt = javaClass.getAnnotation(ImageUrlAt.class);
 		if (imageUrlAt != null) {
 			URL imageUrl;
@@ -645,7 +655,7 @@ public class DomainClass<T>
 		}
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		EClass eClass = (EClass)parameter.getEType();
-		return DomainClassRegistry.instance().domainClassFor(eClass);
+		return MetaModel.instance().domainClassFor(eClass);
 	}
 
 	public String getNameFor(EOperation operation, int parameterPosition) {
@@ -674,8 +684,8 @@ public class DomainClass<T>
 	// LINKS SUPPORT: START
 
 	/**
-	 * Invoked by {@link DomainClassRegistry} when it is informed that all 
-	 * classes have been registered (@link DomainClassRegistry#done()}.
+	 * Invoked by {@link MetaModel} when it is informed that all 
+	 * classes have been registered (@link MetaModel#done()}.
 	 * 
 	 * TODO.
 	 */
@@ -836,79 +846,5 @@ public class DomainClass<T>
 	}
 
 	// DEPENDENCY INJECTION END
-
-	
-	/**
-	 * Cross-cutting validation of any eAttributes or eOperations 
-	 * passed to us in the various convenience methods.
-	 * 
-	 * <p>
-	 * Don't worry about the red squigglies: AJDT has not yet taught the
-	 * Java editor about inner aspects.
-	 */
-	private static aspect EnsureMemberBelongsToDomainClassAspect {
-
-		pointcut convenienceMethodForAttribute(DomainClass domainClass, EAttribute eAttribute):
-			execution(* *..DomainClass+.*(EAttribute, ..)) &&
-			!execution(* *..DomainClass+.containsAttribute(EAttribute)) &&
-			this(domainClass) && args(eAttribute, ..);
-		
-		before(DomainClass domainClass, EAttribute eAttribute): 
-			convenienceMethodForAttribute(domainClass, eAttribute) {
-			if (domainClass.containsAttribute(eAttribute)) {
-				return;
-			}
-			throw new IllegalArgumentException(
-				"EAttribute '" + eAttribute + "' not part of this DomainClass");
-		}
-
-		pointcut convenienceMethodForOperation(DomainClass domainClass, EOperation eOperation):
-			execution(* *..DomainClass+.*(EOperation, ..)) &&
-			!execution(* *..DomainClass+.containsOperation(EOperation)) &&
-			this(domainClass) && args(eOperation, ..);
-		
-		before(DomainClass domainClass, EOperation eOperation): 
-			convenienceMethodForOperation(domainClass, eOperation) {
-			if (domainClass.containsOperation(eOperation)) {
-				return;
-			}
-			throw new IllegalArgumentException(
-				"EOperation '" + eOperation + "' not part of this DomainClass");
-		}
-
-	}
-
-	/**
-	 * Cross-cutting validation of any convenience methods on operations that
-	 * take a second int (being the parameter position). 
-	 * 
-	 * <p>
-	 * Don't worry about the red squigglies: AJDT has not yet taught the
-	 * Java editor about inner aspects.
-	 */
-	private static aspect EnsureParameterPositionIsInRangeAspect {
-
-		declare precedence: EnsureMemberBelongsToDomainClassAspect, 
-							EnsureParameterPositionIsInRangeAspect;
-	
-		pointcut convenienceMethodForParameter(EOperation eOperation, int parameterPosition):
-			execution(* *..DomainClass+.*(EOperation, int)) &&
-			args(eOperation, parameterPosition);
-		
-		before(EOperation eOperation, int parameterPosition): 
-			convenienceMethodForParameter(eOperation, parameterPosition) {
-			int numberOfParametersForOperation = eOperation.getEParameters().size();  
-			if (numberOfParametersForOperation == 0) {
-				throw new IllegalArgumentException(
-					"EOperation '" + eOperation + "' takes no parameters");
-			}
-			if (parameterPosition < 0 ||
-			    parameterPosition >= numberOfParametersForOperation) {
-				throw new IllegalArgumentException(
-					"EOperation '" + eOperation + "': 0 <= parameterPosition < " + numberOfParametersForOperation);
-			}
-		}
-	}
-
 
 }

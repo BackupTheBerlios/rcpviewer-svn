@@ -5,7 +5,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.persistence.IObjectStore;
@@ -36,7 +36,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testCanPersistThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.persist();
@@ -53,7 +53,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testCanPersistThroughPojo() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.getPojo().save();
@@ -65,7 +65,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testCannotPersistIfNotAttachedToSession() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertFalse(getSession().isAttached(domainObject));
 		try {
@@ -79,7 +79,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCannotPersistMoreThanOnce() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.persist();
@@ -94,7 +94,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanSetAttribute() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
@@ -104,7 +104,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCannotSetAttributeToInvalidValue() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
@@ -118,7 +118,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanGetAttribute() {
 		IDomainClass<Department> domainClass = 
-			DomainClassRegistry.instance().register(Department.class);
+			MetaModel.instance().register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		domainObject.getPojo().setName("HR");

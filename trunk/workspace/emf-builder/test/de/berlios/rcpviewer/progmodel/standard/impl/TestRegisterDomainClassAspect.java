@@ -10,8 +10,8 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * Classes can be registered explicitly.
 	 */
 	public void testExplicitRegistration() {
-		DomainClassRegistry.instance().register(Department.class);
-		assertNotNull(DomainClassRegistry.instance().lookup(Department.class));
+		MetaModel.instance().register(Department.class);
+		assertNotNull(MetaModel.instance().lookup(Department.class));
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 */
 	public void testImplicitRegistrationByClassLoading() throws ClassNotFoundException {
 		Class.forName(Department.class.getName());
-		assertNotNull(DomainClassRegistry.instance().lookup(Department.class));
+		assertNotNull(MetaModel.instance().lookup(Department.class));
 	}
 	
 
@@ -36,7 +36,7 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 */
 	public void testImplicitRegistration() {
 		new Department();
-		assertNotNull(DomainClassRegistry.instance().lookup(Department.class));
+		assertNotNull(MetaModel.instance().lookup(Department.class));
 	}
 
 
@@ -44,9 +44,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * The registry remembers what's in it :-)
 	 */
 	public void testCanLookupOnceRegistered() {
-		DomainClassRegistry.instance().register(Department.class);
-		DomainClassRegistry.instance().done();
-		DomainClass d = DomainClassRegistry.instance().lookup(Department.class);
+		MetaModel.instance().register(Department.class);
+		MetaModel.instance().done();
+		DomainClass d = MetaModel.instance().lookup(Department.class);
 		assertNotNull(d);
 	}
 
