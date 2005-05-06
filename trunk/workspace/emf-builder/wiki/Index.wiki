@@ -2,7 +2,7 @@
 
 To run this project, you need the following:
 * Eclipse 3.1m6 
-* aspectJ-1.2m3
+* aspectJ-1.2m3 (specifically the AJDT at http://www.eclipse.org/ajdt )
 * JRE 1.5.0_02
 * Compiler compliance level: 5.0
 * Set up EMF_CORE user library (see below)
@@ -12,8 +12,8 @@ To run this project, you need the following:
 
 * java>build path>user libraries
 * EMF_CORE
-* org.eclipse,emf.ecore_2.0.1/runtime/ ecore.jar, ecore.resources.jar
-* org.eclipse,emf.common_2.0.1/runtime/ common.jar, common.resources.jar
+* org.eclipse.emf.ecore_2.0.1/runtime/ ecore.jar, ecore.resources.jar
+* org.eclipse.emf.common_2.0.1/runtime/ common.jar, common.resources.jar
 
 1.1 JFACE user library
 
