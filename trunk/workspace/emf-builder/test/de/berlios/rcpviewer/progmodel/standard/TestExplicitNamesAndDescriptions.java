@@ -81,7 +81,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 		}
 	}
 
-	private IDomainClass domainClass;
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -96,7 +96,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testDomainClassThatIsExplicitlyNamed() {
 		MetaModel.instance().addExtension(new RcpViewerExtension());
-		domainClass = new DomainClass(ProspectiveSale.class);
+		domainClass = new DomainClass<ProspectiveSale>(ProspectiveSale.class);
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());
 		assertEquals(
@@ -112,7 +112,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {
-		domainClass = new DomainClass(CustomerWithNoExplicitName.class);
+		domainClass = new DomainClass<CustomerWithNoExplicitName>(CustomerWithNoExplicitName.class);
 		assertEquals("CustomerWithNoExplicitName", domainClass.getName());
 		assertEquals("CustomerWithNoExplicitName", domainClass.getEClass().getName());
 		assertNull(domainClass.getDescription());
@@ -137,7 +137,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = new DomainClass(Appointment.class);
+		domainClass = new DomainClass<Appointment>(Appointment.class);
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());

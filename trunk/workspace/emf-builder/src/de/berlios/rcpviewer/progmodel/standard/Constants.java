@@ -89,4 +89,28 @@ public final class Constants {
 	public static final String ANNOTATION_OPERATION_STATIC = 
 		"http://rcpviewer.berlios.de/progmodel/standard/operation/static";
 
+	/**
+	 * Prefix to the source of EAnnotations that represent extensions (adapters)
+	 * for a model element.
+	 * 
+	 * <p>
+	 * The prefix is appended with the fully qualified class name of the
+	 * adapter class.
+	 */
+	public static final String ANNOTATION_EXTENSIONS_PREFIX = 
+		"http://rcpviewer.berlios.de/progmodel/extensions/";
+
+	/**
+	 * Reserved key name for an element in details map of the EAnnotation on a
+	 * model element holding extensions.
+	 * 
+	 * <p>
+	 * Used to construct the {@link de.berlios.rcpviewer.metamodel.IAdapterFactory}
+	 * that then interprets the remainder of the details to construct the actual
+	 * adapter.
+	 */
+	public static final String ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY = 
+			"adapterFactoryClassName";
+
+
 }

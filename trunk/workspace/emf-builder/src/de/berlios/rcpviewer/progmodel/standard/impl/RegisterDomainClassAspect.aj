@@ -35,6 +35,10 @@ aspect RegisterDomainClassAspect {
 	 * register pojo's class
 	 */
 	after() returning(Class javaClass): classForName() {
+		// HACK: make sure not an IAdapterFactory. 
+		if (IAdapterFactory.class.isAssignableFrom(javaClass)) {
+			return;
+		}
 		getMetaModel().register(javaClass);
 	}
 	

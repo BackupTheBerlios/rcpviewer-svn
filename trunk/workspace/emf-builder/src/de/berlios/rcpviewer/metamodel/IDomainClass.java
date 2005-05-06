@@ -76,13 +76,19 @@ public interface IDomainClass<T> {
 
 	/**
 	 * Allows arbitrary extensions to be attached to this domain object.
-	 *
-	 * @see #getAdapter(Class).
+	 * 
+	 * <p>
+	 * The adapters (as provided by {@link #getAdapter(Class)} are not
+	 * attached directly, because we want to be able to serialize the 
+	 * information within EMF.  So instead an adapter factory is supplied that
+	 * can convert from the serialized information that EMF holds (basically
+	 * a Map<String, String>) into an instance of an object implementing the
+	 * required adapter class.
 	 * 
 	 * @param adapterClass
 	 * @return
 	 */
-	public void setAdapter(Class<?> adapterClass, Object adapter);
+	public void setAdapterFactory(Class<?> adapterClass, IAdapterFactory<?> adapterFactory);
 
 
 	/**

@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.metamodel.Constants;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.metamodel.Util;
+import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
@@ -106,13 +106,13 @@ final class NamingConventions {
 			if (name.length() <= 3) {
 				throw new IllegalArgumentException("getter or setter name too short");
 			}
-			return Util.camelCase(name.substring(3));
+			return new MethodNameHelper().camelCase(name.substring(3));
 		}
 		if (name.startsWith("is")) {
 			if (name.length() <= 2) {
 				throw new IllegalArgumentException("is getter name too short");
 			}
-			return Util.camelCase(name.substring(2));
+			return new MethodNameHelper().camelCase(name.substring(2));
 		}
 		throw new IllegalArgumentException("getter or setter expected");
 	}
@@ -126,7 +126,7 @@ final class NamingConventions {
 			return false;
 		}
 		String attributeName = attribute.getName();
-		String isUnsetMethodName = "isUnset" + Util.titleCase(attributeName);
+		String isUnsetMethodName = "isUnset" + new MethodNameHelper().titleCase(attributeName);
 		if (!method.getName().equals(isUnsetMethodName)) {
 			return false;
 		}
@@ -142,7 +142,7 @@ final class NamingConventions {
 			return false;
 		}
 		String attributeName = attribute.getName();
-		String unsetMethodName = "unset" + Util.titleCase(attributeName);
+		String unsetMethodName = "unset" + new MethodNameHelper().titleCase(attributeName);
 		if (!method.getName().equals(unsetMethodName)) {
 			return false;
 		}
@@ -264,19 +264,19 @@ final class NamingConventions {
 			if (name.length() <= 3) {
 				throw new IllegalArgumentException("name of link method too short");
 			}
-			return Util.camelCase(name.substring(3));
+			return new MethodNameHelper().camelCase(name.substring(3));
 		}
 		if (name.startsWith("associate")) {
 			if (name.length() <= 9) {
 				throw new IllegalArgumentException("name of associator method too short");
 			}
-			return Util.camelCase(name.substring(9));
+			return new MethodNameHelper().camelCase(name.substring(9));
 		}
 		if (name.startsWith("dissociate")) {
 			if (name.length() <= 10) {
 				throw new IllegalArgumentException("name of dissociator method too short");
 			}
-			return Util.camelCase(name.substring(10));
+			return new MethodNameHelper().camelCase(name.substring(10));
 		}
 		throw new IllegalArgumentException("association method expected");
 	}

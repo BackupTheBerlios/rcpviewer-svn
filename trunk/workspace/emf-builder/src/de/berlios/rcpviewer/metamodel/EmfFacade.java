@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.Set;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
+import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -202,5 +205,52 @@ public class EmfFacade {
 		
 		throw new IllegalArgumentException("Not a built-in, and is not a Value");
 	}
+
+	/**
+	 * Returns the {@link EAnnotation} of the supplied source on the model element,
+	 * creating it if necessary.
+	 * 
+	 * @param modelElement
+	 * @param annotationSource
+	 * @return
+	 */
+	public EAnnotation annotationOf(EModelElement eModelElement, String annotationSource) {
+		EAnnotation eAnnotation = eModelElement.getEAnnotation(annotationSource);
+		if (eAnnotation == null) {
+			eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
+			eAnnotation.setSource(annotationSource);
+			eAnnotation.setEModelElement(eModelElement);
+		}
+		return eAnnotation;
+	}
+	
+
+	public EAnnotation putAnnotationDetails(EAnnotation eAnnotation, Map<String, String> details) {
+		eAnnotation.getDetails().putAll(details);
+		return eAnnotation;
+	}
+
+	public void putAnnotationDetails(EModelElement eModelElement, String annotationSource, Map<String, String> details) {
+		annotationOf(eModelElement, annotationSource).getDetails().putAll(details);
+	}
+
+	public Map<String, String> getAnnotationDetails(EAnnotation eAnnotation) {
+		Map<String, String> retrievedDetails = new HashMap<String,String>();
+		EMap details = eAnnotation.getDetails();
+		for(Object key: details.keySet()) {
+			retrievedDetails.put((String)key, (String)details.get(key));
+		}
+		return retrievedDetails;
+	}
+	
+	public Map<String, String> getAnnotationDetails(EModelElement eModelElement, String annotationSource) {
+		Map<String, String> retrievedDetails = new HashMap<String,String>();
+		EMap details = annotationOf(eModelElement, annotationSource).getDetails();
+		for(Object key: details.keySet()) {
+			retrievedDetails.put((String)key, (String)details.get(key));
+		}
+		return retrievedDetails;
+	}
+	
 
 }

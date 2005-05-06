@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.II18nData;
 import de.berlios.rcpviewer.metamodel.OperationKind;
-import de.berlios.rcpviewer.metamodel.Util;
+import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;

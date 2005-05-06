@@ -1,12 +1,15 @@
 package de.berlios.rcpviewer.metamodel;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 
@@ -201,6 +204,52 @@ public class TestEmfFacade extends TestCase {
 		} catch(IllegalArgumentException ex) {
 			// expected
 		}
+	}
+
+	/**
+	 * Obtain annotation of supplied source on a model element.
+	 */
+	public void testAnnotationOf() {
+		// any model element should do
+		EModelElement modelElement = emfFacade.getEcorePackage();
+		EAnnotation eAnnotation = emfFacade.annotationOf(modelElement, "http://rcpviewer.berlios.de/test/source");
+		assertNotNull(eAnnotation);
+		assertEquals("http://rcpviewer.berlios.de/test/source", eAnnotation.getSource());
+	}
+
+	/**
+	 * The EAnnotations#details is a map-like construct that can be put to
+	 * and got from. 
+	 */
+	public void testSetEAnnotationsDetails() {
+		// any model element should do
+		EModelElement modelElement = emfFacade.getEcorePackage();
+		EAnnotation eAnnotation = emfFacade.annotationOf(modelElement, "http://rcpviewer.berlios.de/test/source");
+		Map<String,String> details = new HashMap<String,String>();
+		details.put("foo", "bar");
+		details.put("baz", "boz");
+		assertEquals(0, eAnnotation.getDetails().size());
+		emfFacade.putAnnotationDetails(eAnnotation, details);
+		assertEquals(2, eAnnotation.getDetails().size());
+	}
+
+	/**
+	 * The EAnnotations#details is a map-like construct that can be put to
+	 * and got from. 
+	 */
+	public void testGetEAnnotationsDetails() {
+		// any model element should do
+		EModelElement modelElement = emfFacade.getEcorePackage();
+		EAnnotation eAnnotation = emfFacade.annotationOf(modelElement, "http://rcpviewer.berlios.de/test/source");
+		Map<String,String> details = new HashMap<String,String>();
+		details.put("foo", "bar");
+		details.put("baz", "boz");
+		emfFacade.putAnnotationDetails(eAnnotation, details);
+		
+		Map<String,String> retrievedDetails = emfFacade.getAnnotationDetails(eAnnotation);
+		assertEquals(2, retrievedDetails.size());
+		assertEquals("bar", retrievedDetails.get("foo"));
+		assertEquals("boz", retrievedDetails.get("baz"));
 	}
 
 }

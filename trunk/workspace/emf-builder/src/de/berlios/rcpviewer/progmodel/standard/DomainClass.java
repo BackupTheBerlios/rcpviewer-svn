@@ -1,10 +1,12 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EOperationImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 
+import de.berlios.rcpviewer.metamodel.IAdapterFactory;
 import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
@@ -12,7 +14,7 @@ import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.II18nData;
 import de.berlios.rcpviewer.metamodel.OperationKind;
-import de.berlios.rcpviewer.metamodel.Util;
+import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
@@ -40,6 +42,8 @@ import java.util.List;
  * programming model should be a user of getAdapter() for Eclipse-specific things.
  *  
  * TODO: should implement the choreography of interacting with the underlying POJOs (or this could be done by DomainObject).
+ * 
+ * TODO: need to sort out generic parameterization. 
  * 
  * @author Dan Haywood
  */
@@ -98,7 +102,24 @@ public class DomainClass<T>
 	 * @return adapter (extension) that will implement the said class.
 	 */
 	public Object getAdapter(Class adapterClass) {
-		return adaptersByClass.get(adapterClass);
+		Map<String, String> detailsPlusFactoryName = 
+			emfFacade.getAnnotationDetails(eClass, Constants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
+		String adapterFactoryName = 
+			(String)detailsPlusFactoryName.get(Constants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
+		IAdapterFactory adapterFactory;
+		try {
+			adapterFactory = (IAdapterFactory)Class.forName(adapterFactoryName).newInstance();
+			return adapterFactory.createAdapter(detailsPlusFactoryName);
+		} catch (InstantiationException e) {
+			// TODO - log?
+			return null;
+		} catch (IllegalAccessException e) {
+			// TODO - log?
+			return null;
+		} catch (ClassNotFoundException e) {
+			// TODO - log?
+			return null;
+		}
 	}
 	/**
 	 * Extension object pattern - adding an extension.
@@ -106,13 +127,13 @@ public class DomainClass<T>
 	 * @param adapterClass
 	 * @param adapter
 	 */
-	public void setAdapter(Class adapterClass, Object adapter) {
-		if (!adapterClass.isAssignableFrom(adapter.getClass())) {
-			throw new IllegalArgumentException(
-				"Adapter '" + adapter + "' does not implement " +
-				"adapterClass '" + adapterClass + "'");
-		}
-		adaptersByClass.put(adapterClass, adapter);
+	public void setAdapterFactory(Class adapterClass, IAdapterFactory adapterFactory) {
+		EAnnotation eAnnotation = 
+			emfFacade.annotationOf(eClass, Constants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
+		Map<String,String> detailsPlusFactoryName = new HashMap<String,String>();
+		detailsPlusFactoryName.putAll(adapterFactory.getDetails());
+		detailsPlusFactoryName.put(Constants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
+		emfFacade.putAnnotationDetails(eAnnotation, detailsPlusFactoryName);
 	}
 
 	/**
@@ -148,9 +169,9 @@ public class DomainClass<T>
 		}
 		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
 		if (ea == null) {
-			ea = setAnnotation(modelElement, Constants.ANNOTATION_ELEMENT);
+			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
 		}
-		putAnnotationDetail(ea, 
+		putAnnotationDetails(ea, 
 			Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
 	}
 
@@ -186,7 +207,7 @@ public class DomainClass<T>
 			eAttribute.setName(attributeName);
 			eClass.getEStructuralFeatures().add(eAttribute);
 
-			putAnnotationDetail(
+			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
 					method.getName());
@@ -268,10 +289,10 @@ public class DomainClass<T>
 
 				eClass.getEStructuralFeatures().add(eAttribute);
 
-				setAnnotation(eAttribute, de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
 			
-			putAnnotationDetail(
+			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
 					methods[i].getName());
@@ -311,12 +332,12 @@ public class DomainClass<T>
 			// has both an IsUnset and an unset method for this attribute
 			eAttribute.setUnsettable(true);
 			
-			putAnnotationDetail(
+			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 			
-			putAnnotationDetail(
+			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
 					Constants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
@@ -510,7 +531,7 @@ public class DomainClass<T>
 						unnamedParameterIndexByType.put(parameterType, parameterIndex);
 					}
 					parameterIndex[0]++;
-					parameterName = Util.camelCase(parameterType.getSimpleName());
+					parameterName = new MethodNameHelper().camelCase(parameterType.getSimpleName());
 					if (parameterIndex[0] > 0) {
 						parameterName += parameterIndex[0];
 					}
@@ -540,7 +561,7 @@ public class DomainClass<T>
 			}
 
 			if ((methods[i].getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
-				setAnnotation(eOperation, Constants.ANNOTATION_OPERATION_STATIC);
+				emfFacade.annotationOf(eOperation, Constants.ANNOTATION_OPERATION_STATIC);
 			}
 			
 			
@@ -555,7 +576,7 @@ public class DomainClass<T>
 
 		
 			
-			putAnnotationDetail(
+			putAnnotationDetails(
 					methodAnnotationFor(eOperation), 
 					Constants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
 					methods[i].getName());
@@ -754,31 +775,19 @@ public class DomainClass<T>
 		if (eAnnotation != null) {
 			return eAnnotation;
 		}
-		return setAnnotation(eModelElement, Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+		return emfFacade.annotationOf(eModelElement, Constants.ANNOTATION_SOURCE_METHOD_NAMES);
 	}
 	
-	EAnnotation putAnnotationDetail(EAnnotation eAnnotation, String key, String value) {
-		if (eAnnotation == null) {
-			return null;
-		}
-		eAnnotation.getDetails().put(key, value);
-		return eAnnotation;
+	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
+		Map<String, String> details = new HashMap<String, String>();
+		details.put(key, value);
+		return emfFacade.putAnnotationDetails(eAnnotation, details);
 	}
 	
 	String getAnnotationDetail(EAnnotation eAnnotation, String key) {
-		if (eAnnotation == null) {
-			return null;
-		}
-		return (String)eAnnotation.getDetails().get(key);
+		return (String)emfFacade.getAnnotationDetails(eAnnotation).get(key);
 	}
 	
-	private EAnnotation setAnnotation(EModelElement eModelElement, String annotationSource) {
-		EAnnotation eAnnotation = EcoreFactory.eINSTANCE.createEAnnotation();
-		eAnnotation.setSource(annotationSource);
-		eAnnotation.setEModelElement(eModelElement);
-		return eAnnotation;
-	}
-
 	// ANNOTATION SUPPORT: END
 	
 	// DOMAIN OBJECT SUPPORT: START

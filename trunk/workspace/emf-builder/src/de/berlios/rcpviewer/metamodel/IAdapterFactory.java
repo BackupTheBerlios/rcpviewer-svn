@@ -25,5 +25,19 @@ import java.util.Map;
  * @author Dan Haywood
  */
 public interface IAdapterFactory<T> {
+	
+	/**
+	 * The details for the {@link IDomainClass} to store (using EMF).
+	 * 
+	 * @return
+	 */
+	public Map<String, String> getDetails();
+	
+	/**
+	 * The adapter created later on from these details.
+	 * 
+	 * @param details
+	 * @return
+	 */
 	public T createAdapter(Map<String, String> details);
 }
