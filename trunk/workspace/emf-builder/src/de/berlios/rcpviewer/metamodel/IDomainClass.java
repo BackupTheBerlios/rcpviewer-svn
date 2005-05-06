@@ -27,8 +27,66 @@ import de.berlios.rcpviewer.session.ISession;
 public interface IDomainClass<T> {
 
 	public Class<T> getJavaClass();
-	
+
+	/**
+	 * Underlying EMF {@link EClass} that holds the structural features and
+	 * information about this class.
+	 * 
+	 * @return
+	 */
 	public EClass getEClass();
+
+	/**
+	 * Convenience method that simply returns the name of the underlying
+	 * {@link EClass}.
+	 * 
+	 * <p>
+	 * The class may have been explicitly named or its name may have been 
+	 * implied.  The standard programming model uses the <tt>Named</tt> 
+	 * annotation.
+	 * 
+	 * @return
+	 */
+	public String getName();
+
+
+	/**
+	 * Allows arbitrary extensions to be attached to this domain object.
+	 * 
+	 * <p>
+	 * This is an instance of the Extension Object pattern, used widely
+	 * throughout the Eclipse Platform under the name of an "adapter" (hence
+	 * our choice of name).
+	 * 
+	 * <p>
+	 * Programming models implementations that wish to provide additional 
+	 * semantics (usually UI-related) can do so by populating the hash. 
+	 * @param adapterClass
+	 * @return
+	 */
+	public Object getAdapter(Class adapterClass);
+
+	/**
+	 * Returns the description of this class (if any).
+	 * 
+	 * <p>
+	 * The standard programming model uses the <tt>DescribedAs</tt> annotation.
+	 * 
+	 * @return
+	 */
+	public String getDescription();
+
+
+	/**
+	 * Returns the internalizationed data of this class.
+	 * 
+	 * <p>
+	 * Provides access to the key for the internalization name, description and
+	 * any other internationalizatrion information.
+	 * 
+	 * @return
+	 */
+	public II18nData getI18nData();
 
 	/**
 	 * Convenience method returning a type-safe iterable List over all 
@@ -48,7 +106,8 @@ public interface IDomainClass<T> {
 
 
 	/**
-	 * Since EClass (as of EMF 2.0) doesn't expose, we provide as a convenience.
+	 * Returns the attribute with given name, or <tt>nothing</tt> if unknown.
+	 * 
 	 * @param attributeName
 	 * @return
 	 */
@@ -323,6 +382,19 @@ public interface IDomainClass<T> {
 
 
 	/**
+	 * Returns internalizationalized data for the specified attribute of the 
+	 * domain class.
+	 * 
+	 * <p>
+	 * The attribute must be one of those for the class. 
+	 * 
+	 * @param attribute
+	 * @return
+	 */
+	public II18nData getI18nDataFor(EAttribute attribute);
+
+
+	/**
 	 * Convenience method returning a type-safe iterable List over all 
 	 * EOperations (whether static or instance, and whether inherited or not)
 	 * known to the underlying EClass.
@@ -341,12 +413,21 @@ public interface IDomainClass<T> {
 	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited);
 
 
+	/**
+	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
+	 * 
+	 * @param operationName
+	 * @return
+	 */
 	public EOperation getEOperationNamed(String operationName);
 
 	/**
 	 * Whether the operation is for an instance of this class, or for the 
 	 * class itself.
 	 *  
+	 * <p>
+	 * The operation must be one of those for the class.. 
+	 * 
 	 * @param eOperation
 	 * @return false if an instance operation, true if a class operation. 
 	 */
@@ -354,19 +435,18 @@ public interface IDomainClass<T> {
 
 
 	/**
-	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
-	 * wrapping a pojo of the type represented by this domain class.
+	 * Returns internalizationalized data for the specified operation of the 
+	 * domain class.
 	 * 
 	 * <p>
-	 * The object will not be attached to any {@link ISession}.  Since created
-	 * objects normally should be attached, typically 
-	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
-	 * resultant object to the session) should be used instead. 
+	 * The operation must be one of those for the class.. 
 	 * 
+	 * @param operation
 	 * @return
 	 */
-	public IDomainObject<T> createTransient();
+	public II18nData getI18nDataFor(EOperation operation);
 
+	
 	/**
 	 * Indicates whether the specified parameter of the operation (of this domain 
 	 * class) is a value.
@@ -433,5 +513,70 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public IDomainClass getDomainClassFor(EOperation operation, int parameterPosition);
+
+	/**
+	 * Returns the name of the specified parameter of the operation.
+	 * 
+	 * <p>
+	 * All parameters will have a name, but it may (depending upon the
+	 * programming model) be derived from the type.  The standard programming
+	 * model will use the <tt>Named</tt> annotation if present but will 
+	 * construct a name based on the type otherwise.
+	 *  
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters. 
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return
+	 */
+	public String getNameFor(EOperation operation, int parameterPosition);
+
+
+	/**
+	 * Returns the description (if known) of the specified parameter of the 
+	 * operation.
+	 * 
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters. 
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return
+	 */
+	public String getDescriptionFor(EOperation operation, int parameterPosition);
+
+
+	/**
+	 * Returns internalizationalized data for the specified parameter of the 
+	 * operation.
+	 * 
+	 * <p>
+	 * The operation must be one of those for the class; the operation must
+	 * have n parameters. 
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return
+	 */
+	public II18nData getI18nDataFor(EOperation operation, int parameterPosition);
+
+	
+	/**
+	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
+	 * wrapping a pojo of the type represented by this domain class.
+	 * 
+	 * <p>
+	 * The object will not be attached to any {@link ISession}.  Since created
+	 * objects normally should be attached, typically 
+	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
+	 * resultant object to the session) should be used instead. 
+	 * 
+	 * @return
+	 */
+	public IDomainObject<T> createTransient();
+
 
 }

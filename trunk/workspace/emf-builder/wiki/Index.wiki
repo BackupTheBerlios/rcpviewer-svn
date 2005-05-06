@@ -6,6 +6,7 @@ To run this project, you need the following:
 * JRE 1.5.0_02
 * Compiler compliance level: 5.0
 * Set up EMF_CORE user library (see below)
+* Set up JFACE user library (see below)
 
 1.1 EMF_CORE user library
 
@@ -13,6 +14,15 @@ To run this project, you need the following:
 * EMF_CORE
 * org.eclipse,emf.ecore_2.0.1/runtime/ ecore.jar, ecore.resources.jar
 * org.eclipse,emf.common_2.0.1/runtime/ common.jar, common.resources.jar
+
+1.1 JFACE user library
+
+* java>build path>user libraries
+* JFACE
+* c:\eclipse\plugins\org.eclipse.jface_3.1.0.jar
+* c:\eclipse\plugins\org.eclipse.swt_3.1.0.jar
+* c:\eclipse\plugins\org.eclipse.swt.win32_3.1.0.jar  (or whatever your platform is)
+
 
 1 Compiling
 Should auto-build by itself; if have problems, try removing and then re-adding the AspectJ nature (from package explorer)

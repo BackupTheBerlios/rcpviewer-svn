@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 public class TestDomainClassOperations extends AbstractTestCase {
 
@@ -52,6 +53,32 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	public static class CustomerPositionedOnMap {
 		public void positionAt(float x, float y) {}
 		public static void createAtPosition(double x, double y) {}
+	}
+	public static class TimePeriod implements ValueMarker {
+		private java.util.Date from;
+		public java.util.Date getFrom() {
+			return from;
+		}
+		public void setFrom(java.util.Date from) {
+			this.from = from;
+		}
+		private java.util.Date to;
+		public java.util.Date getTo() {
+			return to;
+		}
+		public void setTo(java.util.Date to) {
+			this.to = to;
+		}
+	}
+	public static class Appointment {
+		public void moveTo(
+				TimePeriod newPeriod, 
+				String agenda) {
+		}
+		public static void createAt(
+				TimePeriod timePeriod,
+				String rationale) {
+		}
 	}
 
 
@@ -169,6 +196,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(1, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
 		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		assertEquals("int", domainClass.getNameFor(eOperation, 0));
 		assertEquals("EInt", eDataType.getName());
 		assertFalse(domainClass.isStatic(eOperation));
 		
@@ -178,6 +206,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(1, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		assertEquals("long", domainClass.getNameFor(eOperation, 0));
 		assertEquals("ELong", eDataType.getName());
 		assertTrue(domainClass.isStatic(eOperation));
 
@@ -189,9 +218,11 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		assertEquals("float", domainClass.getNameFor(eOperation, 0));
 		assertEquals("EFloat", eDataType.getName());
 		assertTrue(domainClass.isParameterAValue(eOperation, 1));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
+		assertEquals("float1", domainClass.getNameFor(eOperation, 1));
 		assertEquals("EFloat", eDataType.getName());
 		assertFalse(domainClass.isStatic(eOperation));
 		
@@ -201,18 +232,48 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		assertEquals("double", domainClass.getNameFor(eOperation, 0));
 		assertEquals("EDouble", eDataType.getName());
 		assertTrue(domainClass.isParameterAValue(eOperation, 1));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
+		assertEquals("double1", domainClass.getNameFor(eOperation, 1));
 		assertEquals("EDouble", eDataType.getName());
 		assertTrue(domainClass.isStatic(eOperation));
 	}
 
-	public void xtestMethodWithValueObjectArgumentsPickedUpAsOperation() {
-		// TODO
+	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
+		// 2 arg
+		domainClass = new DomainClass(Appointment.class);
+		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
+		assertNotNull(eOperation);
+		assertEquals("moveTo", eOperation.getName());
+		assertEquals(2, eOperation.getEParameters().size());
+		assertTrue(domainClass.isParameterAValue(eOperation, 0));
+		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
+		assertEquals("de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperations$TimePeriod", eDataType.getName());
+		assertTrue(domainClass.isParameterAValue(eOperation, 1));
+		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
+		assertEquals("string", domainClass.getNameFor(eOperation, 1));
+		assertEquals("EString", eDataType.getName());
+		assertFalse(domainClass.isStatic(eOperation));
+		
+		eOperation = domainClass.getEOperationNamed("createAt");
+		assertNotNull(eOperation);
+		assertEquals("createAt", eOperation.getName());
+		assertEquals(2, eOperation.getEParameters().size());
+		assertTrue(domainClass.isParameterAValue(eOperation, 0));
+		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
+		assertEquals("de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperations$TimePeriod", eDataType.getName());
+		assertTrue(domainClass.isParameterAValue(eOperation, 1));
+		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
+		assertEquals("string", domainClass.getNameFor(eOperation, 1));
+		assertEquals("EString", eDataType.getName());
+		assertTrue(domainClass.isStatic(eOperation));
 	}
 
-	public void xtestMethodWithDomainObjectArgumentsPickedUpAsOperation() {
+	public void incompletetestMethodWithDomainObjectArgumentsPickedUpAsOperation() {
 		// TODO
 	}
 
@@ -221,7 +282,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * then it is not exposed as an operation.
 	 *
 	 */
-	public void xtestMethodWithInvalidArgumentsNotPickedUpAsOperation() {
+	public void incompletetestMethodWithInvalidArgumentsNotPickedUpAsOperation() {
 		// TODO
 	}
 
@@ -229,7 +290,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 *
 	 */
-	public void xtestMethodWithMixedValidArgumentsPickedUpAsOperation() {
+	public void incompletetestMethodWithMixedValidArgumentsPickedUpAsOperation() {
 		// TODO
 	}
 
@@ -237,19 +298,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 *
 	 */
-	public void xtestMethodReturningVoidPickedUpAsOperation() {
-		// TODO
-	}
-
-	/**
-	 * This is following the lead from the original NO framework.  An 
-	 * alternative would be that it <i>is</i> picked up, and rendered as some
-	 * sort of dialog box???
-	 *
-	 * <p>
-	 * Tested for both instance and static methods.
-	 */
-	public void xtestMethodReturningPrimitiveNotPickedUpAsOperation() {
+	public void incompletetestMethodReturningVoidPickedUpAsOperation() {
 		// TODO
 	}
 
@@ -261,7 +310,19 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * <p>
 	 * Tested for both instance and static methods.
 	 */
-	public void xtestMethodReturningValueNotPickedUpAsOperation() {
+	public void incompletetestMethodReturningPrimitiveNotPickedUpAsOperation() {
+		// TODO
+	}
+
+	/**
+	 * This is following the lead from the original NO framework.  An 
+	 * alternative would be that it <i>is</i> picked up, and rendered as some
+	 * sort of dialog box???
+	 *
+	 * <p>
+	 * Tested for both instance and static methods.
+	 */
+	public void incompletetestMethodReturningValueNotPickedUpAsOperation() {
 		// TODO
 	}
 
@@ -269,31 +330,31 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 *
 	 */
-	public void xtestMethodReturningDomainObjectPickedUpAsOperation() {
+	public void incompletetestMethodReturningDomainObjectPickedUpAsOperation() {
 		// TODO
 	}
 
-	public void xtestCanInvokeOperationReturningVoidWithNoArgs() {
+	public void incompletetestCanInvokeOperationReturningVoidWithNoArgs() {
 		// TODO
 	}
 	
-	public void xtestCanInvokeOperationReturningDomainObjectWithNoArgs() {
+	public void incompletetestCanInvokeOperationReturningDomainObjectWithNoArgs() {
 		// TODO
 	}
 	
-	public void xtestCanInvokeOperationReturningVoidWithPrimitiveArgs() {
+	public void incompletetestCanInvokeOperationReturningVoidWithPrimitiveArgs() {
 		// TODO
 	}
 	
-	public void xtestCanInvokeOperationReturningDomainObjectWithPrimitiveArgs() {
+	public void incompletetestCanInvokeOperationReturningDomainObjectWithPrimitiveArgs() {
 		// TODO
 	}
 	
-	public void xtestCanInvokeOperationReturningVoidWithDomainObjectArgs() {
+	public void incompletetestCanInvokeOperationReturningVoidWithDomainObjectArgs() {
 		// TODO
 	}
 	
-	public void xtestCanInvokeOperationReturningDomainObjectWithDomainObjectArgs() {
+	public void incompletetestCanInvokeOperationReturningDomainObjectWithDomainObjectArgs() {
 		// TODO
 	}
 	

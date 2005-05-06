@@ -16,6 +16,11 @@ import de.berlios.rcpviewer.progmodel.standard.UpperBoundOf;
 
 import junit.framework.TestCase;
 
+/**
+ * Class names and internalization are tested elsewhere.
+ * 
+ * @author Dan Haywood
+ */
 public class TestDomainClass extends AbstractTestCase {
 
 	public static class CustomerWithNoAttributes {

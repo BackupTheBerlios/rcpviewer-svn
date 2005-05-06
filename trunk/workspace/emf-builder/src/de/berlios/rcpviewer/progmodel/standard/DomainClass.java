@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EOperationImpl;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.progmodel.standard.Constants;
 import de.berlios.rcpviewer.metamodel.DomainClassRegistry;
@@ -10,17 +11,24 @@ import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.metamodel.II18nData;
 import de.berlios.rcpviewer.metamodel.OperationKind;
+import de.berlios.rcpviewer.metamodel.Util;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
 import de.berlios.rcpviewer.progmodel.standard.Constants;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.util.List;
 
@@ -29,13 +37,14 @@ import java.util.List;
  * Represents a class in the meta model, akin to {@link java.lang.Class} and
  * wrapping an underlying EMF EClass.
  * 
- * TODO: should delegate much more to ProgrammingModel
- * TODO: should be part of the implementation of a specific programming model 
+ * TODO: should factor much up into a Generic implementation; the standard
+ * programming model should be a user of getAdapter() for Eclipse-specific things.
+ *  
  * TODO: should implement the choreography of interacting with the underlying POJOs (or this could be done by DomainObject).
  * 
  * @author Dan Haywood
  */
-public final class DomainClass<T> 
+public class DomainClass<T> 
 		implements IDomainClass,
 				   EmfFacadeAware,
 				   IWrapperAware {
@@ -47,20 +56,16 @@ public final class DomainClass<T>
 
 		identifyClass();
 
-		Method[] methods = javaClass.getMethods();
-
 		identifyAccessors();
 		identifyMutators();
 		identifyUnSettableAttributes();
 		identifyOperations();
-
 	}
 
 	private final NamingConventions namingConventions;
 	public NamingConventions getNamingConventions() {
 		return namingConventions;
 	}
-
 
 	private final Class<T> javaClass;
 	public Class<T> getJavaClass() {
@@ -72,8 +77,44 @@ public final class DomainClass<T>
 		return eClass;
 	}
 
-	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
+	public String getName() {
+		return eClass.getName();
+	}
+
+
+	public String getDescription() {
+		return descriptionOf(eClass);
+	}
+
+	public II18nData getI18nData() {
+		throw new RuntimeException("Not yet implemented");
+	}
+
 	
+	private Map<Class<?>, Object> adaptersByClass = new HashMap<Class<?>, Object>();
+	/**
+	 * Extension object pattern.
+	 * 
+	 * @param adapterClass
+	 * @return
+	 */
+	public Object getAdapter(Class adapterClass) {
+		return adaptersByClass.get(adapterClass);
+	}
+	/**
+	 * Protected visibility so that subclass implementations can populate.
+	 * 
+	 * @param adapterClass
+	 * @param adapter
+	 */
+	protected void setAdapter(Class<?> adapterClass, Object adapter) {
+		if (!adapterClass.isAssignableFrom(adapter.getClass())) {
+			throw new IllegalArgumentException(
+				"Adapter '" + adapter + "' does not implement " +
+				"adapterClass '" + adapterClass + "'");
+		}
+		adaptersByClass.put(adapterClass, adapter);
+	}
 
 	/**
 	 * TODO: should also identify class hierarchy
@@ -90,7 +131,38 @@ public final class DomainClass<T>
 		}
 
 		eClass.setInstanceClass(javaClass);
-		eClass.setName(javaClass.getSimpleName());
+
+		String name = null;
+		Named named = javaClass.getAnnotation(Named.class);
+		name = named != null? named.value(): javaClass.getSimpleName();
+		eClass.setName(name);
+
+		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
+		
+		ImageUrlAt imageUrlAt = javaClass.getAnnotation(ImageUrlAt.class);
+		if (imageUrlAt != null) {
+			URL imageUrl;
+			try {
+				imageUrl = new URL(imageUrlAt.value());
+				this.setAdapter(ImageDescriptor.class, 
+				        ImageDescriptor.createFromURL(imageUrl));
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block - should log.
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {
+		if (describedAs == null) {
+			return;
+		}
+		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (ea == null) {
+			ea = setAnnotation(modelElement, Constants.ANNOTATION_ELEMENT);
+		}
+		putAnnotationDetail(ea, 
+			Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
 	}
 
 	
@@ -367,6 +439,11 @@ public final class DomainClass<T>
 		return this.eClass.getEAllAttributes().contains(eAttribute);
 	}
 
+	public II18nData getI18nDataFor(EAttribute attribute) {
+		throw new RuntimeException("Not yet implemented");
+	}
+
+
 	// ATTRIBUTE SUPPORT: END
 
 	// OPERATION SUPPORT: START
@@ -407,6 +484,7 @@ public final class DomainClass<T>
 			}
 			
 			Class<?>[] parameterTypes = method.getParameterTypes();
+			Annotation[][] parameterAnnotationSets = method.getParameterAnnotations();
 			for(Class<?> parameterType: parameterTypes) {
 				if (!getNamingConventions().isValueType(parameterType) &&
 					!getNamingConventions().isReferenceType(parameterType)) {
@@ -416,12 +494,54 @@ public final class DomainClass<T>
 			
 			EOperation eOperation = EcoreFactory.eINSTANCE.createEOperation();
 			eOperation.setName(method.getName());
-			for(Class<?> parameterType: parameterTypes) {
+			Map<Class<?>, int[]> unnamedParameterIndexByType = new HashMap<Class<?>, int[]>();
+			for(int j=0; j<parameterTypes.length; j++) {
+				Class<?> parameterType = parameterTypes[j];
+				Annotation[] parameterAnnotationSet = parameterAnnotationSets[j];
 				EDataType dataType = getEmfFacade().getEDataTypeFor(parameterType);
 				EParameter eParameter = EcoreFactory.eINSTANCE.createEParameter();
 				eOperation.getEParameters().add(eParameter);
 				eParameter.setEType(dataType);
+				
+				// parameter name
+				Named named = null;				
+				for(Annotation parameterAnnotation: parameterAnnotationSet) {
+					if (parameterAnnotation instanceof Named) {
+						named = (Named)parameterAnnotation;
+						break;
+					}
+				}
+				String parameterName = null;
+				if (named != null) {
+					parameterName = named.value();
+				} else {
+					int[] parameterIndex = unnamedParameterIndexByType.get(parameterType);
+					if (parameterIndex == null) {
+						parameterIndex = new int[] {-1};
+						unnamedParameterIndexByType.put(parameterType, parameterIndex);
+					}
+					parameterIndex[0]++;
+					parameterName = Util.camelCase(parameterType.getSimpleName());
+					if (parameterIndex[0] > 0) {
+						parameterName += parameterIndex[0];
+					}
+				}
+				eParameter.setName(parameterName);
+				
+				// description
+				DescribedAs describedAs = null;
+				for(Annotation parameterAnnotation: parameterAnnotationSet) {
+					if (parameterAnnotation instanceof DescribedAs) {
+						describedAs = (DescribedAs)parameterAnnotation;
+						break;
+					}
+				}
+				if (describedAs != null) {
+					addDescription(describedAs, eParameter);
+				}
+				
 			}
+			//addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
 
 			Class<?> dataType = methods[i].getReturnType();
 			// EMF does not have a built-in classifier for Void
@@ -528,6 +648,25 @@ public final class DomainClass<T>
 		return DomainClassRegistry.instance().domainClassFor(eClass);
 	}
 
+	public String getNameFor(EOperation operation, int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		return parameter.getName();
+	}
+	
+	public String getDescriptionFor(EOperation operation, int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		return descriptionOf(parameter);
+	}
+
+	public II18nData getI18nDataFor(EOperation operation) {
+		throw new RuntimeException("Not yet implemented");
+	}
+
+	public II18nData getI18nDataFor(EOperation operation, int parameterPosition) {
+		throw new RuntimeException("Not yet implemented");
+	}
+
+
 
 	// OPERATION SUPPORT: END
 
@@ -603,6 +742,23 @@ public final class DomainClass<T>
 
 	// ANNOTATION SUPPORT: START
 
+
+	/**
+	 * Since descriptions are stored as annotations and apply to many model
+	 * elements, this is a convenient way of getting to the description.
+	 * 
+	 * @param modelElement
+	 * @return
+	 */
+	private String descriptionOf(EModelElement modelElement) {
+		EAnnotation annotation = 
+			modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return null;
+		}
+		return (String)annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
+	}
+
 	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
 		EAnnotation eAnnotation = 
 			eModelElement.getEAnnotation(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
@@ -658,7 +814,8 @@ public final class DomainClass<T>
 	 * @param message
 	 */
 	private void logWarning(String message) {}
-	
+
+	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
 
 	// DEPENDENCY INJECTION
 	
@@ -752,5 +909,6 @@ public final class DomainClass<T>
 			}
 		}
 	}
+
 
 }

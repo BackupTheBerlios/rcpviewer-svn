@@ -6,9 +6,23 @@ public final class Constants {
 	}
 
 	/**
-	 * Access to any annotations pertaining to the {@link IDomainClass}/EClass.
+	 * Presence of an EAnnotation with this source on an EModelElement indicates
+	 * additional information accessible from the details.
 	 */
-	public static final String ANNOTATION_SOURCE_CLASS = 
+	public static final String ANNOTATION_ELEMENT = 
+		"http://rcpviewer.berlios.de/progmodel/standard/element";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}.
+	 */
+	public static final String ANNOTATION_ELEMENT_DESCRIPTION_KEY = 
+		"description";
+
+	/**
+	 * Access to any annotations pertaining (and specific to) the 
+	 * {@link IDomainClass}/EClass.
+	 */
+	public static final String ANNOTATION_CLASS = 
 		"http://rcpviewer.berlios.de/progmodel/standard/class";
 
 	/**

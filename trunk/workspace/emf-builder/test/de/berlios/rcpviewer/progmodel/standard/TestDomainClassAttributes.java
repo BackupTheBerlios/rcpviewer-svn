@@ -97,123 +97,6 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 			return "foobar";
 		}
 	}
-	public static class CustomerWithNoLowerBoundReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithLowerBoundReadOnlyAttribute {
-		private String surname;
-		@LowerBoundOf(0)
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithNoUpperBoundReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithUpperBoundReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithNoUniquenessReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithUniqueReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		@Unique
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithNonUniqueReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		@Unique(false)
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithNoOrderingReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithOrderingReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		@Ordered
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithoutOrderingReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		@Ordered(false)
-		public String getSurname() {
-			return surname;
-		}
-	}
-	public static class CustomerWithUnsettableAttribute {
-		private int age;
-		public boolean isUnsetAge() {
-			return age == -1;
-		}
-		public void unsetAge() {
-			age = -1;
-		}
-		public int getAge() {
-			return age;
-		}
-		public void setAge(int age) {
-			this.age = age;
-		}
-	}
-	public static class CustomerWithOnlyIsUnsetForAttribute {
-		private int age;
-		/**
-		 * Not having unsetXxx means this attribute isn't unsettable.
-		 * @return
-		 */
-		public boolean isUnsetAge() {
-			return age == -1;
-		}
-		public int getAge() {
-			return age;
-		}
-		public void setAge(int age) {
-			this.age = age;
-		}
-	}
-	public static class CustomerWithOnlyUnsetForAttribute {
-		private int age;
-		/**
-		 * Not having isUnsetXxx means this attribute isn't unsettable.
-		 * @return
-		 */
-		public void unsetAge() {
-			age = -1;
-		}
-		public int getAge() {
-			return age;
-		}
-		public void setAge(int age) {
-			this.age = age;
-		}
-	}
 
 	public void testGetAttributesWhenNone() {
 		domainClass = new DomainClass(CustomerWithNoAttributes.class);
@@ -225,7 +108,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 		assertEquals(8, domainClass.attributes().size());
 	}
 	
-	public void xtestGetAttributesIgnoringInherited() {
+	public void incompletetestGetAttributesIgnoringInherited() {
 		// TODO: invoking domainClass.attributes(false);
 	}
 	
@@ -306,112 +189,11 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 		// TODO: not tested, but this is a placeholder: we should have a compile time rule that prevents this 
 	}
 
-	public void testLowerBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass(CustomerWithNoLowerBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(1, eAttribute.getLowerBound());
-		assertEquals(1, domainClass.getLowerBound(eAttribute));
-	}
 
-	public void testLowerBoundOfEAttributeWhenSpecified() {
-		domainClass = new DomainClass(CustomerWithLowerBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(0, eAttribute.getLowerBound());
-		assertEquals(0, domainClass.getLowerBound(eAttribute));
-	}
-
-	public void incompletetestLowerBoundOfEAttributeWithDatatypeNotSupporting() {
-		// TODO
-		
-	}
-
-	public void testUpperBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass(CustomerWithNoUpperBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(1, eAttribute.getUpperBound());
-		assertEquals(1, domainClass.getLowerBound(eAttribute));
-	}
-
-	public void testUpperBoundOfEAttributeWhenSpecified() {
-		domainClass = new DomainClass(CustomerWithUpperBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(3, eAttribute.getUpperBound());
-		assertEquals(3, domainClass.getUpperBound(eAttribute));
-	}
-
-	public void incompletetestUpperBoundOfEAttributeWithDatatypeNotSupporting() {
-		// TODO
-	}
-
-	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass(CustomerWithNoUniquenessReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isUnique());
-		assertTrue(domainClass.isUnique(eAttribute));
-	}
-
-	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = new DomainClass(CustomerWithUniqueReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isUnique());
-		assertTrue(domainClass.isUnique(eAttribute));
-	}
-
-	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = new DomainClass(CustomerWithNonUniqueReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(eAttribute.isUnique());
-		assertFalse(domainClass.isUnique(eAttribute));
-	}
-
-	public void incompletetestUniquenessOfEAttributeWhenSpecifiedWithoutUpperBound() {
-		// TODO
-	}
-
-	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass(CustomerWithNoOrderingReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isOrdered());
-		assertTrue(domainClass.isOrdered(eAttribute));
-	}
-
-	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = new DomainClass(CustomerWithOrderingReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isOrdered());
-		assertTrue(domainClass.isOrdered(eAttribute));
-	}
-
-	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = new DomainClass(CustomerWithoutOrderingReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(eAttribute.isOrdered());
-		assertFalse(domainClass.isOrdered(eAttribute));
-	}
-
-	public void incompletetestOrderingOfEAttributeWhenSpecifiedWithoutUpperBound() {
-		// TODO
-	}
-
-	public void testWhetherEAttributeIsUnsettableWhenIs() {
-		domainClass = new DomainClass(CustomerWithUnsettableAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
-		assertTrue(eAttribute.isUnsettable());
-		assertTrue(domainClass.isUnsettable(eAttribute));
-	}
-
-	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
-		domainClass = new DomainClass(CustomerWithOnlyIsUnsetForAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
-		assertFalse(eAttribute.isUnsettable());
-		assertFalse(domainClass.isUnsettable(eAttribute));
-	}
-	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
-		domainClass = new DomainClass(CustomerWithOnlyUnsetForAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
-		assertFalse(eAttribute.isUnsettable());
-		assertFalse(domainClass.isUnsettable(eAttribute));
-	}
 	
-	
+	public void incompletetestNeedTestsUsingValueMarkers() {
+		// TODO
+	}
+
+
 }
