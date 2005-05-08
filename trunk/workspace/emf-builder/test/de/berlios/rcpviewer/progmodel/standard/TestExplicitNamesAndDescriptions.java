@@ -9,6 +9,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.progmodel.rcpviewer.ImageUrlAt;
 import de.berlios.rcpviewer.progmodel.rcpviewer.RcpViewerExtension;
 import de.berlios.rcpviewer.progmodel.standard.Derived;
 import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;

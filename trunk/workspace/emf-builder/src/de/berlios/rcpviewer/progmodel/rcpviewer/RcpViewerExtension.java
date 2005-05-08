@@ -10,7 +10,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import de.berlios.rcpviewer.metamodel.IAdapterFactory;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
-import de.berlios.rcpviewer.progmodel.standard.ImageUrlAt;
 
 /**
  * Adds annotations specific to the RCPViewer.
