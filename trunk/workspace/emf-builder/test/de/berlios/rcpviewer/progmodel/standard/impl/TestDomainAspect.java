@@ -1,13 +1,16 @@
 package de.berlios.rcpviewer.progmodel.standard.impl;
-import org.aspectj.lang.*;
-import org.aspectj.runtime.*;
-import junit.framework.TestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.*;
-import de.berlios.rcpviewer.session.local.Session;
+import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 
 
 public class TestDomainAspect extends AbstractTestCase {
+
+	protected void tearDown() throws Exception {
+		MetaModel.instance().clear();
+		super.tearDown();
+	}
 
 	/**
 	 * Each pojo is automatically wrapped.

@@ -1,9 +1,5 @@
 package de.berlios.rcpviewer;
 
-import de.berlios.rcpviewer.metamodel.TestMetaModel;
-import de.berlios.rcpviewer.metamodel.TestEmfFacade;
-import de.berlios.rcpviewer.progmodel.standard.TestDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.TestNamingConventions;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -15,6 +11,8 @@ public class AllTests {
 		suite.addTest(de.berlios.rcpviewer.metamodel.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.progmodel.standard.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.progmodel.standard.impl.AllTests.suite());
+		suite.addTest(de.berlios.rcpviewer.progmodel.extended.AllTests.suite());
+		suite.addTest(de.berlios.rcpviewer.progmodel.rcpviewer.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.session.AllTests.suite());
 		//$JUnit-END$
 		return suite;

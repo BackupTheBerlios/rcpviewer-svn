@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
-import org.eclipse.emf.ecore.EcoreFactory;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
@@ -67,32 +66,17 @@ public final class DomainObject<T> implements IDomainObject /*, ISessionAware */
 		return getDomainClass().getEAttributeNamed(attributeName);
 	}
 
-	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
-		return getDomainClassImpl().methodAnnotationFor(eModelElement);
-	}
-	
-	EAnnotation putMethodNameIn(EAnnotation eAnnotation, String methodKey, String methodName) {
-		return getDomainClassImpl().putAnnotationDetails(eAnnotation, methodKey, methodName);
-	}
-	
-	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
-		return getDomainClassImpl().getAnnotationDetail(eAnnotation, methodKey);
-	}
-	
 
-	public Object get(EAttribute nameAttribute) {
-		String accessorMethodName = 
-			getMethodNameFrom(
-					methodAnnotationFor(nameAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
-		Method accessorMethod;
+	public Object get(EAttribute attribute) {
+		Method accessorMethod = getDomainClass().getAccessorFor(attribute);
+		if (accessorMethod == null) {
+			throw new UnsupportedOperationException("Accesor method '" + accessorMethod + "' not accessible / could not be found");
+		}
+		String accessorMethodName = accessorMethod.getName();
 		try {
-			accessorMethod = this.getDomainClass().getJavaClass().getMethod(accessorMethodName, new Class[]{});
 			return accessorMethod.invoke(this.getPojo());
 		} catch (SecurityException e) {
 			throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
-		} catch (NoSuchMethodException e) {
-			throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' could not be found", e);
 		} catch (IllegalAccessException e) {
 			throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
 		} catch (InvocationTargetException e) {
@@ -100,27 +84,21 @@ public final class DomainObject<T> implements IDomainObject /*, ISessionAware */
 		}
 	}
 
-	public void set(EAttribute nameAttribute, Object newValue) throws IllegalArgumentException {
-		String mutatorMethodName = 
-			getMethodNameFrom(
-					methodAnnotationFor(nameAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
-		EDataType dataType = (EDataType)nameAttribute.getEType();
-		
-		Method mutatorMethod;
+	public void set(EAttribute attribute, Object newValue) throws IllegalArgumentException {
+		Method mutatorMethod = getDomainClass().getMutatorFor(attribute);
+		if (mutatorMethod == null) {
+			throw new UnsupportedOperationException("Mutator method '" + mutatorMethod + "' not accessible / could not be found");
+		}
+		String mutatorMethodName = mutatorMethod.getName();
 		try {
-			mutatorMethod = this.getDomainClass().getJavaClass().getMethod(mutatorMethodName, new Class[]{dataType.getInstanceClass()});
 			mutatorMethod.invoke(this.getPojo(), newValue);
 		} catch (SecurityException e) {
-			throw new UnsupportedOperationException("Accessor method '" + mutatorMethodName + "' not accessible", e);
-		} catch (NoSuchMethodException e) {
-			throw new UnsupportedOperationException("Accessor method '" + mutatorMethodName + "' could not be found", e);
+			throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
 		} catch (IllegalAccessException e) {
-			throw new UnsupportedOperationException("Could not invoke accessor method '" + mutatorMethodName + "'", e);
+			throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
 		} catch (InvocationTargetException e) {
-			throw new UnsupportedOperationException("Could not invoke accessor method '" + mutatorMethodName + "'", e);
+			throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
 		}
-		
 	}
 
 

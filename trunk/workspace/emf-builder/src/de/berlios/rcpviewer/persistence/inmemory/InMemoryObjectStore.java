@@ -3,9 +3,7 @@ package de.berlios.rcpviewer.persistence.inmemory;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainAspect;
 
 public final class InMemoryObjectStore implements IObjectStore {
 

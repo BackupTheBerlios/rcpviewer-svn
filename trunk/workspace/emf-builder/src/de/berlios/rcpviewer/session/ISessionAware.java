@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.session;
 
-import de.berlios.rcpviewer.persistence.IObjectStore;
 
 /**
  * Objects that require an {@link ISession} should implement this interface;

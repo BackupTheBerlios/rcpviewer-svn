@@ -59,6 +59,7 @@ public class EmfFacade {
 //		}
 		
 		coreDataTypes = new HashMap<Class,EDataTypeData>() {
+			private static final long serialVersionUID = 1L;
 			{
 				put(java.math.BigDecimal.class, 
 						new EDataTypeData(getEcorePackage().getEClassifier("EBigDecimal"), true));

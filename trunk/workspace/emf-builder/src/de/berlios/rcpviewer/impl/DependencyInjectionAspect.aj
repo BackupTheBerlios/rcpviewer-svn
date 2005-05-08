@@ -1,13 +1,15 @@
 package de.berlios.rcpviewer.impl;
 
-import de.berlios.rcpviewer.persistence.*;
-import de.berlios.rcpviewer.persistence.inmemory.*;
-import de.berlios.rcpviewer.metamodel.*;
-import de.berlios.rcpviewer.progmodel.*;
-import de.berlios.rcpviewer.progmodel.standard.*;
-import de.berlios.rcpviewer.progmodel.standard.impl.*;
-import de.berlios.rcpviewer.session.*;
-import de.berlios.rcpviewer.session.local.*;
+import de.berlios.rcpviewer.metamodel.EmfFacade;
+import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
+import de.berlios.rcpviewer.persistence.IObjectStore;
+import de.berlios.rcpviewer.persistence.IObjectStoreAware;
+import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
+import de.berlios.rcpviewer.progmodel.standard.impl.Wrapper;
+import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.ISessionAware;
+import de.berlios.rcpviewer.session.IWrapper;
+import de.berlios.rcpviewer.session.IWrapperAware;
 
 /**
  * TODO: convert to use the generic container approach used in DSFA

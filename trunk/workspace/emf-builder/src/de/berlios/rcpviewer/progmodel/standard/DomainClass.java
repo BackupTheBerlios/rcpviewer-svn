@@ -1,48 +1,53 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.impl.EOperationImpl;
-import org.eclipse.jface.resource.ImageDescriptor;
-
-import de.berlios.rcpviewer.metamodel.IAdapterFactory;
-import de.berlios.rcpviewer.metamodel.MetaModel;
-import de.berlios.rcpviewer.metamodel.EmfFacade;
-import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.metamodel.II18nData;
-import de.berlios.rcpviewer.metamodel.OperationKind;
-import de.berlios.rcpviewer.metamodel.MethodNameHelper;
-import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
-import de.berlios.rcpviewer.session.IWrapper;
-import de.berlios.rcpviewer.session.IWrapperAware;
-import de.berlios.rcpviewer.progmodel.standard.Constants;
-import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.HashMap;
-
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EModelElement;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EParameter;
+import org.eclipse.emf.ecore.EcoreFactory;
+
+import de.berlios.rcpviewer.metamodel.EmfFacade;
+import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
+import de.berlios.rcpviewer.metamodel.IAdapterFactory;
+import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.metamodel.II18nData;
+import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.MethodNameHelper;
+import de.berlios.rcpviewer.metamodel.OperationKind;
+import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.session.IWrapper;
+import de.berlios.rcpviewer.session.IWrapperAware;
 
 
 /**
  * Represents a class in the meta model, akin to {@link java.lang.Class} and
  * wrapping an underlying EMF EClass.
  * 
+ * <p>
  * TODO: should factor much up into a Generic implementation; the standard
- * programming model should be a user of getAdapter() for Eclipse-specific things.
+ * programming model should be a user of getAdapter() for Eclipse-specific 
+ * things.
  *  
- * TODO: should implement the choreography of interacting with the underlying POJOs (or this could be done by DomainObject).
+ * <p>
+ * TODO: should implement the choreography of interacting with the underlying 
+ * POJOs (or this could be done by DomainObject).
  * 
+ * <p>
  * TODO: need to sort out generic parameterization. 
  * 
  * @author Dan Haywood
@@ -158,9 +163,6 @@ public class DomainClass<T>
 		eClass.setName(name);
 
 		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
-		
-		MetaModel.instance().haveExtensionsAnalyze(this);
-		
 	}
 
 	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {
@@ -382,10 +384,25 @@ public class DomainClass<T>
 		return getEClass().getEAllAttributes().size();
 	}
 
+	/**
+	 * Returns all the attributes of the class, including inherited attributes.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
 	public List<EAttribute> attributes() {
 		return attributes(true);
 	}
 
+	/**
+	 * Returns all the attributes of the class, including inherited attributes
+	 * only if requested.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
 	public List<EAttribute> attributes(boolean includeInherited) {
 		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
 		EList attributes = includeInherited?
@@ -405,6 +422,64 @@ public class DomainClass<T>
 		return null;
 	}
 	
+
+	EAnnotation putMethodNameIn(EAnnotation eAnnotation, String methodKey, String methodName) {
+		return putAnnotationDetails(eAnnotation, methodKey, methodName);
+	}
+	
+	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
+
+		
+		return getAnnotationDetail(eAnnotation, methodKey);
+	}
+	
+	public Method getAccessorFor(EAttribute eAttribute) {
+		String accessorMethodName = 
+			getMethodNameFrom(
+					methodAnnotationFor(eAttribute), 
+					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
+		try {
+			Method accessorMethod = 
+				getJavaClass().getMethod(
+						accessorMethodName, new Class[]{});
+			return accessorMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getMutatorFor(EAttribute eAttribute) {
+		String mutatorMethodName = 
+			getMethodNameFrom(
+					methodAnnotationFor(eAttribute), 
+					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+		EDataType dataType = (EDataType)eAttribute.getEType();
+		try {
+			Method mutatorMethod = 
+				getJavaClass().getMethod(
+						mutatorMethodName, new Class[]{dataType.getInstanceClass()});
+			return mutatorMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getAccessorOrMutatorFor(EAttribute eAttribute) {
+		Method accessorMethod = getAccessorFor(eAttribute);
+		if (accessorMethod != null) {
+			return accessorMethod;
+		}
+		return getMutatorFor(eAttribute);
+	}
+
 	public boolean isWriteOnly(EAttribute eAttribute) {
 		return eAttribute.getEAnnotation(de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 	}
@@ -584,10 +659,28 @@ public class DomainClass<T>
 		}
 	}
 
+
+	/**
+	 * Returns all the operations (both static and instance) of the class, 
+	 * including inherited operations.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
 	public List<EOperation> operations() {
 		return operations(OperationKind.ALL, true);
 	}
 
+	/**
+	 * Returns all the attributes of the class, of the specified
+	 * {@link OperationKind}, and including inherited operations only if 
+	 * requested.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
 	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited) {
 		List<EOperation> eOperations = new ArrayList<EOperation>();
 		EList operations = includeInherited?
@@ -833,6 +926,9 @@ public class DomainClass<T>
 		this.wrapper = wrapper;
 	}
 
+
 	// DEPENDENCY INJECTION END
+
+
 
 }

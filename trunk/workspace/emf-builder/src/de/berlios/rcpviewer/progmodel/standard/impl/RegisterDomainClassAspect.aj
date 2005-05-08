@@ -24,6 +24,18 @@ aspect RegisterDomainClassAspect {
 		call(Class Class.forName(..)) && 
 		!within(*..RegisterDomainObjectAspect);
 
+
+//	/**
+//	 * pick out instantiating a DomainClass
+//	 * The !within is needed to prevent infinite loops
+//
+//   * - NOT WORKING YET...
+//	 */ 
+//	pointcut instantiateDomainClass(DomainClass domainClass):
+//		call(*..DomainClass.new(..)) && target(domainClass) && 
+//		!within(*..RegisterDomainObjectAspect) &&
+//		!within(*..MetaModel);
+
 	/**
 	 * pick out classloading (subclasses of) pojo annotated with {@link @ADomainObject}
 	 */
@@ -41,6 +53,12 @@ aspect RegisterDomainClassAspect {
 		}
 		getMetaModel().register(javaClass);
 	}
+	
+//
+//  * - NOT WORKING YET...
+//	after(DomainClass domainClass): instantiateDomainClass(domainClass) {
+//		getMetaModel().register(domainClass.getJavaClass());
+//	}
 	
 
 	/**

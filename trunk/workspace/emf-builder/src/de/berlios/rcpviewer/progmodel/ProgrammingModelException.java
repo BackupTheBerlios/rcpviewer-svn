@@ -8,6 +8,11 @@ package de.berlios.rcpviewer.progmodel;
  */
 public class ProgrammingModelException extends RuntimeException {
 
+	/**
+	 * Since RuntimeException is serializable.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ProgrammingModelException() {
 		super();
 	}

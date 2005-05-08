@@ -1,21 +1,8 @@
 package de.berlios.rcpviewer.metamodel;
 
-import java.util.List;
-
-import org.eclipse.emf.ecore.EAttribute;
-
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.MetaModel;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.persistence.IObjectStoreAware;
-import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
-import de.berlios.rcpviewer.session.IWrapper;
-import de.berlios.rcpviewer.session.local.Session;
-import junit.framework.TestCase;
 
 public class TestDomainClass extends AbstractTestCase  {
 
@@ -24,6 +11,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	}
 
 	protected void tearDown() throws Exception {
+		MetaModel.instance().clear();
 		super.tearDown();
 		
 		getObjectStore().reset();

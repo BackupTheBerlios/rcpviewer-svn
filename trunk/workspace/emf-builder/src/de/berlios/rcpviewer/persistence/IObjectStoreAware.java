@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.persistence;
 
-import de.berlios.rcpviewer.session.IWrapper;
 
 /**
  * Objects that require an {@link IObjectStore} should implement this interface;

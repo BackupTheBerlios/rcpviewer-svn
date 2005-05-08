@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.ArrayList;
 
+import de.berlios.rcpviewer.metamodel.MetaModel;
+
 
 import junit.framework.TestCase;
 
@@ -73,6 +75,7 @@ public class TestNamingConventions extends TestCase {
 	
 	@Override
 	protected void tearDown() throws Exception {
+		MetaModel.instance().clear();
 		namingConventions = null;
 		super.tearDown();
 	}

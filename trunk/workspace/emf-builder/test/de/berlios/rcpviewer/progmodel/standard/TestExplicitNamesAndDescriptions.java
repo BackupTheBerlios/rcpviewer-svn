@@ -1,39 +1,19 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.*;
-import de.berlios.rcpviewer.progmodel.rcpviewer.ImageUrlAt;
-import de.berlios.rcpviewer.progmodel.rcpviewer.RcpViewerExtension;
-import de.berlios.rcpviewer.progmodel.standard.Derived;
-import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
-import de.berlios.rcpviewer.progmodel.standard.Ordered;
-import de.berlios.rcpviewer.progmodel.standard.Unique;
-import de.berlios.rcpviewer.progmodel.standard.UpperBoundOf;
-import de.berlios.rcpviewer.progmodel.standard.TestDomainClass.CustomerWithNoAttributes;
-import de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperations.Appointment;
-import de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperations.TimePeriod;
+import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
-import junit.framework.TestCase;
-
 /**
- * Tests for the use of the <tt>Named</tt>, <tt>DescribedAs</tt> and
- * <tt>ImageUrlAt</tt> annotations.
- *
+ * Tests for the use of the <tt>Named</tt> and <tt>DescribedAs</tt>.
+ * 
  * <p>
  * There is some repetition with tests elsewhere in terms of tests relating to 
  * features with no explicit name - this test case tests edge conditions more
  * exhaustively.
- * 
- * <p>
- * TODO: should fix the URL ref.
  * 
  * @author Dan Haywood
  */
@@ -44,7 +24,6 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	@Named("Customer")
 	@DescribedAs("A Customer who may have originally become known to us via " +
 			     "the marketing system or who may have contacted us directly.")
-    @ImageUrlAt("http://www.eclipse.org/artwork/builtoneclipse/images/bui_eclipse_pos_logo_fc_sm.jpg")
 	public static class ProspectiveSale {
 	}
 	public static class TimePeriod implements ValueMarker {
@@ -88,15 +67,12 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
+		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	
-	public void testDummy() {
-	}
 
-	
 	public void testDomainClassThatIsExplicitlyNamed() {
-		MetaModel.instance().addExtension(new RcpViewerExtension());
 		domainClass = new DomainClass<ProspectiveSale>(ProspectiveSale.class);
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());
@@ -108,8 +84,6 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 				"A Customer who may have originally become known to us via " +
 			    "the marketing system or who may have contacted us directly.", 
 			    domainClass.getDescription());
-		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
-		assertNotNull(id);
 	}
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {

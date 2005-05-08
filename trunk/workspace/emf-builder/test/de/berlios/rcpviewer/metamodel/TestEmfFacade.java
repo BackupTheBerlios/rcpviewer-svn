@@ -2,18 +2,13 @@ package de.berlios.rcpviewer.metamodel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcoreFactory;
-
-import de.berlios.rcpviewer.metamodel.*;
 
 
 public class TestEmfFacade extends TestCase {
@@ -56,6 +51,7 @@ public class TestEmfFacade extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
+		MetaModel.instance().clear();
 		super.tearDown();
 		emfFacade = null;
 		primitiveClasses = null;

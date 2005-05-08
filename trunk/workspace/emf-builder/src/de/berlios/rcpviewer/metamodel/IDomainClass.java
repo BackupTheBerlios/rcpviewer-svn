@@ -1,13 +1,12 @@
 package de.berlios.rcpviewer.metamodel;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EParameter;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.session.ISession;
 
@@ -603,5 +602,49 @@ public interface IDomainClass<T> {
 	 */
 	public IDomainObject<T> createTransient();
 
+
+	/**
+	 * Returns the method to access the value in the underlying object. 
+	 * 
+	 * <p>
+	 * May be null if this is a write-only attribute.
+	 * 
+	 * @see #getMutatorFor()
+	 * @see #getAccessorOrMutatorFor()
+	 * 
+	 * @return
+	 */
+	public Method getAccessorFor(EAttribute eAttribute);
+
+
+	/**
+	 * Returns the method to modify the value in the underlying object. 
+	 * 
+	 * <p>
+	 * May be null if this is a write-only attribute.
+	 * 
+	 * @see #getAccessorFor()
+	 * @see #getAccessorOrMutatorFor()
+	 * 
+	 * @return
+	 */
+	public Method getMutatorFor(EAttribute eAttribute);
+
+
+	/**
+	 * Returns the method to either access or mutate the value in the 
+	 * underlying object.
+	 * 
+	 * <p>
+	 * If the accessor is present, then it will be returned; if this is a
+	 * write-only attribute then the mutator will be returned.  Will never
+	 * be null.
+	 * 
+	 * @see #getAccessorFor()
+	 * @see #getMutatorFor()
+	 * 
+	 * @return
+	 */
+	public Method getAccessorOrMutatorFor(EAttribute eAttribute);
 
 }

@@ -1,5 +1,10 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+/**
+ * Set of constants relating to this package.
+ * 
+ * @author Dan Haywood
+ */
 public final class Constants {
 
 	private Constants() {

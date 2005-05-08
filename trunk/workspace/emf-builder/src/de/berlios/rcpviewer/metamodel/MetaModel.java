@@ -1,9 +1,6 @@
 package de.berlios.rcpviewer.metamodel;
 
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainAspect;
-import de.berlios.rcpviewer.metamodel.Constants;
-
+import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,10 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EClass;
 
-import sun.security.krb5.internal.crypto.d;
+import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 /**
  * Registery of all discovered {@link DomainClass}es.
@@ -40,19 +36,14 @@ public final class MetaModel {
 	}
 
 	private List<IMetaModelExtension> extensions = new ArrayList<IMetaModelExtension>();
+	/**
+	 * Call after registering all classes.
+	 * 
+	 * @param extension
+	 */
 	public void addExtension(IMetaModelExtension extension) {
 		extensions.add(extension);
-	}
-	/**
-	 * Only {@link DomainClass} should call this.
-	 * 
-	 * <p>
-	 * TODO: move DomainClass back into this package, and then lower visibility?
-	 * 
-	 * @param domainClass
-	 */
-	public void haveExtensionsAnalyze(IDomainClass<?> domainClass) {
-		for(IMetaModelExtension extension: extensions) {
+		for(IDomainClass domainClass: classes()) {
 			extension.analyze(domainClass);
 		}
 	}
@@ -63,7 +54,7 @@ public final class MetaModel {
 	public MetaModel() {
 	}
 	
-	public Collection classes() {
+	public Collection<IDomainClass> classes() {
 		return Collections.unmodifiableCollection(domainClassesByjavaClass.values());
 	}
 	
@@ -88,9 +79,23 @@ public final class MetaModel {
 			domainClass = new DomainClass(clazz);
 			domainClassesByjavaClass.put(clazz, domainClass);
 		}
+		
 		return domainClass;
 	}
 	
+	public DomainClass<?> register(final DomainClass<?> domainClass) {
+		Class javaClass = domainClass.getJavaClass();
+		DomainClass<?> existingDomainClass = lookup(javaClass);
+		if (existingDomainClass != null) {
+			if (domainClass != existingDomainClass) {
+				throw new RuntimeException("Domain class already registered, '" + domainClass.getName() + "'");
+			}
+		} else {
+			domainClassesByjavaClass.put(javaClass, domainClass);
+		}
+		return domainClass;
+	}
+
 	/**
 	 * looks up the {@link DomainClass} for the supplied {@link Class}. 
 	 * @param clazz
@@ -101,8 +106,10 @@ public final class MetaModel {
 	}
 
 	/**
-	 * Indicates that all classes have been registered.  The registry
-	 * uses this to determine any links.
+	 * Indicates that all classes have been registered / created.
+	 * 
+	 * <p>
+	 * The registry uses this to determine any links
 	 */
 	public void done() {
 //		for(DomainClass dc: domainClassesByjavaClass.values()) {
@@ -117,13 +124,14 @@ public final class MetaModel {
 	 */
 	public void clear() {
 		domainClassesByjavaClass.clear();
+		this.extensions.clear();
 	}
 	
 	public int size() {
 		return domainClassesByjavaClass.keySet().size();
 	}
 
-	private final Map<Class, DomainClass> domainClassesByjavaClass = new HashMap<Class, DomainClass>();
+	private final Map<Class, IDomainClass> domainClassesByjavaClass = new HashMap<Class, IDomainClass>();
 	public IDomainClass domainClassFor(EClass eClass) {
 		Class javaClass = eClass.getInstanceClass();
 		return MetaModel.instance().lookup(javaClass);

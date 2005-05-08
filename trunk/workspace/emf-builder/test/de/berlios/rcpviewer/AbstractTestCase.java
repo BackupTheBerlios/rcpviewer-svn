@@ -1,11 +1,10 @@
 package de.berlios.rcpviewer;
 
+import junit.framework.TestCase;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
 import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.ISessionAware;
 import de.berlios.rcpviewer.session.local.Session;
-import junit.framework.TestCase;
 
 /**
  * Aware of certain components.

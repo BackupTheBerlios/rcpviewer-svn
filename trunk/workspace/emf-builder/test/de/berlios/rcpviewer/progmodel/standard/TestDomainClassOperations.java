@@ -15,6 +15,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
+		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	
