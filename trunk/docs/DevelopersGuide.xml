@@ -13,6 +13,16 @@
     <section>
       <title>Background</title>
 
+      <para><emphasis>Note to readers: I've adopted current rather than future
+      tense, eg "RCP Viewer supports" rather than "RCP Viewer will
+      support...". That''s basically so I don't have to rewrite whole tracts
+      of this documentation when we actually implement this stuff (ie we
+      haven't written it yet). My intent is to make the documentation
+      consistent with the software as and when we eventually put out a
+      release.</emphasis></para>
+
+      <para></para>
+
       <para>Naked Objects is a radical approach to business systems design and
       development. Core business objects such as Customer, Product and Order
       are exposed directly and to the user instead of being masked behinds the
@@ -68,14 +78,13 @@
     </section>
 
     <section>
-      <title>Purpose</title>
+      <title>Audience</title>
 
       <para>The RCP Viewer project aims to develop a generic viewing mechanism
       for Naked Objects applications using the Eclipse Rich Client Platform.
       In addition, the project aims to develop Eclipse tooling to assist in
-      the development of Naked Objects applications.</para>
-
-      <para>As such, it has a number of audiences.</para>
+      the development of Naked Objects applications. As such, it has a number
+      of audiences.</para>
 
       <itemizedlist>
         <listitem>
@@ -89,110 +98,394 @@
         <listitem>
           <para>Domain Programmers</para>
 
-          <para>Programmers either with domain expertise or good analytical
-          skills, who use RCP tooling to develop business applications.</para>
-        </listitem>
-
-        <listitem>
-          <para>UI Programmers</para>
-
-          <para>Although the Naked Objects pattern means that domain
-          programmers do not need to code a user interface, RCP viewer does
-          allow custom views of domain objects to be developed. The simplest
-          means of </para>
+          <para>Domain programmers is the term we use for developers who have
+          domain expertise and/or good analytical skills, who use RCP tooling
+          to develop business applications. In a "traditional" development
+          such developers might be employed as business analysts: however, in
+          Naked Objects (and very much supporting agile development
+          methodologies) such developers represent their analysis by building
+          (ie programming) a domain model.</para>
         </listitem>
 
         <listitem>
           <para>View Programmers</para>
 
-          <para></para>
+          <para>Naked Objects automatically provides a default (and reasonably
+          sophisticated) user interfrace without requring the domain
+          programmer to write any code. However, sometimes it makes sense to
+          provide additional ways of interacting with a domain object.</para>
+
+          <para>For example, a domain object that represents a meeting might
+          want to be shown as a shaded region on a "day-at-a-time" calendar
+          view. Or, a domain object representing a physical location, for
+          example a traffic light in a city), might be rendered on an overlay
+          of the city's grid map.</para>
+
+          <para>RCP Viewer therefore provides a simplified API that allows
+          programmers with (realistically) at least some experience of writing
+          Eclipse plugins to be able to develop additional views. Our
+          expectation is that a large system development project might have
+          one or two developers who staff this role.</para>
         </listitem>
 
         <listitem>
           <para>Component Programmers</para>
 
-          <para></para>
+          <para>RCP Viewer uses Spring Framework to stitch together a number
+          of well-defined components. These components - for such things as
+          persistence, security and distribution - are well documented so that
+          other implementations can be developed as required.</para>
         </listitem>
       </itemizedlist>
 
+      <para></para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Naked Objects Concepts &amp; Consequences</title>
+
+    <para>In our experience it's rare for those new to the naked objects
+    pattern to appreciate its power. So this chapter aims to provide just a
+    little bit of an insight into what the developing using naked objects
+    means.</para>
+
+    <section>
+      <title>Behaviourally Complete Objects</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Layers</title>
+
+      <para>*** Domain object, state management, authorization</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Subtractive Programming</title>
+
+      <para>*** NO for identifying constraints.</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Domain Driven Design vs Use Case Driven Design</title>
+
+      <para></para>
+
+      <para>*** Use cases are useful for driving out scenarios.</para>
+    </section>
+
+    <section>
+      <title>FAQs</title>
+
+      <para>The Naked Objects concept is controversial because it challenges
+      the current dominant design of building business systems today. If you
+      have time, we refer you to Richard and Robert's book, or to Richard's
+      PhD thesis. But let's tackle a couple of points here anyway.</para>
+
       <section>
-        <para />
+        <title>Doesn't the Naked Objects concepts mean having to put UI
+        information into the domain model?</title>
+
+        <para>RCP Viewer's metamodel goes to some lengths to distinguish what
+        is intrinsic to the domain model and what is an extension to it for
+        the purpose of UI rendering.</para>
+
+        <para>A central tenet of RCP Viewer (indeed, of any Naked Objects-like
+        framework) is that is should be able to render domain objects without
+        any extensions. This is absolutely key since it reduces the feedback
+        loop from business user (domain expert) and domain programmer: the
+        domain programmer must be able to get the application up and running
+        for review without having to specify any UI information.</para>
+
+        <para>Thus, providing UI information is really a matter of fine-tuning
+        the rendering once the core domain analysis has been done. One obvious
+        example is specifying the field order, or order of actions.</para>
+
+        <sidebar>
+          <para>As an interesting side note, Trygve Reenskaug - the originator
+          of the MVC pattern and external examiner to Richard's thesis - has
+          noted that an original intent of MVS was that every model object
+          should have a default rendering of itself. Unfortunately, they just
+          didn't get around to implementing it - and the rest, as they say, is
+          history.</para>
+
+          <para>(For a presentation by Trygve on MVC, see: ***. He gives Naked
+          Objects a mention).</para>
+        </sidebar>
+      </section>
+
+      <section>
+        <title>How do I deal with Legacy Domain Objects?</title>
+
+        <para>*** virtual domain objects.</para>
+      </section>
+
+      <section>
+        <title>Why doesn't RCP Viewer use XML deployment descriptors / why
+        does it rely so much on annotations?</title>
+
+        <para>Because we want it to be easy to allow the domain programmer to
+        enter information that they are likely to know/uncover in a single
+        place. If we used deployment descriptors then at best we would need to
+        provide a separate specialized editor so that the domain programmer
+        could update such metadata without having to hack XML. Even that is
+        too much of a disruption - if the domain programmer is "in the flow"
+        capturing their domain model as a POJO, then they should be easily
+        able to capture other relevant information in the same way.</para>
+      </section>
+
+      <section>
+        <title>How would I represent a group of widgets in a UI?</title>
+
+        <para>Use a immutable 1:1 composition association to a aggregated
+        class referenced by its aggregate.</para>
+
+        <para>For example, a Customer has a Name; the Name is itself a
+        collection of title/firstName/lastName. The association from Customer
+        to Name is immutable 1:1 association with composition (aggregation by
+        value) semantics.</para>
+      </section>
+
+      <section>
+        <title>How do I deal with large collections (eg PensionScheme to
+        Payments) ?</title>
+
+        <para>The preferred solution is generally not to model such as
+        navigable in the domain model. It probably doesn't make sense anyway.
+        Instead, let them be accessed via a query to a Repository.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>References</title>
+
+      <para></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Trygve2003:
+          http://heim.ifi.uio.no/~trygver/2003/javazone-jaoo/MVC_pattern.pdf</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Standard Programming Model</title>
+
+    <para></para>
+
+    <para>The "programming model" is the set of coding conventions and
+    annotations that a domain programmer uses to both capture the core domain
+    model and to extend its semantics with other information specific to a
+    particular UI.</para>
+
+    <para>RCP Viewer has several programming models,each one building on the
+    rest:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>the <emphasis>standard</emphasis> programming model is
+        restricted solely to capturing the structure and relationships of
+        domain classes. The intent is that all semantics captured through the
+        programming model could (reasonaly easily) be justified as being part
+        of domain analysis. If you are aware of the Eclipse Modelling
+        Framework (EMF), think of the standard programming model as
+        corresponding to what can be stored in EMF without
+        EAnnotations.</para>
+      </listitem>
+
+      <listitem>
+        <para>the <emphasis>extended</emphasis> programming model builds upon
+        the standard programming model, and adds in a small number of
+        semantics that do represent UI information, though only such
+        information as could be used by any framework implementing the naked
+        objects pattern. One example here is @PositionedAt attribute for field
+        and action ordering.</para>
+      </listitem>
+
+      <listitem>
+        <para>The <emphasis>rcpviewer</emphasis> programming model builds upon
+        both the standard and extended programming models, and adds another
+        set of semantics that repreesnt UI information (likely to be)
+        pertinent only to RCP Viewer. An example is the @ImageUrlAt attribute
+        that is used for building ImageDescriptors.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>This chapter focuses on coding conventions and annotations that make
+    up the <emphasis>standard</emphasis> programming model.</para>
+
+    <section>
+      <title>Domain Class</title>
+
+      <para>any class annotated @Domain (not working as of yet: implement
+      IDomainMarker).</para>
+
+      <para>Use @Named</para>
+
+      <para>Use @DescribedAs</para>
+    </section>
+
+    <section>
+      <title>Value Objects</title>
+
+      <para>In built are the 8 primitives, String and java.util.Date.</para>
+
+      <para>Even though Date is not immutable, it should be considered to be
+      (none of its mutating methods should be invoked).</para>
+
+      <para>Any class annotated @Value (not working as of yet: implement
+      IValueMarker).</para>
+    </section>
+
+    <section>
+      <title>Attributes</title>
+
+      <para>*** getter, setter, isUnset, unset</para>
+
+      <para>Use @Named</para>
+
+      <para>Use @DescribedAs</para>
+    </section>
+
+    <section>
+      <title>Operations (Actions)</title>
+
+      <para>*** any public method not annotated with @Programmatic</para>
+
+      <para>*** can be instance of static</para>
+
+      <para>Use @Named</para>
+
+      <para>Use @DescribedAs</para>
+
+      <section>
+        <title>Operation Parameters</title>
+
+        <para>Use @Named</para>
+
+        <para></para>
       </section>
     </section>
   </chapter>
 
   <chapter>
-    <title>Programming Model</title>
+    <title>Extended Programming Model</title>
 
-    <para></para>
+    <para>This chapter focuses on coding conventions and annotations that make
+    up the <emphasis>extended</emphasis> programming model. See *** for a
+    discussion on the different programming models.</para>
 
-    <para></para>
+    <section>
+      <title>Root Class</title>
 
-    <para></para>
+      <para>Starting point for use cases</para>
+    </section>
 
-    <para></para>
+    <section>
+      <title>Plural Name</title>
 
-    <para>1.1 @Searchable * applies to ~~@Target(TYPE)~~ * indicates that the
-    domain class should be made available in search window. * implement using
-    an ~~EAnnotation~~ 1.1 @Immutable * applies to ~~@Target(TYPE)~~ *
-    indicates that should not be possible to modify (useful for reference
-    data). * implement using an ~~EAnnotation~~ 1.1 @NonPersistable * applies
-    to ~~@Target(TYPE)~~ * indicates that should not be possible to persist
-    (useful for some derived objects). * implement using an ~~EAnnotation~~
-    1.1 @Positioned(int) * applies to ~~@Target(METHOD)~~ * when applied to a
-    method representing a getter of an attribute, indicates its position
-    relative to other attributes, eg as shown in UI. when applied to a method
-    representing an action, indicates its position on the menu * implement
-    using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to
-    a String 1.1 @Programmatic * applies to ~~@Target(METHOD)~~ * by default
-    all ~~public~~ methods not representing attributes should be exposed in
-    the UI providing that they have appropriate datatypes. This annotation
-    indicates that the UI should not expose the method, however. (This should
-    encourage domain developers to use appropriate visibility). * implement
-    using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to
-    a String 1.1 @Name(String) * applies to ~~@Target(TYPE)~~,
-    ~~@Target(METHOD)~~, ~~@Target(PARAMETER)~~ * provides the name of the
-    feature where the desired name has not been used as the class' own name
-    (eg a reserved word). When applied to a method, specify on the getter of
-    an attribute or any action method. When applied to parameters, only used
-    for parameters of action methods. * overridden by I18n annotation if
-    present * implement using an ~~EAnnotation~~, with its ~~details~~ holding
-    value as a String 1.1 @I18nNameKey(String) * same applicability as
-    ~~@Name~~, overrides ~~@Name~~ if present * key to resource bundle,
-    provides name for current locale * implement using an ~~EAnnotation~~,
-    with its ~~details~~ holding value as a String 1.1 @PluralName(String) *
-    applies to ~~@Target(TYPE)~~ * indicates the plural name of the class
-    where the plural form is irregular, or the ~~@Singular(String)~~
-    annotation is in use. * overridden by I18n annotations if present *
-    implement using an ~~EAnnotation~~, with its ~~details~~ holding value as
-    a String 1.1 @I18nPluralNamelKey(String) * same applicability as
-    ~~@PluralName~~, overrides ~~@PluralName~~ if present * key to resource
-    bundle, provides plural name for current locale * implement using an
-    ~~EAnnotation~~, with its ~~details~~ holding value as a String 1.1
-    @Description * applies to ~~@Target(TYPE)~~, ~~@Target(METHOD)~~,
-    ~~@Target(PARAMETER)~~ * provides a description of the feature, eg for
-    tooltip text. See ~~@Name~~ for more details * overridden by I18n
-    annotation if present * implement using an ~~EAnnotation~~, with its
-    ~~details~~ holding value as a String 1.1 @I18nDescriptionKey(String) *
-    same applicability as ~~@Description~~, overrides ~~@Description~~ if
-    present * key to resource bundle, provides description for current locale
-    * implement using an ~~EAnnotation~~, with its ~~details~~ holding value
-    as a String 1.1 Help Haven't specified a help annotation: the framework
-    should be able to allocate a feature Id eg
-    ~~com.mycompany.Department#getEmployees~~ and use that to look up help
-    transparently. 1.1 @ExtendedWith(Class) * applies to ~~@Target(TYPE)~~ *
-    domain programmer view of extension object pattern, indicating that an
-    instance of the provided class should be able to interpret the object on
-    which the annotation has been attached By way of example, the domain
-    programmer might write: @ExtendedWith(LocatableOnMap.class) public class
-    House { private int xCoord; private int yCoord; } For the UI programmer
-    who is providing a Map view, they can write: LocatableOnMap lom =
-    houseDomainClass.getExtension(LocatableOnMap.class);
-    lom.doSomethingUsefulWith(house); Note that the provided extension object
-    is stateless.</para>
+      <para></para>
+    </section>
 
-    <para></para>
+    <section>
+      <title>PositionedAt</title>
 
-    <para></para>
+      <para></para>
+    </section>
+
+    <section>
+      <title>State Management</title>
+
+      <para>*** Use of @StateOf(...)</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Immutable</title>
+
+      <para>*** applies to domain classes</para>
+    </section>
+
+    <section>
+      <title>NonPersistable</title>
+
+      <para>*** applies to domain classes</para>
+    </section>
+
+    <section>
+      <title>Internationalization</title>
+
+      <para>Every class and class member has an implicit Id whose format -
+      broadly - is akin to a Javadoc reference. For example,
+      com.mycompany.Customer would represent the class of Customer, while
+      com.mycompany.Customer#firstName represents the firstName attribute of
+      Customer.</para>
+
+      <para>This id may be used to access internationalized names (cf @Named)
+      and descriptions (cf @DescribedAs) from a ResourceBundle. The key is the
+      id.name or id.desc; for example:</para>
+
+      <blockquote>
+        <para>com.mycompany.Customer#firstName.name=Vorname</para>
+
+        <para>com.mycompany.Customer#firstName.desc=Der Vorname dieses
+        Kunden</para>
+
+        <para>com.mycompany.Customer#surname.name=Familienname</para>
+
+        <para>com.mycompany.Customer#surname.desc=Der Familienname dieses
+        Kunden</para>
+      </blockquote>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>RcpViewer Programming Model</title>
+
+    <para>This chapter focuses on coding conventions and annotations that make
+    up the <emphasis>rcpviewer</emphasis> programming model. See *** for a
+    discussion on the different programming models</para>
+
+    <section>
+      <title>ImageDescriptors</title>
+
+      <para>Eclipse RCP requires an ImageDescriptor for most features
+      (classes, attributes and operations) so that they may be rendered with
+      appropriate icons.</para>
+
+      <para>Domain programmer can provide the image icon either implicitly or
+      explicitly.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The implicit approach is to place a .png, .gif or .jpg in the
+          same source directory as the class that is being described</para>
+        </listitem>
+
+        <listitem>
+          <para>The explicit approach is to use the @ImageUrlAt annotation
+          which explicitly specifies the URL that holds the image.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The former approach is recommended since it is much less
+      fragile.</para>
+    </section>
+
+    <section>
+      <title>Searchable</title>
+
+      <para>Indicating that the domain object should be shown on the search
+      dialog.</para>
+    </section>
   </chapter>
 </book>
