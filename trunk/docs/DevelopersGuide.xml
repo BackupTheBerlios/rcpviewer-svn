@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<book>
+  <title>RCP Viewer Developers' Guide</title>
+
+  <subtitle>Developing Naked Objects business applications on the Eclipse Rich
+  Client Platform.</subtitle>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <section>
+      <title>Background</title>
+
+      <para>Naked Objects is a radical approach to business systems design and
+      development. Core business objects such as Customer, Product and Order
+      are exposed directly and to the user instead of being masked behinds the
+      constructs of a conventional user interface.</para>
+
+      <para>What this means in practice is that it is not necessary for
+      application developers to have to write any user interface code for
+      domain objects. While it's clear to see that writing less code means
+      that it should be possible to develop applications more quickly, the
+      consequences are much more profound than that:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>developers and end-users communicate only in terms of domain
+          concepts; because domain objects are represented so directly in the
+          user interface, then misunderstandings quickly come to light</para>
+        </listitem>
+
+        <listitem>
+          <para>because all functionality must reside on domain objects, it
+          forces the responsibilities of those objects to be assigned
+          appropriately. In short, a <emphasis>naked</emphasis> domain object
+          model tends to be a very <emphasis>good</emphasis> domain object
+          model.</para>
+        </listitem>
+
+        <listitem>
+          <para>the approach lends itself well to using agile (iterative and
+          incremental) development processes. Indeed, it is somewhat difficult
+          to develop with Naked Objects without using such an approach.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The ideas and implementation in Naked Objects have been developed
+      by Richard Pawson and Robert Matthews. Richard is the originator of the
+      ideas that make up Naked Objects; the best exposition of the concept is
+      in his PhD thesis [*** ref]. Robert meanwhile has (almost
+      single-handedly) developed an open source framework to implement these
+      ideas. This framework - the <emphasis>Naked Objects framework</emphasis>
+      - is dual-licensed under GPL or can be licensed commercially through
+      their company. Richard and Robert also co-authored a book to express
+      their ideas, again called <emphasis>Naked Objects</emphasis>.</para>
+
+      <para>Latterly Dan Haywood (project lead for <emphasis>RCP
+      Viewer</emphasis>) has been working closely with Richard and Robert on a
+      major project to re-implement the Pensions benefit for the Irish
+      Government's Department of Social &amp; Family Affairs (DSFA). The
+      project has successfully coupled TogetherJ (as championed by Dan) with
+      Naked Objects: TogetherJ synchronizes the code with UML representation
+      at development-time; the Naked Objects framework synchronizes the code
+      with the user-interface at run-time. Dan has also contributed to the
+      overall architecture of the NO framework.</para>
+    </section>
+
+    <section>
+      <title>Purpose</title>
+
+      <para>The RCP Viewer project aims to develop a generic viewing mechanism
+      for Naked Objects applications using the Eclipse Rich Client Platform.
+      In addition, the project aims to develop Eclipse tooling to assist in
+      the development of Naked Objects applications.</para>
+
+      <para>As such, it has a number of audiences.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>End-users</para>
+
+          <para>As a generic viewing mechanism, RCPViewer offers end-users a
+          rich viewing and editing experience of domain objects. By leveraging
+          Eclipse RCP, the application offers native look</para>
+        </listitem>
+
+        <listitem>
+          <para>Domain Programmers</para>
+
+          <para>Programmers either with domain expertise or good analytical
+          skills, who use RCP tooling to develop business applications.</para>
+        </listitem>
+
+        <listitem>
+          <para>UI Programmers</para>
+
+          <para>Although the Naked Objects pattern means that domain
+          programmers do not need to code a user interface, RCP viewer does
+          allow custom views of domain objects to be developed. The simplest
+          means of </para>
+        </listitem>
+
+        <listitem>
+          <para>View Programmers</para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para>Component Programmers</para>
+
+          <para></para>
+        </listitem>
+      </itemizedlist>
+
+      <section>
+        <para />
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Programming Model</title>
+
+    <para></para>
+
+    <para></para>
+
+    <para></para>
+
+    <para></para>
+
+    <para>1.1 @Searchable * applies to ~~@Target(TYPE)~~ * indicates that the
+    domain class should be made available in search window. * implement using
+    an ~~EAnnotation~~ 1.1 @Immutable * applies to ~~@Target(TYPE)~~ *
+    indicates that should not be possible to modify (useful for reference
+    data). * implement using an ~~EAnnotation~~ 1.1 @NonPersistable * applies
+    to ~~@Target(TYPE)~~ * indicates that should not be possible to persist
+    (useful for some derived objects). * implement using an ~~EAnnotation~~
+    1.1 @Positioned(int) * applies to ~~@Target(METHOD)~~ * when applied to a
+    method representing a getter of an attribute, indicates its position
+    relative to other attributes, eg as shown in UI. when applied to a method
+    representing an action, indicates its position on the menu * implement
+    using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to
+    a String 1.1 @Programmatic * applies to ~~@Target(METHOD)~~ * by default
+    all ~~public~~ methods not representing attributes should be exposed in
+    the UI providing that they have appropriate datatypes. This annotation
+    indicates that the UI should not expose the method, however. (This should
+    encourage domain developers to use appropriate visibility). * implement
+    using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to
+    a String 1.1 @Name(String) * applies to ~~@Target(TYPE)~~,
+    ~~@Target(METHOD)~~, ~~@Target(PARAMETER)~~ * provides the name of the
+    feature where the desired name has not been used as the class' own name
+    (eg a reserved word). When applied to a method, specify on the getter of
+    an attribute or any action method. When applied to parameters, only used
+    for parameters of action methods. * overridden by I18n annotation if
+    present * implement using an ~~EAnnotation~~, with its ~~details~~ holding
+    value as a String 1.1 @I18nNameKey(String) * same applicability as
+    ~~@Name~~, overrides ~~@Name~~ if present * key to resource bundle,
+    provides name for current locale * implement using an ~~EAnnotation~~,
+    with its ~~details~~ holding value as a String 1.1 @PluralName(String) *
+    applies to ~~@Target(TYPE)~~ * indicates the plural name of the class
+    where the plural form is irregular, or the ~~@Singular(String)~~
+    annotation is in use. * overridden by I18n annotations if present *
+    implement using an ~~EAnnotation~~, with its ~~details~~ holding value as
+    a String 1.1 @I18nPluralNamelKey(String) * same applicability as
+    ~~@PluralName~~, overrides ~~@PluralName~~ if present * key to resource
+    bundle, provides plural name for current locale * implement using an
+    ~~EAnnotation~~, with its ~~details~~ holding value as a String 1.1
+    @Description * applies to ~~@Target(TYPE)~~, ~~@Target(METHOD)~~,
+    ~~@Target(PARAMETER)~~ * provides a description of the feature, eg for
+    tooltip text. See ~~@Name~~ for more details * overridden by I18n
+    annotation if present * implement using an ~~EAnnotation~~, with its
+    ~~details~~ holding value as a String 1.1 @I18nDescriptionKey(String) *
+    same applicability as ~~@Description~~, overrides ~~@Description~~ if
+    present * key to resource bundle, provides description for current locale
+    * implement using an ~~EAnnotation~~, with its ~~details~~ holding value
+    as a String 1.1 Help Haven't specified a help annotation: the framework
+    should be able to allocate a feature Id eg
+    ~~com.mycompany.Department#getEmployees~~ and use that to look up help
+    transparently. 1.1 @ExtendedWith(Class) * applies to ~~@Target(TYPE)~~ *
+    domain programmer view of extension object pattern, indicating that an
+    instance of the provided class should be able to interpret the object on
+    which the annotation has been attached By way of example, the domain
+    programmer might write: @ExtendedWith(LocatableOnMap.class) public class
+    House { private int xCoord; private int yCoord; } For the UI programmer
+    who is providing a Map view, they can write: LocatableOnMap lom =
+    houseDomainClass.getExtension(LocatableOnMap.class);
+    lom.doSomethingUsefulWith(house); Note that the provided extension object
+    is stateless.</para>
+
+    <para></para>
+
+    <para></para>
+  </chapter>
+</book>
