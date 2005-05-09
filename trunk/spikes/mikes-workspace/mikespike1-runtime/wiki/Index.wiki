@@ -1,0 +1,26 @@
+1 Mike's Spike 1
+
+This wiki idea is cool!
+
+~~What I've done~~
+1. Created 'mikespike1-runtime' project.  This represents the RCPViewer application as used by an end-user.  I did this using the new plug-in project wizard, selecting to create an RCP app (second page of wizard) and then selecting the 'RCP application with a view' template.
+1. Created 'mikespike1-test' project.   This is all the regression tests for the 'runtime' component.  For this we still need a plugin project (for the PDE test environment) but I chose not to add any code (including no plugin class).  I made it dependent on the mikespike1-runtime and org.junit plugins ( having configured mikespike1-runtime to export the core eclipse plugins it is dependent upon). 
+1. Then created a src package in the test project and wrote a junit.framework.TestCase class with a dummy test.
+1. Then needed a test run configuration:
+1. New 'JUnit Plug-in Test'
+1. Name : Test
+1. Run all tests in selected package ... : mikespike1_test
+1. (next tab) Program to Run : run an application : mikespike1_runtime.mikespike1
+1. (next tab) Choose plug-ins and frgements to launch : Deselect all then select the two 2 mikespike1 plugins;
+1. Add Required Plug-ins
+1. Run! 
+1. Added some more tests based on the rcp template's generated code 
+
+~~Discussion~~
+If you look at the tests you'll see I use reflection to access the underlying SWT GUI widgets.  Hence the tests are tied to the underlying implementations.  I feel this is OK as:
+* to my mind the only way to really test GUI's;
+* the Eclipse platform (or at least JFace) forces us down standard patterns of implementation anyway so this should not be too much of a constraint (as long as we do not keep changing the field names)
+* as we are doing Test-Driven development the tests control the code anyway...
+
+~~Next Steps~~
+So far I have put the cart before the horse in that I added tests to a pre-existing implementation - that produced by the RCP wizard.  So spike 2 will do things properly.  Next goto mikespike2-test/wiki/Index.wiki

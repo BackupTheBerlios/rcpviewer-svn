@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="mikespike1"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="mikespike1_runtime.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perspective"
+            class="mikespike1_runtime.Perspective"
+            id="mikespike1_runtime.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="View"
+            class="mikespike1_runtime.View"
+            id="mikespike1_runtime.view">
+      </view>
+   </extension>
+
+</plugin>

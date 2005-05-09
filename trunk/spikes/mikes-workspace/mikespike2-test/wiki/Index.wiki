@@ -1,0 +1,15 @@
+1 Mike's Spike 2
+
+~~ Introduction ~~
+This spike is about developing a basic RcpViewer GUI prototype using test-driven development.  Hence this wiki is in the 'test' project rather than the 'runtime' project as from now on test precede and control development.  
+
+This 'test' project itself started out as a cut'n'pasted version of mikespike1-test, whilst mikespike2-runtime was created via the new project plug-in wizard, selecting an RCP application and choosing the Hello World template (I fiddled with some of the names/ids).
+
+Creating a runtime configuration for the mikespike2-runtime plugins only (and its required plugins) will show that the wizard has done its work and runs up an empty RCP app window.
+
+__Note__ : in addtion configure mikespike2-runtime to export the core eclipse plugins it is dependent upon.
+
+~~ Development ~~
+Is all controlled from the Test class now.  Each iteration creates a test, runs it, fails and then add the implementation to make the test pass.  Good ol' XP.  So all other notes and explanations of reside in the javadoc of each test.  I realise you are presented with the end implementation of all tests but I hope by following each subsequent test's javadoc you'll get a handle on my thought processes.
+
+__Note__ : you'll nedd to create a JUnit Plugin Test configuartion using only the two mikespike2 plugins and their requisite plugins.

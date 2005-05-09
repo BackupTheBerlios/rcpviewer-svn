@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Plug-in
+Bundle-SymbolicName: mikespike1_test
+Bundle-Version: 0.0.1
+Bundle-ClassPath: mikespike1_test.jar
+Bundle-Vendor: Mike
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: mikespike1_runtime,
+ org.junit
