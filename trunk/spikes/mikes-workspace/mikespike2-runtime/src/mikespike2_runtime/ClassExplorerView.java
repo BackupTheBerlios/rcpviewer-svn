@@ -5,8 +5,6 @@ import mikespike2_runtime.editors.DefaultEditorInput;
 import mikespike2_runtime.model.God;
 import mikespike2_runtime.model.IGodListener;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
