@@ -114,8 +114,6 @@ public class God {
 
 	private God() {
 		super();
-		addClass( Person.class );
-		addClass( Dog.class );
 		// TODO Auto-generated constructor stub
 	}
 
