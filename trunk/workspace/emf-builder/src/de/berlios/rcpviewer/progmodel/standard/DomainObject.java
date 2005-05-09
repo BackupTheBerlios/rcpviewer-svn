@@ -23,17 +23,17 @@ import de.berlios.rcpviewer.session.*;
  */
 public final class DomainObject<T> implements IDomainObject /*, ISessionAware */ {
 
-	public DomainObject(final DomainClass<T> domainClass, final T pojo) {
+	public DomainObject(final IDomainClass<T> domainClass, final T pojo) {
 		this.domainClass = domainClass;
 		this.pojo = pojo;
 	}
 	
-	private final DomainClass<T> domainClass;
+	private final IDomainClass<T> domainClass;
 	public IDomainClass<T> getDomainClass() {
-		return (IDomainClass<T>)domainClass;
+		return domainClass;
 	}
 	public DomainClass<T> getDomainClassImpl() {
-		return domainClass;
+		return (DomainClass<T>)domainClass;
 	}
 	
 	private final T pojo;

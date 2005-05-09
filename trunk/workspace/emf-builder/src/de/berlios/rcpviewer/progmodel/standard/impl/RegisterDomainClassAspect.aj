@@ -68,13 +68,13 @@ aspect RegisterDomainClassAspect {
 	 * seem to work.
 	 */
 	after(): loadPojo() {
-		Class javaClass = thisJoinPointStaticPart.getSignature().getDeclaringType();
-		DomainClass domainClass = getMetaModel().register(javaClass);
+		Class<?> javaClass = thisJoinPointStaticPart.getSignature().getDeclaringType();
+		IDomainClass<?> domainClass = getMetaModel().register(javaClass);
 	}
 
 
 	public MetaModel getMetaModel() {
-		return MetaModel.instance();
+		return MetaModel.threadInstance();
 	}
 
 }

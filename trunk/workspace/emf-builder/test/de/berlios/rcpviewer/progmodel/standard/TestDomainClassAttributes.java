@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributes extends AbstractTestCase {
 
@@ -14,7 +13,6 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	

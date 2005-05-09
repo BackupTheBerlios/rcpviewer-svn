@@ -6,12 +6,14 @@ import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 public class TestDomainClass extends AbstractTestCase  {
 
+	private MetaModel metaModel;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
+		metaModel = null;
 		super.tearDown();
 		
 		getObjectStore().reset();
@@ -26,7 +28,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertNotNull(domainObject);
@@ -44,7 +46,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			MetaModel.instance().register(DepartmentWithoutNoArgConstructor.class);
+			metaModel.register(DepartmentWithoutNoArgConstructor.class);
 
 		try {
 			IDomainObject domainObject = domainClass.createTransient();

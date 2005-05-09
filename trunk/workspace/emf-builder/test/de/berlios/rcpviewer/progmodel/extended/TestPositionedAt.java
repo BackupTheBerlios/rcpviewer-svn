@@ -41,13 +41,15 @@ public class TestPositionedAt extends AbstractTestCase {
 		}
 	}
 	
+	private MetaModel metaModel;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
+		metaModel = null;
 		super.tearDown();
 	}
 	
@@ -58,8 +60,8 @@ public class TestPositionedAt extends AbstractTestCase {
 	 */
 	public void testDomainClassWithAllAttributesPositioned() {
 		domainClass = 
-			MetaModel.instance().register(CustomerWithAllAttributesPositioned.class);
-		MetaModel.instance().addExtension(new ExtendedProgModelExtension());
+			metaModel.register(CustomerWithAllAttributesPositioned.class);
+		metaModel.addExtension(new ExtendedProgModelExtension());
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
 		assertNotNull(comparator);
 		List<EAttribute> sortedAttributes = 

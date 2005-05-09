@@ -31,7 +31,7 @@ public final class MetaModel {
 			return new MetaModel();
 		}
 	};
-	public static MetaModel instance() {
+	public static MetaModel threadInstance() {
 		return registryForThisThread.get();
 	}
 
@@ -54,8 +54,8 @@ public final class MetaModel {
 	public MetaModel() {
 	}
 	
-	public Collection<IDomainClass> classes() {
-		return Collections.unmodifiableCollection(domainClassesByjavaClass.values());
+	public <V> Collection<IDomainClass<V>> classes() {
+		return Collections.unmodifiableCollection((Collection)domainClassesByjavaClass.values());
 	}
 	
 	/**
@@ -68,24 +68,24 @@ public final class MetaModel {
 	 * @param clazz
 	 * @return corresponding {@link DomainClass}
 	 */
-	public DomainClass<?> register(final Class<?> clazz) {
+	public <V> IDomainClass<V> register(final Class<V> clazz) {
 		// TODO: for some reason, not working even though AspectJ says that
 		// the introduction will be applied???
 //		if (!DomainObject.class.isAssignableFrom(clazz)) {
 //			return null;
 //		}
-		DomainClass<?> domainClass = lookup(clazz);
+		IDomainClass<V> domainClass = lookup(clazz);
 		if (domainClass == null) {
-			domainClass = new DomainClass(clazz);
+			domainClass = new DomainClass<V>(this, clazz);
 			domainClassesByjavaClass.put(clazz, domainClass);
 		}
 		
 		return domainClass;
 	}
 	
-	public DomainClass<?> register(final DomainClass<?> domainClass) {
-		Class javaClass = domainClass.getJavaClass();
-		DomainClass<?> existingDomainClass = lookup(javaClass);
+	public <V> IDomainClass<V> register(final DomainClass<V> domainClass) {
+		Class<V> javaClass = domainClass.getJavaClass();
+		IDomainClass<V> existingDomainClass = lookup(javaClass);
 		if (existingDomainClass != null) {
 			if (domainClass != existingDomainClass) {
 				throw new RuntimeException("Domain class already registered, '" + domainClass.getName() + "'");
@@ -101,20 +101,20 @@ public final class MetaModel {
 	 * @param clazz
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
-	public DomainClass lookup(final Class javaClass) {
-		return (DomainClass)domainClassesByjavaClass.get(javaClass);
+	public <V> IDomainClass<V> lookup(final Class<V> javaClass) {
+		return (DomainClass<V>)domainClassesByjavaClass.get(javaClass);
 	}
 
 	/**
 	 * Indicates that all classes have been registered / created.
 	 * 
 	 * <p>
-	 * The registry uses this to determine any links
+	 * The metamodel uses this to determine any references.
 	 */
 	public void done() {
-//		for(DomainClass dc: domainClassesByjavaClass.values()) {
-//			dc.identifyLinks();
-//		}
+		for(IDomainClass<?> dc: domainClassesByjavaClass.values()) {
+			dc.identifyReferences();
+		}
 		
 	}
 	
@@ -131,10 +131,11 @@ public final class MetaModel {
 		return domainClassesByjavaClass.keySet().size();
 	}
 
-	private final Map<Class, IDomainClass> domainClassesByjavaClass = new HashMap<Class, IDomainClass>();
-	public IDomainClass domainClassFor(EClass eClass) {
-		Class javaClass = eClass.getInstanceClass();
-		return MetaModel.instance().lookup(javaClass);
+	private final Map<Class<?>, IDomainClass<?>> domainClassesByjavaClass = 
+		new HashMap<Class<?>, IDomainClass<?>>();
+	public <V> IDomainClass<V> domainClassFor(EClass eClass) {
+		Class<V> javaClass = (Class<V>)eClass.getInstanceClass();
+		return lookup(javaClass);
 	}
 	
 

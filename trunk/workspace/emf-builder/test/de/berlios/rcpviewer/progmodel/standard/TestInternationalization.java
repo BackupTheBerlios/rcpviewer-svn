@@ -12,7 +12,6 @@ public class TestInternationalization extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	

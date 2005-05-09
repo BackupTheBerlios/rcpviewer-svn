@@ -163,7 +163,7 @@ final class NamingConventions {
 	 * @param linkMethod
 	 * @return
 	 */
-	public final boolean isLink(final Method linkMethod) {
+	public final boolean isReference(final Method linkMethod) {
 		if (linkMethod.getParameterTypes().length != 0)
 			return false;
 		Class<?> returnType = linkMethod.getReturnType();
@@ -179,7 +179,7 @@ final class NamingConventions {
 		if (linkMethod == null) {
 			throw new AssertionError("null linkMethod");
 		}
-		if (!isLink(linkMethod)) {
+		if (!isReference(linkMethod)) {
 			throw new AssertionError("not a Method that represents a link");
 		}
 	}
@@ -295,6 +295,12 @@ final class NamingConventions {
 			   ValueMarker.class.isAssignableFrom(clazz);
 	}
 	
+	/**
+	 * TODO: should be a better way of determining if reference type
+	 *  
+	 * @param clazz
+	 * @return
+	 */
 	public final boolean isReferenceType(final Class<?> clazz) {
 		return clazz != null &&
 		       clazz != void.class &&

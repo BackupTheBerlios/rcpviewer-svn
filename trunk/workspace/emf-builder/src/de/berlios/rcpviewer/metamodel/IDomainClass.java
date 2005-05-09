@@ -1,12 +1,14 @@
 package de.berlios.rcpviewer.metamodel;
 
 import java.lang.reflect.Method;
+import java.util.AbstractCollection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.session.ISession;
 
@@ -589,21 +591,6 @@ public interface IDomainClass<T> {
 
 	
 	/**
-	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
-	 * wrapping a pojo of the type represented by this domain class.
-	 * 
-	 * <p>
-	 * The object will not be attached to any {@link ISession}.  Since created
-	 * objects normally should be attached, typically 
-	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
-	 * resultant object to the session) should be used instead. 
-	 * 
-	 * @return
-	 */
-	public IDomainObject<T> createTransient();
-
-
-	/**
 	 * Returns the method to access the value in the underlying object. 
 	 * 
 	 * <p>
@@ -646,5 +633,51 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public Method getAccessorOrMutatorFor(EAttribute eAttribute);
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<EReference> references();
+
+	/**
+	 * For internal use only called by {@link MetaModel}
+	 * 
+	 * @param model
+	 */
+	public void identifyReferences();
+
+	/**
+	 * Returns the {@link IDomainClass} referenced 
+	 * @param departmentRef
+	 * @return
+	 */
+	public IDomainClass getReferencedClass(EReference eReference);
+
+
+	public boolean isMultiple(EReference eReference);
+
+	public boolean isOrdered(EReference eReference);
+
+	public boolean isContainer(EReference eReference);
+
+	public boolean isUnique(EReference eReference);
+
+
+	/**
+	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
+	 * wrapping a pojo of the type represented by this domain class.
+	 * 
+	 * <p>
+	 * The object will not be attached to any {@link ISession}.  Since created
+	 * objects normally should be attached, typically 
+	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
+	 * resultant object to the session) should be used instead. 
+	 * 
+	 * @return
+	 */
+	public IDomainObject<T> createTransient();
+
+
 
 }

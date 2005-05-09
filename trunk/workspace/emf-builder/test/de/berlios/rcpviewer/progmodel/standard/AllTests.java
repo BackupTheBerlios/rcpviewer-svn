@@ -16,7 +16,7 @@ public class AllTests {
 		suite.addTestSuite(TestDomainClassAttributes.class);
 		suite.addTestSuite(TestDomainClassAttributesUniqueness.class);
 		suite.addTestSuite(TestDomainClassOperations.class);
-		suite.addTestSuite(TestDomainClassLinks.class);
+		suite.addTestSuite(TestDomainClassReferences.class);
 		suite.addTestSuite(TestExplicitNamesAndDescriptions.class);
 		suite.addTestSuite(TestDomainClassAttributesOrdering.class);
 		suite.addTestSuite(TestDomainClassAttributesUnsettability.class);

@@ -7,8 +7,15 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 public class TestRegisterDomainClassAspect extends TestCase {
 
 	
+	private MetaModel metaModel;
+	protected void setUp() throws Exception {
+		super.setUp();
+		metaModel = new MetaModel();
+	}
+
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
+		metaModel = null;
+		MetaModel.threadInstance().clear();
 		super.tearDown();
 	}
 
@@ -16,9 +23,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * Classes can be registered explicitly.
 	 */
 	public void testExplicitRegistration() {
-		assertNull(MetaModel.instance().lookup(Department.class));
-		MetaModel.instance().register(Department.class);
-		assertNotNull(MetaModel.instance().lookup(Department.class));
+		assertNull(metaModel.lookup(Department.class));
+		metaModel.register(Department.class);
+		assertNotNull(metaModel.lookup(Department.class));
 	}
 
 
@@ -30,9 +37,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * TODO: not working yet
 	 */
 	public void incompletetestImplicitRegistrationByDomainClassInstantiation() {
-		assertNull(MetaModel.instance().lookup(Department.class));
+		assertNull(metaModel.lookup(Department.class));
 		new DomainClass(Department.class);
-		assertNotNull(MetaModel.instance().lookup(Department.class));
+		assertNotNull(metaModel.lookup(Department.class));
 	}
 
 
@@ -47,9 +54,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * @throws ClassNotFoundException
 	 */
 	public void testImplicitRegistrationByClassLoading() throws ClassNotFoundException {
-		assertNull(MetaModel.instance().lookup(Department.class));
+		assertNull(MetaModel.threadInstance().lookup(Department.class));
 		Class.forName(Department.class.getName());
-		assertNotNull(MetaModel.instance().lookup(Department.class));
+		assertNotNull(MetaModel.threadInstance().lookup(Department.class));
 	}
 	
 
@@ -59,9 +66,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * links between classes cannot be setup implicitly).
 	 */
 	public void testImplicitRegistration() {
-		assertNull(MetaModel.instance().lookup(Department.class));
+		assertNull(MetaModel.threadInstance().lookup(Department.class));
 		new Department();
-		assertNotNull(MetaModel.instance().lookup(Department.class));
+		assertNotNull(MetaModel.threadInstance().lookup(Department.class));
 	}
 
 
@@ -69,10 +76,10 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * The registry remembers what's in it :-)
 	 */
 	public void testCanLookupOnceRegistered() {
-		assertNull(MetaModel.instance().lookup(Department.class));
-		MetaModel.instance().register(Department.class);
-		MetaModel.instance().done();
-		DomainClass d = MetaModel.instance().lookup(Department.class);
+		assertNull(metaModel.lookup(Department.class));
+		metaModel.register(Department.class);
+		metaModel.done();
+		IDomainClass<Department> d = metaModel.lookup(Department.class);
 		assertNotNull(d);
 	}
 

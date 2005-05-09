@@ -10,12 +10,15 @@ import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 public class TestSession extends AbstractTestCase  {
 
+	private MetaModel metaModel;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
+		metaModel = null;
+		metaModel.threadInstance().clear();
 		super.tearDown();
 		
 		getObjectStore().reset();
@@ -30,7 +33,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			MetaModel.threadInstance().register(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
@@ -48,7 +51,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testDomainObjectInitiallyTransient() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		assertFalse(domainObject.isPersistent());
@@ -58,7 +61,7 @@ public class TestSession extends AbstractTestCase  {
 
 	public void testCanDetachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		assertTrue(getSession().isAttached(domainObject));
@@ -71,7 +74,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanDetachFromSessionThroughPojo() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		assertTrue(getSession().isAttached(domainObject));
@@ -83,7 +86,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanReAttachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		getSession().detach(domainObject);
@@ -97,7 +100,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanReAttachFromSessionThroughPojo() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		getSession().detach(domainObject);
@@ -111,7 +114,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		getSession().detach(domainObject);
@@ -127,7 +130,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCannotAttachToSessionIfAlreadyAttached() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		assertTrue(getSession().isAttached(domainObject));
@@ -147,7 +150,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprint() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.instance().register(Department.class);
+			MetaModel.threadInstance().register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -162,7 +165,7 @@ public class TestSession extends AbstractTestCase  {
 
 
 		IDomainClass<Employee> employeeDomainClass = 
-			MetaModel.instance().register(Employee.class);
+			metaModel.register(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
 			(IDomainObject<Employee>)getSession().createTransient(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
@@ -189,7 +192,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.threadInstance().register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -219,7 +222,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIsImmutable() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -244,7 +247,7 @@ public class TestSession extends AbstractTestCase  {
 
 	public void testCanRetrieveOncePersisted() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)getSession().createTransient(domainClass);
 		Department dept = domainObject.getPojo();

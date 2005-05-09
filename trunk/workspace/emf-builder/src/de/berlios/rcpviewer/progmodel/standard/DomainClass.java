@@ -13,11 +13,13 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
@@ -29,6 +31,7 @@ import de.berlios.rcpviewer.metamodel.II18nData;
 import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.metamodel.OperationKind;
+import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
@@ -53,12 +56,13 @@ import de.berlios.rcpviewer.session.IWrapperAware;
  * @author Dan Haywood
  */
 public class DomainClass<T> 
-		implements IDomainClass,
+		implements IDomainClass<T>,
 				   EmfFacadeAware,
 				   IWrapperAware {
 	
-	public DomainClass(final Class<T> javaClass) {
+	public DomainClass(final MetaModel metaModel, final Class<T> javaClass) {
 		
+		this.metaModel = metaModel;
 		this.javaClass = javaClass;
 		this.namingConventions = new NamingConventions();
 
@@ -68,6 +72,19 @@ public class DomainClass<T>
 		identifyMutators();
 		identifyUnSettableAttributes();
 		identifyOperations();
+	}
+
+	public DomainClass(final Class<T> javaClass) {
+		this(null, javaClass);
+	}
+
+	private final MetaModel metaModel;
+	/**
+	 * The metaModel (if known) within which this DomainClass has been created. 
+	 * @return
+	 */
+	public MetaModel getMetaModel() {
+		return metaModel;
 	}
 
 	private final NamingConventions namingConventions;
@@ -648,8 +665,6 @@ public class DomainClass<T>
 //			eOperation.setOrdered(..);
 //			eOperation.setUnique(..);
 //			eOperation.setOrdered(..);
-
-		
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eOperation), 
@@ -748,7 +763,7 @@ public class DomainClass<T>
 		}
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		EClass eClass = (EClass)parameter.getEType();
-		return MetaModel.instance().domainClassFor(eClass);
+		return metaModel.domainClassFor(eClass);
 	}
 
 	public String getNameFor(EOperation operation, int parameterPosition) {
@@ -774,7 +789,7 @@ public class DomainClass<T>
 	// OPERATION SUPPORT: END
 
 
-	// LINKS SUPPORT: START
+	// REFERENCES SUPPORT: START
 
 	/**
 	 * Invoked by {@link MetaModel} when it is informed that all 
@@ -782,11 +797,72 @@ public class DomainClass<T>
 	 * 
 	 * TODO.
 	 */
-	void identifyLinks() {
+	public void identifyReferences() {
 
 		Method[] methods = javaClass.getMethods();
 		for(int i=0; i<methods.length; i++) {
+			final Method method = methods[i];
+
+			if (!getNamingConventions().isReference(method)) {
+				continue;
+			}
 			
+			LinkSemanticsType linkSemanticsType = null;
+
+			Class<?> referencedJavaClass = methods[i].getReturnType();
+			IDomainClass<?> referencedDomainClass = metaModel.lookup(referencedJavaClass);
+			if (referencedDomainClass != null) {
+				// 1:1
+				linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
+			} else {
+				// probably 1:m (collection class)
+				linkSemanticsType = LinkSemanticsType.lookupBy(referencedJavaClass);
+				if (linkSemanticsType == null) {
+					continue;
+				}
+				Associates associates = method.getAnnotation(Associates.class);
+				if (associates == null) {
+					continue;
+				}
+				referencedJavaClass = associates.value();
+				referencedDomainClass = metaModel.lookup(referencedJavaClass);
+				if (referencedDomainClass == null) {
+					continue;
+				}
+			}
+
+			EReference eReference = EcoreFactory.eINSTANCE.createEReference();
+			eReference.setEType(referencedDomainClass.getEClass());
+			String referenceName = getNamingConventions().deriveLinkName(method);
+			eReference.setName(referenceName);
+			linkSemanticsType.setOrderingUniquenessAndMultiplicity(eReference);
+			
+			// TODO: use EAnnotations to specify if qualified and if sorted
+			
+			Container contained = method.getAnnotation(Container.class);
+			if (contained != null) {
+				eReference.setContainment(true);
+			}
+			Derived derived = method.getAnnotation(Derived.class);
+			if (derived != null) {
+				eReference.setDerived(true);
+				eReference.setTransient(true);
+				eReference.setVolatile(true);
+			}
+			
+			// eReference.setChangeable(whetherChangeable); // TODO
+			// eReference.setUnsettable()
+			// eReference.setDefaultValueLiteral(someDefaultLiteral); // TODO
+			// eReference.setEOpposite(eReferenceOpposite); // TODO
+			
+			// eReference.setResolveProxies(...); // TODO: this is a little like Hibernate lazy loading.
+			
+			// eReference.setLowerBound( ... set by linkSemanticsType ...);
+
+
+			eClass.getEStructuralFeatures().add(eReference);
+
+
 //			if (!getProgrammingModel().isLink(methods[i])) // simple or composite.
 //				continue;
 			
@@ -839,9 +915,62 @@ public class DomainClass<T>
 		return associatorOrDissociator.getParameterTypes()[0];
 	}
 
-	
+	/**
+	 * Returns references from this class to other classes, including those 
+	 * inherited.
+	 */
+	public List<EReference> references() {
+		return references(true);
+	}
 
-	// LINKS SUPPORT: END
+	/**
+	 * Returns references from this class to other classes, specifying whether
+	 * inherited references should be included.
+	 * 
+	 * @param includeInherited
+	 * @return
+	 */
+	public List<EReference> references(final boolean includeInherited) {
+		List<EReference> references = new ArrayList<EReference>();
+		EClass eClass = getEClass();
+		EList eReferenceList = includeInherited? eClass.getEAllReferences(): eClass.getEReferences();
+		for(Iterator<?> iter = eReferenceList.iterator(); iter.hasNext(); ) {
+			EReference ref = (EReference)iter.next();
+			references.add(ref);
+		}
+		return references;
+	}
+	
+	public boolean containsReference(EReference eReference) {
+		return this.eClass.getEAllReferences().contains(eReference);
+	}
+		
+	/**
+	 * TODO: using MetaModel from thread; should be got elsewhere?
+	 */
+	public IDomainClass<?> getReferencedClass(EReference eReference) {
+		EClass eClass = (EClass)eReference.getEType();
+		return metaModel.lookup(eClass.getInstanceClass());
+		
+	}
+
+	public boolean isMultiple(EReference eReference) {
+		return eReference.isMany();
+	}
+
+	public boolean isOrdered(EReference eReference) {
+		return eReference.isOrdered();
+	}
+
+	public boolean isContainer(EReference eReference) {
+		return eReference.isContainer();
+	}
+
+	public boolean isUnique(EReference eReference) {
+		return eReference.isUnique();
+	}
+
+	// REFERENCES SUPPORT: END
 
 	// ANNOTATION SUPPORT: START
 

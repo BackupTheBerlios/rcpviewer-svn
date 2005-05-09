@@ -2,13 +2,11 @@ package de.berlios.rcpviewer.progmodel.standard.impl;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.metamodel.MetaModel;
 
 
 public class TestDomainAspect extends AbstractTestCase {
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 

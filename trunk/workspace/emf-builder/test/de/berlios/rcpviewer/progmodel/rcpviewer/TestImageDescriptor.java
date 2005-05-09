@@ -21,19 +21,21 @@ public class TestImageDescriptor extends AbstractTestCase {
 	public static class ProspectiveSale {
 	}
 
+	private MetaModel metaModel;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
+		metaModel = null;
 		super.tearDown();
 	}
 	
 	public void testDomainClassWithImageUrlAt() {
-		domainClass = MetaModel.instance().register(ProspectiveSale.class);
-		MetaModel.instance().addExtension(new RcpViewerExtension());
+		domainClass = metaModel.register(ProspectiveSale.class);
+		metaModel.addExtension(new RcpViewerExtension());
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNotNull(id);
 	}

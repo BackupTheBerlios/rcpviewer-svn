@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EPackage;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
 
 /**
  * Class names and internalization are tested elsewhere.
@@ -23,7 +22,6 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	

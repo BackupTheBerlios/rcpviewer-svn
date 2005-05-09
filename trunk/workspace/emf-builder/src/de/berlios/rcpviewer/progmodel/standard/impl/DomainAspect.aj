@@ -84,12 +84,12 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	after(Object pojo): instantiatePojo(pojo) {
         Class clazz = pojo.getClass();
         // we register rather than lookup just in case the class has not been loaded
-		DomainClass domainClass = getMetaModel().register(clazz);
+		IDomainClass domainClass = getMetaModel().register(clazz);
 		this.domainObject = new DomainObject(domainClass, pojo);
 	}
 
 	public MetaModel getMetaModel() {
-		return MetaModel.instance();
+		return MetaModel.threadInstance();
 	}
 
 }

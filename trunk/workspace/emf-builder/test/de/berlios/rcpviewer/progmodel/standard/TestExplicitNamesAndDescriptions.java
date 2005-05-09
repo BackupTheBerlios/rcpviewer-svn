@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
@@ -67,7 +66,6 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	

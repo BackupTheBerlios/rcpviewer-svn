@@ -4,8 +4,10 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
+
+import de.berlios.rcpviewer.metamodel.OperationKind;
 
 public class TestDomainClassOperations extends AbstractTestCase {
 
@@ -15,7 +17,6 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	

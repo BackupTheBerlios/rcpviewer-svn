@@ -7,13 +7,20 @@ import junit.framework.TestCase;
 
 public class TestMetaModel extends TestCase {
 
+	private MetaModel metaModel;
+
+	public void setUp() throws Exception {
+		super.setUp();
+		metaModel = new MetaModel();
+	}
+	
 	public void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
+		metaModel = null;
 	}
 	
 	public void testMetaModelCreated() {
-		assertNotNull(MetaModel.instance());
+		assertNotNull(MetaModel.threadInstance());
 	}
 	
 	public void testOneMetaModelPerThread() throws InterruptedException {
@@ -22,7 +29,7 @@ public class TestMetaModel extends TestCase {
 			final int j = i;
 			Thread t = new Thread() {
 				public void run() {
-					metaModels[j] = MetaModel.instance();
+					metaModels[j] = MetaModel.threadInstance();
 				}
 			};
 			t.start();
@@ -34,10 +41,10 @@ public class TestMetaModel extends TestCase {
 
 	public void testGetDomainClassFromEClass() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().register(Department.class);
+			metaModel.register(Department.class);
 
 		EClass eClass = domainClass.getEClass();
-		IDomainClass reverseDomainClass = MetaModel.instance().domainClassFor(eClass);
+		IDomainClass reverseDomainClass = metaModel.domainClassFor(eClass);
 		assertNotNull(reverseDomainClass);
 		assertSame(reverseDomainClass, domainClass);
 	}

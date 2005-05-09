@@ -51,7 +51,6 @@ public class TestEmfFacade extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 		emfFacade = null;
 		primitiveClasses = null;

@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.emf.ecore.EReference;
+
 import de.berlios.rcpviewer.metamodel.Constraint;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 /**
  * Powertype describing the different sorts of {@link de.berlios.rcpviewer.metamodel.LinkSemantics}.
@@ -18,12 +21,12 @@ import de.berlios.rcpviewer.metamodel.IDomainObject;
 public final class LinkSemanticsType {
 	
 	public final static LinkSemanticsType SIMPLE_REF =
-		new LinkSemanticsType("SimpleRef", Boolean.FALSE, IDomainObject.class,
+		new LinkSemanticsType("SimpleRef", Boolean.FALSE, DomainMarker.class,
 				new Constraint[] {} );
 	
 	public final static LinkSemanticsType LIST =
 		new LinkSemanticsType("List", Boolean.TRUE, java.util.List.class,
-				new Constraint[] { Constraint.INDEXED } );
+				new Constraint[] { Constraint.ORDERED } );
 	
 	public final static LinkSemanticsType SET =
 		new LinkSemanticsType("Set", Boolean.TRUE, java.util.Set.class,
@@ -45,11 +48,29 @@ public final class LinkSemanticsType {
 		new LinkSemanticsType("Unknown", null, null,
 				new Constraint[] { } );
 	
-	private final String name;
-	private final Class<?> javaType;
-	private final Boolean multiple;
-	private final Set<Constraint> constraints = new HashSet<Constraint>();
+	private final static LinkSemanticsType[] semanticTypes = 
+		new LinkSemanticsType[] {
+			LinkSemanticsType.SIMPLE_REF,
+			LinkSemanticsType.LIST,
+			LinkSemanticsType.SET,
+			LinkSemanticsType.SORTED_SET,
+			LinkSemanticsType.MAP,
+			LinkSemanticsType.SORTED_MAP,
+			LinkSemanticsType.UNKNOWN,
+		};
 	
+	public static LinkSemanticsType lookupBy(final Class javaType) {
+		if (javaType == null) { // TODO: replace with an aspect + @Required
+			throw new IllegalArgumentException("Java Class cannot be null");
+		}
+		for(LinkSemanticsType lst: semanticTypes) {
+			if (javaType.equals(lst.getJavaType())) {
+				return lst;
+			}
+		}
+		return null;
+	}
+
 	private LinkSemanticsType(final String name, final Boolean multiple, final Class<?> javaType, final Constraint[] constraints) {
 		this.name = name;
 		this.multiple = multiple;
@@ -57,14 +78,17 @@ public final class LinkSemanticsType {
 		this.constraints.addAll(Arrays.asList(constraints));
 	}
 	
+	private final String name;
 	public String getName() {
 		return name;
 	}
 	
+	private final Boolean multiple;
 	public Boolean isMultiple() {
 		return multiple;
 	}
 	
+	private final Class<?> javaType;
 	public Class<?> getJavaType() {
 		return javaType;
 	}
@@ -74,12 +98,19 @@ public final class LinkSemanticsType {
 	 * TODO: <T>
 	 * @return
 	 */
-	public Set getConstraints() {
+	private final Set<Constraint> constraints = new HashSet<Constraint>();
+	public Set<Constraint> getConstraints() {
 		return Collections.unmodifiableSet(constraints);
 	}
 	
 	public String toString() {
 		return getName();
+	}
+
+	public void setOrderingUniquenessAndMultiplicity(EReference eReference) {
+		eReference.setOrdered(constraints.contains(Constraint.ORDERED));
+		eReference.setUnique(constraints.contains(Constraint.UNIQUE));
+		eReference.setUpperBound(multiple? -1 : 1);
 	}
 	
 }

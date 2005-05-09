@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
 
 /**
 * Cross-cutting validation of any eAttributes or eOperations 
@@ -41,4 +42,18 @@ aspect EnsureMemberBelongsToDomainClassAspect {
 			"EOperation '" + eOperation + "' not part of this DomainClass");
 	}
 
+
+	pointcut convenienceMethodForReference(DomainClass domainClass, EReference eReference):
+		execution(* *..DomainClass+.*(EReference, ..)) &&
+		!execution(* *..DomainClass+.containsReference(EReference)) &&
+		this(domainClass) && args(eReference, ..);
+	
+	before(DomainClass domainClass, EReference eReference): 
+		convenienceMethodForReference(domainClass, eReference) {
+		if (domainClass.containsReference(eReference)) {
+			return;
+		}
+		throw new IllegalArgumentException(
+			"EReference '" + eReference+ "' not part of this DomainClass");
+	}
 }

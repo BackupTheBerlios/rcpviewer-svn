@@ -4,7 +4,6 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 
@@ -41,7 +40,6 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		MetaModel.instance().clear();
 		super.tearDown();
 	}
 	
