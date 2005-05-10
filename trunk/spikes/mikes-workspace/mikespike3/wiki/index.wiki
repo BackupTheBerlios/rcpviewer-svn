@@ -1,0 +1,30 @@
+1 Mike's Spike 3
+
+This is a real spike - no more hand holding.  Its aim is to look at how to implement a form editor for a generic object instance.
+
+~~Set Up~~
+Based on the mikespike2 code with the following (initial differences):
+* 'God' singleton has been swapped for rather more tasteful 'Model'
+* this handles arbitary objects
+* the model starts with a simple 'EasyBean' class that is bean of String values randomly created on creation
+* the start-up view (ObjectListView) is now a list of all __instances__ within the model
+
+If you run the app without any argument then the model auto-populates with a random number of instances.  Add the -test argument and it will start empty and expect to be filled by unit tests.  The test class is in a package within this project as this is a real spike so I am not really doing test-driven development.
+
+Treat all of this as boilerplate.  The stuff to look at happens in the createPartControl( Composite ) method of DefaultEditor and in the mikespike3.gui package.
+
+~~Limitations~~
+* Only thinking about presentation here - not any other functionality.
+* Still not using EMF model as a distraction
+
+~~ Initial Design ~~
+Focussing only on FormEditor's.  Two core types, IFormBuilder and IFieldBuilder.  The former deals with overall layout, the second with the display of an individual field.  The approriate implementation used is decided by Factorys that current simply use default values.
+The next step is to make the factories extension-point aware.
+
+~~ Issues Raised~~
+* How will I distinguish first class objects (with their own editors) with dependent objects (in groups on the parent editor)? 
+
+~~ Likely Annotation Requirements ~~
+* size and wrapping for text fields
+
+
