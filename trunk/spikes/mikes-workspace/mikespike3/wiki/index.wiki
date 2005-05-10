@@ -1,6 +1,7 @@
 1 Mike's Spike 3
 
 This is a real spike - no more hand holding.  Its aim is to look at how to implement a form editor for a generic object instance.
+* (to run the application up, define an Eclipse application run configuration - spike 2 has an example)
 
 ~~Set Up~~
 Based on the mikespike2 code with the following (initial differences):
@@ -23,6 +24,8 @@ The next step is to make the factories extension-point aware.
 
 ~~ Issues Raised~~
 * How will I distinguish first class objects (with their own editors) with dependent objects (in groups on the parent editor)? 
+DAN says: metaModel.classes() should return you all IDomainClass's that are known.  For those that are dependent, there will be (isn't yet) an eReference up to their parent IDomainClass.  So I guess what you want is for the MetaModel to do this filtering for you automatically, eg an overload like metaModel.classes(onlyFirstClass)???
+
 
 ~~ Likely Annotation Requirements ~~
 * size and wrapping for text fields
