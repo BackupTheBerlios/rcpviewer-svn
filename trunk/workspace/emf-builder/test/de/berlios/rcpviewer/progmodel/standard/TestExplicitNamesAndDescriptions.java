@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
@@ -60,12 +61,15 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 		}
 	}
 
+	private MetaModel metaModel;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
+		metaModel = null;
 		super.tearDown();
 	}
 	
@@ -110,7 +114,9 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = new DomainClass<Appointment>(Appointment.class);
+		domainClass = metaModel.register(Appointment.class);
+		metaModel.done();
+
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());

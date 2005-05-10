@@ -11,6 +11,13 @@ import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 import de.berlios.rcpviewer.metamodel.OperationKind;
 
+/**
+ * We use the {@link MetaModel} to register classes since the operations are
+ * only identified via {@link MetaModel#done()}.
+ * 
+ * @author Dan Haywood
+ *
+ */
 public class TestDomainClassOperations extends AbstractTestCase {
 
 	private MetaModel metaModel;
@@ -96,7 +103,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPublicVisibilityMethodPickedUpAsOperation() {
-		domainClass = new DomainClass<CustomerWithPublicVisibilityOperation>(CustomerWithPublicVisibilityOperation.class);
+		domainClass = metaModel.register(CustomerWithPublicVisibilityOperation.class);
+		metaModel.done();
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
@@ -179,7 +187,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithNoArgumentsAPickedUpAsOperation() {
-		domainClass = new DomainClass<CustomerWithNoArgOperation>(CustomerWithNoArgOperation.class);
+		domainClass = metaModel.register(CustomerWithNoArgOperation.class);
+		metaModel.done();
+
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
@@ -193,9 +203,10 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(domainClass.isStatic(eOperation));
 	}
 
-	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation() {
-		// 1 arg
-		domainClass = new DomainClass<CustomerWithPrimitiveArgOperation>(CustomerWithPrimitiveArgOperation.class);
+	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation1Arg() {
+		domainClass = metaModel.register(CustomerWithPrimitiveArgOperation.class);
+		metaModel.done();
+
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
 		assertNotNull(eOperation);
 		assertEquals("rankAs", eOperation.getName());
@@ -215,15 +226,18 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals("long", domainClass.getNameFor(eOperation, 0));
 		assertEquals("ELong", eDataType.getName());
 		assertTrue(domainClass.isStatic(eOperation));
+	}
 
-		// 2 arg
-		domainClass = new DomainClass<CustomerPositionedOnMap>(CustomerPositionedOnMap.class);
-		eOperation = domainClass.getEOperationNamed("positionAt");
+	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation2Arg() {
+		domainClass = metaModel.register(CustomerPositionedOnMap.class);
+		metaModel.done();
+
+		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
 		assertNotNull(eOperation);
 		assertEquals("positionAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
+		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
 		assertEquals("float", domainClass.getNameFor(eOperation, 0));
 		assertEquals("EFloat", eDataType.getName());
 		assertTrue(domainClass.isParameterAValue(eOperation, 1));
@@ -249,7 +263,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
 		// 2 arg
-		domainClass = new DomainClass<Appointment>(Appointment.class);
+		domainClass = metaModel.register(Appointment.class);
+		metaModel.done();
+		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertNotNull(eOperation);
 		assertEquals("moveTo", eOperation.getName());
@@ -300,7 +316,12 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 *
 	 */
 	public void testMethodWithDomainObjectArgumentsPickedUpAsOperation() {
+		
+		metaModel.register(Man.class);
+		metaModel.register(Woman.class);
 		domainClass = metaModel.register(Priest.class);
+		metaModel.done();
+
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
 		assertNotNull(eOperation);
 		assertEquals("marry", eOperation.getName());

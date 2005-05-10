@@ -70,7 +70,6 @@ public class DomainClass<T>
 		identifyAccessors();
 		identifyMutators();
 		identifyUnSettableAttributes();
-		identifyOperations();
 	}
 
 	public DomainClass(final Class<T> javaClass) {
@@ -562,7 +561,7 @@ public class DomainClass<T>
 	 * TODO: EMF support lower and upper bounds, also ordered and unique?  
 	 * not yet exposing them (what would they mean?)
 	 */
-	private void identifyOperations() {
+	public void identifyOperations() {
 		Method[] methods = javaClass.getMethods();
 
 		eachMethod: 

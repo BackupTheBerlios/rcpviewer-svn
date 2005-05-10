@@ -123,6 +123,7 @@ public final class MetaModel {
 	 */
 	public void done() {
 		for(IDomainClass<?> dc: domainClassesByjavaClass.values()) {
+			dc.identifyOperations();
 			dc.identifyReferences();
 		}
 		

@@ -641,8 +641,12 @@ public interface IDomainClass<T> {
 
 	/**
 	 * For internal use only called by {@link MetaModel}
-	 * 
-	 * @param model
+	 */
+	public void identifyOperations();
+
+
+	/**
+	 * For internal use only called by {@link MetaModel}
 	 */
 	public void identifyReferences();
 
