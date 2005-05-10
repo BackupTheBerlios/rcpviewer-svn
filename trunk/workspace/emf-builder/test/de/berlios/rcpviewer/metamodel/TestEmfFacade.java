@@ -192,13 +192,9 @@ public class TestEmfFacade extends TestCase {
 	}
 
 	public void testGetEDataTypeForClassThatIsntAValueObject() {
-		try {
-			EDataType eDataType = 
-				emfFacade.getEDataTypeFor(TestEmfFacadeCustomer.class);
-			fail("Expected an IllegalArgumentException to have been thrown.");
-		} catch(IllegalArgumentException ex) {
-			// expected
-		}
+		EDataType eDataType = 
+			emfFacade.getEDataTypeFor(TestEmfFacadeCustomer.class);
+		assertNull(eDataType);
 	}
 
 	/**

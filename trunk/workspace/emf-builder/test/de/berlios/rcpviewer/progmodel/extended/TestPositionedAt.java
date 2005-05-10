@@ -7,11 +7,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.MetaModel;
-import de.berlios.rcpviewer.progmodel.extended.AttributeComparator;
-import de.berlios.rcpviewer.progmodel.extended.PositionedAt;
-import de.berlios.rcpviewer.progmodel.rcpviewer.RcpViewerExtension;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 /**
  * Tests for the use of the <tt>PositionedAt</tt>.

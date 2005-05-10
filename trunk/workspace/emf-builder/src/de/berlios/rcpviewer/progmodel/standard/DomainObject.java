@@ -3,14 +3,11 @@ package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EModelElement;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
-import de.berlios.rcpviewer.session.*;
+import de.berlios.rcpviewer.session.ISession;
 
 /**
  * Wrapper for a POJO that also knows its {@link IDomainClass}.

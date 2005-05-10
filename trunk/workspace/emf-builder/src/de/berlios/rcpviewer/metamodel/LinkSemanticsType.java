@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel.link;
+package de.berlios.rcpviewer.metamodel;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,8 +7,6 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.metamodel.Constraint;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 /**

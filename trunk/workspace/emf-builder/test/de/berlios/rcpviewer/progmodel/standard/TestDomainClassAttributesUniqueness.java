@@ -30,7 +30,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 		}
 	}
 
-	private IDomainClass domainClass;
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -42,21 +42,21 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	// uniqueness //
 
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass(CustomerWithNoUniquenessReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithNoUniquenessReadOnlyAttribute>(CustomerWithNoUniquenessReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = new DomainClass(CustomerWithUniqueReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithUniqueReadOnlyAttribute>(CustomerWithUniqueReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = new DomainClass(CustomerWithNonUniqueReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithNonUniqueReadOnlyAttribute>(CustomerWithNonUniqueReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());
 		assertFalse(domainClass.isUnique(eAttribute));

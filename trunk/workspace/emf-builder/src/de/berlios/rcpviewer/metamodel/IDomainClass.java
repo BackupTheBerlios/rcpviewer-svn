@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.metamodel;
 
 import java.lang.reflect.Method;
-import java.util.AbstractCollection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -73,7 +72,7 @@ public interface IDomainClass<T> {
 	 * @param adapterClass
 	 * @return object that implements said class.
 	 */
-	public Object getAdapter(Class<?> adapterClass);
+	public <V> V getAdapter(Class<V> adapterClass);
 
 	/**
 	 * Allows arbitrary extensions to be attached to this domain object.
@@ -89,7 +88,7 @@ public interface IDomainClass<T> {
 	 * @param adapterClass
 	 * @return
 	 */
-	public void setAdapterFactory(Class<?> adapterClass, IAdapterFactory<?> adapterFactory);
+	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<V> adapterFactory);
 
 
 	/**

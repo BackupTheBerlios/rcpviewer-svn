@@ -5,10 +5,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
+import de.berlios.rcpviewer.metamodel.IDomainClass;
 
 
 /**

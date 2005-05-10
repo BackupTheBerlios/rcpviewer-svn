@@ -40,7 +40,7 @@ public interface ISession {
 	 * @param domainClass
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
 	 */
-	IDomainObject<?> createTransient(IDomainClass<?> domainClass);
+	<T> IDomainObject<T> createTransient(IDomainClass<T> domainClass);
 
 	/**
 	 * Whether the supplied pojo is attached to this session.

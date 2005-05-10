@@ -1,12 +1,5 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
 
 /**
  * Set of constants relating to this package.

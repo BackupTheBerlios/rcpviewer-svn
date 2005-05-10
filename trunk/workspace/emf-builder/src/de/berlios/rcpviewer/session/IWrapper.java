@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.session.ISession;
  * @author Dan Haywood
  *
  */
-public interface IWrapper {
+public interface IWrapper<T> {
 
 	/**
 	 * Returns the IDomainObject associated with the pojo.
@@ -23,7 +23,7 @@ public interface IWrapper {
 	 * @param pojo
 	 * @return
 	 */
-	IDomainObject wrapped(Object pojo);
+	IDomainObject<T> wrapped(Object pojo);
 
 
 }

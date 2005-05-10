@@ -31,7 +31,7 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 
 	public void testGetEClass() {
-		domainClass = new DomainClass(CustomerWithNoAttributes.class);
+		domainClass = new DomainClass<CustomerWithNoAttributes>(CustomerWithNoAttributes.class);
 		EClass eClass = domainClass.getEClass();
 		assertNotNull(eClass);
 		assertSame(eClass.getInstanceClass(), CustomerWithNoAttributes.class);

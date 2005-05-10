@@ -30,7 +30,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 		}
 	}
 
-	private IDomainClass domainClass;
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -42,21 +42,21 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	// ordering //
 
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass(CustomerWithNoOrderingReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithNoOrderingReadOnlyAttribute>(CustomerWithNoOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = new DomainClass(CustomerWithOrderingReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithOrderingReadOnlyAttribute>(CustomerWithOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = new DomainClass(CustomerWithoutOrderingReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithoutOrderingReadOnlyAttribute>(CustomerWithoutOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());
 		assertFalse(domainClass.isOrdered(eAttribute));

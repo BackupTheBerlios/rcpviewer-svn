@@ -55,7 +55,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 		}
 	}
 
-	private IDomainClass domainClass;
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -65,20 +65,20 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 	}
 	
 	public void testWhetherEAttributeIsUnsettableWhenIs() {
-		domainClass = new DomainClass(CustomerWithUnsettableAttribute.class);
+		domainClass = new DomainClass<CustomerWithUnsettableAttribute>(CustomerWithUnsettableAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
 		assertTrue(domainClass.isUnsettable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
-		domainClass = new DomainClass(CustomerWithOnlyIsUnsetForAttribute.class);
+		domainClass = new DomainClass<CustomerWithOnlyIsUnsetForAttribute>(CustomerWithOnlyIsUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
-		domainClass = new DomainClass(CustomerWithOnlyUnsetForAttribute.class);
+		domainClass = new DomainClass<CustomerWithOnlyUnsetForAttribute>(CustomerWithOnlyUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));

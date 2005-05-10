@@ -1,0 +1,7 @@
+/**
+ * An in-memory implementation of a "persistent" object store.
+ * 
+ * <p>
+ * Objects are stored in memory; this is suitable for unit testing.
+ */
+package de.berlios.rcpviewer.persistence.inmemory;

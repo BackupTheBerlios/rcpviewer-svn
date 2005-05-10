@@ -18,7 +18,7 @@ public class TestSession extends AbstractTestCase  {
 
 	protected void tearDown() throws Exception {
 		metaModel = null;
-		metaModel.threadInstance().clear();
+		MetaModel.threadInstance().clear();
 		super.tearDown();
 		
 		getObjectStore().reset();
@@ -192,7 +192,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			metaModel.threadInstance().register(Department.class);
+			MetaModel.threadInstance().register(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)getSession().createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");

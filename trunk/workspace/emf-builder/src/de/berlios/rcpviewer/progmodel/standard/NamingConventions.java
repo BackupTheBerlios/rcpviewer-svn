@@ -15,7 +15,7 @@ import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
  * 
  * @author Dan Haywood
  */
-final class NamingConventions {
+public final class NamingConventions {
 
 	// ATTRIBUTES: START
 	
@@ -301,7 +301,7 @@ final class NamingConventions {
 	 * @param clazz
 	 * @return
 	 */
-	public final boolean isReferenceType(final Class<?> clazz) {
+	public final <V> boolean isReferenceType(final Class<V> clazz) {
 		return clazz != null &&
 		       clazz != void.class &&
 			   de.berlios.rcpviewer.metamodel.Constants.SIMPLE_REF_TYPE.isAssignableFrom(clazz);

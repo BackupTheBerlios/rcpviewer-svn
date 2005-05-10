@@ -13,7 +13,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
@@ -28,10 +27,10 @@ import de.berlios.rcpviewer.metamodel.IAdapterFactory;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.II18nData;
+import de.berlios.rcpviewer.metamodel.LinkSemanticsType;
 import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.metamodel.OperationKind;
-import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
@@ -58,7 +57,7 @@ import de.berlios.rcpviewer.session.IWrapperAware;
 public class DomainClass<T> 
 		implements IDomainClass<T>,
 				   EmfFacadeAware,
-				   IWrapperAware {
+				   IWrapperAware<T> {
 	
 	public DomainClass(final MetaModel metaModel, final Class<T> javaClass) {
 		
@@ -123,14 +122,14 @@ public class DomainClass<T>
 	 * @param adapterClass
 	 * @return adapter (extension) that will implement the said class.
 	 */
-	public Object getAdapter(Class adapterClass) {
+	public <V> V getAdapter(Class<V> adapterClass) {
 		Map<String, String> detailsPlusFactoryName = 
 			emfFacade.getAnnotationDetails(eClass, Constants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		String adapterFactoryName = 
 			(String)detailsPlusFactoryName.get(Constants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
-		IAdapterFactory adapterFactory;
+		IAdapterFactory<V> adapterFactory;
 		try {
-			adapterFactory = (IAdapterFactory)Class.forName(adapterFactoryName).newInstance();
+			adapterFactory = (IAdapterFactory<V>)Class.forName(adapterFactoryName).newInstance();
 			return adapterFactory.createAdapter(detailsPlusFactoryName);
 		} catch (InstantiationException e) {
 			// TODO - log?
@@ -149,7 +148,7 @@ public class DomainClass<T>
 	 * @param adapterClass
 	 * @param adapter
 	 */
-	public void setAdapterFactory(Class adapterClass, IAdapterFactory adapterFactory) {
+	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<V> adapterFactory) {
 		EAnnotation eAnnotation = 
 			emfFacade.annotationOf(eClass, Constants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		Map<String,String> detailsPlusFactoryName = new HashMap<String,String>();
@@ -168,7 +167,7 @@ public class DomainClass<T>
 		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(javaPackage.getName());
 		if (ePackage == null) {
 			ePackage = EcoreFactory.eINSTANCE.createEPackage();
-			ePackage.getEClassifiers().add(this.eClass);
+			((List<? super EClass>)ePackage.getEClassifiers()).add(this.eClass);
 			ePackage.setName(javaPackage.getName());
 		}
 
@@ -224,7 +223,7 @@ public class DomainClass<T>
 			eAttribute.setEType(eDataType);
 			String attributeName = getNamingConventions().deriveAttributeName(method);
 			eAttribute.setName(attributeName);
-			eClass.getEStructuralFeatures().add(eAttribute);
+			((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
 			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
@@ -306,7 +305,7 @@ public class DomainClass<T>
 				eAttribute.setEType(eDataType);
 				eAttribute.setName(attributeName);
 
-				eClass.getEStructuralFeatures().add(eAttribute);
+				((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
 				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
@@ -579,9 +578,11 @@ public class DomainClass<T>
 				continue;
 			}
 			Class<?> returnType = method.getReturnType();
-			if (!getNamingConventions().isValueType(returnType) &&
-				!getNamingConventions().isReferenceType(returnType) &&
-				!getNamingConventions().isVoid(returnType)) {
+			boolean returnsValue = getNamingConventions().isValueType(returnType);
+			boolean returnsReference = getNamingConventions().isReferenceType(returnType);
+			boolean returnsVoid = getNamingConventions().isVoid(returnType);
+			
+			if (!returnsValue && !returnsReference && !returnsVoid) {
 				continue;
 			}
 			
@@ -596,14 +597,44 @@ public class DomainClass<T>
 			
 			EOperation eOperation = EcoreFactory.eINSTANCE.createEOperation();
 			eOperation.setName(method.getName());
+
+			if (returnsValue) {
+				EDataType returnDataType = getEmfFacade().getEDataTypeFor(returnType);
+				eOperation.setEType(returnDataType);
+			} else if (returnsReference) {
+				IDomainClass<?> returnDomainClass = metaModel.register(returnType);
+				eOperation.setEType(returnDomainClass.getEClass());
+			} else {
+				// do nothing; EMF does not apparently have a built-in classifier for Void 
+			}
+
 			Map<Class<?>, int[]> unnamedParameterIndexByType = new HashMap<Class<?>, int[]>();
 			for(int j=0; j<parameterTypes.length; j++) {
 				Class<?> parameterType = parameterTypes[j];
 				Annotation[] parameterAnnotationSet = parameterAnnotationSets[j];
-				EDataType dataType = getEmfFacade().getEDataTypeFor(parameterType);
+				
+				// try to match as a data type or a reference (domain class)
+				EDataType parameterDataType = getEmfFacade().getEDataTypeFor(parameterType);
+				IDomainClass parameterDomainClass = null;
+				boolean isValue = (parameterDataType != null);
+				boolean isReference = false;
+				if (!isValue) {
+					// register rather than lookup since we may not have seen
+					// the referenced DomainClass yet.
+					parameterDomainClass = metaModel.register(parameterType);
+					isReference = (parameterDomainClass != null);
+				}
+				if (!isValue && !isReference) {
+					continue;
+				}
+				
 				EParameter eParameter = EcoreFactory.eINSTANCE.createEParameter();
-				eOperation.getEParameters().add(eParameter);
-				eParameter.setEType(dataType);
+				((List<? super EParameter>)eOperation.getEParameters()).add(eParameter);
+				if (isValue) {
+					eParameter.setEType(parameterDataType);
+				} else {
+					eParameter.setEType(parameterDomainClass.getEClass());
+				}
 				
 				// parameter name
 				Named named = null;				
@@ -643,21 +674,12 @@ public class DomainClass<T>
 				}
 				
 			}
-			//addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
-
-			Class<?> dataType = methods[i].getReturnType();
-			// EMF does not have a built-in classifier for Void
-			if (!getNamingConventions().isVoid(dataType)) { // HACK
-				EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
-				eOperation.setEType(eDataType);
-			}
 
 			if ((methods[i].getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
 				emfFacade.annotationOf(eOperation, Constants.ANNOTATION_OPERATION_STATIC);
 			}
 			
-			
-			eClass.getEOperations().add(eOperation);
+			((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
 
 			// these are supported by EMF, but not (yet) by our metamodel.
 //			eOperation.setLowerBound(..);
@@ -860,7 +882,7 @@ public class DomainClass<T>
 			// eReference.setLowerBound( ... set by linkSemanticsType ...);
 
 
-			eClass.getEStructuralFeatures().add(eReference);
+			((List<? super EReference>)eClass.getEStructuralFeatures()).add(eReference);
 
 
 //			if (!getProgrammingModel().isLink(methods[i])) // simple or composite.
@@ -1014,10 +1036,10 @@ public class DomainClass<T>
 	
 	// DOMAIN OBJECT SUPPORT: START
 
-	public IDomainObject createTransient() {
+	public IDomainObject<T> createTransient() {
 		try {
 			Object pojo = getJavaClass().newInstance();
-			IDomainObject domainObject = getWrapper().wrapped(pojo);
+			IDomainObject<T> domainObject = getWrapper().wrapped(pojo);
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
@@ -1047,11 +1069,11 @@ public class DomainClass<T>
 		this.emfFacade = emfFacade;
 	}
 
-	private IWrapper wrapper;
-	public IWrapper getWrapper() {
+	private IWrapper<T> wrapper;
+	public IWrapper<T> getWrapper() {
 		return wrapper;
 	}
-	public void setWrapper(IWrapper wrapper) {
+	public void setWrapper(IWrapper<T> wrapper) {
 		this.wrapper = wrapper;
 	}
 

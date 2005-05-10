@@ -1,11 +1,7 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.metamodel.IAdapterFactory;
 

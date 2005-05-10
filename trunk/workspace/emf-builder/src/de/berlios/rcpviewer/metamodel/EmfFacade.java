@@ -4,7 +4,9 @@ package de.berlios.rcpviewer.metamodel;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
+import java.util.List;
+
+import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
 
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -22,6 +24,9 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  * <p>
  * Stateless class; an alternative design would have been a collection of 
  * static methods.
+ * 
+ * <p>
+ * TODO: shouldn't be using NamingConventions really.
  * 
  * @author Dan Haywood
  */
@@ -121,7 +126,7 @@ public class EmfFacade {
 			ePackage.setName(javaPackage.getName());
 			ePackage.setNsURI("http://de.berlios.rcpviewer.metamodel/2005/" + javaPackage.getName());
 		}
-		resourceSet.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
+		((Map<? super String,? super EPackage>)resourceSet.getPackageRegistry()).put(ePackage.getNsURI(), ePackage);
 		return ePackage;
 	}
 	/**
@@ -140,10 +145,11 @@ public class EmfFacade {
 	}
 	
 	private EPackage findPackageInRegistryWithName(EPackage.Registry ePackageRegistry, String packageName) {
-		Set<Map.Entry> ePackageEntrySet = ePackageRegistry.entrySet();  
-		for(Map.Entry ePackageEntry: ePackageEntrySet) {
-			String ePackageNsUri = (String)ePackageEntry.getKey();
-			EPackage ePackage = (EPackage)ePackageEntry.getValue();
+		Set<Map.Entry<String,EPackage>> ePackageEntrySet = 
+			((Set<Map.Entry<String,EPackage>>)ePackageRegistry.entrySet());  
+		for(Map.Entry<String,EPackage> ePackageEntry: ePackageEntrySet) {
+			String ePackageNsUri = ePackageEntry.getKey();
+			EPackage ePackage = ePackageEntry.getValue();
 			if (ePackage.getName().equals(packageName)) {
 				return ePackage;
 			}
@@ -152,11 +158,16 @@ public class EmfFacade {
 	}
 
 	public EDataType getEDataTypeFor(Class<?> javaDataType) {
+
 		EDataTypeData coreDataTypeData = coreDataTypes.get(javaDataType); 
 		if (coreDataTypeData != null) {
 			return coreDataTypeData.getEDataType();
 		}
 		
+		if (!getNamingConventions().isValueType(javaDataType)) {
+			return null;
+		}
+
 		Package javaPackage = javaDataType.getPackage();
 		EPackage ePackage = getEPackageFor(javaPackage);
 		for(Object eClassifierAsObject: ePackage.getEClassifiers()) {
@@ -165,17 +176,19 @@ public class EmfFacade {
 				return (EDataType)eClassifier;
 			}
 		}
-		
-		if (!ValueMarker.class.isAssignableFrom(javaDataType)) {
-			throw new IllegalArgumentException("Java datatype '" + javaDataType + "' is not a built-in, and is not a Value");
-		}
+
 		EDataType eDataType = EcoreFactory.eINSTANCE.createEDataType();
 		eDataType.setInstanceClass(javaDataType);
 		eDataType.setName(javaDataType.getName());
 		eDataType.setSerializable(true);
-		ePackage.getEClassifiers().add(eDataType);
+		((List<? super EDataType>)ePackage.getEClassifiers()).add(eDataType);
 		
 		return eDataType;
+	}
+
+	private NamingConventions namingConventions = new NamingConventions();
+	private NamingConventions getNamingConventions() {
+		return namingConventions;
 	}
 
 	/**

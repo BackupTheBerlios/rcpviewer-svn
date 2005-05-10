@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
 
 /**
  * Set of constants relating to this package.
@@ -64,7 +63,7 @@ public final class Constants {
 	/**
 	 * TODO: not yet being used, for derivation of links.
 	 */
-	public final static Class SIMPLE_REF_TYPE =
+	public final static Class<?> SIMPLE_REF_TYPE =
 		LinkSemanticsType.SIMPLE_REF.getJavaType();
 
 }

@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.metamodel;
 
-import de.berlios.rcpviewer.metamodel.link.LinkSemanticsType;
 
 /**
  * Enumeration of different constraints applicable to {@link LinkSemanticsType}s.

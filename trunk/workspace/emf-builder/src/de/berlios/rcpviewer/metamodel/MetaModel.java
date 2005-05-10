@@ -54,8 +54,14 @@ public final class MetaModel {
 	public MetaModel() {
 	}
 	
-	public <V> Collection<IDomainClass<V>> classes() {
-		return Collections.unmodifiableCollection((Collection)domainClassesByjavaClass.values());
+	/**
+	 * Returns a collection of {@link IDomainClass}es, each one parameterized
+	 * by a different type.
+	 * 
+	 * @return
+	 */
+	public Collection<IDomainClass<?>> classes() {
+		return Collections.unmodifiableCollection((Collection<IDomainClass<?>>)domainClassesByjavaClass.values());
 	}
 	
 	/**
@@ -65,6 +71,10 @@ public final class MetaModel {
 	 * 
 	 * <p>
 	 * If already registered, simply returns, same way as {@link #lookup(Class)}.
+	 * 
+	 * <p>
+	 * TODO: should make sure class is indeed a domain class.
+	 * 
 	 * @param clazz
 	 * @return corresponding {@link DomainClass}
 	 */

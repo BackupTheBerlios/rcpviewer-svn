@@ -82,12 +82,20 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	 * and store class in this (perthis) aspect.
 	 */
 	after(Object pojo): instantiatePojo(pojo) {
-        Class clazz = pojo.getClass();
-        // we register rather than lookup just in case the class has not been loaded
-		IDomainClass domainClass = getMetaModel().register(clazz);
-		this.domainObject = new DomainObject(domainClass, pojo);
+		doInstantiatePojo(pojo, pojo.getClass());
 	}
-
+	
+	/**
+	 * Should be V pojo rather than Object pojo, but AJDT1.2m3 compiler is 
+	 * throwing null pointer exception.
+	 */
+	private <V> void doInstantiatePojo(Object pojo, Class<V> pojoClass) {
+        // we register rather than lookup just in case the class has not been loaded
+		IDomainClass<V> domainClass = getMetaModel().register(pojoClass);
+		this.domainObject = new DomainObject<V>(domainClass, (V)pojo);
+	}
+	
+	
 	public MetaModel getMetaModel() {
 		return MetaModel.threadInstance();
 	}

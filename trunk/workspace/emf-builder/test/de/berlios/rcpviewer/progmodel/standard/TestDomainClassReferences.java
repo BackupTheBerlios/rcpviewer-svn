@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 

@@ -1,14 +1,11 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.IDomainClass;

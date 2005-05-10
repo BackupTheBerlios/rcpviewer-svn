@@ -7,7 +7,7 @@ import de.berlios.rcpviewer.metamodel.IDomainClass;
 
 public class TestDomainClassAttributes extends AbstractTestCase {
 
-	private IDomainClass domainClass;
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -88,12 +88,12 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	public void testGetAttributesWhenNone() {
-		domainClass = new DomainClass(CustomerWithNoAttributes.class);
+		domainClass = new DomainClass<CustomerWithNoAttributes>(CustomerWithNoAttributes.class);
 		assertEquals(0, domainClass.attributes().size());
 	}
 
 	public void testGetAttributesForPrimitives() {
-		domainClass = new DomainClass(CustomerWithEveryPrimitiveTypeAccessor.class);
+		domainClass = new DomainClass<CustomerWithEveryPrimitiveTypeAccessor>(CustomerWithEveryPrimitiveTypeAccessor.class);
 		assertEquals(8, domainClass.attributes().size());
 	}
 	
@@ -103,7 +103,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	
 
 	public void testGetEAttributeNamedForEveryBuiltInPrimitiveType() {
-		domainClass = new DomainClass(CustomerWithEveryPrimitiveTypeAccessor.class);
+		domainClass = new DomainClass<CustomerWithEveryPrimitiveTypeAccessor>(CustomerWithEveryPrimitiveTypeAccessor.class);
 		for(String attributeName: new String[] { 
 								"aByte", "aShort", "anInt", "aLong", 
 								"aChar", "aFloat", "aDouble", "aBoolean", }) {
@@ -113,51 +113,51 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	public void testGetEAttributeNamedForNoneExisting() {
-		domainClass = new DomainClass(CustomerWithEveryPrimitiveTypeAccessor.class);
+		domainClass = new DomainClass<CustomerWithEveryPrimitiveTypeAccessor>(CustomerWithEveryPrimitiveTypeAccessor.class);
 		assertNull(domainClass.getEAttributeNamed("nonExistingAttribute"));
 	}
 
 	public void testWhetherEAttributeIsChangeableForReadWriteAttribute() {
-		domainClass = new DomainClass(CustomerWithReadWriteAttribute.class);
+		domainClass = new DomainClass<CustomerWithReadWriteAttribute>(CustomerWithReadWriteAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isChangeable());
 		assertTrue(domainClass.isChangeable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsChangeableForReadOnlyAttribute() {
-		domainClass = new DomainClass(CustomerWithReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithReadOnlyAttribute>(CustomerWithReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isChangeable());
 		assertFalse(domainClass.isChangeable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsChangeableForWriteOnlyAttribute() {
-		domainClass = new DomainClass(CustomerWithWriteOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithWriteOnlyAttribute>(CustomerWithWriteOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isChangeable());
 		assertTrue(domainClass.isChangeable(eAttribute));
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsWriteOnlyForReadWriteAttribute() {
-		domainClass = new DomainClass(CustomerWithReadWriteAttribute.class);
+		domainClass = new DomainClass<CustomerWithReadWriteAttribute>(CustomerWithReadWriteAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(domainClass.isWriteOnly(eAttribute));
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsReadOnlyForReadOnlyAttribute() {
-		domainClass = new DomainClass(CustomerWithReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithReadOnlyAttribute>(CustomerWithReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(domainClass.isWriteOnly(eAttribute));
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsWriteOnlyForWriteOnlyAttribute() {
-		domainClass = new DomainClass(CustomerWithWriteOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithWriteOnlyAttribute>(CustomerWithWriteOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(domainClass.isWriteOnly(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsDerivedForNonDerivedReadOnlyAttribute() {
-		domainClass = new DomainClass(CustomerWithNonDerivedReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithNonDerivedReadOnlyAttribute>(CustomerWithNonDerivedReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isDerived());
 		assertFalse(eAttribute.isTransient());
@@ -166,7 +166,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 	
 	public void testWhetherEAttributeIsDerivedForDerivedReadOnlyAttribute() {
-		domainClass = new DomainClass(CustomerWithDerivedReadOnlyAttribute.class);
+		domainClass = new DomainClass<CustomerWithDerivedReadOnlyAttribute>(CustomerWithDerivedReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isDerived());
 		assertTrue(eAttribute.isTransient());

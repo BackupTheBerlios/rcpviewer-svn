@@ -44,8 +44,8 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 		return getDomainObjectsFor(domainObject.getDomainClass());
 	}
 
-	public IDomainObject<?> createTransient(IDomainClass<?> domainClass) {
-		IDomainObject domainObject = domainClass.createTransient();
+	public <T> IDomainObject<T> createTransient(IDomainClass<T> domainClass) {
+		IDomainObject<T> domainObject = domainClass.createTransient();
 		attach(domainObject);
 		return domainObject;
 	}

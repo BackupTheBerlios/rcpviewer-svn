@@ -5,18 +5,23 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 import de.berlios.rcpviewer.metamodel.OperationKind;
 
 public class TestDomainClassOperations extends AbstractTestCase {
 
-	private IDomainClass domainClass;
+	private MetaModel metaModel;
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
+		metaModel = null;
 		super.tearDown();
 	}
 	
@@ -91,7 +96,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPublicVisibilityMethodPickedUpAsOperation() {
-		domainClass = new DomainClass(CustomerWithPublicVisibilityOperation.class);
+		domainClass = new DomainClass<CustomerWithPublicVisibilityOperation>(CustomerWithPublicVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
@@ -114,7 +119,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testProtectedVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass(CustomerWithProtectedVisibilityOperation.class);
+		domainClass = new DomainClass<CustomerWithProtectedVisibilityOperation>(CustomerWithProtectedVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -132,7 +137,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPackageLocalVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass(CustomerWithPackageLocalVisibilityOperation.class);
+		domainClass = new DomainClass<CustomerWithPackageLocalVisibilityOperation>(CustomerWithPackageLocalVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -148,7 +153,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPrivateVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass(CustomerWithPrivateVisibilityOperation.class);
+		domainClass = new DomainClass<CustomerWithPrivateVisibilityOperation>(CustomerWithPrivateVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -165,7 +170,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testSuppressedPublicVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass(CustomerWithProgrammaticPublicVisibilityOperation.class);
+		domainClass = new DomainClass<CustomerWithProgrammaticPublicVisibilityOperation>(CustomerWithProgrammaticPublicVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -174,7 +179,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithNoArgumentsAPickedUpAsOperation() {
-		domainClass = new DomainClass(CustomerWithNoArgOperation.class);
+		domainClass = new DomainClass<CustomerWithNoArgOperation>(CustomerWithNoArgOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
@@ -190,7 +195,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation() {
 		// 1 arg
-		domainClass = new DomainClass(CustomerWithPrimitiveArgOperation.class);
+		domainClass = new DomainClass<CustomerWithPrimitiveArgOperation>(CustomerWithPrimitiveArgOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
 		assertNotNull(eOperation);
 		assertEquals("rankAs", eOperation.getName());
@@ -212,7 +217,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(domainClass.isStatic(eOperation));
 
 		// 2 arg
-		domainClass = new DomainClass(CustomerPositionedOnMap.class);
+		domainClass = new DomainClass<CustomerPositionedOnMap>(CustomerPositionedOnMap.class);
 		eOperation = domainClass.getEOperationNamed("positionAt");
 		assertNotNull(eOperation);
 		assertEquals("positionAt", eOperation.getName());
@@ -244,7 +249,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
 		// 2 arg
-		domainClass = new DomainClass(Appointment.class);
+		domainClass = new DomainClass<Appointment>(Appointment.class);
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertNotNull(eOperation);
 		assertEquals("moveTo", eOperation.getName());
@@ -274,8 +279,36 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(domainClass.isStatic(eOperation));
 	}
 
-	public void incompletetestMethodWithDomainObjectArgumentsPickedUpAsOperation() {
-		// TODO
+	public static abstract class Person {
+		private String name;
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+	}
+	public static class Man extends Person implements DomainMarker { }
+	public static class Woman extends Person implements DomainMarker{ }
+	public static class Priest implements DomainMarker {
+		public void marry(Man m, Woman w) {
+		}
+	}
+	/**
+	 * Must register with metaModel rather than just instantiate since we need
+	 * to lookup other {@link IDomainClass}es.
+	 *
+	 */
+	public void testMethodWithDomainObjectArgumentsPickedUpAsOperation() {
+		domainClass = metaModel.register(Priest.class);
+		EOperation eOperation = domainClass.getEOperationNamed("marry");
+		assertNotNull(eOperation);
+		assertEquals("marry", eOperation.getName());
+		assertEquals(2, eOperation.getEParameters().size());
+		assertTrue(domainClass.isParameterAReference(eOperation, 0));
+		IDomainClass<?> eMarryFirstArgClass = domainClass.getDomainClassFor(eOperation, 0);
+		assertSame(Man.class, eMarryFirstArgClass.getJavaClass());
+		
 	}
 
 	/**

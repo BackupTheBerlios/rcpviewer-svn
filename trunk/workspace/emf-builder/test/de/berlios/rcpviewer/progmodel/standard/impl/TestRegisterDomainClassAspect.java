@@ -38,7 +38,7 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 */
 	public void incompletetestImplicitRegistrationByDomainClassInstantiation() {
 		assertNull(metaModel.lookup(Department.class));
-		new DomainClass(Department.class);
+		new DomainClass<Department>(Department.class);
 		assertNotNull(metaModel.lookup(Department.class));
 	}
 
