@@ -678,8 +678,9 @@ public class DomainClass<T>
 				emfFacade.annotationOf(eOperation, Constants.ANNOTATION_OPERATION_STATIC);
 			}
 			
-			((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
-
+			//((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
+			eClass.getEOperations().add(eOperation);
+			
 			// these are supported by EMF, but not (yet) by our metamodel.
 //			eOperation.setLowerBound(..);
 //			eOperation.setUpperBound(..);
@@ -805,6 +806,31 @@ public class DomainClass<T>
 		throw new RuntimeException("Not yet implemented");
 	}
 
+
+	public Method getInvokerFor(EOperation eOperation) {
+		String invokerMethodName = 
+			getMethodNameFrom(
+					methodAnnotationFor(eOperation), 
+					Constants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
+		EList eParameterList = eOperation.getEParameters();
+		Class[] parameterTypes = new Class[eParameterList.size()];
+		int i=0;
+		for(EParameter eParameter: (List<EParameter>)eParameterList ) {
+			parameterTypes[i++] = eParameter.getEType().getInstanceClass();
+		}
+		try {
+			Method invokerMethod = 
+				getJavaClass().getMethod(
+						invokerMethodName, parameterTypes);
+			return invokerMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
 
 
 	// OPERATION SUPPORT: END
@@ -969,9 +995,9 @@ public class DomainClass<T>
 	/**
 	 * TODO: using MetaModel from thread; should be got elsewhere?
 	 */
-	public IDomainClass<?> getReferencedClass(EReference eReference) {
+	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
 		EClass eClass = (EClass)eReference.getEType();
-		return metaModel.lookup(eClass.getInstanceClass());
+		return metaModel.lookup(((Class<V>)eClass.getInstanceClass()));
 		
 	}
 

@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.metamodel;
 
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EOperation;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
@@ -25,11 +26,15 @@ import org.eclipse.emf.ecore.EAttribute;
  * fetching default values of operations, and establishing whether an attribute
  * or operation is (a) visible and if so then (b) enabled. 
  * 
+ * <p>
+ * TODO: should validate the EOperations and EAttributes, just as we do
+ * for IDomainClass.
+ * 
  * @author Dan Haywood
  */
 public interface IDomainObject<T> {
 	
-	public IDomainClass getDomainClass();
+	public IDomainClass<T> getDomainClass();
 	
 	public T getPojo();
 	
@@ -79,5 +84,21 @@ public interface IDomainObject<T> {
 	 * @param newValue
 	 */
 	public void set(EAttribute nameAttribute, Object newValue);
+
+	/**
+	 * Convenience method that should return the same as the 
+	 * corresponding method in {@link IDomainClass}.
+	 * 
+	 * @param operationName
+	 * @return
+	 */
+	public EOperation getEOperationNamed(String operationName);
+
+	/**
+	 * Invoke the operation, applying any preconditions before hand.
+	 * 
+	 * @param operation
+	 */
+	public void invokeOperation(EOperation operation, Object[] args);
 
 }

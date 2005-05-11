@@ -24,6 +24,7 @@ public class TestDomainAspect extends AbstractTestCase {
 	
 	/**
 	 * DomainObject has DomainClass references the correct class
+	 *
 	 */
 	public void testDomainObjectHasCorrectClass() {
 		Department d = new Department();
@@ -33,6 +34,9 @@ public class TestDomainAspect extends AbstractTestCase {
 	}
 
 	/**
+	 * <p>
+	 * TODO: marked incomplete for now; must create domain objects through
+	 * domain class (was getting two copies of IDomainClass). 
 	 */
 	public void testCanGetDomainObjectFromMetaModel() {
 		Department d = new Department();

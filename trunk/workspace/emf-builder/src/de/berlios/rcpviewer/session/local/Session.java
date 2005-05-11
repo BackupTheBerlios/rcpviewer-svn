@@ -99,6 +99,9 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 	public void reset() {
 		domainObjectsByDomainClass.clear();
 	}
+	public static void resetCurrent() {
+		((Session)instance()).reset();
+	}
 
 	// DEPENDENCY INJECTION START //
 

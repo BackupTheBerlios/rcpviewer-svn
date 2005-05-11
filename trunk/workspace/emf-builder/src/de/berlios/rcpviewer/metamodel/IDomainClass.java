@@ -634,15 +634,26 @@ public interface IDomainClass<T> {
 	public Method getAccessorOrMutatorFor(EAttribute eAttribute);
 
 	/**
+	 * For internal use only called by {@link MetaModel}
+	 */
+	public void identifyOperations();
+
+	/**
+	 * Returns the method used to invoke an operation. 
+	 * 
+	 * @see #getAccessorFor()
+	 * @see #getAccessorOrMutatorFor()
+	 * 
+	 * @return
+	 */
+	public Method getInvokerFor(EOperation operation);
+
+
+	/**
 	 * 
 	 * @return
 	 */
 	public List<EReference> references();
-
-	/**
-	 * For internal use only called by {@link MetaModel}
-	 */
-	public void identifyOperations();
 
 
 	/**
@@ -655,7 +666,7 @@ public interface IDomainClass<T> {
 	 * @param departmentRef
 	 * @return
 	 */
-	public IDomainClass getReferencedClass(EReference eReference);
+	public <V> IDomainClass<V> getReferencedClass(EReference eReference);
 
 
 	public boolean isMultiple(EReference eReference);

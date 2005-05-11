@@ -90,14 +90,13 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	 * throwing null pointer exception.
 	 */
 	private <V> void doInstantiatePojo(Object pojo, Class<V> pojoClass) {
-        // we register rather than lookup just in case the class has not been loaded
-		IDomainClass<V> domainClass = getMetaModel().register(pojoClass);
+		IDomainClass<V> domainClass = MetaModel.threadInstance().register(pojoClass);
 		this.domainObject = new DomainObject<V>(domainClass, (V)pojo);
 	}
 	
 	
-	public MetaModel getMetaModel() {
-		return MetaModel.threadInstance();
-	}
+//	public MetaModel getMetaModel() {
+//		return MetaModel.threadInstance();
+//	}
 
 }

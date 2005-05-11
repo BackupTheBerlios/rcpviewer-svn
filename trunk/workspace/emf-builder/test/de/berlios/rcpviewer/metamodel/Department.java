@@ -22,4 +22,5 @@ public class Department implements DomainMarker {
 		this.rank = rank;
 	}
 	
+	
 }

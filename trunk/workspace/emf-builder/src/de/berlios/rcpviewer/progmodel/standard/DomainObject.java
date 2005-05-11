@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
@@ -18,14 +19,14 @@ import de.berlios.rcpviewer.session.ISession;
  * 
  * @author Dan Haywood
  */
-public final class DomainObject<T> implements IDomainObject /*, ISessionAware */ {
-
+public final class DomainObject<T> implements IDomainObject<T> /*, ISessionAware */ {
+	
 	public DomainObject(final IDomainClass<T> domainClass, final T pojo) {
 		this.domainClass = domainClass;
 		this.pojo = pojo;
 	}
 	
-	private final IDomainClass<T> domainClass;
+	private IDomainClass<T> domainClass;
 	public IDomainClass<T> getDomainClass() {
 		return domainClass;
 	}
@@ -96,6 +97,28 @@ public final class DomainObject<T> implements IDomainObject /*, ISessionAware */
 		} catch (InvocationTargetException e) {
 			throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
 		}
+	}
+
+	public EOperation getEOperationNamed(String operationName) {
+		return getDomainClass().getEOperationNamed(operationName);
+	}
+	
+	public void invokeOperation(EOperation operation, final Object[] args) {
+		Method operationMethod = getDomainClass().getInvokerFor(operation);
+		if (operationMethod == null) {
+			throw new UnsupportedOperationException("Operation method '" + operationMethod + "' not accessible / could not be found");
+		}
+		String operationMethodName = operationMethod.getName();
+		try {
+			operationMethod.invoke(this.getPojo(), args);
+		} catch (SecurityException e) {
+			throw new UnsupportedOperationException("Mutator method '" + operationMethodName + "' not accessible");
+		} catch (IllegalAccessException e) {
+			throw new UnsupportedOperationException("Could not invoke mutator method '" + operationMethodName + "'", e);
+		} catch (InvocationTargetException e) {
+			throw new UnsupportedOperationException("Could not invoke mutator method '" + operationMethodName + "'", e);
+		}
+		
 	}
 
 

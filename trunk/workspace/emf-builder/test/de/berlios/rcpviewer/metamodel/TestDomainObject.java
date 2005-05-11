@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.metamodel;
 
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
@@ -8,9 +9,15 @@ import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 public class TestDomainObject extends AbstractTestCase  {
 
 	private MetaModel metaModel;
+	/**
+	 * Need to use MetaModel on the thread because the aspect that creates the
+	 * IDomainObject uses that metamodel for its lookup.
+	 *
+	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		//metaModel = new MetaModel();
+		metaModel = MetaModel.threadInstance();
 	}
 
 	protected void tearDown() throws Exception {
@@ -118,5 +125,20 @@ public class TestDomainObject extends AbstractTestCase  {
 		assertEquals("HR", value);
 	}
 	
+	public void testCanInvokeOperation() {
+		
+		IDomainClass<Department> domainClass = 
+			metaModel.register(Department.class);
+		metaModel.done();
+		
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)getSession().createTransient(domainClass);
+		Department pojo = domainObject.getPojo();
+		EOperation moveOfficeOperation = domainObject.getEOperationNamed("moveOffice");
+		assertFalse(pojo.movedOffice);
+		domainObject.invokeOperation(moveOfficeOperation, new Object[]{});
+		assertTrue(pojo.movedOffice);
+	}
+
 
 }
