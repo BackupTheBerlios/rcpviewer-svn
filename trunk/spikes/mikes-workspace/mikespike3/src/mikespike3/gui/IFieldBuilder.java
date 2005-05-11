@@ -1,7 +1,5 @@
 package mikespike3.gui;
 
-import java.lang.reflect.Method;
-
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -9,6 +7,8 @@ import org.eclipse.swt.widgets.Composite;
  * @author Mike
  */
 public interface IFieldBuilder {
+	
+	public boolean isApplicable( Class clazz, Object value );
 
-	public void createGui( Composite parent, Method method, Object instance );
+	public void createGui( Composite parent, Object value );
 }

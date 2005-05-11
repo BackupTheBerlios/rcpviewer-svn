@@ -8,5 +8,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public interface IFormBuilder {
 
+	public boolean isApplicable( Class clazz, Object value );
+
 	public void createGui( Composite parent, Object instance );
 }

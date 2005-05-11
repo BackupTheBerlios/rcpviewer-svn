@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+   <extension-point id="fieldbuilder" name="Field Builder" schema="schema/fieldbuilder.exsd"/>
 
    <extension
          id="mikespike3"
@@ -38,6 +39,18 @@
          	class="mikespike3.editors.DefaultEditor"
          	id="mikespike3.editors.DefaultEditor">
          </editor>
+   </extension>
+   
+   <extension
+         point="mikespike3.fieldbuilder">
+         <impl
+         	field="java.lang.Boolean"
+         	class="mikespike3.gui.exts.BooleanFieldBuilder">
+         </impl>
+        <impl
+         	field="java.lang.Exception"
+         	class="mikespike3.gui.exts.ExceptionFieldBuilder">
+         </impl>
    </extension>
 
 </plugin>

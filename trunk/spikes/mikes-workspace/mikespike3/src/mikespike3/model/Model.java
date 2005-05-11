@@ -40,10 +40,16 @@ public class Model {
 	
 	/* metamodel contract */
 	
+	/* (non-Javadoc)
+	 * @see mikespike3.model.IModel#getObjects()
+	 */
 	public Object[] getObjects() {
 		return objects.toArray();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mikespike3.model.IModel#addObject(java.lang.Object)
+	 */
 	public boolean addObject( Object obj ) {
 		if ( obj == null ) throw new IllegalArgumentException();
 		if ( objects.contains( obj ) ) return false;
@@ -54,6 +60,9 @@ public class Model {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mikespike3.model.IModel#removeObject(java.lang.Object)
+	 */
 	public boolean removeObject( Object obj ) {
 		if ( obj == null ) throw new IllegalArgumentException();
 		if ( !objects.contains( obj ) ) return false;
@@ -64,6 +73,9 @@ public class Model {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mikespike3.model.IModel#reset()
+	 */
 	public void reset() {
 		objects.clear();
 		notifyListeners();
@@ -72,11 +84,17 @@ public class Model {
 	
 	/* listener functionality */
 	
+	/* (non-Javadoc)
+	 * @see mikespike3.model.IModel#add(mikespike3.model.IModelListener)
+	 */
 	public void add( IModelListener listener) {
 		// TODO Auto-generated method stub
 		listeners.add(listener);
 	}
 
+	/* (non-Javadoc)
+	 * @see mikespike3.model.IModel#remove(mikespike3.model.IModelListener)
+	 */
 	public void remove( IModelListener listener) {
 		// TODO Auto-generated method stub
 		listeners.remove(listener);

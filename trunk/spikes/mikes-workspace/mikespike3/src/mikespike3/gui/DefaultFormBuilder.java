@@ -10,10 +10,17 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class DefaultFormBuilder implements IFormBuilder {
+
+	
+	public boolean isApplicable(Class clazz, Object value) {
+		// default - always applicable
+		return true;
+	}
 
 	/**
 	 * Creates a scrolled form with a single column of fields (each has a label)
@@ -31,11 +38,11 @@ public class DefaultFormBuilder implements IFormBuilder {
 			}
 		});
 		
-		// create form
+		// create form with two columns - one for labels, second for fields
 		ScrolledForm form = toolkit.createScrolledForm( parent );
 		form.setText( instance.getClass().getName() );
 		Composite body = form.getBody();
-		body.setLayout( new GridLayout() );
+		body.setLayout( new GridLayout( 2, false ) );
 
 		// discover methods - stuff the model should do
 		Method[] methods = instance.getClass().getMethods();
@@ -45,6 +52,12 @@ public class DefaultFormBuilder implements IFormBuilder {
 			String name = methods[i].getName();
 			if ( name.startsWith( "get" ) ) {
 				
+				// label
+				Label label = new Label( body, SWT.NONE );
+				label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
+				label.setText( name.substring( 3 ) + ":" );
+				label.setBackground( body.getBackground() );
+				
 				// create parent composite for field
 				Composite fieldComposite = new Composite( body, SWT.NONE );
 				fieldComposite.setLayoutData( 
@@ -52,13 +65,24 @@ public class DefaultFormBuilder implements IFormBuilder {
 				fieldComposite.setBackground( body.getBackground() );
 				toolkit.paintBordersFor( fieldComposite );
 				
-				// create correct field builder
-				IFieldBuilder fieldBuilder
-					= Plugin.getDefault().getFieldBuilderFactory().create(
-							methods[i], instance );
-				
-				// build field gui
-				fieldBuilder.createGui( fieldComposite, methods[i], instance );
+				// get value and create approriate gui
+				Object value = null;
+				try {
+					assert methods[i].getParameterTypes().length == 0;
+					value = methods[i].invoke( instance, (Object[])null );
+					// create correct field builder
+					IFieldBuilder fieldBuilder
+						= Plugin.getDefault().getFieldBuilderFactory().create( 
+								methods[i].getReturnType(), value  );
+					fieldBuilder.createGui( fieldComposite,value );
+				}
+				catch ( Exception ex ) {
+					// exceptions must have specialist displays...
+					IFieldBuilder fieldBuilder
+						= Plugin.getDefault().getFieldBuilderFactory().create( 
+								ex.getClass(), ex  );
+					fieldBuilder.createGui( fieldComposite, ex );
+				}	
 			}
 		}
 		

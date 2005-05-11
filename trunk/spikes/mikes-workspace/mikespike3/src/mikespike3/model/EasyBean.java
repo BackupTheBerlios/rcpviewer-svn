@@ -1,5 +1,7 @@
 package mikespike3.model;
 
+import java.io.Serializable;
+
 import mikespike3.util.RandomUtil;
 
 public class EasyBean {
@@ -7,22 +9,23 @@ public class EasyBean {
 	private String field0 = null;
 	private String field1 = null;
 	private String field2 = null;
-	private String field3 = null;
+	private Boolean field3 = null;
 	private String field4 = null;
 	private String field5 = null;
-	private String field6 = null;
+	private Boolean field6 = null;
 	private String field7 = null;
 	private String field8 = null;
 	private String field9 = null;
+	
 
 	public EasyBean() {
 		field0 = RandomUtil.createString( 0, 10 );
 		field1 = RandomUtil.createString( 0, 10 );
 		field2 = RandomUtil.createString( 0, 10 );
-		field3 = RandomUtil.createString( 0, 10 );
+		field3 = RandomUtil.oneHalfLikely();
 		field4 = RandomUtil.createString( 0, 10 );
 		field5 = RandomUtil.createString( 0, 10 );
-		field6 = RandomUtil.createString( 0, 10 );
+		field6 = RandomUtil.oneHalfLikely();
 		field7 = RandomUtil.createString( 0, 10 );
 		field8 = RandomUtil.createString( 0, 10 );
 		field9 = RandomUtil.createString( 0, 10 );
@@ -52,11 +55,11 @@ public class EasyBean {
 		this.field2 = field2;
 	}
 
-	public String getField3() {
+	public Boolean getField3() {
 		return field3;
 	}
 
-	public void setField3(String field3) {
+	public void setField3(Boolean field3) {
 		this.field3 = field3;
 	}
 
@@ -76,11 +79,11 @@ public class EasyBean {
 		this.field5 = field5;
 	}
 
-	public String getField6() {
+	public Boolean getField6() {
 		return field6;
 	}
 
-	public void setField6(String field6) {
+	public void setField6(Boolean field6) {
 		this.field6 = field6;
 	}
 
