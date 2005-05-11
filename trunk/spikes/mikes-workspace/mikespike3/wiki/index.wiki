@@ -19,13 +19,21 @@ Treat all of this as boilerplate.  The stuff to look at happens in the createPar
 * Still not using EMF model as a distraction
 
 ~~ Initial Design ~~
-Focussing only on FormEditor's.  Two core types, IFormBuilder and IFieldBuilder.  The former deals with overall layout, the second with the display of an individual field.  The approriate implementation used is decided by Factorys that current simply use default values.
-The next step is to make the factories extension-point aware.
+Focussing only on FormEditor's.  Two core types, IFormBuilder and IFieldBuilder.  The former deals with overall layout, the second with the display of an individual field.  
+
+Each has an isApplicable() method which is passed the class and the instance.  The latter arg may seem overkill but might be required for null values and where a user develops specialist editors, for e.g., different states of the instance.
+
+The implementation used is decided by Factories.  Their strategies differ.
+
+The FieldBuilderFactory runs through all implementations of the 'mikespike3.fieldbuilder' extension point untilit hits the first that isApplicable().  If none are found it reverts to the DefaultFieldBuilder.
+
+The FormBuilderFactory simply uses the DefaultFormBuilder.
 
 ~~ Issues Raised~~
 * How will I distinguish first class objects (with their own editors) with dependent objects (in groups on the parent editor)? 
 DAN says: metaModel.classes() should return you all IDomainClass's that are known.  For those that are dependent, there will be (isn't yet) an eReference up to their parent IDomainClass.  So I guess what you want is for the MetaModel to do this filtering for you automatically, eg an overload like metaModel.classes(onlyFirstClass)???
 
+* Both IFormBuilder and IFieldBuilder have the same contract - does this indicate that they are really one and the same thing?
 
 ~~ Likely Annotation Requirements ~~
 * size and wrapping for text fields
