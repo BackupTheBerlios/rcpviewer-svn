@@ -1,7 +1,10 @@
 package mikespike3.gui;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import mikespike3.util.ConfigElementSorter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -17,6 +20,7 @@ public class FieldBuilderFactory {
         IConfigurationElement[] elems
         	= Platform.getExtensionRegistry()
                   .getConfigurationElementsFor( "mikespike3.fieldbuilder" );
+		Arrays.sort( elems, new ConfigElementSorter() );
 		int num = elems.length;
 		builders = new IFieldBuilder[ num ];
 		for ( int i=0 ; i < num ; i++ ) {
