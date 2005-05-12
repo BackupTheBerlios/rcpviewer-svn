@@ -774,13 +774,13 @@ public class DomainClass<T>
 		return (EDataType)parameter.getEType();
 	}
 
-	public boolean isParameterAReference(EOperation operation, int parameterPosition) {
+	public boolean isParameterADomainObject(EOperation operation, int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		return parameter.getEType() instanceof EClass;
 	}
 
 	public IDomainClass getDomainClassFor(EOperation operation, int parameterPosition) {
-		if (!isParameterAReference(operation, parameterPosition)) {
+		if (!isParameterADomainObject(operation, parameterPosition)) {
 			throw new IllegalArgumentException("Parameter does not represent a reference.");
 		}
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
@@ -862,18 +862,21 @@ public class DomainClass<T>
 				// 1:1
 				linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
 			} else {
-				// probably 1:m (collection class)
+				// let's see if its a 1:m (collection class)
 				linkSemanticsType = LinkSemanticsType.lookupBy(referencedJavaClass);
 				if (linkSemanticsType == null) {
+					// no, it's not a List, Set, Map etc.
 					continue;
 				}
 				Associates associates = method.getAnnotation(Associates.class);
 				if (associates == null) {
+					// they've forgotten the @Associates annotation.
 					continue;
 				}
 				referencedJavaClass = associates.value();
 				referencedDomainClass = metaModel.lookup(referencedJavaClass);
 				if (referencedDomainClass == null) {
+					// what they're referencing isn't a domain class
 					continue;
 				}
 			}
@@ -886,8 +889,8 @@ public class DomainClass<T>
 			
 			// TODO: use EAnnotations to specify if qualified and if sorted
 			
-			Container contained = method.getAnnotation(Container.class);
-			if (contained != null) {
+			Container container = method.getAnnotation(Container.class);
+			if (container != null) {
 				eReference.setContainment(true);
 			}
 			Derived derived = method.getAnnotation(Derived.class);
@@ -896,8 +899,11 @@ public class DomainClass<T>
 				eReference.setTransient(true);
 				eReference.setVolatile(true);
 			}
+			Immutable immutable = method.getAnnotation(Immutable.class);
+			if (immutable != null) {
+				eReference.setChangeable(false);
+			}
 			
-			// eReference.setChangeable(whetherChangeable); // TODO
 			// eReference.setUnsettable()
 			// eReference.setDefaultValueLiteral(someDefaultLiteral); // TODO
 			// eReference.setEOpposite(eReferenceOpposite); // TODO
@@ -988,6 +994,15 @@ public class DomainClass<T>
 		return references;
 	}
 	
+	public EReference getEReferenceNamed(String referenceName) {
+		for(EReference eReference: references() ) {
+			if (eReference.getName().equals(referenceName)) {
+				return eReference;
+			}
+		}
+		return null;
+	}
+
 	public boolean containsReference(EReference eReference) {
 		return this.eClass.getEAllReferences().contains(eReference);
 	}
@@ -1015,6 +1030,14 @@ public class DomainClass<T>
 
 	public boolean isUnique(EReference eReference) {
 		return eReference.isUnique();
+	}
+
+	public boolean isChangeable(EReference eReference) {
+		return eReference.isChangeable();
+	}
+
+	public boolean isDerived(EReference eReference) {
+		return eReference.isDerived();
 	}
 
 	// REFERENCES SUPPORT: END

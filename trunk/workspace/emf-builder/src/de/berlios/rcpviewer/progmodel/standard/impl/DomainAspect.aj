@@ -2,6 +2,8 @@ package de.berlios.rcpviewer.progmodel.standard.impl;
 
 import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
+import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.local.Session;
 
 /**
  * A <i>perthis</i> aspect that wraps each POJO and creates a corresponding 
@@ -91,12 +93,23 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	 */
 	private <V> void doInstantiatePojo(Object pojo, Class<V> pojoClass) {
 		IDomainClass<V> domainClass = MetaModel.threadInstance().register(pojoClass);
-		this.domainObject = new DomainObject<V>(domainClass, (V)pojo);
+		this.domainObject = new DomainObject<V>(domainClass, (V)pojo, getSession());
 	}
 	
 	
-//	public MetaModel getMetaModel() {
-//		return MetaModel.threadInstance();
-//	}
+	private ISession session;
+	/**
+	 * TODO: get Session via dependency injection.  For now, just returning singleton.
+	 */
+	public ISession getSession() {
+		// return session;
+		return Session.instance();
+	}
+	public void setSession(ISession session) {
+		if (this.session != null && this.session != session) {
+			throw new IllegalArgumentException("Session already set.");
+		}
+		this.session = session;
+	}
 
 }

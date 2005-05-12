@@ -326,7 +326,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertNotNull(eOperation);
 		assertEquals("marry", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAReference(eOperation, 0));
+		assertTrue(domainClass.isParameterADomainObject(eOperation, 0));
 		IDomainClass<?> eMarryFirstArgClass = domainClass.getDomainClassFor(eOperation, 0);
 		assertSame(Man.class, eMarryFirstArgClass.getJavaClass());
 		

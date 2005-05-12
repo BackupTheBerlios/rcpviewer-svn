@@ -94,3 +94,8 @@ LocatableOnMap lom = houseDomainClass.getExtension(LocatableOnMap.class);
 lom.doSomethingUsefulWith(house);
 
 Note that the provided extension object is stateless.
+
+1.1 Other
+Aspect to:
+* make sure have no-arg constructor on @Domain
+* having @Associates (or any annotation) on wrong type of method.

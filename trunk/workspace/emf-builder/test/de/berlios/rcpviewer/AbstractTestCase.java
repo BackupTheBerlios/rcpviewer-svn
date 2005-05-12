@@ -1,10 +1,6 @@
 package de.berlios.rcpviewer;
 
 import junit.framework.TestCase;
-import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.persistence.IObjectStoreAware;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.local.Session;
 
 /**
  * Aware of certain components.
@@ -12,34 +8,12 @@ import de.berlios.rcpviewer.session.local.Session;
  * @author Dan Haywood
  *
  */
-public abstract class AbstractTestCase extends TestCase 
-	implements /* ISessionAware, */ IObjectStoreAware{
+public abstract class AbstractTestCase extends TestCase {
 
 	public AbstractTestCase() { }
 
 	public AbstractTestCase(String name) {
 		super(name);
 	}
-
-	// DEPENDENCY INJECTION START
-	
-	private ISession session;
-	public ISession getSession() {
-		return Session.instance();
-	}
-	public void setSession(ISession session) {
-		this.session = session;
-	}
-
-
-	private IObjectStore objectStore;
-	public IObjectStore getObjectStore() {
-		return objectStore;
-	}
-	public void setObjectStore(IObjectStore objectStore) {
-		this.objectStore = objectStore;
-	}
-
-	// DEPENDENCY INJECTION END
 
 }

@@ -27,6 +27,19 @@ import de.berlios.rcpviewer.session.ISession;
  */
 public interface IDomainClass<T> {
 
+	/**
+	 * The {@link Metamodel} that (conceptually) owns this domain class.
+	 * 
+	 * <p>
+	 * There could potentially be several {@link MetaModel}s instantiated at
+	 * a time.  For example, one might model the main business object domain,
+	 * while another might model a set of user preferences, and a third might
+	 * model the user's filesystem.
+	 * 
+	 * @return the owning metamodel for this domain class.
+	 */
+	public MetaModel getMetaModel();
+	
 	public Class<T> getJavaClass();
 
 	/**
@@ -522,7 +535,7 @@ public interface IDomainClass<T> {
 	 * @param parameterPosition from 0 to n-1
 	 * @return
 	 */
-	public boolean isParameterAReference(EOperation operation, int parameterPosition);
+	public boolean isParameterADomainObject(EOperation operation, int parameterPosition);
 
 
 	/**
@@ -531,7 +544,7 @@ public interface IDomainClass<T> {
 	 * <p>
 	 * The operation must be one of those for the class; the operation must
 	 * have n parameters; the parameter must be a reference 
-	 * (see {@link #isParameterAReference(EOperation, int)}.
+	 * (see {@link #isParameterADomainObject(EOperation, int)}.
 	 * 
 	 * @param operation
 	 * @param parameterPosition from 0 to n-1
@@ -660,6 +673,14 @@ public interface IDomainClass<T> {
 	 * For internal use only called by {@link MetaModel}
 	 */
 	public void identifyReferences();
+	
+	/**
+	 * Returns the reference with given name, or <tt>nothing</tt> if unknown.
+	 * 
+	 * @param referenceName
+	 * @return
+	 */
+	public EReference getEReferenceNamed(String referenceName);
 
 	/**
 	 * Returns the {@link IDomainClass} referenced 
@@ -677,6 +698,10 @@ public interface IDomainClass<T> {
 
 	public boolean isUnique(EReference eReference);
 
+	public boolean isChangeable(EReference eReference);
+
+	public boolean isDerived(EReference eReference);
+	
 
 	/**
 	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}

@@ -12,3 +12,4 @@ You can optimize the generated get pattern for references that you know will nev
       
 
 ~~Reckon this will be useful when doing links... (hibernate/EJB3 hint for lazy loading)~~
+

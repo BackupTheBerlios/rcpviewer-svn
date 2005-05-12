@@ -12,8 +12,10 @@ import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.ISessionListener;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
+import de.berlios.rcpviewer.session.SessionObjectEvent;
 
 public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 
@@ -50,6 +52,42 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 		return domainObject;
 	}
 
+
+	public void attach(IDomainObject<?> domainObject) {
+		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
+		if (domainObjects.contains(domainObject)) {
+			throw new IllegalArgumentException("pojo already attached to session.");
+		}
+		domainObjects.add(domainObject);
+		// notify listeners
+		SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
+		for(ISessionListener listener: listeners) {
+			listener.domainObjectAttached(event);
+		}
+	}
+	public void attach(Department pojo) {
+		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
+		attach(domainObject);
+	}
+
+	
+	public void detach(IDomainObject<?> domainObject) {
+		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
+		if (!domainObjects.contains(domainObject)) {
+			throw new IllegalArgumentException("pojo not attached to session.");
+		}
+		domainObjects.remove(domainObject);
+		// notify listeners
+		SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
+		for(ISessionListener listener: listeners) {
+			listener.domainObjectDetached(event);
+		}
+	}
+	public void detach(Object pojo) {
+		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
+		detach(domainObject);
+	}
+
 	public boolean isAttached(Object pojo) {
 		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
 		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
@@ -59,30 +97,6 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 	public boolean isAttached(IDomainObject<?> domainObject) {
 		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
 		return domainObjects.contains(domainObject);
-	}
-	
-	public void detach(IDomainObject<?> domainObject) {
-		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
-		if (!domainObjects.contains(domainObject)) {
-			throw new IllegalArgumentException("pojo not attached to session.");
-		}
-		domainObjects.remove(domainObject);
-	}
-	public void detach(Object pojo) {
-		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
-		detach(domainObject);
-	}
-
-	public void attach(IDomainObject<?> domainObject) {
-		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
-		if (domainObjects.contains(domainObject)) {
-			throw new IllegalArgumentException("pojo already attached to session.");
-		}
-		domainObjects.add(domainObject);
-	}
-	public void attach(Department pojo) {
-		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
-		attach(domainObject);
 	}
 
 	public List<IDomainObject<?>> footprintFor(IDomainClass<?> domainClass) {
@@ -102,6 +116,25 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 	public static void resetCurrent() {
 		((Session)instance()).reset();
 	}
+
+	private List<ISessionListener> listeners = new ArrayList<ISessionListener>();
+	/**
+	 * Returns listener only because it simplifies test implementation to do so.
+	 */
+	public <T extends ISessionListener> T addSessionListener(T listener) {
+		synchronized(listeners) {
+			if (!listeners.contains(listener)) {
+				listeners.add(listener);
+			}
+		}
+		return listener;
+	}
+	public void removeSessionListener(ISessionListener listener) {
+		synchronized(listeners) {
+			listeners.remove(listener);
+		}
+	}
+	
 
 	// DEPENDENCY INJECTION START //
 

@@ -5,9 +5,23 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
+import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.local.Session;
 
 public class TestDomainObject extends AbstractTestCase  {
 
+	private static class MyDomainObjectListener implements IDomainObjectListener {
+		boolean attributeChangedCallbackCalled = false;
+		boolean persistedCallbackCalled = false;
+		public void attributeChanged(DomainObjectAttributeEvent event) {
+			attributeChangedCallbackCalled=true;
+		}
+		public void persisted(DomainObjectEvent event) {
+			persistedCallbackCalled=true;
+		}
+	}
+
+	private ISession session;
 	private MetaModel metaModel;
 	/**
 	 * Need to use MetaModel on the thread because the aspect that creates the
@@ -18,14 +32,14 @@ public class TestDomainObject extends AbstractTestCase  {
 		super.setUp();
 		//metaModel = new MetaModel();
 		metaModel = MetaModel.threadInstance();
+		session = new Session();
 	}
 
 	protected void tearDown() throws Exception {
+		metaModel.clear();
 		metaModel = null;
+		session = null;
 		super.tearDown();
-		
-		getObjectStore().reset();
-		getSession().reset();
 	}
 
 	
@@ -33,10 +47,11 @@ public class TestDomainObject extends AbstractTestCase  {
 	 * 
 	 */
 	public void testCanPersistThroughDomainObject() {
+		session = Session.instance(); // use singleton since this is what Aspect
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
 		assertTrue(domainObject.isPersistent());
 	}
@@ -50,10 +65,11 @@ public class TestDomainObject extends AbstractTestCase  {
 	 * In the standard programming model, we pick up on a method called 'save'.
 	 */
 	public void testCanPersistThroughPojo() {
+		session = Session.instance(); // must use Singleton since this is what Aspect uses.
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.getPojo().save();
 		assertTrue(domainObject.isPersistent());
 	}
@@ -65,7 +81,7 @@ public class TestDomainObject extends AbstractTestCase  {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = domainClass.createTransient();
-		assertFalse(getSession().isAttached(domainObject));
+		assertFalse(session.isAttached(domainObject));
 		try {
 			domainObject.persist();
 			fail("IllegalArgumentException should have been thrown.");
@@ -76,10 +92,11 @@ public class TestDomainObject extends AbstractTestCase  {
 
 
 	public void testCannotPersistMoreThanOnce() {
+		session = Session.instance(); // since Aspect will use singleton Session
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
 		try {
 			domainObject.persist();
@@ -94,7 +111,7 @@ public class TestDomainObject extends AbstractTestCase  {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
 		domainObject.set(nameAttribute, "HR");
 		assertEquals("HR", domainObject.getPojo().getName());
@@ -104,7 +121,7 @@ public class TestDomainObject extends AbstractTestCase  {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
 		try {
 			domainObject.set(nameAttribute, new Integer(1));
@@ -114,11 +131,25 @@ public class TestDomainObject extends AbstractTestCase  {
 		}
 	}
 
+	public void testSettingAttributeNotifiesListeners() {
+		IDomainClass<Department> domainClass = 
+			metaModel.register(Department.class);
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)session.createTransient(domainClass);
+		MyDomainObjectListener l =
+			domainObject.addDomainObjectListener(new MyDomainObjectListener());
+		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
+		domainObject.set(nameAttribute, "HR");
+		assertTrue(l.attributeChangedCallbackCalled);
+		assertFalse(l.persistedCallbackCalled);
+	}
+
+
 	public void testCanGetAttribute() {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.getPojo().setName("HR");
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
 		String value = (String)domainObject.get(nameAttribute);
@@ -132,7 +163,7 @@ public class TestDomainObject extends AbstractTestCase  {
 		metaModel.done();
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)getSession().createTransient(domainClass);
+			(IDomainObject<Department>)session.createTransient(domainClass);
 		Department pojo = domainObject.getPojo();
 		EOperation moveOfficeOperation = domainObject.getEOperationNamed("moveOffice");
 		assertFalse(pojo.movedOffice);

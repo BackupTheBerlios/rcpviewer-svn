@@ -5,26 +5,22 @@ import org.eclipse.emf.ecore.EOperation;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
- * pojo in the context of a describing meta-model.
+ * pojo in the context of a describing meta-model, usually attached to an
+ * owning session.
  * 
  * <p>
  * The UI layer interacts with the rest of the framework through the
  * IDomainObject: conceptually a single IDomainObject backs every editor 
- * shown in the UI.
- * 
- * <p> 
- * Note that although this interface exposes the underlying pojo, the UI layer
- * will not interact with the pojo directly because it necessarily must be
- * generic (not coupled to any particular class of pojo).  So instead, this
- * interface exposes methods such as {@link #get(EAttribute)} and
+ * shown in the UI.  Although this interface exposes the underlying pojo, the 
+ * UI layer will not interact with the pojo directly because it necessarily 
+ * must be generic (not coupled to any particular class of pojo).  Instead, 
+ * this interface exposes methods such as {@link #get(EAttribute)} and
  * {@link #set(EAttribute, Object)} to allow reflective interactions.
  * 
  * <p>
- * TODO: At the moment the need for get and set methods probably does not 
- * seem that compelling.  However, in time will extend to include other aspects
- * of the choreography between the UI and the underlying pojo, including
- * fetching default values of operations, and establishing whether an attribute
- * or operation is (a) visible and if so then (b) enabled. 
+ * Moreover, the IDomainObject also plays the role of <i>model</i> within the 
+ * MVC pattern.  Again, the UI layer is the archetypal <i>view</i>, being
+ * notified of changes through the {@link IDomainObjectListener} interface. 
  * 
  * <p>
  * TODO: should validate the EOperations and EAttributes, just as we do
@@ -46,7 +42,10 @@ public interface IDomainObject<T> {
 	
 	/**
 	 * Persist this object.
-	 *
+	 * 
+	 * <p>
+	 * Any {@link IDomainObjectListener}s of the object will be notified.
+	 *  
 	 * @throws IllegalStateException if already persisted.
 	 */
 	public void persist();
@@ -100,5 +99,30 @@ public interface IDomainObject<T> {
 	 * @param operation
 	 */
 	public void invokeOperation(EOperation operation, Object[] args);
+
+	/**
+	 * Adds domain object listener.
+	 * 
+	 * <p>
+	 * If the listener is already known, does nothing.
+	 * 
+	 * <p>
+	 * Note: we return the listener only because it slightly simplfies the
+	 * implementation of tests.
+	 * 
+	 * @param listener
+	 */
+	public <T extends IDomainObjectListener> T addDomainObjectListener(T listener);
+
+	
+	/**
+	 * Removes domain object listener.
+	 * 
+	 * <p>
+	 * If the listener is unknown, does nothing.
+	 * 
+	 * @param listener
+	 */
+	public void removeDomainObjectListener(IDomainObjectListener listener);
 
 }

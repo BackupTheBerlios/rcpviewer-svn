@@ -33,14 +33,59 @@ public interface ISession {
 	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
 	 * attaches to the session.
 	 * 
-	 * <p>
-	 * TODO: forgive my ignorance: is there a way of templating this so that it
-	 * returns a <T> of same type as supplied IDomainClass?
-	 * 
 	 * @param domainClass
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
 	 */
 	<T> IDomainObject<T> createTransient(IDomainClass<T> domainClass);
+
+	/**
+	 * Attach the pojo wrapped in the supplied domainObject to the session.
+	 * 
+	 * <p>
+	 * Any {@link ISessionListener}s of the session will be notified that the
+	 * corresponding {@link IDomainObject} has been attached.
+	 * 
+	 * @param domainObject
+	 * @throws IllegalArgumentException if the pojo was already attached.
+	 */
+	void attach(Department pojo);
+
+	/**
+	 * Attach the pojo wrapped in the supplied domainObject to the session.
+	 * 
+	 * <p>
+	 * Any {@link ISessionListener}s of the session will be notified that the
+	 * {@link IDomainObject} has been attached.
+	 * 
+	 * @param domainObject
+	 * @throws IllegalArgumentException if the pojo was already attached.
+	 */
+	void attach(IDomainObject<?> domainObject);
+
+	
+	/**
+	 * Detach the supplied pojo from the session.
+	 * 
+	 * <p>
+	 * Any {@link ISessionListener}s of the session will be notified that the
+	 * corresponding {@link IDomainObject} has been detached.
+	 * 
+	 * @param pojo
+	 * @throws IllegalArgumentException if the pojo was not attached.
+	 */
+	void detach(Object pojo);
+	
+	/**
+	 * Detach the pojo wrapped in the supplied domainObject from the session.
+	 * 
+	 * <p>
+	 * Any {@link ISessionListener}s of the session will be notified that the
+	 * {@link IDomainObject} has been detached.
+	 * 
+	 * @param domainObject
+	 * @throws IllegalArgumentException if the pojo was not attached.
+	 */
+	void detach(IDomainObject<?> domainObject);
 
 	/**
 	 * Whether the supplied pojo is attached to this session.
@@ -60,52 +105,28 @@ public interface ISession {
 	boolean isAttached(IDomainObject<?> domainObject);
 	
 	/**
-	 * Detach the supplied pojo from the session.
-	 * 
-	 * @param pojo
-	 * @throws IllegalArgumentException if the pojo was not attached.
-	 */
-	void detach(Object pojo);
-	
-	/**
-	 * Detach the pojo wrapped in the supplied domainObject from the session.
-	 * 
-	 * @param domainObject
-	 * @throws IllegalArgumentException if the pojo was not attached.
-	 */
-	void detach(IDomainObject<?> domainObject);
-	
-	/**
-	 * Persist this object to the configured object store.
-	 * 
-	 * @param domainObject
-	 */
-	void persist(IDomainObject<?> domainObject);
-	
-	/**
 	 * Detach all instances.
+	 * 
+	 * <p>
+	 * Note that <i>no</i> {@link IDomainObjectListener}s will be notified. 
 	 * 
 	 * <p>
 	 * Primarily of use for testing.
 	 */
 	void reset();
 
+	
 	/**
-	 * Attach the pojo wrapped in the supplied domainObject to the session.
+	 * Persist this object to the configured object store.
 	 * 
+	 * <p>
+	 * Should delegate to the {@link IDomainObject} to do the persist; 
+	 * {@link IDomainObjectListener}s of the {@link IDomainObject} (<i>not</i>
+	 * the session) will be notified.
+	 *  
 	 * @param domainObject
-	 * @throws IllegalArgumentException if the pojo was already attached.
 	 */
-	void attach(Department pojo);
-
-	/**
-	 * Attach the pojo wrapped in the supplied domainObject to the session.
-	 * 
-	 * @param domainObject
-	 * @throws IllegalArgumentException if the pojo was already attached.
-	 */
-	void attach(IDomainObject<?> domainObject);
-
+	void persist(IDomainObject<?> domainObject);
 	/**
 	 * Returns all attached objects of the supplied class.
 	 * 
@@ -113,5 +134,30 @@ public interface ISession {
 	 * @return
 	 */
 	List<IDomainObject<?>> footprintFor(IDomainClass<?> domainClass);
+
+	/**
+	 * Adds session listener.
+	 * 
+	 * <p>
+	 * If the listener is already known, does nothing.
+	 * 
+	 * <p>
+	 * Note: we return the listener only because it slightly simplfies the
+	 * implementation of tests.
+	 * 
+	 * @param listener
+	 */
+	public <T extends ISessionListener> T addSessionListener(T listener);
+
+	
+	/**
+	 * Removes session listener.
+	 * 
+	 * <p>
+	 * If the listener is unknown, does nothing.
+	 * 
+	 * @param listener
+	 */
+	public void removeSessionListener(ISessionListener listener);
 
 }

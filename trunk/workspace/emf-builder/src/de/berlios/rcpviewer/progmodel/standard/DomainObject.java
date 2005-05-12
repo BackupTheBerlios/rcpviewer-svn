@@ -2,16 +2,21 @@ package de.berlios.rcpviewer.progmodel.standard;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 
+import de.berlios.rcpviewer.metamodel.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.metamodel.IDomainObjectListener;
 import de.berlios.rcpviewer.session.ISession;
 
 /**
- * Wrapper for a POJO that also knows its {@link IDomainClass}.
+ * Wrapper for a POJO that also knows its {@link IDomainClass} and the
+ * {@link ISession} (if any) that owns it.
  * 
  * <p>
  * Implementation note: created by {@link DomainAspect} (perthis aspect for 
@@ -19,11 +24,12 @@ import de.berlios.rcpviewer.session.ISession;
  * 
  * @author Dan Haywood
  */
-public final class DomainObject<T> implements IDomainObject<T> /*, ISessionAware */ {
+public final class DomainObject<T> implements IDomainObject<T> {
 	
-	public DomainObject(final IDomainClass<T> domainClass, final T pojo) {
+	public DomainObject(final IDomainClass<T> domainClass, final T pojo, final ISession session) {
 		this.domainClass = domainClass;
 		this.pojo = pojo;
+		this.session = session;
 	}
 	
 	private IDomainClass<T> domainClass;
@@ -90,6 +96,13 @@ public final class DomainObject<T> implements IDomainObject<T> /*, ISessionAware
 		String mutatorMethodName = mutatorMethod.getName();
 		try {
 			mutatorMethod.invoke(this.getPojo(), newValue);
+			// notify listeners
+			DomainObjectAttributeEvent event = 
+				new DomainObjectAttributeEvent(this, attribute, newValue);
+			for(IDomainObjectListener listener: listeners) {
+				listener.attributeChanged(event);
+			}
+			
 		} catch (SecurityException e) {
 			throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
 		} catch (IllegalAccessException e) {
@@ -121,17 +134,33 @@ public final class DomainObject<T> implements IDomainObject<T> /*, ISessionAware
 		
 	}
 
-
-	// DEPENDENCY INJECTION START
+	private List<IDomainObjectListener> listeners = new ArrayList<IDomainObjectListener>();
+	/**
+	 * Returns listener only because it simplifies test implementation to do so.
+	 */
+	public <T extends IDomainObjectListener> T addDomainObjectListener(T listener) {
+		synchronized(listeners) {
+			if (!listeners.contains(listener)) {
+				listeners.add(listener);
+			}
+		}
+		return listener;
+	}
+	public void removeDomainObjectListener(IDomainObjectListener listener) {
+		synchronized(listeners) {
+			listeners.remove(listener);
+		}
+	}
 	
-	private ISession session;
-	public ISession getSession() {
-		return de.berlios.rcpviewer.session.local.Session.instance();
-	}
-	public void setSession(ISession session) {
-		this.session = session;
-	}
 
-	// DEPENDENCY INJECTION END
+	private ISession session;
+	/**
+	 * Session through which this was created.
+	 * 
+	 * @return
+	 */
+	public ISession getSession() {
+		return session;
+	}
 
 }

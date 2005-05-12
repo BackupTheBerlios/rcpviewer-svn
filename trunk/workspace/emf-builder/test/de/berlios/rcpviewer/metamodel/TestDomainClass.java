@@ -3,21 +3,22 @@ package de.berlios.rcpviewer.metamodel;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
+import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.local.Session;
 
 public class TestDomainClass extends AbstractTestCase  {
 
 	private MetaModel metaModel;
+	private ISession session;
 	protected void setUp() throws Exception {
 		super.setUp();
 		metaModel = new MetaModel();
+		session = new Session();
 	}
 
 	protected void tearDown() throws Exception {
 		metaModel = null;
 		super.tearDown();
-		
-		getObjectStore().reset();
-		getSession().reset();
 	}
 
 	/**
@@ -36,8 +37,8 @@ public class TestDomainClass extends AbstractTestCase  {
 		Department pojo = domainObject.getPojo();
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
-		assertFalse(getSession().isAttached(domainObject));
-		assertFalse(getSession().isAttached(domainObject.getPojo()));
+		assertFalse(session.isAttached(domainObject));
+		assertFalse(session.isAttached(domainObject.getPojo()));
 	}
 
 
