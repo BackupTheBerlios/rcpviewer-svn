@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Spike 3
 Bundle-SymbolicName: mikespike3; singleton:=true
 Bundle-Version: 0.0.1
-Bundle-ClassPath: mikespike2_runtime.jar
+Bundle-ClassPath: mikespike2_runtime.jar,
+ lib/swtcalendar.jar
 Bundle-Activator: mikespike3.Plugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,

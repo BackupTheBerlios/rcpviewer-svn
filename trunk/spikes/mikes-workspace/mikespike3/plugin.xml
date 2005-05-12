@@ -47,6 +47,10 @@
          	field="java.lang.Boolean"
          	class="mikespike3.gui.exts.BooleanFieldBuilder">
          </impl>
+         <impl
+         	field="java.util.Date"
+         	class="mikespike3.gui.exts.DateFieldBuilder">
+         </impl>
         <impl
          	field="java.lang.Exception"
          	class="mikespike3.gui.exts.ExceptionFieldBuilder">

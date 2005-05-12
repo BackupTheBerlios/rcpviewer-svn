@@ -25,7 +25,7 @@ Each has an isApplicable() method which is passed the class and the instance.  T
 
 The implementation used is decided by Factories.  Their strategies differ.
 
-The FieldBuilderFactory runs through all implementations of the 'mikespike3.fieldbuilder' extension point until it hits the first that isApplicable().  If none are found it reverts to the DefaultFieldBuilder.  Note that the extension points are sorted so that more specialist ones are checked first.  What does 'more specialist' mean? - see ConfigElementSorter in the util package (this is an old implemenattion that might be more elegantly done in Eclipse 3.x).
+The FieldBuilderFactory runs through all implementations of the 'mikespike3.fieldbuilder' extension point until it hits the first that isApplicable().  If none are found it reverts to the DefaultFieldBuilder.  Note that the extension points are sorted so that more specialist ones are checked first.  What does 'more specialist' mean? - see ConfigElementSorter in the util package (this is an old implemenation that might be more elegantly done in Eclipse 3.x).
 
 The FormBuilderFactory simply uses the DefaultFormBuilder.
 

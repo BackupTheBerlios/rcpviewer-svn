@@ -1,6 +1,6 @@
 package mikespike3.model;
 
-import java.io.Serializable;
+import java.util.Date;
 
 import mikespike3.util.RandomUtil;
 
@@ -13,9 +13,9 @@ public class EasyBean {
 	private String field4 = null;
 	private String field5 = null;
 	private Boolean field6 = null;
-	private String field7 = null;
+	private Date field7 = null;
 	private String field8 = null;
-	private String field9 = null;
+	private Date field9 = null;
 	
 
 	public EasyBean() {
@@ -26,9 +26,9 @@ public class EasyBean {
 		field4 = RandomUtil.createString( 0, 10 );
 		field5 = RandomUtil.createString( 0, 10 );
 		field6 = RandomUtil.oneHalfLikely();
-		field7 = RandomUtil.createString( 0, 10 );
+		field7 = RandomUtil.createDate( RandomUtil.DATE_HINT_LAST_YEAR );
 		field8 = RandomUtil.createString( 0, 10 );
-		field9 = RandomUtil.createString( 0, 10 );
+		field9 = RandomUtil.createDate( RandomUtil.DATE_HINT_NEXT_YEAR );
 	}
 
 	public String getField0() {
@@ -87,11 +87,11 @@ public class EasyBean {
 		this.field6 = field6;
 	}
 
-	public String getField7() {
+	public Date getField7() {
 		return field7;
 	}
 
-	public void setField7(String field7) {
+	public void setField7(Date field7) {
 		this.field7 = field7;
 	}
 
@@ -103,11 +103,11 @@ public class EasyBean {
 		this.field8 = field8;
 	}
 
-	public String getField9() {
+	public Date getField9() {
 		return field9;
 	}
 
-	public void setField9(String field9) {
+	public void setField9(Date field9) {
 		this.field9 = field9;
 	}
 	

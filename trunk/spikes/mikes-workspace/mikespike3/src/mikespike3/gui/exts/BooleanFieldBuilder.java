@@ -22,7 +22,7 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 		if ( parent == null ) throw new IllegalArgumentException();
 		// value could be null;
 		
-		parent.setLayout( new GridLayout( 2, false ) );
+		parent.setLayout( new GridLayout() );
 		Button checkbox = new Button( parent, SWT.CHECK );
 		checkbox.setLayoutData( new GridData() );
 		
