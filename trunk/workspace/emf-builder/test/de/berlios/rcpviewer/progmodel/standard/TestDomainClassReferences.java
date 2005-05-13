@@ -192,14 +192,14 @@ public class TestDomainClassReferences extends AbstractTestCase {
 			return employeesNamed;
 		}
 		
-//		/**
-//		 * Should be picked up as a derived 1:1 reference to Employee.
-//		 * @return
-//		 */
-//		@Derived
-//		public Employee getMostRecentJoiner() {
-//			throw new RuntimeException("not implemented");
-//		}
+		/**
+		 * Should be picked up as a derived 1:1 reference to Employee.
+		 * @return
+		 */
+		@Derived
+		public Employee getMostRecentJoiner() {
+			throw new RuntimeException("not implemented");
+		}
 
 	}
 
@@ -260,7 +260,6 @@ public class TestDomainClassReferences extends AbstractTestCase {
 		departmentDomainClass = metaModel.register(DepartmentImmutableEmployeeCollection.class);
 		employeeDomainClass = metaModel.register(Employee.class);
 		metaModel.done();
-		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
 		assertEquals("employees", refToEmployees.getName());
@@ -271,7 +270,6 @@ public class TestDomainClassReferences extends AbstractTestCase {
 		employeeDomainClass = metaModel.register(EmployeeImmutableNameRef.class);
 		nameDomainClass = metaModel.register(Name.class);
 		metaModel.done();
-		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToName = employeeDomainClass.references().get(0);
 		assertEquals("name", refToName.getName());
@@ -291,11 +289,9 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	/**
-	 * TODO: when add in 1:1, getting concurrent collection modification.  Think that the
-	 * Employee is not being picked up and so trying to auto-create.
 	 *
 	 */
-	public void incompletetestDerivedOneToOneIsPickedUp(){
+	public void testDerivedOneToOneIsPickedUp(){
 		departmentDomainClass = metaModel.register(DepartmentDerivedReferences.class);
 		employeeDomainClass = metaModel.register(Employee.class);
 		metaModel.done();
@@ -304,6 +300,5 @@ public class TestDomainClassReferences extends AbstractTestCase {
 		assertFalse(departmentDomainClass.isMultiple(derivedRefToEmployee));
 		assertTrue(departmentDomainClass.isDerived(derivedRefToEmployee));
 	} 
-
 
 }

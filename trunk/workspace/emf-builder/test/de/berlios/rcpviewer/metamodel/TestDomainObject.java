@@ -36,7 +36,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel.clear();
+		metaModel.reset();
 		metaModel = null;
 		session = null;
 		super.tearDown();
@@ -110,6 +110,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanSetAttribute() {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
+		metaModel.done();
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
@@ -134,6 +135,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testSettingAttributeNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
+		metaModel.done();
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		MyDomainObjectListener l =
@@ -148,6 +150,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanGetAttribute() {
 		IDomainClass<Department> domainClass = 
 			metaModel.register(Department.class);
+		metaModel.done();
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.getPojo().setName("HR");

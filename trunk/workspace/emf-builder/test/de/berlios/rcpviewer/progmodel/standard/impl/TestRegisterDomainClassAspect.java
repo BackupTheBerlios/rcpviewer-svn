@@ -15,7 +15,7 @@ public class TestRegisterDomainClassAspect extends TestCase {
 
 	protected void tearDown() throws Exception {
 		metaModel = null;
-		MetaModel.threadInstance().clear();
+		MetaModel.threadInstance().reset();
 		super.tearDown();
 	}
 

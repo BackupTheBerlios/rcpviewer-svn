@@ -66,10 +66,6 @@ public class DomainClass<T>
 		this.namingConventions = new NamingConventions();
 
 		identifyClass();
-
-		identifyAccessors();
-		identifyMutators();
-		identifyUnSettableAttributes();
 	}
 
 	public DomainClass(final Class<T> javaClass) {
@@ -205,7 +201,7 @@ public class DomainClass<T>
 	 * @param methods
 	 * @param attributesByName
 	 */
-	private void identifyAccessors() {
+	public void identifyAccessors() {
 		
 		Method[] methods = javaClass.getMethods();
 		// search for accessors of value types
@@ -282,7 +278,7 @@ public class DomainClass<T>
 	 * this is not symmetric with {@link #identifyOperations()}.
 	 * 
 	 */
-	private void identifyMutators() {
+	public void identifyMutators() {
 
 		Method[] methods = javaClass.getMethods();
 
@@ -322,7 +318,7 @@ public class DomainClass<T>
 	/**
 	 *  
 	 */
-	private void identifyUnSettableAttributes() {
+	public void identifyUnSettableAttributes() {
 	
 		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;

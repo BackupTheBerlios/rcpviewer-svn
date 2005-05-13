@@ -649,6 +649,21 @@ public interface IDomainClass<T> {
 	/**
 	 * For internal use only called by {@link MetaModel}
 	 */
+	public void identifyAccessors();
+
+	/**
+	 * For internal use only called by {@link MetaModel}
+	 */
+	public void identifyMutators();
+
+	/**
+	 * For internal use only called by {@link MetaModel}
+	 */
+	public void identifyUnSettableAttributes();
+
+	/**
+	 * For internal use only called by {@link MetaModel}
+	 */
 	public void identifyOperations();
 
 	/**

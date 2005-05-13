@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 
@@ -34,26 +35,31 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 		}
 	}
 
+	private MetaModel metaModel;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = MetaModel.threadInstance();  // since aspects pick up thread singleton
 	}
 
 	protected void tearDown() throws Exception {
+		metaModel.reset();
 		super.tearDown();
 	}
 	
 	// lower & upper bounds //
 
 	public void testLowerBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass<CustomerWithNoLowerBoundReadOnlyAttribute>(CustomerWithNoLowerBoundReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithNoLowerBoundReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getLowerBound());
 		assertEquals(1, domainClass.getLowerBound(eAttribute));
 	}
 
 	public void testLowerBoundOfEAttributeWhenSpecified() {
-		domainClass = new DomainClass<CustomerWithLowerBoundReadOnlyAttribute>(CustomerWithLowerBoundReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithLowerBoundReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(0, eAttribute.getLowerBound());
 		assertEquals(0, domainClass.getLowerBound(eAttribute));
@@ -65,14 +71,16 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testUpperBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass<CustomerWithNoUpperBoundReadOnlyAttribute>(CustomerWithNoUpperBoundReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithNoUpperBoundReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getUpperBound());
 		assertEquals(1, domainClass.getLowerBound(eAttribute));
 	}
 
 	public void testUpperBoundOfEAttributeWhenSpecified() {
-		domainClass = new DomainClass<CustomerWithUpperBoundReadOnlyAttribute>(CustomerWithUpperBoundReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithUpperBoundReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(3, eAttribute.getUpperBound());
 		assertEquals(3, domainClass.getUpperBound(eAttribute));

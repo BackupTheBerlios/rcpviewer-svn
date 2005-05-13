@@ -54,9 +54,10 @@ public class TestPositionedAt extends AbstractTestCase {
 	 *
 	 */
 	public void testDomainClassWithAllAttributesPositioned() {
+		metaModel.addExtension(new ExtendedProgModelExtension());
 		domainClass = 
 			metaModel.register(CustomerWithAllAttributesPositioned.class);
-		metaModel.addExtension(new ExtendedProgModelExtension());
+		metaModel.done();
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
 		assertNotNull(comparator);
 		List<EAttribute> sortedAttributes = 

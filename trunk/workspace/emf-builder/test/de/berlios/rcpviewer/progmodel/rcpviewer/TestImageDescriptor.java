@@ -34,8 +34,9 @@ public class TestImageDescriptor extends AbstractTestCase {
 	}
 	
 	public void testDomainClassWithImageUrlAt() {
-		domainClass = metaModel.register(ProspectiveSale.class);
 		metaModel.addExtension(new RcpViewerExtension());
+		domainClass = metaModel.register(ProspectiveSale.class);
+		metaModel.done();
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNotNull(id);
 	}

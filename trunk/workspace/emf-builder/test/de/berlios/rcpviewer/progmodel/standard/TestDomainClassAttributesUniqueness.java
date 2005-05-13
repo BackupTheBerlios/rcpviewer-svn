@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
@@ -30,33 +31,39 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 		}
 	}
 
+	private MetaModel metaModel;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
+		metaModel = null;
 		super.tearDown();
 	}
 	
 	// uniqueness //
 
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass<CustomerWithNoUniquenessReadOnlyAttribute>(CustomerWithNoUniquenessReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithNoUniquenessReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = new DomainClass<CustomerWithUniqueReadOnlyAttribute>(CustomerWithUniqueReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithUniqueReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = new DomainClass<CustomerWithNonUniqueReadOnlyAttribute>(CustomerWithNonUniqueReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithNonUniqueReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());
 		assertFalse(domainClass.isUnique(eAttribute));

@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 
@@ -30,33 +31,39 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 		}
 	}
 
+	private MetaModel metaModel;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
+		metaModel = new MetaModel();
 	}
 
 	protected void tearDown() throws Exception {
+		metaModel = null;
 		super.tearDown();
 	}
 	
 	// ordering //
 
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = new DomainClass<CustomerWithNoOrderingReadOnlyAttribute>(CustomerWithNoOrderingReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithNoOrderingReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = new DomainClass<CustomerWithOrderingReadOnlyAttribute>(CustomerWithOrderingReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithOrderingReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = new DomainClass<CustomerWithoutOrderingReadOnlyAttribute>(CustomerWithoutOrderingReadOnlyAttribute.class);
+		domainClass = metaModel.register(CustomerWithoutOrderingReadOnlyAttribute.class);
+		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());
 		assertFalse(domainClass.isOrdered(eAttribute));

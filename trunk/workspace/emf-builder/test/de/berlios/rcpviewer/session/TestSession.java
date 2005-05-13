@@ -42,7 +42,7 @@ public class TestSession extends AbstractTestCase  {
 		session.reset();
 		session = null;
 		metaModel = null;
-		MetaModel.threadInstance().clear();
+		MetaModel.threadInstance().reset();
 		super.tearDown();
 	}
 

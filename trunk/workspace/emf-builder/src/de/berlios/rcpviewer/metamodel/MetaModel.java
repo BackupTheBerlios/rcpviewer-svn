@@ -11,6 +11,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
 
 /**
  * Registery of all discovered {@link DomainClass}es.
@@ -43,17 +44,20 @@ public final class MetaModel {
 	 */
 	public void addExtension(IMetaModelExtension extension) {
 		extensions.add(extension);
-		for(IDomainClass domainClass: classes()) {
-			extension.analyze(domainClass);
-		}
 	}
 	
 	/**
 	 * managed using {@link Container}
 	 */
 	public MetaModel() {
+		init();
 	}
 	
+	private void init() {
+		addExtension(new StandardProgModelExtension());
+	}
+	
+
 	/**
 	 * Returns a collection of {@link IDomainClass}es, each one parameterized
 	 * by a different type.
@@ -122,20 +126,21 @@ public final class MetaModel {
 	 * The metamodel uses this to determine any references.
 	 */
 	public void done() {
-		for(IDomainClass<?> dc: domainClassesByjavaClass.values()) {
-			dc.identifyOperations();
-			dc.identifyReferences();
+		for(IMetaModelExtension extension: extensions) {
+			for(IDomainClass domainClass: new ArrayList<IDomainClass>(classes())) {
+				extension.analyze(domainClass);
+			}
 		}
-		
 	}
 	
 
 	/**
 	 * for testing purposes
 	 */
-	public void clear() {
+	public void reset() {
 		domainClassesByjavaClass.clear();
-		this.extensions.clear();
+		extensions.clear();
+		init();
 	}
 	
 	public int size() {
