@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+import java.util.List;
+
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 
@@ -84,6 +86,63 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		}
 	}
 	public static class Appointment {
+		public void moveTo(
+				TimePeriod newPeriod, 
+				String agenda) {
+		}
+		public static void createAt(
+				TimePeriod timePeriod,
+				String rationale) {
+		}
+	}
+	public static class AppointmentWithAccessor {
+		private String name;
+		public String getName() {
+			return name;
+		}
+		public void moveTo(
+				TimePeriod newPeriod, 
+				String agenda) {
+		}
+		public static void createAt(
+				TimePeriod timePeriod,
+				String rationale) {
+		}
+	}
+	public static class AppointmentWithMutator {
+		private String name;
+		public void setName(String name) {
+			this.name = name;
+		}
+		public void moveTo(
+				TimePeriod newPeriod, 
+				String agenda) {
+		}
+		public static void createAt(
+				TimePeriod timePeriod,
+				String rationale) {
+		}
+	}
+	public static class AppointmentWithSingleReference {
+		private AppointmentWithSingleReference nextAppointment;
+		public AppointmentWithSingleReference getNextAppointment() {
+			return nextAppointment;
+		}
+		public void moveTo(
+				TimePeriod newPeriod, 
+				String agenda) {
+		}
+		public static void createAt(
+				TimePeriod timePeriod,
+				String rationale) {
+		}
+	}
+	public static class AppointmentWithCollection {
+		private List<AppointmentWithCollection> otherAppointments;
+		@Associates(AppointmentWithCollection.class)
+		public List<AppointmentWithCollection> getOtherAppointments() {
+			return otherAppointments;
+		}
 		public void moveTo(
 				TimePeriod newPeriod, 
 				String agenda) {
@@ -413,4 +472,28 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		// TODO
 	}
 	
+	public void testAccessorsNotPickedUpAsOperation() {
+		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		metaModel.done();
+		assertEquals(2, domainClass.operations().size());
+	}
+
+	public void testMutatorsNotPickedUpAsOperation() {
+		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		metaModel.done();
+		assertEquals(2, domainClass.operations().size());
+	}
+
+	public void testSingleReferencessNotPickedUpAsOperation() {
+		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		metaModel.done();
+		assertEquals(2, domainClass.operations().size());
+	}
+
+	public void testCollectionsNotPickedUpAsOperation() {
+		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		metaModel.done();
+		assertEquals(2, domainClass.operations().size());
+	}
+
 }

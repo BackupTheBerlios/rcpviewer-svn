@@ -566,12 +566,20 @@ public class DomainClass<T>
 			if ((method.getModifiers() & Method.PUBLIC) != Method.PUBLIC) {
 				continue;
 			}
-			if (method.getAnnotation(Programmatic.class) != null) {
-				continue;
-			}
 			if (getNamingConventions().isReserved(method)) {
 				continue;
 			}
+			if (getNamingConventions().isAccessor(method) ||
+					getNamingConventions().isMutator(method)) {
+				continue;
+			}
+			if (getNamingConventions().isReference(method)) {
+				continue;
+			}
+			if (method.getAnnotation(Programmatic.class) != null) {
+				continue;
+			}
+			
 			Class<?> returnType = method.getReturnType();
 			boolean returnsValue = getNamingConventions().isValueType(returnType);
 			boolean returnsReference = getNamingConventions().isReferenceType(returnType);

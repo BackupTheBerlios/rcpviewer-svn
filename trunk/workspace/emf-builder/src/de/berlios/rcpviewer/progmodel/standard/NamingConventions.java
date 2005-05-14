@@ -160,26 +160,26 @@ public final class NamingConventions {
 	 * Whether this method represents an accessor (getter) to either a simple
 	 * or multiple reference of other {@link ADomainObject}s.
 	 * 
-	 * @param linkMethod
+	 * @param method
 	 * @return
 	 */
-	public final boolean isReference(final Method linkMethod) {
-		if (linkMethod.getParameterTypes().length != 0)
+	public final boolean isReference(final Method method) {
+		if (method.getParameterTypes().length != 0)
 			return false;
-		Class<?> returnType = linkMethod.getReturnType();
+		Class<?> returnType = method.getReturnType();
 		if (!isReferenceType(returnType) &&
 			!isCollectionType(returnType))
 			return false;
-		String methodName = linkMethod.getName(); 
+		String methodName = method.getName(); 
 		return methodName.startsWith("get") &&
 		       methodName.length() > 3        ;
 	}
 	
-	public final void assertLink(final Method linkMethod) {
-		if (linkMethod == null) {
-			throw new AssertionError("null linkMethod");
+	public final void assertReference(final Method method) {
+		if (method == null) { // TODO: make into an aspet
+			throw new AssertionError("null method");
 		}
-		if (!isReference(linkMethod)) {
+		if (!isReference(method)) {
 			throw new AssertionError("not a Method that represents a link");
 		}
 	}
