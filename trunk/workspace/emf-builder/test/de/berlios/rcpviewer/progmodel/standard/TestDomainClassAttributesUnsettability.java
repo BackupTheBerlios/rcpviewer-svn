@@ -69,7 +69,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 	}
 	
 	public void testWhetherEAttributeIsUnsettableWhenIs() {
-		domainClass = metaModel.register(CustomerWithUnsettableAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithUnsettableAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
@@ -77,14 +77,14 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
-		domainClass = metaModel.register(CustomerWithOnlyIsUnsetForAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithOnlyIsUnsetForAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
-		domainClass = metaModel.register(CustomerWithOnlyUnsetForAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithOnlyUnsetForAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());

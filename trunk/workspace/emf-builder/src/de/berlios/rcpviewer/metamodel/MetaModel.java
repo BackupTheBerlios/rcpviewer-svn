@@ -36,6 +36,36 @@ public final class MetaModel {
 		return registryForThisThread.get();
 	}
 
+	
+	/**
+	 * Creates a new metamodel using {@link StandardProgModelExtension} as the
+	 * a primary extension.
+	 * 
+	 * @see #getPrimaryExtension()
+	 */
+	public MetaModel() {
+		this(new StandardProgModelExtension()); 
+	}
+
+	/**
+	 * Creates a new metamodel using specified {@link IMetaModelExtension} as 
+	 * the a primary extension.
+	 * 
+	 * @see #getPrimaryExtension()
+	 */
+	public MetaModel(final IMetaModelExtension primaryExtension) {
+		this.primaryExtension = primaryExtension; 
+	}
+
+	private final IMetaModelExtension primaryExtension;
+	/**
+	 * The primary extension is responsible for traversing the graph of
+	 * POJOs to build the extent of the meta model.
+	 */
+	public IMetaModelExtension getPrimaryExtension() {
+		return primaryExtension;
+	}
+
 	private List<IMetaModelExtension> extensions = new ArrayList<IMetaModelExtension>();
 	/**
 	 * Call after registering all classes.
@@ -45,18 +75,6 @@ public final class MetaModel {
 	public void addExtension(IMetaModelExtension extension) {
 		extensions.add(extension);
 	}
-	
-	/**
-	 * managed using {@link Container}
-	 */
-	public MetaModel() {
-		init();
-	}
-	
-	private void init() {
-		addExtension(new StandardProgModelExtension());
-	}
-	
 
 	/**
 	 * Returns a collection of {@link IDomainClass}es, each one parameterized
@@ -74,7 +92,7 @@ public final class MetaModel {
 	 * returns null *** this functionality commented out ***).
 	 * 
 	 * <p>
-	 * If already registered, simply returns, same way as {@link #lookup(Class)}.
+	 * If already registered, simply returns, same way as {@link #lookupNoRegister(Class)}.
 	 * 
 	 * <p>
 	 * TODO: should make sure class is indeed a domain class.
@@ -82,24 +100,24 @@ public final class MetaModel {
 	 * @param clazz
 	 * @return corresponding {@link DomainClass}
 	 */
-	public <V> IDomainClass<V> register(final Class<V> clazz) {
+	public <V> IDomainClass<V> lookup(final Class<V> clazz) {
 		// TODO: for some reason, not working even though AspectJ says that
 		// the introduction will be applied???
-//		if (!DomainObject.class.isAssignableFrom(clazz)) {
+//		if (!de.berlios.rcpviewer.progmodel.standard.DomainObject.class.isAssignableFrom(clazz)) {
 //			return null;
 //		}
-		IDomainClass<V> domainClass = lookup(clazz);
+		IDomainClass<V> domainClass = lookupNoRegister(clazz);
 		if (domainClass == null) {
 			domainClass = new DomainClass<V>(this, clazz);
 			domainClassesByjavaClass.put(clazz, domainClass);
+			primaryExtension.analyze(domainClass);
 		}
-		
 		return domainClass;
 	}
 	
-	public <V> IDomainClass<V> register(final DomainClass<V> domainClass) {
+	public <V> IDomainClass<V> lookup(final DomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
-		IDomainClass<V> existingDomainClass = lookup(javaClass);
+		IDomainClass<V> existingDomainClass = lookupNoRegister(javaClass);
 		if (existingDomainClass != null) {
 			if (domainClass != existingDomainClass) {
 				throw new RuntimeException("Domain class already registered, '" + domainClass.getName() + "'");
@@ -111,11 +129,12 @@ public final class MetaModel {
 	}
 
 	/**
-	 * looks up the {@link DomainClass} for the supplied {@link Class}. 
-	 * @param clazz
+	 * looks up the {@link DomainClass} for the supplied {@link Class}.
+	 *  
+	 * @param javaClass
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
-	public <V> IDomainClass<V> lookup(final Class<V> javaClass) {
+	public <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass) {
 		return (DomainClass<V>)domainClassesByjavaClass.get(javaClass);
 	}
 
@@ -140,7 +159,6 @@ public final class MetaModel {
 	public void reset() {
 		domainClassesByjavaClass.clear();
 		extensions.clear();
-		init();
 	}
 	
 	public int size() {
@@ -151,7 +169,7 @@ public final class MetaModel {
 		new HashMap<Class<?>, IDomainClass<?>>();
 	public <V> IDomainClass<V> domainClassFor(EClass eClass) {
 		Class<V> javaClass = (Class<V>)eClass.getInstanceClass();
-		return lookup(javaClass);
+		return lookupNoRegister(javaClass);
 	}
 	
 

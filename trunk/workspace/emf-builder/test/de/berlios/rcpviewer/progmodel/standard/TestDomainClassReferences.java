@@ -223,8 +223,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	
 
 	public void testOneToManyIsPickedUp(){
-		departmentDomainClass = metaModel.register(Department.class);
-		employeeDomainClass = metaModel.register(Employee.class);
+		departmentDomainClass = metaModel.lookup(Department.class);
+		employeeDomainClass = metaModel.lookup(Employee.class);
 		metaModel.done();
 		
 		assertEquals(1, departmentDomainClass.references().size());
@@ -240,8 +240,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testOneToOneIsPickedUp(){
-		departmentDomainClass = metaModel.register(Department.class);
-		employeeDomainClass = metaModel.register(Employee.class);
+		departmentDomainClass = metaModel.lookup(Department.class);
+		employeeDomainClass = metaModel.lookup(Employee.class);
 		metaModel.done();
 		
 		assertEquals(1, employeeDomainClass.references().size());
@@ -257,8 +257,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToManyIsPickedUp(){
-		departmentDomainClass = metaModel.register(DepartmentImmutableEmployeeCollection.class);
-		employeeDomainClass = metaModel.register(Employee.class);
+		departmentDomainClass = metaModel.lookup(DepartmentImmutableEmployeeCollection.class);
+		employeeDomainClass = metaModel.lookup(Employee.class);
 		metaModel.done();
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -267,8 +267,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToOneIsPickedUp(){
-		employeeDomainClass = metaModel.register(EmployeeImmutableNameRef.class);
-		nameDomainClass = metaModel.register(Name.class);
+		employeeDomainClass = metaModel.lookup(EmployeeImmutableNameRef.class);
+		nameDomainClass = metaModel.lookup(Name.class);
 		metaModel.done();
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToName = employeeDomainClass.references().get(0);
@@ -278,9 +278,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testDerivedOneToManyIsPickedUp(){
-		departmentDomainClass = metaModel.register(DepartmentDerivedReferences.class);
-		employeeDomainClass = metaModel.register(Employee.class);
-		metaModel.done();
+		departmentDomainClass = metaModel.lookup(DepartmentDerivedReferences.class);
 		
 		EReference derivedRefToEmployees = departmentDomainClass.getEReferenceNamed("terminatedEmployees");
 		assertEquals("terminatedEmployees", derivedRefToEmployees.getName());
@@ -292,8 +290,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 *
 	 */
 	public void testDerivedOneToOneIsPickedUp(){
-		departmentDomainClass = metaModel.register(DepartmentDerivedReferences.class);
-		employeeDomainClass = metaModel.register(Employee.class);
+		departmentDomainClass = metaModel.lookup(DepartmentDerivedReferences.class);
+		employeeDomainClass = metaModel.lookup(Employee.class);
 		metaModel.done();
 		
 		EReference derivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");

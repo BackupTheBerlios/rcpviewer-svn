@@ -93,13 +93,13 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	public void testGetAttributesWhenNone() {
-		domainClass = metaModel.register(CustomerWithNoAttributes.class);
+		domainClass = metaModel.lookup(CustomerWithNoAttributes.class);
 		metaModel.done();
 		assertEquals(0, domainClass.attributes().size());
 	}
 
 	public void testGetAttributesForPrimitives() {
-		domainClass = metaModel.register(CustomerWithEveryPrimitiveTypeAccessor.class);
+		domainClass = metaModel.lookup(CustomerWithEveryPrimitiveTypeAccessor.class);
 		metaModel.done();
 		assertEquals(8, domainClass.attributes().size());
 	}
@@ -110,7 +110,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	
 
 	public void testGetEAttributeNamedForEveryBuiltInPrimitiveType() {
-		domainClass = metaModel.register(CustomerWithEveryPrimitiveTypeAccessor.class);
+		domainClass = metaModel.lookup(CustomerWithEveryPrimitiveTypeAccessor.class);
 		metaModel.done();
 		for(String attributeName: new String[] { 
 								"aByte", "aShort", "anInt", "aLong", 
@@ -126,7 +126,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	public void testWhetherEAttributeIsChangeableForReadWriteAttribute() {
-		domainClass = metaModel.register(CustomerWithReadWriteAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithReadWriteAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isChangeable());
@@ -134,7 +134,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	public void testWhetherEAttributeIsChangeableForReadOnlyAttribute() {
-		domainClass = metaModel.register(CustomerWithReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isChangeable());
@@ -142,7 +142,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 
 	public void testWhetherEAttributeIsChangeableForWriteOnlyAttribute() {
-		domainClass = metaModel.register(CustomerWithWriteOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithWriteOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isChangeable());
@@ -150,28 +150,28 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsWriteOnlyForReadWriteAttribute() {
-		domainClass = metaModel.register(CustomerWithReadWriteAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithReadWriteAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(domainClass.isWriteOnly(eAttribute));
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsReadOnlyForReadOnlyAttribute() {
-		domainClass = metaModel.register(CustomerWithReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(domainClass.isWriteOnly(eAttribute));
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsWriteOnlyForWriteOnlyAttribute() {
-		domainClass = metaModel.register(CustomerWithWriteOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithWriteOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(domainClass.isWriteOnly(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsDerivedForNonDerivedReadOnlyAttribute() {
-		domainClass = metaModel.register(CustomerWithNonDerivedReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithNonDerivedReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isDerived());
@@ -181,7 +181,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 	
 	public void testWhetherEAttributeIsDerivedForDerivedReadOnlyAttribute() {
-		domainClass = metaModel.register(CustomerWithDerivedReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithDerivedReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isDerived());

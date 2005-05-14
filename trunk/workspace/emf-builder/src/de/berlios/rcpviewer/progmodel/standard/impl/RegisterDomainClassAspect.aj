@@ -51,7 +51,7 @@ aspect RegisterDomainClassAspect {
 		if (IAdapterFactory.class.isAssignableFrom(javaClass)) {
 			return;
 		}
-		getMetaModel().register(javaClass);
+		getMetaModel().lookup(javaClass);
 	}
 	
 //
@@ -69,7 +69,7 @@ aspect RegisterDomainClassAspect {
 	 */
 	after(): loadPojo() {
 		Class<?> javaClass = thisJoinPointStaticPart.getSignature().getDeclaringType();
-		IDomainClass<?> domainClass = getMetaModel().register(javaClass);
+		IDomainClass<?> domainClass = getMetaModel().lookup(javaClass);
 	}
 
 

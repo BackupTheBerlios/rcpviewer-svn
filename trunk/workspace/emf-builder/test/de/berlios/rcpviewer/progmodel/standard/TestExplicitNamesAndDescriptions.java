@@ -114,7 +114,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = metaModel.register(Appointment.class);
+		domainClass = metaModel.lookup(Appointment.class);
 		metaModel.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");

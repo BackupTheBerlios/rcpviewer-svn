@@ -31,11 +31,7 @@ import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
 public class StandardProgModelExtension implements IMetaModelExtension {
 
 	public void analyze(IDomainClass<?> domainClass) {
-		domainClass.identifyAccessors();
-		domainClass.identifyMutators();
-		domainClass.identifyUnSettableAttributes();
-		domainClass.identifyOperations();
-		domainClass.identifyReferences();
+		domainClass.init();
 	}
 	
 	private final EmfFacade emfFacade = new EmfFacade();

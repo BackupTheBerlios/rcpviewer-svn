@@ -46,7 +46,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	// ordering //
 
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = metaModel.register(CustomerWithNoOrderingReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithNoOrderingReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
@@ -54,7 +54,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = metaModel.register(CustomerWithOrderingReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithOrderingReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
@@ -62,7 +62,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = metaModel.register(CustomerWithoutOrderingReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithoutOrderingReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());

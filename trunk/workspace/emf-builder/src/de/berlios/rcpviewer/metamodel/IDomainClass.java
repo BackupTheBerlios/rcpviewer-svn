@@ -65,6 +65,12 @@ public interface IDomainClass<T> {
 
 
 	/**
+	 * For internal use only called by {@link MetaModel}
+	 */
+	public void init();
+	
+
+	/**
 	 * Obtain an arbitrary extensions attached to this domain object.
 	 * 
 	 * <p>
@@ -647,26 +653,6 @@ public interface IDomainClass<T> {
 	public Method getAccessorOrMutatorFor(EAttribute eAttribute);
 
 	/**
-	 * For internal use only called by {@link MetaModel}
-	 */
-	public void identifyAccessors();
-
-	/**
-	 * For internal use only called by {@link MetaModel}
-	 */
-	public void identifyMutators();
-
-	/**
-	 * For internal use only called by {@link MetaModel}
-	 */
-	public void identifyUnSettableAttributes();
-
-	/**
-	 * For internal use only called by {@link MetaModel}
-	 */
-	public void identifyOperations();
-
-	/**
 	 * Returns the method used to invoke an operation. 
 	 * 
 	 * @see #getAccessorFor()
@@ -684,11 +670,6 @@ public interface IDomainClass<T> {
 	public List<EReference> references();
 
 
-	/**
-	 * For internal use only called by {@link MetaModel}
-	 */
-	public void identifyReferences();
-	
 	/**
 	 * Returns the reference with given name, or <tt>nothing</tt> if unknown.
 	 * 

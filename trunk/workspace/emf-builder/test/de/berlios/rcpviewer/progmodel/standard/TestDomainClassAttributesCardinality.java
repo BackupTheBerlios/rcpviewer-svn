@@ -50,7 +50,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	// lower & upper bounds //
 
 	public void testLowerBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = metaModel.register(CustomerWithNoLowerBoundReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithNoLowerBoundReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getLowerBound());
@@ -58,7 +58,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testLowerBoundOfEAttributeWhenSpecified() {
-		domainClass = metaModel.register(CustomerWithLowerBoundReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithLowerBoundReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(0, eAttribute.getLowerBound());
@@ -71,7 +71,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testUpperBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = metaModel.register(CustomerWithNoUpperBoundReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithNoUpperBoundReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getUpperBound());
@@ -79,7 +79,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testUpperBoundOfEAttributeWhenSpecified() {
-		domainClass = metaModel.register(CustomerWithUpperBoundReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithUpperBoundReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(3, eAttribute.getUpperBound());

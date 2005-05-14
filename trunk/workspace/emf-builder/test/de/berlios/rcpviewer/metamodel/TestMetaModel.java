@@ -41,7 +41,7 @@ public class TestMetaModel extends TestCase {
 
 	public void testGetDomainClassFromEClass() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 
 		EClass eClass = domainClass.getEClass();
 		IDomainClass reverseDomainClass = metaModel.domainClassFor(eClass);

@@ -105,6 +105,17 @@ public class DomainClass<T>
 		return descriptionOf(eClass);
 	}
 
+
+	public void init() {
+		identifyAccessors();
+		identifyMutators();
+		identifyUnSettableAttributes();
+		identifyOperations();
+		identifyReferences();
+		identifyBidirectionalReferences();
+	}
+
+
 	public II18nData getI18nData() {
 		throw new RuntimeException("Not yet implemented");
 	}
@@ -201,7 +212,7 @@ public class DomainClass<T>
 	 * @param methods
 	 * @param attributesByName
 	 */
-	public void identifyAccessors() {
+	private void identifyAccessors() {
 		
 		Method[] methods = javaClass.getMethods();
 		// search for accessors of value types
@@ -278,7 +289,7 @@ public class DomainClass<T>
 	 * this is not symmetric with {@link #identifyOperations()}.
 	 * 
 	 */
-	public void identifyMutators() {
+	private void identifyMutators() {
 
 		Method[] methods = javaClass.getMethods();
 
@@ -318,7 +329,7 @@ public class DomainClass<T>
 	/**
 	 *  
 	 */
-	public void identifyUnSettableAttributes() {
+	private void identifyUnSettableAttributes() {
 	
 		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;
@@ -557,7 +568,7 @@ public class DomainClass<T>
 	 * TODO: EMF support lower and upper bounds, also ordered and unique?  
 	 * not yet exposing them (what would they mean?)
 	 */
-	public void identifyOperations() {
+	private void identifyOperations() {
 		Method[] methods = javaClass.getMethods();
 
 		eachMethod: 
@@ -605,7 +616,7 @@ public class DomainClass<T>
 				EDataType returnDataType = getEmfFacade().getEDataTypeFor(returnType);
 				eOperation.setEType(returnDataType);
 			} else if (returnsReference) {
-				IDomainClass<?> returnDomainClass = metaModel.register(returnType);
+				IDomainClass<?> returnDomainClass = metaModel.lookup(returnType);
 				eOperation.setEType(returnDomainClass.getEClass());
 			} else {
 				// do nothing; EMF does not apparently have a built-in classifier for Void 
@@ -624,7 +635,7 @@ public class DomainClass<T>
 				if (!isValue) {
 					// register rather than lookup since we may not have seen
 					// the referenced DomainClass yet.
-					parameterDomainClass = metaModel.register(parameterType);
+					parameterDomainClass = metaModel.lookup(parameterType);
 					isReference = (parameterDomainClass != null);
 				}
 				if (!isValue && !isReference) {
@@ -846,9 +857,8 @@ public class DomainClass<T>
 	 * Invoked by {@link MetaModel} when it is informed that all 
 	 * classes have been registered (@link MetaModel#done()}.
 	 * 
-	 * TODO.
 	 */
-	public void identifyReferences() {
+	private void identifyReferences() {
 
 		Method[] methods = javaClass.getMethods();
 		for(int i=0; i<methods.length; i++) {
@@ -861,30 +871,41 @@ public class DomainClass<T>
 			LinkSemanticsType linkSemanticsType = null;
 
 			Class<?> referencedJavaClass = methods[i].getReturnType();
-			IDomainClass<?> referencedDomainClass = metaModel.lookup(referencedJavaClass);
-			if (referencedDomainClass != null) {
-				// 1:1
-				linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
-			} else {
-				// let's see if its a 1:m (collection class)
+			IDomainClass<?> referencedDomainClass = null;
+			boolean couldBeCollection = true;
+			Associates associates = null;
+
+			// let's see if its a 1:m (collection class)
+			if (couldBeCollection) {
 				linkSemanticsType = LinkSemanticsType.lookupBy(referencedJavaClass);
 				if (linkSemanticsType == null) {
 					// no, it's not a List, Set, Map etc.
-					continue;
+					couldBeCollection = false;
 				}
-				Associates associates = method.getAnnotation(Associates.class);
+			}
+			if (couldBeCollection) {
+				associates = method.getAnnotation(Associates.class);
 				if (associates == null) {
 					// they've forgotten the @Associates annotation.
-					continue;
+					couldBeCollection = false;
 				}
+			}
+			if (couldBeCollection) {
 				referencedJavaClass = associates.value();
 				referencedDomainClass = metaModel.lookup(referencedJavaClass);
 				if (referencedDomainClass == null) {
 					// what they're referencing isn't a domain class
-					continue;
+					couldBeCollection = false;
 				}
 			}
-
+			if (!couldBeCollection) {
+				// treat as a 1:1 reference
+				referencedDomainClass = metaModel.lookup(referencedJavaClass);
+				if (referencedDomainClass != null) {
+					// 1:1
+					linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
+				} 				
+			}
 			EReference eReference = EcoreFactory.eINSTANCE.createEReference();
 			eReference.setEType(referencedDomainClass.getEClass());
 			String referenceName = getNamingConventions().deriveLinkName(method);
@@ -928,6 +949,13 @@ public class DomainClass<T>
 		}
 	}
 	
+
+	/**
+	 * TODO
+	 */
+	private void identifyBidirectionalReferences() {
+		
+	}
 
 
 	/**
@@ -1016,7 +1044,7 @@ public class DomainClass<T>
 	 */
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
 		EClass eClass = (EClass)eReference.getEType();
-		return metaModel.lookup(((Class<V>)eClass.getInstanceClass()));
+		return metaModel.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
 		
 	}
 

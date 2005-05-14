@@ -162,7 +162,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPublicVisibilityMethodPickedUpAsOperation() {
-		domainClass = metaModel.register(CustomerWithPublicVisibilityOperation.class);
+		domainClass = metaModel.lookup(CustomerWithPublicVisibilityOperation.class);
 		metaModel.done();
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
@@ -246,7 +246,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithNoArgumentsAPickedUpAsOperation() {
-		domainClass = metaModel.register(CustomerWithNoArgOperation.class);
+		domainClass = metaModel.lookup(CustomerWithNoArgOperation.class);
 		metaModel.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
@@ -263,7 +263,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation1Arg() {
-		domainClass = metaModel.register(CustomerWithPrimitiveArgOperation.class);
+		domainClass = metaModel.lookup(CustomerWithPrimitiveArgOperation.class);
 		metaModel.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
@@ -288,7 +288,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation2Arg() {
-		domainClass = metaModel.register(CustomerPositionedOnMap.class);
+		domainClass = metaModel.lookup(CustomerPositionedOnMap.class);
 		metaModel.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
@@ -322,7 +322,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
 		// 2 arg
-		domainClass = metaModel.register(Appointment.class);
+		domainClass = metaModel.lookup(Appointment.class);
 		metaModel.done();
 		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
@@ -376,9 +376,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 */
 	public void testMethodWithDomainObjectArgumentsPickedUpAsOperation() {
 		
-		metaModel.register(Man.class);
-		metaModel.register(Woman.class);
-		domainClass = metaModel.register(Priest.class);
+		metaModel.lookup(Man.class);
+		metaModel.lookup(Woman.class);
+		domainClass = metaModel.lookup(Priest.class);
 		metaModel.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
@@ -473,25 +473,25 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 	
 	public void testAccessorsNotPickedUpAsOperation() {
-		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		domainClass = metaModel.lookup(AppointmentWithAccessor.class);
 		metaModel.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testMutatorsNotPickedUpAsOperation() {
-		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		domainClass = metaModel.lookup(AppointmentWithAccessor.class);
 		metaModel.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testSingleReferencessNotPickedUpAsOperation() {
-		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		domainClass = metaModel.lookup(AppointmentWithAccessor.class);
 		metaModel.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testCollectionsNotPickedUpAsOperation() {
-		domainClass = metaModel.register(AppointmentWithAccessor.class);
+		domainClass = metaModel.lookup(AppointmentWithAccessor.class);
 		metaModel.done();
 		assertEquals(2, domainClass.operations().size());
 	}

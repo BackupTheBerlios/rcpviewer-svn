@@ -49,7 +49,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanPersistThroughDomainObject() {
 		session = Session.instance(); // use singleton since this is what Aspect
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
@@ -67,7 +67,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanPersistThroughPojo() {
 		session = Session.instance(); // must use Singleton since this is what Aspect uses.
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.getPojo().save();
@@ -79,7 +79,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testCannotPersistIfNotAttachedToSession() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertFalse(session.isAttached(domainObject));
 		try {
@@ -94,7 +94,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCannotPersistMoreThanOnce() {
 		session = Session.instance(); // since Aspect will use singleton Session
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
@@ -109,7 +109,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanSetAttribute() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		metaModel.done();
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -120,7 +120,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCannotSetAttributeToInvalidValue() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
@@ -134,7 +134,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testSettingAttributeNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		metaModel.done();
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -149,7 +149,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanGetAttribute() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		metaModel.done();
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -162,7 +162,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanInvokeOperation() {
 		
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		metaModel.done();
 		
 		IDomainObject<Department> domainObject = 

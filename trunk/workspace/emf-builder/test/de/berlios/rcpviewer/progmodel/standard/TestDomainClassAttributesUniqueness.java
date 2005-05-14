@@ -46,7 +46,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	// uniqueness //
 
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = metaModel.register(CustomerWithNoUniquenessReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithNoUniquenessReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
@@ -54,7 +54,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = metaModel.register(CustomerWithUniqueReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithUniqueReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
@@ -62,7 +62,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = metaModel.register(CustomerWithNonUniqueReadOnlyAttribute.class);
+		domainClass = metaModel.lookup(CustomerWithNonUniqueReadOnlyAttribute.class);
 		metaModel.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());

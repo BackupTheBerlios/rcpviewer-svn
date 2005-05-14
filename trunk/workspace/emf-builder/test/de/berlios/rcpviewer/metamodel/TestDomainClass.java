@@ -29,7 +29,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
 		IDomainClass<Department> domainClass = 
-			metaModel.register(Department.class);
+			metaModel.lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertNotNull(domainObject);
@@ -47,7 +47,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			metaModel.register(DepartmentWithoutNoArgConstructor.class);
+			metaModel.lookup(DepartmentWithoutNoArgConstructor.class);
 
 		try {
 			IDomainObject domainObject = domainClass.createTransient();

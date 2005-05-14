@@ -20,12 +20,12 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	}
 
 	/**
-	 * Classes can be registered explicitly.
+	 * Classes can be registered explicitly using lookup.
 	 */
 	public void testExplicitRegistration() {
-		assertNull(metaModel.lookup(Department.class));
-		metaModel.register(Department.class);
-		assertNotNull(metaModel.lookup(Department.class));
+		assertNull(metaModel.lookupNoRegister(Department.class));
+		metaModel.lookup(Department.class);
+		assertNotNull(metaModel.lookupNoRegister(Department.class));
 	}
 
 
@@ -37,9 +37,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * TODO: not working yet
 	 */
 	public void incompletetestImplicitRegistrationByDomainClassInstantiation() {
-		assertNull(metaModel.lookup(Department.class));
+		assertNull(metaModel.lookupNoRegister(Department.class));
 		new DomainClass<Department>(Department.class);
-		assertNotNull(metaModel.lookup(Department.class));
+		assertNotNull(metaModel.lookupNoRegister(Department.class));
 	}
 
 
@@ -54,9 +54,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * @throws ClassNotFoundException
 	 */
 	public void testImplicitRegistrationByClassLoading() throws ClassNotFoundException {
-		assertNull(MetaModel.threadInstance().lookup(Department.class));
+		assertNull(MetaModel.threadInstance().lookupNoRegister(Department.class));
 		Class.forName(Department.class.getName());
-		assertNotNull(MetaModel.threadInstance().lookup(Department.class));
+		assertNotNull(MetaModel.threadInstance().lookupNoRegister(Department.class));
 	}
 	
 
@@ -66,9 +66,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * links between classes cannot be setup implicitly).
 	 */
 	public void testImplicitRegistration() {
-		assertNull(MetaModel.threadInstance().lookup(Department.class));
+		assertNull(MetaModel.threadInstance().lookupNoRegister(Department.class));
 		new Department();
-		assertNotNull(MetaModel.threadInstance().lookup(Department.class));
+		assertNotNull(MetaModel.threadInstance().lookupNoRegister(Department.class));
 	}
 
 
@@ -76,10 +76,10 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	 * The registry remembers what's in it :-)
 	 */
 	public void testCanLookupOnceRegistered() {
-		assertNull(metaModel.lookup(Department.class));
-		metaModel.register(Department.class);
+		assertNull(metaModel.lookupNoRegister(Department.class));
+		metaModel.lookup(Department.class);
 		metaModel.done();
-		IDomainClass<Department> d = metaModel.lookup(Department.class);
+		IDomainClass<Department> d = metaModel.lookupNoRegister(Department.class);
 		assertNotNull(d);
 	}
 
