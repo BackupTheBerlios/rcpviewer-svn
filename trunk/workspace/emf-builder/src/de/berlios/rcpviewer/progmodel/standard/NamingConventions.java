@@ -325,15 +325,20 @@ public final class NamingConventions {
 	}
 	
 	/**
-	 * TODO: should be a better way of determining if reference type
+	 * A reference type if has the @Domain annotation.
 	 *  
-	 * @param clazz
+	 * @param javaClass
 	 * @return
 	 */
-	public final <V> boolean isReferenceType(final Class<V> clazz) {
-		return clazz != null &&
-		       clazz != void.class &&
-			   de.berlios.rcpviewer.metamodel.Constants.SIMPLE_REF_TYPE.isAssignableFrom(clazz);
+	public final <V> boolean isReferenceType(final Class<V> javaClass) {
+		if (javaClass == null) {
+			return false;
+		}
+		if (javaClass == void.class) {
+			return false;
+		}
+		Domain domain = javaClass.getAnnotation(Domain.class);
+		return domain != null;
 	}
 	
 	public final boolean isCollectionType(final Class<?> clazz) {

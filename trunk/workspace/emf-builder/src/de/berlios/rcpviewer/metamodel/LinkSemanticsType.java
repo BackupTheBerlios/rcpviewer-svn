@@ -7,8 +7,6 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
-
 /**
  * Powertype describing the different sorts of {@link de.berlios.rcpviewer.metamodel.LinkSemantics}.
  * 
@@ -18,8 +16,15 @@ import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
  */
 public final class LinkSemanticsType {
 	
+	/**
+	 * Note that the java type is Object since any object could be a reference.
+	 * 
+	 * <p>
+	 * However, there are additional constraints - it must have @Domain, cannot
+	 * have @Value.
+	 */
 	public final static LinkSemanticsType SIMPLE_REF =
-		new LinkSemanticsType("SimpleRef", Boolean.FALSE, DomainMarker.class,
+		new LinkSemanticsType("SimpleRef", Boolean.FALSE, Object.class,
 				new Constraint[] {} );
 	
 	public final static LinkSemanticsType LIST =
@@ -48,15 +53,21 @@ public final class LinkSemanticsType {
 	
 	private final static LinkSemanticsType[] semanticTypes = 
 		new LinkSemanticsType[] {
-			LinkSemanticsType.SIMPLE_REF,
 			LinkSemanticsType.LIST,
 			LinkSemanticsType.SET,
 			LinkSemanticsType.SORTED_SET,
 			LinkSemanticsType.MAP,
 			LinkSemanticsType.SORTED_MAP,
 			LinkSemanticsType.UNKNOWN,
+			LinkSemanticsType.SIMPLE_REF,
 		};
-	
+
+	/**
+	 * Will never map SIMPLE_REF.
+	 * 
+	 * @param javaType
+	 * @return
+	 */
 	public static LinkSemanticsType lookupBy(final Class javaType) {
 		if (javaType == null) { // TODO: replace with an aspect + @Required
 			throw new IllegalArgumentException("Java Class cannot be null");

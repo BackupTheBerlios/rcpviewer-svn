@@ -62,7 +62,7 @@ public class DomainClass<T>
 	
 	public DomainClass(final MetaModel metaModel, final Class<T> javaClass) {
 		
-		this.metaModel = metaModel;
+		this.domain = metaModel;
 		this.javaClass = javaClass;
 		this.namingConventions = new NamingConventions();
 
@@ -73,13 +73,21 @@ public class DomainClass<T>
 		this(null, javaClass);
 	}
 
-	private final MetaModel metaModel;
+	private final MetaModel domain;
+	public MetaModel getMetaModel() {
+		return getDomain();
+	}
 	/**
-	 * The metaModel (if known) within which this DomainClass has been created. 
+	 * The domain to which this DomainClass belongs.
+	 * 
+	 * <p>
+	 * Under the standard programming model, this is default using the @Domain
+	 * annotation.
+	 * 
 	 * @return
 	 */
-	public MetaModel getMetaModel() {
-		return metaModel;
+	public MetaModel getDomain() {
+		return domain;
 	}
 
 	private final NamingConventions namingConventions;
@@ -615,7 +623,7 @@ public class DomainClass<T>
 				EDataType returnDataType = getEmfFacade().getEDataTypeFor(returnType);
 				eOperation.setEType(returnDataType);
 			} else if (returnsReference) {
-				IDomainClass<?> returnDomainClass = metaModel.lookup(returnType);
+				IDomainClass<?> returnDomainClass = domain.lookup(returnType);
 				eOperation.setEType(returnDomainClass.getEClass());
 			} else {
 				// do nothing; EMF does not apparently have a built-in classifier for Void 
@@ -634,7 +642,7 @@ public class DomainClass<T>
 				if (!isValue) {
 					// register rather than lookup since we may not have seen
 					// the referenced DomainClass yet.
-					parameterDomainClass = metaModel.lookup(parameterType);
+					parameterDomainClass = domain.lookup(parameterType);
 					isReference = (parameterDomainClass != null);
 				}
 				if (!isValue && !isReference) {
@@ -799,7 +807,7 @@ public class DomainClass<T>
 		}
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		EClass eClass = (EClass)parameter.getEType();
-		return metaModel.domainClassFor(eClass);
+		return domain.domainClassFor(eClass);
 	}
 
 	public String getNameFor(EOperation operation, int parameterPosition) {
@@ -891,7 +899,7 @@ public class DomainClass<T>
 			}
 			if (couldBeCollection) {
 				referencedJavaClass = associates.value();
-				referencedDomainClass = metaModel.lookup(referencedJavaClass);
+				referencedDomainClass = domain.lookup(referencedJavaClass);
 				if (referencedDomainClass == null) {
 					// what they're referencing isn't a domain class
 					couldBeCollection = false;
@@ -899,7 +907,7 @@ public class DomainClass<T>
 			}
 			if (!couldBeCollection) {
 				// treat as a 1:1 reference
-				referencedDomainClass = metaModel.lookup(referencedJavaClass);
+				referencedDomainClass = domain.lookup(referencedJavaClass);
 				if (referencedDomainClass != null) {
 					// 1:1
 					linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
@@ -1068,7 +1076,7 @@ public class DomainClass<T>
 		
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
 		EClass eClass = (EClass)eReference.getEReferenceType();
-		return metaModel.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
+		return domain.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
 		
 	}
 
@@ -1239,6 +1247,7 @@ public class DomainClass<T>
 	public void setWrapper(IWrapper<T> wrapper) {
 		this.wrapper = wrapper;
 	}
+
 
 	// DEPENDENCY INJECTION END
 

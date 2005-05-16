@@ -74,7 +74,7 @@ aspect RegisterDomainClassAspect {
 
 
 	public MetaModel getMetaModel() {
-		return MetaModel.threadInstance();
+		return MetaModel.instance();
 	}
 
 }

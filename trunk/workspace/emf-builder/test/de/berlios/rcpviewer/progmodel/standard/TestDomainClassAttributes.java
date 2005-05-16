@@ -12,7 +12,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {
@@ -22,8 +22,10 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 	}
 	
 
+	@Domain
 	public static class CustomerWithNoAttributes {
 	}
+	@Domain
 	public static class CustomerWithEveryPrimitiveTypeAccessor {
 		private byte aByte;
 		public byte getAByte() {
@@ -58,6 +60,7 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 			return aBoolean;
 		}
 	}
+	@Domain
 	public static class CustomerWithReadWriteAttribute {
 		private String surname;
 		public String getSurname() {
@@ -67,24 +70,28 @@ public class TestDomainClassAttributes extends AbstractTestCase {
 			this.surname = surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithWriteOnlyAttribute {
 		private String surname;
 		public void setSurname(String surname) {
 			this.surname = surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithNonDerivedReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithDerivedReadOnlyAttribute {
 		@Derived
 		public String getSurname() {

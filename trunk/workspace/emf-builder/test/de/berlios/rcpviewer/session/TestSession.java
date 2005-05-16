@@ -29,7 +29,7 @@ public class TestSession extends AbstractTestCase  {
 	private IObjectStore objectStore;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 		session = new Session();
 		objectStore = new InMemoryObjectStore();
 		((Session)session).setObjectStore(objectStore);
@@ -41,7 +41,7 @@ public class TestSession extends AbstractTestCase  {
 		session.reset();
 		session = null;
 		metaModel = null;
-		MetaModel.threadInstance().reset();
+		MetaModel.instance().reset();
 		super.tearDown();
 	}
 
@@ -54,7 +54,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.threadInstance().lookup(Department.class);
+			MetaModel.instance().lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -77,7 +77,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.threadInstance().lookup(Department.class);
+			MetaModel.instance().lookup(Department.class);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -201,7 +201,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprint() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.threadInstance().lookup(Department.class);
+			MetaModel.instance().lookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -243,7 +243,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.threadInstance().lookup(Department.class);
+			MetaModel.instance().lookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");

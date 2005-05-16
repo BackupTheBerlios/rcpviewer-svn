@@ -8,6 +8,7 @@ import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 
+	@Domain
 	public static class CustomerWithUnsettableAttribute {
 		private int age;
 		public boolean isUnsetAge() {
@@ -23,6 +24,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 			this.age = age;
 		}
 	}
+	@Domain
 	public static class CustomerWithOnlyIsUnsetForAttribute {
 		private int age;
 		/**
@@ -39,6 +41,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 			this.age = age;
 		}
 	}
+	@Domain
 	public static class CustomerWithOnlyUnsetForAttribute {
 		private int age;
 		/**
@@ -60,7 +63,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {

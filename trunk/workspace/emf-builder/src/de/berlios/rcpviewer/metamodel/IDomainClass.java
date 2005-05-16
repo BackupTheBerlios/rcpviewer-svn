@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
@@ -770,6 +771,8 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public IDomainObject<T> createTransient();
+
+	public MetaModel getDomain();
 
 
 }

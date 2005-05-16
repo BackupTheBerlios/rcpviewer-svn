@@ -13,7 +13,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	private ISession session;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 		session = new Session();
 	}
 
@@ -40,7 +40,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 * The returned object will not be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
-		metaModel = MetaModel.threadInstance();
+		metaModel = MetaModel.instance();
 		IDomainClass<Department> domainClass = 
 			metaModel.lookup(Department.class);
 		

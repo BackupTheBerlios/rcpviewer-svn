@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.progmodel.standard.Domain;
 
 /**
  * Tests for the use of the <tt>PositionedAt</tt>.
@@ -15,6 +16,7 @@ import de.berlios.rcpviewer.metamodel.MetaModel;
  */
 public class TestPositionedAt extends AbstractTestCase {
 
+	@Domain
 	public static class CustomerWithAllAttributesPositioned {
 
 		private int numberOfOrders;
@@ -40,7 +42,7 @@ public class TestPositionedAt extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {

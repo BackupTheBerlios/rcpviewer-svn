@@ -47,8 +47,8 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		//metaModel = new MetaModel();
-		metaModel = MetaModel.threadInstance();
+		//metaModel = MetaModel.threadInstance();
+		metaModel = MetaModel.instance();
 		session = new Session();
 	}
 

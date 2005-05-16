@@ -5,6 +5,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.progmodel.standard.Domain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 /**
@@ -17,6 +18,7 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
  */
 public class TestImageDescriptor extends AbstractTestCase {
 
+	@Domain
     @ImageUrlAt("http://www.eclipse.org/artwork/builtoneclipse/images/bui_eclipse_pos_logo_fc_sm.jpg")
 	public static class ProspectiveSale {
 	}
@@ -25,7 +27,7 @@ public class TestImageDescriptor extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {

@@ -19,11 +19,13 @@ import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
  */
 public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
+	@Domain
 	public static class CustomerWithNoExplicitName {
 	}
 	@Named("Customer")
 	@DescribedAs("A Customer who may have originally become known to us via " +
 			     "the marketing system or who may have contacted us directly.")
+	@Domain
 	public static class ProspectiveSale {
 	}
 	public static class TimePeriod implements ValueMarker {
@@ -42,6 +44,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 			this.to = to;
 		}
 	}
+	@Domain
 	public static class Appointment {
 		public void moveTo(
 				@Named("newPeriod")
@@ -65,7 +68,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {

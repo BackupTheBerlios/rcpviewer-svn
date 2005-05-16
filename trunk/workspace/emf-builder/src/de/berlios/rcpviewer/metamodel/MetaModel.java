@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 
+import de.berlios.rcpviewer.progmodel.standard.Domain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
 
@@ -24,15 +25,18 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
  */
 public final class MetaModel {
 	
-	// TODO: should convert this into an aspect.
-	private static ThreadLocal<MetaModel> registryForThisThread = 
-			new ThreadLocal<MetaModel>() {
-		protected synchronized MetaModel initialValue() {
-			return new MetaModel();
+	public final static String DEFAULT_META_MODEL_NAME = "default";
+	private static Map<String,MetaModel> metaModelByName = new HashMap<String,MetaModel>();
+	public static MetaModel instance() {
+		return instance(DEFAULT_META_MODEL_NAME);
+	}
+	public synchronized static MetaModel instance(String metaModelName) {
+		MetaModel metaModel = metaModelByName.get(metaModelName);
+		if (metaModel == null) {
+			metaModel = new MetaModel(metaModelName);
+			metaModelByName.put(metaModelName, metaModel);
 		}
-	};
-	public static MetaModel threadInstance() {
-		return registryForThisThread.get();
+		return metaModel;
 	}
 
 	
@@ -42,8 +46,8 @@ public final class MetaModel {
 	 * 
 	 * @see #getPrimaryExtension()
 	 */
-	public MetaModel() {
-		this(new StandardProgModelExtension()); 
+	private MetaModel(final String name) {
+		this(name, new StandardProgModelExtension()); 
 	}
 
 	/**
@@ -52,9 +56,19 @@ public final class MetaModel {
 	 * 
 	 * @see #getPrimaryExtension()
 	 */
-	public MetaModel(final IMetaModelExtension primaryExtension) {
+	private MetaModel(final String name, final IMetaModelExtension primaryExtension) {
+		if (metaModelByName.get(name) != null) {
+			throw new IllegalArgumentException("MetaModel named '" + name + "' already exists.");
+		}
+		this.name = name;
 		this.primaryExtension = primaryExtension; 
 	}
+
+	private final String name;
+	public String getName() {
+		return name;
+	}
+	
 
 	private final IMetaModelExtension primaryExtension;
 	/**
@@ -86,29 +100,35 @@ public final class MetaModel {
 	}
 	
 	/**
-	 * creates a {@link DomainClass} for the supplied {@link Class} if not present,
-	 * provided that the class in question implements DomainObject (else
-	 * returns null *** this functionality commented out ***).
+	 * Creates a {@link DomainClass} for the supplied {@link Class} if not 
+	 * present, provided that the class in question is annotated with @Domain 
+	 * (indicating the domain to which it belongs).
 	 * 
 	 * <p>
 	 * If already registered, simply returns, same way as {@link #lookupNoRegister(Class)}.
 	 * 
 	 * <p>
-	 * TODO: should make sure class is indeed a domain class.
+	 * If there is no @Domain annotation, then returns null.  Or, if there is
+	 * an @Domain annotation that indicates (either implicitly or explicitly)
+	 * a domain name that is different from this metamodel's name, then again
+	 * returns null. 
 	 * 
-	 * @param clazz
+	 * @param javaClass
 	 * @return corresponding {@link DomainClass}
 	 */
-	public <V> IDomainClass<V> lookup(final Class<V> clazz) {
-		// TODO: for some reason, not working even though AspectJ says that
-		// the introduction will be applied???
-//		if (!de.berlios.rcpviewer.progmodel.standard.DomainObject.class.isAssignableFrom(clazz)) {
-//			return null;
-//		}
-		IDomainClass<V> domainClass = lookupNoRegister(clazz);
+	public <V> IDomainClass<V> lookup(final Class<V> javaClass) {
+		Domain domain = javaClass.getAnnotation(Domain.class);
+		if (domain == null) {
+			return null;
+		}
+		if (!name.equals(domain.value())) {
+			return null;
+		}
+		
+		IDomainClass<V> domainClass = lookupNoRegister(javaClass);
 		if (domainClass == null) {
-			domainClass = new DomainClass<V>(this, clazz);
-			domainClassesByjavaClass.put(clazz, domainClass);
+			domainClass = new DomainClass<V>(this, javaClass);
+			domainClassesByjavaClass.put(javaClass, domainClass);
 			primaryExtension.analyze(domainClass);
 		}
 		return domainClass;

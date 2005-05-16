@@ -8,12 +8,14 @@ import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 
+	@Domain
 	public static class CustomerWithNoLowerBoundReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithLowerBoundReadOnlyAttribute {
 		private String surname;
 		@LowerBoundOf(0)
@@ -21,12 +23,14 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithNoUpperBoundReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithUpperBoundReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -39,7 +43,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.threadInstance();  // since aspects pick up thread singleton
+		metaModel = MetaModel.instance();  // since aspects pick up thread singleton
 	}
 
 	protected void tearDown() throws Exception {

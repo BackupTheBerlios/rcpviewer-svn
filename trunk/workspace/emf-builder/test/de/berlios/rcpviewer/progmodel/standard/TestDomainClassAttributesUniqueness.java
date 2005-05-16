@@ -8,12 +8,14 @@ import de.berlios.rcpviewer.metamodel.MetaModel;
 
 public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
+	@Domain
 	public static class CustomerWithNoUniquenessReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithUniqueReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -22,6 +24,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 			return surname;
 		}
 	}
+	@Domain
 	public static class CustomerWithNonUniqueReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -35,7 +38,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {

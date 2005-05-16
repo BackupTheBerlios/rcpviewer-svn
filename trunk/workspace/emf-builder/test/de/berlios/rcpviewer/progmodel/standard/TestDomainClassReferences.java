@@ -17,6 +17,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * 
 	 * TODO: DomainMarker is workaround
 	 */
+	@Domain
 	public static class Department implements DomainMarker {
 		private Set<Employee> employees = new HashSet<Employee>();
 		/**
@@ -42,6 +43,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * <p>
 	 * TODO: DomainMarker is workaround
 	 */
+	@Domain
 	public static class Employee implements DomainMarker {
 		public Employee(String firstName, String lastName) {
 			this.firstName = firstName;
@@ -92,6 +94,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * Has a 1:m unidirectional relationship with Employee.
 	 * TODO: DomainMarker is workaround
 	 */
+	@Domain
 	public static class DepartmentImmutableEmployeeCollection implements DomainMarker {
 		private Set<Employee> employees = new HashSet<Employee>();
 		/**
@@ -113,6 +116,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	/**
 	 * TODO: DomainMarker is workaround
 	 */
+	@Domain
 	public static class Name implements DomainMarker {
 		public Name(String firstName, String lastName) {
 			this.firstName = firstName;
@@ -138,6 +142,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * 
 	 * TODO: DomainMarker is workaround
 	 */
+	@Domain
 	public static class EmployeeImmutableNameRef implements DomainMarker {
 		public EmployeeImmutableNameRef(String firstName, String lastName) {
 			this.name = new Name(firstName, lastName);
@@ -158,6 +163,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * 
 	 * TODO: DomainMarker is workaround
 	 */
+	@Domain
 	public static class DepartmentDerivedReferences implements DomainMarker {
 		private Set<Employee> employees = new HashSet<Employee>();
 		/**
@@ -210,7 +216,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	private IDomainClass<Name> nameDomainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {

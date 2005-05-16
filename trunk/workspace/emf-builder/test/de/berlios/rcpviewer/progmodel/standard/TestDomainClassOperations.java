@@ -26,7 +26,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = new MetaModel();
+		metaModel = MetaModel.instance();
 	}
 
 	protected void tearDown() throws Exception {
@@ -35,40 +35,49 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 	
 
+	@Domain
 	public static class CustomerWithPublicVisibilityOperation {
 		public void placeOrder() {}
 		public static void create() {}
 	}
+	@Domain
 	public static class CustomerWithProtectedVisibilityOperation {
 		protected void placeOrder() {}
 		protected static void create() {}
 	}
+	@Domain
 	public static class CustomerWithPackageLocalVisibilityOperation {
 		void placeOrder() {}
 		static void create() {}
 	}
+	@Domain
 	public static class CustomerWithPrivateVisibilityOperation {
 		private void placeOrder() {}
 		private static void create() {}
 	}
+	@Domain
 	public static class CustomerWithProgrammaticPublicVisibilityOperation {
 		@Programmatic
 		public void placeOrder() {}
 		@Programmatic
 		public static void create() {}
 	}
+	@Domain
 	public static class CustomerWithNoArgOperation {
 		public void placeOrder() {}
 		public static void create() {}
 	}
+	@Domain
 	public static class CustomerWithPrimitiveArgOperation {
 		public void rankAs(int rank) {}
 		public static void createWithRank(long rank) {}
 	}
+	@Domain
 	public static class CustomerPositionedOnMap {
 		public void positionAt(float x, float y) {}
 		public static void createAtPosition(double x, double y) {}
 	}
+	@Domain
 	public static class TimePeriod implements ValueMarker {
 		private java.util.Date from;
 		public java.util.Date getFrom() {
@@ -85,6 +94,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 			this.to = to;
 		}
 	}
+	@Domain
 	public static class Appointment {
 		public void moveTo(
 				TimePeriod newPeriod, 
@@ -95,6 +105,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 				String rationale) {
 		}
 	}
+	@Domain
 	public static class AppointmentWithAccessor {
 		private String name;
 		public String getName() {
@@ -109,6 +120,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 				String rationale) {
 		}
 	}
+	@Domain
 	public static class AppointmentWithMutator {
 		private String name;
 		public void setName(String name) {
@@ -123,6 +135,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 				String rationale) {
 		}
 	}
+	@Domain
 	public static class AppointmentWithSingleReference {
 		private AppointmentWithSingleReference nextAppointment;
 		public AppointmentWithSingleReference getNextAppointment() {
@@ -137,6 +150,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 				String rationale) {
 		}
 	}
+	@Domain
 	public static class AppointmentWithCollection {
 		private List<AppointmentWithCollection> otherAppointments;
 		@Associates(AppointmentWithCollection.class)
@@ -354,6 +368,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(domainClass.isStatic(eOperation));
 	}
 
+	@Domain
 	public static abstract class Person {
 		private String name;
 		public String getName() {
@@ -363,9 +378,12 @@ public class TestDomainClassOperations extends AbstractTestCase {
 			this.name = name;
 		}
 	}
-	public static class Man extends Person implements DomainMarker { }
-	public static class Woman extends Person implements DomainMarker{ }
-	public static class Priest implements DomainMarker {
+	@Domain
+	public static class Man extends Person  { }
+	@Domain
+	public static class Woman extends Person { }
+	@Domain
+	public static class Priest  {
 		public void marry(Man m, Woman w) {
 		}
 	}
@@ -379,7 +397,6 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		metaModel.lookup(Man.class);
 		metaModel.lookup(Woman.class);
 		domainClass = metaModel.lookup(Priest.class);
-		metaModel.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
 		assertNotNull(eOperation);
