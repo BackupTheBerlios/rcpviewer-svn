@@ -1,11 +1,12 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.session;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
+
+import de.berlios.rcpviewer.metamodel.IDomainClass;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that

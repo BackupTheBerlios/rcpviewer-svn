@@ -8,14 +8,14 @@ package de.berlios.rcpviewer.session;
 public interface ISessionListener {
 
 	/**
-	 * An {@link de.berlios.rcpviewer.metamodel.IDomainObject} has been 
+	 * An {@link de.berlios.rcpviewer.session.IDomainObject} has been 
 	 * attached to the session.
 	 * 
 	 */
 	public void domainObjectAttached(SessionObjectEvent event);
 
 	/**
-	 * An {@link de.berlios.rcpviewer.metamodel.IDomainObject} has been 
+	 * An {@link de.berlios.rcpviewer.session.IDomainObject} has been 
 	 * dettached to the session.
 	 * 
 	 */

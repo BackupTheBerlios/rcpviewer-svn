@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.metamodel;
 
-import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

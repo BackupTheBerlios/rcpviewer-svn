@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 
 /**

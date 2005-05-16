@@ -21,19 +21,18 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
-import org.eclipse.jface.viewers.deferred.SetModel;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
 import de.berlios.rcpviewer.metamodel.IAdapterFactory;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.II18nData;
 import de.berlios.rcpviewer.metamodel.LinkSemanticsType;
 import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.metamodel.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
 

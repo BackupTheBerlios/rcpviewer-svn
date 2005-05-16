@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.session;
 
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 
 /**
  * Event object for events that relate to an {@link IDomainObject} changing its 

@@ -4,6 +4,7 @@ import de.berlios.rcpviewer.metamodel.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.Session;
+import de.berlios.rcpviewer.session.*;
 
 /**
  * A <i>perthis</i> aspect that wraps each POJO and creates a corresponding 

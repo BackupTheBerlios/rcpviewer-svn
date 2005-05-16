@@ -1,8 +1,9 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.session;
 
 import java.util.EventObject;
 
 import org.eclipse.emf.ecore.EAttribute;
+
 
 /**
  * Event object for events that impact an {@link IDomainObject}.

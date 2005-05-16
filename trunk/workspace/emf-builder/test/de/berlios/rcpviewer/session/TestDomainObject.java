@@ -1,8 +1,6 @@
 package de.berlios.rcpviewer.session;
 
 import java.util.Collection;
-import java.util.Set;
-import de.berlios.rcpviewer.metamodel.*;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
@@ -11,7 +9,8 @@ import org.eclipse.emf.ecore.EReference;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.Department;
 import de.berlios.rcpviewer.metamodel.Employee;
-import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.metamodel.MetaModel;
 import de.berlios.rcpviewer.session.local.Session;
 
 public class TestDomainObject extends AbstractTestCase  {

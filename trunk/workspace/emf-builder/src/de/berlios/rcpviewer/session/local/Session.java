@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
+import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionListener;
 import de.berlios.rcpviewer.session.IWrapper;

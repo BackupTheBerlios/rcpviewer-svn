@@ -6,9 +6,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.metamodel.Constants;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Helper class that encapsulates the various naming conventions of the

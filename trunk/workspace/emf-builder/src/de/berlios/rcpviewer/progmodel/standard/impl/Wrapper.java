@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard.impl;
 
-import de.berlios.rcpviewer.metamodel.IDomainObject;
+import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IWrapper;
 
 public final class Wrapper implements IWrapper {

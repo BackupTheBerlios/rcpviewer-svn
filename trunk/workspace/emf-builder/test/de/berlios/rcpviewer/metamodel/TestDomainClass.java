@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.metamodel;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 //import de.berlios.rcpviewer.progmodel.standard.impl.Department;
+import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.Session;
 

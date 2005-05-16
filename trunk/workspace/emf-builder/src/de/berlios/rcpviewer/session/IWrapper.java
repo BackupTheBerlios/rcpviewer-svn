@@ -1,5 +1,4 @@
 package de.berlios.rcpviewer.session;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 
 /**

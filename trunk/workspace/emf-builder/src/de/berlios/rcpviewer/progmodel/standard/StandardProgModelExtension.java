@@ -1,12 +1,5 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EAttribute;
-
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IMetaModelExtension;

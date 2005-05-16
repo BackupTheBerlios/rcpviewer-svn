@@ -1,9 +1,8 @@
 package de.berlios.rcpviewer.progmodel.standard.impl;
 
-import de.berlios.rcpviewer.session.*;
-import de.berlios.rcpviewer.session.local.*;
-import de.berlios.rcpviewer.metamodel.IDomainObject;
-
+import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.local.Session;
 
 public aspect SaveDomainObjectAspect /* implements ISessionAware */ {
 	pointcut saveDomainObject(DomainMarker domainMarker):
