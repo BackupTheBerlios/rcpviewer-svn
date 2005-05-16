@@ -679,12 +679,69 @@ public interface IDomainClass<T> {
 	public EReference getEReferenceNamed(String referenceName);
 
 	/**
-	 * Returns the {@link IDomainClass} referenced 
+	 * Returns the {@link IDomainClass} referenced by this reference.
+	 * 
+	 * <p>
+	 * If the reference is a simple 1:!, then the domain class will have been
+	 * determined directly.  If the reference is a 1:m, then the domain class
+	 * will have been read from the @Associates annotation.
+	 *   
 	 * @param departmentRef
 	 * @return
 	 */
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference);
 
+	/**
+	 * Returns the accessor for a reference representing either a simple 
+	 * 1:1 reference or a collection.
+	 * 
+	 * <p>
+	 * Typically {@link #isMultiple(EReference)} should be used to determine 
+	 * whether the return type of the Method is a collection or a single 
+	 * reference.
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	public Method getAccessorFor(EReference reference);
+
+	/**
+	 * Returns the "associator" for a reference representing either a simple 
+	 * 1:1 reference or a collection.
+	 * 
+	 * <p>
+	 * If the reference represents a collection ({@link #isMultiple(EReference)}),
+	 * then the <i>associator</i> is an addTo method.  If it is a single reference,
+	 * then it is a method named <i>associate</i>. 
+	 * 
+	 * <p>
+	 * Associators and dissociators are optional (the accessor is not).  If
+	 * neither an associator or dissociator is present, then the reference is
+	 * presumed to be immutable (non changeable). 
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	public Method getAssociatorFor(EReference reference);
+
+	/**
+	 * Returns the "dissociator" for a reference representing either a simple 
+	 * 1:1 reference or a collection.
+	 * 
+	 * <p>
+	 * If the reference represents a collection ({@link #isMultiple(EReference)}),
+	 * then the dissociator is prefixed <i>removeFrom</i> method.  If it is a 
+	 * single reference, then it is a method named <i>dissociate</i>. 
+	 * 
+	 * <p>
+	 * Associators and dissociators are optional (the accessor is not).  If
+	 * neither an associator or dissociator is present, then the reference is
+	 * presumed to be immutable (non changeable). 
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	public Method getDissociatorFor(EReference reference);
 
 	public boolean isMultiple(EReference eReference);
 
@@ -712,7 +769,6 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public IDomainObject<T> createTransient();
-
 
 
 }

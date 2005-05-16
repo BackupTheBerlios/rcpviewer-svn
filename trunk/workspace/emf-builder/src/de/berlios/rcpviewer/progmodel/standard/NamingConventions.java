@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.reflect.Method;
 
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.metamodel.Constants;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
@@ -241,6 +242,34 @@ public final class NamingConventions {
 			throw new AssertionError("not an dissociator");
 		}
 	}
+	
+	public final boolean isAssociatorFor(Method method, EReference eReference) {
+		return isAssociatorOrDissociatorFor(method, eReference, 
+				eReference.isMany()?"addTo":"associate");
+	}
+
+	public final boolean isDissociatorFor(Method method, EReference eReference) {
+		return isAssociatorOrDissociatorFor(method, eReference, 
+				eReference.isMany()?"removeFrom":"dissociate");
+	}
+
+	private boolean isAssociatorOrDissociatorFor(Method method, EReference eReference, final String prefix) {
+		if (method.getParameterTypes().length != 1) {
+			return false;
+		}
+		Class paramType = method.getParameterTypes()[0];
+		Class referencedType = eReference.getEReferenceType().getInstanceClass();
+		if (!paramType.equals(referencedType)) {
+			return false;
+		}
+		String referenceName = eReference.getName();
+		String associatorMethodName = prefix + new MethodNameHelper().titleCase(referenceName);
+		if (!method.getName().equals(associatorMethodName)) {
+			return false;
+		}
+		return true;
+	}
+
 
 	/**
 	 * Determines name of association from Method name (can represent any of a
@@ -249,7 +278,7 @@ public final class NamingConventions {
 	 * @param associationMethod
 	 * @return
 	 */
-	public final String deriveLinkName(final Method associationMethod) {
+	public final String deriveReferenceName(final Method associationMethod) {
 		return deriveLinkName(associationMethod.getName());
 	}
 

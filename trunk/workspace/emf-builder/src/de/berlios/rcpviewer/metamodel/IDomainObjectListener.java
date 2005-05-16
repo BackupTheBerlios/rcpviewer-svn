@@ -25,10 +25,24 @@ public interface IDomainObjectListener {
 	public void attributeChanged(DomainObjectAttributeEvent event);
 
 	/**
+	 * An collection reference of the {@link IDomainObject} has been added to.
+	 * 
+	 */
+	public void collectionAddedTo(DomainObjectReferenceEvent event);
+	
+
+	/**
+	 * An collection reference of the {@link IDomainObject} has been removed 
+	 * from.
+	 * 
+	 */
+	public void collectionRemovedFrom(DomainObjectReferenceEvent event);
+	
+
+	/**
 	 * The {@link IDomainObject} has been persisted.
 	 * 
 	 * @param event
 	 */
 	public void persisted(DomainObjectEvent event);
-	
 }

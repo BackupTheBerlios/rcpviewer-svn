@@ -3,12 +3,16 @@ package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.metamodel.DomainObjectAttributeEvent;
+import de.berlios.rcpviewer.metamodel.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.IDomainObject;
 import de.berlios.rcpviewer.metamodel.IDomainObjectListener;
@@ -102,7 +106,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			for(IDomainObjectListener listener: listeners) {
 				listener.attributeChanged(event);
 			}
-			
 		} catch (SecurityException e) {
 			throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
 		} catch (IllegalAccessException e) {
@@ -112,11 +115,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 	}
 
-	public EOperation getEOperationNamed(String operationName) {
+	public EOperation getEOperationNamed(final String operationName) {
 		return getDomainClass().getEOperationNamed(operationName);
 	}
 	
-	public void invokeOperation(EOperation operation, final Object[] args) {
+	public void invokeOperation(final EOperation operation, final Object[] args) {
 		Method operationMethod = getDomainClass().getInvokerFor(operation);
 		if (operationMethod == null) {
 			throw new UnsupportedOperationException("Operation method '" + operationMethod + "' not accessible / could not be found");
@@ -132,6 +135,78 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			throw new UnsupportedOperationException("Could not invoke mutator method '" + operationMethodName + "'", e);
 		}
 		
+	}
+
+	public EReference getEReferenceNamed(final String referenceName) {
+		return getDomainClass().getEReferenceNamed(referenceName);
+	}
+
+	public <V> Collection<IDomainObject<V>> getCollection(EReference collectionReference) {
+		assert getDomainClass().isMultiple(collectionReference);
+		Method collectionAccessorMethod = getDomainClass().getAccessorFor(collectionReference);
+		Collection<IDomainObject<V>> collection;
+		try {
+			collection = (Collection<IDomainObject<V>>)collectionAccessorMethod.invoke(getPojo(), new Object[]{});
+			return Collections.unmodifiableCollection(collection);
+		} catch (IllegalArgumentException ex) {
+			// TODO - log?
+			return null;
+		} catch (IllegalAccessException ex) {
+			// TODO - log?
+			return null;
+		} catch (InvocationTargetException ex) {
+			// TODO - log?
+			return null;
+		}
+	}
+	
+	public <Q> void addToCollection(EReference collectionReference, IDomainObject<Q> domainObject) {
+		assert getDomainClass().isMultiple(collectionReference);
+		assert getDomainClass().getReferencedClass(collectionReference) == 
+			domainObject.getDomainClass();
+		Method collectionAssociatorMethod = getDomainClass().getAssociatorFor(collectionReference);
+		try {
+			collectionAssociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
+			// notify listeners
+			DomainObjectReferenceEvent event = 
+				new DomainObjectReferenceEvent(this, collectionReference, getPojo());
+			for(IDomainObjectListener listener: listeners) {
+				listener.collectionAddedTo(event);
+			}
+		} catch (IllegalArgumentException ex) {
+			// TODO - log?
+			throw new RuntimeException(ex);
+		} catch (IllegalAccessException ex) {
+			// TODO - log?
+			throw new RuntimeException(ex);
+		} catch (InvocationTargetException ex) {
+			// TODO - log?
+			throw new RuntimeException(ex);
+		}
+	}
+	public <Q> void removeFromCollection(EReference collectionReference, IDomainObject<Q> domainObject) {
+		assert getDomainClass().isMultiple(collectionReference);
+		assert getDomainClass().getReferencedClass(collectionReference) == 
+			domainObject.getDomainClass();
+		Method collectionDissociatorMethod = getDomainClass().getDissociatorFor(collectionReference);
+		try {
+			collectionDissociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
+			// notify listeners
+			DomainObjectReferenceEvent event = 
+				new DomainObjectReferenceEvent(this, collectionReference, getPojo());
+			for(IDomainObjectListener listener: listeners) {
+				listener.collectionRemovedFrom(event);
+			}
+		} catch (IllegalArgumentException ex) {
+			// TODO - log?
+			throw new RuntimeException(ex);
+		} catch (IllegalAccessException ex) {
+			// TODO - log?
+			throw new RuntimeException(ex);
+		} catch (InvocationTargetException ex) {
+			// TODO - log?
+			throw new RuntimeException(ex);
+		}
 	}
 
 	private List<IDomainObjectListener> listeners = new ArrayList<IDomainObjectListener>();

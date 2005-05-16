@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.metamodel;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
+//import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.Session;
 
@@ -21,6 +21,17 @@ public class TestDomainClass extends AbstractTestCase  {
 		super.tearDown();
 	}
 
+	public void testCreateTransientCreatesUnderlyingPojo() {
+		IDomainClass<Department> departmentDomainClass = 
+			metaModel.lookup(Department.class);
+		
+		IDomainObject<Department> departmentDomainObject = 
+			session.createTransient(departmentDomainClass);
+		assertNotNull(departmentDomainObject.getPojo());
+		assertSame(Department.class, departmentDomainObject.getPojo().getClass());
+	}
+
+
 	/**
 	 * Can instantiate domain object/pojo directly from DomainClass.
 	 * 
@@ -28,6 +39,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 * The returned object will not be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
+		metaModel = MetaModel.threadInstance();
 		IDomainClass<Department> domainClass = 
 			metaModel.lookup(Department.class);
 		

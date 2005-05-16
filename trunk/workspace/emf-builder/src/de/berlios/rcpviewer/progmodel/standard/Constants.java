@@ -95,6 +95,34 @@ public final class Constants {
 		"http://rcpviewer.berlios.de/progmodel/standard/operation/static";
 
 	/**
+	 * Key to EAnnotation details representing (names of) methods to access 
+	 * a reference (single or collection).
+	 * 
+	 * <p>
+	 * Holds key to the accessor method (always exists for references).
+	 */
+	public static final String ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY = "get";
+
+	/**
+	 * Key to EAnnotation details representing (names of) method to associate
+	 * instances with a reference.
+	 * 
+	 * <p>
+	 * Holds key to the associate method, if it exists.
+	 */
+	public static final String ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY = "associate";
+
+	/**
+	 * Key to EAnnotation details representing (names of) methods to dissociate
+	 * instances with a reference.
+	 * 
+	 * <p>
+	 * Holds key to the dissociate method, if it exists.
+	 */
+	public static final String ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY = "dissociate";
+
+
+	/**
 	 * Prefix to the source of EAnnotations that represent extensions (adapters)
 	 * for a model element.
 	 * 

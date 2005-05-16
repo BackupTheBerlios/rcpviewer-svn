@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.metamodel;
 
+import de.berlios.rcpviewer.session.TestDomainObject;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -9,9 +10,9 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.metamodel");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestMetaModel.class);
+		suite.addTestSuite(TestDomainClass.class);
 		suite.addTestSuite(TestEmfFacade.class);
-		suite.addTestSuite(TestDomainObject.class);
+		suite.addTestSuite(TestMetaModel.class);
 		//$JUnit-END$
 		return suite;
 	}

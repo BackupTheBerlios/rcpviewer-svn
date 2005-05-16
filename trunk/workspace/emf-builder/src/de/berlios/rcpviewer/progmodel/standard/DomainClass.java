@@ -20,6 +20,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
+import org.eclipse.emf.ecore.impl.EReferenceImpl;
+import org.eclipse.jface.viewers.deferred.SetModel;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
@@ -112,6 +114,7 @@ public class DomainClass<T>
 		identifyUnSettableAttributes();
 		identifyOperations();
 		identifyReferences();
+		identifyAssociatorsAndDissociators();
 		identifyBidirectionalReferences();
 	}
 
@@ -324,7 +327,6 @@ public class DomainClass<T>
 //			eAttribute.setDefaultValueLiteral(defaultValueAsString); // TODO: read from annotation
 		}
 	}
-	
 
 	/**
 	 *  
@@ -450,8 +452,6 @@ public class DomainClass<T>
 	}
 	
 	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
-
-		
 		return getAnnotationDetail(eAnnotation, methodKey);
 	}
 	
@@ -907,8 +907,9 @@ public class DomainClass<T>
 				} 				
 			}
 			EReference eReference = EcoreFactory.eINSTANCE.createEReference();
-			eReference.setEType(referencedDomainClass.getEClass());
-			String referenceName = getNamingConventions().deriveLinkName(method);
+			EReferenceImpl eReferenceImpl = (EReferenceImpl)eReference;
+			eReference.setEType(referencedDomainClass.getEClass()); // sets EReferenceType
+			String referenceName = getNamingConventions().deriveReferenceName(method);
 			eReference.setName(referenceName);
 			linkSemanticsType.setOrderingUniquenessAndMultiplicity(eReference);
 			
@@ -924,10 +925,12 @@ public class DomainClass<T>
 				eReference.setTransient(true);
 				eReference.setVolatile(true);
 			}
-			Immutable immutable = method.getAnnotation(Immutable.class);
-			if (immutable != null) {
-				eReference.setChangeable(false);
-			}
+			
+			
+			
+			// we determine immutability based on presence of associator/dissociator.
+			eReference.setChangeable(false);
+			
 			
 			// eReference.setUnsettable()
 			// eReference.setDefaultValueLiteral(someDefaultLiteral); // TODO
@@ -940,6 +943,11 @@ public class DomainClass<T>
 
 			((List<? super EReference>)eClass.getEStructuralFeatures()).add(eReference);
 
+			putAnnotationDetails(
+					methodAnnotationFor(eReference), 
+					Constants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
+					method.getName());
+
 
 //			if (!getProgrammingModel().isLink(methods[i])) // simple or composite.
 //				continue;
@@ -948,7 +956,47 @@ public class DomainClass<T>
 
 		}
 	}
+
 	
+	
+	private void identifyAssociatorsAndDissociators() {
+		Method[] methods = javaClass.getMethods();
+		Method associatorMethod = null;
+		Method dissociatorMethod = null;
+		for(EReference eReference: references()) {
+			for(int i=0; i<methods.length; i++) {
+				if (getNamingConventions().isAssociatorFor(methods[i], eReference)) {
+					associatorMethod = methods[i];
+					break;
+				}
+			}
+			if (associatorMethod == null) {
+				continue;
+			}
+			for(int i=0; i<methods.length; i++) {
+				if (getNamingConventions().isDissociatorFor(methods[i], eReference)) {
+					dissociatorMethod = methods[i];
+					break;
+				}
+			}
+			if (dissociatorMethod == null) {
+				continue;
+			}
+			// has both an associator and a dissociator method for this reference
+			eReference.setChangeable(true);
+			
+			putAnnotationDetails(
+					methodAnnotationFor(eReference), 
+					Constants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY,  
+					associatorMethod.getName());
+			
+			putAnnotationDetails(
+					methodAnnotationFor(eReference), 
+					Constants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY, 
+					dissociatorMethod.getName());
+		}
+	}
+
 
 	/**
 	 * TODO
@@ -965,40 +1013,20 @@ public class DomainClass<T>
 	 * @param dissociator
 	 * @return
 	 */
-	private final boolean isLinkPairCompatible(final Method associator, final Method dissociator) {
+	private final boolean isReferencePairCompatible(final Method associator, final Method dissociator) {
 		getNamingConventions().assertAssociator(associator); // TODO: precondition aspect
 		getNamingConventions().assertDissociator(dissociator);  // TODO: precondition aspect
-		if (!linkType(associator).equals(linkType(dissociator))) {
+		if (associator.getParameterTypes()[0] != dissociator.getParameterTypes()[0]) {
 			return false;
 		}
-		String deriveLinkNameForAssociator = getNamingConventions().deriveLinkName(associator);
-		String deriveLinkNameForDissociator = getNamingConventions().deriveLinkName(dissociator);
-		if (!deriveLinkNameForAssociator.equals(deriveLinkNameForDissociator)) {
+		String deriveReferenceNameForAssociator = getNamingConventions().deriveReferenceName(associator);
+		String deriveReferenceNameForDissociator = getNamingConventions().deriveReferenceName(dissociator);
+		if (!deriveReferenceNameForAssociator.equals(deriveReferenceNameForDissociator)) {
 			return false;
 		}
 		return true;
 	}
 
-
-
-	/**
-	 * TODO: this isn't used an needs to change - the type is instead picked
-	 * up from an annotation.
-	 * 
-	 * @param associator or dissociator method
-	 * 
-	 * @return The type of the associator or dissociator (the type of its first argument).
-	 */
-	private final Class linkType(final Method associatorOrDissociator) {
-		if (associatorOrDissociator == null) {
-			throw new AssertionError("null associator/dissociator method");
-		}
-		if (!getNamingConventions().isAssociator(associatorOrDissociator) &&
-			!getNamingConventions().isDissociator(associatorOrDissociator)  ) {
-			throw new AssertionError("not an associator/dissociator method");
-		}
-		return associatorOrDissociator.getParameterTypes()[0];
-	}
 
 	/**
 	 * Returns references from this class to other classes, including those 
@@ -1039,13 +1067,69 @@ public class DomainClass<T>
 		return this.eClass.getEAllReferences().contains(eReference);
 	}
 		
-	/**
-	 * TODO: using MetaModel from thread; should be got elsewhere?
-	 */
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
-		EClass eClass = (EClass)eReference.getEType();
+		EClass eClass = (EClass)eReference.getEReferenceType();
 		return metaModel.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
 		
+	}
+
+	public Method getAccessorFor(EReference eReference) {
+		String accessorMethodName = 
+			getMethodNameFrom(
+					methodAnnotationFor(eReference), 
+					Constants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
+		try {
+			Method accessorMethod = 
+				getJavaClass().getMethod(
+						accessorMethodName, new Class[]{});
+			return accessorMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getAssociatorFor(EReference eReference) {
+		String associatorMethodName = 
+			getMethodNameFrom(
+					methodAnnotationFor(eReference), 
+					Constants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
+		EClass eClass = (EClass)eReference.getEReferenceType();
+		try {
+			Method associatorMethod = 
+				getJavaClass().getMethod(
+						associatorMethodName, new Class[]{eClass.getInstanceClass()});
+			return associatorMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getDissociatorFor(EReference eReference) {
+		String dissociatorMethodName = 
+			getMethodNameFrom(
+					methodAnnotationFor(eReference), 
+					Constants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
+		EClass eClass = (EClass)eReference.getEReferenceType();
+		try {
+			Method dissociatorMethod = 
+				getJavaClass().getMethod(
+						dissociatorMethodName, new Class[]{eClass.getInstanceClass()});
+			return dissociatorMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
 	}
 
 	public boolean isMultiple(EReference eReference) {
@@ -1156,7 +1240,6 @@ public class DomainClass<T>
 	public void setWrapper(IWrapper<T> wrapper) {
 		this.wrapper = wrapper;
 	}
-
 
 	// DEPENDENCY INJECTION END
 

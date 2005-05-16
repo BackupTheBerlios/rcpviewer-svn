@@ -1,7 +1,11 @@
 package de.berlios.rcpviewer.metamodel;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
@@ -99,6 +103,45 @@ public interface IDomainObject<T> {
 	 * @param operation
 	 */
 	public void invokeOperation(EOperation operation, Object[] args);
+
+	/**
+	 * Convenience method that should return the same as the 
+	 * corresponding method in {@link IDomainClass}.
+	 * 
+	 * @param operationName
+	 * @return
+	 */
+	public EReference getEReferenceNamed(String referenceName);
+
+	/**
+	 * Returns an immutable collection,
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	public <V> Collection<IDomainObject<V>> getCollection(EReference reference);
+
+	/**
+	 * Adds the domain object to the named collection.
+	 * 
+	 * <p>
+	 * Any {@link IDomainObjectListener}s will be notified.
+	 * 
+	 * @param collection
+	 * @param domainObject
+	 */
+	public <Q> void addToCollection(EReference collection, IDomainObject<Q> domainObject);
+
+	/**
+	 * Removes the domain object from the named collection.
+	 * 
+	 * <p>
+	 * Any {@link IDomainObjectListener}s will be notified.
+	 * 
+	 * @param collection
+	 * @param domainObject
+	 */
+	public <Q> void removeFromCollection(EReference collection, IDomainObject<Q> domainObject);
 
 	/**
 	 * Adds domain object listener.

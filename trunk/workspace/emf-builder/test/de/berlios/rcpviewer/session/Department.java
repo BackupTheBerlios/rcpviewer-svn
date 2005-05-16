@@ -20,5 +20,5 @@ public class Department implements DomainMarker {
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
-	
+
 }
