@@ -5,11 +5,13 @@ import de.berlios.rcpviewer.progmodel.standard.*;
 
 /**
  * Registers {@link DomainClass}es as they are loaded with the
- * {@link MetaModel}.
+ * {@link Domain}.
  * 
+ * <p>
  * TODO: at some point should be able to factor out advice into an abstract
  * aspect in the progmodel.impl package.
  * 
+ * <p>
  * TODO: make into a <T> aspect.
  * 
  * @author Dan Haywood
@@ -34,13 +36,13 @@ aspect RegisterDomainClassAspect {
 //	pointcut instantiateDomainClass(DomainClass domainClass):
 //		call(*..DomainClass.new(..)) && target(domainClass) && 
 //		!within(*..RegisterDomainObjectAspect) &&
-//		!within(*..MetaModel);
+//		!within(*..Domain);
 
 	/**
 	 * pick out classloading (subclasses of) pojo annotated with {@link @ADomainObject}
 	 */
 	public pointcut loadPojo(): 
-		staticinitialization(@Domain *);
+		staticinitialization(@InDomain *);
 
 	
 	/**
@@ -51,13 +53,13 @@ aspect RegisterDomainClassAspect {
 		if (IAdapterFactory.class.isAssignableFrom(javaClass)) {
 			return;
 		}
-		getMetaModel().lookup(javaClass);
+		getDomain().lookup(javaClass);
 	}
 	
 //
 //  * - NOT WORKING YET...
 //	after(DomainClass domainClass): instantiateDomainClass(domainClass) {
-//		getMetaModel().register(domainClass.getJavaClass());
+//		getDomain().register(domainClass.getJavaClass());
 //	}
 	
 
@@ -69,12 +71,12 @@ aspect RegisterDomainClassAspect {
 	 */
 	after(): loadPojo() {
 		Class<?> javaClass = thisJoinPointStaticPart.getSignature().getDeclaringType();
-		IDomainClass<?> domainClass = getMetaModel().lookup(javaClass);
+		IDomainClass<?> domainClass = getDomain().lookup(javaClass);
 	}
 
 
-	public MetaModel getMetaModel() {
-		return MetaModel.instance();
+	public Domain getDomain() {
+		return Domain.instance();
 	}
 
 }

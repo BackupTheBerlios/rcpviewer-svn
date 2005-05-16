@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
+import de.berlios.rcpviewer.metamodel.IDomainAnalyzer;
 
 /**
  * Adds annotations specific to the RCPViewer.
@@ -23,7 +23,7 @@ import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
  * @author Dan Haywood
  *
  */
-public class ExtendedProgModelExtension implements IMetaModelExtension {
+public class ExtendedProgModelExtension implements IDomainAnalyzer {
 
 	public void analyze(IDomainClass<?> domainClass) {
 		Class<?> javaClass = domainClass.getJavaClass();

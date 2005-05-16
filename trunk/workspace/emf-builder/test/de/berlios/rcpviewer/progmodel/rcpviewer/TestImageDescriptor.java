@@ -4,8 +4,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
-import de.berlios.rcpviewer.progmodel.standard.Domain;
+import de.berlios.rcpviewer.metamodel.Domain;
+import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 /**
@@ -18,27 +18,28 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
  */
 public class TestImageDescriptor extends AbstractTestCase {
 
-	@Domain
+	@InDomain
     @ImageUrlAt("http://www.eclipse.org/artwork/builtoneclipse/images/bui_eclipse_pos_logo_fc_sm.jpg")
 	public static class ProspectiveSale {
 	}
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
 	public void testDomainClassWithImageUrlAt() {
-		metaModel.addExtension(new RcpViewerExtension());
-		domainClass = metaModel.lookup(ProspectiveSale.class);
-		metaModel.done();
+		domain.addExtension(new RcpViewerExtension());
+		domainClass = domain.lookup(ProspectiveSale.class);
+		domain.done();
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNotNull(id);
 	}

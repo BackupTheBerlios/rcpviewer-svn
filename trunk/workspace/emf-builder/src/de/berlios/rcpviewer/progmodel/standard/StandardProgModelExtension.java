@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.metamodel.EmfFacade;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
+import de.berlios.rcpviewer.metamodel.IDomainAnalyzer;
 
 /**
  * Builds standard domain model.
@@ -21,7 +21,7 @@ import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
  * @author Dan Haywood
  *
  */
-public class StandardProgModelExtension implements IMetaModelExtension {
+public class StandardProgModelExtension implements IDomainAnalyzer {
 
 	public void analyze(IDomainClass<?> domainClass) {
 		domainClass.init();

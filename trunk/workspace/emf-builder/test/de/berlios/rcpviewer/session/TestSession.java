@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
@@ -24,12 +24,12 @@ public class TestSession extends AbstractTestCase  {
 	}
 
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private ISession session;
 	private IObjectStore objectStore;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 		session = new Session();
 		objectStore = new InMemoryObjectStore();
 		((Session)session).setObjectStore(objectStore);
@@ -40,8 +40,8 @@ public class TestSession extends AbstractTestCase  {
 		objectStore = null;
 		session.reset();
 		session = null;
-		metaModel = null;
-		MetaModel.instance().reset();
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 
@@ -54,7 +54,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().lookup(Department.class);
+			Domain.instance().lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -77,7 +77,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
 		IDomainClass<Department> domainClass = 
-			MetaModel.instance().lookup(Department.class);
+			Domain.instance().lookup(Department.class);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -92,7 +92,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testDomainObjectInitiallyTransient() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertFalse(domainObject.isPersistent());
@@ -101,7 +101,7 @@ public class TestSession extends AbstractTestCase  {
 
 	public void testCanDetachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertTrue(session.isAttached(domainObject));
@@ -114,7 +114,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanDetachFromSessionThroughPojo() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertTrue(session.isAttached(domainObject));
@@ -126,7 +126,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testDetachFromSesionNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
@@ -137,7 +137,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanReAttachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.detach(domainObject);
@@ -151,7 +151,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanReAttachFromSessionThroughPojo() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.detach(domainObject);
@@ -165,7 +165,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.detach(domainObject);
@@ -181,7 +181,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCannotAttachToSessionIfAlreadyAttached() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertTrue(session.isAttached(domainObject));
@@ -201,7 +201,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprint() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.instance().lookup(Department.class);
+			Domain.instance().lookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -216,7 +216,7 @@ public class TestSession extends AbstractTestCase  {
 
 
 		IDomainClass<Employee> employeeDomainClass = 
-			metaModel.lookup(Employee.class);
+			domain.lookup(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
 			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
@@ -243,7 +243,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			MetaModel.instance().lookup(Department.class);
+			Domain.instance().lookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -273,7 +273,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIsImmutable() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -301,7 +301,7 @@ public class TestSession extends AbstractTestCase  {
 		objectStore = ((Session)session).getObjectStore();
 		
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		Department dept = domainObject.getPojo();

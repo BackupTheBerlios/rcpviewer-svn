@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 public class TestDomainClassReferences extends AbstractTestCase {
@@ -17,7 +17,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * 
 	 * TODO: DomainMarker is workaround
 	 */
-	@Domain
+	@InDomain
 	public static class Department implements DomainMarker {
 		private Set<Employee> employees = new HashSet<Employee>();
 		/**
@@ -43,7 +43,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * <p>
 	 * TODO: DomainMarker is workaround
 	 */
-	@Domain
+	@InDomain
 	public static class Employee implements DomainMarker {
 		public Employee(String firstName, String lastName) {
 			this.firstName = firstName;
@@ -94,7 +94,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * Has a 1:m unidirectional relationship with Employee.
 	 * TODO: DomainMarker is workaround
 	 */
-	@Domain
+	@InDomain
 	public static class DepartmentImmutableEmployeeCollection implements DomainMarker {
 		private Set<Employee> employees = new HashSet<Employee>();
 		/**
@@ -116,7 +116,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	/**
 	 * TODO: DomainMarker is workaround
 	 */
-	@Domain
+	@InDomain
 	public static class Name implements DomainMarker {
 		public Name(String firstName, String lastName) {
 			this.firstName = firstName;
@@ -142,7 +142,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * 
 	 * TODO: DomainMarker is workaround
 	 */
-	@Domain
+	@InDomain
 	public static class EmployeeImmutableNameRef implements DomainMarker {
 		public EmployeeImmutableNameRef(String firstName, String lastName) {
 			this.name = new Name(firstName, lastName);
@@ -163,7 +163,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 * 
 	 * TODO: DomainMarker is workaround
 	 */
-	@Domain
+	@InDomain
 	public static class DepartmentDerivedReferences implements DomainMarker {
 		private Set<Employee> employees = new HashSet<Employee>();
 		/**
@@ -210,17 +210,18 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	}
 
 	
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> departmentDomainClass;
 	private IDomainClass<?> employeeDomainClass;
 	private IDomainClass<Name> nameDomainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		departmentDomainClass = null;
 		employeeDomainClass = null;
 		nameDomainClass = null;
@@ -229,8 +230,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	
 
 	public void testOneToManyIsPickedUp(){
-		departmentDomainClass = metaModel.lookup(Department.class);
-		employeeDomainClass = metaModel.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(Department.class);
+		employeeDomainClass = domain.lookup(Employee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -245,8 +246,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testOneToOneIsPickedUp(){
-		departmentDomainClass = metaModel.lookup(Department.class);
-		employeeDomainClass = metaModel.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(Department.class);
+		employeeDomainClass = domain.lookup(Employee.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToDepartment = employeeDomainClass.references().get(0);
@@ -261,8 +262,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToManyIsPickedUp(){
-		departmentDomainClass = metaModel.lookup(DepartmentImmutableEmployeeCollection.class);
-		employeeDomainClass = metaModel.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(DepartmentImmutableEmployeeCollection.class);
+		employeeDomainClass = domain.lookup(Employee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -271,8 +272,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToOneIsPickedUp(){
-		employeeDomainClass = metaModel.lookup(EmployeeImmutableNameRef.class);
-		nameDomainClass = metaModel.lookup(Name.class);
+		employeeDomainClass = domain.lookup(EmployeeImmutableNameRef.class);
+		nameDomainClass = domain.lookup(Name.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToName = employeeDomainClass.references().get(0);
@@ -282,7 +283,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testDerivedOneToManyIsPickedUp(){
-		departmentDomainClass = metaModel.lookup(DepartmentDerivedReferences.class);
+		departmentDomainClass = domain.lookup(DepartmentDerivedReferences.class);
 		
 		EReference derivedRefToEmployees = departmentDomainClass.getEReferenceNamed("terminatedEmployees");
 		assertEquals("terminatedEmployees", derivedRefToEmployees.getName());
@@ -294,8 +295,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 *
 	 */
 	public void testDerivedOneToOneIsPickedUp(){
-		departmentDomainClass = metaModel.lookup(DepartmentDerivedReferences.class);
-		employeeDomainClass = metaModel.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(DepartmentDerivedReferences.class);
+		employeeDomainClass = domain.lookup(Employee.class);
 				
 		EReference derivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");
 		assertFalse(departmentDomainClass.isMultiple(derivedRefToEmployee));

@@ -9,22 +9,23 @@ import de.berlios.rcpviewer.session.local.Session;
 
 public class TestDomainClass extends AbstractTestCase  {
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private ISession session;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 		session = new Session();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 
 	public void testCreateTransientCreatesUnderlyingPojo() {
 		IDomainClass<Department> departmentDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -40,9 +41,9 @@ public class TestDomainClass extends AbstractTestCase  {
 	 * The returned object will not be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertNotNull(domainObject);
@@ -60,7 +61,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			metaModel.lookup(DepartmentWithoutNoArgConstructor.class);
+			domain.lookup(DepartmentWithoutNoArgConstructor.class);
 
 		try {
 			IDomainObject domainObject = domainClass.createTransient();

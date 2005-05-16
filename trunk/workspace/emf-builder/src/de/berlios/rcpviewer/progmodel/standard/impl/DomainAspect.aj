@@ -24,16 +24,16 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 
 	// THIS STUFF IS COMMENTED OUT SINCE NOT SURE IF ANNOTATIONS ARE TRIPPING US UP...
 //	/**
-//	 * pick out instantiating of a Pojo annotated with @Domain
+//	 * pick out instantiating of a Pojo annotated with @InDomain
 //	 */
 //	public pointcut instantiatePojo(Object pojo): 
-//		execution((@Domain *..*).new(..)) && this(pojo);
+//		execution((@InDomain *..*).new(..)) && this(pojo);
 //
 //	/**
-//	 * pick out invoking any public method on a Pojo annotated with @DomainObject.
+//	 * pick out invoking any public method on a Pojo annotated with @InDomain.
 //	 */
 //	public pointcut invokePublicMethodOnPojo(Object pojo): 
-//		execution(public * (@Domain *..*).*(..)) && this(pojo);
+//		execution(public * (@InDomain *..*).*(..)) && this(pojo);
 //
 //	/**
 //	 * TODO: want to use as perthis pointcut, but doesn't seem to work?
@@ -43,13 +43,13 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 //	
 
 	/**
-	 * pick out instantiating of a Pojo annotated with @DomainObject.
+	 * pick out instantiating of a Pojo annotated with @InDomain.
 	 */
 	public pointcut instantiatePojo(DomainMarker pojo): 
 		execution(*..DomainMarker+.new(..)) && this(pojo);
 
 	/**
-	 * pick out invoking any public method on a Pojo annotated with @DomainObject.
+	 * pick out invoking any public method on a Pojo annotated with @InDomain.
 	 */
 	public pointcut invokePublicMethodOnPojo(DomainMarker pojo): 
 		execution(public * *..DomainMarker+.*(..)) && this(pojo);
@@ -66,19 +66,19 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	 * Picks out a call to an action method
 	 */
 	public pointcut invokeActionOnPojo(Object pojo): 
-		execution(* (@Domain *..*).action*(..)) && this(pojo);
+		execution(* (@InDomain *..*).action*(..)) && this(pojo);
 	
 	/**
 	 * Picks out a call to a setter
 	 */
 	public pointcut invokeSetterOnPojo(Object pojo, String postValue): 
-		execution(* (@Domain *..*).set*(String)) && this(pojo) && args(postValue);
+		execution(* (@InDomain *..*).set*(String)) && this(pojo) && args(postValue);
 	
 	/**
 	 * Picks out any modification of a field on a {@link DomainObject}
 	 */
 	public pointcut modifyDomainObjectFieldOnPojo(Object pojo, Object postValue) :
-		args(postValue) && this(pojo) && set(* (@Domain *..*).*);
+		args(postValue) && this(pojo) && set(* (@InDomain *..*).*);
 
 	/**
 	 * register {@link DomainObject}'s class if necessary (its class may not have been loaded yet),
@@ -93,7 +93,7 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	 * throwing null pointer exception.
 	 */
 	private <V> void doInstantiatePojo(Object pojo, Class<V> pojoClass) {
-		IDomainClass<V> domainClass = MetaModel.instance().lookup(pojoClass);
+		IDomainClass<V> domainClass = Domain.instance().lookup(pojoClass);
 		this.domainObject = new DomainObject<V>(domainClass, (V)pojo, getSession());
 	}
 	

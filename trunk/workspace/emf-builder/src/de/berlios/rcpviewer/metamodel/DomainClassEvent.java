@@ -7,7 +7,7 @@ import java.util.EventObject;
  * 
  * @author Dan Haywood
  */
-public final class DomainClassEvent extends MetaModelEvent {
+public final class DomainClassEvent extends DomainEvent {
 
 	/**
 	 *  
@@ -21,7 +21,7 @@ public final class DomainClassEvent extends MetaModelEvent {
 	 * @param source
 	 */
 	public DomainClassEvent(final IDomainClass domainClass) {
-		super(domainClass.getMetaModel());
+		super(domainClass.getDomain());
 		this.domainClass = domainClass;
 	}
 	

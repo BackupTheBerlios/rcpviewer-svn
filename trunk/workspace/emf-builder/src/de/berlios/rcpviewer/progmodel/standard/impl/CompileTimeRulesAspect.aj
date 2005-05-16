@@ -11,7 +11,7 @@ aspect CompileTimeRulesAspect {
 
 	declare error: 
 		staticinitialization(@Value *) &&
-		staticinitialization(@Domain *): 
-			"Cannot be annotated as both @Value and @Domain";
+		staticinitialization(@InDomain *): 
+			"Cannot be annotated as both @Value and @InDomain";
 
 }

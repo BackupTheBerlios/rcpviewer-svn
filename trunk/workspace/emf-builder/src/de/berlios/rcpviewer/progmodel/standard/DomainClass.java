@@ -28,7 +28,7 @@ import de.berlios.rcpviewer.metamodel.IAdapterFactory;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
 import de.berlios.rcpviewer.metamodel.II18nData;
 import de.berlios.rcpviewer.metamodel.LinkSemanticsType;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 import de.berlios.rcpviewer.metamodel.MethodNameHelper;
 import de.berlios.rcpviewer.metamodel.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
@@ -60,9 +60,9 @@ public class DomainClass<T>
 				   EmfFacadeAware,
 				   IWrapperAware<T> {
 	
-	public DomainClass(final MetaModel metaModel, final Class<T> javaClass) {
+	public DomainClass(final Domain domain, final Class<T> javaClass) {
 		
-		this.domain = metaModel;
+		this.domain = domain;
 		this.javaClass = javaClass;
 		this.namingConventions = new NamingConventions();
 
@@ -73,20 +73,17 @@ public class DomainClass<T>
 		this(null, javaClass);
 	}
 
-	private final MetaModel domain;
-	public MetaModel getMetaModel() {
-		return getDomain();
-	}
+	private final Domain domain;
 	/**
 	 * The domain to which this DomainClass belongs.
 	 * 
 	 * <p>
-	 * Under the standard programming model, this is default using the @Domain
+	 * Under the standard programming model, this is default using the @InDomain
 	 * annotation.
 	 * 
 	 * @return
 	 */
-	public MetaModel getDomain() {
+	public Domain getDomain() {
 		return domain;
 	}
 
@@ -860,11 +857,6 @@ public class DomainClass<T>
 
 	// REFERENCES SUPPORT: START
 
-	/**
-	 * Invoked by {@link MetaModel} when it is informed that all 
-	 * classes have been registered (@link MetaModel#done()}.
-	 * 
-	 */
 	private void identifyReferences() {
 
 		Method[] methods = javaClass.getMethods();

@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
@@ -19,13 +19,13 @@ import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
  */
 public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
-	@Domain
+	@InDomain
 	public static class CustomerWithNoExplicitName {
 	}
 	@Named("Customer")
 	@DescribedAs("A Customer who may have originally become known to us via " +
 			     "the marketing system or who may have contacted us directly.")
-	@Domain
+	@InDomain
 	public static class ProspectiveSale {
 	}
 	public static class TimePeriod implements ValueMarker {
@@ -44,7 +44,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 			this.to = to;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class Appointment {
 		public void moveTo(
 				@Named("newPeriod")
@@ -64,15 +64,16 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 		}
 	}
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
@@ -117,8 +118,8 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = metaModel.lookup(Appointment.class);
-		metaModel.done();
+		domainClass = domain.lookup(Appointment.class);
+		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());

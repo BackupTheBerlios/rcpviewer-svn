@@ -6,8 +6,8 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
-import de.berlios.rcpviewer.progmodel.standard.Domain;
+import de.berlios.rcpviewer.metamodel.Domain;
+import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
  * Tests for the use of the <tt>PositionedAt</tt>.
@@ -16,7 +16,7 @@ import de.berlios.rcpviewer.progmodel.standard.Domain;
  */
 public class TestPositionedAt extends AbstractTestCase {
 
-	@Domain
+	@InDomain
 	public static class CustomerWithAllAttributesPositioned {
 
 		private int numberOfOrders;
@@ -38,15 +38,16 @@ public class TestPositionedAt extends AbstractTestCase {
 		}
 	}
 	
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
@@ -56,10 +57,10 @@ public class TestPositionedAt extends AbstractTestCase {
 	 *
 	 */
 	public void testDomainClassWithAllAttributesPositioned() {
-		metaModel.addExtension(new ExtendedProgModelExtension());
+		domain.addExtension(new ExtendedProgModelExtension());
 		domainClass = 
-			metaModel.lookup(CustomerWithAllAttributesPositioned.class);
-		metaModel.done();
+			domain.lookup(CustomerWithAllAttributesPositioned.class);
+		domain.done();
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
 		assertNotNull(comparator);
 		List<EAttribute> sortedAttributes = 

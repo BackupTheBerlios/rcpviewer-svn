@@ -6,7 +6,7 @@ import java.net.URL;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
+import de.berlios.rcpviewer.metamodel.IDomainAnalyzer;
 
 /**
  * Adds annotations specific to the RCPViewer.
@@ -20,7 +20,7 @@ import de.berlios.rcpviewer.metamodel.IMetaModelExtension;
  * @author Dan Haywood
  *
  */
-public class RcpViewerExtension implements IMetaModelExtension {
+public class RcpViewerExtension implements IDomainAnalyzer {
 
 	public void analyze(IDomainClass<?> domainClass) {
 		Class<?> javaClass = domainClass.getJavaClass();

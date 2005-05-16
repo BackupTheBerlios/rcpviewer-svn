@@ -177,7 +177,7 @@ public final class NamingConventions {
 	}
 	
 	public final void assertReference(final Method method) {
-		if (method == null) { // TODO: make into an aspet
+		if (method == null) { // TODO: make into an aspect
 			throw new AssertionError("null method");
 		}
 		if (!isReference(method)) {
@@ -325,7 +325,7 @@ public final class NamingConventions {
 	}
 	
 	/**
-	 * A reference type if has the @Domain annotation.
+	 * A reference type if has the @InDomain annotation.
 	 *  
 	 * @param javaClass
 	 * @return
@@ -337,7 +337,7 @@ public final class NamingConventions {
 		if (javaClass == void.class) {
 			return false;
 		}
-		Domain domain = javaClass.getAnnotation(Domain.class);
+		InDomain domain = javaClass.getAnnotation(InDomain.class);
 		return domain != null;
 	}
 	

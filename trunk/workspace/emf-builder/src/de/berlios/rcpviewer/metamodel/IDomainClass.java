@@ -33,14 +33,14 @@ public interface IDomainClass<T> {
 	 * The {@link Metamodel} that (conceptually) owns this domain class.
 	 * 
 	 * <p>
-	 * There could potentially be several {@link MetaModel}s instantiated at
+	 * There could potentially be several {@link Domain}s instantiated at
 	 * a time.  For example, one might model the main business object domain,
 	 * while another might model a set of user preferences, and a third might
 	 * model the user's filesystem.
 	 * 
 	 * @return the owning metamodel for this domain class.
 	 */
-	public MetaModel getMetaModel();
+	public Domain getDomain();
 	
 	public Class<T> getJavaClass();
 
@@ -67,7 +67,7 @@ public interface IDomainClass<T> {
 
 
 	/**
-	 * For internal use only called by {@link MetaModel}
+	 * For internal use only called by {@link Domain}
 	 */
 	public void init();
 	
@@ -771,8 +771,5 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public IDomainObject<T> createTransient();
-
-	public MetaModel getDomain();
-
 
 }

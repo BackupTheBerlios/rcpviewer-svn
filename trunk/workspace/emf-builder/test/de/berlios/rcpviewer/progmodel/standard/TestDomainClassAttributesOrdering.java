@@ -4,18 +4,18 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 
 public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 
-	@Domain
+	@InDomain
 	public static class CustomerWithNoOrderingReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class CustomerWithOrderingReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -24,7 +24,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 			return surname;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class CustomerWithoutOrderingReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -34,39 +34,40 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 		}
 	}
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
 	// ordering //
 
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = metaModel.lookup(CustomerWithNoOrderingReadOnlyAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithNoOrderingReadOnlyAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = metaModel.lookup(CustomerWithOrderingReadOnlyAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithOrderingReadOnlyAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = metaModel.lookup(CustomerWithoutOrderingReadOnlyAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithoutOrderingReadOnlyAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());
 		assertFalse(domainClass.isOrdered(eAttribute));

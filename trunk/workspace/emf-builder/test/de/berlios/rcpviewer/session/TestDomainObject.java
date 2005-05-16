@@ -10,7 +10,7 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.Department;
 import de.berlios.rcpviewer.metamodel.Employee;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 import de.berlios.rcpviewer.session.local.Session;
 
 public class TestDomainObject extends AbstractTestCase  {
@@ -39,22 +39,16 @@ public class TestDomainObject extends AbstractTestCase  {
 	}
 
 	private ISession session;
-	private MetaModel metaModel;
-	/**
-	 * Need to use MetaModel on the thread because the aspect that creates the
-	 * IDomainObject uses that metamodel for its lookup.
-	 *
-	 */
+	private Domain domain;
 	protected void setUp() throws Exception {
 		super.setUp();
-		//metaModel = MetaModel.threadInstance();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 		session = new Session();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel.reset();
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		session = null;
 		super.tearDown();
 	}
@@ -67,7 +61,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanPersistThroughDomainObject() {
 		session = Session.instance(); // use singleton since this is what Aspect
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
@@ -85,7 +79,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanPersistThroughPojo() {
 		session = Session.instance(); // must use Singleton since this is what Aspect uses.
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.getPojo().save();
@@ -97,7 +91,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testCannotPersistIfNotAttachedToSession() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertFalse(session.isAttached(domainObject));
 		try {
@@ -112,7 +106,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCannotPersistMoreThanOnce() {
 		session = Session.instance(); // since Aspect will use singleton Session
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
@@ -127,7 +121,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanSetAttribute() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -138,7 +132,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCannotSetAttributeToInvalidValue() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
@@ -152,7 +146,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testSettingAttributeNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -167,7 +161,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanGetAttribute() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -179,7 +173,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	
 	public void testCanInvokeOperation() {
 		IDomainClass<Department> domainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -197,9 +191,9 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testGetCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			metaModel.lookup(Employee.class);
+			domain.lookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -217,8 +211,8 @@ public class TestDomainObject extends AbstractTestCase  {
 	}
 
 	public void testGetReferencedClassForCollection() {
-		IDomainClass<Department> departmentDomainClass = metaModel.lookup(Department.class);
-		IDomainClass<Employee> employeeDomainClass = metaModel.lookup(Employee.class);
+		IDomainClass<Department> departmentDomainClass = domain.lookup(Department.class);
+		IDomainClass<Employee> employeeDomainClass = domain.lookup(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
 		assertSame(employeeDomainClass, departmentDomainClass.getReferencedClass(employeesCollection));
@@ -227,9 +221,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanAddToCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			metaModel.lookup(Employee.class);
+			domain.lookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -247,9 +241,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanRemoveFromCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			metaModel.lookup(Employee.class);
+			domain.lookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -274,9 +268,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testListenersNotifiedWhenAddToCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			metaModel.lookup(Employee.class);
+			domain.lookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -297,9 +291,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testListenersNotifiedWhenRemoveFromCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			metaModel.lookup(Department.class);
+			domain.lookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			metaModel.lookup(Employee.class);
+			domain.lookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);

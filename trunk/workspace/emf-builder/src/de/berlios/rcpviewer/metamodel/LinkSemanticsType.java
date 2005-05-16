@@ -20,7 +20,7 @@ public final class LinkSemanticsType {
 	 * Note that the java type is Object since any object could be a reference.
 	 * 
 	 * <p>
-	 * However, there are additional constraints - it must have @Domain, cannot
+	 * However, there are additional constraints - it must have @InDomain, cannot
 	 * have @Value.
 	 */
 	public final static LinkSemanticsType SIMPLE_REF =

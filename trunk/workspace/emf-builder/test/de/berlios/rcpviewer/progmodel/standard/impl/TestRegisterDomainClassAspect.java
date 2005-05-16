@@ -7,15 +7,15 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 public class TestRegisterDomainClassAspect extends TestCase {
 
 	
-	private MetaModel metaModel;
+	private Domain metaModel;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		metaModel = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
 		metaModel = null;
-		MetaModel.instance().reset();
+		Domain.instance().reset();
 		super.tearDown();
 	}
 
@@ -58,9 +58,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	public void incompletetestImplicitRegistrationByClassLoading() throws ClassNotFoundException {
 		// incomplete since this is already doing the lookup...
 		// (which is good, right?)
-		assertNull(MetaModel.instance().lookupNoRegister(Department.class));
+		assertNull(Domain.instance().lookupNoRegister(Department.class));
 		Class.forName(Department.class.getName());
-		assertNotNull(MetaModel.instance().lookupNoRegister(Department.class));
+		assertNotNull(Domain.instance().lookupNoRegister(Department.class));
 	}
 	
 
@@ -72,9 +72,9 @@ public class TestRegisterDomainClassAspect extends TestCase {
 	public void incompletetestImplicitRegistration() {
 		// incomplete since this is already doing the lookup...
 		// (which is good, right?)
-		assertNull(MetaModel.instance().lookupNoRegister(Department.class));
+		assertNull(Domain.instance().lookupNoRegister(Department.class));
 		new Department();
-		assertNotNull(MetaModel.instance().lookupNoRegister(Department.class));
+		assertNotNull(Domain.instance().lookupNoRegister(Department.class));
 	}
 
 

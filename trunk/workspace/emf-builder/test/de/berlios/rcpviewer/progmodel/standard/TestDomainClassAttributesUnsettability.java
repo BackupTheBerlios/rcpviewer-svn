@@ -4,11 +4,11 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 
 public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 
-	@Domain
+	@InDomain
 	public static class CustomerWithUnsettableAttribute {
 		private int age;
 		public boolean isUnsetAge() {
@@ -24,7 +24,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 			this.age = age;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class CustomerWithOnlyIsUnsetForAttribute {
 		private int age;
 		/**
@@ -41,7 +41,7 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 			this.age = age;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class CustomerWithOnlyUnsetForAttribute {
 		private int age;
 		/**
@@ -59,36 +59,37 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 		}
 	}
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
 	public void testWhetherEAttributeIsUnsettableWhenIs() {
-		domainClass = metaModel.lookup(CustomerWithUnsettableAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithUnsettableAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
 		assertTrue(domainClass.isUnsettable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
-		domainClass = metaModel.lookup(CustomerWithOnlyIsUnsetForAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithOnlyIsUnsetForAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
-		domainClass = metaModel.lookup(CustomerWithOnlyUnsetForAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithOnlyUnsetForAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));

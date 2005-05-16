@@ -1,22 +1,24 @@
 /**
- * The structure of the MetaModel.
+ * The structure of a domain.
  * 
  * <p>
- * {@link MetaModel} <i>is</i> the metamodel.  Typically POJO classes are 
- * registered directly with the MetaModel, and the its {@link MetaModel#done()}
- * method called to allow analysis of references (associations) between clasess
- * to be performed.
+ * Each collection of classes pertaining to a domain of interest will belong
+ * and be associated with an instance of a {@link Domain} class.  (Alternate
+ * names for this concept include "meta-model" and "schema").  
  * 
  * <p>
- * In addition, {@link IMetaModelExtension}s can be installed on the
- * {@link MetaModel} to allow additional semantics to be gleaned.  When an 
- * extension is installed, it is asked to analyse all {@link IDomainClass}es
- * known at that point. 
+ * Typically POJO classes are registered directly with the Domain, and the its 
+ * {@link Domain#done()} method called to allow analysis of references 
+ * (associations) between classes to be performed.
  * 
  * <p>
- * Note that MetaModel is not necessarily a singleton - we may have a number
- * of co-existing domains each with their own metamodel (eg user preferences
- * vs back-end business domain).
+ * In addition, {@link IDomainAnalyzer}s can be installed on the
+ * {@link Domain} to allow additional semantics to be gleaned.  To get such
+ * analyzers to do their stuff, invoke the {@link Domain#done()}.
+ * 
+ * <p>
+ * {@link Domain}s are stored globally (accessed via a singleton), indexed by
+ * their name.  
  * 
  */
 package de.berlios.rcpviewer.metamodel;

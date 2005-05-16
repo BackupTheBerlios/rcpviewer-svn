@@ -47,7 +47,7 @@ public class TestDomainAspect extends AbstractTestCase {
 	 * TODO: marked incomplete for now; must create domain objects through
 	 * domain class (was getting two copies of IDomainClass). 
 	 */
-	public void testCanGetDomainObjectFromMetaModel() {
+	public void testCanGetDomainObjectFromDomain() {
 		Department d = new Department();
 		IDomainObject obj = session.getWrapper().wrapped(d);
 		IDomainClass dc = obj.getDomainClass();

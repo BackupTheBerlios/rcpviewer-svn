@@ -4,18 +4,18 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.MetaModel;
+import de.berlios.rcpviewer.metamodel.Domain;
 
 public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
-	@Domain
+	@InDomain
 	public static class CustomerWithNoUniquenessReadOnlyAttribute {
 		private String surname;
 		public String getSurname() {
 			return surname;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class CustomerWithUniqueReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -24,7 +24,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 			return surname;
 		}
 	}
-	@Domain
+	@InDomain
 	public static class CustomerWithNonUniqueReadOnlyAttribute {
 		private String surname;
 		@UpperBoundOf(3)
@@ -34,39 +34,40 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 		}
 	}
 
-	private MetaModel metaModel;
+	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		metaModel = MetaModel.instance();
+		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		metaModel = null;
+		domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
 	// uniqueness //
 
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = metaModel.lookup(CustomerWithNoUniquenessReadOnlyAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithNoUniquenessReadOnlyAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = metaModel.lookup(CustomerWithUniqueReadOnlyAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithUniqueReadOnlyAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = metaModel.lookup(CustomerWithNonUniqueReadOnlyAttribute.class);
-		metaModel.done();
+		domainClass = domain.lookup(CustomerWithNonUniqueReadOnlyAttribute.class);
+		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());
 		assertFalse(domainClass.isUnique(eAttribute));
