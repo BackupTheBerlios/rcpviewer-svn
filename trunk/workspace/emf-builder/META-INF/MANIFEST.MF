@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core Plug-in
+Bundle-SymbolicName: de.berlios.rcpviewer.core
+Bundle-Version: 1.0.0
+Bundle-ClassPath: core.jar
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: org.eclipse.emf.common,
+ org.eclipse.emf.ecore,
+ org.eclipse.jface,
+ org.aspectj.runtime
