@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Utils
+Bundle-SymbolicName: net.sf.plugins.utils
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: org.eclipse.jface,
+ org.eclipse.swt,
+ org.eclipse.core.runtime.compatibility,
+ org.eclipse.ui.forms
+Export-Package: net.sf.plugins.utils.ui.forms,
+ net.sf.rcpplugins.utils
