@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+	Application context for Ppo RCPViewer example.
+-->
+<beans>
+
+	<!-- *****************
+		 *
+		 * main application entry point 
+		 *
+		 ***************** 	-->
+	<bean id="main" class="com.example.ppo.internal.PpoApplication">
+		<constructor-arg>
+			<ref bean="com.example.ppo.commands.AuthenticationCommand" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="com.example.ppo.commands.CreateAndRunWorkbenchCommand" />
+		</constructor-arg>
+	</bean>
+	
+	
+	<!-- *****************
+		 *
+		 * commands
+		 *
+		 ***************** 	-->
+	<bean id="com.example.ppo.commands.AuthenticationCommand" class="com.example.ppo.internal.commands.PpoAuthenticationCommand">
+		<constructor-arg>
+			<ref bean="com.example.ppo.internal.LoginWizard" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="com.example.ppo.commands.CreateAndRunWorkbenchCommand" class="com.example.ppo.internal.commands.PpoCreateAndRunWorkbenchCommand">
+		<constructor-arg>
+			<ref bean="org.eclipse.swt.widgets.Display" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="org.eclipse.ui.application.WorkbenchAdvisor" />
+		</constructor-arg>
+	</bean>
+
+	
+	<!-- *****************
+		 *
+		 * services
+		 *
+		 ***************** 	-->
+	<bean id="net.sf.acegisecurity.AuthenticationManager" class="com.example.ppo.internal.PpoAuthenticationManager">
+	</bean>
+	
+	
+	<!-- *****************
+		 *
+		 * UI
+		 *
+		 ***************** 	-->
+	<bean id="org.eclipse.swt.widgets.Display" class="com.example.ppo.internal.DisplayFactoryBean" >
+	</bean>
+	
+	<bean class="com.example.ppo.internal.LoginWizard" >
+		<constructor-arg>
+			<ref bean="org.eclipse.ui.forms.widgets.FormToolkit" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="net.sf.acegisecurity.AuthenticationManager" />
+		</constructor-arg>
+		<property name="windowText" value="Ppo Example Application"/>
+		<property name="titleText" value="Please Sign In"/>
+	</bean>
+	
+	<bean id="org.eclipse.ui.forms.widgets.FormToolkit" class="net.sf.plugins.utils.ui.forms.DialogFormToolkit" singleton="false" >
+		<constructor-arg>
+			<ref bean="org.eclipse.swt.widgets.Display" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="org.eclipse.ui.application.WorkbenchAdvisor" class="com.example.ppo.internal.PpoWorkbenchAdvisor" >
+	</bean>
+
+</beans>

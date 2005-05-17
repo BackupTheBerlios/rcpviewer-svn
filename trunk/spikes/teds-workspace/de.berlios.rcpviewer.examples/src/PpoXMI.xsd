@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xmi="http://www.omg.org/XMI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:com.example.ppo="http:///com/example/ppo.ecore" targetNamespace="http:///com/example/ppo.ecore">
+  <xsd:import schemaLocation="XMI.xsd" namespace="http://www.omg.org/XMI"/>
+  <xsd:complexType name="Item">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="xmi:Extension"/>
+    </xsd:choice>
+    <xsd:attribute ref="xmi:id"/>
+    <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+    <xsd:attribute name="productName" type="xsd:string"/>
+    <xsd:attribute name="quantity" type="xsd:int"/>
+    <xsd:attribute name="uSPrice" type="xsd:int"/>
+    <xsd:attribute name="comment" type="xsd:string"/>
+    <xsd:attribute name="shipDate" type="xsd:string"/>
+    <xsd:attribute name="partNum" type="xsd:string"/>
+  </xsd:complexType>
+  <xsd:element name="Item" type="com.example.ppo:Item"/>
+  <xsd:complexType name="PurchaseOrder">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="items" type="com.example.ppo:Item"/>
+      <xsd:element name="billTo" type="com.example.ppo:USAddress"/>
+      <xsd:element name="shipTo" type="com.example.ppo:USAddress"/>
+      <xsd:element ref="xmi:Extension"/>
+    </xsd:choice>
+    <xsd:attribute ref="xmi:id"/>
+    <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+    <xsd:attribute name="comment" type="xsd:string"/>
+    <xsd:attribute name="orderDate" type="xsd:string"/>
+  </xsd:complexType>
+  <xsd:element name="PurchaseOrder" type="com.example.ppo:PurchaseOrder"/>
+  <xsd:complexType name="USAddress">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="xmi:Extension"/>
+    </xsd:choice>
+    <xsd:attribute ref="xmi:id"/>
+    <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+    <xsd:attribute name="name" type="xsd:string"/>
+    <xsd:attribute name="street" type="xsd:string"/>
+    <xsd:attribute name="city" type="xsd:string"/>
+    <xsd:attribute name="state" type="xsd:string"/>
+    <xsd:attribute name="zip" type="xsd:int"/>
+    <xsd:attribute name="country" type="xsd:string"/>
+  </xsd:complexType>
+  <xsd:element name="USAddress" type="com.example.ppo:USAddress"/>
+</xsd:schema>

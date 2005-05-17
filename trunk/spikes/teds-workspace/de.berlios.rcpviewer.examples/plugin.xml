@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+/**
+ * <copyright>
+ * </copyright>
+ *
+ * $Id$
+ */
+-->
+
+<plugin>
+
+    <extension point="org.eclipse.emf.ecore.generated_package">
+    <package 
+       uri = "http:///com/example/ppo.ecore" 
+       class = "com.example.ppo.PpoPackage" />
+  </extension>
+    <extension point="net.sf.plugins.springframework.beanFactories">
+    	<beanFactory id="net.sf.plugins.rcpviewer.examples.ppo" file="ppo-beanfactory.xml" />
+    </extension>
+    <extension
+          point="org.eclipse.ui.newWizards">
+       <category
+             id="de.berlios.rcpviewer.examples"
+             name="Ppo Example Objects"/>
+       <wizard
+             category="de.berlios.rcpviewer.examples"
+             class="com.example.ppo.internal.PurchaseOrderNewWizard"
+             icon="icons/NewPurchaseOrder.gif"
+             id="de.berlios.rcpviewer.examples.wizards.PurchaseOrderNewWizard"
+             name="Purchase Order"/>
+    </extension>
+    <extension
+          point="org.eclipse.ui.actionSets">
+       <actionSet
+             description="Ppo Example Actions"
+             id="de.berlios.rcpviewer.examples.actionSet1"
+             label="de.berlios.rcpviewer.examples.actionSet1"
+             visible="true">
+          <action
+                class="com.example.ppo.internal.NewPurchaseOrderActionDelegate"
+                id="de.berlios.rcpviewer.examples.action1"
+                label="New Purchase Order"
+                menubarPath="file/new/additions"
+                style="push"
+                tooltip="Create a new purchase order"/>
+       </actionSet>
+    </extension>
+
+</plugin>
+

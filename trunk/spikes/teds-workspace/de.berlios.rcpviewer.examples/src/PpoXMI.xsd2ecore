@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xsd2ecore:XSD2EcoreMappingRoot xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsd2ecore="http://www.eclipse.org/emf/2002/XSD2Ecore" inputs="ppo.ecore#/"
+    outputs="PpoXMI.xsd#/">
+  <nested inputs="ppo.ecore#/" outputs="PpoXMI.xsd#/">
+    <nested inputs="ppo.ecore#//Item" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition">
+      <nested inputs="ppo.ecore#//Item/productName" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition/XSDAttributeUse=1"/>
+      <nested inputs="ppo.ecore#//Item/quantity" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition/XSDAttributeUse=2"/>
+      <nested inputs="ppo.ecore#//Item/uSPrice" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition/XSDAttributeUse=3"/>
+      <nested inputs="ppo.ecore#//Item/comment" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition/XSDAttributeUse=4"/>
+      <nested inputs="ppo.ecore#//Item/shipDate" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition/XSDAttributeUse=5"/>
+      <nested inputs="ppo.ecore#//Item/partNum" outputs="PpoXMI.xsd#//Item;XSDComplexTypeDefinition/XSDAttributeUse=6"/>
+    </nested>
+    <nested inputs="ppo.ecore#//Item" outputs="PpoXMI.xsd#//Item;XSDElementDeclaration"/>
+    <nested inputs="ppo.ecore#//PurchaseOrder" outputs="PpoXMI.xsd#//PurchaseOrder;XSDComplexTypeDefinition=1">
+      <nested inputs="ppo.ecore#//PurchaseOrder/comment" outputs="PpoXMI.xsd#//PurchaseOrder;XSDComplexTypeDefinition=1/XSDAttributeUse=1"/>
+      <nested inputs="ppo.ecore#//PurchaseOrder/orderDate" outputs="PpoXMI.xsd#//PurchaseOrder;XSDComplexTypeDefinition=1/XSDAttributeUse=2"/>
+      <nested inputs="ppo.ecore#//PurchaseOrder/items" outputs="PpoXMI.xsd#//PurchaseOrder;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle"/>
+      <nested inputs="ppo.ecore#//PurchaseOrder/billTo" outputs="PpoXMI.xsd#//PurchaseOrder;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=1"/>
+      <nested inputs="ppo.ecore#//PurchaseOrder/shipTo" outputs="PpoXMI.xsd#//PurchaseOrder;XSDComplexTypeDefinition=1/XSDParticle/XSDModelGroup/XSDParticle=2"/>
+    </nested>
+    <nested inputs="ppo.ecore#//PurchaseOrder" outputs="PpoXMI.xsd#//PurchaseOrder;XSDElementDeclaration=1"/>
+    <nested inputs="ppo.ecore#//USAddress" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2">
+      <nested inputs="ppo.ecore#//USAddress/name" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2/XSDAttributeUse=1"/>
+      <nested inputs="ppo.ecore#//USAddress/street" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2/XSDAttributeUse=2"/>
+      <nested inputs="ppo.ecore#//USAddress/city" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2/XSDAttributeUse=3"/>
+      <nested inputs="ppo.ecore#//USAddress/state" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2/XSDAttributeUse=4"/>
+      <nested inputs="ppo.ecore#//USAddress/zip" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2/XSDAttributeUse=5"/>
+      <nested inputs="ppo.ecore#//USAddress/country" outputs="PpoXMI.xsd#//USAddress;XSDComplexTypeDefinition=2/XSDAttributeUse=6"/>
+    </nested>
+    <nested inputs="ppo.ecore#//USAddress" outputs="PpoXMI.xsd#//USAddress;XSDElementDeclaration=2"/>
+  </nested>
+</xsd2ecore:XSD2EcoreMappingRoot>
