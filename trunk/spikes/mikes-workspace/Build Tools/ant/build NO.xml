@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build NO" default="deploy">
+
+	<!-- NOTE! These are host-specific and will have to be modified -->
+    <property name="eclipse_workspace" location="E:\Eclipse Workspaces\NakedObjects"/>
+    <property name="NO_dir" location="${eclipse_workspace}\nof-20050328"/>
+	<property name="rcpviewer_lib_dir" location="${eclipse_workspace}\RCPViewer\lib"/>
+	
+	
+	<target name="deploy"
+			depends="wipe-previous,
+			         create-NO-jar,
+			         create-NO-src-jar,
+			         copy-NO-libs">
+	</target>
+	
+	<target name="wipe-previous">
+		<delete dir="${rcpviewer_lib_dir}"/>
+		<mkdir dir="${rcpviewer_lib_dir}"/>
+	</target>
+	
+	<target name="create-NO-jar">
+		<jar destfile="${rcpviewer_lib_dir}\no.jar">
+			<fileset dir="${NO_dir}\bin">
+				<include name="**\*.class"/>
+				<exclude name="org/nakedobjects/example/ecs/**"/>
+			</fileset>
+			<fileset dir="${NO_dir}\src">
+				<include name="**\*.java"/>
+				<exclude name="org/nakedobjects/example/ecs/**"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="create-NO-src-jar">
+		<jar destfile="${rcpviewer_lib_dir}\no-src.jar">
+			<fileset dir="${NO_dir}\src">
+				<include name="**\*.java"/>
+				<exclude name="org/nakedobjects/example/ecs/**"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="copy-NO-libs">
+		<copy todir="${rcpviewer_lib_dir}">
+			<fileset dir="${NO_dir}\lib">
+			</fileset>
+		</copy>
+	</target>
+	
+</project>

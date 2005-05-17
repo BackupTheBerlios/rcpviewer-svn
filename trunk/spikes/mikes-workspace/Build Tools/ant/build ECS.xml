@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build ECS" default="deploy">
+
+    <!-- NOTE! These are host-specific and will have to be modified -->
+    <property name="eclipse_workspace" location="E:\Eclipse Workspaces\NakedObjects"/>
+    <property name="ECS_dir" location="${eclipse_workspace}\nof-examples-20050316"/>
+	<property name="plugin_lib_dir" location="${eclipse_workspace}\ECSPlugin\lib"/>
+	
+	
+	<target name="deploy"
+			depends="wipe-previous,
+			         create-ECS-src-jar,
+			         create-ECS-jar">
+	</target>
+	
+	<target name="wipe-previous">
+		<delete dir="${plugin_lib_dir}"/>
+		<mkdir dir="${plugin_lib_dir}"/>
+	</target>
+	
+	<target name="create-ECS-jar">
+		<jar destfile="${plugin_lib_dir}\ecs.jar">
+			<fileset dir="${ECS_dir}\bin">
+				<include name="**\*.class"/>
+				<include name="**\*.gif"/>
+				<include name="**\*.png"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="create-ECS-src-jar">
+		<jar destfile="${plugin_lib_dir}\ecs-src.jar">
+			<fileset dir="${ECS_dir}\src">
+				<include name="**\*.java"/>
+			</fileset>
+		</jar>
+	</target>
+	
+</project>

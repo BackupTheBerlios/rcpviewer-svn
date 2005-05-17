@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension-point id="fixture" name="Fixture Extension Point" schema="schema/de.berlios.rcpviewer.fixture.exsd"/>
+
+   <extension
+         id="rcpviewer"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="de.berlios.rcpviewer.app.RCPViewerApplication">
+         </run>
+      </application>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Default Perspective"
+            class="de.berlios.rcpviewer.app.DefaultPerspective"
+            id="de.berlios.rcpviewer.app.DefaultPerspective">
+      </perspective>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="de.berlios.rcpviewer"
+            name="RCP Views"/>
+      <view
+            category="de.berlios.rcpviewer"
+            class="de.berlios.rcpviewer.views.ClassBar"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.views.ClassBar"
+            name="Class Bar"/>
+   </extension>
+   
+   <!--
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="de.berlios.rcpviewer.app.DefaultPerspective">
+         <view
+               id="de.berlios.rcpviewer.views.ClassBar"
+               ratio="0.2"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"/>
+      </perspectiveExtension>
+   </extension>
+   -->
+
+
+</plugin>

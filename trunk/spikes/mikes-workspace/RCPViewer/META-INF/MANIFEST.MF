@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: de.berlios.rcpviewer
+Bundle-SymbolicName: de.berlios.rcpviewer
+Bundle-Version: 0.0.1
+Bundle-ClassPath: 
+ ./bin/,
+ RCPViewer.jar
+Bundle-Activator: de.berlios.rcpviewer.app.ExplorationPlugin
+Eclipse-AutoStart: true
+Bundle-Localization: plugin
+Require-Bundle: 
+ de.berlios.rcpviewer.nakedobjects,
+ org.eclipse.ui,
+ org.eclipse.ui.workbench,
+ org.eclipse.core.runtime.compatibility,
+ org.apache.log4j
+Export-Package: 
+ de.berlios.rcpviewer.app,
+ de.berlios.rcpviewer.config,
+ de.berlios.rcpviewer.views
+Provide-Package: 
+ de.berlios.rcpviewer.app,
+ de.berlios.rcpviewer.config,
+ de.berlios.rcpviewer.views
