@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.berlios.rcpviewer.application.RCPViewerPerspectiveFactory"
+            fixed="false"
+            id="de.berlios.rcpviewer.viewerPerspective"
+            name="de.berlios.rcpviewer.viewerPerspective"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.berlios.rcpviewer.presentation.RCPViewerEditor"
+            contributorClass="org.eclipse.ui.part.EditorActionBarContributor"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.objectEditor"
+            name="RCPViewer Object Editor"/>
+   </extension>
+
+</plugin>

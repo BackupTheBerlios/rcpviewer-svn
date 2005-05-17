@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<de.berlios.rcpviewer.metadata:RCPViewerMetadata xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:de.berlios.rcpviewer.metadata="http:///de/berlios/rcpviewer/metadata.ecore" imagePath="images/PurchaseOrder.gif" name="Purchase Order" toolTipText="Purchase Order" className="com.example.PurchaseOrder" namePlural="Purchase Orders"/>

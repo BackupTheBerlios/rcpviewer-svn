@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xsd2ecore:XSD2EcoreMappingRoot xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsd2ecore="http://www.eclipse.org/emf/2002/XSD2Ecore" inputs="metadata.ecore#/"
+    outputs="MetadataXMI.xsd#/">
+  <nested inputs="metadata.ecore#/" outputs="MetadataXMI.xsd#/">
+    <nested inputs="metadata.ecore#//RCPViewerMetadata" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDComplexTypeDefinition">
+      <nested inputs="metadata.ecore#//RCPViewerMetadata/imagePath" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDComplexTypeDefinition/XSDAttributeUse=1"/>
+      <nested inputs="metadata.ecore#//RCPViewerMetadata/name" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDComplexTypeDefinition/XSDAttributeUse=2"/>
+      <nested inputs="metadata.ecore#//RCPViewerMetadata/toolTipText" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDComplexTypeDefinition/XSDAttributeUse=3"/>
+      <nested inputs="metadata.ecore#//RCPViewerMetadata/className" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDComplexTypeDefinition/XSDAttributeUse=4"/>
+      <nested inputs="metadata.ecore#//RCPViewerMetadata/namePlural" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDComplexTypeDefinition/XSDAttributeUse=5"/>
+    </nested>
+    <nested inputs="metadata.ecore#//RCPViewerMetadata" outputs="MetadataXMI.xsd#//RCPViewerMetadata;XSDElementDeclaration"/>
+  </nested>
+</xsd2ecore:XSD2EcoreMappingRoot>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xmi="http://www.omg.org/XMI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:de.berlios.rcpviewer.metadata="http:///de/berlios/rcpviewer/metadata.ecore" targetNamespace="http:///de/berlios/rcpviewer/metadata.ecore">
+  <xsd:import schemaLocation="XMI.xsd" namespace="http://www.omg.org/XMI"/>
+  <xsd:complexType name="RCPViewerMetadata">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="xmi:Extension"/>
+    </xsd:choice>
+    <xsd:attribute ref="xmi:id"/>
+    <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+    <xsd:attribute name="imagePath" type="xsd:string"/>
+    <xsd:attribute name="name" type="xsd:string"/>
+    <xsd:attribute name="toolTipText" type="xsd:string"/>
+    <xsd:attribute name="className" type="xsd:string"/>
+    <xsd:attribute name="namePlural" type="xsd:string"/>
+  </xsd:complexType>
+  <xsd:element name="RCPViewerMetadata" type="de.berlios.rcpviewer.metadata:RCPViewerMetadata"/>
+</xsd:schema>
