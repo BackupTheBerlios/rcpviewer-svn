@@ -1,219 +1,18 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 public class TestDomainClassReferences extends AbstractTestCase {
 
-	/**
-	 * Has a 1:m bidirectional relationship with Employee.
-	 * 
-	 * TODO: DomainMarker is workaround
-	 */
-	@InDomain
-	public static class Department implements DomainMarker {
-		private Set<Employee> employees = new HashSet<Employee>();
-		/**
-		 * Should be picked up as a 1:m reference to Employee.
-		 * @return
-		 */
-		@Associates(Employee.class)
-		public Set<Employee> getEmployees() {
-			return employees ;
-		}
-		void addToEmployees(final Employee employee) {
-			employees.add(employee);
-			employee.setDepartment(this);
-		}
-		void removeFromEmployees(final Employee employee) {
-			employees.remove(employee);
-			employee.setDepartment(null);
-		}
-	}
-	/**
-	 * Has a m:1 bidirectional relationship with Employee.
-	 * 
-	 * <p>
-	 * TODO: DomainMarker is workaround
-	 */
-	@InDomain
-	public static class Employee implements DomainMarker {
-		public Employee(String firstName, String lastName) {
-			this.firstName = firstName;
-			this.lastName = lastName;
-		}
-		private String firstName;
-		public String getFirstName() {
-			return firstName;
-		}
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-		private String lastName;
-		public String getLastName() {
-			return lastName;
-		}
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-
-		private Department department;
-		/**
-		 * Should be picked up as representing a 1:1 reference to Department.
-		 * @return
-		 */
-		public Department getDepartment() {
-			return department;
-		}
-		/**
-		 * not public since not an operation.
-		 * @param department
-		 */
-		void setDepartment(Department department) {
-			department.addToEmployees(this);
-		}
-		/**
-		 * presence to indicate an optional reference.
-		 *
-		 */
-		public void clearDepartment() {
-			department.removeFromEmployees(this);
-		}
-		public boolean isTerminated() {
-			return false;
-		}
-	}
-	/**
-	 * Has a 1:m unidirectional relationship with Employee.
-	 * TODO: DomainMarker is workaround
-	 */
-	@InDomain
-	public static class DepartmentImmutableEmployeeCollection implements DomainMarker {
-		private Set<Employee> employees = new HashSet<Employee>();
-		/**
-		 * Should be picked up as an immutable 1:m reference to Employee.
-		 * @return
-		 */
-		@Immutable
-		@Associates(Employee.class)
-		public Set<Employee> getEmployees() {
-			return employees ;
-		}
-		void addToEmployees(final Employee employee) {
-			employees.add(employee);
-		}
-		void removeFromEmployees(final Employee employee) {
-			employees.remove(employee);
-		}
-	}
-	/**
-	 * TODO: DomainMarker is workaround
-	 */
-	@InDomain
-	public static class Name implements DomainMarker {
-		public Name(String firstName, String lastName) {
-			this.firstName = firstName;
-			this.lastName = lastName;
-		}
-		private String firstName;
-		public String getFirstName() {
-			return firstName;
-		}
-		public void setFirstName(String firstName) {
-			this.firstName = firstName;
-		}
-		private String lastName;
-		public String getLastName() {
-			return lastName;
-		}
-		public void setLastName(String lastName) {
-			this.lastName = lastName;
-		}
-	}
-	/**
-	 * Has a 1:1 unidirectional immutable relationship with Name.
-	 * 
-	 * TODO: DomainMarker is workaround
-	 */
-	@InDomain
-	public static class EmployeeImmutableNameRef implements DomainMarker {
-		public EmployeeImmutableNameRef(String firstName, String lastName) {
-			this.name = new Name(firstName, lastName);
-		}
-		private Name name;
-		/**
-		 * Should be picked up as an immutable 1:1 reference
-		 * @return
-		 */
-		@Immutable
-		public Name getName() {
-			return name;
-		}
-	}
-	/**
-	 * Has a 1:m unidirectional relationship with Employee, and a separate
-	 * 1:m derived unidirectional relationship with Employee.
-	 * 
-	 * TODO: DomainMarker is workaround
-	 */
-	@InDomain
-	public static class DepartmentDerivedReferences implements DomainMarker {
-		private Set<Employee> employees = new HashSet<Employee>();
-		/**
-		 * Should be picked up as an immutable 1:m reference to Employee.
-		 * @return
-		 */
-		@Immutable
-		@Associates(Employee.class)
-		public Set<Employee> getEmployees() {
-			return employees ;
-		}
-		void addToEmployees(final Employee employee) {
-			employees.add(employee);
-		}
-		void removeFromEmployees(final Employee employee) {
-			employees.remove(employee);
-		}
-
-		/**
-		 * Should be picked up as a derived 1:m reference to Employee.
-		 * @return
-		 */
-		@Derived
-		@Associates(Employee.class)
-		public Set<Employee> getTerminatedEmployees() {
-			Set<Employee> employeesNamed = new HashSet<Employee>();
-			for(Employee e: employees) {
-				if (e.isTerminated()) {
-					employeesNamed.add(e);
-				}
-			}
-			return employeesNamed;
-		}
-		
-		/**
-		 * Should be picked up as a derived 1:1 reference to Employee.
-		 * @return
-		 */
-		@Derived
-		public Employee getMostRecentJoiner() {
-			throw new RuntimeException("not implemented");
-		}
-
-	}
-
-	
 	private Domain domain;
 	private IDomainClass<?> departmentDomainClass;
 	private IDomainClass<?> employeeDomainClass;
-	private IDomainClass<Name> nameDomainClass;
+	private IDomainClass<TestDomainClassReferencesName> nameDomainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 		domain = Domain.instance();
@@ -230,8 +29,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	
 
 	public void testOneToManyIsPickedUp(){
-		departmentDomainClass = domain.lookup(Department.class);
-		employeeDomainClass = domain.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(TestDomainClassReferencesDepartment.class);
+		employeeDomainClass = domain.lookup(TestDomainClassReferencesEmployee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -246,8 +45,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testOneToOneIsPickedUp(){
-		departmentDomainClass = domain.lookup(Department.class);
-		employeeDomainClass = domain.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(TestDomainClassReferencesDepartment.class);
+		employeeDomainClass = domain.lookup(TestDomainClassReferencesEmployee.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToDepartment = employeeDomainClass.references().get(0);
@@ -262,8 +61,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToManyIsPickedUp(){
-		departmentDomainClass = domain.lookup(DepartmentImmutableEmployeeCollection.class);
-		employeeDomainClass = domain.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(TestDomainClassReferencesDepartmentImmutableEmployeeCollection.class);
+		employeeDomainClass = domain.lookup(TestDomainClassReferencesEmployee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -272,8 +71,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToOneIsPickedUp(){
-		employeeDomainClass = domain.lookup(EmployeeImmutableNameRef.class);
-		nameDomainClass = domain.lookup(Name.class);
+		employeeDomainClass = domain.lookup(TestDomainClassReferencesEmployeeImmutableNameRef.class);
+		nameDomainClass = domain.lookup(TestDomainClassReferencesName.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToName = employeeDomainClass.references().get(0);
@@ -283,7 +82,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testDerivedOneToManyIsPickedUp(){
-		departmentDomainClass = domain.lookup(DepartmentDerivedReferences.class);
+		departmentDomainClass = domain.lookup(TestDomainClassReferencesDepartmentDerivedReferences.class);
 		
 		EReference derivedRefToEmployees = departmentDomainClass.getEReferenceNamed("terminatedEmployees");
 		assertEquals("terminatedEmployees", derivedRefToEmployees.getName());
@@ -295,8 +94,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 *
 	 */
 	public void testDerivedOneToOneIsPickedUp(){
-		departmentDomainClass = domain.lookup(DepartmentDerivedReferences.class);
-		employeeDomainClass = domain.lookup(Employee.class);
+		departmentDomainClass = domain.lookup(TestDomainClassReferencesDepartmentDerivedReferences.class);
+		employeeDomainClass = domain.lookup(TestDomainClassReferencesEmployee.class);
 				
 		EReference derivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");
 		assertFalse(departmentDomainClass.isMultiple(derivedRefToEmployee));

@@ -8,32 +8,6 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
-	@InDomain
-	public static class CustomerWithNoUniquenessReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	@InDomain
-	public static class CustomerWithUniqueReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		@Unique
-		public String getSurname() {
-			return surname;
-		}
-	}
-	@InDomain
-	public static class CustomerWithNonUniqueReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		@Unique(false)
-		public String getSurname() {
-			return surname;
-		}
-	}
-
 	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
@@ -50,7 +24,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	// uniqueness //
 
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.lookup(CustomerWithNoUniquenessReadOnlyAttribute.class);
+		domainClass = domain.lookup(TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
@@ -58,7 +32,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = domain.lookup(CustomerWithUniqueReadOnlyAttribute.class);
+		domainClass = domain.lookup(TestDomainClassAttributesUniquenessCustomerWithUniqueReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
@@ -66,7 +40,7 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = domain.lookup(CustomerWithNonUniqueReadOnlyAttribute.class);
+		domainClass = domain.lookup(TestDomainClassAttributesUniquenessCustomerWithNonUniqueReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());

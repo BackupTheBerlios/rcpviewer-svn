@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
  * Tests for the use of the <tt>PositionedAt</tt>.
@@ -16,28 +15,6 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
  */
 public class TestPositionedAt extends AbstractTestCase {
 
-	@InDomain
-	public static class CustomerWithAllAttributesPositioned {
-
-		private int numberOfOrders;
-		@PositionedAt(3)
-		public int getNumberOfOrders() {
-			return numberOfOrders;
-		}
-
-		private String firstName;
-		@PositionedAt(2)
-		public String getFirstName() {
-			return firstName;
-		}
-		
-		private String lastName;
-		@PositionedAt(1)
-		public String getLastName() {
-			return lastName;
-		}
-	}
-	
 	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {

@@ -15,8 +15,6 @@ import de.berlios.rcpviewer.domain.EmfFacade;
 
 public class TestEmfFacade extends TestCase {
 
-	public static class ClassInRegularPackage {}
-
 	private Class[] primitiveClasses;
 	private Class[] primitiveArrayClasses;
 	private Class[] wrapperClasses;
@@ -112,7 +110,7 @@ public class TestEmfFacade extends TestCase {
 
 	public void testGetEPackageForRegularPackage() {
 		Package javaPackage = 
-			de.berlios.rcpviewer.domain.TestEmfFacade.ClassInRegularPackage.class.getPackage();
+			de.berlios.rcpviewer.domain.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
 			emfFacade.getEPackageFor(javaPackage);
 		assertNotNull(ePackage);
@@ -122,7 +120,7 @@ public class TestEmfFacade extends TestCase {
 	
 	public void testFindPackageWithNameUsingRegularPackageWhenNotYetCreated() {
 		Package javaPackage = 
-			de.berlios.rcpviewer.domain.TestEmfFacade.ClassInRegularPackage.class.getPackage();
+			de.berlios.rcpviewer.domain.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
 			emfFacade.findPackageWithName(javaPackage.getName());
 		assertNull(ePackage);
@@ -131,7 +129,7 @@ public class TestEmfFacade extends TestCase {
 	
 	public void testFindPackageWithNameUsingRegularPackageWhenCreated() {
 		Package javaPackage = 
-			de.berlios.rcpviewer.domain.TestEmfFacade.ClassInRegularPackage.class.getPackage();
+			de.berlios.rcpviewer.domain.ClassInRegularPackage.class.getPackage();
 		
 		// cause to get created
 		emfFacade.getEPackageFor(javaPackage);

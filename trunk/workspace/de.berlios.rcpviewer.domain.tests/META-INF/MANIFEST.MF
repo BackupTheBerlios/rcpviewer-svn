@@ -3,12 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
 Bundle-SymbolicName: de.berlios.rcpviewer.domain.tests
 Bundle-Version: 0.0.1
-Bundle-ClassPath: tests.jar
+Bundle-ClassPath: tests.jar,
+ bin/
 Bundle-Activator: de.berlios.rcpviewer.domain.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.ide,
  org.junit,
- de.berlios.rcpviewer.domain
+ de.berlios.rcpviewer.domain,
+ org.aspectj.runtime,
+ de.berlios.rcpviewer.domain.fixture
 Eclipse-AutoStart: true

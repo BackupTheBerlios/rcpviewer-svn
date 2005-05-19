@@ -5,7 +5,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 /**
@@ -17,11 +16,6 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
  * @author Dan Haywood
  */
 public class TestImageDescriptor extends AbstractTestCase {
-
-	@InDomain
-    @ImageUrlAt("http://www.eclipse.org/artwork/builtoneclipse/images/bui_eclipse_pos_logo_fc_sm.jpg")
-	public static class ProspectiveSale {
-	}
 
 	private Domain domain;
 	private IDomainClass<?> domainClass;

@@ -1,14 +1,9 @@
 package de.berlios.rcpviewer.domain;
 
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import junit.framework.TestCase;
 
 public class TestMetaModel extends TestCase {
-
-	@InDomain
-	private static class Department { }
-	
 
 	private Domain domain;
 

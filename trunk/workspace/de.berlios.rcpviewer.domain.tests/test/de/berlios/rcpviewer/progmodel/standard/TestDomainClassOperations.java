@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import java.util.List;
 
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
@@ -9,8 +8,6 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.OperationKind;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
-import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 
 /**
@@ -36,139 +33,6 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 	
 
-	@InDomain
-	public static class CustomerWithPublicVisibilityOperation {
-		public void placeOrder() {}
-		public static void create() {}
-	}
-	@InDomain
-	public static class CustomerWithProtectedVisibilityOperation {
-		protected void placeOrder() {}
-		protected static void create() {}
-	}
-	@InDomain
-	public static class CustomerWithPackageLocalVisibilityOperation {
-		void placeOrder() {}
-		static void create() {}
-	}
-	@InDomain
-	public static class CustomerWithPrivateVisibilityOperation {
-		private void placeOrder() {}
-		private static void create() {}
-	}
-	@InDomain
-	public static class CustomerWithProgrammaticPublicVisibilityOperation {
-		@Programmatic
-		public void placeOrder() {}
-		@Programmatic
-		public static void create() {}
-	}
-	@InDomain
-	public static class CustomerWithNoArgOperation {
-		public void placeOrder() {}
-		public static void create() {}
-	}
-	@InDomain
-	public static class CustomerWithPrimitiveArgOperation {
-		public void rankAs(int rank) {}
-		public static void createWithRank(long rank) {}
-	}
-	@InDomain
-	public static class CustomerPositionedOnMap {
-		public void positionAt(float x, float y) {}
-		public static void createAtPosition(double x, double y) {}
-	}
-	@InDomain
-	public static class TimePeriod implements ValueMarker {
-		private java.util.Date from;
-		public java.util.Date getFrom() {
-			return from;
-		}
-		public void setFrom(java.util.Date from) {
-			this.from = from;
-		}
-		private java.util.Date to;
-		public java.util.Date getTo() {
-			return to;
-		}
-		public void setTo(java.util.Date to) {
-			this.to = to;
-		}
-	}
-	@InDomain
-	public static class Appointment {
-		public void moveTo(
-				TimePeriod newPeriod, 
-				String agenda) {
-		}
-		public static void createAt(
-				TimePeriod timePeriod,
-				String rationale) {
-		}
-	}
-	@InDomain
-	public static class AppointmentWithAccessor {
-		private String name;
-		public String getName() {
-			return name;
-		}
-		public void moveTo(
-				TimePeriod newPeriod, 
-				String agenda) {
-		}
-		public static void createAt(
-				TimePeriod timePeriod,
-				String rationale) {
-		}
-	}
-	@InDomain
-	public static class AppointmentWithMutator {
-		private String name;
-		public void setName(String name) {
-			this.name = name;
-		}
-		public void moveTo(
-				TimePeriod newPeriod, 
-				String agenda) {
-		}
-		public static void createAt(
-				TimePeriod timePeriod,
-				String rationale) {
-		}
-	}
-	@InDomain
-	public static class AppointmentWithSingleReference {
-		private AppointmentWithSingleReference nextAppointment;
-		public AppointmentWithSingleReference getNextAppointment() {
-			return nextAppointment;
-		}
-		public void moveTo(
-				TimePeriod newPeriod, 
-				String agenda) {
-		}
-		public static void createAt(
-				TimePeriod timePeriod,
-				String rationale) {
-		}
-	}
-	@InDomain
-	public static class AppointmentWithCollection {
-		private List<AppointmentWithCollection> otherAppointments;
-		@Associates(AppointmentWithCollection.class)
-		public List<AppointmentWithCollection> getOtherAppointments() {
-			return otherAppointments;
-		}
-		public void moveTo(
-				TimePeriod newPeriod, 
-				String agenda) {
-		}
-		public static void createAt(
-				TimePeriod timePeriod,
-				String rationale) {
-		}
-	}
-
-
 	/**
 	 * Methods which are public are implicitly picked up as a user-invokable
 	 * operation.
@@ -177,7 +41,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPublicVisibilityMethodPickedUpAsOperation() {
-		domainClass = domain.lookup(CustomerWithPublicVisibilityOperation.class);
+		domainClass = domain.lookup(TestDomainClassOperationsCustomerWithPublicVisibilityOperation.class);
 		domain.done();
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
@@ -201,7 +65,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testProtectedVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<CustomerWithProtectedVisibilityOperation>(CustomerWithProtectedVisibilityOperation.class);
+		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithProtectedVisibilityOperation>(TestDomainClassOperationsCustomerWithProtectedVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -219,7 +83,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPackageLocalVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<CustomerWithPackageLocalVisibilityOperation>(CustomerWithPackageLocalVisibilityOperation.class);
+		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithPackageLocalVisibilityOperation>(TestDomainClassOperationsCustomerWithPackageLocalVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -235,7 +99,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPrivateVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<CustomerWithPrivateVisibilityOperation>(CustomerWithPrivateVisibilityOperation.class);
+		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithPrivateVisibilityOperation>(TestDomainClassOperationsCustomerWithPrivateVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -252,7 +116,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testSuppressedPublicVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<CustomerWithProgrammaticPublicVisibilityOperation>(CustomerWithProgrammaticPublicVisibilityOperation.class);
+		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithProgrammaticPublicVisibilityOperation>(TestDomainClassOperationsCustomerWithProgrammaticPublicVisibilityOperation.class);
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -261,7 +125,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithNoArgumentsAPickedUpAsOperation() {
-		domainClass = domain.lookup(CustomerWithNoArgOperation.class);
+		domainClass = domain.lookup(TestDomainClassOperationsCustomerWithNoArgOperation.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
@@ -278,7 +142,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation1Arg() {
-		domainClass = domain.lookup(CustomerWithPrimitiveArgOperation.class);
+		domainClass = domain.lookup(TestDomainClassOperationsCustomerWithPrimitiveArgOperation.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
@@ -303,7 +167,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation2Arg() {
-		domainClass = domain.lookup(CustomerPositionedOnMap.class);
+		domainClass = domain.lookup(TestDomainClassOperationsCustomerPositionedOnMap.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
@@ -337,7 +201,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
 		// 2 arg
-		domainClass = domain.lookup(Appointment.class);
+		domainClass = domain.lookup(TestDomainClassOperationsAppointment.class);
 		domain.done();
 		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
@@ -491,25 +355,25 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 	
 	public void testAccessorsNotPickedUpAsOperation() {
-		domainClass = domain.lookup(AppointmentWithAccessor.class);
+		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testMutatorsNotPickedUpAsOperation() {
-		domainClass = domain.lookup(AppointmentWithAccessor.class);
+		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testSingleReferencessNotPickedUpAsOperation() {
-		domainClass = domain.lookup(AppointmentWithAccessor.class);
+		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testCollectionsNotPickedUpAsOperation() {
-		domainClass = domain.lookup(AppointmentWithAccessor.class);
+		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}

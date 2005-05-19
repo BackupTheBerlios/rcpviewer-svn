@@ -310,7 +310,7 @@ public class TestSession extends AbstractTestCase  {
 		Department dept2 = 
 			(Department)objectStore.findByTitle(Department.class, "HR");
 		assertSame(dept2, dept);
-		IDomainObject domainObject2 = session.getWrapper().wrapped(dept2);
+		IDomainObject<Department> domainObject2 = session.getWrapper().wrapped(dept2, Department.class);
 		assertSame(domainObject2, domainObject);
 	}
 

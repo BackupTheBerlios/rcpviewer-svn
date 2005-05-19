@@ -15,14 +15,6 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public class TestDomainClass extends AbstractTestCase {
 
-	@InDomain
-	public static class Department {
-	}
-
-	@InDomain
-	public static class CustomerWithNoAttributes {
-	}
-
 	private Domain domain;
 	private Domain domain2;
 	private IDomainClass<?> domainClass;
@@ -42,26 +34,26 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 	
 	public void testGetJavaClass() {
-		domainClass = new DomainClass<CustomerWithNoAttributes>(CustomerWithNoAttributes.class);
-		assertSame(CustomerWithNoAttributes.class, domainClass.getJavaClass());
+		domainClass = new DomainClass<TestDomainClassCustomerWithNoAttributes>(TestDomainClassCustomerWithNoAttributes.class);
+		assertSame(TestDomainClassCustomerWithNoAttributes.class, domainClass.getJavaClass());
 	}
 
 	public void testGetEClass() {
-		domainClass = new DomainClass<CustomerWithNoAttributes>(CustomerWithNoAttributes.class);
+		domainClass = new DomainClass<TestDomainClassCustomerWithNoAttributes>(TestDomainClassCustomerWithNoAttributes.class);
 		EClass eClass = domainClass.getEClass();
 		assertNotNull(eClass);
-		assertSame(eClass.getInstanceClass(), CustomerWithNoAttributes.class);
+		assertSame(eClass.getInstanceClass(), TestDomainClassCustomerWithNoAttributes.class);
 		assertEquals("CustomerWithNoAttributes", eClass.getName());
 		EPackage ePackage = eClass.getEPackage();
 		assertNotNull(ePackage);
 		assertEquals(
-				CustomerWithNoAttributes.class.getPackage().getName(), 
+				TestDomainClassCustomerWithNoAttributes.class.getPackage().getName(), 
 				ePackage.getName());
 	}
 
 	public void testGetDomainClassFromEClass() {
-		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+		IDomainClass<TestDomainClassDepartment> domainClass = 
+			domain.lookup(TestDomainClassDepartment.class);
 
 		EClass eClass = domainClass.getEClass();
 		IDomainClass reverseDomainClass = domain.domainClassFor(eClass);

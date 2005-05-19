@@ -66,7 +66,8 @@ public class TestDomainClass extends AbstractTestCase  {
 			domain.lookup(DepartmentWithoutNoArgConstructor.class);
 
 		try {
-			IDomainObject domainObject = domainClass.createTransient();
+			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 
+				domainClass.createTransient();
 			fail("Expected exception to have been thrown.");
 		} catch(ProgrammingModelException ex) {
 			// expected

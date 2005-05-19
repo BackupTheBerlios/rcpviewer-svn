@@ -1,49 +1,12 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.ArrayList;
 
 
 import junit.framework.TestCase;
 
 public class TestNamingConventions extends TestCase {
 
-	public static class Department {
-		private String name;
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public void foo() { }
-		public void bar() { }
-		
-		private Employee supervisor;
-		public Employee getSupervisor() {
-			return supervisor;
-		}
-		public void setSupervisor(Employee supervisor) {}
-		
-		private List employees = new ArrayList();
-		public List getEmployees() {
-			return employees;
-		}
-		
-		private int numberOfEmployees;
-		public int getNumberOfEmployees() {
-			return numberOfEmployees;
-		}
-		public void setNumberOfEmployees(int numberOfEmployees) {
-			this.numberOfEmployees = numberOfEmployees;
-		}
-		
-	}
-	
-	public static class Employee {}
-	
-	
 	private NamingConventions namingConventions;
 	private Method departmentGetNameMethod;
 	private Method departmentNotAnAccessorMethod;
@@ -60,15 +23,15 @@ public class TestNamingConventions extends TestCase {
 		super.setUp();
 		namingConventions = new NamingConventions();
 
-		departmentGetNameMethod = Department.class.getMethod("getName", new Class[]{});
-		departmentNotAnAccessorMethod = Department.class.getMethod("foo", new Class[]{});;
-		departmentGetSupervisorMethod = Department.class.getMethod("getSupervisor", new Class[]{});;
-		departmentGetEmployeesMethod = Department.class.getMethod("getEmployees", new Class[]{});;
-		departmentSetNameMethod = Department.class.getMethod("setName", new Class[]{String.class});;
-		departmentNotAMutatorMethod = Department.class.getMethod("bar", new Class[]{});;
-		departmentSetSupervisorMethod = Department.class.getMethod("setSupervisor", new Class[]{Employee.class});;
-		departmentGetNumberOfEmployeesMethod = Department.class.getMethod("getNumberOfEmployees", new Class[]{});;
-		departmentSetNumberOfEmployeesMethod = Department.class.getMethod("setNumberOfEmployees", new Class[]{int.class});;
+		departmentGetNameMethod = TestNamingConventionsDepartment.class.getMethod("getName", new Class[]{});
+		departmentNotAnAccessorMethod = TestNamingConventionsDepartment.class.getMethod("foo", new Class[]{});;
+		departmentGetSupervisorMethod = TestNamingConventionsDepartment.class.getMethod("getSupervisor", new Class[]{});;
+		departmentGetEmployeesMethod = TestNamingConventionsDepartment.class.getMethod("getEmployees", new Class[]{});;
+		departmentSetNameMethod = TestNamingConventionsDepartment.class.getMethod("setName", new Class[]{String.class});;
+		departmentNotAMutatorMethod = TestNamingConventionsDepartment.class.getMethod("bar", new Class[]{});;
+		departmentSetSupervisorMethod = TestNamingConventionsDepartment.class.getMethod("setSupervisor", new Class[]{TestNamingConventionsEmployee.class});;
+		departmentGetNumberOfEmployeesMethod = TestNamingConventionsDepartment.class.getMethod("getNumberOfEmployees", new Class[]{});;
+		departmentSetNumberOfEmployeesMethod = TestNamingConventionsDepartment.class.getMethod("setNumberOfEmployees", new Class[]{int.class});;
 	}
 	
 	@Override
