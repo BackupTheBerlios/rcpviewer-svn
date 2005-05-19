@@ -16,7 +16,6 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.aspectj.runtime
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer,
- de.berlios.rcpviewer.impl,
  de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.persistence,
  de.berlios.rcpviewer.persistence.inmemory,

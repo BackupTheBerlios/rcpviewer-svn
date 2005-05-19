@@ -1228,7 +1228,7 @@ public class DomainClass<T>
 
 	// DEPENDENCY INJECTION
 	
-	private EmfFacade emfFacade;
+	private EmfFacade emfFacade = new EmfFacade();
 	public EmfFacade getEmfFacade() {
 		return emfFacade;
 	}
