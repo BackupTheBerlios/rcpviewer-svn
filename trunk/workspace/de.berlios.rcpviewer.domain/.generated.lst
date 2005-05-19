@@ -50,12 +50,8 @@ D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\EnsureMemberBelongsToDomainClassAspect.aj
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\EnsureParameterPositionIsInRangeAspect.aj
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\Immutable.java
-D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\CompileTimeRulesAspect.aj
-D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\DomainAspect.aj
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\DomainMarker.java
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\package-info.java
-D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\RegisterDomainClassAspect.aj
-D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\SaveDomainObjectAspect.aj
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\ValueMarker.java
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\impl\Wrapper.java
 D:\dkhaywood\svn\svn.berlios.de\trunk\workspace\de.berlios.rcpviewer.domain\src\de\berlios\rcpviewer\progmodel\standard\InDomain.java

@@ -3,8 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Standard Programming Model Plug-in
 Bundle-SymbolicName: de.berlios.rcpviewer.progmodel.standard
 Bundle-Version: 0.0.1
-Bundle-ClassPath: standard.jar
+Bundle-ClassPath: standard.jar,
+ bin/
 Bundle-Activator: de.berlios.rcpviewer.progmodel.standard.StandardPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ de.berlios.rcpviewer.domain,
+ de.berlios.rcpviewer.domain.fixture,
+ org.aspectj.runtime
 Eclipse-AutoStart: true
+Export-Package: de.berlios.rcpviewer.progmodel.standard
