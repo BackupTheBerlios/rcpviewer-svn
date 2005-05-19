@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.metamodel.Constants;
-import de.berlios.rcpviewer.metamodel.MethodNameHelper;
+import de.berlios.rcpviewer.domain.Constants;
+import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -320,7 +320,7 @@ public final class NamingConventions {
 	 * 
 	 */
 	public final boolean isValueType(final Class<?> clazz) {
-		return de.berlios.rcpviewer.metamodel.Constants.JDK_VALUE_TYPES.contains(clazz) ||
+		return de.berlios.rcpviewer.domain.Constants.JDK_VALUE_TYPES.contains(clazz) ||
 			   ValueMarker.class.isAssignableFrom(clazz);
 	}
 	
@@ -342,7 +342,7 @@ public final class NamingConventions {
 	}
 	
 	public final boolean isCollectionType(final Class<?> clazz) {
-		return de.berlios.rcpviewer.metamodel.Constants.COLLECTION_TYPES.contains(clazz);
+		return de.berlios.rcpviewer.domain.Constants.COLLECTION_TYPES.contains(clazz);
 	}
 
 	public boolean isVoid(Class<?> javaDataType) {

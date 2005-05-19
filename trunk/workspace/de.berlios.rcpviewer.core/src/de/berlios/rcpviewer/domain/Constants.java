@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 public final class I18nData implements II18nData {
 

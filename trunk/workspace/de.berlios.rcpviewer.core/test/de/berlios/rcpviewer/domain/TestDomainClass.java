@@ -1,6 +1,8 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 import de.berlios.rcpviewer.AbstractTestCase;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 //import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.IDomainObject;

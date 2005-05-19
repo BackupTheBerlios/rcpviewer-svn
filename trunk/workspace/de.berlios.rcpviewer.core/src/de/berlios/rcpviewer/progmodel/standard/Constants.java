@@ -138,7 +138,7 @@ public final class Constants {
 	 * model element holding extensions.
 	 * 
 	 * <p>
-	 * Used to construct the {@link de.berlios.rcpviewer.metamodel.IAdapterFactory}
+	 * Used to construct the {@link de.berlios.rcpviewer.domain.IAdapterFactory}
 	 * that then interprets the remainder of the details to construct the actual
 	 * adapter.
 	 */

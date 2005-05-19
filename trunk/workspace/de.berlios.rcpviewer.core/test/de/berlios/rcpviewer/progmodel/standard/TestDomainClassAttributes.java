@@ -3,8 +3,8 @@ package de.berlios.rcpviewer.progmodel.standard;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.Domain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestDomainClassAttributes extends AbstractTestCase {
 

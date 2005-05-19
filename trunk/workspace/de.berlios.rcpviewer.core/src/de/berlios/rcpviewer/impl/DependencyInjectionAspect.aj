@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.impl;
 
-import de.berlios.rcpviewer.metamodel.EmfFacade;
-import de.berlios.rcpviewer.metamodel.EmfFacadeAware;
+import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.EmfFacadeAware;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;

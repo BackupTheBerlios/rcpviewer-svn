@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,8 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
+
+import de.berlios.rcpviewer.domain.EmfFacade;
 
 
 public class TestEmfFacade extends TestCase {
@@ -110,17 +112,17 @@ public class TestEmfFacade extends TestCase {
 
 	public void testGetEPackageForRegularPackage() {
 		Package javaPackage = 
-			de.berlios.rcpviewer.metamodel.TestEmfFacade.ClassInRegularPackage.class.getPackage();
+			de.berlios.rcpviewer.domain.TestEmfFacade.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
 			emfFacade.getEPackageFor(javaPackage);
 		assertNotNull(ePackage);
-		assertEquals("http://de.berlios.rcpviewer.metamodel/2005/de.berlios.rcpviewer.metamodel", ePackage.getNsURI());
-		assertEquals("de.berlios.rcpviewer.metamodel", ePackage.getName());
+		assertEquals("http://de.berlios.rcpviewer.domain/2005/de.berlios.rcpviewer.domain", ePackage.getNsURI());
+		assertEquals("de.berlios.rcpviewer.domain", ePackage.getName());
 	}
 	
 	public void testFindPackageWithNameUsingRegularPackageWhenNotYetCreated() {
 		Package javaPackage = 
-			de.berlios.rcpviewer.metamodel.TestEmfFacade.ClassInRegularPackage.class.getPackage();
+			de.berlios.rcpviewer.domain.TestEmfFacade.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
 			emfFacade.findPackageWithName(javaPackage.getName());
 		assertNull(ePackage);
@@ -129,7 +131,7 @@ public class TestEmfFacade extends TestCase {
 	
 	public void testFindPackageWithNameUsingRegularPackageWhenCreated() {
 		Package javaPackage = 
-			de.berlios.rcpviewer.metamodel.TestEmfFacade.ClassInRegularPackage.class.getPackage();
+			de.berlios.rcpviewer.domain.TestEmfFacade.ClassInRegularPackage.class.getPackage();
 		
 		// cause to get created
 		emfFacade.getEPackageFor(javaPackage);
@@ -139,8 +141,8 @@ public class TestEmfFacade extends TestCase {
 			emfFacade.findPackageWithName(javaPackage.getName());
 		
 		assertNotNull(ePackage);
-		assertEquals("http://de.berlios.rcpviewer.metamodel/2005/de.berlios.rcpviewer.metamodel", ePackage.getNsURI());
-		assertEquals("de.berlios.rcpviewer.metamodel", ePackage.getName());
+		assertEquals("http://de.berlios.rcpviewer.domain/2005/de.berlios.rcpviewer.domain", ePackage.getNsURI());
+		assertEquals("de.berlios.rcpviewer.domain", ePackage.getName());
 	}
 	
 	public void testFindPackageWithNameUsingNonExistentPackage() {

@@ -3,8 +3,8 @@ package de.berlios.rcpviewer.session;
 import java.util.List;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.Domain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;

@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 /**
  * Represents a filter when asking for operations of an {@link IDomainClass}.

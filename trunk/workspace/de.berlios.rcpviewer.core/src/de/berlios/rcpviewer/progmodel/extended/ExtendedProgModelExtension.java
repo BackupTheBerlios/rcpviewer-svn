@@ -7,9 +7,9 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 
-import de.berlios.rcpviewer.metamodel.EmfFacade;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Adds annotations specific to the RCPViewer.

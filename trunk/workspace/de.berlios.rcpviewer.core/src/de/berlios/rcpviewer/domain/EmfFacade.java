@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 
 import java.util.Map;
@@ -124,7 +124,7 @@ public class EmfFacade {
 		if (ePackage == null) {
 			ePackage = EcoreFactory.eINSTANCE.createEPackage();
 			ePackage.setName(javaPackage.getName());
-			ePackage.setNsURI("http://de.berlios.rcpviewer.metamodel/2005/" + javaPackage.getName());
+			ePackage.setNsURI("http://de.berlios.rcpviewer.domain/2005/" + javaPackage.getName());
 		}
 		((Map<? super String,? super EPackage>)resourceSet.getPackageRegistry()).put(ePackage.getNsURI(), ePackage);
 		return ePackage;

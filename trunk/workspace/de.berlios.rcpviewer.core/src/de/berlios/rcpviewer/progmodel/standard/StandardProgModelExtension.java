@@ -1,8 +1,8 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import de.berlios.rcpviewer.metamodel.EmfFacade;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Builds standard domain model.

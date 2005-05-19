@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EReference;
 
 /**
- * Powertype describing the different sorts of {@link de.berlios.rcpviewer.metamodel.LinkSemantics}.
+ * Powertype describing the different sorts of {@link de.berlios.rcpviewer.domain.LinkSemantics}.
  * 
  * TODO: make into an enum
  * 

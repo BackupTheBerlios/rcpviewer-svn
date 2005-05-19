@@ -5,8 +5,8 @@ import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Adds annotations specific to the RCPViewer.

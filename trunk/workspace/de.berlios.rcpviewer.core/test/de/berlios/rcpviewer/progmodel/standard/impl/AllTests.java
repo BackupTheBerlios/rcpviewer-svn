@@ -7,7 +7,7 @@ public class AllTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"Test for de.berlios.rcpviewer.metamodel.impl");
+				"Test for de.berlios.rcpviewer.domain.impl");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestDomainAspect.class);
 		suite.addTestSuite(TestRegisterDomainClassAspect.class);

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import de.berlios.rcpviewer.metamodel.IAdapterFactory;
+import de.berlios.rcpviewer.domain.IAdapterFactory;
 
 public class ImageDescriptorAdapterFactory<T> implements IAdapterFactory<T> {
 

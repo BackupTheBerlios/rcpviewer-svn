@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestInternationalization extends AbstractTestCase {
 

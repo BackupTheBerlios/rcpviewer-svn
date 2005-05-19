@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that

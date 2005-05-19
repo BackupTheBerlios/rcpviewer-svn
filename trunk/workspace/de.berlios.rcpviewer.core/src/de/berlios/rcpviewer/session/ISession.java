@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import java.util.List;
 
-import de.berlios.rcpviewer.metamodel.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 /**

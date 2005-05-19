@@ -1,5 +1,6 @@
-package de.berlios.rcpviewer.metamodel;
+package de.berlios.rcpviewer.domain;
 
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import junit.framework.TestCase;
 

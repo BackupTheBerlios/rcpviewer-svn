@@ -6,8 +6,8 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.metamodel.IDomainClass;
-import de.berlios.rcpviewer.metamodel.Domain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 public class TestDomainClassReferences extends AbstractTestCase {

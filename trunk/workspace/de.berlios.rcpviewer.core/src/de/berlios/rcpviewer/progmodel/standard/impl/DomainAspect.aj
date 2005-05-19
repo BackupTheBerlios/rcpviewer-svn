@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard.impl;
 
-import de.berlios.rcpviewer.metamodel.*;
+import de.berlios.rcpviewer.domain.*;
 import de.berlios.rcpviewer.progmodel.standard.*;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.Session;

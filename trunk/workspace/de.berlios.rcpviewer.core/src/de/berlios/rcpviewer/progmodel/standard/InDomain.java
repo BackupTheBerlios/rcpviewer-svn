@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.annotation.*;
 
-import de.berlios.rcpviewer.metamodel.Domain;
+import de.berlios.rcpviewer.domain.Domain;
 
 /**
  * Persistable and visualisable domain object which names the domain to which

@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.progmodel.extended;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.berlios.rcpviewer.metamodel.IAdapterFactory;
+import de.berlios.rcpviewer.domain.IAdapterFactory;
 
 public class AttributeComparatorAdapterFactory<T> implements IAdapterFactory<T> {
 
