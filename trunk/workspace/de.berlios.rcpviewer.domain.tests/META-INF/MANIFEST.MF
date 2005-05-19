@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests Plug-in
+Bundle-SymbolicName: de.berlios.rcpviewer.domain.tests
+Bundle-Version: 0.0.1
+Bundle-ClassPath: tests.jar
+Bundle-Activator: de.berlios.rcpviewer.domain.tests.TestsPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ de.berlios.rcpviewer.domain,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.junit
+Eclipse-AutoStart: true
