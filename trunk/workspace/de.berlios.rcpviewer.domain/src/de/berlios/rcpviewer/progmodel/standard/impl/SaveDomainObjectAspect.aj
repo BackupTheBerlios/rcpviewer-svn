@@ -10,7 +10,7 @@ public aspect SaveDomainObjectAspect /* implements ISessionAware */ {
 	
 	before(DomainMarker domainMarker): saveDomainObject(domainMarker) {
 		IDomainObject domainObject = 
-			getSession().getWrapper().wrapped(domainMarker);
+			getSession().getWrapper().wrapped(domainMarker, domainMarker.getClass());
 		domainObject.persist();
 	}
 

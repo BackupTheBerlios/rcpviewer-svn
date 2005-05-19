@@ -770,6 +770,6 @@ public interface IDomainClass<T> {
 	 * 
 	 * @return
 	 */
-	public IDomainObject<T> createTransient();
+	public <T> IDomainObject<T> createTransient();
 
 }

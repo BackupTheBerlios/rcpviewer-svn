@@ -9,7 +9,6 @@ import java.util.Map;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionListener;
@@ -65,8 +64,8 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 			listener.domainObjectAttached(event);
 		}
 	}
-	public void attach(Department pojo) {
-		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
+	public void attach(Object pojo) {
+		IDomainObject<?> domainObject = getWrapper().wrapped(pojo, pojo.getClass());
 		attach(domainObject);
 	}
 
@@ -84,12 +83,12 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 		}
 	}
 	public void detach(Object pojo) {
-		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
+		IDomainObject<?> domainObject = getWrapper().wrapped(pojo, pojo.getClass());
 		detach(domainObject);
 	}
 
 	public boolean isAttached(Object pojo) {
-		IDomainObject<?> domainObject = getWrapper().wrapped(pojo);
+		IDomainObject<?> domainObject = getWrapper().wrapped(pojo, pojo.getClass());
 		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
 		return domainObjects.contains(domainObject);
 	}

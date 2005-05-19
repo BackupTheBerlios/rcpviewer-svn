@@ -6,7 +6,7 @@ package de.berlios.rcpviewer.session;
 * 
 * TODO: probably replace with a @Injected annotation.
 */
-public interface IWrapperAware<T> {
+public interface IWrapperAware {
 
-	void setWrapper(IWrapper<T> wrapper);
+	void setWrapper(IWrapper wrapper);
 }

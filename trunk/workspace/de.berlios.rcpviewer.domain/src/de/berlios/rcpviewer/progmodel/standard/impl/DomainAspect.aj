@@ -15,10 +15,10 @@ import de.berlios.rcpviewer.session.*;
  * 
  * @author Dan Haywood
  */
-public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
+public aspect DomainAspect<T> perthis(interactWithPojo(DomainMarker)){
 	
-	private IDomainObject domainObject;
-	public IDomainObject getDomainObject() {
+	private IDomainObject<T> domainObject;
+	public IDomainObject<T> getDomainObject() {
 		return domainObject;
 	}
 
@@ -84,17 +84,17 @@ public aspect DomainAspect perthis(interactWithPojo(DomainMarker)){
 	 * register {@link DomainObject}'s class if necessary (its class may not have been loaded yet),
 	 * and store class in this (perthis) aspect.
 	 */
-	after(Object pojo): instantiatePojo(pojo) {
-		doInstantiatePojo(pojo, pojo.getClass());
+	after(DomainMarker pojo): instantiatePojo(pojo) {
+		doInstantiatePojo(pojo, (Class<T>)pojo.getClass());
 	}
 	
 	/**
 	 * Should be V pojo rather than Object pojo, but AJDT1.2m3 compiler is 
 	 * throwing null pointer exception.
 	 */
-	private <V> void doInstantiatePojo(Object pojo, Class<V> pojoClass) {
-		IDomainClass<V> domainClass = Domain.instance().lookup(pojoClass);
-		this.domainObject = new DomainObject<V>(domainClass, (V)pojo, getSession());
+	private void doInstantiatePojo(DomainMarker pojo, Class<T> pojoClass) {
+		IDomainClass<T> domainClass = Domain.instance().lookup(pojoClass);
+		this.domainObject = new DomainObject<T>(domainClass, (T)pojo, getSession());
 	}
 	
 	

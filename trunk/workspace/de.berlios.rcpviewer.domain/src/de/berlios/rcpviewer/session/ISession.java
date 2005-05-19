@@ -3,7 +3,6 @@ package de.berlios.rcpviewer.session;
 import java.util.List;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 /**
  * Holds the collection of pojos (wrapped in {@link IDomainObject}s known to
@@ -47,7 +46,7 @@ public interface ISession {
 	 * @param domainObject
 	 * @throws IllegalArgumentException if the pojo was already attached.
 	 */
-	void attach(Department pojo);
+	void attach(Object pojo);
 
 	/**
 	 * Attach the pojo wrapped in the supplied domainObject to the session.

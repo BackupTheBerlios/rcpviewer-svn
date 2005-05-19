@@ -145,7 +145,7 @@ public class EmfFacade {
 	}
 	
 	private EPackage findPackageInRegistryWithName(EPackage.Registry ePackageRegistry, String packageName) {
-		Set<String> packageRegistryKeySet = ePackageRegistry.keySet();
+		Set<String> packageRegistryKeySet = (Set<String>)ePackageRegistry.keySet();
 		for(String ePackageNsUri: packageRegistryKeySet) {
 			EPackage ePackage = ePackageRegistry.getEPackage(ePackageNsUri);
 			if (ePackage.getName().equals(packageName)) {

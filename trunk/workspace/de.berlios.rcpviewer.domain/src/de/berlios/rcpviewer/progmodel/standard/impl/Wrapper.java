@@ -5,12 +5,12 @@ import de.berlios.rcpviewer.session.IWrapper;
 
 public final class Wrapper implements IWrapper {
 
-	public IDomainObject<?> wrapped(Object pojo) {
+	public <T> IDomainObject<T> wrapped(Object pojo, Class<T> pojoClass) {
 		DomainAspect domainAspect = DomainAspect.aspectOf(pojo);
 		if (domainAspect == null) {
 			return null;
 		}
-		return domainAspect.getDomainObject();
+		return (IDomainObject<T>)domainAspect.getDomainObject();
 	}
 
 

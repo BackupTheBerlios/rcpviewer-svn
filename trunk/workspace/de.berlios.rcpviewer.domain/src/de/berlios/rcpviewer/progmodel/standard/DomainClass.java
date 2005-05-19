@@ -58,7 +58,7 @@ import de.berlios.rcpviewer.session.IWrapperAware;
 public class DomainClass<T> 
 		implements IDomainClass<T>,
 				   EmfFacadeAware,
-				   IWrapperAware<T> {
+				   IWrapperAware {
 	
 	public DomainClass(final Domain domain, final Class<T> javaClass) {
 		
@@ -1199,16 +1199,20 @@ public class DomainClass<T>
 	
 	// DOMAIN OBJECT SUPPORT: START
 
-	public IDomainObject<T> createTransient() {
+	public <T> IDomainObject<T> createTransient() {
 		try {
 			Object pojo = getJavaClass().newInstance();
-			IDomainObject<T> domainObject = getWrapper().wrapped(pojo);
+			Class<T> pojoClass = pojoClass(pojo.getClass());
+			IDomainObject<T> domainObject = getWrapper().wrapped(pojo, pojoClass);
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
 		} catch(InstantiationException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
 		}
+	}
+	private <T> Class<T> pojoClass(Class<?> pojoClass) {
+		return (Class<T>)pojoClass;
 	}
 
 	// DOMAIN OBJECT SUPPORT: END
@@ -1232,11 +1236,11 @@ public class DomainClass<T>
 		this.emfFacade = emfFacade;
 	}
 
-	private IWrapper<T> wrapper;
-	public IWrapper<T> getWrapper() {
+	private IWrapper wrapper;
+	public IWrapper getWrapper() {
 		return wrapper;
 	}
-	public void setWrapper(IWrapper<T> wrapper) {
+	public void setWrapper(IWrapper wrapper) {
 		this.wrapper = wrapper;
 	}
 
