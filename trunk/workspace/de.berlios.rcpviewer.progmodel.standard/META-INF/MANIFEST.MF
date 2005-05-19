@@ -10,6 +10,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.domain.fixture,
- org.aspectj.runtime
+ org.aspectj.runtime,
+ org.aspectj.weavingruntime
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.progmodel.standard
