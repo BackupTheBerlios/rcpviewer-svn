@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.core; singleton:=true
+Bundle-SymbolicName: de.berlios.rcpviewer.domain; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: core.jar,
  bin/
@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer,
  de.berlios.rcpviewer.impl,
- de.berlios.rcpviewer.metamodel,
+ de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.persistence,
  de.berlios.rcpviewer.persistence.inmemory,
  de.berlios.rcpviewer.progmodel,

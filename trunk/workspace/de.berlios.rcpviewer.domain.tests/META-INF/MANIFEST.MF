@@ -7,8 +7,8 @@ Bundle-ClassPath: tests.jar
 Bundle-Activator: de.berlios.rcpviewer.domain.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- de.berlios.rcpviewer.domain,
  org.eclipse.ui,
  org.eclipse.ui.ide,
- org.junit
+ org.junit,
+ de.berlios.rcpviewer.domain
 Eclipse-AutoStart: true
