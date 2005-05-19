@@ -1,12 +1,29 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.core
-Bundle-Version: 1.0.0
-Bundle-ClassPath: core.jar
+Bundle-SymbolicName: de.berlios.rcpviewer.core; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: core.jar,
+ bin/
+Bundle-Activator: de.berlios.rcpviewer.CorePlugin
 Bundle-Localization: plugin
+Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.jface;visibility:=reexport,
+ org.aspectj.runtime;visibility:=reexport,
+ org.junit,
+ org.eclipse.osgi;visibility:=reexport,
+ org.eclipse.core.runtime;visibility:=reexport
 Eclipse-AutoStart: true
-Require-Bundle: org.eclipse.emf.common,
- org.eclipse.emf.ecore,
- org.eclipse.jface,
- org.aspectj.runtime
+Export-Package: de.berlios.rcpviewer,
+ de.berlios.rcpviewer.impl,
+ de.berlios.rcpviewer.metamodel,
+ de.berlios.rcpviewer.persistence,
+ de.berlios.rcpviewer.persistence.inmemory,
+ de.berlios.rcpviewer.progmodel,
+ de.berlios.rcpviewer.progmodel.extended,
+ de.berlios.rcpviewer.progmodel.rcpviewer,
+ de.berlios.rcpviewer.progmodel.standard,
+ de.berlios.rcpviewer.progmodel.standard.impl,
+ de.berlios.rcpviewer.session,
+ de.berlios.rcpviewer.session.local
