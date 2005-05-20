@@ -13,7 +13,7 @@
    <element name="extension">
       <annotation>
          <documentation>
-            Implementations of IFieldBuilder; must have no-arg constructor.
+            Implementations of IEditorContentBuilder; must have no-arg constructor.
          </documentation>
       </annotation>
       <complexType>
