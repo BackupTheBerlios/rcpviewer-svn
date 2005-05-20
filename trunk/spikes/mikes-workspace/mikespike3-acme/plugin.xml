@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="mikespike3.fieldbuilder">
+          <impl class="com.acme.gui.exts.BlueStringFieldBuilder"/>
+   </extension>
+   
+   <extension
+         point="mikespike3.editorcontentbuilder">
+          <impl class="com.acme.gui.exts.BlueFormBuilder"/>
+          <impl class="com.acme.gui.exts.RedFormBuilder"/>
+   </extension>  
+
+</plugin>
