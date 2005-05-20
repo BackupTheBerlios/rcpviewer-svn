@@ -4,6 +4,18 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="aspects">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="fixture">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="test">
+		<attributes>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<attributes>
 		</attributes>
