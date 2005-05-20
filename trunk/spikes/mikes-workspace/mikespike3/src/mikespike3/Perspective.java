@@ -1,5 +1,7 @@
 package mikespike3;
 
+import mikespike3.views.ObjectListView;
+
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 

@@ -1,12 +1,10 @@
 package mikespike3.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import mikespike3.util.RandomUtil;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.ListenerList;
 
 /**
@@ -112,12 +110,13 @@ public class Model {
 	}
 
 	private Model() {
-		// auto-populate?
-		String[] args = Platform.getApplicationArgs();
-		Arrays.sort( args );
-		if ( Arrays.binarySearch( args, "-test" ) < 0 ) {
-			for ( int i=0 ; i < RandomUtil.createInt( 5, 20 ); i++ ) {
+		// auto-populate
+		for ( int i=0 ; i < RandomUtil.createInt( 5, 20 ); i++ ) {
+			if ( RandomUtil.oneHalfLikely() ) {
 				addObject( new EasyBean() );
+			}
+			else {
+				addObject( new AnotherEasyBean() );
 			}
 		}
 	}

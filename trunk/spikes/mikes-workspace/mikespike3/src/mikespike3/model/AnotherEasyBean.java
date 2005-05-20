@@ -4,38 +4,38 @@ import java.util.Date;
 
 import mikespike3.util.RandomUtil;
 
-public class EasyBean {
+public class AnotherEasyBean {
 	
-	private Boolean field0 = null;
+	private String field0 = null;
 	private String field1 = null;
-	private Date field2 = null;
-	private String field3 = null;
+	private String field2 = null;
+	private Boolean field3 = null;
 	private String field4 = null;
-	private Boolean field5 = null;
+	private String field5 = null;
 	private Boolean field6 = null;
 	private Date field7 = null;
 	private String field8 = null;
-	private String field9 = null;
+	private Date field9 = null;
 	
 
-	public EasyBean() {
-		field0 = RandomUtil.oneHalfLikely();
+	public AnotherEasyBean() {
+		field0 = RandomUtil.createString( 0, 10 );
 		field1 = RandomUtil.createString( 0, 10 );
-		field2 = RandomUtil.createDate( RandomUtil.DATE_HINT_LAST_YEAR );
-		field3 = RandomUtil.createString( 0, 10 );
-		field5 = RandomUtil.oneHalfLikely();
+		field2 = RandomUtil.createString( 0, 10 );
+		field3 = RandomUtil.oneHalfLikely();
 		field4 = RandomUtil.createString( 0, 10 );
+		field5 = RandomUtil.createString( 0, 10 );
 		field6 = RandomUtil.oneHalfLikely();
 		field7 = RandomUtil.createDate( RandomUtil.DATE_HINT_LAST_YEAR );
 		field8 = RandomUtil.createString( 0, 10 );
-		field9 = RandomUtil.createString( 0, 10 );
+		field9 = RandomUtil.createDate( RandomUtil.DATE_HINT_NEXT_YEAR );
 	}
 
-	public Boolean getField0() {
+	public String getField0() {
 		return field0;
 	}
 
-	public void setField0(Boolean field0) {
+	public void setField0(String field0) {
 		this.field0 = field0;
 	}
 
@@ -47,20 +47,20 @@ public class EasyBean {
 		this.field1 = field1;
 	}
 
-	public Date getField2() {
+	public String getField2() {
 		return field2;
 	}
 
-	public void setField2(Date field2) {
+	public void setField2(String field2) {
 		this.field2 = field2;
 	}
 
-	public Boolean getField5() {
-		return field5;
+	public Boolean getField3() {
+		return field3;
 	}
 
-	public void setField5(Boolean field5) {
-		this.field5 = field5;
+	public void setField3(Boolean field3) {
+		this.field3 = field3;
 	}
 
 	public String getField4() {
@@ -71,12 +71,12 @@ public class EasyBean {
 		this.field4 = field4;
 	}
 
-	public String getField3() {
-		return field3;
+	public String getField5() {
+		return field5;
 	}
 
-	public void setField3(String field3) {
-		this.field3 = field3;
+	public void setField5(String field5) {
+		this.field5 = field5;
 	}
 
 	public Boolean getField6() {
@@ -103,11 +103,11 @@ public class EasyBean {
 		this.field8 = field8;
 	}
 
-	public String getField9() {
+	public Date getField9() {
 		return field9;
 	}
 
-	public void setField9(String field9) {
+	public void setField9(Date field9) {
 		this.field9 = field9;
 	}
 	

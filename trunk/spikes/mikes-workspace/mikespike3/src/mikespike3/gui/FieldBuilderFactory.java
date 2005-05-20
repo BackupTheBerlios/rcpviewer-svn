@@ -16,6 +16,12 @@ public class FieldBuilderFactory {
 	private final IFieldBuilder[] builders;
 	private final Map mappings;
 	
+	
+	/**
+	 * Constructor instantiates all implementations of 
+	 * "mikespike3.fieldbuilder" extension point.
+	 * @throws CoreException
+	 */
 	public FieldBuilderFactory() throws CoreException {
         IConfigurationElement[] elems
         	= Platform.getExtensionRegistry()
@@ -37,7 +43,7 @@ public class FieldBuilderFactory {
 	 * @param instance
 	 * @return
 	 */
-	public IFieldBuilder create( Class clazz, Object value ) {
+	public IFieldBuilder getInstance( Class clazz, Object value ) {
 		// ignoring value for now for simplicity
 		IFieldBuilder builder = (IFieldBuilder)mappings.get( clazz );
 		if ( builder == null ) {

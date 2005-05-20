@@ -1,7 +1,7 @@
 package mikespike3;
 
 import mikespike3.gui.FieldBuilderFactory;
-import mikespike3.gui.FormBuilderFactory;
+import mikespike3.gui.EditorContentBuilderFactory;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -13,7 +13,7 @@ public class Plugin extends AbstractUIPlugin {
 	//The shared instance.
 	private static Plugin plugin;
 	
-	private FormBuilderFactory formBuilderFactory = null;
+	private EditorContentBuilderFactory editorContentBuilderFactory = null;
 	private FieldBuilderFactory fieldBuilderFactory = null;
 	
 	/**
@@ -29,7 +29,7 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		formBuilderFactory = new FormBuilderFactory();
+		editorContentBuilderFactory = new EditorContentBuilderFactory();
 		fieldBuilderFactory = new FieldBuilderFactory();
 	}
 
@@ -44,8 +44,8 @@ public class Plugin extends AbstractUIPlugin {
 		return fieldBuilderFactory;
 	}
 
-	public FormBuilderFactory getFormBuilderFactory() {
-		return formBuilderFactory;
+	public EditorContentBuilderFactory getEditorContentBuilderFactory() {
+		return editorContentBuilderFactory;
 	}
 	
 	

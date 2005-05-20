@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="fieldbuilder" name="Field Builder" schema="schema/fieldbuilder.exsd"/>
-
+   <extension-point id="fieldbuilder" 
+                    name="Field Builder" 
+                    schema="schema/fieldbuilder.exsd"/>
+   <extension-point id="editorcontentbuilder" 
+                    name="Editor Content Builder" 
+                    schema="schema/editorcontentbuilder.exsd"/>
+   
    <extension
          id="mikespike3"
          point="org.eclipse.core.runtime.applications">
@@ -26,8 +31,8 @@
          point="org.eclipse.ui.views">
       <view
             name="Object List View"
-            class="mikespike3.ObjectListView"
-            id="mikespike3.ObjectListView">
+            class="mikespike3.views.ObjectListView"
+            id="mikespike3.views.ObjectListView">
       </view>
    </extension>
    
@@ -36,25 +41,16 @@
          <editor
          	name="Default Editor"
          	icon=""
-         	class="mikespike3.editors.DefaultEditor"
-         	id="mikespike3.editors.DefaultEditor">
+         	class="mikespike3.editors.Editor"
+         	id="mikespike3.editors.Editor">
          </editor>
    </extension>
    
    <extension
          point="mikespike3.fieldbuilder">
-         <impl
-         	field="java.lang.Boolean"
-         	class="mikespike3.gui.exts.BooleanFieldBuilder">
-         </impl>
-         <impl
-         	field="java.util.Date"
-         	class="mikespike3.gui.exts.DateFieldBuilder">
-         </impl>
-        <impl
-         	field="java.lang.Exception"
-         	class="mikespike3.gui.exts.ExceptionFieldBuilder">
-         </impl>
+         <impl class="mikespike3.gui.exts.BooleanFieldBuilder"/>
+         <impl class="mikespike3.gui.exts.DateFieldBuilder"/>
+        <impl class="mikespike3.gui.exts.ExceptionFieldBuilder"/>
    </extension>
 
 </plugin>
