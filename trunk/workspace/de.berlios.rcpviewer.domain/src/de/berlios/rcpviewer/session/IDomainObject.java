@@ -169,4 +169,6 @@ public interface IDomainObject<T> {
 	 */
 	public void removeDomainObjectListener(IDomainObjectListener listener);
 
+	public void setSession(ISession session);
+
 }

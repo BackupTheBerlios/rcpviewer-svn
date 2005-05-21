@@ -257,4 +257,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return session;
 	}
 
+	public void setSession(ISession session) {
+		this.session = session;
+	}
+
 }

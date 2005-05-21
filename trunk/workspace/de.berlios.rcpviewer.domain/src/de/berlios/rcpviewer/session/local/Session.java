@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.session.local;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.Map;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
+import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
+import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionListener;
@@ -26,13 +29,36 @@ public class Session implements ISession, IObjectStoreAware {
 	public static ISession instance() {
 		return sessionForThisThread.get();
 	}
+	
+	public Session() {
+		// TODO: Session should be created by Domain.
+		// HACK: should be injected into Domain and propogated.
+		this.objectStore = new InMemoryObjectStore();
+	}
 
 	/**
-	 * Simulating a perthis association between a pojo and an IDomainObject.
+	 * Mapping of pojo to wrapping {@link IDomainObject}.
+	 * 
+	 * <p> 
+	 * An alternative implementation would be a perthis association between a
+	 * pojo and an IDomainObject (indeed this was the initial design).
+	 * 
+	 * @see #domainObjectByPojo
 	 */
 	private Map<IDomainObject, Object> pojoByDomainObject = 
 		new HashMap<IDomainObject, Object>();
 	
+	/**
+	 * Mapping of pojo to wrapping {@link IDomainObject}.
+	 * 
+	 * @see #pojoByDomainObject
+	 */
+	private Map<Object, IDomainObject> domainObjectByPojo = 
+		new HashMap<Object, IDomainObject>();
+
+	/**
+	 * Partitioned hash of objects by their class.
+	 */
 	private Map<IDomainClass<?>, List<IDomainObject<?>>> 
 		domainObjectsByDomainClass = new HashMap<IDomainClass<?>, List<IDomainObject<?>>>();
 
@@ -58,9 +84,10 @@ public class Session implements ISession, IObjectStoreAware {
 
 	public void attach(IDomainObject<?> domainObject) {
 		synchronized(domainObject) {
-			// add to session hash 
+			// add to session hashes 
 			{
 				pojoByDomainObject.put(domainObject, domainObject.getPojo());
+				domainObjectByPojo.put(domainObject.getPojo(), domainObject);
 			}
 			// add to partitioned hash of objects of this class
 			{
@@ -69,6 +96,10 @@ public class Session implements ISession, IObjectStoreAware {
 					throw new IllegalArgumentException("pojo already attached to session.");
 				}
 				domainObjects.add(domainObject);
+			}
+			// tell domain object the session it is attached to
+			{
+				domainObject.setSession(this);
 			}
 		}
 		// notify listeners
@@ -93,7 +124,12 @@ public class Session implements ISession, IObjectStoreAware {
 			}
 			// remove from global hash
 			{
+				domainObjectByPojo.remove(domainObject.getPojo());
 				pojoByDomainObject.remove(domainObject);
+			}
+			// tell domain object it is no longer attached to a session
+			{
+				domainObject.setSession(null);
 			}
 		}
 		// notify listeners
@@ -107,6 +143,10 @@ public class Session implements ISession, IObjectStoreAware {
 		return pojoByDomainObject.get(domainObject) != null;
 	}
 
+	public boolean isAttached(Object pojo) {
+		return domainObjectByPojo.get(pojo) != null;
+	}
+
 	public List<IDomainObject<?>> footprintFor(IDomainClass<?> domainClass) {
 		return Collections.unmodifiableList(getDomainObjectsFor(domainClass));
 	}
@@ -117,6 +157,11 @@ public class Session implements ISession, IObjectStoreAware {
 		}
 		getObjectStore().persist(domainObject.title(), domainObject.getPojo());
 	}
+	public void persist(Object pojo) {
+		IDomainObject<?> domainObject = getDomainObjectFor(pojo, pojo.getClass());
+		persist(domainObject);
+	}
+	
 
 	public void reset() {
 		domainObjectsByDomainClass.clear();
@@ -126,6 +171,8 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	private List<ISessionListener> listeners = new ArrayList<ISessionListener>();
+
+	
 	/**
 	 * Returns listener only because it simplifies test implementation to do so.
 	 */
@@ -143,6 +190,14 @@ public class Session implements ISession, IObjectStoreAware {
 		}
 	}
 	
+	public <T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass) {
+		IDomainObject<T> domainObject = domainObjectByPojo.get(pojo);
+		if (domainObject == null) {
+			throw new IllegalStateException("Not attached to session");
+		}
+		return domainObject;
+	}
+
 
 	// DEPENDENCY INJECTION START //
 
@@ -153,7 +208,7 @@ public class Session implements ISession, IObjectStoreAware {
 	public void setObjectStore(IObjectStore objectStore) {
 		this.objectStore = objectStore;
 	}
-	
+
 	// DEPENDENCY INJECTION END //
 
 

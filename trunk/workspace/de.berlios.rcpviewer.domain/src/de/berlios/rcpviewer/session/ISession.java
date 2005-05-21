@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.session;
 import java.util.List;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 /**
  * Holds the collection of pojos (wrapped in {@link IDomainObject}s known to
@@ -54,6 +55,14 @@ public interface ISession {
 	void detach(IDomainObject<?> domainObject);
 
 	/**
+	 * Whether the supplied pojo is attached to this session.
+	 * 
+	 * @param pojo
+	 * @return true if attached, false otherwise.
+	 */
+	boolean isAttached(Object pojo);
+	
+	/**
 	 * Whether the pojo wrapped in the supplied {@link IDomainObject} is 
 	 * attached to this session.
 	 * 
@@ -85,6 +94,21 @@ public interface ISession {
 	 * @param domainObject
 	 */
 	void persist(IDomainObject<?> domainObject);
+	
+
+	/**
+	 * Persist this object to the configured object store.
+	 * 
+	 * <p>
+	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
+	 * persist; {@link IDomainObjectListener}s of the {@link IDomainObject} 
+	 * (<i>not</i> the session) will be notified.
+	 *  
+	 * @param domainObject
+	 */
+	void persist(Object pojo);
+
+	
 	/**
 	 * Returns all attached objects of the supplied class.
 	 * 
@@ -117,5 +141,7 @@ public interface ISession {
 	 * @param listener
 	 */
 	public void removeSessionListener(ISessionListener listener);
+
+	<T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass);
 
 }

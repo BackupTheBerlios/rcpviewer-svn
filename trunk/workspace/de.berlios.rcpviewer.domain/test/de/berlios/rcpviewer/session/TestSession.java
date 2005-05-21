@@ -8,7 +8,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.session.local.Session;
-import de.berlios.rcpviewer.session.local.impl.Department;
+import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 public class TestSession extends AbstractTestCase  {
 
@@ -279,7 +279,7 @@ public class TestSession extends AbstractTestCase  {
 		Department dept2 = 
 			(Department)objectStore.findByTitle(Department.class, "HR");
 		assertSame(dept2, dept);
-		IDomainObject<Department> domainObject2 = session.getWrapper().wrapped(dept2, Department.class);
+		IDomainObject<Department> domainObject2 = session.getDomainObjectFor(dept2, Department.class);
 		assertSame(domainObject2, domainObject);
 	}
 
