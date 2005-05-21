@@ -1,4 +1,0 @@
-src.includes = src/,\
-               aspects/,\
-               fixture/,\
-               test/
