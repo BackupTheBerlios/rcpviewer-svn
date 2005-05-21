@@ -3,7 +3,6 @@ package de.berlios.rcpviewer.session;
 import java.util.List;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 
 /**
  * Holds the collection of pojos (wrapped in {@link IDomainObject}s known to
