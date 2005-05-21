@@ -34,8 +34,6 @@ import de.berlios.rcpviewer.domain.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.IWrapper;
-import de.berlios.rcpviewer.session.IWrapperAware;
 
 
 /**
@@ -58,8 +56,7 @@ import de.berlios.rcpviewer.session.IWrapperAware;
  */
 public class DomainClass<T> 
 		implements IDomainClass<T>,
-				   EmfFacadeAware,
-				   IWrapperAware {
+				   EmfFacadeAware {
 	
 	public DomainClass(final Domain domain, final Class<T> javaClass) {
 		
@@ -1236,15 +1233,6 @@ public class DomainClass<T>
 	public void setEmfFacade(EmfFacade emfFacade) {
 		this.emfFacade = emfFacade;
 	}
-
-	private IWrapper wrapper;
-	public IWrapper getWrapper() {
-		return wrapper;
-	}
-	public void setWrapper(IWrapper wrapper) {
-		this.wrapper = wrapper;
-	}
-
 
 	// DEPENDENCY INJECTION END
 

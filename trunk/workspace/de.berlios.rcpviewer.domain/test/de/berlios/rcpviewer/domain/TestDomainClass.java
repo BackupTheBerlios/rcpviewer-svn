@@ -54,7 +54,6 @@ public class TestDomainClass extends AbstractTestCase  {
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
 		assertFalse(session.isAttached(domainObject));
-		assertFalse(session.isAttached(domainObject.getPojo()));
 	}
 
 

@@ -20,14 +20,6 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 public interface ISession {
 
 	/**
-	 * Injected service that provides the ability to wrap a pojo in an
-	 * {@link IDomainObject}.
-	 * 
-	 * @return
-	 */
-	IWrapper getWrapper();
-	
-	/**
 	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
 	 * attaches to the session.
 	 * 
@@ -35,18 +27,6 @@ public interface ISession {
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
 	 */
 	<T> IDomainObject<T> createTransient(IDomainClass<T> domainClass);
-
-	/**
-	 * Attach the pojo wrapped in the supplied domainObject to the session.
-	 * 
-	 * <p>
-	 * Any {@link ISessionListener}s of the session will be notified that the
-	 * corresponding {@link IDomainObject} has been attached.
-	 * 
-	 * @param domainObject
-	 * @throws IllegalArgumentException if the pojo was already attached.
-	 */
-	void attach(Object pojo);
 
 	/**
 	 * Attach the pojo wrapped in the supplied domainObject to the session.
@@ -62,18 +42,6 @@ public interface ISession {
 
 	
 	/**
-	 * Detach the supplied pojo from the session.
-	 * 
-	 * <p>
-	 * Any {@link ISessionListener}s of the session will be notified that the
-	 * corresponding {@link IDomainObject} has been detached.
-	 * 
-	 * @param pojo
-	 * @throws IllegalArgumentException if the pojo was not attached.
-	 */
-	void detach(Object pojo);
-	
-	/**
 	 * Detach the pojo wrapped in the supplied domainObject from the session.
 	 * 
 	 * <p>
@@ -85,14 +53,6 @@ public interface ISession {
 	 */
 	void detach(IDomainObject<?> domainObject);
 
-	/**
-	 * Whether the supplied pojo is attached to this session.
-	 * 
-	 * @param pojo
-	 * @return true if attached, false otherwise.
-	 */
-	boolean isAttached(Object pojo);
-	
 	/**
 	 * Whether the pojo wrapped in the supplied {@link IDomainObject} is 
 	 * attached to this session.
