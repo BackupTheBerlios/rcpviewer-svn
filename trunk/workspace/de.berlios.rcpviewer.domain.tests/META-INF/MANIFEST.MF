@@ -12,7 +12,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.junit,
  de.berlios.rcpviewer.domain,
- org.aspectj.runtime,
- de.berlios.rcpviewer.domain.fixture,
- de.berlios.rcpviewer.progmodel.standard
+ de.berlios.rcpviewer.domain.fixture
 Eclipse-AutoStart: true
