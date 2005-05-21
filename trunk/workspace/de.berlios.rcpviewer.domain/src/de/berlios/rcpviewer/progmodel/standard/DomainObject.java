@@ -29,7 +29,23 @@ import de.berlios.rcpviewer.session.ISession;
  * @author Dan Haywood
  */
 public final class DomainObject<T> implements IDomainObject<T> {
+
+	/**
+	 * Creates a domain object unattached to any session.
+	 * 
+	 * @param domainClass
+	 * @param pojo
+	 */
+	public DomainObject(final IDomainClass<T> domainClass, final T pojo) {
+		this(domainClass, pojo, null);
+	}
 	
+	/**
+	 * Creates a domain object attached to the session.
+	 * 
+	 * @param domainClass
+	 * @param pojo
+	 */
 	public DomainObject(final IDomainClass<T> domainClass, final T pojo, final ISession session) {
 		this.domainClass = domainClass;
 		this.pojo = pojo;
@@ -57,6 +73,9 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public void persist() {
 		if (isPersistent()) {
 			throw new IllegalStateException("Already persisted.");
+		}
+		if (getSession() == null) {
+			throw new IllegalStateException("Not attached to a session");
 		}
 		getSession().persist(this);
 		persistent = true;

@@ -4,10 +4,6 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="aspects">
-		<attributes>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="fixture">
 		<attributes>
 		</attributes>

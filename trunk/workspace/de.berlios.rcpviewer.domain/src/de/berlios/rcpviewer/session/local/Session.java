@@ -16,9 +16,9 @@ import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
 import de.berlios.rcpviewer.session.SessionObjectEvent;
 
-public class Session implements ISession, IWrapperAware, IObjectStoreAware {
+public class Session implements ISession, IObjectStoreAware {
 
-	// TODO: make into an aspect
+	// TODO: wire back to an IDomain.
 	private static ThreadLocal<Session> sessionForThisThread = 
 			new ThreadLocal<Session>() {
 		protected synchronized Session initialValue() {
@@ -29,6 +29,12 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 		return sessionForThisThread.get();
 	}
 
+	/**
+	 * Simulating a perthis association between a pojo and an IDomainObject.
+	 */
+	private Map<IDomainObject, Object> pojoByDomainObject = 
+		new HashMap<IDomainObject, Object>();
+	
 	private Map<IDomainClass<?>, List<IDomainObject<?>>> 
 		domainObjectsByDomainClass = new HashMap<IDomainClass<?>, List<IDomainObject<?>>>();
 
@@ -53,15 +59,26 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 
 
 	public void attach(IDomainObject<?> domainObject) {
-		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
-		if (domainObjects.contains(domainObject)) {
-			throw new IllegalArgumentException("pojo already attached to session.");
+		synchronized(domainObject) {
+			// add to session hash 
+			{
+				pojoByDomainObject.put(domainObject, domainObject.getPojo());
+			}
+			// add to partitioned hash of objects of this class
+			{
+				List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
+				if (domainObjects.contains(domainObject)) {
+					throw new IllegalArgumentException("pojo already attached to session.");
+				}
+				domainObjects.add(domainObject);
+			}
 		}
-		domainObjects.add(domainObject);
 		// notify listeners
-		SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
-		for(ISessionListener listener: listeners) {
-			listener.domainObjectAttached(event);
+		{
+			SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
+			for(ISessionListener listener: listeners) {
+				listener.domainObjectAttached(event);
+			}
 		}
 	}
 	public void attach(Object pojo) {
@@ -71,11 +88,20 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 
 	
 	public void detach(IDomainObject<?> domainObject) {
-		List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
-		if (!domainObjects.contains(domainObject)) {
-			throw new IllegalArgumentException("pojo not attached to session.");
+		synchronized(domainObject) {
+			// remove from partitioned hash of objects of this class
+			{
+				List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
+				if (!domainObjects.contains(domainObject)) {
+					throw new IllegalArgumentException("pojo not attached to session.");
+				}
+				domainObjects.remove(domainObject);
+			}
+			// remove from global hash
+			{
+				pojoByDomainObject.remove(domainObject);
+			}
 		}
-		domainObjects.remove(domainObject);
 		// notify listeners
 		SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
 		for(ISessionListener listener: listeners) {
@@ -137,14 +163,6 @@ public class Session implements ISession, IWrapperAware, IObjectStoreAware {
 
 	// DEPENDENCY INJECTION START //
 
-	private IWrapper wrapper;
-	public IWrapper getWrapper() {
-		return wrapper;
-	}
-	public void setWrapper(IWrapper wrapper) {
-		this.wrapper = wrapper;
-	}
-	
 	private IObjectStore objectStore;
 	public IObjectStore getObjectStore() {
 		return objectStore;

@@ -33,6 +33,7 @@ import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.IWrapper;
 import de.berlios.rcpviewer.session.IWrapperAware;
 
@@ -1203,7 +1204,7 @@ public class DomainClass<T>
 		try {
 			Object pojo = getJavaClass().newInstance();
 			Class<T> pojoClass = pojoClass(pojo.getClass());
-			IDomainObject<T> domainObject = getWrapper().wrapped(pojo, pojoClass);
+			IDomainObject<T> domainObject = new DomainObject(this, pojo);
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);

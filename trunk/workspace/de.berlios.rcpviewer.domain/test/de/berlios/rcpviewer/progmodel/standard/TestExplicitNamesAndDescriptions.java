@@ -48,8 +48,8 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {
 		domainClass = new DomainClass<TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName>(TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName.class);
-		assertEquals("CustomerWithNoExplicitName", domainClass.getName());
-		assertEquals("CustomerWithNoExplicitName", domainClass.getEClass().getName());
+		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getName());
+		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getEClass().getName());
 		assertNull(domainClass.getDescription());
 	}
 

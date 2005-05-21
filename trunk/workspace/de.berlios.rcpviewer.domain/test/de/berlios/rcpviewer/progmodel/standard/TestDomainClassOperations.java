@@ -210,8 +210,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
 		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
-		assertEquals("de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperations$TimePeriod", eDataType.getName());
+		assertEquals("testDomainClassOperationsTimePeriod", domainClass.getNameFor(eOperation, 0));
+		assertEquals("de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperationsTimePeriod", eDataType.getName());
 		assertTrue(domainClass.isParameterAValue(eOperation, 1));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
 		assertEquals("string", domainClass.getNameFor(eOperation, 1));
@@ -224,8 +224,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterAValue(eOperation, 0));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
-		assertEquals("de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperations$TimePeriod", eDataType.getName());
+		assertEquals("testDomainClassOperationsTimePeriod", domainClass.getNameFor(eOperation, 0));
+		assertEquals("de.berlios.rcpviewer.progmodel.standard.TestDomainClassOperationsTimePeriod", eDataType.getName());
 		assertTrue(domainClass.isParameterAValue(eOperation, 1));
 		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
 		assertEquals("string", domainClass.getNameFor(eOperation, 1));

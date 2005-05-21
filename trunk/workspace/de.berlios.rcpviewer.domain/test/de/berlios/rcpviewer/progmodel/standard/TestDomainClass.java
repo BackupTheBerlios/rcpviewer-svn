@@ -43,7 +43,7 @@ public class TestDomainClass extends AbstractTestCase {
 		EClass eClass = domainClass.getEClass();
 		assertNotNull(eClass);
 		assertSame(eClass.getInstanceClass(), TestDomainClassCustomerWithNoAttributes.class);
-		assertEquals("CustomerWithNoAttributes", eClass.getName());
+		assertEquals("TestDomainClassCustomerWithNoAttributes", eClass.getName());
 		EPackage ePackage = eClass.getEPackage();
 		assertNotNull(ePackage);
 		assertEquals(
