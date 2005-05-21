@@ -10,7 +10,6 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTest(de.berlios.rcpviewer.domain.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.progmodel.standard.AllTests.suite());
-		suite.addTest(de.berlios.rcpviewer.progmodel.standard.impl.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.progmodel.extended.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.progmodel.rcpviewer.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.session.AllTests.suite());

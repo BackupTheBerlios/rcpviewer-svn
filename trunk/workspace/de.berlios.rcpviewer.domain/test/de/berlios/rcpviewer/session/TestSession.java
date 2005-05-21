@@ -7,8 +7,8 @@ import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.local.Session;
+import de.berlios.rcpviewer.session.local.impl.Department;
 
 public class TestSession extends AbstractTestCase  {
 
@@ -64,7 +64,6 @@ public class TestSession extends AbstractTestCase  {
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
 		assertTrue(session.isAttached(domainObject));
-		assertTrue(session.isAttached(domainObject.getPojo()));
 	}
 
 
@@ -105,24 +104,10 @@ public class TestSession extends AbstractTestCase  {
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertTrue(session.isAttached(domainObject));
-		assertTrue(session.isAttached(domainObject.getPojo()));
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
-		assertFalse(session.isAttached(domainObject.getPojo()));
 	}
 
-	
-	public void testCanDetachFromSessionThroughPojo() {
-		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		assertTrue(session.isAttached(domainObject));
-		assertTrue(session.isAttached(domainObject.getPojo()));
-		session.detach(domainObject.getPojo());
-		assertFalse(session.isAttached(domainObject));
-		assertFalse(session.isAttached(domainObject.getPojo()));
-	}
 	
 	public void testDetachFromSesionNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
@@ -142,26 +127,10 @@ public class TestSession extends AbstractTestCase  {
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
-		assertFalse(session.isAttached(domainObject.getPojo()));
 		session.attach(domainObject);
 		assertTrue(session.isAttached(domainObject));
-		assertTrue(session.isAttached(domainObject.getPojo()));
 	}
 	
-	
-	public void testCanReAttachFromSessionThroughPojo() {
-		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		session.detach(domainObject);
-		assertFalse(session.isAttached(domainObject));
-		assertFalse(session.isAttached(domainObject.getPojo()));
-		session.attach(domainObject.getPojo());
-		assertTrue(session.isAttached(domainObject));
-		assertTrue(session.isAttached(domainObject.getPojo()));
-	}
-
 	
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
 		IDomainClass<Department> domainClass = 
