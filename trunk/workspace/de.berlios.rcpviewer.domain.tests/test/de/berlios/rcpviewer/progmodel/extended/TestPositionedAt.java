@@ -19,11 +19,10 @@ public class TestPositionedAt extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
@@ -34,10 +33,11 @@ public class TestPositionedAt extends AbstractTestCase {
 	 *
 	 */
 	public void testDomainClassWithAllAttributesPositioned() {
-		domain.addExtension(new ExtendedProgModelExtension());
 		domainClass = 
-			domain.localLookup(CustomerWithAllAttributesPositioned.class);
-		domain.done();
+			Domain.lookup(CustomerWithAllAttributesPositioned.class);
+		Domain.instance().addExtension(new ExtendedProgModelExtension());
+		Domain.instance().done();
+		
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
 		assertNotNull(comparator);
 		List<EAttribute> sortedAttributes = 

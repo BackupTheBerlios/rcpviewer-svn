@@ -9,12 +9,10 @@ public class TestDomain extends TestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 	
 	public void tearDown() throws Exception {
-		domain.reset();
-		domain = null;
+		Domain.reset();
 		super.tearDown();
 	}
 	

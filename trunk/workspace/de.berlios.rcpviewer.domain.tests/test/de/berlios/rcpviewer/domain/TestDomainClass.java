@@ -15,25 +15,26 @@ public class TestDomainClass extends AbstractTestCase  {
 	private ISession session;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 		session = new Session();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
 		domain = null;
+		session = null;
+		Domain.reset();
 		super.tearDown();
 	}
 
 
 	public void testCreateTransientCreatesUnderlyingPojo() {
-		IDomainClass<Department> departmentDomainClass = 
-			domain.localLookup(Department.class);
+		IDomainClass<Department> domainClass = 
+			Domain.lookup(Department.class);
+		domain = domainClass.getDomain();
 		
-		IDomainObject<Department> departmentDomainObject = 
-			session.createTransient(departmentDomainClass);
-		assertNotNull(departmentDomainObject.getPojo());
-		assertSame(Department.class, departmentDomainObject.getPojo().getClass());
+		IDomainObject<Department> domainObject = 
+			session.createTransient(domainClass);
+		assertNotNull(domainObject.getPojo());
+		assertSame(Department.class, domainObject.getPojo().getClass());
 	}
 
 
@@ -44,9 +45,9 @@ public class TestDomainClass extends AbstractTestCase  {
 	 * The returned object will not be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
-		domain = Domain.instance();
 		IDomainClass<Department> domainClass = 
-			domain.localLookup(Department.class);
+			Domain.lookup(Department.class);
+		domain = domainClass.getDomain();
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertNotNull(domainObject);
@@ -63,7 +64,8 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			domain.localLookup(DepartmentWithoutNoArgConstructor.class);
+			Domain.lookup(DepartmentWithoutNoArgConstructor.class);
+		domain = domainClass.getDomain();
 
 		try {
 			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 

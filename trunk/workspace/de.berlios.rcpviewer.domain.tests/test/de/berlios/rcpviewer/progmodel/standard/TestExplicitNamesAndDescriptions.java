@@ -22,18 +22,19 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
 	
 
 	public void testDomainClassThatIsExplicitlyNamed() {
-		domainClass = new DomainClass<TestExplicitNamesAndDescriptionsProspectiveSale>(TestExplicitNamesAndDescriptionsProspectiveSale.class);
+		domainClass = Domain.lookup(TestExplicitNamesAndDescriptionsProspectiveSale.class);
+		Domain.instance().done();
+		
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());
 		assertEquals(
@@ -47,7 +48,9 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {
-		domainClass = new DomainClass<TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName>(TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName.class);
+		domainClass = Domain.lookup(TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName.class);
+		Domain.instance().done();
+		
 		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getName());
 		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getEClass().getName());
 		assertNull(domainClass.getDescription());
@@ -72,8 +75,8 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = domain.localLookup(TestExplicitNamesAndDescriptionsAppointment.class);
-		domain.done();
+		domainClass = Domain.lookup(TestExplicitNamesAndDescriptionsAppointment.class);
+		Domain.instance().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());

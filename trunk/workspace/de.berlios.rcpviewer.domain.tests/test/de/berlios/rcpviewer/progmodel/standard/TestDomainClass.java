@@ -24,22 +24,23 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
 		domain = null;
-		if (domain2 != null) {
-			domain2.reset();
-			domain2 = null;
-		}
+		domain2 = null;
+		Domain.reset();
 		super.tearDown();
 	}
 	
 	public void testGetJavaClass() {
-		domainClass = new DomainClass<TestDomainClassCustomerWithNoAttributes>(TestDomainClassCustomerWithNoAttributes.class);
+		domainClass = Domain.lookup(TestDomainClassCustomerWithNoAttributes.class);
+		Domain.instance().done();
+		
 		assertSame(TestDomainClassCustomerWithNoAttributes.class, domainClass.getJavaClass());
 	}
 
 	public void testGetEClass() {
-		domainClass = new DomainClass<TestDomainClassCustomerWithNoAttributes>(TestDomainClassCustomerWithNoAttributes.class);
+		domainClass = Domain.lookup(TestDomainClassCustomerWithNoAttributes.class);
+		Domain.instance().done();
+		
 		EClass eClass = domainClass.getEClass();
 		assertNotNull(eClass);
 		assertSame(eClass.getInstanceClass(), TestDomainClassCustomerWithNoAttributes.class);
@@ -53,8 +54,9 @@ public class TestDomainClass extends AbstractTestCase {
 
 	public void testGetDomainClassFromEClass() {
 		IDomainClass<TestDomainClassDepartment> domainClass = 
-			domain.localLookup(TestDomainClassDepartment.class);
-
+			Domain.lookup(TestDomainClassDepartment.class);
+		Domain.instance().done();
+		
 		EClass eClass = domainClass.getEClass();
 		IDomainClass reverseDomainClass = domain.domainClassFor(eClass);
 		assertNotNull(reverseDomainClass);
@@ -76,22 +78,25 @@ public class TestDomainClass extends AbstractTestCase {
 
 	public void testGetDomainFromDomainClassForImplicitDefaultDomain() {
 		IDomainClass<CustomerImplicitlyInDefaultDomain> domainClass = 
-			domain.localLookup(CustomerImplicitlyInDefaultDomain.class);
+			Domain.lookup(CustomerImplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 
 
 	public void testGetDomainFromDomainClassForExplicitDefaultDomain() {
-		IDomainClass<CustomerExplicitlyInDefaultDomain> domainClass = 
-			domain.localLookup(CustomerExplicitlyInDefaultDomain.class);
+		domainClass = Domain.lookup(CustomerExplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 
+	/**
+	 * Prospect class is in marketing domain, so shouldn't be found in the
+	 * default domain.
+	 *
+	 */
 	public void testGetDomainClassFromWrongDomainWillFindNothing() {
-		IDomainClass<Prospect> domainClass = 
-			domain.localLookup(Prospect.class);
+		domainClass = Domain.instance().localLookup(Prospect.class);
 		
 		assertNull(domainClass);
 	}
@@ -99,7 +104,8 @@ public class TestDomainClass extends AbstractTestCase {
 	public void testGetDomainFromDomainClassForExplicitCustomDomain() {
 		domain = Domain.instance("marketing");
 		IDomainClass<Prospect> domainClass = 
-			domain.localLookup(Prospect.class);
+			Domain.lookup(Prospect.class);
+		domain.done();
 		
 		assertEquals("marketing", domainClass.getDomain().getName());
 	}
@@ -109,9 +115,9 @@ public class TestDomainClass extends AbstractTestCase {
 		domain = Domain.instance();
 		domain2 = Domain.instance("marketing");
 		IDomainClass<Customer> customerDomainClass = 
-			domain.localLookup(Customer.class);
+			Domain.lookup(Customer.class);
 		IDomainClass<Prospect> prospectDomainClass = 
-			domain2.localLookup(Prospect.class);
+			Domain.lookup(Prospect.class);
 		
 		assertEquals("marketing", prospectDomainClass.getDomain().getName());
 		assertEquals("default", customerDomainClass.getDomain().getName());

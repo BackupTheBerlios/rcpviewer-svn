@@ -12,11 +12,10 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
@@ -24,24 +23,24 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	// ordering //
 
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.localLookup(TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = domain.localLookup(TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = domain.localLookup(TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());
 		assertFalse(domainClass.isOrdered(eAttribute));

@@ -209,7 +209,13 @@ public final class Domain {
 	/**
 	 * for testing purposes
 	 */
-	public void reset() {
+	public static void reset() {
+		for(String domainName: domainsByName.keySet()) {
+			Domain.instance(domainName).localReset();
+		}
+	}
+	
+	public void localReset() {
 		domainClassesByjavaClass.clear();
 		extensions.clear();
 	}

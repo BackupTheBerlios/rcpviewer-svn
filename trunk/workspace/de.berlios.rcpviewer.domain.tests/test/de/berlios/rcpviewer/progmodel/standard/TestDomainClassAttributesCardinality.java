@@ -43,27 +43,27 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();  // since aspects pick up thread singleton
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
+		domain = null;
 		super.tearDown();
 	}
 	
 	// lower & upper bounds //
 
 	public void testLowerBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.localLookup(CustomerWithNoLowerBoundReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(CustomerWithNoLowerBoundReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getLowerBound());
 		assertEquals(1, domainClass.getLowerBound(eAttribute));
 	}
 
 	public void testLowerBoundOfEAttributeWhenSpecified() {
-		domainClass = domain.localLookup(CustomerWithLowerBoundReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(CustomerWithLowerBoundReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(0, eAttribute.getLowerBound());
 		assertEquals(0, domainClass.getLowerBound(eAttribute));
@@ -75,16 +75,16 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testUpperBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.localLookup(CustomerWithNoUpperBoundReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(CustomerWithNoUpperBoundReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getUpperBound());
 		assertEquals(1, domainClass.getLowerBound(eAttribute));
 	}
 
 	public void testUpperBoundOfEAttributeWhenSpecified() {
-		domainClass = domain.localLookup(CustomerWithUpperBoundReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(CustomerWithUpperBoundReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(3, eAttribute.getUpperBound());
 		assertEquals(3, domainClass.getUpperBound(eAttribute));

@@ -21,19 +21,19 @@ public class TestImageDescriptor extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
 	
 	public void testDomainClassWithImageUrlAt() {
-		domain.addExtension(new RcpViewerExtension());
-		domainClass = domain.localLookup(ProspectiveSale.class);
-		domain.done();
+		domainClass = Domain.lookup(ProspectiveSale.class);
+		Domain.instance().addExtension(new RcpViewerExtension());
+		Domain.instance().done();
+		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNotNull(id);
 	}
@@ -43,7 +43,9 @@ public class TestImageDescriptor extends AbstractTestCase {
 	 *
 	 */
 	public void incompletetestDomainClassWithImageUrlAtWithoutExtensionInstalled() {
-		domainClass = new DomainClass<ProspectiveSale>(ProspectiveSale.class);
+		domainClass = Domain.lookup(ProspectiveSale.class);
+		Domain.instance().done();
+		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNull(id);
 	}

@@ -23,11 +23,10 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
@@ -41,8 +40,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPublicVisibilityMethodPickedUpAsOperation() {
-		domainClass = domain.localLookup(TestDomainClassOperationsCustomerWithPublicVisibilityOperation.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithPublicVisibilityOperation.class);
+		domainClass.getDomain().done();
+		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
@@ -65,7 +65,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testProtectedVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithProtectedVisibilityOperation>(TestDomainClassOperationsCustomerWithProtectedVisibilityOperation.class);
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithProtectedVisibilityOperation.class);
+		domainClass.getDomain().done();
+		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -83,7 +85,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPackageLocalVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithPackageLocalVisibilityOperation>(TestDomainClassOperationsCustomerWithPackageLocalVisibilityOperation.class);
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithPackageLocalVisibilityOperation.class);
+		domainClass.getDomain().done();
+		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -99,7 +103,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPrivateVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithPrivateVisibilityOperation>(TestDomainClassOperationsCustomerWithPrivateVisibilityOperation.class);
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithPrivateVisibilityOperation.class);
+		domainClass.getDomain().done();
+		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -116,7 +122,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testSuppressedPublicVisibilityMethodNotPickedUpAsOperation() {
-		domainClass = new DomainClass<TestDomainClassOperationsCustomerWithProgrammaticPublicVisibilityOperation>(TestDomainClassOperationsCustomerWithProgrammaticPublicVisibilityOperation.class);
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithProgrammaticPublicVisibilityOperation.class);
+		domainClass.getDomain().done();
+		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNull(eOperation);
 		
@@ -125,8 +133,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithNoArgumentsAPickedUpAsOperation() {
-		domainClass = domain.localLookup(TestDomainClassOperationsCustomerWithNoArgOperation.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithNoArgOperation.class);
+		domainClass.getDomain().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
@@ -142,8 +150,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation1Arg() {
-		domainClass = domain.localLookup(TestDomainClassOperationsCustomerWithPrimitiveArgOperation.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerWithPrimitiveArgOperation.class);
+		domainClass.getDomain().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
 		assertNotNull(eOperation);
@@ -167,8 +175,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation2Arg() {
-		domainClass = domain.localLookup(TestDomainClassOperationsCustomerPositionedOnMap.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsCustomerPositionedOnMap.class);
+		domainClass.getDomain().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
 		assertNotNull(eOperation);
@@ -201,8 +209,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
 		// 2 arg
-		domainClass = domain.localLookup(TestDomainClassOperationsAppointment.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsAppointment.class);
+		domainClass.getDomain().done();
 		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertNotNull(eOperation);
@@ -259,9 +267,10 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 */
 	public void testMethodWithDomainObjectArgumentsPickedUpAsOperation() {
 		
-		domain.localLookup(Man.class);
-		domain.localLookup(Woman.class);
-		domainClass = domain.localLookup(Priest.class);
+		Domain.lookup(Man.class);
+		Domain.lookup(Woman.class);
+		domainClass = Domain.lookup(Priest.class);
+		domainClass.getDomain().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
 		assertNotNull(eOperation);
@@ -355,26 +364,26 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 	
 	public void testAccessorsNotPickedUpAsOperation() {
-		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass.getDomain().done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testMutatorsNotPickedUpAsOperation() {
-		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass.getDomain().done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testSingleReferencessNotPickedUpAsOperation() {
-		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass.getDomain().done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testCollectionsNotPickedUpAsOperation() {
-		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass.getDomain().done();
 		assertEquals(2, domainClass.operations().size());
 	}
 

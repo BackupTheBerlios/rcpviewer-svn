@@ -12,11 +12,10 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
@@ -24,24 +23,24 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	// uniqueness //
 
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.localLookup(TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = domain.localLookup(TestDomainClassAttributesUniquenessCustomerWithUniqueReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesUniquenessCustomerWithUniqueReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = domain.localLookup(TestDomainClassAttributesUniquenessCustomerWithNonUniqueReadOnlyAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesUniquenessCustomerWithNonUniqueReadOnlyAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());
 		assertFalse(domainClass.isUnique(eAttribute));

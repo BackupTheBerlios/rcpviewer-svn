@@ -12,33 +12,32 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
-		domain = Domain.instance();
 	}
 
 	protected void tearDown() throws Exception {
-		domain.reset();
+		Domain.reset();
 		domain = null;
 		super.tearDown();
 	}
 	
 	public void testWhetherEAttributeIsUnsettableWhenIs() {
-		domainClass = domain.localLookup(TestDomainClassAttributesUnsettabilityCustomerWithUnsettableAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesUnsettabilityCustomerWithUnsettableAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
 		assertTrue(domainClass.isUnsettable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
-		domainClass = domain.localLookup(TestDomainClassAttributesUnsettabilityCustomerWithOnlyIsUnsetForAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesUnsettabilityCustomerWithOnlyIsUnsetForAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
-		domainClass = domain.localLookup(TestDomainClassAttributesUnsettabilityCustomerWithOnlyUnsetForAttribute.class);
-		domain.done();
+		domainClass = Domain.lookup(TestDomainClassAttributesUnsettabilityCustomerWithOnlyUnsetForAttribute.class);
+		domainClass.getDomain().done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));
