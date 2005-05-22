@@ -72,7 +72,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = domain.lookup(TestExplicitNamesAndDescriptionsAppointment.class);
+		domainClass = domain.localLookup(TestExplicitNamesAndDescriptionsAppointment.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");

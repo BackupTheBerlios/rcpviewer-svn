@@ -53,7 +53,7 @@ public class TestDomainClass extends AbstractTestCase {
 
 	public void testGetDomainClassFromEClass() {
 		IDomainClass<TestDomainClassDepartment> domainClass = 
-			domain.lookup(TestDomainClassDepartment.class);
+			domain.localLookup(TestDomainClassDepartment.class);
 
 		EClass eClass = domainClass.getEClass();
 		IDomainClass reverseDomainClass = domain.domainClassFor(eClass);
@@ -76,7 +76,7 @@ public class TestDomainClass extends AbstractTestCase {
 
 	public void testGetDomainFromDomainClassForImplicitDefaultDomain() {
 		IDomainClass<CustomerImplicitlyInDefaultDomain> domainClass = 
-			domain.lookup(CustomerImplicitlyInDefaultDomain.class);
+			domain.localLookup(CustomerImplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
 	}
@@ -84,14 +84,14 @@ public class TestDomainClass extends AbstractTestCase {
 
 	public void testGetDomainFromDomainClassForExplicitDefaultDomain() {
 		IDomainClass<CustomerExplicitlyInDefaultDomain> domainClass = 
-			domain.lookup(CustomerExplicitlyInDefaultDomain.class);
+			domain.localLookup(CustomerExplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 
 	public void testGetDomainClassFromWrongDomainWillFindNothing() {
 		IDomainClass<Prospect> domainClass = 
-			domain.lookup(Prospect.class);
+			domain.localLookup(Prospect.class);
 		
 		assertNull(domainClass);
 	}
@@ -99,7 +99,7 @@ public class TestDomainClass extends AbstractTestCase {
 	public void testGetDomainFromDomainClassForExplicitCustomDomain() {
 		domain = Domain.instance("marketing");
 		IDomainClass<Prospect> domainClass = 
-			domain.lookup(Prospect.class);
+			domain.localLookup(Prospect.class);
 		
 		assertEquals("marketing", domainClass.getDomain().getName());
 	}
@@ -109,9 +109,9 @@ public class TestDomainClass extends AbstractTestCase {
 		domain = Domain.instance();
 		domain2 = Domain.instance("marketing");
 		IDomainClass<Customer> customerDomainClass = 
-			domain.lookup(Customer.class);
+			domain.localLookup(Customer.class);
 		IDomainClass<Prospect> prospectDomainClass = 
-			domain2.lookup(Prospect.class);
+			domain2.localLookup(Prospect.class);
 		
 		assertEquals("marketing", prospectDomainClass.getDomain().getName());
 		assertEquals("default", customerDomainClass.getDomain().getName());

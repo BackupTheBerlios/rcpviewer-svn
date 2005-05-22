@@ -41,7 +41,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 * Tested for both instance and static methods.
 	 */
 	public void testPublicVisibilityMethodPickedUpAsOperation() {
-		domainClass = domain.lookup(TestDomainClassOperationsCustomerWithPublicVisibilityOperation.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsCustomerWithPublicVisibilityOperation.class);
 		domain.done();
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
 		assertNotNull(eOperation);
@@ -125,7 +125,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithNoArgumentsAPickedUpAsOperation() {
-		domainClass = domain.lookup(TestDomainClassOperationsCustomerWithNoArgOperation.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsCustomerWithNoArgOperation.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
@@ -142,7 +142,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation1Arg() {
-		domainClass = domain.lookup(TestDomainClassOperationsCustomerWithPrimitiveArgOperation.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsCustomerWithPrimitiveArgOperation.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
@@ -167,7 +167,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation2Arg() {
-		domainClass = domain.lookup(TestDomainClassOperationsCustomerPositionedOnMap.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsCustomerPositionedOnMap.class);
 		domain.done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
@@ -201,7 +201,7 @@ public class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
 		// 2 arg
-		domainClass = domain.lookup(TestDomainClassOperationsAppointment.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsAppointment.class);
 		domain.done();
 		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
@@ -259,9 +259,9 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	 */
 	public void testMethodWithDomainObjectArgumentsPickedUpAsOperation() {
 		
-		domain.lookup(Man.class);
-		domain.lookup(Woman.class);
-		domainClass = domain.lookup(Priest.class);
+		domain.localLookup(Man.class);
+		domain.localLookup(Woman.class);
+		domainClass = domain.localLookup(Priest.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
 		assertNotNull(eOperation);
@@ -355,25 +355,25 @@ public class TestDomainClassOperations extends AbstractTestCase {
 	}
 	
 	public void testAccessorsNotPickedUpAsOperation() {
-		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testMutatorsNotPickedUpAsOperation() {
-		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testSingleReferencessNotPickedUpAsOperation() {
-		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testCollectionsNotPickedUpAsOperation() {
-		domainClass = domain.lookup(TestDomainClassOperationsAppointmentWithAccessor.class);
+		domainClass = domain.localLookup(TestDomainClassOperationsAppointmentWithAccessor.class);
 		domain.done();
 		assertEquals(2, domainClass.operations().size());
 	}

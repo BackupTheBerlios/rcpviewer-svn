@@ -36,7 +36,7 @@ public class TestPositionedAt extends AbstractTestCase {
 	public void testDomainClassWithAllAttributesPositioned() {
 		domain.addExtension(new ExtendedProgModelExtension());
 		domainClass = 
-			domain.lookup(CustomerWithAllAttributesPositioned.class);
+			domain.localLookup(CustomerWithAllAttributesPositioned.class);
 		domain.done();
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
 		assertNotNull(comparator);

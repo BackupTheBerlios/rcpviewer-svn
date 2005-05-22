@@ -61,7 +61,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCanPersistThroughDomainObject() {
 		session = Session.instance(); // use singleton since this is what Aspect
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
@@ -84,7 +84,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void incompletetestCanPersistThroughPojo() {
 		session = Session.instance(); // must use Singleton since this is what Aspect uses.
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.persist(domainObject.getPojo());
@@ -96,7 +96,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testCannotPersistIfNotAttachedToSession() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertFalse(session.isAttached(domainObject));
 		try {
@@ -111,7 +111,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	public void testCannotPersistMoreThanOnce() {
 		session = Session.instance(); // since Aspect will use singleton Session
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.persist();
@@ -126,7 +126,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanSetAttribute() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -137,7 +137,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCannotSetAttributeToInvalidValue() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
@@ -151,7 +151,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testSettingAttributeNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -166,7 +166,7 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanGetAttribute() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -178,7 +178,7 @@ public class TestDomainObject extends AbstractTestCase  {
 	
 	public void testCanInvokeOperation() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -196,9 +196,9 @@ public class TestDomainObject extends AbstractTestCase  {
 	 */
 	public void testGetCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			domain.lookup(Employee.class);
+			domain.localLookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -216,8 +216,8 @@ public class TestDomainObject extends AbstractTestCase  {
 	}
 
 	public void testGetReferencedClassForCollection() {
-		IDomainClass<Department> departmentDomainClass = domain.lookup(Department.class);
-		IDomainClass<Employee> employeeDomainClass = domain.lookup(Employee.class);
+		IDomainClass<Department> departmentDomainClass = domain.localLookup(Department.class);
+		IDomainClass<Employee> employeeDomainClass = domain.localLookup(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
 		assertSame(employeeDomainClass, departmentDomainClass.getReferencedClass(employeesCollection));
@@ -226,9 +226,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanAddToCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			domain.lookup(Employee.class);
+			domain.localLookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -246,9 +246,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testCanRemoveFromCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			domain.lookup(Employee.class);
+			domain.localLookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -273,9 +273,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testListenersNotifiedWhenAddToCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			domain.lookup(Employee.class);
+			domain.localLookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -296,9 +296,9 @@ public class TestDomainObject extends AbstractTestCase  {
 
 	public void testListenersNotifiedWhenRemoveFromCollection() {
 		IDomainClass<Department> departmentDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainClass<Employee> employeeDomainClass = 
-			domain.lookup(Employee.class);
+			domain.localLookup(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);

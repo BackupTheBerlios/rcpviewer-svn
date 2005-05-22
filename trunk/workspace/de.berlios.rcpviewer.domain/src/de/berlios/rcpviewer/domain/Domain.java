@@ -24,19 +24,51 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
  * @author Dan Haywood
  */
 public final class Domain {
-	
+
 	public final static String DEFAULT_META_MODEL_NAME = "default";
 	private static Map<String,Domain> domainsByName = new HashMap<String,Domain>();
 	public static Domain instance() {
 		return instance(DEFAULT_META_MODEL_NAME);
 	}
-	public synchronized static Domain instance(String metaModelName) {
-		Domain domain = domainsByName.get(metaModelName);
+	/**
+	 * Returns the Domain instance with the given name (creating it if
+	 * necessary).
+	 * 
+	 * @param domainName
+	 * @return
+	 */
+	public synchronized static Domain instance(String domainName) {
+		Domain domain = domainsByName.get(domainName);
 		if (domain == null) {
-			domain = new Domain(metaModelName);
-			domainsByName.put(metaModelName, domain);
+			domain = new Domain(domainName);
+			domainsByName.put(domainName, domain);
 		}
 		return domain;
+	}
+
+	/**
+	 * Looks up the {@link IDomainClass} for the supplied Class, registering it
+	 * if necessary.
+	 * 
+	 * <p>
+	 * The {@link IDomainClass} will be registered in the {@link Domain} 
+	 * specified by its {@link InDomain} annotation.
+	 * 
+	 * <p>
+	 * If the {@link Domain} does not yet exist, it too will be created
+	 * first.
+	 * 
+	 * @param <V>
+	 * @param javaClass
+	 * @return
+	 */
+	public static <V> IDomainClass<V> lookup(final Class<V> javaClass) {
+		InDomain inDomain = javaClass.getAnnotation(InDomain.class);
+		if (inDomain == null) {
+			return null;
+		}
+		Domain domain = instance(inDomain.value());
+		return domain.localLookup(javaClass);
 	}
 
 	
@@ -99,13 +131,15 @@ public final class Domain {
 		return Collections.unmodifiableCollection((Collection<IDomainClass<?>>)domainClassesByjavaClass.values());
 	}
 	
+	
 	/**
 	 * Creates a {@link DomainClass} for the supplied {@link Class} if not 
 	 * present, provided that the class in question is annotated with @InDomain 
 	 * (indicating the domain to which it belongs).
 	 * 
 	 * <p>
-	 * If already registered, simply returns, same way as {@link #lookupNoRegister(Class)}.
+	 * If already registered, simply returns, same way as 
+	 * {@link #localLookupNoRegister(Class)}.
 	 * 
 	 * <p>
 	 * If there is no @InDomain annotation, then returns null.  Or, if there is
@@ -116,7 +150,7 @@ public final class Domain {
 	 * @param javaClass
 	 * @return corresponding {@link DomainClass}
 	 */
-	public <V> IDomainClass<V> lookup(final Class<V> javaClass) {
+	public <V> IDomainClass<V> localLookup(final Class<V> javaClass) {
 		InDomain domain = javaClass.getAnnotation(InDomain.class);
 		if (domain == null) {
 			return null;
@@ -125,7 +159,7 @@ public final class Domain {
 			return null;
 		}
 		
-		IDomainClass<V> domainClass = lookupNoRegister(javaClass);
+		IDomainClass<V> domainClass = localLookupNoRegister(javaClass);
 		if (domainClass == null) {
 			domainClass = new DomainClass<V>(this, javaClass);
 			domainClassesByjavaClass.put(javaClass, domainClass);
@@ -134,9 +168,9 @@ public final class Domain {
 		return domainClass;
 	}
 	
-	public <V> IDomainClass<V> lookup(final DomainClass<V> domainClass) {
+	public <V> IDomainClass<V> localLookup(final DomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
-		IDomainClass<V> existingDomainClass = lookupNoRegister(javaClass);
+		IDomainClass<V> existingDomainClass = localLookupNoRegister(javaClass);
 		if (existingDomainClass != null) {
 			if (domainClass != existingDomainClass) {
 				throw new RuntimeException("Domain class already registered, '" + domainClass.getName() + "'");
@@ -153,7 +187,7 @@ public final class Domain {
 	 * @param javaClass
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
-	public <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass) {
+	public <V> IDomainClass<V> localLookupNoRegister(final Class<V> javaClass) {
 		return (DomainClass<V>)domainClassesByjavaClass.get(javaClass);
 	}
 
@@ -188,7 +222,7 @@ public final class Domain {
 		new HashMap<Class<?>, IDomainClass<?>>();
 	public <V> IDomainClass<V> domainClassFor(EClass eClass) {
 		Class<V> javaClass = (Class<V>)eClass.getInstanceClass();
-		return lookupNoRegister(javaClass);
+		return localLookupNoRegister(javaClass);
 	}
 	
 

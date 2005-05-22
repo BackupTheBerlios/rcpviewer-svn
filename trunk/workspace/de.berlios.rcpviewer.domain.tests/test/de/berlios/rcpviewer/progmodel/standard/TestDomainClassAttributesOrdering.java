@@ -24,7 +24,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	// ordering //
 
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.lookup(TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute.class);
+		domainClass = domain.localLookup(TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
@@ -32,7 +32,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = domain.lookup(TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute.class);
+		domainClass = domain.localLookup(TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
@@ -40,7 +40,7 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = domain.lookup(TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute.class);
+		domainClass = domain.localLookup(TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());

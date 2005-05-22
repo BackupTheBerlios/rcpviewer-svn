@@ -618,7 +618,7 @@ public class DomainClass<T>
 				EDataType returnDataType = getEmfFacade().getEDataTypeFor(returnType);
 				eOperation.setEType(returnDataType);
 			} else if (returnsReference) {
-				IDomainClass<?> returnDomainClass = domain.lookup(returnType);
+				IDomainClass<?> returnDomainClass = domain.localLookup(returnType);
 				eOperation.setEType(returnDomainClass.getEClass());
 			} else {
 				// do nothing; EMF does not apparently have a built-in classifier for Void 
@@ -637,7 +637,7 @@ public class DomainClass<T>
 				if (!isValue) {
 					// register rather than lookup since we may not have seen
 					// the referenced DomainClass yet.
-					parameterDomainClass = domain.lookup(parameterType);
+					parameterDomainClass = domain.localLookup(parameterType);
 					isReference = (parameterDomainClass != null);
 				}
 				if (!isValue && !isReference) {
@@ -889,7 +889,7 @@ public class DomainClass<T>
 			}
 			if (couldBeCollection) {
 				referencedJavaClass = associates.value();
-				referencedDomainClass = domain.lookup(referencedJavaClass);
+				referencedDomainClass = domain.localLookup(referencedJavaClass);
 				if (referencedDomainClass == null) {
 					// what they're referencing isn't a domain class
 					couldBeCollection = false;
@@ -897,7 +897,7 @@ public class DomainClass<T>
 			}
 			if (!couldBeCollection) {
 				// treat as a 1:1 reference
-				referencedDomainClass = domain.lookup(referencedJavaClass);
+				referencedDomainClass = domain.localLookup(referencedJavaClass);
 				if (referencedDomainClass != null) {
 					// 1:1
 					linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
@@ -1066,7 +1066,7 @@ public class DomainClass<T>
 		
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
 		EClass eClass = (EClass)eReference.getEReferenceType();
-		return domain.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
+		return domain.localLookupNoRegister(((Class<V>)eClass.getInstanceClass()));
 		
 	}
 

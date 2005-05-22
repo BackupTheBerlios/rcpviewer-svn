@@ -54,7 +54,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
 		IDomainClass<Department> domainClass = 
-			Domain.instance().lookup(Department.class);
+			Domain.instance().localLookup(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -76,7 +76,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
 		IDomainClass<Department> domainClass = 
-			Domain.instance().lookup(Department.class);
+			Domain.instance().localLookup(Department.class);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -91,7 +91,7 @@ public class TestSession extends AbstractTestCase  {
 	 */
 	public void testDomainObjectInitiallyTransient() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertFalse(domainObject.isPersistent());
@@ -100,7 +100,7 @@ public class TestSession extends AbstractTestCase  {
 
 	public void testCanDetachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertTrue(session.isAttached(domainObject));
@@ -111,7 +111,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testDetachFromSesionNotifiesListeners() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
@@ -122,7 +122,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCanReAttachFromSessionThroughDomainObject() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.detach(domainObject);
@@ -134,7 +134,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		session.detach(domainObject);
@@ -150,7 +150,7 @@ public class TestSession extends AbstractTestCase  {
 	
 	public void testCannotAttachToSessionIfAlreadyAttached() {
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		assertTrue(session.isAttached(domainObject));
@@ -170,7 +170,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprint() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			Domain.instance().lookup(Department.class);
+			Domain.instance().localLookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -185,7 +185,7 @@ public class TestSession extends AbstractTestCase  {
 
 
 		IDomainClass<Employee> employeeDomainClass = 
-			domain.lookup(Employee.class);
+			domain.localLookup(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
 			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
@@ -212,7 +212,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			Domain.instance().lookup(Department.class);
+			Domain.instance().localLookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -242,7 +242,7 @@ public class TestSession extends AbstractTestCase  {
 	public void testSessionFootprintIsImmutable() {
 		
 		IDomainClass<Department> deptDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -270,7 +270,7 @@ public class TestSession extends AbstractTestCase  {
 		objectStore = ((Session)session).getObjectStore();
 		
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		Department dept = domainObject.getPojo();

@@ -25,9 +25,10 @@ public class TestDomainClass extends AbstractTestCase  {
 		super.tearDown();
 	}
 
+
 	public void testCreateTransientCreatesUnderlyingPojo() {
 		IDomainClass<Department> departmentDomainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -45,7 +46,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	public void testCanInstantiateDomainObjectFromDomainClass() {
 		domain = Domain.instance();
 		IDomainClass<Department> domainClass = 
-			domain.lookup(Department.class);
+			domain.localLookup(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertNotNull(domainObject);
@@ -62,7 +63,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			domain.lookup(DepartmentWithoutNoArgConstructor.class);
+			domain.localLookup(DepartmentWithoutNoArgConstructor.class);
 
 		try {
 			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 

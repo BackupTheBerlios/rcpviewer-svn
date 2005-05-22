@@ -32,7 +32,7 @@ public class TestImageDescriptor extends AbstractTestCase {
 	
 	public void testDomainClassWithImageUrlAt() {
 		domain.addExtension(new RcpViewerExtension());
-		domainClass = domain.lookup(ProspectiveSale.class);
+		domainClass = domain.localLookup(ProspectiveSale.class);
 		domain.done();
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNotNull(id);

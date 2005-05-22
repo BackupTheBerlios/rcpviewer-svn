@@ -11,7 +11,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestDomainClass.class);
 		suite.addTestSuite(TestEmfFacade.class);
-		suite.addTestSuite(TestMetaModel.class);
+		suite.addTestSuite(TestDomain.class);
 		//$JUnit-END$
 		return suite;
 	}

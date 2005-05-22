@@ -54,7 +54,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	// lower & upper bounds //
 
 	public void testLowerBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.lookup(CustomerWithNoLowerBoundReadOnlyAttribute.class);
+		domainClass = domain.localLookup(CustomerWithNoLowerBoundReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getLowerBound());
@@ -62,7 +62,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testLowerBoundOfEAttributeWhenSpecified() {
-		domainClass = domain.lookup(CustomerWithLowerBoundReadOnlyAttribute.class);
+		domainClass = domain.localLookup(CustomerWithLowerBoundReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(0, eAttribute.getLowerBound());
@@ -75,7 +75,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testUpperBoundOfEAttributeWhenNoneSpecified() {
-		domainClass = domain.lookup(CustomerWithNoUpperBoundReadOnlyAttribute.class);
+		domainClass = domain.localLookup(CustomerWithNoUpperBoundReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getUpperBound());
@@ -83,7 +83,7 @@ public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 	}
 
 	public void testUpperBoundOfEAttributeWhenSpecified() {
-		domainClass = domain.lookup(CustomerWithUpperBoundReadOnlyAttribute.class);
+		domainClass = domain.localLookup(CustomerWithUpperBoundReadOnlyAttribute.class);
 		domain.done();
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(3, eAttribute.getUpperBound());
