@@ -34,7 +34,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * @author Dan Haywood
  */
 public interface IDomainObject<T> {
-	
+
 	public IDomainClass<T> getDomainClass();
 	
 	public T getPojo();
@@ -169,6 +169,70 @@ public interface IDomainObject<T> {
 	 */
 	public void removeDomainObjectListener(IDomainObjectListener listener);
 
-	public void setSession(ISession session);
+	
+	/**
+	 * The id of the {@link ISession} that initially managed this session
+	 * (if any).
+	 * 
+	 * <p>
+	 * Attempting to attach a domain object to a session with a different Id
+	 * will fail.
+	 * 
+	 * @return
+	 */
+	public String getSessionId();
+
+	/**
+	 * Clears the session identifier.
+	 *
+	 * <p>
+	 * Normally the session identifier of a domain object is never changed, 
+	 * representing the id of the {@link ISession} that originally managed
+	 * the domain object.  Even if a domain object is detached from that 
+	 * session, the session identifier is retained so that - under normal
+	 * circumstances - the domain object may only be re-attached to the same
+	 * session.
+	 * 
+	 * <p>
+	 * However, if an object has been detached from a session then it is 
+	 * possible using this method to clear this session id, thereby allowing
+	 * the domain object to be attached to some other {@link ISession}, 
+	 * providing that this new session references to the same {@link Domain}.
+	 * This capability may be useful for "what-if" analysis and the like.
+	 * 
+	 * @throws IllegalStateException - if currently attached.
+	 */
+	public void clearSessionId();
+
+	/**
+	 * Inform the domain object that it has been attached to the supplied
+	 * {@link ISession}.
+	 * 
+	 * <p>
+	 * The session's identifier should match the session id of the object.
+	 * 
+	 * @param session
+	 */
+	public void attached(ISession session);
+
+	/**
+	 * Inform the domain object that it is no longer attached to any session.
+	 * 
+	 * <p>
+	 * The session identifier (@link #getSessionId()} held by the domain object
+	 * is unaffected.
+	 *
+	 */
+	public void detached();
+
+	/**
+	 * Whether this domain object is currently attached to a {@link ISession}.
+	 * 
+	 * <p>
+	 * If so, then {#getSession()} will return a non-null result.
+	 *  
+	 * @return
+	 */
+	public boolean isAttached();
 
 }

@@ -248,8 +248,9 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	
 
 	private ISession session;
+	
 	/**
-	 * Session through which this was created.
+	 * The {@link ISession} to which this domain object is currently attached.
 	 * 
 	 * @return
 	 */
@@ -257,8 +258,49 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return session;
 	}
 
-	public void setSession(ISession session) {
+	/**
+	 * Ensures that the session id is compatible.
+	 */
+	public void attached(ISession session) {
+		if (session == null) {
+			throw new IllegalArgumentException("Session is null");
+		}
+		if (this.getSessionId() == null) {
+			this.sessionId = session.getId();
+		} else {
+			if (!session.getId().equals(this.getSessionId())) {
+				throw new IllegalArgumentException(
+					"Session id does not match " +
+					"(session.id = '" + session.getId() + "', " +
+					"this.sessionId = '" + this.getSessionId() + "')");
+			}
+		}
 		this.session = session;
+	}
+	public void detached() {
+		this.session = null;
+	}
+	public boolean isAttached() {
+		return session != null;
+	}
+
+	private String sessionId;
+	/**
+	 * The identifier of the {@link ISession} that originally managed this
+	 * domain object.
+	 * 
+	 * <p>
+	 * If set to <code>null</code>, then indicates  
+	 */
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void clearSessionId() {
+		if (isAttached()) {
+			throw new IllegalStateException("Cannot clear session id when attached to session");
+		}
+		sessionId = null;
 	}
 
 }

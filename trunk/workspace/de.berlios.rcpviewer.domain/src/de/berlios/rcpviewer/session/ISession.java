@@ -2,7 +2,9 @@ package de.berlios.rcpviewer.session;
 
 import java.util.List;
 
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.persistence.IObjectStore;
 
 /**
  * Holds the collection of pojos (wrapped in {@link IDomainObject}s known to
@@ -20,6 +22,37 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 public interface ISession {
 
 	/**
+	 * The unique identifier for this session.
+	 * 
+	 * <p>
+	 * Typically there will be precisely one session per {@link IDomain}.
+	 * However, the design allows multiple such sessions. 
+	 * 
+	 * <p>
+	 * TODO: should make this a guid.
+	 * 
+	 * @return
+	 */
+	public String getId();
+	
+	/**
+	 * The {@link Domain} (or schema, or metamodel) that holds the
+	 * {@link IDomainClass}es for which every {@link IDomainObject} managed
+	 * by this session must correspond.
+	 *   
+	 * @return
+	 */
+	Domain getDomain();
+	
+	/**
+	 * The objectstore to which all {@link IDomainObject}s managed by this
+	 * session will be persisted.
+	 * 
+	 * @return
+	 */
+	IObjectStore getObjectStore();
+	
+	/**
 	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
 	 * attaches to the session.
 	 * 
@@ -29,14 +62,19 @@ public interface ISession {
 	<T> IDomainObject<T> createTransient(IDomainClass<T> domainClass);
 
 	/**
-	 * Attach the pojo wrapped in the supplied domainObject to the session.
+	 * Attach the pojo wrapped in the supplied {@link IDomainObject} to the 
+	 * session.
+	 * 
+	 * <p>
+	 * The id of the domain object must match that of the session itself.
 	 * 
 	 * <p>
 	 * Any {@link ISessionListener}s of the session will be notified that the
 	 * {@link IDomainObject} has been attached.
 	 * 
 	 * @param domainObject
-	 * @throws IllegalArgumentException if the pojo was already attached.
+	 * @throws IllegalStateException if the object was already attached.
+	 * @throws IllegalArgumentException if the session does not match.
 	 */
 	void attach(IDomainObject<?> domainObject);
 
@@ -49,7 +87,7 @@ public interface ISession {
 	 * {@link IDomainObject} has been detached.
 	 * 
 	 * @param domainObject
-	 * @throws IllegalArgumentException if the pojo was not attached.
+	 * @throws IllegalStateException if the pojo was not attached.
 	 */
 	void detach(IDomainObject<?> domainObject);
 

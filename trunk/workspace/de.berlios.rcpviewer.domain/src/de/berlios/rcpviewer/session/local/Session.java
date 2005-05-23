@@ -1,38 +1,36 @@
 package de.berlios.rcpviewer.session.local;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
-import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionListener;
 import de.berlios.rcpviewer.session.SessionObjectEvent;
 
 public class Session implements ISession, IObjectStoreAware {
-
-	// TODO: wire back to an IDomain.
-	private static ThreadLocal<Session> sessionForThisThread = 
-			new ThreadLocal<Session>() {
-		protected synchronized Session initialValue() {
-			return new Session();
-		}
-	};
-	public static ISession instance() {
-		return sessionForThisThread.get();
-	}
 	
-	public Session() {
-		// TODO: Session should be created by Domain.
-		// HACK: should be injected into Domain and propogated.
-		this.objectStore = new InMemoryObjectStore();
+	Session(String id, Domain domain, IObjectStore objectStore) {
+		this.id = id;
+		this.domain = domain;
+		this.objectStore = objectStore;
+	}
+
+	private String id;
+	public String getId() {
+		return id;
+	}
+
+	private Domain domain;
+	public Domain getDomain() {
+		return domain;
 	}
 
 	/**
@@ -83,6 +81,15 @@ public class Session implements ISession, IObjectStoreAware {
 
 	public void attach(IDomainObject<?> domainObject) {
 		synchronized(domainObject) {
+			// make sure session id is compatible, or not set
+			if (domainObject.getSessionId() != null && 
+				!this.getId().equals(domainObject.getSessionId())) {
+				throw new IllegalArgumentException(
+						"Incompatible session id " +
+						"(this.id = '" + getId() + "', " +
+						"domainObject.sessionId = '" + 
+								domainObject.getSessionId() + "')");
+			}
 			// add to session hashes 
 			{
 				pojoByDomainObject.put(domainObject, domainObject.getPojo());
@@ -98,7 +105,7 @@ public class Session implements ISession, IObjectStoreAware {
 			}
 			// tell domain object the session it is attached to
 			{
-				domainObject.setSession(this);
+				domainObject.attached(this);
 			}
 		}
 		// notify listeners
@@ -128,7 +135,7 @@ public class Session implements ISession, IObjectStoreAware {
 			}
 			// tell domain object it is no longer attached to a session
 			{
-				domainObject.setSession(null);
+				domainObject.detached();
 			}
 		}
 		// notify listeners
@@ -164,9 +171,6 @@ public class Session implements ISession, IObjectStoreAware {
 
 	public void reset() {
 		domainObjectsByDomainClass.clear();
-	}
-	public static void resetCurrent() {
-		((Session)instance()).reset();
 	}
 
 	private List<ISessionListener> listeners = new ArrayList<ISessionListener>();

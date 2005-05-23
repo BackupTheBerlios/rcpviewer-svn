@@ -28,5 +28,5 @@ import de.berlios.rcpviewer.domain.Domain;
 @Inherited
 @Target(ElementType.TYPE)
 public @interface InDomain {
-	String value() default Domain.DEFAULT_META_MODEL_NAME;
+	String value() default Domain.DEFAULT_DOMAIN_NAME;
 }
