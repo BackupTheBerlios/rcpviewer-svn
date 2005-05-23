@@ -5,9 +5,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniquenessCustomerWithNonUniqueReadOnlyAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniquenessCustomerWithUniqueReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithNoUniquenessReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithNonUniqueReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithUniqueReadOnlyAttribute;
 
 public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
@@ -21,21 +21,21 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 	}
 	
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithNoUniquenessReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesUniquenessCustomerWithUniqueReadOnlyAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithUniqueReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
 		assertTrue(domainClass.isUnique(eAttribute));
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesUniquenessCustomerWithNonUniqueReadOnlyAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithNonUniqueReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());
 		assertFalse(domainClass.isUnique(eAttribute));

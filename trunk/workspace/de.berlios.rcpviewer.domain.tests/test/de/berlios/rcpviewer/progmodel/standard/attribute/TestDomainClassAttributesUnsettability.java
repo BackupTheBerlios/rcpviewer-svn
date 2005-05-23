@@ -5,9 +5,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUnsettabilityCustomerWithOnlyIsUnsetForAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUnsettabilityCustomerWithOnlyUnsetForAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUnsettabilityCustomerWithUnsettableAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithOnlyIsUnsetForAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithOnlyUnsetForAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithUnsettableAttribute;
 
 public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 
@@ -21,20 +21,20 @@ public class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 	}
 	
 	public void testWhetherEAttributeIsUnsettableWhenIs() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesUnsettabilityCustomerWithUnsettableAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithUnsettableAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
 		assertTrue(domainClass.isUnsettable(eAttribute));
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesUnsettabilityCustomerWithOnlyIsUnsetForAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithOnlyIsUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesUnsettabilityCustomerWithOnlyUnsetForAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithOnlyUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
 		assertFalse(domainClass.isUnsettable(eAttribute));

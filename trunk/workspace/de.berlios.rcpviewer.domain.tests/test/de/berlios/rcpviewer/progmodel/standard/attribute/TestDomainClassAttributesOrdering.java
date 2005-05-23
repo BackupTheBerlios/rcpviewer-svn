@@ -5,9 +5,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithNoOrderingReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithOrderingReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithoutOrderingReadOnlyAttribute;
 
 public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 
@@ -21,21 +21,21 @@ public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 	}
 	
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithNoOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
 		assertTrue(domainClass.isOrdered(eAttribute));
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
-		domainClass = Domain.lookupAny(TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute.class);
+		domainClass = Domain.lookupAny(CustomerWithoutOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());
 		assertFalse(domainClass.isOrdered(eAttribute));
