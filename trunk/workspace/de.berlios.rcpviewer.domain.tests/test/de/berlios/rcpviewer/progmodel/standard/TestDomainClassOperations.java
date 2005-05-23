@@ -228,25 +228,6 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(domainClass.isStatic(eOperation));
 	}
 
-	@InDomain
-	public static abstract class Person {
-		private String name;
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-	}
-	@InDomain
-	public static class Man extends Person  { }
-	@InDomain
-	public static class Woman extends Person { }
-	@InDomain
-	public static class Priest  {
-		public void marry(Man m, Woman w) {
-		}
-	}
 	/**
 	 * Must register with metaModel rather than just instantiate since we need
 	 * to lookup other {@link IDomainClass}es.

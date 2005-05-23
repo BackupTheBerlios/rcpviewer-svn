@@ -58,18 +58,6 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 	
 
-	@InDomain
-	private static class CustomerImplicitlyInDefaultDomain { }
-	
-	@InDomain("default")
-	private static class CustomerExplicitlyInDefaultDomain { }
-
-	@InDomain("marketing")
-	private static class Prospect { }
-	@InDomain
-	private static class Customer { }
-
-
 	public void testGetDomainFromDomainClassForImplicitDefaultDomain() {
 		IDomainClass<CustomerImplicitlyInDefaultDomain> domainClass = 
 			Domain.lookupAny(CustomerImplicitlyInDefaultDomain.class);

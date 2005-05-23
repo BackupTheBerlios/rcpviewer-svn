@@ -8,37 +8,6 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 
-	@InDomain
-	public static class CustomerWithNoLowerBoundReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	@InDomain
-	public static class CustomerWithLowerBoundReadOnlyAttribute {
-		private String surname;
-		@LowerBoundOf(0)
-		public String getSurname() {
-			return surname;
-		}
-	}
-	@InDomain
-	public static class CustomerWithNoUpperBoundReadOnlyAttribute {
-		private String surname;
-		public String getSurname() {
-			return surname;
-		}
-	}
-	@InDomain
-	public static class CustomerWithUpperBoundReadOnlyAttribute {
-		private String surname;
-		@UpperBoundOf(3)
-		public String getSurname() {
-			return surname;
-		}
-	}
-
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
