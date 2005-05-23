@@ -9,7 +9,6 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestDomainClassReferences extends AbstractTestCase {
 
-	private Domain domain;
 	private IDomainClass<?> departmentDomainClass;
 	private IDomainClass<?> employeeDomainClass;
 	private IDomainClass<TestDomainClassReferencesName> nameDomainClass;
@@ -18,8 +17,6 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		Domain.reset();
-		domain = null;
 		departmentDomainClass = null;
 		employeeDomainClass = null;
 		nameDomainClass = null;
@@ -28,9 +25,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	
 
 	public void testOneToManyIsPickedUp(){
-		departmentDomainClass = Domain.lookup(TestDomainClassReferencesDepartment.class);
-		employeeDomainClass = Domain.lookup(TestDomainClassReferencesEmployee.class);
-		Domain.instance().done();
+		departmentDomainClass = Domain.lookupAny(TestDomainClassReferencesDepartment.class);
+		employeeDomainClass = Domain.lookupAny(TestDomainClassReferencesEmployee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -45,9 +41,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testOneToOneIsPickedUp(){
-		departmentDomainClass = Domain.lookup(TestDomainClassReferencesDepartment.class);
-		employeeDomainClass = Domain.lookup(TestDomainClassReferencesEmployee.class);
-		Domain.instance().done();
+		departmentDomainClass = Domain.lookupAny(TestDomainClassReferencesDepartment.class);
+		employeeDomainClass = Domain.lookupAny(TestDomainClassReferencesEmployee.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToDepartment = employeeDomainClass.references().get(0);
@@ -62,9 +57,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToManyIsPickedUp(){
-		departmentDomainClass = Domain.lookup(TestDomainClassReferencesDepartmentImmutableEmployeeCollection.class);
-		employeeDomainClass = Domain.lookup(TestDomainClassReferencesEmployee.class);
-		Domain.instance().done();
+		departmentDomainClass = Domain.lookupAny(TestDomainClassReferencesDepartmentImmutableEmployeeCollection.class);
+		employeeDomainClass = Domain.lookupAny(TestDomainClassReferencesEmployee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
 		EReference refToEmployees = departmentDomainClass.references().get(0);
@@ -73,9 +67,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testImmutableOneToOneIsPickedUp(){
-		employeeDomainClass = Domain.lookup(TestDomainClassReferencesEmployeeImmutableNameRef.class);
-		nameDomainClass = Domain.lookup(TestDomainClassReferencesName.class);
-		Domain.instance().done();
+		employeeDomainClass = Domain.lookupAny(TestDomainClassReferencesEmployeeImmutableNameRef.class);
+		nameDomainClass = Domain.lookupAny(TestDomainClassReferencesName.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
 		EReference refToName = employeeDomainClass.references().get(0);
@@ -85,8 +78,7 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	} 
 
 	public void testDerivedOneToManyIsPickedUp(){
-		departmentDomainClass = Domain.lookup(TestDomainClassReferencesDepartmentDerivedReferences.class);
-		Domain.instance().done();
+		departmentDomainClass = Domain.lookupAny(TestDomainClassReferencesDepartmentDerivedReferences.class);
 		
 		EReference derivedRefToEmployees = departmentDomainClass.getEReferenceNamed("terminatedEmployees");
 		assertEquals("terminatedEmployees", derivedRefToEmployees.getName());
@@ -98,9 +90,8 @@ public class TestDomainClassReferences extends AbstractTestCase {
 	 *
 	 */
 	public void testDerivedOneToOneIsPickedUp(){
-		departmentDomainClass = Domain.lookup(TestDomainClassReferencesDepartmentDerivedReferences.class);
-		employeeDomainClass = Domain.lookup(TestDomainClassReferencesEmployee.class);
-		Domain.instance().done();
+		departmentDomainClass = Domain.lookupAny(TestDomainClassReferencesDepartmentDerivedReferences.class);
+		employeeDomainClass = Domain.lookupAny(TestDomainClassReferencesEmployee.class);
 				
 		EReference derivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");
 		assertFalse(departmentDomainClass.isMultiple(derivedRefToEmployee));

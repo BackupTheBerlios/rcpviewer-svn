@@ -17,20 +17,17 @@ import de.berlios.rcpviewer.progmodel.standard.DomainClass;
  */
 public class TestImageDescriptor extends AbstractTestCase {
 
-	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
 	protected void tearDown() throws Exception {
-		Domain.reset();
-		domain = null;
 		super.tearDown();
 	}
 	
 	public void testDomainClassWithImageUrlAt() {
-		domainClass = Domain.lookup(ProspectiveSale.class);
+		domainClass = Domain.lookupAny(ProspectiveSale.class);
 		Domain.instance().addExtension(new RcpViewerExtension());
 		Domain.instance().done();
 		
@@ -43,7 +40,7 @@ public class TestImageDescriptor extends AbstractTestCase {
 	 *
 	 */
 	public void incompletetestDomainClassWithImageUrlAtWithoutExtensionInstalled() {
-		domainClass = Domain.lookup(ProspectiveSale.class);
+		domainClass = Domain.lookupAny(ProspectiveSale.class);
 		Domain.instance().done();
 		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);

@@ -18,22 +18,18 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
-	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
 	protected void tearDown() throws Exception {
-		Domain.reset();
-		domain = null;
 		super.tearDown();
 	}
 	
 
 	public void testDomainClassThatIsExplicitlyNamed() {
-		domainClass = Domain.lookup(TestExplicitNamesAndDescriptionsProspectiveSale.class);
-		Domain.instance().done();
+		domainClass = Domain.lookupAny(TestExplicitNamesAndDescriptionsProspectiveSale.class);
 		
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());
@@ -48,8 +44,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {
-		domainClass = Domain.lookup(TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName.class);
-		Domain.instance().done();
+		domainClass = Domain.lookupAny(TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName.class);
 		
 		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getName());
 		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getEClass().getName());
@@ -75,8 +70,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = Domain.lookup(TestExplicitNamesAndDescriptionsAppointment.class);
-		Domain.instance().done();
+		domainClass = Domain.lookupAny(TestExplicitNamesAndDescriptionsAppointment.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());

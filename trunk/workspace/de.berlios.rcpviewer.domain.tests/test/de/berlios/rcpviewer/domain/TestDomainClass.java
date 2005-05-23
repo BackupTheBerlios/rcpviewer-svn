@@ -3,33 +3,31 @@ package de.berlios.rcpviewer.domain;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 //import de.berlios.rcpviewer.progmodel.standard.impl.Department;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.ISessionFactory;
+import de.berlios.rcpviewer.session.ISessionManager;
 import de.berlios.rcpviewer.session.local.Session;
+import de.berlios.rcpviewer.session.local.SessionFactory;
+import de.berlios.rcpviewer.session.local.SessionManager;
 
 public class TestDomainClass extends AbstractTestCase  {
 
-	private Domain domain;
-	private ISession session;
 	protected void setUp() throws Exception {
 		super.setUp();
-		session = new Session();
 	}
 
 	protected void tearDown() throws Exception {
-		domain = null;
-		session = null;
-		Domain.reset();
 		super.tearDown();
 	}
 
 
 	public void testCreateTransientCreatesUnderlyingPojo() {
 		IDomainClass<Department> domainClass = 
-			Domain.lookup(Department.class);
-		domain = domainClass.getDomain();
+			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			session.createTransient(domainClass);
@@ -46,8 +44,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
 		IDomainClass<Department> domainClass = 
-			Domain.lookup(Department.class);
-		domain = domainClass.getDomain();
+			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertNotNull(domainObject);
@@ -64,8 +61,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			Domain.lookup(DepartmentWithoutNoArgConstructor.class);
-		domain = domainClass.getDomain();
+			Domain.lookupAny(DepartmentWithoutNoArgConstructor.class);
 
 		try {
 			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 

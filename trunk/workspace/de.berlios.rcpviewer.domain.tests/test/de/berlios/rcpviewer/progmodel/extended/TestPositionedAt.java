@@ -15,15 +15,12 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public class TestPositionedAt extends AbstractTestCase {
 
-	private Domain domain;
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
 	protected void tearDown() throws Exception {
-		Domain.reset();
-		domain = null;
 		super.tearDown();
 	}
 	
@@ -34,7 +31,7 @@ public class TestPositionedAt extends AbstractTestCase {
 	 */
 	public void testDomainClassWithAllAttributesPositioned() {
 		domainClass = 
-			Domain.lookup(CustomerWithAllAttributesPositioned.class);
+			Domain.lookupAny(CustomerWithAllAttributesPositioned.class);
 		Domain.instance().addExtension(new ExtendedProgModelExtension());
 		Domain.instance().done();
 		

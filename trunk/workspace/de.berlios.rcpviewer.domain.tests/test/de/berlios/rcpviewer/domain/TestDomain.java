@@ -1,18 +1,16 @@
 package de.berlios.rcpviewer.domain;
 
+import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import junit.framework.TestCase;
 
-public class TestDomain extends TestCase {
-
-	private Domain domain;
+public class TestDomain extends AbstractTestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
 	}
 	
 	public void tearDown() throws Exception {
-		Domain.reset();
 		super.tearDown();
 	}
 	
@@ -24,26 +22,26 @@ public class TestDomain extends TestCase {
 	
 	public void testDomainCreatedWhenSomethingRegistered() {
 		IDomainClass<TestDomainClassInOtherDomain> domainClass = 
-			Domain.lookup(TestDomainClassInOtherDomain.class);
-		Domain domain = domainClass.getDomain();
-		assertEquals(1, domain.classes().size());
+			Domain.lookupAny(TestDomainClassInOtherDomain.class);
+		
+		assertEquals(1, Domain.instance("other").classes().size());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainImplicitly() {
 		IDomainClass<TestDomainClassInDefaultDomainImplicitly> domainClass = 
-			Domain.lookup(TestDomainClassInDefaultDomainImplicitly.class);
+			Domain.lookupAny(TestDomainClassInDefaultDomainImplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainExplicitly() {
 		IDomainClass<TestDomainClassInDefaultDomainExplicitly> domainClass = 
-			Domain.lookup(TestDomainClassInDefaultDomainExplicitly.class);
+			Domain.lookupAny(TestDomainClassInDefaultDomainExplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDomainExplicit() {
 		IDomainClass<TestDomainClassInOtherDomain> domainClass = 
-			Domain.lookup(TestDomainClassInOtherDomain.class);
+			Domain.lookupAny(TestDomainClassInOtherDomain.class);
 		assertEquals("other", domainClass.getDomain().getName());
 	}
 	
@@ -61,6 +59,5 @@ public class TestDomain extends TestCase {
 		}
 		assertSame(domains[0], domains[1]);
 	}
-
 
 }

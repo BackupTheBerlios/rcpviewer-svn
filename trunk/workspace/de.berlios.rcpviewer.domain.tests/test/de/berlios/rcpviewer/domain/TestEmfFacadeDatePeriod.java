@@ -7,9 +7,11 @@ import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 /**
  * An application-defined value object (datatype)
  * 
+ * <p>
  * Note: not a nested class because otherwise the getCanonicalName() doesn't
  * match the actual name that EMF gives us (which has an embedded "$").
  * 
+ * <p>
  * TODO: should be enough just to be annotated with @Value.
  */
 @Value
