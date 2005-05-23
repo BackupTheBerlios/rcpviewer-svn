@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.session.local;
 
+import java.rmi.dgc.VMID;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +20,14 @@ public final class SessionManager implements ISessionManager {
 		return instance;
 	}
 	
-	private int idAsInteger;
+	/**
+	 * Returns a GUID guaranteed to be unique across all VMs.
+	 * 
+	 * <p>
+	 * Uses {@link java.rmi.dgc.VMID}.
+	 */
 	public String nextId() {
-		return "" + idAsInteger++;
+		return new VMID().toString();
 	}
 
 	private Map<String, ISession> sessionById = new HashMap<String, ISession>();
