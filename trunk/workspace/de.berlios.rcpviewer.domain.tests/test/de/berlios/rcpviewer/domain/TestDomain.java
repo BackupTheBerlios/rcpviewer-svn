@@ -21,27 +21,27 @@ public class TestDomain extends AbstractTestCase {
 	}
 	
 	public void testDomainCreatedWhenSomethingRegistered() {
-		IDomainClass<TestDomainClassInOtherDomain> domainClass = 
-			Domain.lookupAny(TestDomainClassInOtherDomain.class);
+		IDomainClass<ClassInOtherDomain> domainClass = 
+			Domain.lookupAny(ClassInOtherDomain.class);
 		
 		assertEquals(1, Domain.instance("other").classes().size());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainImplicitly() {
-		IDomainClass<TestDomainClassInDefaultDomainImplicitly> domainClass = 
-			Domain.lookupAny(TestDomainClassInDefaultDomainImplicitly.class);
+		IDomainClass<ClassInDefaultDomainImplicitly> domainClass = 
+			Domain.lookupAny(ClassInDefaultDomainImplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainExplicitly() {
-		IDomainClass<TestDomainClassInDefaultDomainExplicitly> domainClass = 
-			Domain.lookupAny(TestDomainClassInDefaultDomainExplicitly.class);
+		IDomainClass<ClassInDefaultDomainExplicitly> domainClass = 
+			Domain.lookupAny(ClassInDefaultDomainExplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDomainExplicit() {
-		IDomainClass<TestDomainClassInOtherDomain> domainClass = 
-			Domain.lookupAny(TestDomainClassInOtherDomain.class);
+		IDomainClass<ClassInOtherDomain> domainClass = 
+			Domain.lookupAny(ClassInOtherDomain.class);
 		assertEquals("other", domainClass.getDomain().getName());
 	}
 	

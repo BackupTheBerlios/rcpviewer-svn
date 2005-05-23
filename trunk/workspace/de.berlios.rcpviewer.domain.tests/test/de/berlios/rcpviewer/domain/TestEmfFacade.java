@@ -185,15 +185,15 @@ public class TestEmfFacade extends TestCase {
 	
 	public void testGetEDataTypeForValueObject() {
 		EDataType eDataType = 
-			emfFacade.getEDataTypeFor(TestEmfFacadeDatePeriod.class);
+			emfFacade.getEDataTypeFor(EmfFacadeDatePeriod.class);
 		assertNotNull(eDataType);
-		assertEquals(TestEmfFacadeDatePeriod.class.getName(), 
+		assertEquals(EmfFacadeDatePeriod.class.getName(), 
 					 eDataType.getInstanceClassName());
 	}
 
 	public void testGetEDataTypeForClassThatIsntAValueObject() {
 		EDataType eDataType = 
-			emfFacade.getEDataTypeFor(TestEmfFacadeCustomer.class);
+			emfFacade.getEDataTypeFor(EmfFacadeCustomer.class);
 		assertNull(eDataType);
 	}
 

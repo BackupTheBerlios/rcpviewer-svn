@@ -9,8 +9,8 @@ import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.CustomerExplicitlyInDefaultDomain;
 import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain;
-import de.berlios.rcpviewer.progmodel.standard.domainclass.TestDomainClassCustomerWithNoAttributes;
-import de.berlios.rcpviewer.progmodel.standard.domainclass.TestDomainClassDepartment;
+import de.berlios.rcpviewer.progmodel.standard.domainclass.CustomerWithNoAttributes;
+import de.berlios.rcpviewer.progmodel.standard.domainclass.Department;
 
 
 /**
@@ -32,29 +32,29 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 	
 	public void testGetJavaClass() {
-		domainClass = Domain.lookupAny(TestDomainClassCustomerWithNoAttributes.class);
+		domainClass = Domain.lookupAny(CustomerWithNoAttributes.class);
 		Domain.instance().done();
 		
-		assertSame(TestDomainClassCustomerWithNoAttributes.class, domainClass.getJavaClass());
+		assertSame(CustomerWithNoAttributes.class, domainClass.getJavaClass());
 	}
 
 	public void testGetEClass() {
-		domainClass = Domain.lookupAny(TestDomainClassCustomerWithNoAttributes.class);
+		domainClass = Domain.lookupAny(CustomerWithNoAttributes.class);
 		
 		EClass eClass = domainClass.getEClass();
 		assertNotNull(eClass);
-		assertSame(eClass.getInstanceClass(), TestDomainClassCustomerWithNoAttributes.class);
-		assertEquals("TestDomainClassCustomerWithNoAttributes", eClass.getName());
+		assertSame(eClass.getInstanceClass(), CustomerWithNoAttributes.class);
+		assertEquals("CustomerWithNoAttributes", eClass.getName());
 		EPackage ePackage = eClass.getEPackage();
 		assertNotNull(ePackage);
 		assertEquals(
-				TestDomainClassCustomerWithNoAttributes.class.getPackage().getName(), 
+				CustomerWithNoAttributes.class.getPackage().getName(), 
 				ePackage.getName());
 	}
 
 	public void testGetDomainClassFromEClass() {
-		IDomainClass<TestDomainClassDepartment> domainClass = 
-			Domain.lookupAny(TestDomainClassDepartment.class);
+		IDomainClass<Department> domainClass = 
+			Domain.lookupAny(Department.class);
 		
 		EClass eClass = domainClass.getEClass();
 		IDomainClass reverseDomainClass = domain.domainClassFor(eClass);

@@ -5,9 +5,9 @@ import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptionsAppointment;
-import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName;
-import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptionsProspectiveSale;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.Appointment;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.CustomerWithNoExplicitName;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.ProspectiveSale;
 
 /**
  * Tests for the use of the <tt>Named</tt> and <tt>DescribedAs</tt>.
@@ -32,7 +32,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 
 	public void testDomainClassThatIsExplicitlyNamed() {
-		domainClass = Domain.lookupAny(TestExplicitNamesAndDescriptionsProspectiveSale.class);
+		domainClass = Domain.lookupAny(ProspectiveSale.class);
 		
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());
@@ -47,10 +47,10 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {
-		domainClass = Domain.lookupAny(TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName.class);
+		domainClass = Domain.lookupAny(CustomerWithNoExplicitName.class);
 		
-		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getName());
-		assertEquals("TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName", domainClass.getEClass().getName());
+		assertEquals("CustomerWithNoExplicitName", domainClass.getName());
+		assertEquals("CustomerWithNoExplicitName", domainClass.getEClass().getName());
 		assertNull(domainClass.getDescription());
 	}
 
@@ -73,7 +73,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = Domain.lookupAny(TestExplicitNamesAndDescriptionsAppointment.class);
+		domainClass = Domain.lookupAny(Appointment.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());
