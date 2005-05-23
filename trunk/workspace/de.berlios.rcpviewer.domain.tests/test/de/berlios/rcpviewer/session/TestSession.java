@@ -53,6 +53,15 @@ public class TestSession extends AbstractTestCase  {
 		assertTrue(session.isAttached(domainObject));
 	}
 
+	public void testDomainObjectSessionIdTakenFromManagingSession() {
+		IDomainClass<Department> domainClass = 
+			Domain.lookupAny(Department.class);
+		
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)session.createTransient(domainClass);
+		assertEquals(session.getId(), domainObject.getSessionId());
+	}
+
 
 	/**
 	 * Listeners are notified when an object is created, because the objects
@@ -88,184 +97,6 @@ public class TestSession extends AbstractTestCase  {
 		assertFalse(domainObject.isPersistent());
 	}
 
-
-	public void testCanDetachFromSessionThroughDomainObject() {
-		IDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
-		Domain.instance().done();
-		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		assertTrue(session.isAttached(domainObject));
-		session.detach(domainObject);
-		assertFalse(session.isAttached(domainObject));
-	}
-
-	
-	public void testDetachFromSesionNotifiesListeners() {
-		IDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
-		Domain.instance().done();
-		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		MySessionListener l = session.addSessionListener(new MySessionListener());
-		session.detach(domainObject);
-		assertFalse(l.attachedCallbackCalled);
-		assertTrue(l.detachedCallbackCalled);
-	}
-	
-	public void testCanReAttachFromSessionThroughDomainObject() {
-		IDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
-		Domain.instance().done();
-		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		session.detach(domainObject);
-		assertFalse(session.isAttached(domainObject));
-		session.attach(domainObject);
-		assertTrue(session.isAttached(domainObject));
-	}
-	
-	
-	public void testCannotDetachFromSessionIfAlreadyDetached() {
-		IDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
-		Domain.instance().done();
-		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		session.detach(domainObject);
-		assertFalse(session.isAttached(domainObject));
-		try {
-			session.detach(domainObject);
-			fail("Expected IllegalArgumentException");
-		} catch(IllegalArgumentException ex) {
-			// expected
-		}
-	}
-
-	
-	public void testCannotAttachToSessionIfAlreadyAttached() {
-		IDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
-		Domain.instance().done();
-		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		assertTrue(session.isAttached(domainObject));
-		try {
-			session.attach(domainObject);
-			fail("Expected IllegalArgumentException");
-		} catch(IllegalArgumentException ex) {
-			// expected
-		}
-	}
-
-	
-	/**
-	 * Set up 3 departments, 2 employees, then get the footprint for one;
-	 * should exclude the other. 
-	 */
-	public void testSessionFootprint() {
-		
-		IDomainClass<Department> deptDomainClass = 
-			Domain.lookupAny(Department.class);
-		
-		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		hrDeptDomainObject.getPojo().setName("HR");
-		
-		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		itDeptDomainObject.getPojo().setName("IT");
-
-		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		cateringDeptDomainObject.getPojo().setName("Catering");
-
-
-		IDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
-		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
-			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
-		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
-		clarkKent.setFirstName("Clark");
-		clarkKent.setSurname("Kent");
-		
-		IDomainObject<Employee> loisLaneEmployeeDomainObject = 
-			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
-		Employee loisLane = loisLaneEmployeeDomainObject.getPojo();
-		loisLane.setFirstName("Lois");
-		loisLane.setSurname("Lane");
-		
-		List<IDomainObject<?>> departmentDomainObjects = 
-			session.footprintFor(deptDomainClass);
-		assertEquals(3, departmentDomainObjects.size());
-		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));
-		assertTrue(departmentDomainObjects.contains(itDeptDomainObject));
-		assertTrue(departmentDomainObjects.contains(cateringDeptDomainObject));
-	}
-	
-	/**
-	 * Set up 3 departments, then detach one.
-	 */
-	public void testSessionFootprintIgnoresDetached() {
-		
-		IDomainClass<Department> deptDomainClass = 
-			Domain.instance().lookup(Department.class);
-		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		hrDeptDomainObject.getPojo().setName("HR");
-		
-		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		itDeptDomainObject.getPojo().setName("IT");
-
-		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		cateringDeptDomainObject.getPojo().setName("Catering");
-
-		session.detach(itDeptDomainObject);
-
-		List<IDomainObject<?>> departmentDomainObjects = 
-			session.footprintFor(deptDomainClass);
-		assertEquals(2, departmentDomainObjects.size());
-		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));
-		assertFalse(departmentDomainObjects.contains(itDeptDomainObject)); // not in footprint
-		assertTrue(departmentDomainObjects.contains(cateringDeptDomainObject));
-	}
-	
-	
-	/**
-	 * 
-	 */
-	public void testSessionFootprintIsImmutable() {
-		
-		IDomainClass<Department> deptDomainClass = 
-			Domain.lookupAny(Department.class);
-		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		hrDeptDomainObject.getPojo().setName("HR");
-		
-		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		itDeptDomainObject.getPojo().setName("IT");
-
-		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
-		cateringDeptDomainObject.getPojo().setName("Catering");
-
-		List<IDomainObject<?>> departmentDomainObjects = 
-			session.footprintFor(deptDomainClass);
-		try {
-			departmentDomainObjects.remove(itDeptDomainObject);
-			fail("Expected UnsupportedOperationException");
-		} catch(UnsupportedOperationException ex) {
-			// expected
-		}
-	}
 
 	public void testCanRetrieveOncePersisted() {
 		IDomainClass<Department> domainClass = 
