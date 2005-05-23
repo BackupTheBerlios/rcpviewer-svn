@@ -10,6 +10,7 @@ import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
+import de.berlios.rcpviewer.progmodel.standard.DomainObject;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionListener;
@@ -79,7 +80,9 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 
-	public void attach(IDomainObject<?> domainObject) {
+	public <T> void attach(IDomainObject<T> iDomainObject) {
+		assert iDomainObject instanceof DomainObject; // make sure own implementation
+		DomainObject domainObject = (DomainObject)iDomainObject;
 		synchronized(domainObject) {
 			// make sure session id is compatible, or not set
 			if (domainObject.getSessionId() != null && 
@@ -118,7 +121,9 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	
-	public void detach(IDomainObject<?> domainObject) {
+	public <T> void detach(IDomainObject<T> iDomainObject) {
+		assert iDomainObject instanceof DomainObject; // make sure own implementation
+		DomainObject<T> domainObject = (DomainObject)iDomainObject;
 		synchronized(domainObject) {
 			// remove from partitioned hash of objects of this class
 			{
@@ -145,7 +150,7 @@ public class Session implements ISession, IObjectStoreAware {
 		}
 	}
 
-	public boolean isAttached(IDomainObject<?> domainObject) {
+	public <T> boolean isAttached(IDomainObject<T> domainObject) {
 		return pojoByDomainObject.get(domainObject) != null;
 	}
 
@@ -153,11 +158,11 @@ public class Session implements ISession, IObjectStoreAware {
 		return domainObjectByPojo.get(pojo) != null;
 	}
 
-	public List<IDomainObject<?>> footprintFor(IDomainClass<?> domainClass) {
-		return Collections.unmodifiableList(getDomainObjectsFor(domainClass));
+	public <T> List<IDomainObject<T>> footprintFor(IDomainClass<T> domainClass) {
+		return (List)Collections.unmodifiableList(getDomainObjectsFor(domainClass));
 	}
 
-	public void persist(IDomainObject<?> domainObject) {
+	public <T> void persist(IDomainObject<T> domainObject) {
 		if (!isAttached(domainObject)) {
 			throw new IllegalArgumentException("pojo not attached to session");
 		}

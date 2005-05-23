@@ -205,27 +205,6 @@ public interface IDomainObject<T> {
 	public void clearSessionId();
 
 	/**
-	 * Inform the domain object that it has been attached to the supplied
-	 * {@link ISession}.
-	 * 
-	 * <p>
-	 * The session's identifier should match the session id of the object.
-	 * 
-	 * @param session
-	 */
-	public void attached(ISession session);
-
-	/**
-	 * Inform the domain object that it is no longer attached to any session.
-	 * 
-	 * <p>
-	 * The session identifier (@link #getSessionId()} held by the domain object
-	 * is unaffected.
-	 *
-	 */
-	public void detached();
-
-	/**
 	 * Whether this domain object is currently attached to a {@link ISession}.
 	 * 
 	 * <p>

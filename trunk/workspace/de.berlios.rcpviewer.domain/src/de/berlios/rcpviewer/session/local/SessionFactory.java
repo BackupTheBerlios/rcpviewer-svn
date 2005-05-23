@@ -15,7 +15,7 @@ public class SessionFactory implements ISessionFactory {
 
 	public ISession createSession(IObjectStore objectStore) {
 		assertInitialized();
-		return new Session(getSessionManager().nextId(), getDomain(), getObjectStore());	
+		return new Session(getSessionManager().nextId(), getDomain(), objectStore);	
 	}
 
 	private void assertInitialized() {

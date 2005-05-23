@@ -76,7 +76,7 @@ public interface ISession {
 	 * @throws IllegalStateException if the object was already attached.
 	 * @throws IllegalArgumentException if the session does not match.
 	 */
-	void attach(IDomainObject<?> domainObject);
+	<T> void attach(IDomainObject<T> domainObject);
 
 	
 	/**
@@ -89,7 +89,7 @@ public interface ISession {
 	 * @param domainObject
 	 * @throws IllegalStateException if the pojo was not attached.
 	 */
-	void detach(IDomainObject<?> domainObject);
+	<T> void detach(IDomainObject<T> domainObject);
 
 	/**
 	 * Whether the supplied pojo is attached to this session.
@@ -106,7 +106,7 @@ public interface ISession {
 	 * @param pojo
 	 * @return true if attached, false otherwise.
 	 */
-	boolean isAttached(IDomainObject<?> domainObject);
+	<T> boolean isAttached(IDomainObject<T> domainObject);
 	
 	/**
 	 * Detach all instances.
@@ -130,7 +130,7 @@ public interface ISession {
 	 *  
 	 * @param domainObject
 	 */
-	void persist(IDomainObject<?> domainObject);
+	<T> void persist(IDomainObject<T> domainObject);
 	
 
 	/**
@@ -152,7 +152,7 @@ public interface ISession {
 	 * @param domainClass
 	 * @return
 	 */
-	List<IDomainObject<?>> footprintFor(IDomainClass<?> domainClass);
+	<T> List<IDomainObject<T>> footprintFor(IDomainClass<T> domainClass);
 
 	/**
 	 * Adds session listener.
@@ -179,6 +179,18 @@ public interface ISession {
 	 */
 	public void removeSessionListener(ISessionListener listener);
 
+	/**
+	 * Returns the {@link IDomainObject} that is wrapping the supplied pojo.
+	 * 
+	 * <p>
+	 * The class of the pojo is required so that the returned
+	 * {@link IDomainObject} is correct parameterized. 
+	 * 
+	 * @param <T>
+	 * @param pojo
+	 * @param pojoClass
+	 * @return
+	 */
 	<T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass);
 
 }
