@@ -143,6 +143,31 @@ public class TestSessionAttachDetach extends AbstractTestCase  {
 		}
 	}
 
+	public void testCannotClearDomainObjectSessionIdIfAttached() {
+		IDomainClass<Department> domainClass = 
+			Domain.lookupAny(Department.class);
+		
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)session.createTransient(domainClass);
+		assertTrue(domainObject.isAttached());
+		try {
+			domainObject.clearSessionId();
+			fail("IllegalStateException should have been thrown");
+		} catch(IllegalStateException ex) {
+			// expected
+		}
+	}
 
 
+	public void testCanClearDomainObjectSessionIdIfDetached() {
+		IDomainClass<Department> domainClass = 
+			Domain.lookupAny(Department.class);
+		
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)session.createTransient(domainClass);
+		assertTrue(domainObject.isAttached());
+		session.detach(domainObject);
+		domainObject.clearSessionId();
+		assertNull(domainObject.getSessionId());
+	}
 }

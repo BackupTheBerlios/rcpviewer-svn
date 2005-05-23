@@ -9,7 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite("Test for de.berlios.rcpviewer.session");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestSession.class);
-		suite.addTestSuite(TestDomainObject.class);
+		suite.addTestSuite(TestDomainObjectPersist.class);
 		suite.addTestSuite(TestSessionFactory.class);
 		suite.addTestSuite(TestSessionAttachDetach.class);
 		suite.addTestSuite(TestSessionFootprint.class);

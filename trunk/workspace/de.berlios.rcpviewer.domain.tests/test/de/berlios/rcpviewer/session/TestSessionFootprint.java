@@ -50,7 +50,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 	
-		List<IDomainObject<?>> departmentDomainObjects = 
+		List<IDomainObject<Department>> departmentDomainObjects = 
 			session.footprintFor(deptDomainClass);
 		try {
 			departmentDomainObjects.remove(itDeptDomainObject);
@@ -81,7 +81,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	
 		session.detach(itDeptDomainObject);
 	
-		List<IDomainObject<?>> departmentDomainObjects = 
+		List<IDomainObject<Department>> departmentDomainObjects = 
 			session.footprintFor(deptDomainClass);
 		assertEquals(2, departmentDomainObjects.size());
 		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));
@@ -125,7 +125,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 		loisLane.setFirstName("Lois");
 		loisLane.setSurname("Lane");
 		
-		List<IDomainObject<?>> departmentDomainObjects = 
+		List<IDomainObject<Department>> departmentDomainObjects = 
 			session.footprintFor(deptDomainClass);
 		assertEquals(3, departmentDomainObjects.size());
 		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));

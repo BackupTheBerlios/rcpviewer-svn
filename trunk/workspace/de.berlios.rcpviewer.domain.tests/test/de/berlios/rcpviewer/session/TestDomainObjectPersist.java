@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.domain.Department;
 import de.berlios.rcpviewer.domain.Employee;
 import de.berlios.rcpviewer.session.local.Session;
 
-public class TestDomainObject extends AbstractTestCase  {
+public class TestDomainObjectPersist extends AbstractTestCase  {
 
 	protected void setUp() throws Exception {
 		super.setUp();
