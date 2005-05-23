@@ -14,4 +14,11 @@ Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel.extended,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard,
- de.berlios.rcpviewer.progmodel.standard.impl
+ de.berlios.rcpviewer.progmodel.standard.attribute,
+ de.berlios.rcpviewer.progmodel.standard.domainclass,
+ de.berlios.rcpviewer.progmodel.standard.impl,
+ de.berlios.rcpviewer.progmodel.standard.namesanddesc,
+ de.berlios.rcpviewer.progmodel.standard.namingconventions,
+ de.berlios.rcpviewer.progmodel.standard.operation,
+ de.berlios.rcpviewer.progmodel.standard.reference,
+ de.berlios.rcpviewer.session
