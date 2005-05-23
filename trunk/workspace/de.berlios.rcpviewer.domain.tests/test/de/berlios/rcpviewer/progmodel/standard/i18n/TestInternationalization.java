@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.i18n;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.IDomainClass;

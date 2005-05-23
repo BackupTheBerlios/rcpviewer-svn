@@ -1,6 +1,10 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.namingconventions;
+import de.berlios.rcpviewer.progmodel.standard.*;
 
 import java.lang.reflect.Method;
+
+import de.berlios.rcpviewer.progmodel.standard.namingconventions.TestNamingConventionsDepartment;
+import de.berlios.rcpviewer.progmodel.standard.namingconventions.TestNamingConventionsEmployee;
 
 
 import junit.framework.TestCase;
@@ -124,35 +128,35 @@ public class TestNamingConventions extends TestCase {
 		}
 	}
 
-	public void xtestAccessorTypeWhenValue() {
+	public void incompletetestAccessorTypeWhenValue() {
 		// TODO
 	}
 
-	public void xtestAccessorTypeWhenSimpleReference() {
+	public void incompletetestAccessorTypeWhenSimpleReference() {
 		// TODO
 	}
 
-	public void xtestAccessorTypeWhenCollection() {
+	public void incompletetestAccessorTypeWhenCollection() {
 		// TODO
 	}
 
-	public void xtestAccessorTypeWhenNotAnAccessor() {
+	public void incompletetestAccessorTypeWhenNotAnAccessor() {
 		// TODO
 	}
 
-	public void xtestMutatorTypeWhenValue() {
+	public void incompletetestMutatorTypeWhenValue() {
 		// TODO
 	}
 	
-	public void xtestMutatorTypeWhenSimpleReference() {
+	public void incompletetestMutatorTypeWhenSimpleReference() {
 		// TODO
 	}
 	
-	public void xtestMutatorTypeWhenCollection() {
+	public void incompletetestMutatorTypeWhenCollection() {
 		// TODO
 	}
 	
-	public void xtestMutatorTypeWhenNotAMutator() {
+	public void incompletetestMutatorTypeWhenNotAMutator() {
 		// TODO
 	}
 	
@@ -160,19 +164,19 @@ public class TestNamingConventions extends TestCase {
 	 * Whether supplied getter and setter are compatible, that is, that they
 	 * have the same type and the same name. 
 	 */
-	public void xtestIsCompatibleWhenAre() {
+	public void incompletetestIsCompatibleWhenAre() {
 		// TODO
 	}
 	
-	public void xtestIsCompatibleWhenNot() {
+	public void incompletetestIsCompatibleWhenNot() {
 		// TODO
 	}
 	
-	public void xtestIsCompatibleWhenNotGivenAnAccessor() {
+	public void incompletetestIsCompatibleWhenNotGivenAnAccessor() {
 		// TODO
 	}
 	
-	public void xtestIsCompatibleWhenNotGivenAMutator() {
+	public void incompletetestIsCompatibleWhenNotGivenAMutator() {
 		// TODO
 	}
 	
@@ -192,63 +196,63 @@ public class TestNamingConventions extends TestCase {
 		assertEquals("numberOfEmployees", namingConventions.deriveAttributeName(departmentSetNumberOfEmployeesMethod));
 	}
 
-	public void xtestDeriveAttributeNameWhenNeitherAccessorNorMutator() {
+	public void incompletetestDeriveAttributeNameWhenNeitherAccessorNorMutator() {
 		// TODO
 	}
 
-	public void xtestIsValueTypeWhenIs() {
+	public void incompletetestIsValueTypeWhenIs() {
 		// TODO
 	}
 	
-	public void xtestIsValueTypeWhenNot() {
+	public void incompletetestIsValueTypeWhenNot() {
 		// TODO
 	}
 	
-	public void xtestIsReferenceTypeWhenIs() {
+	public void incompletetestIsReferenceTypeWhenIs() {
 		// TODO
 	}
 	
-	public void xtestIsReferenceTypeWhenNot() {
+	public void incompletetestIsReferenceTypeWhenNot() {
 		// TODO
 	}
 
-	public void xtestIsCollectionTypeWhenIs() {
+	public void incompletetestIsCollectionTypeWhenIs() {
 		// TODO
 	}
 	
-	public void xtestIsCollectionTypeWhenNot() {
+	public void incompletetestIsCollectionTypeWhenNot() {
 		// TODO
 	}
 	
-	public void xtestIsLink() {
+	public void incompletetestIsLink() {
 		// TODO
 	}
 	
-	public void xtestAssertLink() {
+	public void incompletetestAssertLink() {
 		// TODO
 	}
 	
-	public void xtestIsAssociator() {
+	public void incompletetestIsAssociator() {
 		// TODO
 	}
 	
-	public void xtestIsDissociator() {
+	public void incompletetestIsDissociator() {
 		// TODO
 	}
 	
-	public void xtestAssertAssociator() {
+	public void incompletetestAssertAssociator() {
 		// TODO
 	}
 	
-	public void xtestAssertDissociator() {
+	public void incompletetestAssertDissociator() {
 		// TODO
 	}
 	
-	public void xtestLinkType() {
+	public void incompletetestLinkType() {
 		// TODO
 	}
 	
-	public void xtestDeriveLinkName() {
+	public void incompletetestDeriveLinkName() {
 		// TODO
 	}
 	
@@ -259,7 +263,7 @@ public class TestNamingConventions extends TestCase {
 	 * @param dissociator
 	 * @return
 	 */
-	public void xtestIsLinkPairCompatible(final Method associator, final Method dissociator) {
+	public void incompletetestIsLinkPairCompatible(final Method associator, final Method dissociator) {
 		// TODO
 	}
 	

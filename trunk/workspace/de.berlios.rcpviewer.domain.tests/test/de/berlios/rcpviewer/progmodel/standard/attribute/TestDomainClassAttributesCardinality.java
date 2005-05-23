@@ -1,10 +1,14 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.CustomerWithLowerBoundReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.CustomerWithNoLowerBoundReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.CustomerWithNoUpperBoundReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.CustomerWithUpperBoundReadOnlyAttribute;
 
 public class TestDomainClassAttributesCardinality extends AbstractTestCase {
 

@@ -1,5 +1,16 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributes;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCardinality;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrdering;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniqueness;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUnsettability;
+import de.berlios.rcpviewer.progmodel.standard.domainclass.TestDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.i18n.TestInternationalization;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptions;
+import de.berlios.rcpviewer.progmodel.standard.namingconventions.TestNamingConventions;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperations;
+import de.berlios.rcpviewer.progmodel.standard.reference.TestDomainClassReferences;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

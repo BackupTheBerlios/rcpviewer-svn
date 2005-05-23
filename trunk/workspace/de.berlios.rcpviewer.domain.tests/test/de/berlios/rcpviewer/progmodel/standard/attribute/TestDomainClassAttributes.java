@@ -1,10 +1,17 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithDerivedReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithEveryPrimitiveTypeAccessor;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithNoAttributes;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithNonDerivedReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithReadWriteAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesCustomerWithWriteOnlyAttribute;
 
 public class TestDomainClassAttributes extends AbstractTestCase {
 

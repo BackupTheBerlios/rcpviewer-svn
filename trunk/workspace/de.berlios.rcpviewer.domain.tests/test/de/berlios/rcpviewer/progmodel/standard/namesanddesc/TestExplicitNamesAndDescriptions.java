@@ -1,10 +1,13 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.namesanddesc;
 
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptionsAppointment;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptionsCustomerWithNoExplicitName;
+import de.berlios.rcpviewer.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptionsProspectiveSale;
 
 /**
  * Tests for the use of the <tt>Named</tt> and <tt>DescribedAs</tt>.

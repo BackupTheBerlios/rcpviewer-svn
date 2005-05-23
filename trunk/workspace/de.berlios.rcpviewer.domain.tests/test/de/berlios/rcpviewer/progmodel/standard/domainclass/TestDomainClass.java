@@ -1,4 +1,5 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.domainclass;
+import de.berlios.rcpviewer.progmodel.standard.*;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -6,6 +7,10 @@ import org.eclipse.emf.ecore.EPackage;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.CustomerExplicitlyInDefaultDomain;
+import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain;
+import de.berlios.rcpviewer.progmodel.standard.domainclass.TestDomainClassCustomerWithNoAttributes;
+import de.berlios.rcpviewer.progmodel.standard.domainclass.TestDomainClassDepartment;
 
 
 /**

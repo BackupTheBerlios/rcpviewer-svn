@@ -1,10 +1,13 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniquenessCustomerWithNonUniqueReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesUniquenessCustomerWithUniqueReadOnlyAttribute;
 
 public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
@@ -17,8 +20,6 @@ public class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 		super.tearDown();
 	}
 	
-	// uniqueness //
-
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
 		domainClass = Domain.lookupAny(TestDomainClassAttributesUniquenessCustomerWithNoUniquenessReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");

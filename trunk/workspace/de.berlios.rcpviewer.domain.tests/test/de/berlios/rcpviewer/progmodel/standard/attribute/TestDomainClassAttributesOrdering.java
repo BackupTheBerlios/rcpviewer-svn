@@ -1,10 +1,13 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrderingCustomerWithNoOrderingReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrderingCustomerWithOrderingReadOnlyAttribute;
+import de.berlios.rcpviewer.progmodel.standard.attribute.TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute;
 
 public class TestDomainClassAttributesOrdering extends AbstractTestCase {
 

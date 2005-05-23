@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.standard;
+package de.berlios.rcpviewer.progmodel.standard.operation;
 
 
 import org.eclipse.emf.ecore.EDataType;
@@ -8,6 +8,19 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.OperationKind;
+import de.berlios.rcpviewer.progmodel.standard.Man;
+import de.berlios.rcpviewer.progmodel.standard.Priest;
+import de.berlios.rcpviewer.progmodel.standard.Woman;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsAppointment;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsAppointmentWithAccessor;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerPositionedOnMap;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithNoArgOperation;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithPackageLocalVisibilityOperation;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithPrimitiveArgOperation;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithPrivateVisibilityOperation;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithProgrammaticPublicVisibilityOperation;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithProtectedVisibilityOperation;
+import de.berlios.rcpviewer.progmodel.standard.operation.TestDomainClassOperationsCustomerWithPublicVisibilityOperation;
 
 
 /**
