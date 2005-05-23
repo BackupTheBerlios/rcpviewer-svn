@@ -1,0 +1,1 @@
+From http://today.java.net/today/2004/02/02/ch12Eclipse.pdf
