@@ -1,4 +1,5 @@
 package de.berlios.rcpviewer.progmodel.standard.reference;
+import de.berlios.rcpviewer.progmodel.standard.*;
 
 import java.util.HashSet;
 import java.util.Set;
