@@ -5,10 +5,10 @@ package de.berlios.rcpviewer.progmodel.standard.attribute;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 @InDomain
-public class TestDomainClassAttributesOrderingCustomerWithoutOrderingReadOnlyAttribute {
+public class CustomerWithNonUniqueReadOnlyAttribute {
 	String surname;
 	@UpperBoundOf(3)
-	@Ordered(false)
+	@Unique(false)
 	public String getSurname() {
 		return surname;
 	}

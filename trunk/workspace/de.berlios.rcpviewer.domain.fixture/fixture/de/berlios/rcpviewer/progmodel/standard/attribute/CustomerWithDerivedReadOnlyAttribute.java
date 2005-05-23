@@ -5,9 +5,9 @@ package de.berlios.rcpviewer.progmodel.standard.attribute;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 @InDomain
-public class TestDomainClassAttributesCustomerWithReadOnlyAttribute {
-	String surname;
+public class CustomerWithDerivedReadOnlyAttribute {
+	@Derived
 	public String getSurname() {
-		return surname;
+		return "foobar";
 	}
 }

@@ -5,11 +5,12 @@ package de.berlios.rcpviewer.progmodel.standard.attribute;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 @InDomain
-public class TestDomainClassAttributesUnsettabilityCustomerWithUnsettableAttribute {
+public class CustomerWithOnlyUnsetForAttribute {
 	int age;
-	public boolean isUnsetAge() {
-		return age == -1;
-	}
+	/**
+	 * Not having isUnsetXxx means this attribute isn't unsettable.
+	 * @return
+	 */
 	public void unsetAge() {
 		age = -1;
 	}
