@@ -84,14 +84,31 @@ public class Session implements ISession, IObjectStoreAware {
 		assert iDomainObject instanceof DomainObject; // make sure own implementation
 		DomainObject domainObject = (DomainObject)iDomainObject;
 		synchronized(domainObject) {
-			// make sure session id is compatible, or not set
-			if (domainObject.getSessionId() != null && 
-				!this.getId().equals(domainObject.getSessionId())) {
-				throw new IllegalArgumentException(
-						"Incompatible session id " +
-						"(this.id = '" + getId() + "', " +
-						"domainObject.sessionId = '" + 
-								domainObject.getSessionId() + "')");
+			// make sure session id is compatible, or if not set then is in
+			// the same domain
+			{
+				String domainObjectSessionId = domainObject.getSessionId(); 
+				if (domainObjectSessionId != null) {
+					if (!this.getId().equals(domainObject.getSessionId())) {
+					throw new IllegalArgumentException(
+							"Incompatible session id " +
+							"(this.id = '" + getId() + "', " +
+							"domainObject.sessionId = '" + 
+									domainObject.getSessionId() + "')");
+					}
+				} else {
+					
+					String domainObjectDomainName = 
+						domainObject.getDomainClass().getDomain().getName();
+					String sessionDomainName = this.getDomain().getName();
+					if (!domainObjectDomainName.equals(sessionDomainName)) {
+						throw new IllegalArgumentException(
+							"Incorrect domain " +
+							"this.domainName = '" + sessionDomainName + "', " +
+							"domainObject.domainName = ' " + 
+								domainObjectDomainName + ")");
+					}
+				}
 			}
 			// add to session hashes 
 			{
