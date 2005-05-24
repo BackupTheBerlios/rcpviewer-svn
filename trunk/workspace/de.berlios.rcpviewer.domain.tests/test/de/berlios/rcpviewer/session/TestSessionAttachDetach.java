@@ -8,20 +8,11 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.session.local.Session;
-import de.berlios.rcpviewer.progmodel.standard.impl.Department;
+import de.berlios.rcpviewer.session.local.SessionFactory;
+import de.berlios.rcpviewer.session.local.SessionManager;
+import de.berlios.rcpviewer.session.Department;
 
 public class TestSessionAttachDetach extends AbstractTestCase  {
-
-	private static class MySessionListener implements ISessionListener {
-		boolean attachedCallbackCalled = false;
-		boolean detachedCallbackCalled = false;
-		public void domainObjectAttached(SessionObjectEvent event) {
-			attachedCallbackCalled=true;
-		}
-		public void domainObjectDetached(SessionObjectEvent event) {
-			detachedCallbackCalled=true;
-		}
-	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -170,4 +161,61 @@ public class TestSessionAttachDetach extends AbstractTestCase  {
 		domainObject.clearSessionId();
 		assertNull(domainObject.getSessionId());
 	}
+	
+	/**
+	 * Look up Department (in the "default" domain); clear its session Id, then
+	 * attach to another session referring to the default domain.
+	 *
+	 */
+	public void testDomainObjectCanBeAttachedToSessionForSameDomainIfHasNoSessionId() {
+		IDomainClass<Department> domainClass = 
+			Domain.lookupAny(Department.class);
+		
+		IDomainObject<Department> domainObject = 
+			(IDomainObject<Department>)session.createTransient(domainClass);
+		assertTrue(domainObject.isAttached());
+		session.detach(domainObject);
+		domainObject.clearSessionId();
+		
+		ISession session2 = sessionFactory.createSession();
+		String session2Id = session2.getId();
+		
+		session2.attach(domainObject);
+		
+		assertTrue(domainObject.isAttached());
+		assertEquals(session2Id, domainObject.getSessionId());
+	}
+	
+	public void testDomainObjectCannotBeAttachedToSessionForDifferentDomain() {
+		
+		// set up sessions
+		ISession sessionForDefaultDomain = session;
+		assertEquals("default", sessionForDefaultDomain.getDomain().getName());
+		
+		SessionFactory sessionFactoryForMarketingDomain = new SessionFactory();
+		sessionFactoryForMarketingDomain.setDomainName("marketing");
+		sessionFactoryForMarketingDomain.setObjectStore(new InMemoryObjectStore());
+		sessionFactoryForMarketingDomain.setSessionManager(SessionManager.instance());
+		
+		ISession sessionForMarketingDomain = sessionFactoryForMarketingDomain.createSession();
+		
+		// create domain object from default domain
+		IDomainClass<Department> departmentDomainClass = 
+			Domain.lookupAny(Department.class);
+		IDomainObject<Department> departmentDomainObject = 
+			(IDomainObject<Department>)sessionForDefaultDomain.createTransient(departmentDomainClass);
+
+		// detach and clear its session Id
+		sessionForDefaultDomain.detach(departmentDomainObject);
+		departmentDomainObject.clearSessionId();
+
+		try {
+			sessionForMarketingDomain.attach(departmentDomainObject);
+			fail("Expected IllegalArgumentException to have been thrown");
+		} catch(IllegalArgumentException ex) {
+			// expected
+		}
+	
+	}
+	
 }
