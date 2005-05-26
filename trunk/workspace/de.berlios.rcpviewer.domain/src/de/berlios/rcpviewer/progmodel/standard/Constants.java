@@ -3,6 +3,9 @@ package de.berlios.rcpviewer.progmodel.standard;
 /**
  * Set of constants relating to this package.
  * 
+ * <p>
+ * TODO: some of these constants are runtime- or compiletime- specific.
+ * 
  * @author Dan Haywood
  */
 public final class Constants {

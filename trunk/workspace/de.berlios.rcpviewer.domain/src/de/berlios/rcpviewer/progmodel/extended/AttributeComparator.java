@@ -12,12 +12,11 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 
 
 /**
- * Extension of {@link IDomainClass}, derived from {@link de.berlios.rcpviewer.progmodel.extended.PositionedAt}
+ * Extension of {@link IDomainClass}, derived from {@link PositionedAt}
  * attribute, that can be used to compare attributes.
  * 
  * <p>
- * TODO: should really implement Comparator<EAttribute>, but AJDT 1.2m3 
- * compiler is throwing a null pointer exception.
+ * TODO: should really implement Comparator<EAttribute>.
  * 
  * @author dkhaywood
  *

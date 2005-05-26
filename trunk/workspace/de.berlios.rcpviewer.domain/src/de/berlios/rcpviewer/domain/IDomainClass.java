@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.domain;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -30,7 +29,7 @@ import de.berlios.rcpviewer.session.ISession;
 public interface IDomainClass<T> {
 
 	/**
-	 * The {@link Metamodel} that (conceptually) owns this domain class.
+	 * The {@link Domain} that (conceptually) owns this domain class.
 	 * 
 	 * <p>
 	 * There could potentially be several {@link Domain}s instantiated at
@@ -38,12 +37,10 @@ public interface IDomainClass<T> {
 	 * while another might model a set of user preferences, and a third might
 	 * model the user's filesystem.
 	 * 
-	 * @return the owning metamodel for this domain class.
+	 * @return the owning domain for this domain class.
 	 */
 	public Domain getDomain();
 	
-	public Class<T> getJavaClass();
-
 	/**
 	 * Underlying EMF {@link EClass} that holds the structural features and
 	 * information about this class.
@@ -607,64 +604,9 @@ public interface IDomainClass<T> {
 	 * @param parameterPosition
 	 * @return
 	 */
-	public II18nData getI18nDataFor(EOperation operation, int parameterPosition);
+	public II18nData getI18nDataFor(EOperation operation,int parameterPosition);
 
 	
-	/**
-	 * Returns the method to access the value in the underlying object. 
-	 * 
-	 * <p>
-	 * May be null if this is a write-only attribute.
-	 * 
-	 * @see #getMutatorFor()
-	 * @see #getAccessorOrMutatorFor()
-	 * 
-	 * @return
-	 */
-	public Method getAccessorFor(EAttribute eAttribute);
-
-
-	/**
-	 * Returns the method to modify the value in the underlying object. 
-	 * 
-	 * <p>
-	 * May be null if this is a write-only attribute.
-	 * 
-	 * @see #getAccessorFor()
-	 * @see #getAccessorOrMutatorFor()
-	 * 
-	 * @return
-	 */
-	public Method getMutatorFor(EAttribute eAttribute);
-
-
-	/**
-	 * Returns the method to either access or mutate the value in the 
-	 * underlying object.
-	 * 
-	 * <p>
-	 * If the accessor is present, then it will be returned; if this is a
-	 * write-only attribute then the mutator will be returned.  Will never
-	 * be null.
-	 * 
-	 * @see #getAccessorFor()
-	 * @see #getMutatorFor()
-	 * 
-	 * @return
-	 */
-	public Method getAccessorOrMutatorFor(EAttribute eAttribute);
-
-	/**
-	 * Returns the method used to invoke an operation. 
-	 * 
-	 * @see #getAccessorFor()
-	 * @see #getAccessorOrMutatorFor()
-	 * 
-	 * @return
-	 */
-	public Method getInvokerFor(EOperation operation);
-
-
 	/**
 	 * 
 	 * @return
@@ -693,58 +635,6 @@ public interface IDomainClass<T> {
 	 */
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference);
 
-	/**
-	 * Returns the accessor for a reference representing either a simple 
-	 * 1:1 reference or a collection.
-	 * 
-	 * <p>
-	 * Typically {@link #isMultiple(EReference)} should be used to determine 
-	 * whether the return type of the Method is a collection or a single 
-	 * reference.
-	 * 
-	 * @param reference
-	 * @return
-	 */
-	public Method getAccessorFor(EReference reference);
-
-	/**
-	 * Returns the "associator" for a reference representing either a simple 
-	 * 1:1 reference or a collection.
-	 * 
-	 * <p>
-	 * If the reference represents a collection ({@link #isMultiple(EReference)}),
-	 * then the <i>associator</i> is an addTo method.  If it is a single reference,
-	 * then it is a method named <i>associate</i>. 
-	 * 
-	 * <p>
-	 * Associators and dissociators are optional (the accessor is not).  If
-	 * neither an associator or dissociator is present, then the reference is
-	 * presumed to be immutable (non changeable). 
-	 * 
-	 * @param reference
-	 * @return
-	 */
-	public Method getAssociatorFor(EReference reference);
-
-	/**
-	 * Returns the "dissociator" for a reference representing either a simple 
-	 * 1:1 reference or a collection.
-	 * 
-	 * <p>
-	 * If the reference represents a collection ({@link #isMultiple(EReference)}),
-	 * then the dissociator is prefixed <i>removeFrom</i> method.  If it is a 
-	 * single reference, then it is a method named <i>dissociate</i>. 
-	 * 
-	 * <p>
-	 * Associators and dissociators are optional (the accessor is not).  If
-	 * neither an associator or dissociator is present, then the reference is
-	 * presumed to be immutable (non changeable). 
-	 * 
-	 * @param reference
-	 * @return
-	 */
-	public Method getDissociatorFor(EReference reference);
-
 	public boolean isMultiple(EReference eReference);
 
 	public boolean isOrdered(EReference eReference);
@@ -757,7 +647,6 @@ public interface IDomainClass<T> {
 
 	public boolean isDerived(EReference eReference);
 	
-
 	/**
 	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
 	 * wrapping a pojo of the type represented by this domain class.

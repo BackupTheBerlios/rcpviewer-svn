@@ -1,0 +1,122 @@
+package de.berlios.rcpviewer.domain;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.emf.ecore.EClass;
+
+import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
+
+/**
+ * A registry of {@link IDomainClass}es within a given domain (or meta-model, 
+ * or schema).
+ *
+ * <p>
+ * This interface defines the (instance-level) responsibility of domains.  By
+ * convention, every implementation also provides static (class-level) 
+ * access to all instantiated Domains, keyed by the domain name.
+ * 
+ * @author Dan Haywood
+ */
+public interface IDomain {
+
+	public String getName();
+	
+
+	/**
+	 * The primary analyzer is responsible for traversing the graph of
+	 * POJOs to build the extent of the domain's meta model.
+	 */
+	public IDomainAnalyzer getPrimaryExtension();
+
+	/**
+	 * Perform additional analysis of domain classes.
+	 *
+	 * <p>
+	 * The analysis is not performed until {@link IDomain#done()} is
+	 * called.
+	 * 
+	 * @param extension
+	 */
+	public void addExtension(IDomainAnalyzer extension);
+
+	/**
+	 * Returns a collection of {@link IDomainClass}es, each one parameterized
+	 * by a different type.
+	 * 
+	 * @return
+	 */
+	public Collection<IDomainClass<?>> classes();
+	
+	
+	/**
+	 * Looks up the {@link DomainClass} for the supplied {@link Class} from 
+	 * this domain, creating it if not present, <i>provided</i> that the class 
+	 * in question is annotated with @InDomain with the name of this domain.
+	 * 
+	 * <p>
+	 * If already registered, simply returns, same way as 
+	 * {@link #lookupNoRegister(Class)}.
+	 * 
+	 * <p>
+	 * If there is no @InDomain annotation, then returns null.  Or, if there is
+	 * an @InDomain annotation that indicates (either implicitly or explicitly)
+	 * a domain name that is different from this metamodel's name, then again
+	 * returns null. 
+	 * 
+	 * <p>
+	 * To perform a lookup / register that will <i>always</i> return a
+	 * {@link IDomainClass}, irrespective of the @InDomain annotation, then use
+	 * {@link #lookupAny(Class)}. 
+	 * 
+	 * @param javaClass
+	 * @return corresponding {@link DomainClass}
+	 */
+	public <V> IDomainClass<V> lookup(final Class<V> javaClass);
+	
+	public <V> IDomainClass<V> lookup(final DomainClass<V> domainClass);
+
+	/**
+	 * Looks up the {@link DomainClass} for the supplied {@link Class}.
+	 * 
+	 * <p>
+	 * If the domain class has not yet been looked up (via either 
+	 * {@link Domain#lookup(Class)} or {@link Domain#lookupAny(Class)}, then
+	 * will return <code>null</code>.
+	 *  
+	 * @param javaClass
+	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
+	 */
+	public <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass);
+
+	/**
+	 * Indicates that all classes have been registered / created, and that
+	 * any additionally installed analyzers should do their stuff.
+	 * 
+	 */
+	public void done();
+	
+
+	/**
+	 * For testing purposes, clear out any {@link IDomainClass}es and
+	 * installed {@link IDomainAnalyzer}s.
+	 */
+	public void reset();
+	
+	/**
+	 * Useful for testing: the number of registered classes.
+	 */
+	public int size();
+
+	/**
+	 * Reverse lookup of {@link IDomainClass} from an EMF EClass.
+	 */
+	public <V> IDomainClass<V> domainClassFor(EClass eClass);
+	
+}
