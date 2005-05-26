@@ -6,7 +6,7 @@ Bundle-Version: 0.0.1
 Bundle-ClassPath: standard.jar,
  bin/
 Bundle-Activator: de.berlios.rcpviewer.progmodel.standard.StandardPlugin
-Bundle-Vendor: RcpViewer Development
+Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-AutoStart: true

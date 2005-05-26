@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.domain;
 
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -146,7 +147,10 @@ public class EmfFacade {
 	
 	private EPackage findPackageInRegistryWithName(EPackage.Registry ePackageRegistry, String packageName) {
 		Set<String> packageRegistryKeySet = (Set<String>)ePackageRegistry.keySet();
-		for(String ePackageNsUri: packageRegistryKeySet) {
+		// need to take a copy because otherwise getting a concurrent modification exception when
+		// running plugin tests (not sure why, didn't bother to investigate.
+		Set<String> copyOfPackageRegistryKeySet = new HashSet<String>(packageRegistryKeySet);
+		for(String ePackageNsUri: copyOfPackageRegistryKeySet) {
 			EPackage ePackage = ePackageRegistry.getEPackage(ePackageNsUri);
 			if (ePackage.getName().equals(packageName)) {
 				return ePackage;

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Core Plug-in
+Bundle-Name: Domain Plug-in
 Bundle-SymbolicName: de.berlios.rcpviewer.domain; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: core.jar,
@@ -28,3 +28,4 @@ Export-Package: de.berlios.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard.impl,
  de.berlios.rcpviewer.session,
  de.berlios.rcpviewer.session.local
+Bundle-Vendor: RcpViewer Development Team

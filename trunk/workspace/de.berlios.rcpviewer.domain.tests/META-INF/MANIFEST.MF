@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.core.runtime,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard
 Eclipse-AutoStart: true
+Bundle-Vendor: RcpViewer Development Team

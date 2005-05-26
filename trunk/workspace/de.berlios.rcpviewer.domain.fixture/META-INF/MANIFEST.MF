@@ -25,3 +25,4 @@ Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel.standard.operation,
  de.berlios.rcpviewer.progmodel.standard.reference,
  de.berlios.rcpviewer.session
+Bundle-Vendor: RcpViewer Development Team
