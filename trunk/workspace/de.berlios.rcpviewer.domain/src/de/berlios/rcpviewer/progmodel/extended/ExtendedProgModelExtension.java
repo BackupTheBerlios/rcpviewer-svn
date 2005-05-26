@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.rcpviewer;
+package de.berlios.rcpviewer.progmodel.extended;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * <p>
  * Specifically, these are:
  * <ul>
- * <li>ImageDescriptor.
+ * <li>PositionedAt.
  * </ul>
  * 
  * @author Dan Haywood
