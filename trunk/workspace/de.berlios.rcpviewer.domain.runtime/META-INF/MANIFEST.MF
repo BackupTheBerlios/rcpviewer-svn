@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime Plug-in
+Bundle-SymbolicName: de.berlios.rcpviewer.domain.runtime
+Bundle-Version: 1.0.0
+Bundle-ClassPath: runtime.jar
+Bundle-Activator: de.berlios.rcpviewer.domain.runtime.RuntimePlugin
+Bundle-Vendor: RcpViewer Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-AutoStart: true
