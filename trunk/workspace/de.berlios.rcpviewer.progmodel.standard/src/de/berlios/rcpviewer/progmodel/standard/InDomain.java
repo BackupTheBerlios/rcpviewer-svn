@@ -1,8 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.annotation.*;
 
-import de.berlios.rcpviewer.domain.Domain;
-
 /**
  * Persistable and visualisable domain object which names the domain to which
  * it belongs.
@@ -28,5 +26,5 @@ import de.berlios.rcpviewer.domain.Domain;
 @Inherited
 @Target(ElementType.TYPE)
 public @interface InDomain {
-	String value() default Domain.DEFAULT_DOMAIN_NAME;
+	String value() default "default";
 }

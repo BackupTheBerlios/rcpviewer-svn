@@ -12,5 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.junit,
  de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.domain.fixture
+ de.berlios.rcpviewer.domain.fixture,
+ de.berlios.rcpviewer.progmodel.extended,
+ de.berlios.rcpviewer.progmodel.rcpviewer,
+ de.berlios.rcpviewer.progmodel.standard
 Eclipse-AutoStart: true

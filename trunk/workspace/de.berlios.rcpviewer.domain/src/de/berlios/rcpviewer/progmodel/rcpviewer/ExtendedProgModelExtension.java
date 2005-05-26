@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.extended;
+package de.berlios.rcpviewer.progmodel.rcpviewer;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

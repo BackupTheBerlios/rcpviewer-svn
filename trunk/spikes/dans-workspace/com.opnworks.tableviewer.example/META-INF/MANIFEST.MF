@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Example Plug-in
+Bundle-SymbolicName: com.opnworks.tableviewer.example
+Bundle-Version: 1.0.0
+Bundle-ClassPath: example.jar
+Bundle-Activator: com.opnworks.tableviewer.example.ExamplePlugin
+Bundle-Vendor: OPNWORKS
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui
+Eclipse-AutoStart: true

@@ -1,0 +1,38 @@
+1 Extension Points
+
+1.1 org.eclipse.ui.views
+
+Register custom view, class=org.eclipse.jdt.astview.views.ASTView
+
+1.1 org.eclipse.ui.perspectiveExtensions
+
+(from sample), extending resource perspective (org.eclipse.ui.resourcePerspective)
+
+1.1 org.eclipse.ui.commands
+
+for the ASTView, a set of key bindings.
+
+1 ASTView
+See org.eclipse.jdt.astview.views.ASTView
+
+Installs various listeners, reacts to some
+* ISelectionListener
+* IFileBufferListener
+* IDocumentListener
+* ISelectionChangedListener
+* IDoubleClickListener
+* IPartListener2
+
+1 ASTViewContentProvider
+See org.eclipse.jdt.astview.views.ASTViewContentProvider
+
+provides the content for the outline tree by interrogating the ASTNode that backs each node of the tree.  
+
+In getNodeChildren(), there are three main cases:
+* an expression (eg a name, or a method invocation)
+* a reference (some sort of node)
+* a declaration (some sort of node)
+In all cases, uses AST to create a Binding::ASTAttribute, then for each of the node's structuralPropertiesForType(), adds NodeProperty::ASTAttribute.
+
+1 Traversing Java AST tree
+

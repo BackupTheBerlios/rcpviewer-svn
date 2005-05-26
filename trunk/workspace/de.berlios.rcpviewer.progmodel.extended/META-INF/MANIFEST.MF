@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Extended Programming Model Plug-in
+Bundle-SymbolicName: de.berlios.rcpviewer.progmodel.extended
+Bundle-Version: 1.0.0
+Bundle-ClassPath: extended.jar,
+ bin/
+Bundle-Activator: de.berlios.rcpviewer.progmodel.extended.ExtendedPlugin
+Bundle-Vendor: RcpViewer Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime
+Eclipse-AutoStart: true
+Export-Package: de.berlios.rcpviewer.progmodel.extended

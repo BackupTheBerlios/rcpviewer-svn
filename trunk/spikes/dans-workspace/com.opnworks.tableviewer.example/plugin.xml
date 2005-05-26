@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="com.opnworks.tableviewer.example"
+   name="TableViewer Example Plug-in"
+   version="1.0.0"
+   provider-name="Mirasol Op&apos;nWorks"
+   class="com.opnworks.tableviewer.example.plugin.Plugin">
+
+   <runtime>
+      <library name="TableViewerExample.jar"/>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Examples"
+            id="com.opnworks.tableviewer.example">
+      </category>
+      <view
+            name="TableViewerExample view"
+            icon="icons/sample.gif"
+            category="com.opnworks.tableviewer.example"
+            class="com.opnworks.tableviewer.example.views.SampleView"
+            id="com.opnworks.tableviewer.example.views.SampleView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="stack"
+               id="com.opnworks.tableviewer.example.views.SampleView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
