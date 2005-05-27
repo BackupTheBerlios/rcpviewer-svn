@@ -12,7 +12,12 @@ import org.eclipse.emf.ecore.EPackage;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
 
-
+/**
+ * Independent (so also applicable) to both runtime and compiletime, 
+ * and therefore tested in both.
+ * 
+ * @author Dan Haywood
+ */
 public class TestEmfFacade extends TestCase {
 
 	private Class[] primitiveClasses;

@@ -3,9 +3,10 @@
  */
 package de.berlios.rcpviewer.progmodel.standard.namesanddesc;
 
-import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
+import de.berlios.rcpviewer.progmodel.standard.Value;
 
-public class TimePeriod implements ValueMarker {
+@Value
+public class TimePeriod {
 	java.util.Date from;
 	public java.util.Date getFrom() {
 		return from;

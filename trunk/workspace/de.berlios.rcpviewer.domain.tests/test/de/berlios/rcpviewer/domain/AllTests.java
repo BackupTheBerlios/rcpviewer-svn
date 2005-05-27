@@ -6,12 +6,11 @@ import junit.framework.TestSuite;
 public class AllTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for de.berlios.rcpviewer.domain");
+		TestSuite suite = new TestSuite("Test for de.berlios.rcpviewer.domain");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestDomainClass.class);
 		suite.addTestSuite(TestEmfFacade.class);
 		suite.addTestSuite(TestDomain.class);
+		suite.addTestSuite(TestDomainClass.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -5,7 +5,9 @@ import java.util.List;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
+import de.berlios.rcpviewer.IDomainSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
@@ -13,7 +15,11 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * 
  * @author Dan Haywood
  */
-public class TestPositionedAt extends AbstractTestCase {
+public abstract class TestPositionedAt extends AbstractTestCase {
+
+	public TestPositionedAt(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+		super(domainSpecifics, domainAnalyzer);
+	}
 
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
@@ -24,16 +30,11 @@ public class TestPositionedAt extends AbstractTestCase {
 		super.tearDown();
 	}
 	
-
-	/**
-	 * 
-	 *
-	 */
 	public void testDomainClassWithAllAttributesPositioned() {
 		domainClass = 
-			Domain.lookupAny(CustomerWithAllAttributesPositioned.class);
-		Domain.instance().addExtension(new ExtendedProgModelExtension());
-		Domain.instance().done();
+			lookupAny(CustomerWithAllAttributesPositioned.class);
+		getDomainInstance().addExtension(getDomainAnalyzer());
+		getDomainInstance().done();
 		
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
 		assertNotNull(comparator);
@@ -43,6 +44,5 @@ public class TestPositionedAt extends AbstractTestCase {
 		assertEquals("firstName", sortedAttributes.get(1).getName());
 		assertEquals("lastName", sortedAttributes.get(2).getName());
 	}
-
 	
 }

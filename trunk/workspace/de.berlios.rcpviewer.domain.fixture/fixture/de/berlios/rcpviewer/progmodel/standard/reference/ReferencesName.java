@@ -1,12 +1,8 @@
 package de.berlios.rcpviewer.progmodel.standard.reference;
 import de.berlios.rcpviewer.progmodel.standard.*;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
-/**
- * TODO: DomainMarker is workaround
- */
 @InDomain
-public class ReferencesName implements DomainMarker {
+public class ReferencesName {
 	public ReferencesName(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;

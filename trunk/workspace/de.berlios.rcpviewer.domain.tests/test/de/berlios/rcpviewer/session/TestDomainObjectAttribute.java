@@ -2,16 +2,20 @@ package de.berlios.rcpviewer.session;
 
 import org.eclipse.emf.ecore.EAttribute;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
-public class TestDomainObjectAttribute extends AbstractTestCase  {
+public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
+
+	public TestDomainObjectAttribute() {
+		super(null);
+	}
 
 	public void testCanGetAttribute() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -23,7 +27,7 @@ public class TestDomainObjectAttribute extends AbstractTestCase  {
 
 	public void testCanSetAttribute() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -34,7 +38,7 @@ public class TestDomainObjectAttribute extends AbstractTestCase  {
 
 	public void testSettingAttributeNotifiesListeners() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -48,7 +52,7 @@ public class TestDomainObjectAttribute extends AbstractTestCase  {
 
 	public void testCannotSetAttributeToInvalidValue() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);

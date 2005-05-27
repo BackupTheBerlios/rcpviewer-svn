@@ -2,12 +2,16 @@ package de.berlios.rcpviewer.session;
 
 import org.eclipse.emf.ecore.EOperation;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
-public class TestDomainObjectOperation extends AbstractTestCase  {
+public class TestDomainObjectOperation extends AbstractRuntimeTestCase  {
+
+	public TestDomainObjectOperation() {
+		super(null);
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -19,7 +23,7 @@ public class TestDomainObjectOperation extends AbstractTestCase  {
 
 	public void testCanInvokeOperation() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);

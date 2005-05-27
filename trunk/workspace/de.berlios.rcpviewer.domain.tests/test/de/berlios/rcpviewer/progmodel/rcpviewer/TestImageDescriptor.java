@@ -3,7 +3,9 @@ package de.berlios.rcpviewer.progmodel.rcpviewer;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
+import de.berlios.rcpviewer.IDomainSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
@@ -14,7 +16,12 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * 
  * @author Dan Haywood
  */
-public class TestImageDescriptor extends AbstractTestCase {
+public abstract class TestImageDescriptor extends AbstractTestCase {
+
+	public TestImageDescriptor(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+		super(domainSpecifics, domainAnalyzer);
+	}
+
 
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
@@ -26,9 +33,9 @@ public class TestImageDescriptor extends AbstractTestCase {
 	}
 	
 	public void testDomainClassWithImageUrlAt() {
-		domainClass = Domain.lookupAny(ProspectiveSale.class);
-		Domain.instance().addExtension(new RcpViewerExtension());
-		Domain.instance().done();
+		domainClass = lookupAny(ProspectiveSale.class);
+		getDomainInstance().addExtension(getDomainAnalyzer());
+		getDomainInstance().done();
 		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNotNull(id);
@@ -39,7 +46,7 @@ public class TestImageDescriptor extends AbstractTestCase {
 	 *
 	 */
 	public void incompletetestDomainClassWithImageUrlAtWithoutExtensionInstalled() {
-		domainClass = Domain.lookupAny(ProspectiveSale.class);
+		domainClass = lookupAny(ProspectiveSale.class);
 		Domain.instance().done();
 		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);

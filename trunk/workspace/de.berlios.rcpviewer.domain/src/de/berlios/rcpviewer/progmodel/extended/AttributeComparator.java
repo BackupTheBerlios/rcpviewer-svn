@@ -8,7 +8,6 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
-import de.berlios.rcpviewer.domain.IDomainClass;
 
 
 /**

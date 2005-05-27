@@ -1,8 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import de.berlios.rcpviewer.domain.Constants;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
-import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
 
 /**
  * Helper class that encapsulates the various naming conventions of the
@@ -83,9 +81,12 @@ public class NamingConventions {
 	 * TODO: use annotations rather than interface inheritance.
 	 * 
 	 */
-	public final boolean isValueType(final Class<?> clazz) {
-		return de.berlios.rcpviewer.domain.Constants.JDK_VALUE_TYPES.contains(clazz) ||
-			   ValueMarker.class.isAssignableFrom(clazz);
+	public final boolean isValueType(final Class<?> javaClass) {
+		if (de.berlios.rcpviewer.domain.Constants.JDK_VALUE_TYPES.contains(javaClass)) {
+			return true;
+		}
+		Value valueAnnotation = javaClass.getAnnotation(Value.class);
+		return valueAnnotation != null;
 	}
 	
 	/**

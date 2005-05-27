@@ -1,10 +1,15 @@
 package de.berlios.rcpviewer.session;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 
-public class TestSessionFactory extends AbstractTestCase  {
+public class TestSessionFactory extends AbstractRuntimeTestCase  {
+
+	public TestSessionFactory() {
+		super(null);
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();

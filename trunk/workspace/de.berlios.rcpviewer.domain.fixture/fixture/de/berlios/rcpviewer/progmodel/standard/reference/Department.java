@@ -4,15 +4,12 @@ import de.berlios.rcpviewer.progmodel.standard.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
-
 /**
  * Has a 1:m bidirectional relationship with Employee.
  * 
- * TODO: DomainMarker is workaround
  */
 @InDomain
-public class Department implements DomainMarker {
+public class Department {
 	Set<ReferencesEmployee> employees = new HashSet<ReferencesEmployee>();
 	/**
 	 * Should be picked up as a 1:m reference to Employee.

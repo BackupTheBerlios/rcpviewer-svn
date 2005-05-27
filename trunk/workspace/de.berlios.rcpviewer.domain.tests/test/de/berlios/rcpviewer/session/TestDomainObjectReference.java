@@ -1,8 +1,13 @@
 package de.berlios.rcpviewer.session;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 
-public class TestDomainObjectReference extends AbstractTestCase  {
+public class TestDomainObjectReference extends AbstractRuntimeTestCase  {
+
+	public TestDomainObjectReference() {
+		super(null);
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();

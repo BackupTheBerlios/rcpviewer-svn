@@ -2,13 +2,16 @@ package de.berlios.rcpviewer.session;
 
 import java.util.List;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.session.Department;
 
-public class TestSessionFootprint extends AbstractTestCase  {
+public class TestSessionFootprint extends AbstractRuntimeTestCase  {
+
+	public TestSessionFootprint() {
+		super(null);
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -24,7 +27,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	public void testSessionFootprintIsImmutable() {
 		
 		IRuntimeDomainClass<Department> deptDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -53,7 +56,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IRuntimeDomainClass<Department> deptDomainClass = 
-			Domain.instance().lookup(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -83,7 +86,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	public void testSessionFootprint() {
 		
 		IRuntimeDomainClass<Department> deptDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
@@ -99,7 +102,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	
 	
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
+			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
 			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();

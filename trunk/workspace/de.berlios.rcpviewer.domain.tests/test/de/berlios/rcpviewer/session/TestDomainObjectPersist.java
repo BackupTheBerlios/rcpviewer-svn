@@ -1,12 +1,15 @@
 package de.berlios.rcpviewer.session;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
-
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
-public class TestDomainObjectPersist extends AbstractTestCase  {
+public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
+
+	public TestDomainObjectPersist() {
+		super(null);
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -20,7 +23,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 	
 	public void testCanPersistThroughDomainObject() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -43,7 +46,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 	 */
 	public void incompletetestCanPersistThroughPojo() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
@@ -56,7 +59,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 	 */
 	public void testCannotPersistIfNotAttachedToSession() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
 		assertFalse(session.isAttached(domainObject));
@@ -71,7 +74,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 
 	public void testCannotPersistMoreThanOnce() {
 		IRuntimeDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);

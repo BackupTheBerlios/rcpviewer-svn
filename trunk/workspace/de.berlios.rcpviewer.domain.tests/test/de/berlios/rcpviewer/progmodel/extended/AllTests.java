@@ -9,7 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.progmodel.extended");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestPositionedAt.class);
+		suite.addTestSuite(TestPositionedAtRuntime.class);
 		//$JUnit-END$
 		return suite;
 	}

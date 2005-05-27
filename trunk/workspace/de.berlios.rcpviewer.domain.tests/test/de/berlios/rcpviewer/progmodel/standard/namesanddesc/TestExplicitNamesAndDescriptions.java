@@ -3,7 +3,9 @@ package de.berlios.rcpviewer.progmodel.standard.namesanddesc;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
+import de.berlios.rcpviewer.IDomainSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.namesanddesc.Appointment;
 import de.berlios.rcpviewer.progmodel.standard.namesanddesc.CustomerWithNoExplicitName;
@@ -19,7 +21,11 @@ import de.berlios.rcpviewer.progmodel.standard.namesanddesc.ProspectiveSale;
  * 
  * @author Dan Haywood
  */
-public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
+public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase {
+
+	public TestExplicitNamesAndDescriptions(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+		super(domainSpecifics, domainAnalyzer);
+	}
 
 	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
@@ -32,7 +38,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 
 	public void testDomainClassThatIsExplicitlyNamed() {
-		domainClass = Domain.lookupAny(ProspectiveSale.class);
+		domainClass = lookupAny(ProspectiveSale.class);
 		
 		assertEquals("Customer", domainClass.getName());
 		assertEquals("Customer", domainClass.getEClass().getName());
@@ -47,7 +53,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	}
 
 	public void testDomainClassThatIsNotExplicitlyNamed() {
-		domainClass = Domain.lookupAny(CustomerWithNoExplicitName.class);
+		domainClass = lookupAny(CustomerWithNoExplicitName.class);
 		
 		assertEquals("CustomerWithNoExplicitName", domainClass.getName());
 		assertEquals("CustomerWithNoExplicitName", domainClass.getEClass().getName());
@@ -73,7 +79,7 @@ public class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 	
 	public void testOperationParameterThatIsExplicitlyNamed() {
 		// 2 arg
-		domainClass = Domain.lookupAny(Appointment.class);
+		domainClass = lookupAny(Appointment.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
 		assertEquals("moveTo", eOperation.getName());

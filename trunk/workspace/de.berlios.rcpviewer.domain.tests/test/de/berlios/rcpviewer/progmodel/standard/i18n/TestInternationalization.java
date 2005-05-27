@@ -1,11 +1,16 @@
 package de.berlios.rcpviewer.progmodel.standard.i18n;
 
 import de.berlios.rcpviewer.AbstractTestCase;
+import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
-public class TestInternationalization extends AbstractTestCase {
+public abstract class TestInternationalization extends AbstractTestCase {
 
-	private IDomainClass domainClass;
+	public TestInternationalization(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+		super(domainSpecifics, domainAnalyzer);
+	}
+
 	protected void setUp() throws Exception {
 		super.setUp();
 	}

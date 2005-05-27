@@ -1,13 +1,9 @@
 package de.berlios.rcpviewer.domain;
 
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
-/**
- * TODO: implementing DomainMarker is a work-around; the annotation should be enough.
- */
 @InDomain
-public class DepartmentWithoutNoArgConstructor implements DomainMarker {
+public class DepartmentWithoutNoArgConstructor {
 	
 	public DepartmentWithoutNoArgConstructor(final String name) {
 		this.name = name;

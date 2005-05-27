@@ -9,7 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.progmodel.rcpviewer");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestImageDescriptor.class);
+		suite.addTestSuite(TestImageDescriptorAtRuntime.class);
 		//$JUnit-END$
 		return suite;
 	}

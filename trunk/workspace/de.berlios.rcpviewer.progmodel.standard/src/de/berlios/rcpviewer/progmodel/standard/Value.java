@@ -6,11 +6,11 @@ import java.lang.annotation.*;
  * part of the metamodel) should be annotated with this annotation.
  *
  * <p>
- * Consumed by AspectJ, hence only source retention policy.
+ * Consumed reflectively, so runtime retention policy.
  * 
  * @author Dan Haywood
  */
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(ElementType.TYPE)
 public @interface Value { }

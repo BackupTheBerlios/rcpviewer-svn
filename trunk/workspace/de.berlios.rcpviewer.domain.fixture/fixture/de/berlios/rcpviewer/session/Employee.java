@@ -1,13 +1,9 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
-/**
- * TODO: implementing DomainMarker is a work-around; the annotation should be enough.
- */
 @InDomain
-public class Employee implements DomainMarker{
+public class Employee {
 	
 	private String firstName;
 	public String getFirstName() {

@@ -1,7 +1,5 @@
 package de.berlios.rcpviewer.persistence;
 
-import de.berlios.rcpviewer.session.ISession;
-
 /**
  * Abstracts out mechanics of persisting pojos.
  * 

@@ -4,12 +4,17 @@ import java.util.Collection;
 
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
-public class TestDomainObjectCollection extends AbstractTestCase  {
+public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
+
+	public TestDomainObjectCollection() {
+		super(null);
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -21,9 +26,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 
 	public void testCanRemoveFromCollection() {
 		IRuntimeDomainClass<Department> departmentDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
+			(IRuntimeDomainClass<Employee>) lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -44,9 +49,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	 */
 	public void testGetCollection() {
 		IRuntimeDomainClass<Department> departmentDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
+			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -64,8 +69,10 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	}
 
 	public void testGetReferencedClassForCollection() {
-		IDomainClass<Department> departmentDomainClass = Domain.lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = Domain.lookupAny(Employee.class);
+		IDomainClass<Department> departmentDomainClass = 
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass<Employee> employeeDomainClass = 
+			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
 		assertSame(employeeDomainClass, departmentDomainClass.getReferencedClass(employeesCollection));
@@ -73,9 +80,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 
 	public void testListenersNotifiedWhenAddToCollection() {
 		IRuntimeDomainClass<Department> departmentDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
+			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -96,9 +103,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 
 	public void testListenersNotifiedWhenRemoveFromCollection() {
 		IRuntimeDomainClass<Department> departmentDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
+			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
@@ -123,9 +130,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 
 	public void testCanAddToCollection() {
 		IRuntimeDomainClass<Department> departmentDomainClass = 
-			Domain.lookupAny(Department.class);
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			Domain.lookupAny(Employee.class);
+			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);

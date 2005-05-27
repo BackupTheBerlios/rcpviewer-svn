@@ -1,17 +1,16 @@
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
-import de.berlios.rcpviewer.progmodel.standard.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
 import de.berlios.rcpviewer.AbstractTestCase;
+import de.berlios.rcpviewer.IDomainSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomain;
+import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.CustomerExplicitlyInDefaultDomain;
 import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain;
-import de.berlios.rcpviewer.progmodel.standard.domainclass.CustomerWithNoAttributes;
-import de.berlios.rcpviewer.progmodel.standard.domainclass.Department;
 
 
 /**
@@ -19,28 +18,23 @@ import de.berlios.rcpviewer.progmodel.standard.domainclass.Department;
  * 
  * @author Dan Haywood
  */
-public class TestDomainClass extends AbstractTestCase {
+public abstract class TestDomainClass extends AbstractTestCase {
 
-	private Domain domain2;
-	private IRuntimeDomainClass<?> domainClass;
+	public TestDomainClass(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+		super(domainSpecifics, domainAnalyzer);
+	}
+
+	private IDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 
 	protected void tearDown() throws Exception {
-		domain2 = null;
 		super.tearDown();
 	}
 	
-	public void testGetJavaClass() {
-		domainClass = Domain.lookupAny(CustomerWithNoAttributes.class);
-		Domain.instance().done();
-		
-		assertSame(CustomerWithNoAttributes.class, domainClass.getJavaClass());
-	}
-
 	public void testGetEClass() {
-		domainClass = Domain.lookupAny(CustomerWithNoAttributes.class);
+		domainClass = lookupAny(CustomerWithNoAttributes.class);
 		
 		EClass eClass = domainClass.getEClass();
 		assertNotNull(eClass);
@@ -54,11 +48,9 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 
 	public void testGetDomainClassFromEClass() {
-		IDomainClass<Department> domainClass = 
-			Domain.lookupAny(Department.class);
-		
+		IDomainClass<Department> domainClass = lookupAny(Department.class);
 		EClass eClass = domainClass.getEClass();
-		IDomainClass reverseDomainClass = domain.domainClassFor(eClass);
+		IDomainClass reverseDomainClass = getDomainInstance().domainClassFor(eClass);
 		assertNotNull(reverseDomainClass);
 		assertSame(reverseDomainClass, domainClass);
 	}
@@ -66,14 +58,14 @@ public class TestDomainClass extends AbstractTestCase {
 
 	public void testGetDomainFromDomainClassForImplicitDefaultDomain() {
 		IDomainClass<CustomerImplicitlyInDefaultDomain> domainClass = 
-			Domain.lookupAny(CustomerImplicitlyInDefaultDomain.class);
+			lookupAny(CustomerImplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 
 
 	public void testGetDomainFromDomainClassForExplicitDefaultDomain() {
-		domainClass = Domain.lookupAny(CustomerExplicitlyInDefaultDomain.class);
+		domainClass = lookupAny(CustomerExplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
 	}
@@ -90,20 +82,18 @@ public class TestDomainClass extends AbstractTestCase {
 	}
 
 	public void testGetDomainFromDomainClassForExplicitCustomDomain() {
-		domain = Domain.instance("marketing");
 		IDomainClass<Prospect> domainClass = 
-			Domain.lookupAny(Prospect.class);
+			lookupAny(Prospect.class);
 		
 		assertEquals("marketing", domainClass.getDomain().getName());
 	}
 
 
 	public void testDomainsAreIndependent() {
-		domain2 = Domain.instance("marketing");
 		IDomainClass<Customer> customerDomainClass = 
-			Domain.lookupAny(Customer.class);
+			lookupAny(Customer.class);
 		IDomainClass<Prospect> prospectDomainClass = 
-			Domain.lookupAny(Prospect.class);
+			lookupAny(Prospect.class);
 		
 		assertEquals("marketing", prospectDomainClass.getDomain().getName());
 		assertEquals("default", customerDomainClass.getDomain().getName());

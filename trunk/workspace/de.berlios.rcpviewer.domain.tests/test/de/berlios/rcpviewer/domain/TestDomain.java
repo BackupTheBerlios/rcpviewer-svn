@@ -1,10 +1,14 @@
 package de.berlios.rcpviewer.domain;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
-import junit.framework.TestCase;
 
-public class TestDomain extends AbstractTestCase {
+public class TestDomain extends AbstractRuntimeTestCase {
+
+	public TestDomain() {
+		super(null);
+	}
 
 	public void setUp() throws Exception {
 		super.setUp();
@@ -14,34 +18,35 @@ public class TestDomain extends AbstractTestCase {
 		super.tearDown();
 	}
 	
+	
 	public void testDefaultDomainCreatedIfRequested() {
-		Domain domain = Domain.instance(); 
+		IDomain domain = getDomainInstance(); 
 		assertNotNull(domain);
 		assertEquals(0, domain.classes().size());
 	}
 	
 	public void testDomainCreatedWhenSomethingRegistered() {
 		IDomainClass<ClassInOtherDomain> domainClass = 
-			Domain.lookupAny(ClassInOtherDomain.class);
+			lookupAny(ClassInOtherDomain.class);
 		
 		assertEquals(1, Domain.instance("other").classes().size());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainImplicitly() {
 		IDomainClass<ClassInDefaultDomainImplicitly> domainClass = 
-			Domain.lookupAny(ClassInDefaultDomainImplicitly.class);
+			lookupAny(ClassInDefaultDomainImplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainExplicitly() {
 		IDomainClass<ClassInDefaultDomainExplicitly> domainClass = 
-			Domain.lookupAny(ClassInDefaultDomainExplicitly.class);
+			lookupAny(ClassInDefaultDomainExplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDomainExplicit() {
 		IDomainClass<ClassInOtherDomain> domainClass = 
-			Domain.lookupAny(ClassInOtherDomain.class);
+			lookupAny(ClassInOtherDomain.class);
 		assertEquals("other", domainClass.getDomain().getName());
 	}
 	

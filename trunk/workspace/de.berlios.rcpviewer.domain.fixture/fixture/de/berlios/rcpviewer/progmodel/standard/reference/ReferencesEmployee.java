@@ -1,15 +1,12 @@
 package de.berlios.rcpviewer.progmodel.standard.reference;
 import de.berlios.rcpviewer.progmodel.standard.*;
-import de.berlios.rcpviewer.progmodel.standard.impl.DomainMarker;
 
 /**
  * Has a m:1 bidirectional relationship with Employee.
  * 
- * <p>
- * TODO: DomainMarker is workaround
  */
 @InDomain
-public class ReferencesEmployee implements DomainMarker {
+public class ReferencesEmployee {
 	public ReferencesEmployee(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;

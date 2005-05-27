@@ -1,7 +1,5 @@
 package de.berlios.rcpviewer.domain;
 
-import java.util.EventObject;
-
 /**
  * Event object for events that impact an {@link IDomainClass}.
  * 
