@@ -5,6 +5,7 @@ import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 public class TestDomainObjectOperation extends AbstractTestCase  {
 
@@ -17,7 +18,7 @@ public class TestDomainObjectOperation extends AbstractTestCase  {
 	}
 
 	public void testCanInvokeOperation() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 

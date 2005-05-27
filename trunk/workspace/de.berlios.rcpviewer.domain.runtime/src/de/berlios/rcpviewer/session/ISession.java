@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 
 /**
@@ -59,7 +60,7 @@ public interface ISession {
 	 * @param domainClass
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
 	 */
-	<T> IDomainObject<T> createTransient(IDomainClass<T> domainClass);
+	<T> IDomainObject<T> createTransient(IRuntimeDomainClass<T> domainClass);
 
 	/**
 	 * Attach the pojo wrapped in the supplied {@link IDomainObject} to the 

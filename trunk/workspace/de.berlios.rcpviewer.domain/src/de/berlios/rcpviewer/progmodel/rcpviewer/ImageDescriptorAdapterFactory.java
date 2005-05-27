@@ -14,7 +14,7 @@ public class ImageDescriptorAdapterFactory<T> implements IAdapterFactory<T> {
 	private String url;
 
 	public ImageDescriptorAdapterFactory() {}
-	ImageDescriptorAdapterFactory(String url) {
+	public ImageDescriptorAdapterFactory(String url) {
 		this.url = url;
 	}
 	public Map<String, String> getDetails() {

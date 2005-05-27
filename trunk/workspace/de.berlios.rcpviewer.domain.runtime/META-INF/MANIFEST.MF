@@ -10,3 +10,12 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  de.berlios.rcpviewer.domain
 Eclipse-AutoStart: true
+Export-Package: de.berlios.rcpviewer.domain,
+ de.berlios.rcpviewer.domain.runtime,
+ de.berlios.rcpviewer.persistence,
+ de.berlios.rcpviewer.persistence.inmemory,
+ de.berlios.rcpviewer.progmodel.extended,
+ de.berlios.rcpviewer.progmodel.rcpviewer,
+ de.berlios.rcpviewer.progmodel.standard,
+ de.berlios.rcpviewer.session,
+ de.berlios.rcpviewer.session.local

@@ -4,6 +4,7 @@ import de.berlios.rcpviewer.AbstractTestCase;
 
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 public class TestDomainObjectPersist extends AbstractTestCase  {
 
@@ -18,7 +19,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 
 	
 	public void testCanPersistThroughDomainObject() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -41,7 +42,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 	 * method.
 	 */
 	public void incompletetestCanPersistThroughPojo() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -54,7 +55,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 	 * Create directly from DomainClass rather than from Session. 
 	 */
 	public void testCannotPersistIfNotAttachedToSession() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
@@ -69,7 +70,7 @@ public class TestDomainObjectPersist extends AbstractTestCase  {
 
 
 	public void testCannotPersistMoreThanOnce() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 

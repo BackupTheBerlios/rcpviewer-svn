@@ -26,7 +26,7 @@ public class TestDomainClass extends AbstractTestCase  {
 
 
 	public void testCreateTransientCreatesUnderlyingPojo() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -43,7 +43,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 * The returned object will not be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromDomainClass() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = domainClass.createTransient();
@@ -60,7 +60,7 @@ public class TestDomainClass extends AbstractTestCase  {
 	 * Cannot instantiate if don't play by the rules.
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
-		IDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
+		IRuntimeDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
 			Domain.lookupAny(DepartmentWithoutNoArgConstructor.class);
 
 		try {

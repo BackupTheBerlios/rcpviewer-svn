@@ -5,11 +5,12 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 public class TestDomainObjectAttribute extends AbstractTestCase  {
 
 	public void testCanGetAttribute() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -21,7 +22,7 @@ public class TestDomainObjectAttribute extends AbstractTestCase  {
 	}
 
 	public void testCanSetAttribute() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -32,7 +33,7 @@ public class TestDomainObjectAttribute extends AbstractTestCase  {
 	}
 
 	public void testSettingAttributeNotifiesListeners() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -46,7 +47,7 @@ public class TestDomainObjectAttribute extends AbstractTestCase  {
 	}
 
 	public void testCannotSetAttributeToInvalidValue() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 

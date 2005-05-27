@@ -24,6 +24,21 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 
+	/**
+	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
+	 * wrapping a pojo of the type represented by this domain class.
+	 * 
+	 * <p>
+	 * The object will not be attached to any {@link ISession}.  Since created
+	 * objects normally should be attached, typically 
+	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
+	 * resultant object to the session) should be used instead. 
+	 * 
+	 * @return
+	 */
+	public <T> IDomainObject<T> createTransient();
+
+
 	public Class<T> getJavaClass();
 
 	/**

@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 
-import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.EmfFacadeAware;
 import de.berlios.rcpviewer.domain.IAdapterFactory;
@@ -35,7 +34,6 @@ import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
 
 
 /**

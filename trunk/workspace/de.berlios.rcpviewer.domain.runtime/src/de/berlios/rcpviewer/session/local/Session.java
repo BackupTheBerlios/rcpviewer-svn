@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
 import de.berlios.rcpviewer.progmodel.standard.DomainObject;
@@ -74,7 +74,7 @@ public class Session implements ISession, IObjectStoreAware {
 		return getDomainObjectsFor(domainObject.getDomainClass());
 	}
 
-	public <T> IDomainObject<T> createTransient(IDomainClass<T> domainClass) {
+	public <T> IDomainObject<T> createTransient(IRuntimeDomainClass<T> domainClass) {
 		IDomainObject<T> domainObject = domainClass.createTransient();
 		attach(domainObject);
 		return domainObject;

@@ -5,12 +5,9 @@ import java.util.List;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
 
 /**
  * Represents a class in the meta model, akin to {@link java.lang.Class} and
@@ -649,18 +646,4 @@ public interface IDomainClass<T> {
 
 	public boolean isDerived(EReference eReference);
 	
-	/**
-	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
-	 * wrapping a pojo of the type represented by this domain class.
-	 * 
-	 * <p>
-	 * The object will not be attached to any {@link ISession}.  Since created
-	 * objects normally should be attached, typically 
-	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
-	 * resultant object to the session) should be used instead. 
-	 * 
-	 * @return
-	 */
-	public <T> IDomainObject<T> createTransient();
-
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.session.Department;
 
 public class TestSessionFootprint extends AbstractTestCase  {
@@ -22,7 +23,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	 */
 	public void testSessionFootprintIsImmutable() {
 		
-		IDomainClass<Department> deptDomainClass = 
+		IRuntimeDomainClass<Department> deptDomainClass = 
 			Domain.lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
@@ -51,7 +52,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	 */
 	public void testSessionFootprintIgnoresDetached() {
 		
-		IDomainClass<Department> deptDomainClass = 
+		IRuntimeDomainClass<Department> deptDomainClass = 
 			Domain.instance().lookup(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.createTransient(deptDomainClass);
@@ -81,7 +82,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 	 */
 	public void testSessionFootprint() {
 		
-		IDomainClass<Department> deptDomainClass = 
+		IRuntimeDomainClass<Department> deptDomainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> hrDeptDomainObject = 
@@ -97,7 +98,7 @@ public class TestSessionFootprint extends AbstractTestCase  {
 		cateringDeptDomainObject.getPojo().setName("Catering");
 	
 	
-		IDomainClass<Employee> employeeDomainClass = 
+		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			Domain.lookupAny(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
 			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);

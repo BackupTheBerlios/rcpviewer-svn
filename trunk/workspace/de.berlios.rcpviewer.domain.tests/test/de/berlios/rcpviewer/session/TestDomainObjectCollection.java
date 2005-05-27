@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EReference;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 public class TestDomainObjectCollection extends AbstractTestCase  {
 
@@ -19,9 +20,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	}
 
 	public void testCanRemoveFromCollection() {
-		IDomainClass<Department> departmentDomainClass = 
+		IRuntimeDomainClass<Department> departmentDomainClass = 
 			Domain.lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = 
+		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			Domain.lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
@@ -42,9 +43,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	 *
 	 */
 	public void testGetCollection() {
-		IDomainClass<Department> departmentDomainClass = 
+		IRuntimeDomainClass<Department> departmentDomainClass = 
 			Domain.lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = 
+		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			Domain.lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
@@ -71,9 +72,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	}
 
 	public void testListenersNotifiedWhenAddToCollection() {
-		IDomainClass<Department> departmentDomainClass = 
+		IRuntimeDomainClass<Department> departmentDomainClass = 
 			Domain.lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = 
+		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			Domain.lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
@@ -94,9 +95,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	}
 
 	public void testListenersNotifiedWhenRemoveFromCollection() {
-		IDomainClass<Department> departmentDomainClass = 
+		IRuntimeDomainClass<Department> departmentDomainClass = 
 			Domain.lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = 
+		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			Domain.lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
@@ -121,9 +122,9 @@ public class TestDomainObjectCollection extends AbstractTestCase  {
 	}
 
 	public void testCanAddToCollection() {
-		IDomainClass<Department> departmentDomainClass = 
+		IRuntimeDomainClass<Department> departmentDomainClass = 
 			Domain.lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = 
+		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			Domain.lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 

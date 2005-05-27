@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.session;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 public class TestSession extends AbstractTestCase  {
 
@@ -22,7 +23,7 @@ public class TestSession extends AbstractTestCase  {
 	 * The returned object will be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		Domain.instance().done();
 		
@@ -37,7 +38,7 @@ public class TestSession extends AbstractTestCase  {
 	}
 
 	public void testDomainObjectSessionIdTakenFromManagingSession() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
@@ -54,7 +55,7 @@ public class TestSession extends AbstractTestCase  {
 	 * The returned object will be attached to any session.
 	 */
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		Domain.instance().done();
 		
@@ -71,7 +72,7 @@ public class TestSession extends AbstractTestCase  {
 	 * persistent. 
 	 */
 	public void testDomainObjectInitiallyTransient() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			domain.lookupAny(Department.class);
 		Domain.instance().done();
 		
@@ -82,7 +83,7 @@ public class TestSession extends AbstractTestCase  {
 
 
 	public void testCanRetrieveOncePersisted() {
-		IDomainClass<Department> domainClass = 
+		IRuntimeDomainClass<Department> domainClass = 
 			Domain.lookupAny(Department.class);
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);

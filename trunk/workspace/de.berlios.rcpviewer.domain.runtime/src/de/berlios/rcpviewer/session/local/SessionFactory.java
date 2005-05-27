@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.session.local;
 
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.session.ISession;
