@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
+import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionFactory;
 import de.berlios.rcpviewer.session.local.SessionManager;
@@ -35,7 +36,7 @@ public abstract class AbstractTestCase extends TestCase {
 		sessionManager = SessionManager.instance();
 		sessionFactory = new SessionFactory();
 		sessionFactory.setSessionManager(sessionManager);
-		sessionFactory.setDomainName(Domain.DEFAULT_DOMAIN_NAME);
+		sessionFactory.setDomainName(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
 		sessionFactory.setObjectStore(objectStore);
 		session = sessionFactory.createSession();

@@ -23,7 +23,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public class StandardProgModelExtension implements IDomainAnalyzer {
 
-	public void analyze(IDomainClass<?> domainClass) {
+	public <V> void analyze(IDomainClass<V> domainClass) {
 		domainClass.init();
 	}
 	

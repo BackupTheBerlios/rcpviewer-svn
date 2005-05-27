@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -36,7 +37,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param domainClass
 	 * @param pojo
 	 */
-	public DomainObject(final IDomainClass<T> domainClass, final T pojo) {
+	public DomainObject(final IRuntimeDomainClass<T> domainClass, final T pojo) {
 		this(domainClass, pojo, null);
 	}
 	
@@ -46,14 +47,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param domainClass
 	 * @param pojo
 	 */
-	public DomainObject(final IDomainClass<T> domainClass, final T pojo, final ISession session) {
+	public DomainObject(final IRuntimeDomainClass<T> domainClass, final T pojo, final ISession session) {
 		this.domainClass = domainClass;
 		this.pojo = pojo;
 		this.session = session;
 	}
 	
-	private IDomainClass<T> domainClass;
-	public IDomainClass<T> getDomainClass() {
+	private IRuntimeDomainClass<T> domainClass;
+	public IRuntimeDomainClass<T> getDomainClass() {
 		return domainClass;
 	}
 	public DomainClass<T> getDomainClassImpl() {

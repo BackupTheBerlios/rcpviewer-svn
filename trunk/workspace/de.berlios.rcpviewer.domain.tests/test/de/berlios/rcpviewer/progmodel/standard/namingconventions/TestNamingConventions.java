@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class TestNamingConventions extends TestCase {
 
-	private NamingConventions namingConventions;
+	private RuntimeNamingConventions namingConventions;
 	private Method departmentGetNameMethod;
 	private Method departmentNotAnAccessorMethod;
 	private Method departmentGetSupervisorMethod;
@@ -25,7 +25,7 @@ public class TestNamingConventions extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		namingConventions = new NamingConventions();
+		namingConventions = new RuntimeNamingConventions();
 
 		departmentGetNameMethod = Department.class.getMethod("getName", new Class[]{});
 		departmentNotAnAccessorMethod = Department.class.getMethod("foo", new Class[]{});;

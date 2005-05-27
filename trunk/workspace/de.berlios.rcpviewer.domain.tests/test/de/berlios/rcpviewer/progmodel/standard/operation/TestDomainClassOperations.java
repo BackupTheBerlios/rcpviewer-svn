@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.OperationKind;
 import de.berlios.rcpviewer.progmodel.standard.operation.Appointment;
 import de.berlios.rcpviewer.progmodel.standard.operation.AppointmentWithAccessor;
@@ -29,7 +30,7 @@ import de.berlios.rcpviewer.progmodel.standard.operation.CustomerWithPublicVisib
  */
 public class TestDomainClassOperations extends AbstractTestCase {
 
-	private IDomainClass<?> domainClass;
+	private IRuntimeDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -255,7 +256,8 @@ public class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals("marry", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(domainClass.isParameterADomainObject(eOperation, 0));
-		IDomainClass<?> eMarryFirstArgClass = domainClass.getDomainClassFor(eOperation, 0);
+		// HACK
+		IRuntimeDomainClass<?> eMarryFirstArgClass = (IRuntimeDomainClass)domainClass.getDomainClassFor(eOperation, 0);
 		assertSame(Man.class, eMarryFirstArgClass.getJavaClass());
 		
 	}

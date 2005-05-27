@@ -15,7 +15,7 @@ public class DomainEvent extends EventObject {
 	 * 
 	 * @param source
 	 */
-	DomainEvent(final Domain source) {
+	DomainEvent(final IDomain source) {
 		super(source);
 	}
 	
@@ -24,8 +24,8 @@ public class DomainEvent extends EventObject {
 	 * 
 	 * @return the metamodel that raised the event.
 	 */
-	public Domain getDomain() {
-		return (Domain)this.getSource();
+	public IDomain getDomain() {
+		return (IDomain)this.getSource();
 	}
 
 	/**

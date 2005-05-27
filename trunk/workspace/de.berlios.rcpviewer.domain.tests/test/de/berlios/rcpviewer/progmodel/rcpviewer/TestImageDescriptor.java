@@ -5,7 +5,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 
 /**
  * Tests for the use of the <tt>ImageUrlAt</tt> annotations.

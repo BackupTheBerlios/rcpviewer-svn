@@ -39,7 +39,7 @@ public interface IDomainClass<T> {
 	 * 
 	 * @return the owning domain for this domain class.
 	 */
-	public Domain getDomain();
+	public IDomain getDomain();
 	
 	/**
 	 * Underlying EMF {@link EClass} that holds the structural features and
@@ -551,6 +551,8 @@ public interface IDomainClass<T> {
 	 * have n parameters; the parameter must be a reference 
 	 * (see {@link #isParameterADomainObject(EOperation, int)}.
 	 * 
+	 * <p>
+	 * TODO: covariance of return types required for IRuntimeDomainClass subtype.
 	 * @param operation
 	 * @param parameterPosition from 0 to n-1
 	 * @return

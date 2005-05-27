@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EPackage;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.CustomerExplicitlyInDefaultDomain;
 import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain;
 import de.berlios.rcpviewer.progmodel.standard.domainclass.CustomerWithNoAttributes;
@@ -21,7 +22,7 @@ import de.berlios.rcpviewer.progmodel.standard.domainclass.Department;
 public class TestDomainClass extends AbstractTestCase {
 
 	private Domain domain2;
-	private IDomainClass<?> domainClass;
+	private IRuntimeDomainClass<?> domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}

@@ -9,9 +9,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
 
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
+
 
 /**
  * Mostly complete implementation of {@link IDomain}.
@@ -31,10 +29,10 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
  * 
  * @author Dan Haywood
  */
-public abstract class AbstractDomain {
+public abstract class AbstractDomain implements IDomain {
 
-	protected static Map<String,Domain> domainsByName = 
-		                                new HashMap<String,Domain>();
+	protected static Map<String,IDomain> domainsByName = 
+		                                new HashMap<String,IDomain>();
 
 	/**
 	 * Creates a new domain using specified {@link IDomainAnalyzer} as 
@@ -42,7 +40,7 @@ public abstract class AbstractDomain {
 	 * 
 	 * @see #getPrimaryExtension()
 	 */
-	protected Domain(final String name, final IDomainAnalyzer primaryExtension){
+	protected AbstractDomain(final String name, final IDomainAnalyzer primaryExtension){
 		if (domainsByName.get(name) != null) {
 			throw new IllegalArgumentException("Domain named '" + name + "' already exists.");
 		}
@@ -87,60 +85,6 @@ public abstract class AbstractDomain {
 	
 	
 	/**
-	 * Looks up the {@link DomainClass} for the supplied {@link Class} from 
-	 * this domain, creating it if not present, <i>provided</i> that the class 
-	 * in question is annotated with @InDomain with the name of this domain.
-	 * 
-	 * <p>
-	 * If already registered, simply returns, same way as 
-	 * {@link #lookupNoRegister(Class)}.
-	 * 
-	 * <p>
-	 * If there is no @InDomain annotation, then returns null.  Or, if there is
-	 * an @InDomain annotation that indicates (either implicitly or explicitly)
-	 * a domain name that is different from this metamodel's name, then again
-	 * returns null. 
-	 * 
-	 * <p>
-	 * To perform a lookup / register that will <i>always</i> return a
-	 * {@link IDomainClass}, irrespective of the @InDomain annotation, then use
-	 * {@link #lookupAny(Class)}. 
-	 * 
-	 * @param javaClass
-	 * @return corresponding {@link DomainClass}
-	 */
-	public final <V> IDomainClass<V> lookup(final Class<V> javaClass) {
-		InDomain domain = javaClass.getAnnotation(InDomain.class);
-		if (domain == null) {
-			return null;
-		}
-		if (!name.equals(domain.value())) {
-			return null;
-		}
-		
-		IDomainClass<V> domainClass = lookupNoRegister(javaClass);
-		if (domainClass == null) {
-			domainClass = new DomainClass<V>(this, javaClass);
-			domainClassesByjavaClass.put(javaClass, domainClass);
-			primaryExtension.analyze(domainClass);
-		}
-		return domainClass;
-	}
-	
-	public final <V> IDomainClass<V> lookup(final DomainClass<V> domainClass) {
-		Class<V> javaClass = domainClass.getJavaClass();
-		IDomainClass<V> existingDomainClass = lookupNoRegister(javaClass);
-		if (existingDomainClass != null) {
-			if (domainClass != existingDomainClass) {
-				throw new RuntimeException("Domain class already registered, '" + domainClass.getName() + "'");
-			}
-		} else {
-			domainClassesByjavaClass.put(javaClass, domainClass);
-		}
-		return domainClass;
-	}
-
-	/**
 	 * Looks up the {@link DomainClass} for the supplied {@link Class}.
 	 * 
 	 * <p>
@@ -148,11 +92,14 @@ public abstract class AbstractDomain {
 	 * {@link Domain#lookup(Class)} or {@link Domain#lookupAny(Class)}, then
 	 * will return <code>null</code>.
 	 *  
+	 * <P>
+	 * TODO: covariance of return type required for runtime impl.
+	 * 
 	 * @param javaClass
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
 	public final <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass) {
-		return (DomainClass<V>)domainClassesByjavaClass.get(javaClass);
+		return (IDomainClass<V>)domainClassesByjavaClass.get(javaClass);
 	}
 
 	/**
@@ -178,7 +125,7 @@ public abstract class AbstractDomain {
 		return domainClassesByjavaClass.keySet().size();
 	}
 
-	private final Map<Class<?>, IDomainClass<?>> domainClassesByjavaClass = 
+	protected final Map<Class<?>, IDomainClass<?>> domainClassesByjavaClass = 
 		new HashMap<Class<?>, IDomainClass<?>>();
 	public final <V> IDomainClass<V> domainClassFor(EClass eClass) {
 		Class<V> javaClass = (Class<V>)eClass.getInstanceClass();

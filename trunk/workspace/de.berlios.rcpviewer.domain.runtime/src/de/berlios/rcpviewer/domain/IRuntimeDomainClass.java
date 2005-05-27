@@ -1,17 +1,12 @@
 package de.berlios.rcpviewer.domain;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
 
 /**
  * Represents a class in the meta model, akin to {@link java.lang.Class} and

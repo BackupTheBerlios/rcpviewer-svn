@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
@@ -18,7 +19,7 @@ import de.berlios.rcpviewer.session.SessionObjectEvent;
 
 public class Session implements ISession, IObjectStoreAware {
 	
-	Session(String id, Domain domain, IObjectStore objectStore) {
+	Session(String id, IDomain domain, IObjectStore objectStore) {
 		this.id = id;
 		this.domain = domain;
 		this.objectStore = objectStore;
@@ -29,8 +30,8 @@ public class Session implements ISession, IObjectStoreAware {
 		return id;
 	}
 
-	private Domain domain;
-	public Domain getDomain() {
+	private IDomain domain;
+	public IDomain getDomain() {
 		return domain;
 	}
 

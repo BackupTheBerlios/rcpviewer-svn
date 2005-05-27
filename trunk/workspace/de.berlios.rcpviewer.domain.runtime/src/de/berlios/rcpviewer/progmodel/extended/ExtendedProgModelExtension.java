@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 /**
  * Adds annotations specific to the RCPViewer.
@@ -25,8 +26,12 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public class ExtendedProgModelExtension implements IDomainAnalyzer {
 
-	public void analyze(IDomainClass<?> domainClass) {
-		Class<?> javaClass = domainClass.getJavaClass();
+	public <V> void analyze(IDomainClass<V> domainClass) {
+		analyze((IRuntimeDomainClass<V>)domainClass);
+	}
+
+	public <V> void analyze(IRuntimeDomainClass<V> domainClass) {
+		Class<V> javaClass = domainClass.getJavaClass();
 		domainClass.setAdapterFactory(AttributeComparator.class, 
 			new AttributeComparatorAdapterFactory<AttributeComparator>());
 		

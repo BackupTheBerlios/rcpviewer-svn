@@ -26,5 +26,5 @@ import java.lang.annotation.*;
 @Inherited
 @Target(ElementType.TYPE)
 public @interface InDomain {
-	String value() default Constants.DEFAULT_DOMAIN_NAME;
+	String value() default ProgModelConstants.DEFAULT_DOMAIN_NAME;
 }

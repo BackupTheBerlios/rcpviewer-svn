@@ -16,7 +16,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public final class RuntimeNamingConventions extend NamingConventions {
+public final class RuntimeNamingConventions extends NamingConventions {
 
 	// ATTRIBUTES: START
 	

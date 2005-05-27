@@ -7,6 +7,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
 /**
  * Adds annotations specific to the RCPViewer.
@@ -22,8 +23,15 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public class RcpViewerExtension implements IDomainAnalyzer {
 
-	public void analyze(IDomainClass<?> domainClass) {
-		Class<?> javaClass = domainClass.getJavaClass();
+	/**
+	 * TODO: use parameters to downcast?
+	 */
+	public <V> void analyze(IDomainClass<V> domainClass) {
+		analyze((IRuntimeDomainClass<V>)domainClass);
+	}
+
+	public <V> void analyze(IRuntimeDomainClass<V> domainClass) {
+		Class<V> javaClass = domainClass.getJavaClass();
 		final ImageUrlAt imageUrlAt = javaClass.getAnnotation(ImageUrlAt.class);
 		if (imageUrlAt != null) {
 			try {

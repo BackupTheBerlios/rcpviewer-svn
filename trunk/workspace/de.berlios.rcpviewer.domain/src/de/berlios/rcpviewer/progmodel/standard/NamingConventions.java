@@ -1,12 +1,8 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
-
 import de.berlios.rcpviewer.domain.Constants;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.standard.impl.ValueMarker;
-import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Helper class that encapsulates the various naming conventions of the

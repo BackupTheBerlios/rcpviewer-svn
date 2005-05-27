@@ -26,8 +26,10 @@ import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.EmfFacadeAware;
 import de.berlios.rcpviewer.domain.IAdapterFactory;
+import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.II18nData;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.LinkSemanticsType;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.OperationKind;
@@ -55,14 +57,14 @@ import de.berlios.rcpviewer.session.ISession;
  * @author Dan Haywood
  */
 public class DomainClass<T> 
-		implements IDomainClass<T>,
+		implements IRuntimeDomainClass<T>,
 				   EmfFacadeAware {
 	
-	public DomainClass(final Domain domain, final Class<T> javaClass) {
+	public DomainClass(final IDomain domain, final Class<T> javaClass) {
 		
 		this.domain = domain;
 		this.javaClass = javaClass;
-		this.namingConventions = new NamingConventions();
+		this.namingConventions = new RuntimeNamingConventions();
 
 		identifyClass();
 	}
@@ -71,7 +73,7 @@ public class DomainClass<T>
 		this(null, javaClass);
 	}
 
-	private final Domain domain;
+	private final IDomain domain;
 	/**
 	 * The domain to which this DomainClass belongs.
 	 * 
@@ -81,12 +83,12 @@ public class DomainClass<T>
 	 * 
 	 * @return
 	 */
-	public Domain getDomain() {
+	public IDomain getDomain() {
 		return domain;
 	}
 
-	private final NamingConventions namingConventions;
-	public NamingConventions getNamingConventions() {
+	private final RuntimeNamingConventions namingConventions;
+	public RuntimeNamingConventions getNamingConventions() {
 		return namingConventions;
 	}
 
@@ -318,7 +320,7 @@ public class DomainClass<T>
 
 				((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
-				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
+				emfFacade.annotationOf(eAttribute, Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
 			
 			putAnnotationDetails(
@@ -505,7 +507,7 @@ public class DomainClass<T>
 	}
 
 	public boolean isWriteOnly(EAttribute eAttribute) {
-		return eAttribute.getEAnnotation(de.berlios.rcpviewer.progmodel.standard.Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
+		return eAttribute.getEAnnotation(Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 	}
 
 	public boolean isChangeable(EAttribute eAttribute) {

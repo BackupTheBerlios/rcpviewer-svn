@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.session;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 
 /**
@@ -86,6 +86,6 @@ public interface ISessionFactory {
 	 * 
 	 * @return
 	 */
-	Domain getDomain();
+	IDomain getDomain();
 	
 }

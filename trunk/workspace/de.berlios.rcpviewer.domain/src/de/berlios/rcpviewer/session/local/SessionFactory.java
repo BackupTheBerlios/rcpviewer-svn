@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.session.local;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionFactory;
@@ -33,7 +33,7 @@ public class SessionFactory implements ISessionFactory {
 		}
 	}
 
-	public Domain getDomain() {
+	public IDomain getDomain() {
 		assertInitialized();
 		return Domain.instance(getDomainName());
 	}

@@ -1,17 +1,8 @@
 package de.berlios.rcpviewer.domain;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
-
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
 
 /**
  * A registry of {@link IDomainClass}es within a given domain (or meta-model, 
@@ -80,7 +71,7 @@ public interface IDomain {
 	 */
 	public <V> IDomainClass<V> lookup(final Class<V> javaClass);
 	
-	public <V> IDomainClass<V> lookup(final DomainClass<V> domainClass);
+	public <V> IDomainClass<V> lookup(final IDomainClass<V> domainClass);
 
 	/**
 	 * Looks up the {@link DomainClass} for the supplied {@link Class}.

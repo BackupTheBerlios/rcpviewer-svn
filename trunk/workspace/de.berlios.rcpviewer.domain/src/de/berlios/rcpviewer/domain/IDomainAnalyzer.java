@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.domain;
 
 public interface IDomainAnalyzer {
 	
-	public void analyze(IDomainClass<?> domainClass);
+	public <V> void analyze(IDomainClass<V> domainClass);
 	
 
 }
