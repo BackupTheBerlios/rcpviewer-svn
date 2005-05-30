@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard.attribute;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithUnsettableA
 
 public abstract class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 
-	public TestDomainClassAttributesUnsettability(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClassAttributesUnsettability(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

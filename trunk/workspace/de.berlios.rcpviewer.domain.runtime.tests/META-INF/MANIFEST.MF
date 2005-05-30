@@ -1,34 +1,29 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.domain.tests
+Bundle-SymbolicName: de.berlios.rcpviewer.domain.runtime.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/
-Bundle-Activator: de.berlios.rcpviewer.domain.tests.TestsPlugin
+Bundle-Activator: de.berlios.rcpviewer.domain.runtime.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.eclipse.ui.ide,
- org.junit,
- de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.domain.fixture,
- de.berlios.rcpviewer.progmodel.extended,
- de.berlios.rcpviewer.progmodel.rcpviewer,
- de.berlios.rcpviewer.progmodel.standard,
+ de.berlios.rcpviewer.domain.tests,
  de.berlios.rcpviewer.domain.runtime,
- de.berlios.rcpviewer.domain.compiletime
+ de.berlios.rcpviewer.domain,
+ org.junit
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team
 Export-Package: de.berlios.rcpviewer,
  de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.domain.tests,
+ de.berlios.rcpviewer.domain.runtime.tests,
  de.berlios.rcpviewer.progmodel.extended,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard.attribute,
  de.berlios.rcpviewer.progmodel.standard.domainclass,
  de.berlios.rcpviewer.progmodel.standard.i18n,
  de.berlios.rcpviewer.progmodel.standard.namesanddesc,
- de.berlios.rcpviewer.progmodel.standard.namingconventions,
  de.berlios.rcpviewer.progmodel.standard.operation,
- de.berlios.rcpviewer.progmodel.standard.reference
+ de.berlios.rcpviewer.progmodel.standard.reference,
+ de.berlios.rcpviewer.session

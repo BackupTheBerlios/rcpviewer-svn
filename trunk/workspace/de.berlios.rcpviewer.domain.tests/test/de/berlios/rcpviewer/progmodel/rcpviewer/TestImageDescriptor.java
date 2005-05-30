@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.progmodel.rcpviewer;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public abstract class TestImageDescriptor extends AbstractTestCase {
 
-	public TestImageDescriptor(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestImageDescriptor(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

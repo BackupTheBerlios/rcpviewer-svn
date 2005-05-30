@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard.attribute;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -17,7 +17,7 @@ import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithWriteOnlyAt
 
 public abstract class TestDomainClassAttributes extends AbstractTestCase {
 
-	public TestDomainClassAttributes(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClassAttributes(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

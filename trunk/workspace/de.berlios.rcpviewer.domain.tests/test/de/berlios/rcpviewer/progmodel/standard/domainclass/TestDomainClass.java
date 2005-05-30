@@ -3,7 +3,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
@@ -20,7 +20,7 @@ import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain
  */
 public abstract class TestDomainClass extends AbstractTestCase {
 
-	public TestDomainClass(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClass(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

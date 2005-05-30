@@ -19,12 +19,12 @@ import de.berlios.rcpviewer.session.local.SessionManager;
  */
 public abstract class AbstractTestCase extends TestCase {
 
-	public AbstractTestCase(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public AbstractTestCase(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		this.domainSpecifics = domainSpecifics;
 		this.domainAnalyzer = domainAnalyzer;
 	}
 	
-	public AbstractTestCase(String name, IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(name);
 		this.domainSpecifics = domainSpecifics;
 		this.domainAnalyzer = domainAnalyzer;
@@ -35,7 +35,7 @@ public abstract class AbstractTestCase extends TestCase {
 		return domainAnalyzer;
 	}
 
-	private final IDomainSpecifics domainSpecifics; 
+	private final IDeploymentSpecifics domainSpecifics; 
 	protected IDomain getDomainInstance() {
 		return domainSpecifics.getDomainInstance();
 	}

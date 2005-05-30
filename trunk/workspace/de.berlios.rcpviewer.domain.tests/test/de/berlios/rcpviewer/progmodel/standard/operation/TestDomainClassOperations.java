@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -22,7 +22,7 @@ import de.berlios.rcpviewer.domain.OperationKind;
  */
 public abstract class TestDomainClassOperations extends AbstractTestCase {
 
-	public TestDomainClassOperations(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClassOperations(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

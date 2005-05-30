@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard.namesanddesc;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -23,7 +23,7 @@ import de.berlios.rcpviewer.progmodel.standard.namesanddesc.ProspectiveSale;
  */
 public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
-	public TestExplicitNamesAndDescriptions(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestExplicitNamesAndDescriptions(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

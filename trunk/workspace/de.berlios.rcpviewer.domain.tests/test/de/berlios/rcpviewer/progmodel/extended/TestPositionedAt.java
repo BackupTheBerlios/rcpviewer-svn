@@ -5,7 +5,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.IDomainSpecifics;
+import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -17,7 +17,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public abstract class TestPositionedAt extends AbstractTestCase {
 
-	public TestPositionedAt(IDomainSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestPositionedAt(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
