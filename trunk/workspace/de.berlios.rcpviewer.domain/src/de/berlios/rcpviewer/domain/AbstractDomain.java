@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EClass;
  * 
  * <p>
  * Concrete implementations need to nominate their primary 
- * {@link IDomainAnalyzer} used to actually build the domain's meta-model.
+ * {@link IDomainBuilder} used to actually build the domain's meta-model.
  * For example, the runtime (RCP) implementation uses an analyzer that uses
  * Java reflection, whereas the compile-time (IDE) implementation uses an
  * analyzer that uses Eclipse's Java AST API.
@@ -35,17 +35,17 @@ public abstract class AbstractDomain implements IDomain {
 		                                new HashMap<String,IDomain>();
 
 	/**
-	 * Creates a new domain using specified {@link IDomainAnalyzer} as 
-	 * the a primary extension.
+	 * Creates a new domain using specified {@link IDomainBuilder} as 
+	 * the a primary builder.
 	 * 
-	 * @see #getPrimaryExtension()
+	 * @see #getPrimaryBuilder()
 	 */
-	protected AbstractDomain(final String name, final IDomainAnalyzer primaryExtension){
+	protected AbstractDomain(final String name, final IDomainBuilder primaryBuilder){
 		if (domainsByName.get(name) != null) {
 			throw new IllegalArgumentException("Domain named '" + name + "' already exists.");
 		}
 		this.name = name;
-		this.primaryExtension = primaryExtension; 
+		this.primaryBuilder = primaryBuilder; 
 	}
 
 	private final String name;
@@ -54,23 +54,23 @@ public abstract class AbstractDomain implements IDomain {
 	}
 	
 
-	private final IDomainAnalyzer primaryExtension;
+	private final IDomainBuilder primaryBuilder;
 	/**
-	 * The primary extension is responsible for traversing the graph of
+	 * The primary builder is responsible for traversing the graph of
 	 * POJOs to build the extent of the meta model.
 	 */
-	public final IDomainAnalyzer getPrimaryExtension() {
-		return primaryExtension;
+	public final IDomainBuilder getPrimaryBuilder() {
+		return primaryBuilder;
 	}
 
-	private List<IDomainAnalyzer> extensions = new ArrayList<IDomainAnalyzer>();
+	private List<IDomainBuilder> builders = new ArrayList<IDomainBuilder>();
 	/**
 	 * Call after registering all classes.
 	 * 
-	 * @param extension
+	 * @param builder
 	 */
-	public final void addExtension(IDomainAnalyzer extension) {
-		extensions.add(extension);
+	public final void addBuilder(IDomainBuilder builder) {
+		builders.add(builder);
 	}
 
 	/**
@@ -104,13 +104,13 @@ public abstract class AbstractDomain implements IDomain {
 
 	/**
 	 * Indicates that all classes have been registered / created, so that
-	 * any additionally installed {@link IDomainAnalyzer}s can do their stuff.
+	 * any additionally installed {@link IDomainBuilder}s can do their stuff.
 	 * 
 	 */
 	public void done() {
-		for(IDomainAnalyzer extension: extensions) {
+		for(IDomainBuilder builder: builders) {
 			for(IDomainClass domainClass: new ArrayList<IDomainClass>(classes())) {
-				extension.analyze(domainClass);
+				builder.build(domainClass);
 			}
 		}
 	}
@@ -118,7 +118,7 @@ public abstract class AbstractDomain implements IDomain {
 
 	public void reset() {
 		domainClassesByjavaClass.clear();
-		extensions.clear();
+		builders.clear();
 	}
 	
 	public final int size() {

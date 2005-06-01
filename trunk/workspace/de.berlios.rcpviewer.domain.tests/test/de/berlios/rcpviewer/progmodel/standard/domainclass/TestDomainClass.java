@@ -6,7 +6,7 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.CustomerExplicitlyInDefaultDomain;
@@ -20,7 +20,7 @@ import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain
  */
 public abstract class TestDomainClass extends AbstractTestCase {
 
-	public TestDomainClass(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClass(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

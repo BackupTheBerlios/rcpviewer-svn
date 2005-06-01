@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
@@ -21,9 +21,9 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * @author Dan Haywood
  *
  */
-public class StandardProgModelExtension implements IDomainAnalyzer {
+public class StandardProgModelDomainBuilder implements IDomainBuilder {
 
-	public <V> void analyze(IDomainClass<V> domainClass) {
+	public <V> void build(IDomainClass<V> domainClass) {
 		domainClass.init();
 	}
 	

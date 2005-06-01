@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
@@ -19,19 +19,19 @@ import de.berlios.rcpviewer.session.local.SessionManager;
  */
 public abstract class AbstractTestCase extends TestCase {
 
-	public AbstractTestCase(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public AbstractTestCase(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		this.domainSpecifics = domainSpecifics;
 		this.domainAnalyzer = domainAnalyzer;
 	}
 	
-	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(name);
 		this.domainSpecifics = domainSpecifics;
 		this.domainAnalyzer = domainAnalyzer;
 	}
 
-	private final IDomainAnalyzer domainAnalyzer;
-	protected IDomainAnalyzer getDomainAnalyzer() {
+	private final IDomainBuilder domainAnalyzer;
+	protected IDomainBuilder getDomainAnalyzer() {
 		return domainAnalyzer;
 	}
 

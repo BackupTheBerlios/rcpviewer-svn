@@ -5,7 +5,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public abstract class TestImageDescriptor extends AbstractTestCase {
 
-	public TestImageDescriptor(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestImageDescriptor(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
@@ -34,7 +34,7 @@ public abstract class TestImageDescriptor extends AbstractTestCase {
 	
 	public void testDomainClassWithImageUrlAt() {
 		domainClass = lookupAny(ProspectiveSale.class);
-		getDomainInstance().addExtension(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
@@ -42,10 +42,10 @@ public abstract class TestImageDescriptor extends AbstractTestCase {
 	}
 
 	/**
-	 * currently failing: still returning an ImageDescriptor even if no extension installed ...
+	 * currently failing: still returning an ImageDescriptor even if no builder installed ...
 	 *
 	 */
-	public void incompletetestDomainClassWithImageUrlAtWithoutExtensionInstalled() {
+	public void incompletetestDomainClassWithImageUrlAtWithoutBuilderInstalled() {
 		domainClass = lookupAny(ProspectiveSale.class);
 		Domain.instance().done();
 		

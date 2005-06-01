@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithOnlyIsUnsetForAttribute;
 import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithOnlyUnsetForAttribute;
@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithUnsettableA
 
 public abstract class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 
-	public TestDomainClassAttributesUnsettability(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClassAttributesUnsettability(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

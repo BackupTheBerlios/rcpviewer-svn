@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
@@ -21,12 +21,12 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
  * @author Dan Haywood
  *
  */
-public class RcpViewerExtension implements IDomainAnalyzer {
+public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 
 	/**
 	 * TODO: use parameters to downcast?
 	 */
-	public <V> void analyze(IDomainClass<V> domainClass) {
+	public <V> void build(IDomainClass<V> domainClass) {
 		analyze((IRuntimeDomainClass<V>)domainClass);
 	}
 

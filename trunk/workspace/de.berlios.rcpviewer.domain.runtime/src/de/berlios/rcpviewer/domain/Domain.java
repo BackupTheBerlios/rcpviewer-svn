@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.domain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelExtension;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
 
 /**
  * Implementation of {@link IDomain} for the runtime (RCP) environment.
@@ -82,13 +82,13 @@ public final class Domain extends AbstractDomain {
 	}
 	
 	/**
-	 * Creates a new domain using {@link StandardProgModelExtension} as the
-	 * a primary extension.
+	 * Creates a new domain using {@link StandardProgModelDomainBuilder} as the
+	 * a primary builder.
 	 * 
-	 * @see #getPrimaryExtension()
+	 * @see #getPrimaryBuilder()
 	 */
 	private Domain(final String name) {
-		super(name, new StandardProgModelExtension()); 
+		super(name, new StandardProgModelDomainBuilder()); 
 	}
 
 	
@@ -129,7 +129,7 @@ public final class Domain extends AbstractDomain {
 		if (domainClass == null) {
 			domainClass = new DomainClass<V>(this, javaClass);
 			domainClassesByjavaClass.put(javaClass, domainClass);
-			getPrimaryExtension().analyze(domainClass);
+			getPrimaryBuilder().build(domainClass);
 		}
 		return domainClass;
 	}

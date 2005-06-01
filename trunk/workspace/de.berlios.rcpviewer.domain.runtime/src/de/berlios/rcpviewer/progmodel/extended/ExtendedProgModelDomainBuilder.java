@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 
@@ -24,9 +24,9 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
  * @author Dan Haywood
  *
  */
-public class ExtendedProgModelExtension implements IDomainAnalyzer {
+public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
-	public <V> void analyze(IDomainClass<V> domainClass) {
+	public <V> void build(IDomainClass<V> domainClass) {
 		analyze((IRuntimeDomainClass<V>)domainClass);
 	}
 

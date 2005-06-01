@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.progmodel.rcpviewer;
 
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 
 /**
  * Binds the tests in {@link TestImageDescriptor} to the runtime environment.
@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.domain.IDomainAnalyzer;
 public class TestImageDescriptorAtRuntime extends TestImageDescriptor {
 
 	public TestImageDescriptorAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new RcpViewerExtension());
+		super(new RuntimeDomainSpecifics(), new RcpViewerProgModelDomainBuilder());
 	}
 
 }

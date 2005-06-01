@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
@@ -17,7 +17,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public abstract class TestPositionedAt extends AbstractTestCase {
 
-	public TestPositionedAt(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestPositionedAt(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
@@ -33,7 +33,7 @@ public abstract class TestPositionedAt extends AbstractTestCase {
 	public void testDomainClassWithAllAttributesPositioned() {
 		domainClass = 
 			lookupAny(CustomerWithAllAttributesPositioned.class);
-		getDomainInstance().addExtension(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 		
 		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);

@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer;
 
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
@@ -20,11 +20,11 @@ import de.berlios.rcpviewer.session.local.SessionManager;
  */
 public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 
-	public AbstractRuntimeTestCase(IDomainAnalyzer domainAnalyzer) {
+	public AbstractRuntimeTestCase(IDomainBuilder domainAnalyzer) {
 		super(new RuntimeDomainSpecifics(), domainAnalyzer);
 	}
 	
-	public AbstractRuntimeTestCase(String name, IDomainAnalyzer domainAnalyzer) {
+	public AbstractRuntimeTestCase(String name, IDomainBuilder domainAnalyzer) {
 		super(name, new RuntimeDomainSpecifics(), domainAnalyzer);
 	}
 	

@@ -12,7 +12,7 @@ import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 public class TestPositionedAtRuntime extends TestPositionedAt {
 
 	public TestPositionedAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelExtension());
+		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
 	}
 
 }

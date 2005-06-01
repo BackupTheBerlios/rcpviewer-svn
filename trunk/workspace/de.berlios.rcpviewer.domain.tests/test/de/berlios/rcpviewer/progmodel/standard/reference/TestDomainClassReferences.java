@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EReference;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.reference.Department;
 import de.berlios.rcpviewer.progmodel.standard.reference.DepartmentDerivedReferences;
@@ -17,7 +17,7 @@ import de.berlios.rcpviewer.progmodel.standard.reference.ReferencesName;
 
 public abstract class TestDomainClassReferences extends AbstractTestCase {
 
-	public TestDomainClassReferences(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClassReferences(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

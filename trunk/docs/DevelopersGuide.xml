@@ -210,7 +210,7 @@
         <sidebar>
           <para>As an interesting side note, Trygve Reenskaug - the originator
           of the MVC pattern and external examiner to Richard's thesis - has
-          noted that an original intent of MVS was that every model object
+          noted that an original intent of MVC was that every model object
           should have a default rendering of itself. Unfortunately, they just
           didn't get around to implementing it - and the rest, as they say, is
           history.</para>
@@ -277,6 +277,34 @@
   </chapter>
 
   <chapter>
+    <title>RcpViewer Concepts</title>
+
+    <para></para>
+
+    <para>In this chapter we describe some of the main concepts of the
+    RcpViewer implementation of the Naked Objects pattern.</para>
+
+    <section>
+      <title>IDomain and IDomainClass</title>
+
+      <para>The engine of RcpViewer is IDomain and the IDomainClasses that it
+      contains.</para>
+    </section>
+
+    <section>
+      <title>Session</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Multiple Domains</title>
+
+      <para></para>
+    </section>
+  </chapter>
+
+  <chapter>
     <title>Standard Programming Model</title>
 
     <para></para>
@@ -325,8 +353,7 @@
     <section>
       <title>Domain Class</title>
 
-      <para>any class annotated @Domain (not working as of yet: implement
-      IDomainMarker).</para>
+      <para>any class annotated @InDomain("default").</para>
 
       <para>Use @Named</para>
 

@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.IDomainAnalyzer;
+import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.CustomerWithLowerBoundReadOnlyAttribute;
 import de.berlios.rcpviewer.progmodel.standard.CustomerWithNoLowerBoundReadOnlyAttribute;
@@ -14,7 +14,7 @@ import de.berlios.rcpviewer.progmodel.standard.CustomerWithUpperBoundReadOnlyAtt
 
 public abstract class TestDomainClassAttributesCardinality extends AbstractTestCase {
 
-	public TestDomainClassAttributesCardinality(IDeploymentSpecifics domainSpecifics, IDomainAnalyzer domainAnalyzer) {
+	public TestDomainClassAttributesCardinality(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(domainSpecifics, domainAnalyzer);
 	}
 

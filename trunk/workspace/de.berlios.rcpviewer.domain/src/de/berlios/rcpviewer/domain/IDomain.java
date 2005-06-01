@@ -21,10 +21,14 @@ public interface IDomain {
 	
 
 	/**
-	 * The primary analyzer is responsible for traversing the graph of
+	 * The primary builder is responsible for traversing the graph of
 	 * POJOs to build the extent of the domain's meta model.
+	 * 
+	 * <p>
+	 * To get things started, normally one or two domain classes need to be
+	 * registered implicitly by looking them up, see {@link #lookup(Class)}.
 	 */
-	public IDomainAnalyzer getPrimaryExtension();
+	public IDomainBuilder getPrimaryBuilder();
 
 	/**
 	 * Perform additional analysis of domain classes.
@@ -33,9 +37,9 @@ public interface IDomain {
 	 * The analysis is not performed until {@link IDomain#done()} is
 	 * called.
 	 * 
-	 * @param extension
+	 * @param builder
 	 */
-	public void addExtension(IDomainAnalyzer extension);
+	public void addBuilder(IDomainBuilder builder);
 
 	/**
 	 * Returns a collection of {@link IDomainClass}es, each one parameterized
@@ -96,7 +100,7 @@ public interface IDomain {
 
 	/**
 	 * For testing purposes, clear out any {@link IDomainClass}es and
-	 * installed {@link IDomainAnalyzer}s.
+	 * installed {@link IDomainBuilder}s.
 	 */
 	public void reset();
 	
