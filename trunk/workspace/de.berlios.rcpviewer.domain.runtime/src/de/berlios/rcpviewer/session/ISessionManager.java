@@ -1,5 +1,12 @@
 package de.berlios.rcpviewer.session;
 
+import java.util.Collection;
+
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.persistence.IObjectStore;
+import de.berlios.rcpviewer.session.local.Session;
+
 /**
  * A singleton that, with the co-operation of {@link ISessionFactory}, keeps 
  * track of all {@link ISession}s that have been instantiated.
@@ -57,4 +64,47 @@ public interface ISessionManager {
 	 * @return session with given identifier.
 	 */
 	public ISession get(String id);
+
+	// REVIEW_CHANGE added method - ted
+	/**
+	 * Set the system's current session
+	 */
+	public void setCurrentSession(String id);
+	
+	
+	// REVIEW_CHANGE added method - ted
+	/**
+	 * @return The ID of the current session.  May return null if there is no current session.
+	 */
+	public String getCurrentSession();
+	
+	
+	// REVIEW_CHANGE added method - ted
+	/**
+	 * Add a session to the collection of managed sessions.
+	 * @return This manager will assign an ID to the session and return the ID. 
+	 */
+	public String addSession(Session session);
+	
+	// REVIEW_CHANGE added method - ted
+	/**
+	 * Add a listener that will be notified of session manager changes
+	 */
+	public void addSessionManagerListener(ISessionManagerListener listener);
+	
+	// REVIEW_CHANGE added method - ted
+	/**
+	 * Remove a previously added listener
+	 */
+	public void removeSessionManagerListener(ISessionManagerListener listener);
+
+	// REVIEW_CHANGE added method - ted
+	/**
+	 * Remove a session from the collection of managed sessions.
+	 */
+	public void removeSession(String sessionId);
+
+	// REVIEW_CHANGE added method - ted
+	public Collection<ISession> getAllSessions();
+	
 }

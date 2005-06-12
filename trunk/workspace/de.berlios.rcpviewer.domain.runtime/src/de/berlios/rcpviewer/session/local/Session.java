@@ -19,6 +19,12 @@ import de.berlios.rcpviewer.session.SessionObjectEvent;
 
 public class Session implements ISession, IObjectStoreAware {
 	
+	// REVIEW_CHANGE added method - ted
+	public Session(IDomain domain, IObjectStore objectStore) {
+		this.domain = domain;
+		this.objectStore = objectStore;
+	}
+
 	Session(String id, IDomain domain, IObjectStore objectStore) {
 		this.id = id;
 		this.domain = domain;
@@ -28,6 +34,10 @@ public class Session implements ISession, IObjectStoreAware {
 	private String id;
 	public String getId() {
 		return id;
+	}
+	// REVIEW_CHANGE added method - ted
+	public void setId(String value) {
+		id= value;
 	}
 
 	private IDomain domain;

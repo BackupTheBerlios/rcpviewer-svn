@@ -1,8 +1,16 @@
 package de.berlios.rcpviewer.domain.runtime;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
-import java.util.*;
+
+import de.berlios.rcpviewer.domain.IDomainRegistry;
+import de.berlios.rcpviewer.internal.DomainRegistry;
+import de.berlios.rcpviewer.session.ISessionManager;
+import de.berlios.rcpviewer.session.local.SessionManager;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -12,6 +20,9 @@ public class RuntimePlugin extends Plugin {
 	private static RuntimePlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	
+	private IDomainRegistry _domainRegistry;
+	private ISessionManager _sessionManager;
 	
 	/**
 	 * The constructor.
@@ -70,4 +81,31 @@ public class RuntimePlugin extends Plugin {
 		return resourceBundle;
 	}
 
+//	REVIEW_CHANGE Added this method.  ted 
+	public IDomainRegistry getDomainRegistry() {
+		try {
+			if (_domainRegistry == null) {
+				synchronized (this) {
+					if (_domainRegistry == null)
+						_domainRegistry= new DomainRegistry();
+				}
+			}
+			return _domainRegistry;
+		}
+		catch (CoreException x) {
+			getLog().log(x.getStatus());
+			throw new RuntimeException(x);
+		}
+	}
+
+//	REVIEW_CHANGE Added this method.  ted 
+	public ISessionManager getSessionManager() throws CoreException {
+		if (_sessionManager == null) {
+			synchronized (this) {
+				if (_sessionManager == null)
+					_sessionManager= new SessionManager();
+			}
+		}
+		return _sessionManager;
+	}
 }

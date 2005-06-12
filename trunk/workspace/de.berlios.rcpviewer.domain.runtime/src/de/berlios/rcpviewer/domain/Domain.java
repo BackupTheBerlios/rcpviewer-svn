@@ -3,7 +3,8 @@ package de.berlios.rcpviewer.domain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
+
+//REVIEW_CHANGE Removed final from the class to allow subclassing.  ted 
 
 /**
  * Implementation of {@link IDomain} for the runtime (RCP) environment.
@@ -21,7 +22,7 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
  * 
  * @author Dan Haywood
  */
-public final class Domain extends AbstractDomain {
+public class Domain extends AbstractDomain {
 
 	/**
 	 * Returns the Domain instance with the given name (creating it if
@@ -87,7 +88,7 @@ public final class Domain extends AbstractDomain {
 	 * 
 	 * @see #getPrimaryBuilder()
 	 */
-	private Domain(final String name) {
+	protected Domain(final String name) {
 		super(name, new StandardProgModelDomainBuilder()); 
 	}
 

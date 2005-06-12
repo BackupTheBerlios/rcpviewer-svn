@@ -1,5 +1,9 @@
 package de.berlios.rcpviewer.persistence;
 
+import java.util.Collection;
+
+import de.berlios.rcpviewer.session.ISession;
+
 /**
  * Abstracts out mechanics of persisting pojos.
  * 
@@ -17,12 +21,12 @@ public interface IObjectStore {
 	 * Persist this object such that it may be retrieved at a later date.
 	 * 
 	 * 
-	 * @param domainObject
+	 * @param domainObject 
 	 */
 	public void persist(String title, Object pojo);
 
 	Object findByTitle(Class<?> javaClass, String title);
-
+	
 	/**
 	 * For testing purposes.
 	 *
