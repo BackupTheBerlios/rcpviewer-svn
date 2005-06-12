@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Spike 3
+Bundle-SymbolicName: de.berlios.rcpviewer.mikespike3; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: library.jar
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui;visibility:=reexport,
+ org.eclipse.core.runtime;visibility:=reexport,
+ org.eclipse.ui.forms,
+ de.berlios.rcpviewer.domain,
+ de.berlios.rcpviewer.rcp,
+ net.sf.plugins.acegisecurity,
+ net.sf.plugins.springframework,
+ org.eclipse.ui.editors,
+ de.berlios.rcpviewer.domain.runtime
+Eclipse-AutoStart: true
+Bundle-Vendor: Mike
+Bundle-Activator: mikespike3.application.EasyBeanPlugin
+Export-Package: mikespike3,
+ mikespike3.application,
+ mikespike3.commands,
+ mikespike3.model,
+ mikespike3.util

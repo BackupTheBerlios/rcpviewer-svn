@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   
+   <extension
+         id="mikespike3"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="mikespike3.application.EasyBeanSpringLauncher">
+         </run>
+      </application>
+   </extension>
+   
+    <extension point="net.sf.plugins.springframework.beanFactories">
+        <beanFactory
+              file="beanfactory.xml"
+              id="de.berlios.rcpviewer.easybean">
+           <import id="net.sf.plugins.springframework.rcp"/>
+        </beanFactory>
+    </extension>
+   
+   
+    
+    <extension
+          point="de.berlios.rcpviewer.domain.runtime.domains">
+       <domain
+             class="mikespike3.model.EasyBeanDomain"
+             id="domain"/>
+    </extension>
+   
+
+</plugin>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+	Application context for EasyBean RCPViewer example.
+-->
+<beans>
+
+	<!-- *****************
+		 *
+		 * main application entry point 
+		 *
+		 ***************** 	-->
+	<bean id="main" class="mikespike3.application.EasyBeanApplication">
+		<constructor-arg>
+			<ref bean="authenticationCommand" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="createAndRunWorkbenchCommand" />
+		</constructor-arg>
+	</bean>
+	
+	
+	<!-- *****************
+		 *
+		 * commands
+		 *
+		 ***************** 	-->
+	<bean id="authenticationCommand" class="mikespike3.application.EasyBeanAuthenticationCommand">
+		<constructor-arg>
+			<ref bean="loginWizard" />
+		</constructor-arg>
+	</bean>
+	
+	<bean id="createAndRunWorkbenchCommand" class="mikespike3.application.EasyBeanCreateAndRunWorkbenchCommand">
+		<constructor-arg>
+			<ref bean="org.eclipse.swt.widgets.display" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="workbenchAdvisor" />
+		</constructor-arg>
+	</bean>
+
+	
+	<!-- *****************
+		 *
+		 * services
+		 *
+		 ***************** 	-->
+	<bean id="authenticationManager" class="mikespike3.application.EasyBeanAuthenticationManager">
+	</bean>
+	
+		
+	<bean id="loginWizard" class="mikespike3.application.LoginWizard" >
+		<constructor-arg>
+			<ref bean="formToolkit" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="authenticationManager" />
+		</constructor-arg>
+		<property name="windowText" value="EasyBean Example Application"/>
+		<property name="titleText" value="Please Sign In"/>
+	</bean>
+	
+	<bean id="formToolkit" class="net.sf.plugins.utils.ui.forms.DialogFormToolkit" singleton="false" >
+		<constructor-arg>
+			<ref bean="org.eclipse.swt.widgets.display" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="workbenchAdvisor" class="mikespike3.application.EasyBeanWorkbenchAdvisor" >
+	</bean>
+
+</beans>
