@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            canSearchEnclosingProjects="false"
+            class="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchPage"
+            enabled="true"
+            id="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchPage"
+            label="In Memory Object Store Search"
+            showScopeSection="false"/>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchResultPage"
+            id="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchResultPage"
+            searchResultClass="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchQuery"/>
+   </extension>
+
+
+</plugin>

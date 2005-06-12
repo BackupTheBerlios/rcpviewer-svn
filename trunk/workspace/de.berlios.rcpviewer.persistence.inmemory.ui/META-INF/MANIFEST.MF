@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: de.berlios.rcpviewer.persistence.inmemory.ui
+Bundle-SymbolicName: de.berlios.rcpviewer.persistence.inmemory.ui; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: runtime.jar
+Bundle-Vendor: RcpViewer Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime.compatibility,
+ de.berlios.rcpviewer.domain,
+ org.eclipse.ui,
+ org.eclipse.search,
+ de.berlios.rcpviewer.domain.runtime,
+ net.sf.plugins.utils,
+ de.berlios.rcpviewer.rcp
+Eclipse-AutoStart: true
+Export-Package: de.berlios.rcpviewer.persistence.inmemory
