@@ -48,9 +48,12 @@ public abstract class AbstractDomain implements IDomain {
 		this.primaryBuilder = primaryBuilder; 
 	}
 
-	private final String name;
+	private String name;
 	public final String getName() {
 		return name;
+	}
+	protected void setName(String name) {
+		this.name= name;
 	}
 	
 
