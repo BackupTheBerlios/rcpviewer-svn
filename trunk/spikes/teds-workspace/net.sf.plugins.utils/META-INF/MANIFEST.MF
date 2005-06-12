@@ -9,5 +9,6 @@ Require-Bundle: org.eclipse.jface,
  org.eclipse.swt,
  org.eclipse.core.runtime.compatibility,
  org.eclipse.ui.forms
-Export-Package: net.sf.plugins.utils.ui.forms,
- net.sf.rcpplugins.utils
+Bundle-ClassPath: library.jar
+Export-Package: net.sf.plugins.utils,
+ net.sf.plugins.utils.ui.forms
