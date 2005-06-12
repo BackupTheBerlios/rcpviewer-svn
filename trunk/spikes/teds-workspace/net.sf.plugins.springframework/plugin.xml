@@ -9,5 +9,8 @@
          	<run class="net.sf.plugins.springframework.SpringApplicationLauncher" />
          </application>
    </extension>
+    <extension point="net.sf.plugins.springframework.beanFactories">
+        <beanFactory id="net.sf.plugins.springframework.rcp" file="swtbeanfactory.xml" />
+    </extension>
 
 </plugin>

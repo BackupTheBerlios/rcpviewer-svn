@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Spring Framework
-Bundle-SymbolicName: net.sf.plugins.springframework
+Bundle-SymbolicName: net.sf.plugins.springframework; singleton:=true
 Bundle-Version: 1.2
 Bundle-Vendor: springframework.org
 Bundle-Localization: plugin
@@ -76,4 +76,6 @@ Export-Package: net.sf.plugins.springframework,
  org.springframework.util.xml,
  org.springframework.validation
 Require-Bundle: org.eclipse.core.runtime.compatibility,
- net.sf.plugins.commons
+ net.sf.plugins.commons,
+ org.eclipse.swt
+Plugin-Class: net.sf.plugins.springframework.SpringPlugin

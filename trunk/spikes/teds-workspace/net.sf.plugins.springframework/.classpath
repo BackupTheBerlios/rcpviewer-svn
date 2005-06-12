@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" sourcepath="C:/tools/spring-framework-1.2-rc2/src" kind="lib" path="dist/spring-core.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" sourcepath="C:/tools/spring-framework-1.2-rc2/src" kind="lib" path="dist/spring-beans.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" path="src/"/>
+	<classpathentry exported="true" kind="lib" path="dist/spring-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="dist/spring-beans.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-aop.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-context.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-dao.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-jdbc.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-mock.jar"/>
-	<classpathentry exported="true" kind="lib" path="dist"/>
+	<classpathentry exported="true" sourcepath="dist" kind="lib" path="dist"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>

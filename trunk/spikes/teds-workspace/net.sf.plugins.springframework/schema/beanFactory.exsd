@@ -13,6 +13,7 @@
    <element name="beanFactory">
       <complexType>
          <sequence>
+            <element ref="import"/>
          </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -25,6 +26,23 @@
             <annotation>
                <documentation>
                   Denotes the location within the plugin of a spring configuration file.  This configuration file is used to initialize the bean factory
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="import">
+      <annotation>
+         <documentation>
+            Used to import another bean factory extension and make the beans avaialable to this bean factory
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
                </documentation>
             </annotation>
          </attribute>
