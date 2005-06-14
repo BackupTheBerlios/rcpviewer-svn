@@ -13,7 +13,9 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  net.sf.plugins.acegisecurity,
  net.sf.plugins.springframework,
  org.eclipse.ui.editors,
- de.berlios.rcpviewer.domain.runtime
+ de.berlios.rcpviewer.domain.runtime,
+ de.berlios.rcpviewer.persistence.inmemory.ui,
+ net.sf.plugins.utils
 Eclipse-AutoStart: true
 Bundle-Vendor: Mike
 Bundle-Activator: mikespike3.application.EasyBeanPlugin
