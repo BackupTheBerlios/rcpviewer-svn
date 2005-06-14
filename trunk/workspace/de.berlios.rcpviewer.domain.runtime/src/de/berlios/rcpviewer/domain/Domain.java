@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.domain;
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
 
 //REVIEW_CHANGE Removed final from the class to allow subclassing.  ted 
 
