@@ -16,7 +16,7 @@ import de.berlios.rcpviewer.session.local.Session;
  * {@link ISessionFactory} and one {@link ISession}.  The 
  * {@link ISessionFactory} refers to a specific {@link Domain} and a specific
  * (compatible) {@link IObjectStore} and passes these onto the {@link ISession}
- * that it creates.  The {@link ISession}'s identfier is also passed to it by 
+ * that it creates.  The {@link ISession}'s identifier is also passed to it by 
  * the @link ISessionFactory}, but the factory obtains the identifier from
  * the session manager (that is, an instance of this interface).
  * 
