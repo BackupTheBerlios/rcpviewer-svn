@@ -25,8 +25,8 @@
     <extension
           point="de.berlios.rcpviewer.domain.runtime.domains">
        <domain
-             class="mikespike3.model.EasyBeanDomain"
-             id="domain"/>
+             class="mikespike3.model.EasyBeanDomainBootstrap"
+             id="default"/>
     </extension>
    
 

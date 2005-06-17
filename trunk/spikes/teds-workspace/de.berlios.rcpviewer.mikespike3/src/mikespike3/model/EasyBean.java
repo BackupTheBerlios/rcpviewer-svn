@@ -7,7 +7,7 @@ import mikespike3.util.RandomUtil;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
-@InDomain(EasyBeanExample.PLUGIN_ID)
+@InDomain("default")
 @DescribedAs("A Lean Mean Bean Machine")
 public class EasyBean {
 	

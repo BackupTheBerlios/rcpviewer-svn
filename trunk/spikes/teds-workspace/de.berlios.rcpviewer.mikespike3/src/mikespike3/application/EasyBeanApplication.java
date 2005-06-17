@@ -42,7 +42,8 @@ implements IPlatformRunnable
 			//FIXME In the future there will be a better way to set sessions
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			IDomainRegistry domainRegistry= RuntimePlugin.getDefault().getDomainRegistry();
-			IDomain domain= domainRegistry.getDomain(EasyBeanExample.DOMAIN_ID);
+			// REVIEW_CHANGES: domain names are not the same as plugin Ids.
+			IDomain domain= domainRegistry.getDomain("default");
 			Session session= new Session(domain, new InMemoryObjectStore());
 			String id= sessionManager.addSession(session);
 			sessionManager.setCurrentSession(id);						
