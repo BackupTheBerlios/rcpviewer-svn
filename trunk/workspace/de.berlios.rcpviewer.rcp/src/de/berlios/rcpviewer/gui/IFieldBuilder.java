@@ -13,6 +13,6 @@ public interface IFieldBuilder {
 	
 	public boolean isApplicable( Class clazz, Object value );
 
-	//REVIEW_CHANGE create a managed for part as well as the UI.  Needed in order to manage dirty state.
+	//REVIEW_CHANGE for mike: create a managed for part as well as the UI.  Needed in order to manage dirty state.
 	public IFormPart createFormPart( Composite parent, Method getMethod, Method setMethod, Object configuration);
 }

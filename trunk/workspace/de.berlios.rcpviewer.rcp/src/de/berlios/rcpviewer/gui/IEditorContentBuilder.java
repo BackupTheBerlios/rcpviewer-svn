@@ -23,7 +23,7 @@ public interface IEditorContentBuilder {
 	public String getDisplay();
 	
 	
-	// REVIEW_CHANGE (for Mike): create UI for a managed form instead of composite
+	// REVIEW_CHANGE for mike: create UI for a managed form instead of composite -- ted
 	/**
 	 * Generates a GUI on the passed parent for the passed object.
 	 * @param parent
