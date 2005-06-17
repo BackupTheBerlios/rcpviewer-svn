@@ -32,7 +32,8 @@ import org.eclipse.emf.ecore.EClass;
 public abstract class AbstractDomain implements IDomain {
 
 	protected static Map<String,IDomain> domainsByName = 
-		                                new HashMap<String,IDomain>();
+        new HashMap<String,IDomain>();
+
 
 	/**
 	 * Creates a new domain using specified {@link IDomainBuilder} as 
