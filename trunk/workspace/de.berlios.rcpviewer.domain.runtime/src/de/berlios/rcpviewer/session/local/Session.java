@@ -21,8 +21,7 @@ public class Session implements ISession, IObjectStoreAware {
 	
 	// REVIEW_CHANGE added method - ted
 	public Session(IDomain domain, IObjectStore objectStore) {
-		this.domain = domain;
-		this.objectStore = objectStore;
+		this(null, domain, objectStore);
 	}
 
 	Session(String id, IDomain domain, IObjectStore objectStore) {

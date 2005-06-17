@@ -81,14 +81,10 @@ public class RuntimePlugin extends Plugin {
 		return resourceBundle;
 	}
 
-//	REVIEW_CHANGE Added this method.  ted 
-	public IDomainRegistry getDomainRegistry() {
+	public synchronized IDomainRegistry getDomainRegistry() {
 		try {
 			if (_domainRegistry == null) {
-				synchronized (this) {
-					if (_domainRegistry == null)
-						_domainRegistry= new DomainRegistry();
-				}
+				_domainRegistry= new DomainRegistry();
 			}
 			return _domainRegistry;
 		}
@@ -98,13 +94,9 @@ public class RuntimePlugin extends Plugin {
 		}
 	}
 
-//	REVIEW_CHANGE Added this method.  ted 
-	public ISessionManager getSessionManager() throws CoreException {
+	public synchronized ISessionManager getSessionManager() throws CoreException {
 		if (_sessionManager == null) {
-			synchronized (this) {
-				if (_sessionManager == null)
-					_sessionManager= new SessionManager();
-			}
+			_sessionManager= new SessionManager();
 		}
 		return _sessionManager;
 	}

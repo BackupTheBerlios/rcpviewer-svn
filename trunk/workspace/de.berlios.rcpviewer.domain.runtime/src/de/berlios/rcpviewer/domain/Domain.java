@@ -1,11 +1,13 @@
 package de.berlios.rcpviewer.domain;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
-
-//REVIEW_CHANGE Removed final from the class to allow subclassing.  ted 
 
 /**
  * Implementation of {@link IDomain} for the runtime (RCP) environment.
@@ -23,7 +25,7 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
  * 
  * @author Dan Haywood
  */
-public class Domain extends AbstractDomain {
+public final class Domain extends AbstractDomain {
 
 	/**
 	 * Returns the Domain instance with the given name (creating it if
@@ -43,7 +45,6 @@ public class Domain extends AbstractDomain {
 
 	public static Domain instance() {
 		return Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
-		
 	}
 
 	/**
@@ -68,6 +69,14 @@ public class Domain extends AbstractDomain {
 		Domain domain = instance(inDomain.value());
 		return domain.lookup(javaClass);
 	}
+	
+	/**
+	 * Returns an unmodifiable map of all Domains, keyed by name.
+	 * @return
+	 */
+	public static Map<String, IDomain> getDomains() {
+		return Collections.unmodifiableMap(domainsByName);
+	}
 
 
 	/**
@@ -89,7 +98,7 @@ public class Domain extends AbstractDomain {
 	 * 
 	 * @see #getPrimaryBuilder()
 	 */
-	protected Domain(final String name) {
+	public Domain(final String name) {
 		super(name, new StandardProgModelDomainBuilder()); 
 	}
 

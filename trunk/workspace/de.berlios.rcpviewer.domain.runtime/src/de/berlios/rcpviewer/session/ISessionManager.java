@@ -47,9 +47,6 @@ public interface ISessionManager {
 	/**
 	 * Return the next identifier.
 	 * 
-	 * <p>
-	 * TODO: should use a GUID algorithm.
-	 * 
 	 * @return
 	 */
 	public String nextId();
