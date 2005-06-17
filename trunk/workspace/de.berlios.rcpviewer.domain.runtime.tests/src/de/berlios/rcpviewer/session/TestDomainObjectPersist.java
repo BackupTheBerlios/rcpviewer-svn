@@ -74,7 +74,7 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 
 	/**
 	 * 
-	 * REVIEW_CHANGE: have marked as incomplete because of Ted's commenting out of guard in DomainObject#persist; awaiting his response -- Dan 20050614.
+	 * TODO: is incomplete because Ted needs to distinguish persisted (created) vs saved (updated) -- dan
 	 */
 	public void incompletetestCannotPersistMoreThanOnce() {
 		IRuntimeDomainClass<Department> domainClass = 
