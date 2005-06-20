@@ -2,16 +2,9 @@ package de.berlios.rcpviewer;
 
 import junit.framework.TestCase;
 
-import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.local.SessionFactory;
-import de.berlios.rcpviewer.session.local.SessionManager;
 
 /**
  *  
