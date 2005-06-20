@@ -14,6 +14,7 @@ import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
+import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionManager;
 import de.berlios.rcpviewer.session.local.Session;
 
@@ -44,9 +45,7 @@ implements IPlatformRunnable
 			IDomainRegistry domainRegistry= RuntimePlugin.getDefault().getDomainRegistry();
 			// REVIEW_CHANGES: domain names are not the same as plugin Ids.
 			IDomain domain= domainRegistry.getDomain("default");
-			Session session= new Session(domain, new InMemoryObjectStore());
-			String id= sessionManager.addSession(session);
-			sessionManager.setCurrentSession(id);						
+			ISession session = sessionManager.createSession(domain, new InMemoryObjectStore());
 
 			int returnCode = _createAndRunWorkbenchCommand.run();
 			
