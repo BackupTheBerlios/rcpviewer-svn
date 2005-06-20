@@ -33,7 +33,7 @@ public class NewDomainObjectAction extends Action {
 
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
-			ISession session= sessionManager.get(sessionManager.getCurrentSession());
+			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
 			IDomainObject domainObject= session.createTransient(_domainClass);
 
 			// open it in a new editor
