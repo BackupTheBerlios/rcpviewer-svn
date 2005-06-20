@@ -1,11 +1,9 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.session.local.SessionFactory;
 import de.berlios.rcpviewer.session.local.SessionManager;
 
 public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
@@ -120,7 +118,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
 		
-		ISession session2 = sessionFactory.createSession();
+		ISession session2 = sessionManager.createSession(session.getDomain(), session.getObjectStore());
 		assertFalse(session.getId() == session2.getId());
 		
 		try {
@@ -174,7 +172,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		session.detach(domainObject);
 		domainObject.clearSessionId();
 		
-		ISession session2 = sessionFactory.createSession();
+		ISession session2 = sessionManager.createSession(session.getDomain(), session.getObjectStore());
 		String session2Id = session2.getId();
 		
 		session2.attach(domainObject);
@@ -189,12 +187,9 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		ISession sessionForDefaultDomain = session;
 		assertEquals("default", sessionForDefaultDomain.getDomain().getName());
 		
-		SessionFactory sessionFactoryForMarketingDomain = new SessionFactory();
-		sessionFactoryForMarketingDomain.setDomainName("marketing");
-		sessionFactoryForMarketingDomain.setObjectStore(new InMemoryObjectStore());
-		sessionFactoryForMarketingDomain.setSessionManager(SessionManager.instance());
+		Domain marketingDomain = Domain.instance("marketing");
 		
-		ISession sessionForMarketingDomain = sessionFactoryForMarketingDomain.createSession();
+		ISession sessionForMarketingDomain = sessionManager.createSession(marketingDomain, new InMemoryObjectStore());
 		
 		// create domain object from default domain
 		IRuntimeDomainClass<Department> departmentDomainClass = 

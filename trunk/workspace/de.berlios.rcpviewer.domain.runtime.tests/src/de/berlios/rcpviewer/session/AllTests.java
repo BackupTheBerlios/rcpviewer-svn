@@ -10,7 +10,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestDomainObjectPersist.class);
 		suite.addTestSuite(TestSession.class);
-		suite.addTestSuite(TestSessionFactory.class);
+		suite.addTestSuite(TestSessionManager.class);
 		suite.addTestSuite(TestDomainObjectReference.class);
 		suite.addTestSuite(TestDomainObjectOperation.class);
 		suite.addTestSuite(TestDomainObjectAttribute.class);

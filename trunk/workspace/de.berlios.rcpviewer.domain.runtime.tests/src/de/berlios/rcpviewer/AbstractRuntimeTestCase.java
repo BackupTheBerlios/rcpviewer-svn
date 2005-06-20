@@ -2,12 +2,10 @@ package de.berlios.rcpviewer;
 
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.local.SessionFactory;
 import de.berlios.rcpviewer.session.local.SessionManager;
 
 /**
@@ -30,25 +28,19 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 	
 	protected Domain domain;
 	protected SessionManager sessionManager;
-	protected SessionFactory sessionFactory;
 	protected ISession session;
 	protected IObjectStore objectStore;
 	protected void setUp() throws Exception {
 		super.setUp();
 		sessionManager = SessionManager.instance();
-		sessionFactory = new SessionFactory();
-		sessionFactory.setSessionManager(sessionManager);
-		sessionFactory.setDomainName(ProgModelConstants.DEFAULT_DOMAIN_NAME);
+		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
-		sessionFactory.setObjectStore(objectStore);
-		session = sessionFactory.createSession();
-		domain = Domain.instance();
+		session = sessionManager.createSession(domain, objectStore);
 	}
 
 	protected void tearDown() throws Exception {
 		domain = null;
 		sessionManager = null;
-		sessionFactory = null;
 		session.reset();
 		session = null;
 		objectStore.reset();
