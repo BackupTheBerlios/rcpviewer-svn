@@ -7,36 +7,53 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionManager;
 import de.berlios.rcpviewer.session.ISessionManagerListener;
+import de.berlios.rcpviewer.session.SessionManagerEvent;
 
 public final class SessionManager implements ISessionManager {
 
 	private static SessionManager instance = new SessionManager();
-	private static String _currentSessionId= null;
+	private static String currentSessionId= null;
 	private Map<String, ISession> sessionById = new HashMap<String, ISession>();
-	private ArrayList<ISessionManagerListener> _listeners= new ArrayList<ISessionManagerListener>();
+	private ArrayList<ISessionManagerListener> listeners= new ArrayList<ISessionManagerListener>();
 	
-	// REVIEW_CHANGE added method - ted
-	public String addSession(Session pSession) {
-		String id= nextId();
-		sessionById.put(id, pSession);
-		pSession.setId(id);
-		return id;
+
+	public ISession createSession(IDomain domain, IObjectStore objectStore) {
+		Session session = new Session(nextId(), domain, objectStore);
+		sessionById.put(session.getId(), session);
+		SessionManagerEvent event = new SessionManagerEvent(this, session);
+		for(ISessionManagerListener listener: listeners) {
+			listener.sessionCreated(event);
+		}
+		this.switchSessionTo(session.getId());						
+		return session;
 	}
 
-	// REVIEW_CHANGE added method - ted
-	public String getCurrentSession() {
-		return _currentSessionId;
+	/**
+	 * The id of the {@link ISession} set to be the current session.
+	 */
+	public String getCurrentSessionId() {
+		return currentSessionId;
 	}
 
-	// REVIEW_CHANGE added method - ted
-	public void setCurrentSession(String pId) {
-		if (sessionById.containsKey(pId) == false)
-			throw new InvalidParameterException("No such session id:"+pId);
-		_currentSessionId= pId;
+	/**
+	 * Change the current session to that indicated by the session Id.
+	 */
+	public void switchSessionTo(final String currentSessionId) {
+		ISession session = sessionById.get(currentSessionId);
+		if (session == null) {
+			throw new IllegalArgumentException("No such session id:"+currentSessionId);
+		}
+		this.currentSessionId = currentSessionId;
+		SessionManagerEvent event = new SessionManagerEvent(this, session);
+		for(ISessionManagerListener listener: listeners) {
+			listener.sessionNowCurrent(event);
+		}
+
 	}
 
 	/**
@@ -76,19 +93,23 @@ public final class SessionManager implements ISessionManager {
 		this.sessionById.clear();
 	}
 
-	public synchronized void addSessionManagerListener(ISessionManagerListener pListener) {
-		if (!_listeners.contains(pListener))
-			_listeners.add(pListener);
+	public synchronized void addSessionManagerListener(final ISessionManagerListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
 	}
 
 	public void removeSession(String sessionId) {
-		Object object= sessionById.get(sessionId);
-		if (object != null)
-			sessionById.remove(object);		
+		ISession session = sessionById.get(sessionId);
+		sessionById.remove(session);		
+		SessionManagerEvent event = new SessionManagerEvent(this, session);
+		for(ISessionManagerListener listener: listeners) {
+			listener.sessionRemoved(event);
+		}
 	}
 
 	public synchronized void removeSessionManagerListener(ISessionManagerListener pListener) {
-		_listeners.remove(pListener);
+		listeners.remove(pListener);
 	}
 
 	public Collection<ISession> getAllSessions() {

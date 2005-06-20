@@ -122,10 +122,9 @@ public interface ISession {
 
 	
 	/**
-	 * Persist this object to the configured object store.
+	 * Persist this (currently transient) object to the configured object store.
 	 * 
 	 * <p>
-	 * Should delegate to the {@link IDomainObject} to do the persist; 
 	 * {@link IDomainObjectListener}s of the {@link IDomainObject} (<i>not</i>
 	 * the session) will be notified.
 	 *  
@@ -135,7 +134,7 @@ public interface ISession {
 	
 
 	/**
-	 * Persist this object to the configured object store.
+	 * Persist this (currently transient) object to the configured object store.
 	 * 
 	 * <p>
 	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
@@ -147,6 +146,33 @@ public interface ISession {
 	void persist(Object pojo);
 
 	
+	/**
+	 * Save changes to this (already persistent) object to the
+	 * configured object store.
+	 * 
+	 * <p>
+	 * {@link IDomainObjectListener}s of the {@link IDomainObject} (<i>not</i>
+	 * the session) will be notified.
+	 *  
+	 * @param domainObject
+	 */
+	<T> void save(IDomainObject<T> domainObject);
+
+	
+	/**
+	 * Save changes to this (already persistent) object to the
+	 * configured object store.
+	 * 
+	 * <p>
+	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
+	 * persist; {@link IDomainObjectListener}s of the {@link IDomainObject} 
+	 * (<i>not</i> the session) will be notified.
+	 *  
+	 * @param domainObject
+	 */
+	void save(Object pojo);
+
+
 	/**
 	 * Returns all attached objects of the supplied class.
 	 * 

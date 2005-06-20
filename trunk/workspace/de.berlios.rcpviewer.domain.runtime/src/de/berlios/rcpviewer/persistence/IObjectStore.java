@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.persistence;
 
 import java.util.Collection;
 
+import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 
 /**
@@ -18,14 +19,24 @@ import de.berlios.rcpviewer.session.ISession;
 public interface IObjectStore {
 
 	/**
-	 * Persist this object such that it may be retrieved at a later date.
+	 * Persist this (currently transient) object such that it may be retrieved 
+	 * at a later date.
+	 * 
+	 * @param title
+	 * @param pojo 
+	 */
+	public <T> void persist(IDomainObject<T> domainObject);
+
+	/**
+	 * Save changes to this (already persistent) object such that it may be 
+	 * retrieved at a later date.
 	 * 
 	 * 
 	 * @param domainObject 
 	 */
-	public void persist(String title, Object pojo);
+	public <T> void save(IDomainObject<T> domainObject);
 
-	Object findByTitle(Class<?> javaClass, String title);
+	<V> V findByTitle(Class<V> javaClass, String title);
 	
 	/**
 	 * For testing purposes.

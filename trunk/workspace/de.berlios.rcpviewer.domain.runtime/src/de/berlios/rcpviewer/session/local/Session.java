@@ -19,11 +19,6 @@ import de.berlios.rcpviewer.session.SessionObjectEvent;
 
 public class Session implements ISession, IObjectStoreAware {
 	
-	// REVIEW_CHANGE added method - ted
-	public Session(IDomain domain, IObjectStore objectStore) {
-		this(null, domain, objectStore);
-	}
-
 	Session(String id, IDomain domain, IObjectStore objectStore) {
 		this.id = id;
 		this.domain = domain;
@@ -33,10 +28,6 @@ public class Session implements ISession, IObjectStoreAware {
 	private String id;
 	public String getId() {
 		return id;
-	}
-	// REVIEW_CHANGE added method - ted
-	public void setId(String value) {
-		id= value;
 	}
 
 	private IDomain domain;
@@ -193,13 +184,23 @@ public class Session implements ISession, IObjectStoreAware {
 		if (!isAttached(domainObject)) {
 			throw new IllegalArgumentException("pojo not attached to session");
 		}
-		getObjectStore().persist(domainObject.title(), domainObject.getPojo());
+		getObjectStore().persist(domainObject);
 	}
 	public void persist(Object pojo) {
 		IDomainObject<?> domainObject = getDomainObjectFor(pojo, pojo.getClass());
 		persist(domainObject);
 	}
 	
+	public <T> void save(IDomainObject<T> domainObject) {
+		if (!isAttached(domainObject)) {
+			throw new IllegalArgumentException("pojo not attached to session");
+		}
+		getObjectStore().save(domainObject);
+	}
+	public void save(Object pojo) {
+		IDomainObject<?> domainObject = getDomainObjectFor(pojo, pojo.getClass());
+		save(domainObject);
+	}
 
 	public void reset() {
 		domainObjectsByDomainClass.clear();

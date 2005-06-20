@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.session;
 import java.util.Collection;
 
 import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.session.local.Session;
@@ -62,46 +63,51 @@ public interface ISessionManager {
 	 */
 	public ISession get(String id);
 
-	// REVIEW_CHANGE added method - ted
 	/**
 	 * Set the system's current session
 	 */
-	public void setCurrentSession(String id);
+	public void switchSessionTo(String id);
 	
 	
-	// REVIEW_CHANGE added method - ted
 	/**
 	 * @return The ID of the current session.  May return null if there is no current session.
 	 */
-	public String getCurrentSession();
+	public String getCurrentSessionId();
 	
 	
-	// REVIEW_CHANGE added method - ted
 	/**
-	 * Add a session to the collection of managed sessions.
-	 * @return This manager will assign an ID to the session and return the ID. 
+	 * Creates an {@link ISession} that effectively binds the specified 
+	 * {@link IDomain} with the specified {@link IObjectStore}.
+	 * 
+	 * <p>
+	 * A unique session Id is automatically allocated, and the created session 
+	 * is added to the collection of sessions maintained by this session manager
+	 * and is moreover made the current session.
+	 * 
+	 * @return The newly created {@link ISession} 
 	 */
-	public String addSession(Session session);
+	public ISession createSession(final IDomain domain, final IObjectStore objectStore);
 	
-	// REVIEW_CHANGE added method - ted
 	/**
 	 * Add a listener that will be notified of session manager changes
 	 */
 	public void addSessionManagerListener(ISessionManagerListener listener);
 	
-	// REVIEW_CHANGE added method - ted
 	/**
 	 * Remove a previously added listener
 	 */
 	public void removeSessionManagerListener(ISessionManagerListener listener);
 
-	// REVIEW_CHANGE added method - ted
 	/**
 	 * Remove a session from the collection of managed sessions.
 	 */
 	public void removeSession(String sessionId);
 
-	// REVIEW_CHANGE added method - ted
+	/**
+	 * Returns all sessions currently managed by this session manager.
+	 * 
+	 * @return
+	 */
 	public Collection<ISession> getAllSessions();
 	
 }

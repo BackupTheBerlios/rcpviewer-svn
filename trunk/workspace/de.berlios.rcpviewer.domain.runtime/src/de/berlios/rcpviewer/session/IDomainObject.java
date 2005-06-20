@@ -46,7 +46,7 @@ public interface IDomainObject<T> {
 	public boolean isPersistent();
 	
 	/**
-	 * Persist this object.
+	 * Persist this object (for the first time).
 	 * 
 	 * <p>
 	 * Any {@link IDomainObjectListener}s of the object will be notified.
@@ -54,6 +54,13 @@ public interface IDomainObject<T> {
 	 * @throws IllegalStateException if already persisted.
 	 */
 	public void persist();
+	
+	/**
+	 * Save this already persisted object.
+	 * 
+	 * @throws IllegalStateException if not yet persisted.
+	 */
+	public void save();
 	
 	/**
 	 * Distinguishable representation of the domain object in the UI.

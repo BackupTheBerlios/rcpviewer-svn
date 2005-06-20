@@ -71,12 +71,9 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	public void persist() {
-		//REVIEW_CHANGE There's no 'save' method on IDomainObject, so it seems\  
-		// like this method needs to be called whenever we want to save the object.
-		// tws
-//		if (isPersistent()) {
-//			throw new IllegalStateException("Already persisted.");
-//		}
+		if (isPersistent()) {
+			throw new IllegalStateException("Already persisted.");
+		}
 		if (getSession() == null) {
 			throw new IllegalStateException("Not attached to a session");
 		}
@@ -84,6 +81,17 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		persistent = true;
 	}
 	
+
+	public void save() {
+		if (!isPersistent()) {
+			throw new IllegalStateException("Not yet persisted.");
+		}
+		if (getSession() == null) {
+			throw new IllegalStateException("Not attached to a session");
+		}
+		getSession().save(this);
+	}
+
 	/**
 	 * For the title we just return the POJO's <tt>toString()</tt>.
 	 */
