@@ -9,6 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.progmodel.standard.domainclass");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(TestDomainClassImmutableAtRuntime.class);
 		suite.addTestSuite(TestDomainClassAtRuntime.class);
 		//$JUnit-END$
 		return suite;
