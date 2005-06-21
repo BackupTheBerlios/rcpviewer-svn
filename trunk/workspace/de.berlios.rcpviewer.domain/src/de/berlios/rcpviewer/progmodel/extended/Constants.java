@@ -16,6 +16,13 @@ public final class Constants {
 
 
 	/**
+	 * Presence of an EAnnotation with this source on an EClass indicates
+	 * additional information accessible from the details.
+	 */
+	public static final String ANNOTATION_TYPE = 
+		"http://rcpviewer.berlios.de/progmodel/extended/type";
+
+	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates
 	 * additional information accessible from the details.
 	 */

@@ -645,5 +645,7 @@ public interface IDomainClass<T> {
 	public boolean isChangeable(EReference eReference);
 
 	public boolean isDerived(EReference eReference);
+
+	public boolean isChangeable();
 	
 }

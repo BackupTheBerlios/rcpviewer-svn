@@ -2,11 +2,12 @@
 
 To run this project, you need the following:
 * Eclipse 3.1m6 
-* aspectJ-1.2m3 (specifically the AJDT at http://www.eclipse.org/ajdt )
 * JRE 1.5.0_02
 * Compiler compliance level: 5.0
 * Set up EMF_CORE user library (see below)
 * Set up JFACE user library (see below)
+
+Previously aspect-1.2 was required; this has now been removed.
 
 1.1 EMF_CORE user library
 
@@ -19,17 +20,19 @@ To run this project, you need the following:
 
 * java>build path>user libraries
 * JFACE
-* c:\eclipse\plugins\org.eclipse.jface_3.1.0.jar
-* c:\eclipse\plugins\org.eclipse.swt_3.1.0.jar
-* c:\eclipse\plugins\org.eclipse.swt.win32_3.1.0.jar  (or whatever your platform is)
+* c:/eclipse/plugins/org.eclipse.jface_3.1.0.jar
+* c:/eclipse/plugins/org.eclipse.swt_3.1.0.jar
+* c:/eclipse/plugins/org.eclipse.swt.win32_3.1.0.jar  (or whatever your platform is)
 
 
 1 Compiling
-Should auto-build by itself; if have problems, try removing and then re-adding the AspectJ nature (from package explorer)
+Should auto-build by itself.
 
 1 Things to try out
-* Have a look at the test cases Eclipse:/de.berlios.rcpviewer.AllTests
-* Have a look at rcpviewer:/design/meta-model
+* Open up Eclipse:/de.berlios.rcpviewer.tests/src/de/berlios/rcpviewer/tests/AllRcpViewerTests.java
+* Run > Run As > JUnit Test
+* Run > Run As > JUnit Plugin Test
+
 
 1 To Do
 * [ToDosOnProgrammingModel]

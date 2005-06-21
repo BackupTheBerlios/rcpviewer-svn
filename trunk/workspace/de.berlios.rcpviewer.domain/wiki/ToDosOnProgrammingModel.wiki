@@ -8,22 +8,17 @@ ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
 * indicates that the domain class should be made available in search window.
 * implement using an ~~EAnnotation~~
 
-1.1 @Immutable
-
-* applies to ~~@Target(TYPE)~~
-* indicates that should not be possible to modify (useful for reference data).
-* implement using an ~~EAnnotation~~
-
 1.1 @NonPersistable
 
 * applies to ~~@Target(TYPE)~~
 * indicates that should not be possible to persist (useful for some derived objects).
 * implement using an ~~EAnnotation~~
 
-1.1 @Positioned(int)
+1.1 @PositionedAt(int)
 
 * applies to ~~@Target(METHOD)~~
-* when applied to a method representing a getter of an attribute, indicates its position relative to other attributes, eg as shown in UI.  when applied to a method representing an action, indicates its position on the menu
+* DONE: when applied to a method representing a getter of an attribute, indicates its position relative to other attributes, eg as shown in UI.
+* TODO: when applied to a method representing an action, indicates its position on the menu
 * implement using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to a String
 
 1.1 @Programmatic
@@ -75,7 +70,7 @@ ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
 
 Haven't specified a help annotation: the framework should be able to allocate a feature Id eg ~~com.mycompany.Department#getEmployees~~ and use that to look up help transparently.
 
-1.1 @ExtendedWith(Class)
+1.1 @Extends(Class)
 
 * applies to ~~@Target(TYPE)~~
 * domain programmer view of extension object pattern, indicating that an instance of the provided class should be able to interpret the object on which the annotation has been attached

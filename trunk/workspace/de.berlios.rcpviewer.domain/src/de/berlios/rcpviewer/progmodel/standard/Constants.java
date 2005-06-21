@@ -27,6 +27,12 @@ public final class Constants {
 		"description";
 
 	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}.
+	 */
+	public static final String ANNOTATION_ELEMENT_IMMUTABLE_KEY = 
+		"immutable";
+
+	/**
 	 * Access to any annotations pertaining (and specific to) the 
 	 * {@link IDomainClass}/EClass.
 	 */
