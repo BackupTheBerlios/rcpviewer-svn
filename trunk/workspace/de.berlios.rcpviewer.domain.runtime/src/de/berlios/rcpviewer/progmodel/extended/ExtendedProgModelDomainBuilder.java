@@ -32,16 +32,18 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
 	public <V> void analyze(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
+		
+		// PositionedAt: installs an adapter
 		domainClass.setAdapterFactory(AttributeComparator.class, 
 			new AttributeComparatorAdapterFactory<AttributeComparator>());
 		
-		for(EAttribute attribute: domainClass.attributes()) {
-			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(attribute);
+		for(EAttribute eAttribute: domainClass.attributes()) {
+			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(eAttribute);
 			PositionedAt positionedAt = 
 				accessorOrMutator.getAnnotation(PositionedAt.class);
 			if (positionedAt != null) {
 				EAnnotation attributeAnnotation = 
-					emfFacade.annotationOf(attribute, Constants.ANNOTATION_ATTRIBUTE);
+					emfFacade.annotationOf(eAttribute, Constants.ANNOTATION_ATTRIBUTE);
 				Map<String,String> details = new HashMap<String,String>();
 				details.put(Constants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY, "" + positionedAt.value());
 				emfFacade.putAnnotationDetails(attributeAnnotation, details);	

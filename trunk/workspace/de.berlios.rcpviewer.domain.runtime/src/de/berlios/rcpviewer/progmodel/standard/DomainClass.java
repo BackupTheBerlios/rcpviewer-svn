@@ -71,6 +71,16 @@ public class DomainClass<T>
 		this(null, javaClass);
 	}
 
+	public void init() {
+		identifyAccessors();
+		identifyMutators();
+		identifyUnSettableAttributes();
+		identifyOperations();
+		identifyReferences();
+		identifyAssociatorsAndDissociators();
+		identifyBidirectionalReferences();
+	}
+
 	private final IDomain domain;
 	/**
 	 * The domain to which this DomainClass belongs.
@@ -104,22 +114,18 @@ public class DomainClass<T>
 		return eClass.getName();
 	}
 
-
 	public String getDescription() {
 		return descriptionOf(eClass);
 	}
 
-
-	public void init() {
-		identifyAccessors();
-		identifyMutators();
-		identifyUnSettableAttributes();
-		identifyOperations();
-		identifyReferences();
-		identifyAssociatorsAndDissociators();
-		identifyBidirectionalReferences();
+	public boolean isChangeable() {
+		EAnnotation annotation = 
+			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return true;
+		}
+		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY) != null;
 	}
-
 
 	public II18nData getI18nData() {
 		throw new RuntimeException("Not yet implemented");
@@ -169,12 +175,16 @@ public class DomainClass<T>
 	}
 
 	/**
+	 * Process any semantics on the type itself.
+	 * 
+	 * <p>
 	 * TODO: should also identify class hierarchy
 	 */
 	private void identifyClass() {
 		Package javaPackage = javaClass.getPackage();
 		this.eClass = EcoreFactory.eINSTANCE.createEClass();
 		
+		// EPackage
 		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(javaPackage.getName());
 		if (ePackage == null) {
 			ePackage = EcoreFactory.eINSTANCE.createEPackage();
@@ -182,14 +192,20 @@ public class DomainClass<T>
 			ePackage.setName(javaPackage.getName());
 		}
 
+		// InstanceClass
 		eClass.setInstanceClass(javaClass);
 
+		// Name
 		String name = null;
 		Named named = javaClass.getAnnotation(Named.class);
 		name = named != null? named.value(): javaClass.getSimpleName();
 		eClass.setName(name);
 
+		// Description
 		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
+
+		// Changeable (immutable)
+		addIfChangeable(javaClass.getAnnotation(Immutable.class), eClass);
 	}
 
 	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {
@@ -204,6 +220,20 @@ public class DomainClass<T>
 			Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
 	}
 
+	private void addIfChangeable(Immutable immutable, EModelElement modelElement) {
+		
+		if (immutable == null) {
+			return;
+		}
+		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (ea == null) {
+			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
+		}
+		putAnnotationDetails(ea, 
+			Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, null);
+	}
+
+		
 	
 	/**
 	 * 
