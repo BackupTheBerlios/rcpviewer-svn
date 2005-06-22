@@ -1,6 +1,6 @@
 package mikespike3.application;
 
-import mikespike3.commands.CreateAndRunWorkbenchCommand;
+import mikespike3.commands.ICreateAndRunWorkbenchCommand;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
@@ -8,7 +8,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
 public class EasyBeanCreateAndRunWorkbenchCommand implements 
-CreateAndRunWorkbenchCommand
+ICreateAndRunWorkbenchCommand
 {	
 	Display _display;
 	WorkbenchAdvisor _advisor;

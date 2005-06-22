@@ -1,6 +1,6 @@
 package mikespike3.application;
 
-import mikespike3.commands.AuthenticationCommand;
+import mikespike3.commands.IAuthenticationCommand;
 import net.sf.acegisecurity.Authentication;
 
 import org.eclipse.core.runtime.CoreException;
@@ -9,7 +9,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 
 
 public class EasyBeanAuthenticationCommand
-implements AuthenticationCommand
+implements IAuthenticationCommand
 {
 	private LoginWizard _loginWizard;
 	
