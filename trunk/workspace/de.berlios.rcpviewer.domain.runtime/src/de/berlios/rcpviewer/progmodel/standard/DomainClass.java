@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -122,9 +123,37 @@ public class DomainClass<T>
 		EAnnotation annotation = 
 			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
-			return true;
+			return false;
 		}
-		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY) != null;
+		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY) == null;
+	}
+
+	public boolean isSearchable() {
+		EAnnotation annotation = 
+			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return false;
+		}
+		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_SEARCHABLE_KEY) != null;
+	}
+
+
+	public boolean isInstantiable() {
+		EAnnotation annotation = 
+			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return false;
+		}
+		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY) != null;
+	}
+
+	public boolean isPersistable() {
+		EAnnotation annotation = 
+			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return false;
+		}
+		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_SAVEABLE_KEY) != null;
 	}
 
 	public II18nData getI18nData() {
@@ -204,8 +233,18 @@ public class DomainClass<T>
 		// Description
 		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
 
-		// Changeable (immutable)
-		addIfChangeable(javaClass.getAnnotation(Immutable.class), eClass);
+		// Immutable (to support isChangeable)
+		addIfImmutable(javaClass.getAnnotation(Immutable.class), eClass);
+
+		// Instantiable (File>New)
+		addIfInstantiable(javaClass.getAnnotation(InDomain.class), eClass);
+
+		// Searchable (Search>???)
+		addIfSearchable(javaClass.getAnnotation(InDomain.class), eClass);
+
+		// Saveable (File>Save)
+		addIfSaveable(javaClass.getAnnotation(InDomain.class), eClass);
+
 	}
 
 	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {
@@ -220,7 +259,7 @@ public class DomainClass<T>
 			Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
 	}
 
-	private void addIfChangeable(Immutable immutable, EModelElement modelElement) {
+	private void addIfImmutable(Immutable immutable, EModelElement modelElement) {
 		
 		if (immutable == null) {
 			return;
@@ -230,11 +269,58 @@ public class DomainClass<T>
 			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
 		}
 		putAnnotationDetails(ea, 
-			Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, null);
+			Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, "dummy");
 	}
 
+	private void addIfInstantiable(InDomain inDomain, EModelElement modelElement) {
 		
+		if (inDomain == null) {
+			return;
+		}
+		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (ea == null) {
+			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
+		}
+		if (inDomain.instantiable()) {
+			putAnnotationDetails(ea, 
+				Constants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY, "dummy");
+		}
+	}
+		
+
+	private void addIfSearchable(InDomain inDomain, EModelElement modelElement) {
+		
+		if (inDomain == null) {
+			return;
+		}
+		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (ea == null) {
+			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
+		}
+		if (inDomain.searchable()) {
+			putAnnotationDetails(ea, 
+				Constants.ANNOTATION_ELEMENT_SEARCHABLE_KEY, null);
+		}
+	}
+
 	
+	private void addIfSaveable(InDomain inDomain, EModelElement modelElement) {
+		
+		if (inDomain == null) {
+			return;
+		}
+		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		if (ea == null) {
+			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
+		}
+		if (inDomain.saveable()) {
+			putAnnotationDetails(ea, 
+				Constants.ANNOTATION_ELEMENT_SAVEABLE_KEY, "dummy");
+		}
+	}
+
+
+
 	/**
 	 * 
 	 * <p>

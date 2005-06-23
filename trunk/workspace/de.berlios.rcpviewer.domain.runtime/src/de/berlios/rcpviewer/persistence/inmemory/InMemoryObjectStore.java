@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.session.IDomainObject;

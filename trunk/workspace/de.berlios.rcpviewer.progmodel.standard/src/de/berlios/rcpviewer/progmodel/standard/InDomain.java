@@ -27,4 +27,37 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 public @interface InDomain {
 	String value() default ProgModelConstants.DEFAULT_DOMAIN_NAME;
+	/**
+	 * Whether the type can be searched for using some generic search
+	 * capability.  Default is false.
+	 * 
+	 * <p>
+	 * If searchable, the UI may render this as enabling from Search menu.
+	 * 
+	 * @return
+	 */
+	boolean searchable() default false;
+	/**
+	 * Whether the type can be explicitly instantiated.  Default is false.
+	 * 
+	 * <p>
+	 * If instantiatable, the UI may render this as enabling 'File>New', for
+	 * example.
+	 * 
+	 * @return
+	 */
+	boolean instantiable() default false;
+	/**
+	 * Whether the type can be explicitly saved.  Default is false.
+	 * 
+	 * <p>
+	 * The UI may render this as disabling the 'File>Save', for example.
+	 * 
+	 * <p>
+	 * Note: this does not mean that the object can never be persisted, only
+	 * that it isn't surfaced through a generic mechanism of the UI.
+	 * 
+	 * @return
+	 */
+	boolean saveable() default false;
 }

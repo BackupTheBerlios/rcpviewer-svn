@@ -1,7 +1,5 @@
 package de.berlios.rcpviewer.persistence;
 
-import java.util.Collection;
-
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 

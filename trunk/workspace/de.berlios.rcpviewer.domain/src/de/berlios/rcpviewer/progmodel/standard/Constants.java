@@ -21,16 +21,47 @@ public final class Constants {
 		"http://rcpviewer.berlios.de/progmodel/standard/element";
 
 	/**
-	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}.
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose value is the description of the annotated model element.
 	 */
 	public static final String ANNOTATION_ELEMENT_DESCRIPTION_KEY = 
 		"description";
 
 	/**
-	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}.
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated feature is immutable.
+	 * 
+	 * <p>
+	 * Some EMF model elements, such as EAttribute, have isChangeable() 
+	 * supported directly; this key is only used for EMF model elements where
+	 * this is missing, eg EClass.  
 	 */
 	public static final String ANNOTATION_ELEMENT_IMMUTABLE_KEY = 
 		"immutable";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated type should be made 
+	 * available in a generic search capability.
+	 */
+	public static final String ANNOTATION_ELEMENT_SEARCHABLE_KEY = 
+		"searchable";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated type should NOT be 
+	 * explicitly instantiatable. 
+	 */
+	public static final String ANNOTATION_ELEMENT_INSTANTIABLE_KEY = 
+		"instantiable";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated type should NOT be 
+	 * explicitly saveable. 
+	 */
+	public static final String ANNOTATION_ELEMENT_SAVEABLE_KEY = 
+		"saveable";
 
 	/**
 	 * Access to any annotations pertaining (and specific to) the 

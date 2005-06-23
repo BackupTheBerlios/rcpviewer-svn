@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.session.local;
 
 import java.rmi.dgc.VMID;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

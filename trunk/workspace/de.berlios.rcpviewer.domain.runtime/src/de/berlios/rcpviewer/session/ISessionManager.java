@@ -6,7 +6,6 @@ import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.session.local.Session;
 
 /**
  * A singleton that, with the co-operation of {@link ISessionFactory}, keeps 

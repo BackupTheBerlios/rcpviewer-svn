@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
 
 import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 
 public abstract class AbstractDomainBootstrap 
 implements IDomainBootstrap

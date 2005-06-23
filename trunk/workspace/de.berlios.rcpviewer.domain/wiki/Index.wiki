@@ -36,8 +36,6 @@ Should auto-build by itself.
 
 1 To Do
 * [ToDosOnProgrammingModel]
-* [ToDosOnSession]
-* [ToDosOnMetaModel]
 
 1 Scratch Notes
 * [ScratchNotes]

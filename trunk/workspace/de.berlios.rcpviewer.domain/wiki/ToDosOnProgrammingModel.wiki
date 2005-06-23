@@ -21,19 +21,6 @@ ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
 * TODO: when applied to a method representing an action, indicates its position on the menu
 * implement using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to a String
 
-1.1 @Programmatic
-
-* applies to ~~@Target(METHOD)~~
-* by default all ~~public~~ methods not representing attributes should be exposed in the UI providing that they have appropriate datatypes.  This annotation indicates that the UI should not expose the method, however.  (This should encourage domain developers to use appropriate visibility).
-* implement using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to a String
-
-1.1 @Name(String)
-
-* applies to ~~@Target(TYPE)~~, ~~@Target(METHOD)~~, ~~@Target(PARAMETER)~~
-* provides the name of the feature where the desired name has not been used as the class' own name (eg a reserved word).  When applied to a method, specify on the getter of an attribute or any action method.  When applied to parameters, only used for parameters of action methods.
-* overridden by I18n annotation if present
-* implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
-
 1.1 @I18nNameKey(String)
 
 * same applicability as ~~@Name~~, overrides ~~@Name~~ if present
@@ -53,13 +40,6 @@ ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
 * key to resource bundle, provides plural name for current locale
 * implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
 
-1.1 @Description
-
-* applies to ~~@Target(TYPE)~~, ~~@Target(METHOD)~~, ~~@Target(PARAMETER)~~
-* provides a description of the feature, eg for tooltip text.  See ~~@Name~~ for more details
-* overridden by I18n annotation if present
-* implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
-
 1.1 @I18nDescriptionKey(String)
 
 * same applicability as ~~@Description~~, overrides ~~@Description~~ if present
@@ -70,27 +50,3 @@ ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
 
 Haven't specified a help annotation: the framework should be able to allocate a feature Id eg ~~com.mycompany.Department#getEmployees~~ and use that to look up help transparently.
 
-1.1 @Extends(Class)
-
-* applies to ~~@Target(TYPE)~~
-* domain programmer view of extension object pattern, indicating that an instance of the provided class should be able to interpret the object on which the annotation has been attached
-
-By way of example, the domain programmer might write:
-
-@ExtendedWith(LocatableOnMap.class)
-public class House {
-  private int xCoord;
-  private int yCoord;
-}
-
-For the UI programmer who is providing a Map view, they can write:
-
-LocatableOnMap lom = houseDomainClass.getExtension(LocatableOnMap.class);
-lom.doSomethingUsefulWith(house);
-
-Note that the provided extension object is stateless.
-
-1.1 Other
-Aspect to:
-* make sure have no-arg constructor on @Domain
-* having @Associates (or any annotation) on wrong type of method.

@@ -2,8 +2,6 @@ package de.berlios.rcpviewer.domain;
 
 import java.util.Map;
 
-import de.berlios.rcpviewer.domain.IDomain;
-
 public interface IDomainRegistry {
 	
 	/**

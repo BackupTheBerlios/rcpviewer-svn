@@ -59,6 +59,51 @@ public interface IDomainClass<T> {
 	 */
 	public String getName();
 
+	/**
+	 * Whether this class overall is immutable, meaning that non of its
+	 * attributes may be edited.
+	 * 
+	 * <p>
+	 * Operations may still be invoked, however.
+	 * 
+	 * @return
+	 */
+	public boolean isChangeable();
+
+	/**
+	 * Whether this class may be searched for by the UI in some generic
+	 * search mechanism, eg Search.
+	 * 
+	 * @return
+	 */
+	public boolean isSearchable();
+
+	/**
+	 * Whether this class can be instantiated generically, eg File>New.
+	 * 
+	 * <p>
+	 * The majority of domain classes are expected to be persistable.
+	 * 
+	 * <p>
+	 * In programming model: @InDomain(instantiable=false).
+	 * 
+	 * @return
+	 */
+	public boolean isInstantiable();
+	
+	/**
+	 * Whether instances of this class can be persisted, eg File>Save.
+	 * 
+	 * <p>
+	 * The majority of domain classes are expected to not be directly 
+	 * persistable.
+	 * 
+	 * <p>
+	 * In programming model: @InDomain(nonPersistable=false).
+	 * 
+	 * @return
+	 */
+	public boolean isPersistable();
 
 	/**
 	 * For internal use only called by {@link Domain}
@@ -646,6 +691,4 @@ public interface IDomainClass<T> {
 
 	public boolean isDerived(EReference eReference);
 
-	public boolean isChangeable();
-	
 }

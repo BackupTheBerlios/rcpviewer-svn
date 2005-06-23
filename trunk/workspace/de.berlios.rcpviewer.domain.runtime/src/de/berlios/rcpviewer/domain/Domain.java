@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.domain;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import de.berlios.rcpviewer.progmodel.standard.DomainClass;
