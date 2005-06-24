@@ -1,0 +1,9 @@
+'''General Notes'''
+
+'''Runtime Configuration'''
+You can use the default configuration set up by Eclipse simply using the right-click option 'Run As / JUnit Plugin Test' off one of the test classes.
+However it is nicer to define your own configuartion only using the necessary plugins:
+* generate your own configuration
+* select the option to choose your own plugins
+* select this plugin and then click the 'Add Required Plugins' buttons - this will give you the minimal set needed to run these tests.
+* note! remember to switch the application that starts to the gui application rather than the eclipse workbench (on the Main tab under 'Program To Run') else you'll get startup errors
