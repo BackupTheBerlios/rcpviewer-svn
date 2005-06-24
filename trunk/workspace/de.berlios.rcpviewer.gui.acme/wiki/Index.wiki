@@ -1,0 +1,9 @@
+Example of a domaon-specific plugin developed on top of RCPViewer.
+
+''What you need to do:''
+
+* create POJO model
+* for each class:
+** ensure all class has @InDomain annotation
+** add each class as an de.berlios.rcpviewer.gui.domainclass extension in plugin.xml 
+
