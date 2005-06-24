@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="mikespike4.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Default Perspective"
+            class="mikespike4.rcp.DefaultPerspective"
+            id="mikespike4.rcp.DefaultPerspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="mikespike4"
+            name="Default Views"/>
+      <view
+            category="mikespike4"
+            class="mikespike4.views.classbar.ClassBarView"
+            icon="icons/sample.gif"
+            id="mikespike4.views.classbar.ClassBarView"
+            name=" "/>
+   </extension>
+
+</plugin>
