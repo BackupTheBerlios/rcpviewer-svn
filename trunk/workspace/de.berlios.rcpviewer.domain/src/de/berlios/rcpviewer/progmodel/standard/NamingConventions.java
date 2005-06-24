@@ -75,14 +75,14 @@ public class NamingConventions {
 
 
 	/**
-	 * If one of the (hard-coded) classes in {@link Constants#JDK_VALUE_TYPES},
+	 * If one of the (hard-coded) classes in {@link StandardProgModelConstants#JDK_VALUE_TYPES},
 	 * or implements a {@link ValueObject}.
 	 * 
 	 * TODO: use annotations rather than interface inheritance.
 	 * 
 	 */
 	public final boolean isValueType(final Class<?> javaClass) {
-		if (de.berlios.rcpviewer.domain.Constants.JDK_VALUE_TYPES.contains(javaClass)) {
+		if (de.berlios.rcpviewer.domain.TypeConstants.JDK_VALUE_TYPES.contains(javaClass)) {
 			return true;
 		}
 		Value valueAnnotation = javaClass.getAnnotation(Value.class);
@@ -107,7 +107,7 @@ public class NamingConventions {
 	}
 	
 	public final boolean isCollectionType(final Class<?> clazz) {
-		return de.berlios.rcpviewer.domain.Constants.COLLECTION_TYPES.contains(clazz);
+		return de.berlios.rcpviewer.domain.TypeConstants.COLLECTION_TYPES.contains(clazz);
 	}
 
 	public boolean isVoid(Class<?> javaDataType) {

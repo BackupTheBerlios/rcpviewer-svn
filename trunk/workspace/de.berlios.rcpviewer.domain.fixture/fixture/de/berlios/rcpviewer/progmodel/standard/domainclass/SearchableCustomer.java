@@ -3,9 +3,11 @@
  */
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
 
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
-@InDomain(searchable=true) // default anyway
+@InDomain()
+@Lifecycle(searchable=true)
 public class SearchableCustomer {
 
 }

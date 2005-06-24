@@ -39,5 +39,5 @@ public interface IAdapterFactory<T> {
 	 * @param details
 	 * @return
 	 */
-	public T createAdapter(Map<String, String> details);
+	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass, Map<String, String> details);
 }

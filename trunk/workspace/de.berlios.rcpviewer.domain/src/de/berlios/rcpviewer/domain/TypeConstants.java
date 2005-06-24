@@ -12,12 +12,12 @@ import java.util.Set;
  * 
  * @author Dan Haywood
  */
-public final class Constants {
+public final class TypeConstants {
 
 	/**
 	 * Cannot instantiate.
 	 */
-	private Constants() {
+	private TypeConstants() {
 	}
 
 	/**

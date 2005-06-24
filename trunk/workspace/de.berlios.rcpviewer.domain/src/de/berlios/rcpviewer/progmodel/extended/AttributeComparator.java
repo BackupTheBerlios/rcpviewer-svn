@@ -35,14 +35,14 @@ public final class AttributeComparator implements Comparator {
 		EAttribute attribute1 = (EAttribute)arg1;
 		
 		Map<String,String> attributeDetails0 = 
-			emfFacade.getAnnotationDetails(attribute0, Constants.ANNOTATION_ATTRIBUTE);
+			emfFacade.getAnnotationDetails(attribute0, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 		Map<String,String> attributeDetails1 = 
-			emfFacade.getAnnotationDetails(attribute1, Constants.ANNOTATION_ATTRIBUTE);
+			emfFacade.getAnnotationDetails(attribute1, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 		
 		String positionedAtStr0 = 
-			attributeDetails0.get(Constants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY);
+			attributeDetails0.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY);
 		String positionedAtStr1 = 
-			attributeDetails1.get(Constants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY);
+			attributeDetails1.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY);
 		
 		
 		if (positionedAtStr0 != null && positionedAtStr1 == null) {

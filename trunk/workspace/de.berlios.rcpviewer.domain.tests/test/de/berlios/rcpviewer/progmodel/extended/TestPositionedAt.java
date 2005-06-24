@@ -36,7 +36,9 @@ public abstract class TestPositionedAt extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 		
-		AttributeComparator comparator = (AttributeComparator)domainClass.getAdapter(AttributeComparator.class);
+		ExtendedDomainClass extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		AttributeComparator comparator = extendedDomainClass.attributeComparator();
 		assertNotNull(comparator);
 		List<EAttribute> sortedAttributes = 
 			comparator.compare(domainClass.attributes());

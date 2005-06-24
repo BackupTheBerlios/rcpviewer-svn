@@ -9,6 +9,7 @@ import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.domainclass.ImmutableCustomerCategory;
 
 /**
@@ -37,7 +38,9 @@ public abstract class TestDomainClassInstantiable extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 
-		assertTrue(domainClass.isInstantiable());
+		ExtendedDomainClass extendedDomainClass = 
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertTrue(extendedDomainClass.isInstantiable());
 		
 	}
 	
@@ -47,7 +50,9 @@ public abstract class TestDomainClassInstantiable extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 
-		assertFalse(domainClass.isInstantiable());
+		ExtendedDomainClass extendedDomainClass = 
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertFalse(extendedDomainClass.isInstantiable());
 	}
 	
 }

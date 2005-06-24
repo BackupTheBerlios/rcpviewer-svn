@@ -6,12 +6,12 @@ package de.berlios.rcpviewer.progmodel.extended;
  * 
  * @author Dan Haywood
  */
-public final class Constants {
+public final class ExtendedProgModelConstants {
 
 	/**
 	 * Cannot instantiate.
 	 */
-	private Constants() {
+	private ExtendedProgModelConstants() {
 	}
 
 
@@ -19,8 +19,8 @@ public final class Constants {
 	 * Presence of an EAnnotation with this source on an EClass indicates
 	 * additional information accessible from the details.
 	 */
-	public static final String ANNOTATION_TYPE = 
-		"http://rcpviewer.berlios.de/progmodel/extended/type";
+	public static final String ANNOTATION_CLASS = 
+		"http://rcpviewer.berlios.de/progmodel/extended/class";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates
@@ -58,5 +58,29 @@ public final class Constants {
 	 */
 	public static final String ANNOTATION_OPERATION_POSITIONED_AT_KEY = 
 		"positionedAt";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link ExtendedProgModelConstants#ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated type should NOT be 
+	 * explicitly instantiatable. 
+	 */
+	public static final String ANNOTATION_ELEMENT_INSTANTIABLE_KEY = 
+		"instantiable";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link ExtendedProgModelConstants#ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated type should NOT be 
+	 * explicitly saveable. 
+	 */
+	public static final String ANNOTATION_ELEMENT_SAVEABLE_KEY = 
+		"saveable";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link ExtendedProgModelConstants#ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated type should be made 
+	 * available in a generic search capability.
+	 */
+	public static final String ANNOTATION_ELEMENT_SEARCHABLE_KEY = 
+		"searchable";
 
 }

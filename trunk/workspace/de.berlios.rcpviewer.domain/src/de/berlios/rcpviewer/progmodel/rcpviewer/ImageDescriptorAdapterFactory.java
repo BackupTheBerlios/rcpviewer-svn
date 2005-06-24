@@ -8,6 +8,7 @@ import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.domain.IAdapterFactory;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class ImageDescriptorAdapterFactory<T> implements IAdapterFactory<T> {
 
@@ -22,7 +23,7 @@ public class ImageDescriptorAdapterFactory<T> implements IAdapterFactory<T> {
 		details.put("url", url);
 		return details;
 	}
-	public T createAdapter(Map<String, String> details) {
+	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass, Map<String, String> details) {
 		String url = details.get("url");
 		URL imageUrl;
 		try {

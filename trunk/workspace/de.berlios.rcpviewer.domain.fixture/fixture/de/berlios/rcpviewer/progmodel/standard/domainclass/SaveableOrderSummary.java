@@ -3,9 +3,11 @@
  */
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
 
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
-@InDomain(saveable=true)
+@InDomain()
+@Lifecycle(saveable=true)
 public class SaveableOrderSummary {
 
 }

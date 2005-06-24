@@ -8,9 +8,9 @@ package de.berlios.rcpviewer.progmodel.standard;
  * 
  * @author Dan Haywood
  */
-public final class Constants {
+public final class StandardProgModelConstants {
 
-	private Constants() {
+	private StandardProgModelConstants() {
 	}
 
 	/**
@@ -38,30 +38,6 @@ public final class Constants {
 	 */
 	public static final String ANNOTATION_ELEMENT_IMMUTABLE_KEY = 
 		"immutable";
-
-	/**
-	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
-	 * whose presence indicates that the annotated type should be made 
-	 * available in a generic search capability.
-	 */
-	public static final String ANNOTATION_ELEMENT_SEARCHABLE_KEY = 
-		"searchable";
-
-	/**
-	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
-	 * whose presence indicates that the annotated type should NOT be 
-	 * explicitly instantiatable. 
-	 */
-	public static final String ANNOTATION_ELEMENT_INSTANTIABLE_KEY = 
-		"instantiable";
-
-	/**
-	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
-	 * whose presence indicates that the annotated type should NOT be 
-	 * explicitly saveable. 
-	 */
-	public static final String ANNOTATION_ELEMENT_SAVEABLE_KEY = 
-		"saveable";
 
 	/**
 	 * Access to any annotations pertaining (and specific to) the 

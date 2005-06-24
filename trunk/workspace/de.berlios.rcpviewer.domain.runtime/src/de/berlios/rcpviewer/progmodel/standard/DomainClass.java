@@ -121,40 +121,15 @@ public class DomainClass<T>
 
 	public boolean isChangeable() {
 		EAnnotation annotation = 
-			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+			eClass.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
 			return false;
 		}
-		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY) == null;
+		String immutable = 
+			(String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY);
+		return "false".equals(immutable);
 	}
 
-	public boolean isSearchable() {
-		EAnnotation annotation = 
-			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return false;
-		}
-		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_SEARCHABLE_KEY) != null;
-	}
-
-
-	public boolean isInstantiable() {
-		EAnnotation annotation = 
-			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return false;
-		}
-		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY) != null;
-	}
-
-	public boolean isPersistable() {
-		EAnnotation annotation = 
-			eClass.getEAnnotation(Constants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return false;
-		}
-		return annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_SAVEABLE_KEY) != null;
-	}
 
 	public II18nData getI18nData() {
 		throw new RuntimeException("Not yet implemented");
@@ -170,13 +145,13 @@ public class DomainClass<T>
 	 */
 	public <V> V getAdapter(Class<V> adapterClass) {
 		Map<String, String> detailsPlusFactoryName = 
-			emfFacade.getAnnotationDetails(eClass, Constants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
+			emfFacade.getAnnotationDetails(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		String adapterFactoryName = 
-			(String)detailsPlusFactoryName.get(Constants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
+			(String)detailsPlusFactoryName.get(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
 		IAdapterFactory<V> adapterFactory;
 		try {
 			adapterFactory = (IAdapterFactory<V>)Class.forName(adapterFactoryName).newInstance();
-			return adapterFactory.createAdapter(detailsPlusFactoryName);
+			return adapterFactory.createAdapter(this, detailsPlusFactoryName);
 		} catch (InstantiationException e) {
 			// TODO - log?
 			return null;
@@ -196,10 +171,10 @@ public class DomainClass<T>
 	 */
 	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<V> adapterFactory) {
 		EAnnotation eAnnotation = 
-			emfFacade.annotationOf(eClass, Constants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
+			emfFacade.annotationOf(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		Map<String,String> detailsPlusFactoryName = new HashMap<String,String>();
 		detailsPlusFactoryName.putAll(adapterFactory.getDetails());
-		detailsPlusFactoryName.put(Constants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
+		detailsPlusFactoryName.put(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
 		emfFacade.putAnnotationDetails(eAnnotation, detailsPlusFactoryName);
 	}
 
@@ -235,89 +210,32 @@ public class DomainClass<T>
 
 		// Immutable (to support isChangeable)
 		addIfImmutable(javaClass.getAnnotation(Immutable.class), eClass);
-
-		// Instantiable (File>New)
-		addIfInstantiable(javaClass.getAnnotation(InDomain.class), eClass);
-
-		// Searchable (Search>???)
-		addIfSearchable(javaClass.getAnnotation(InDomain.class), eClass);
-
-		// Saveable (File>Save)
-		addIfSaveable(javaClass.getAnnotation(InDomain.class), eClass);
-
 	}
 
 	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {
 		if (describedAs == null) {
 			return;
 		}
-		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
+			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
 		}
 		putAnnotationDetails(ea, 
-			Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
+			StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
 	}
 
 	private void addIfImmutable(Immutable immutable, EModelElement modelElement) {
-		
-		if (immutable == null) {
-			return;
-		}
-		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+		putAnnotationDetails( 
+			modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, immutable != null);
+	}
+	private void putAnnotationDetails(EModelElement modelElement, String key, boolean value) {
+		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
+			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
 		}
-		putAnnotationDetails(ea, 
-			Constants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, "dummy");
+		putAnnotationDetails(ea, key, value?"true":"false");
 	}
 
-	private void addIfInstantiable(InDomain inDomain, EModelElement modelElement) {
-		
-		if (inDomain == null) {
-			return;
-		}
-		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
-		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
-		}
-		if (inDomain.instantiable()) {
-			putAnnotationDetails(ea, 
-				Constants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY, "dummy");
-		}
-	}
-		
-
-	private void addIfSearchable(InDomain inDomain, EModelElement modelElement) {
-		
-		if (inDomain == null) {
-			return;
-		}
-		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
-		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
-		}
-		if (inDomain.searchable()) {
-			putAnnotationDetails(ea, 
-				Constants.ANNOTATION_ELEMENT_SEARCHABLE_KEY, null);
-		}
-	}
-
-	
-	private void addIfSaveable(InDomain inDomain, EModelElement modelElement) {
-		
-		if (inDomain == null) {
-			return;
-		}
-		EAnnotation ea = modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
-		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, Constants.ANNOTATION_ELEMENT);
-		}
-		if (inDomain.saveable()) {
-			putAnnotationDetails(ea, 
-				Constants.ANNOTATION_ELEMENT_SAVEABLE_KEY, "dummy");
-		}
-	}
 
 
 
@@ -354,7 +272,7 @@ public class DomainClass<T>
 
 			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
 					method.getName());
 			
 			eAttribute.setChangeable(false); // if find a mutator, make changeable
@@ -434,12 +352,12 @@ public class DomainClass<T>
 
 				((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
-				emfFacade.annotationOf(eAttribute, Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
+				emfFacade.annotationOf(eAttribute, StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
 					methods[i].getName());
 			
 //			eAttribute.setDefaultValueLiteral(defaultValueAsString); // TODO: read from annotation
@@ -478,12 +396,12 @@ public class DomainClass<T>
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 		}
 	}
@@ -577,7 +495,7 @@ public class DomainClass<T>
 		String accessorMethodName = 
 			getMethodNameFrom(
 					methodAnnotationFor(eAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
+					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -596,7 +514,7 @@ public class DomainClass<T>
 		String mutatorMethodName = 
 			getMethodNameFrom(
 					methodAnnotationFor(eAttribute), 
-					Constants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
 		EDataType dataType = (EDataType)eAttribute.getEType();
 		try {
 			Method mutatorMethod = 
@@ -621,7 +539,7 @@ public class DomainClass<T>
 	}
 
 	public boolean isWriteOnly(EAttribute eAttribute) {
-		return eAttribute.getEAnnotation(Constants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
+		return eAttribute.getEAnnotation(StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 	}
 
 	public boolean isChangeable(EAttribute eAttribute) {
@@ -808,7 +726,7 @@ public class DomainClass<T>
 			}
 
 			if ((methods[i].getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
-				emfFacade.annotationOf(eOperation, Constants.ANNOTATION_OPERATION_STATIC);
+				emfFacade.annotationOf(eOperation, StandardProgModelConstants.ANNOTATION_OPERATION_STATIC);
 			}
 			
 			//((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
@@ -823,7 +741,7 @@ public class DomainClass<T>
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eOperation), 
-					Constants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
 					methods[i].getName());
 			
 		}
@@ -891,7 +809,7 @@ public class DomainClass<T>
 	}
 		
 	public boolean isStatic(EOperation eOperation) {
-		return eOperation.getEAnnotation(Constants.ANNOTATION_OPERATION_STATIC) != null;
+		return eOperation.getEAnnotation(StandardProgModelConstants.ANNOTATION_OPERATION_STATIC) != null;
 	}
 
 	public boolean isParameterAValue(EOperation operation, int parameterPosition) {
@@ -944,7 +862,7 @@ public class DomainClass<T>
 		String invokerMethodName = 
 			getMethodNameFrom(
 					methodAnnotationFor(eOperation), 
-					Constants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
+					StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
 		EList eParameterList = eOperation.getEParameters();
 		Class[] parameterTypes = new Class[eParameterList.size()];
 		int i=0;
@@ -1058,7 +976,7 @@ public class DomainClass<T>
 
 			putAnnotationDetails(
 					methodAnnotationFor(eReference), 
-					Constants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
 					method.getName());
 
 
@@ -1100,12 +1018,12 @@ public class DomainClass<T>
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eReference), 
-					Constants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY,  
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY,  
 					associatorMethod.getName());
 			
 			putAnnotationDetails(
 					methodAnnotationFor(eReference), 
-					Constants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY, 
 					dissociatorMethod.getName());
 		}
 	}
@@ -1190,7 +1108,7 @@ public class DomainClass<T>
 		String accessorMethodName = 
 			getMethodNameFrom(
 					methodAnnotationFor(eReference), 
-					Constants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -1209,7 +1127,7 @@ public class DomainClass<T>
 		String associatorMethodName = 
 			getMethodNameFrom(
 					methodAnnotationFor(eReference), 
-					Constants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method associatorMethod = 
@@ -1229,7 +1147,7 @@ public class DomainClass<T>
 		String dissociatorMethodName = 
 			getMethodNameFrom(
 					methodAnnotationFor(eReference), 
-					Constants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
+					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method dissociatorMethod = 
@@ -1283,22 +1201,23 @@ public class DomainClass<T>
 	 */
 	private String descriptionOf(EModelElement modelElement) {
 		EAnnotation annotation = 
-			modelElement.getEAnnotation(Constants.ANNOTATION_ELEMENT);
+			modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
 			return null;
 		}
-		return (String)annotation.getDetails().get(Constants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
+		return (String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
 	}
 
 	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
 		EAnnotation eAnnotation = 
-			eModelElement.getEAnnotation(Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+			eModelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
 		if (eAnnotation != null) {
 			return eAnnotation;
 		}
-		return emfFacade.annotationOf(eModelElement, Constants.ANNOTATION_SOURCE_METHOD_NAMES);
+		return emfFacade.annotationOf(eModelElement, StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
 	}
-	
+
+	// TODO: used in extended programming model; move to some common library.
 	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
 		Map<String, String> details = new HashMap<String, String>();
 		details.put(key, value);
