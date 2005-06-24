@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mike Spike 4 Tests
+Bundle-SymbolicName: mikespike4_test
+Bundle-Version: 0.0.1
+Bundle-ClassPath: mikespike4-test.jar
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: org.junit,
+ mikespike4,
+ de.berlios.rcpviewer.domain.fixture
+Bundle-Vendor: Mike
