@@ -1,0 +1,3 @@
+This spike dealt with trying get a runtime / test harness combo that would allow me to test multiple startup configs in a single test suite.
+However time constraints have out this on hold.
+Moreover, the solution I was getting to (with 'StartUpJobs'), smelt wrong.

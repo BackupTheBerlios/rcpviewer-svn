@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RcpViewer GUI Runtime
+Bundle-SymbolicName: mikespike4; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: mikespike4.jar
+Bundle-Activator: mikespike4.GuiPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui;visibility:=reexport,
+ org.eclipse.core.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain;visibility:=reexport
+Eclipse-AutoStart: true
+Export-Package: mikespike4,
+ mikespike4.test,
+ mikespike4.views.classbar
