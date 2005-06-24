@@ -37,7 +37,9 @@ public abstract class TestImageDescriptor extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 		
-		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
+		RcpViewerDomainClass rcpViewerDC = 
+			domainClass.getAdapter(RcpViewerDomainClass.class);
+		ImageDescriptor id = rcpViewerDC.imageDescriptor();
 		assertNotNull(id);
 	}
 

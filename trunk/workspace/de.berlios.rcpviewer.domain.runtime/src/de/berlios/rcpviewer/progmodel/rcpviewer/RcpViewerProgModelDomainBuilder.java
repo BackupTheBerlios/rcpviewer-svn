@@ -38,8 +38,8 @@ public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 				// check URL is ok
 				final URL imageUrl = new URL(imageUrlAt.value());
 		
-				domainClass.setAdapterFactory(ImageDescriptor.class, 
-						new ImageDescriptorAdapterFactory<ImageDescriptor>(imageUrlAt.value()));
+				domainClass.setAdapterFactory(RcpViewerDomainClass.class, 
+						new RcpViewerProgModelAdapterFactory<RcpViewerDomainClass>(imageUrlAt.value()));
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block - should log.
 				e.printStackTrace();
