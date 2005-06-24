@@ -1,0 +1,11 @@
+'''Design Points'''
+* Side-stepping Domain initialisation at the moment by use of DomainInitialiserFactory so that whatever Dan & Ted finalise on can be accomodated easily.
+* DomainInitialiserFactory returns a Job that actually carries out the work.  This is strictly unecessary at the moment (indeed necesitates a join() call in plugin's startup()) but wrapping such long / heavy operations such as this in Job is one of my suggested standards.
+
+
+
+
+'''Suggested Standards'''
+* wrap all log / complex operations in Job's
+* 'eat your own dogfood' for all extension points  '''unless''' the fall-back default option; hecnce 'exts' sub-directories where extension points are implemented
+
