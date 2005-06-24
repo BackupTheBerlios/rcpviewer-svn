@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+              class="de.berlios.rcpviewer.gui.app.Application">
+         </run>
+      </application>
+   </extension>
+   
+   <extension-point id="domainclass" 
+                    name="Domain Class" 
+                    schema="schema/domainclass.exsd"/>
+   <extension-point id="fieldbuilder" 
+                    name="Field Builder" 
+                    schema="schema/fieldbuilder.exsd"/>
+   <extension-point id="editorcontentbuilder" 
+                    name="Editor Content Builder" 
+                    schema="schema/editorcontentbuilder.exsd"/>
+   
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Default Perspective"
+            class="de.berlios.rcpviewer.gui.app.DefaultPerspective"
+            id="de.berlios.rcpviewer.gui.app.DefaultPerspective">
+      </perspective>
+   </extension>
+  
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="de.berlios.rcpviewer.gui"
+            name="Default Views"/>
+      <view
+            category="de.berlios.rcpviewer.gui"
+            class="de.berlios.rcpviewer.gui.views.classbar.ClassBarView"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.gui.views.classbar.ClassBarView"
+            name=" "/>
+   </extension>
+   
+   <extension
+         point="de.berlios.rcpviewer.gui.fieldbuilder">
+         <impl class="de.berlios.rcpviewer.gui.editors.exts.BooleanFieldBuilder"/>
+         <impl class="de.berlios.rcpviewer.gui.editors.exts.DateFieldBuilder"/>
+         <impl class="de.berlios.rcpviewer.gui.editors.exts.ExceptionFieldBuilder"/>
+   </extension>
+
+</plugin>
