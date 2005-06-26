@@ -2,12 +2,9 @@ package de.berlios.rcpviewer.progmodel.extended;
 import java.lang.annotation.*;
 
 /**
- * Provide metadata to specify the positioning of an attribute or 
- * operation.
- * 
- * <p>
  * The value of the annotation determines the order relative to other
- * attributes or operations.  
+ * attributes (when applied to a method representing an attribute) or 
+ * operations (when applied to a method representing an operation).  
  * 
  * <p>
  * For an attribute, the annotation should be specified on the accessor
@@ -26,6 +23,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(ElementType.METHOD)
-public @interface PositionedAt {
+public @interface Order {
 	int value();
 }

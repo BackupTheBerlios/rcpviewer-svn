@@ -9,19 +9,19 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 public class CustomerWithAllAttributesPositioned {
 
 	int numberOfOrders;
-	@PositionedAt(3)
+	@Order(3)
 	public int getNumberOfOrders() {
 		return numberOfOrders;
 	}
 
 	String firstName;
-	@PositionedAt(2)
+	@Order(2)
 	public String getFirstName() {
 		return firstName;
 	}
 	
 	String lastName;
-	@PositionedAt(1)
+	@Order(1)
 	public String getLastName() {
 		return lastName;
 	}

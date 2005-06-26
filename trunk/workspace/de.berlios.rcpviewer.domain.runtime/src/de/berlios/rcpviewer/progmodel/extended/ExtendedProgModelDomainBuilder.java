@@ -51,8 +51,8 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		
 		for(EAttribute eAttribute: domainClass.attributes()) {
 			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(eAttribute);
-			PositionedAt positionedAt = 
-				accessorOrMutator.getAnnotation(PositionedAt.class);
+			Order positionedAt = 
+				accessorOrMutator.getAnnotation(Order.class);
 			if (positionedAt != null) {
 				EAnnotation attributeAnnotation = 
 					emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);

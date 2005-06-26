@@ -40,21 +40,16 @@ public final class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> 
 	}
 
 	/**
-	 * To support the PositionedAt annotation on attributes, use the
-	 * {@link AttributeComparator} to compare a collection of attributes as
-	 * returned from {@link IDomainClass#attributes()}.
-	 * 
-	 * <p>
-	 * Typical usage:
-	 * <pre>
-	 * List<EAttribute> sortedAttributes =
-	 *     someExtendedDC.attributeComparator(someDC.attributes());
-	 * </pre> 
+	 * Returns the attributes of the extended domain class 
+	 * {@link IDomainClass#attributes()} in the order defined by the
+	 * {@link Order} annotation.
 	 * 
 	 * @return
 	 */
-	public AttributeComparator attributeComparator() {
-		return new AttributeComparator();
+	public List<EAttribute> orderedAttributes() {
+		List<EAttribute> attributes = adapts().attributes();
+		Collections.sort(attributes, new AttributeComparator());
+		return attributes;
 	}
 	
 	/**

@@ -34,7 +34,6 @@ public abstract class AbstractDomain implements IDomain {
 	protected static Map<String,IDomain> domainsByName = 
         new HashMap<String,IDomain>();
 
-
 	/**
 	 * Creates a new domain using specified {@link IDomainBuilder} as 
 	 * the a primary builder.
@@ -48,7 +47,7 @@ public abstract class AbstractDomain implements IDomain {
 		this.name = name;
 		this.primaryBuilder = primaryBuilder; 
 	}
-
+	
 	private String name;
 	public final String getName() {
 		return name;

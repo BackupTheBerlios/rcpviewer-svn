@@ -11,28 +11,23 @@ import de.berlios.rcpviewer.domain.EmfFacade;
 
 
 /**
- * Extension of {@link IDomainClass}, derived from {@link PositionedAt}
+ * Extension of {@link IDomainClass}, derived from {@link Order}
  * attribute, that can be used to compare attributes.
- * 
- * <p>
- * TODO: should really implement Comparator<EAttribute>.
  * 
  * @author dkhaywood
  *
  */
-public final class AttributeComparator implements Comparator {
+final class AttributeComparator implements Comparator<EAttribute> {
 
 	/**
-	 * Compares according to the {@link PositionedAt} attribute, if known, or
+	 * Compares according to the {@link Order} attribute, if known, or
 	 * the name if not known.
 	 * 
 	 * @param arg0
 	 * @param arg1
 	 * @return
 	 */
-	public int compare(Object arg0, Object arg1) {
-		EAttribute attribute0 = (EAttribute)arg0;
-		EAttribute attribute1 = (EAttribute)arg1;
+	public int compare(EAttribute attribute0, EAttribute attribute1) {
 		
 		Map<String,String> attributeDetails0 = 
 			emfFacade.getAnnotationDetails(attribute0, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);

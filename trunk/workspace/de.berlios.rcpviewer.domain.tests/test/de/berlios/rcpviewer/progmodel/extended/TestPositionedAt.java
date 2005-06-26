@@ -6,7 +6,6 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
@@ -36,15 +35,14 @@ public abstract class TestPositionedAt extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainAnalyzer());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass extendedDomainClass =
+		ExtendedDomainClass<?> extendedDomainClass =
 			domainClass.getAdapter(ExtendedDomainClass.class);
-		AttributeComparator comparator = extendedDomainClass.attributeComparator();
-		assertNotNull(comparator);
-		List<EAttribute> sortedAttributes = 
-			comparator.compare(domainClass.attributes());
-		assertEquals("numberOfOrders", sortedAttributes.get(0).getName());
-		assertEquals("firstName", sortedAttributes.get(1).getName());
-		assertEquals("lastName", sortedAttributes.get(2).getName());
+		assertNotNull(extendedDomainClass);
+		List<EAttribute> orderedAttributes = 
+			extendedDomainClass.orderedAttributes();
+		assertEquals("numberOfOrders", orderedAttributes.get(0).getName());
+		assertEquals("firstName", orderedAttributes.get(1).getName());
+		assertEquals("lastName", orderedAttributes.get(2).getName());
 	}
 	
 }
