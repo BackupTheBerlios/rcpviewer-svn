@@ -7,10 +7,10 @@ Bundle-ClassPath: fixture.jar,
  bin/
 Bundle-Activator: de.berlios.rcpviewer.domain.fixture.FixturePlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- de.berlios.rcpviewer.progmodel.extended,
- de.berlios.rcpviewer.progmodel.rcpviewer,
- de.berlios.rcpviewer.progmodel.standard
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.standard;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel.extended,
