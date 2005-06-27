@@ -33,7 +33,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 				ClassBarView.ID,
 				false,
 				IPageLayout.LEFT,
-				0.05f,
+				0.1f,
 				layout.getEditorArea() );
 		layout.getViewLayout( ClassBarView.ID ).setCloseable( false );
 				

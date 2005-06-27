@@ -2,10 +2,8 @@ package de.berlios.rcpviewer.gui.util;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

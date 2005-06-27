@@ -1,20 +1,30 @@
 package de.berlios.rcpviewer.gui.views.classbar;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.jobs.FindInstanceJob;
+import de.berlios.rcpviewer.gui.jobs.JobAction;
+import de.berlios.rcpviewer.gui.jobs.NewInstanceJob;
+import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
+import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 /**
  * Outlook-style bar for each class in Domain.
@@ -24,15 +34,15 @@ public class ClassBarView extends ViewPart {
 
 	public static final String ID = ClassBarView.class.getName();
 	public static final String EMPTY_DOMAIN_MSG_KEY = "ClassBarView.EmptyDomain";
-
-	private List<Button> buttons = new ArrayList<Button>();
+	
+	private static final Point IMAGE_SIZE = new Point( 32, 32 );
 	
 	@Override
 	public void createPartControl( final Composite parent) {
 		if ( parent == null ) throw new IllegalArgumentException();
 
 		GridLayout layout = new GridLayout();
-		layout.verticalSpacing = 10;
+		layout.verticalSpacing = 0;
 		parent.setLayout( layout );
 		
 		final Collection<IDomainClass<?>> classes = Domain.instance().classes();
@@ -46,10 +56,42 @@ public class ClassBarView extends ViewPart {
 		}
 		else {
 			for( IDomainClass<?> clazz : classes ) {
-				Button button = new Button( parent, SWT.FLAT );
-				button.setText( clazz.getName() );
-				button.setToolTipText( clazz.getDescription() );
-				buttons.add( button );
+				
+				Button button = new Button( parent, SWT.BORDER );
+				button.setLayoutData( 
+						new GridData( GridData.HORIZONTAL_ALIGN_CENTER ) );
+				button.setImage( 
+						ImageUtil.resize( 
+								ImageUtil.getImage( clazz), 
+								IMAGE_SIZE ) ) ;
+				button.setToolTipText( clazz.getDescription() ); 
+
+				Label label = new Label( parent, SWT.CENTER );
+				label.setText( clazz.getName() );
+				label.setFont( FontUtil.getLabelFont() );
+				label.setLayoutData( new GridData( 
+						GridData.HORIZONTAL_ALIGN_CENTER ) );
+				label.setToolTipText( clazz.getDescription() ); 
+				
+				// vertical spacer
+				new Label( parent, SWT.CENTER );
+				
+				final IAction open = new JobAction( new NewInstanceJob( clazz ) );
+				
+				// click - opens a new instance
+				button.addSelectionListener( new DefaultSelectionAdapter(){
+					public void widgetSelected(SelectionEvent e) {
+						open.run();
+					}
+				});
+				
+				// right click - menu offering different options
+				MenuManager mgr = new MenuManager();
+				mgr.add( open );
+				mgr.add( new JobAction( new FindInstanceJob( clazz ) ) );
+				Menu menu = mgr.createContextMenu(  button );
+				button.setMenu( menu );
+				
 			}
 		}
 	}
@@ -57,15 +99,6 @@ public class ClassBarView extends ViewPart {
 	@Override
 	public void setFocus() {
 		// does nowt
-	}
-
-
-	/**
-	 * Test method 
-	 * @return
-	 */
-	public List<Button> testGetButtons(){
-		return buttons;
 	}
 
 }

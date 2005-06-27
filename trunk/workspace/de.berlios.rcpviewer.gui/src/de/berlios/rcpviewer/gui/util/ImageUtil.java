@@ -1,10 +1,12 @@
 package de.berlios.rcpviewer.gui.util;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
 /**
@@ -14,6 +16,30 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 public class ImageUtil {
 	
 	public static final Point STATUS_BAR_IMAGE_SIZE = new Point ( 16, 16 );
+	
+	/**
+	 * Creates an image for the passed <code>IDomainClass</code>.
+	 * <br>This image is added to the <code>GUIPlugin</code>'s repository
+	 * for caching and resource handling.
+	 * TODO - need image attribute on IDomainClass
+	 * @param clazz
+	 * @return
+	 */
+	public static final Image getImage( IDomainClass clazz ) {
+		if ( clazz == null ) throw new IllegalArgumentException();
+		
+		Image image = GuiPlugin.getDefault().getImageRegistry().get( clazz.getName() );
+		if ( image == null ) {
+			ImageDescriptor desc = null; // TODO - how get image out
+			if ( desc == null ) {
+				desc = ImageDescriptor.getMissingImageDescriptor();
+			}
+			image = desc.createImage();
+			GuiPlugin.getDefault().getImageRegistry().put( clazz.getName(), image );
+		}
+		assert image != null;
+		return image;
+	}
 	
 	/**
 	 * Creates a copy of the image scaled to the passed size.
