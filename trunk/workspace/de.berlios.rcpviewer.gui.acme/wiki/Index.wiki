@@ -1,9 +1,35 @@
 Example of a domaon-specific plugin developed on top of RCPViewer.
 
-''What you need to do:''
+1 What you need to do:
 
 * create POJO model
 * for each class:
 ** ensure all class has @InDomain annotation
-** add each class as an de.berlios.rcpviewer.gui.domainclass extension in plugin.xml 
+** add each class as an ~~de.berlios.rcpviewer.gui.domainclass extension~~ in plugin.xml 
 
+1 Prerequisites
+
+To run these tests, you need the following:
+* Eclipse 3.1
+* JRE 1.5.0_02
+* Compiler compliance level: 5.0
+
+Previously aspect-1.2 was required; this has now been removed.
+
+1 To run the application
+
+* Run > Run...
+* Create a new ~~Eclipse Application~~ configuration:
+** Select the ~~Eclipse Application~~ node on the LHS
+** Press ~~New~~ button below
+* On the Main tab
+** Enter name of ~~de.berlios.rcpviewer.gui~~ (or anything else you like)
+** Program to run:
+*** Run an application
+*** ~~de.berlios.rcpviewer.gui.application~~
+* On the Plugins tab:
+** Choose plugins and fragments to launch from list
+** Press ~~Deselect All~~
+** Select ~~de.berlios.rcpviewer.gui~~ and ~~de.berlios.rcpviewer.gui.acme~~
+** Press ~~Add Required Plugins~~
+* Run

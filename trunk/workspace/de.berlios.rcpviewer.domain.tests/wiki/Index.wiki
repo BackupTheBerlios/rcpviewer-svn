@@ -1,0 +1,6 @@
+1 About this plugin
+Abstract tests for Eclipse:/de.berlios.rcpviewer.domain/wiki/Index.wiki.
+
+The Domain classes are intended to be extended and implemented for both compile-time and run-time.  Therefore a (subset of) tests should apply to both environments.  This plugin defines those abstract tests, deferring to the concrete implementations a number of deployment specifics.  These deployment specifics are encapsulated (naturally enough) in de.berlios.rcpviewer.IDeploymentSpecifics; the subclass tests provide an implementation through a constructor.
+
+If writing new tests for the Domain, consider if they are specific to the compile- or run-time implementations, or are applicable to both.

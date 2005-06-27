@@ -1,0 +1,2 @@
+1 About this plugin
+Extends Eclipse:/de.berlios.rcpviewer.domain/wiki/Index.wiki to the run-time environment, providing implementations of Eclipse:/de.berlios.rcpviewer.domain/src/de/berlios/rcpviewer/domain/IDomainClass.java that are built up using java Reflection API.

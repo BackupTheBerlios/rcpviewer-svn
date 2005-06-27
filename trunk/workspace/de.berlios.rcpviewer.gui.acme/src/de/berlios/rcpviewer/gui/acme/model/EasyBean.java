@@ -3,11 +3,13 @@ package de.berlios.rcpviewer.gui.acme.model;
 import java.util.Date;
 
 import de.berlios.rcpviewer.gui.util.RandomUtil;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
  * @author Mike
  */
+@Lifecycle(instantiable=true,searchable=true,saveable=true)
 @InDomain
 public class EasyBean {
 	

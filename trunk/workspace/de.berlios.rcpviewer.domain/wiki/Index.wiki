@@ -1,37 +1,27 @@
-1 Prerequisites
+1 Introduction
 
-To run this project, you need the following:
-* Eclipse 3.1m6 
-* JRE 1.5.0_02
-* Compiler compliance level: 5.0
-* Set up EMF_CORE user library (see below)
-* Set up JFACE user library (see below)
+The plugins fall into two main categories:
+* the GUI plugins
+** Eclipse:/de.berlios.rcpviewer.gui/wiki/Index.wiki
+*** this needs to be merged with Eclipse:/de.berlios.rcpviewer.rcp/wiki/Index.wiki)
+** Eclipse:/de.berlios.rcpviewer.gui.acme/wiki/Index.wiki
+* the metamodel plugins, including (sketches of) sessions and persistence:
+** basically, everything else.
 
-Previously aspect-1.2 was required; this has now been removed.
+The GUI plugins can be run as an RCP application, very very basic at the moment.
 
-1.1 EMF_CORE user library
-
-* java>build path>user libraries
-* EMF_CORE
-* org.eclipse.emf.ecore_2.0.1/runtime/ ecore.jar, ecore.resources.jar
-* org.eclipse.emf.common_2.0.1/runtime/ common.jar, common.resources.jar
-
-1.1 JFACE user library
-
-* java>build path>user libraries
-* JFACE
-* c:/eclipse/plugins/org.eclipse.jface_3.1.0.jar
-* c:/eclipse/plugins/org.eclipse.swt_3.1.0.jar
-* c:/eclipse/plugins/org.eclipse.swt.win32_3.1.0.jar  (or whatever your platform is)
+The Metamodel plugins provide a full set of tests that can be run either as simple JUnit tests, or - as they are ultimately to be used by the GUI plugins - can be run as JUnit plugin tests.
 
 
-1 Compiling
-Should auto-build by itself.
+1 About this plugin
+Defines the API and partial implementation to describe a domain (a collection of domain classes).  Designed to be extended either at runtime (by implementations that use Java reflection) or at compile-time (by implementations that use Java AST).
+
 
 1 Things to try out
-* Open up Eclipse:/de.berlios.rcpviewer.tests/src/de/berlios/rcpviewer/tests/AllRcpViewerTests.java
-* Run > Run As > JUnit Test
-* Run > Run As > JUnit Plugin Test
+* try running the RCP application
+** see Eclipse:/de.berlios.rcpviewer.gui.acme/wiki/Index.wiki
+* try running the metamodel tests
+** see Eclipse:/de.berlios.rcpviewer.tests/wiki/Index.wiki
 
 
 1 To Do
@@ -39,3 +29,7 @@ Should auto-build by itself.
 
 1 Scratch Notes
 * [ScratchNotes]
+
+1 Wiki pages
+Every project has a wiki/Index.wiki which makes it easy to link to.  Many of the metamodel plugins cross reference back to here, though.
+
