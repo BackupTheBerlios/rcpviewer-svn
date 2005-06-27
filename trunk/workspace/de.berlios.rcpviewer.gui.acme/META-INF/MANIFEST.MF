@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Acme Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.gui.acme
+Bundle-SymbolicName: de.berlios.rcpviewer.gui.acme; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: acme.jar
 Bundle-Vendor: Acme Ltd.
 Bundle-Localization: plugin
 Eclipse-AutoStart: true
-Require-Bundle: de.berlios.rcpviewer.gui
+Require-Bundle: de.berlios.rcpviewer.gui;visibility:=reexport
