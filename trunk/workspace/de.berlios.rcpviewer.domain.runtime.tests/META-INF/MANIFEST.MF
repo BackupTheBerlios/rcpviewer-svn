@@ -7,11 +7,11 @@ Bundle-ClassPath: tests.jar,
  bin/
 Bundle-Activator: de.berlios.rcpviewer.domain.runtime.tests.TestsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- de.berlios.rcpviewer.domain.fixture,
- de.berlios.rcpviewer.domain.tests,
- de.berlios.rcpviewer.domain.runtime,
- de.berlios.rcpviewer.domain,
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain.fixture;visibility:=reexport,
+ de.berlios.rcpviewer.domain.tests;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain;visibility:=reexport,
  org.junit
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team
