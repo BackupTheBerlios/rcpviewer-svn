@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: compiletime.jar
 Bundle-Activator: de.berlios.rcpviewer.domain.compiletime.CompiletimePlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- de.berlios.rcpviewer.domain
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain;visibility:=reexport
 Eclipse-AutoStart: true
