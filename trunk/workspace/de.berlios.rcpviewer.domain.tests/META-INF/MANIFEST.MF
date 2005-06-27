@@ -7,18 +7,18 @@ Bundle-ClassPath: tests.jar,
  bin/
 Bundle-Activator: de.berlios.rcpviewer.domain.tests.TestsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.eclipse.ui.ide,
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ org.eclipse.ui;visibility:=reexport,
+ org.eclipse.ui.ide;visibility:=reexport,
  org.junit,
- de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.domain.fixture,
- de.berlios.rcpviewer.progmodel.extended,
- de.berlios.rcpviewer.progmodel.rcpviewer,
- de.berlios.rcpviewer.progmodel.standard,
- de.berlios.rcpviewer.domain.runtime,
- de.berlios.rcpviewer.domain.compiletime,
- org.aspectj.runtime
+ de.berlios.rcpviewer.domain;visibility:=reexport,
+ de.berlios.rcpviewer.domain.fixture;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain.compiletime;visibility:=reexport,
+ org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team
 Export-Package: de.berlios.rcpviewer,
