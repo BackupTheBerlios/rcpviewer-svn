@@ -11,7 +11,7 @@ import java.util.List;
 @InDomain
 public class AppointmentWithCollection {
 	List<AppointmentWithCollection> otherAppointments;
-	@Associates(AppointmentWithCollection.class)
+	@TypeOf(AppointmentWithCollection.class)
 	public List<AppointmentWithCollection> getOtherAppointments() {
 		return otherAppointments;
 	}

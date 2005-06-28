@@ -27,10 +27,10 @@ public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 	 * TODO: use parameters to downcast?
 	 */
 	public <V> void build(IDomainClass<V> domainClass) {
-		analyze((IRuntimeDomainClass<V>)domainClass);
+		build((IRuntimeDomainClass<V>)domainClass);
 	}
 
-	public <V> void analyze(IRuntimeDomainClass<V> domainClass) {
+	private <V> void build(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
 		final ImageUrlAt imageUrlAt = javaClass.getAnnotation(ImageUrlAt.class);
 		if (imageUrlAt != null) {

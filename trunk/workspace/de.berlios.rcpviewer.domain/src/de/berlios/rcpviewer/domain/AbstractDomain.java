@@ -68,7 +68,13 @@ public abstract class AbstractDomain implements IDomain {
 
 	private List<IDomainBuilder> builders = new ArrayList<IDomainBuilder>();
 	/**
-	 * Call after registering all classes.
+	 * Add additional {@link IDomainBuilder} to analyze the domain classes and
+	 * extract semantics.
+	 * 
+	 * <p>
+	 * All builders registered this way will be asked to do their analysis when
+	 * the domain is notified that all classes have been registered in
+	 * {@link AbstractDomain#done()}.
 	 * 
 	 * @param builder
 	 */
@@ -109,6 +115,9 @@ public abstract class AbstractDomain implements IDomain {
 	 * Indicates that all classes have been registered / created, so that
 	 * any additionally installed {@link IDomainBuilder}s can do their stuff.
 	 * 
+	 * <p>
+	 * Note that the primary builder (see {@link #getPrimaryBuilder()} is not
+	 * included in this.
 	 */
 	public void done() {
 		for(IDomainBuilder builder: builders) {

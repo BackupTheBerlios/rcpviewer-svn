@@ -5,25 +5,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Has a 1:m bidirectional relationship with Employee.
+ * Has a 1:m relationship with Employee.
+ * 
+ * <p>
+ * Although there is a back reference m:1 from Employee to Department, they
+ * are not annotated to represent a bidirectional relationship. 
  * 
  */
 @InDomain
 public class Department {
-	Set<ReferencesEmployee> employees = new HashSet<ReferencesEmployee>();
+	Set<Employee> employees = new HashSet<Employee>();
 	/**
 	 * Should be picked up as a 1:m reference to Employee.
 	 * @return
 	 */
-	@Associates(ReferencesEmployee.class)
-	public Set<ReferencesEmployee> getEmployees() {
+	@TypeOf(Employee.class)
+	public Set<Employee> getEmployees() {
 		return employees ;
 	}
-	void addToEmployees(final ReferencesEmployee employee) {
+	void addToEmployees(final Employee employee) {
 		employees.add(employee);
 		employee.setDepartment(this);
 	}
-	void removeFromEmployees(final ReferencesEmployee employee) {
+	void removeFromEmployees(final Employee employee) {
 		employees.remove(employee);
 		employee.setDepartment(null);
 	}

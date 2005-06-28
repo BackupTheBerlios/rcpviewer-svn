@@ -35,7 +35,7 @@ public abstract class TestDomainClassInstantiable extends AbstractTestCase {
 	public void testInstantiableDomainClass() {
 		domainClass = 
 			lookupAny(InstantiableProduct.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		ExtendedDomainClass extendedDomainClass = 
@@ -47,7 +47,7 @@ public abstract class TestDomainClassInstantiable extends AbstractTestCase {
 	public void testNonInstantiableDomainClass() {
 		domainClass = 
 			lookupAny(NonInstantiableProduct.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		ExtendedDomainClass extendedDomainClass = 

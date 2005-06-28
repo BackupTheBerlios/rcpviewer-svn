@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Inherited;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -72,14 +73,75 @@ public class DomainClass<T>
 		this(null, javaClass);
 	}
 
+	/**
+	 * Identify attributes, operations, and references.
+	 * 
+	 * <p>
+	 * For bidirectional references we note any @OppositeOf annotations but
+	 * the actual wiring up of bidirectional references is done in the
+	 * {@link StandardProgModelDomainBuilder#done}, delegating back to 
+	 * {@link #wireUpOppositeReferences()}.
+	 */
 	public void init() {
 		identifyAccessors();
 		identifyMutators();
 		identifyUnSettableAttributes();
 		identifyOperations();
 		identifyReferences();
+		identifyOppositeReferences();
 		identifyAssociatorsAndDissociators();
-		identifyBidirectionalReferences();
+		oppRefState = OppRefState.onceMore;
+	}
+
+	static enum OppRefState {
+		stillBuilding, onceMore, neverAgain;
+	}
+	/**
+	 * HACK: This is a horrible hack that allows our 
+	 * {@link #identifyOppositeReferences()} to be called once more, in 
+	 * {@link Domain#lookup(Class)}.
+	 */
+	private OppRefState oppRefState = OppRefState.stillBuilding;
+	public void identifyOppositeReferences() {
+		
+		if (oppRefState == OppRefState.neverAgain) {
+			return;
+		} else if (oppRefState == OppRefState.stillBuilding) {
+			// do nothing
+		} else if (oppRefState == OppRefState.stillBuilding) {
+			oppRefState = OppRefState.neverAgain;
+		}
+		
+		for(EReference reference: this.references()) {
+			// since later on we call this same method on the DomainClass 
+			// representing the referenced class, we have the possibility of
+			// an infinite loop if both sides have an @OppositeOf annotation.
+			// this guard prevents this from happening.
+			if (reference.getEOpposite() != null) {
+				continue;
+			}
+			EClass referencedEClass = reference.getEReferenceType();
+			IDomainClass<?> referencedClass = 
+				getDomain().domainClassFor(referencedEClass);
+
+			String oppositeReferenceName = 
+				getAnnotationDetail(referenceAnnotationFor(reference), StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY);
+			if (oppositeReferenceName != null) {
+				// annotation on this end, so set up the opposite
+				EReference oppositeReference = 
+					referencedClass.getEReferenceNamed(oppositeReferenceName);
+				if(oppositeReference != null) {
+					reference.setEOpposite(oppositeReference);
+					oppositeReference.setEOpposite(reference);
+				}
+			} else {
+//				// no annotation this end, but its possible that the referenced
+//				// object does have an annotation its end.
+//				if (referencedClass instanceof DomainClass<?>) {
+//					((DomainClass<?>)referencedClass).identifyOppositeReferences(); 
+//				}
+			}
+		}
 	}
 
 	private final IDomain domain;
@@ -148,6 +210,9 @@ public class DomainClass<T>
 			emfFacade.getAnnotationDetails(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		String adapterFactoryName = 
 			(String)detailsPlusFactoryName.get(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
+		if (adapterFactoryName == null) {
+			throw new IllegalArgumentException("No such adapter '" + adapterFactoryName + "'");
+		}
 		IAdapterFactory<V> adapterFactory;
 		try {
 			adapterFactory = (IAdapterFactory<V>)Class.forName(adapterFactoryName).newInstance();
@@ -271,7 +336,7 @@ public class DomainClass<T>
 			((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
 			putAnnotationDetails(
-					methodAnnotationFor(eAttribute), 
+					methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
 					method.getName());
 			
@@ -356,7 +421,7 @@ public class DomainClass<T>
 			}
 			
 			putAnnotationDetails(
-					methodAnnotationFor(eAttribute), 
+					methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
 					methods[i].getName());
 			
@@ -395,12 +460,12 @@ public class DomainClass<T>
 			eAttribute.setUnsettable(true);
 			
 			putAnnotationDetails(
-					methodAnnotationFor(eAttribute), 
+					methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 			
 			putAnnotationDetails(
-					methodAnnotationFor(eAttribute), 
+					methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 		}
@@ -494,7 +559,7 @@ public class DomainClass<T>
 	public Method getAccessorFor(EAttribute eAttribute) {
 		String accessorMethodName = 
 			getMethodNameFrom(
-					methodAnnotationFor(eAttribute), 
+					methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
 		try {
 			Method accessorMethod = 
@@ -513,7 +578,7 @@ public class DomainClass<T>
 	public Method getMutatorFor(EAttribute eAttribute) {
 		String mutatorMethodName = 
 			getMethodNameFrom(
-					methodAnnotationFor(eAttribute), 
+					methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
 		EDataType dataType = (EDataType)eAttribute.getEType();
 		try {
@@ -729,8 +794,7 @@ public class DomainClass<T>
 				emfFacade.annotationOf(eOperation, StandardProgModelConstants.ANNOTATION_OPERATION_STATIC);
 			}
 			
-			//((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
-			eClass.getEOperations().add(eOperation);
+			((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
 			
 			// these are supported by EMF, but not (yet) by our metamodel.
 //			eOperation.setLowerBound(..);
@@ -740,7 +804,7 @@ public class DomainClass<T>
 //			eOperation.setOrdered(..);
 			
 			putAnnotationDetails(
-					methodAnnotationFor(eOperation), 
+					methodNamesAnnotationFor(eOperation), 
 					StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
 					methods[i].getName());
 			
@@ -861,7 +925,7 @@ public class DomainClass<T>
 	public Method getInvokerFor(EOperation eOperation) {
 		String invokerMethodName = 
 			getMethodNameFrom(
-					methodAnnotationFor(eOperation), 
+					methodNamesAnnotationFor(eOperation), 
 					StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
 		EList eParameterList = eOperation.getEParameters();
 		Class[] parameterTypes = new Class[eParameterList.size()];
@@ -904,7 +968,7 @@ public class DomainClass<T>
 			Class<?> referencedJavaClass = methods[i].getReturnType();
 			IDomainClass<?> referencedDomainClass = null;
 			boolean couldBeCollection = true;
-			Associates associates = null;
+			TypeOf associates = null;
 
 			// let's see if its a 1:m (collection class)
 			if (couldBeCollection) {
@@ -915,7 +979,7 @@ public class DomainClass<T>
 				}
 			}
 			if (couldBeCollection) {
-				associates = method.getAnnotation(Associates.class);
+				associates = method.getAnnotation(TypeOf.class);
 				if (associates == null) {
 					// they've forgotten the @Associates annotation.
 					couldBeCollection = false;
@@ -956,7 +1020,16 @@ public class DomainClass<T>
 				eReference.setTransient(true);
 				eReference.setVolatile(true);
 			}
-			
+
+			// initially we just catalog the opposite; later we shall look 
+			// for them.
+			OppositeOf oppositeOf = method.getAnnotation(OppositeOf.class);
+			if (oppositeOf != null) {
+				putAnnotationDetails(
+						referenceAnnotationFor(eReference), 
+						StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY, 
+						oppositeOf.value());
+			}
 			
 			
 			// we determine immutability based on presence of associator/dissociator.
@@ -975,7 +1048,7 @@ public class DomainClass<T>
 			((List<? super EReference>)eClass.getEStructuralFeatures()).add(eReference);
 
 			putAnnotationDetails(
-					methodAnnotationFor(eReference), 
+					methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
 					method.getName());
 
@@ -1017,23 +1090,15 @@ public class DomainClass<T>
 			eReference.setChangeable(true);
 			
 			putAnnotationDetails(
-					methodAnnotationFor(eReference), 
+					methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY,  
 					associatorMethod.getName());
 			
 			putAnnotationDetails(
-					methodAnnotationFor(eReference), 
+					methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY, 
 					dissociatorMethod.getName());
 		}
-	}
-
-
-	/**
-	 * TODO
-	 */
-	private void identifyBidirectionalReferences() {
-		
 	}
 
 
@@ -1107,7 +1172,7 @@ public class DomainClass<T>
 	public Method getAccessorFor(EReference eReference) {
 		String accessorMethodName = 
 			getMethodNameFrom(
-					methodAnnotationFor(eReference), 
+					methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
 		try {
 			Method accessorMethod = 
@@ -1126,7 +1191,7 @@ public class DomainClass<T>
 	public Method getAssociatorFor(EReference eReference) {
 		String associatorMethodName = 
 			getMethodNameFrom(
-					methodAnnotationFor(eReference), 
+					methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
@@ -1146,7 +1211,7 @@ public class DomainClass<T>
 	public Method getDissociatorFor(EReference eReference) {
 		String dissociatorMethodName = 
 			getMethodNameFrom(
-					methodAnnotationFor(eReference), 
+					methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
@@ -1208,16 +1273,25 @@ public class DomainClass<T>
 		return (String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
 	}
 
-	EAnnotation methodAnnotationFor(EModelElement eModelElement) {
+	EAnnotation methodNamesAnnotationFor(EModelElement eModelElement) {
+		return annotationFor(eModelElement, StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
+	}
+
+	EAnnotation referenceAnnotationFor(EModelElement eModelElement) {
+		return annotationFor(eModelElement, StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE);
+	}
+	
+
+	EAnnotation annotationFor(EModelElement eModelElement, final String annotationSource) {
 		EAnnotation eAnnotation = 
-			eModelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
+			eModelElement.getEAnnotation(annotationSource);
 		if (eAnnotation != null) {
 			return eAnnotation;
 		}
-		return emfFacade.annotationOf(eModelElement, StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
+		return emfFacade.annotationOf(eModelElement, annotationSource);
 	}
 
-	// TODO: used in extended programming model; move to some common library.
+	// TODO: used also in extended programming model; move to some common library.
 	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
 		Map<String, String> details = new HashMap<String, String>();
 		details.put(key, value);

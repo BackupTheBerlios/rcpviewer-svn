@@ -34,7 +34,7 @@ public abstract class TestDomainClassImmutable extends AbstractTestCase {
 	public void testImmutableDomainClass() {
 		domainClass = 
 			lookupAny(ImmutableCustomerCategory.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		assertFalse(domainClass.isChangeable());
@@ -44,7 +44,7 @@ public abstract class TestDomainClassImmutable extends AbstractTestCase {
 	public void testNonImmutableDomainClass() {
 		domainClass = 
 			lookupAny(MutableCustomer.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		assertTrue(domainClass.isChangeable());

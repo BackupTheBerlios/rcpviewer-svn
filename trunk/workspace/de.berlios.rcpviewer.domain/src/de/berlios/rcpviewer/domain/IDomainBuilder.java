@@ -17,7 +17,13 @@ package de.berlios.rcpviewer.domain;
  */
 public interface IDomainBuilder {
 	
+	/**
+	 * Called for each domain class, for all domain builders except the
+	 * primary domain builder.
+	 * 
+	 * @param <V>
+	 * @param domainClass
+	 */
 	public <V> void build(IDomainClass<V> domainClass);
-	
 
 }

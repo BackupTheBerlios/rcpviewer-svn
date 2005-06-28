@@ -35,7 +35,7 @@ public abstract class TestDomainClassSaveable extends AbstractTestCase {
 	public void testPersistableDomainClass() {
 		domainClass = 
 			lookupAny(SaveableOrderSummary.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		ExtendedDomainClass extendedDomainClass = 
@@ -47,7 +47,7 @@ public abstract class TestDomainClassSaveable extends AbstractTestCase {
 	public void testNonPersistableDomainClass() {
 		domainClass = 
 			lookupAny(NonSaveableOrderSummary.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		ExtendedDomainClass extendedDomainClass = 

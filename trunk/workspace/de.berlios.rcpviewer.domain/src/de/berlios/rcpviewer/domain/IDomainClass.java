@@ -656,4 +656,5 @@ public interface IDomainClass<T> {
 
 	public boolean isDerived(EReference eReference);
 
+
 }

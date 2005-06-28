@@ -1,13 +1,9 @@
 package de.berlios.rcpviewer.progmodel.standard.reference;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
-/**
- * Has a m:1 bidirectional relationship with Employee.
- * 
- */
 @InDomain
-public class ReferencesEmployee {
-	public ReferencesEmployee(String firstName, String lastName) {
+public class Employee {
+	public Employee(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
@@ -28,7 +24,13 @@ public class ReferencesEmployee {
 
 	Department department;
 	/**
-	 * Should be picked up as representing a 1:1 reference to Department.
+	 * Should be picked up as representing a 1:1 reference to 
+	 * Department.
+	 * 
+	 *  * <p>
+	 * Although there is a reference 1:m from Department to Employee, they
+	 * are not annotated to represent a bidirectional relationship. 
+	 * 
 	 * @return
 	 */
 	public Department getDepartment() {

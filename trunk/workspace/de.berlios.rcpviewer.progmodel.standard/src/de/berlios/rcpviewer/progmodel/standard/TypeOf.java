@@ -2,7 +2,11 @@ package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.annotation.*;
 
 /**
- * The type (as a Java class) that a 1:m reference associates.
+ * The type (as a Java class).
+ * 
+ * <p>
+ * Potentially can be used in a number of places, though the most common place
+ * is to annotate a 1:m reference.
  * 
  * <p>
  * 1:M references between classes are typically specified with List<T>, Set<T> 
@@ -19,6 +23,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(ElementType.METHOD)
-public @interface Associates {
+public @interface TypeOf {
 	Class<?> value();
 }

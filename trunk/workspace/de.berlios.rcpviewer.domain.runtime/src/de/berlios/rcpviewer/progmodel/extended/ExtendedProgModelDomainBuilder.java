@@ -30,10 +30,10 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
 	public <V> void build(IDomainClass<V> domainClass) {
-		analyze((IRuntimeDomainClass<V>)domainClass);
+		build((IRuntimeDomainClass<V>)domainClass);
 	}
 
-	public <V> void analyze(IRuntimeDomainClass<V> domainClass) {
+	private <V> void build(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
 		
 		// Instantiable (File>New)

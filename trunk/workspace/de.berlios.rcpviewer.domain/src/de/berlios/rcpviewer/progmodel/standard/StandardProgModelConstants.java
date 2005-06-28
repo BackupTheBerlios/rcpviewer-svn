@@ -47,19 +47,49 @@ public final class StandardProgModelConstants {
 		"http://rcpviewer.berlios.de/progmodel/standard/class";
 
 	/**
-	 * Access to the (names of the) accessor/mutator/isUnset/unset methods for
-	 * an attribute, or equivalent methods for an operation.
-	 */
-	public static final String ANNOTATION_SOURCE_METHOD_NAMES = 
-		"http://rcpviewer.berlios.de/progmodel/standard/methodNames";
-
-
-	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates 
 	 * that the EAttribute is write-only (has a mutator, no accessor).
 	 */
 	public final static String ANNOTATION_ATTRIBUTE_WRITE_ONLY = 
 		"http://rcpviewer.berlios.de/progmodel/standard/attribute/writeOnly";
+
+	/**
+	 * Presence of an EAnnotation with this source on an EOperation indicates 
+	 * that the EOperation is static
+	 */
+	public static final String ANNOTATION_OPERATION_STATIC = 
+		"http://rcpviewer.berlios.de/progmodel/standard/operation/static";
+
+	/**
+	 * Presence of an EAnnotation with this source on an EReference indicates 
+	 * that the reference has indicated it has an opposite.
+	 */
+	public static final String ANNOTATION_REFERENCE_OPPOSITE = 
+		"http://rcpviewer.berlios.de/progmodel/standard/reference/opposite";
+
+	/**
+	 * Key to EAnnotation details representing (names of) opposite reference
+	 * to this reference.
+	 * 
+	 * <p>
+	 * The presence of this annotation detail does not necessarily imply that
+	 * the reference does have an opposite, only that an annotation was found
+	 * in the domain model (pojo) indicating that the reference should have
+	 * an opposite.  Since there is no type checking, there could of course
+	 * be a typo.  
+	 * 
+	 * <p>
+	 * Holds key to the accessor method (applicable only if not write only).
+	 */
+	public static final String ANNOTATION_REFERENCE_OPPOSITE_KEY = "get";
+
+
+	/**
+	 * Access to the (names of the) accessor/mutator/isUnset/unset methods for
+	 * an attribute, or an operation, or a reference.
+	 */
+	public static final String ANNOTATION_SOURCE_METHOD_NAMES = 
+		"http://rcpviewer.berlios.de/progmodel/standard/methodNames";
 
 	/**
 	 * Key to EAnnotation details representing (names of) methods to access or
@@ -102,13 +132,6 @@ public final class StandardProgModelConstants {
 	 * represents an operation.
 	 */
 	public static final String ANNOTATION_OPERATION_METHOD_NAME_KEY = "invoke";
-
-	/**
-	 * Presence of an EAnnotation with this source on an EOperation indicates 
-	 * that the EOperation is static
-	 */
-	public static final String ANNOTATION_OPERATION_STATIC = 
-		"http://rcpviewer.berlios.de/progmodel/standard/operation/static";
 
 	/**
 	 * Key to EAnnotation details representing (names of) methods to access 

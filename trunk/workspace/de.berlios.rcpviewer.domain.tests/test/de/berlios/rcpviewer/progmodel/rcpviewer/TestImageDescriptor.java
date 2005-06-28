@@ -34,7 +34,7 @@ public abstract class TestImageDescriptor extends AbstractTestCase {
 	
 	public void testDomainClassWithImageUrlAt() {
 		domainClass = lookupAny(ProspectiveSale.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
 		RcpViewerDomainClass rcpViewerDC = 

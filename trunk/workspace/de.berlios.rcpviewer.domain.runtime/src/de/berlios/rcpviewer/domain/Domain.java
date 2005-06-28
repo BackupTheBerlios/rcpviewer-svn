@@ -135,11 +135,20 @@ public final class Domain extends AbstractDomain {
 		}
 		
 		// HACK
-		IRuntimeDomainClass<V> domainClass = (IRuntimeDomainClass<V>)lookupNoRegister(javaClass);
+		DomainClass<V> domainClass = (DomainClass<V>)lookupNoRegister(javaClass);
 		if (domainClass == null) {
 			domainClass = new DomainClass<V>(this, javaClass);
 			domainClassesByjavaClass.put(javaClass, domainClass);
 			getPrimaryBuilder().build(domainClass);
+		} else {
+			//
+			// HACK to pick up opposite references for case when
+			// the side with @OppositeOf was registered second.
+			//
+			// the domain class will only actually do the work once, not on
+			// every subsequent lookup.
+			//
+			domainClass.identifyOppositeReferences();
 		}
 		return domainClass;
 	}

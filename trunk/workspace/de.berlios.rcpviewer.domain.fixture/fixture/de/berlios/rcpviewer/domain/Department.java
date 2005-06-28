@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.berlios.rcpviewer.progmodel.standard.Associates;
+import de.berlios.rcpviewer.progmodel.standard.TypeOf;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 
@@ -26,7 +26,7 @@ public class Department  {
 	}
 	
 	private Set<Employee> employees = new HashSet<Employee>();
-	@Associates(Employee.class)
+	@TypeOf(Employee.class)
 	public Set<Employee> getEmployees() {
 		return employees;
 	}

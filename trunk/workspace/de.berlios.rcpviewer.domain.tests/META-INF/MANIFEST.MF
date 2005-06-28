@@ -17,7 +17,6 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
  de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
  de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
- de.berlios.rcpviewer.domain.compiletime;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team

@@ -9,20 +9,20 @@ import java.util.Set;
  */
 @InDomain
 public class DepartmentDerivedReferences {
-	Set<ReferencesEmployee> employees = new HashSet<ReferencesEmployee>();
+	Set<Employee> employees = new HashSet<Employee>();
 	/**
 	 * Should be picked up as an immutable 1:m reference to Employee.
 	 * @return
 	 */
 	@Immutable
-	@Associates(ReferencesEmployee.class)
-	public Set<ReferencesEmployee> getEmployees() {
+	@TypeOf(Employee.class)
+	public Set<Employee> getEmployees() {
 		return employees ;
 	}
-	void addToEmployees(final ReferencesEmployee employee) {
+	void addToEmployees(final Employee employee) {
 		employees.add(employee);
 	}
-	void removeFromEmployees(final ReferencesEmployee employee) {
+	void removeFromEmployees(final Employee employee) {
 		employees.remove(employee);
 	}
 
@@ -31,10 +31,10 @@ public class DepartmentDerivedReferences {
 	 * @return
 	 */
 	@Derived
-	@Associates(ReferencesEmployee.class)
-	public Set<ReferencesEmployee> getTerminatedEmployees() {
-		Set<ReferencesEmployee> employeesNamed = new HashSet<ReferencesEmployee>();
-		for(ReferencesEmployee e: employees) {
+	@TypeOf(Employee.class)
+	public Set<Employee> getTerminatedEmployees() {
+		Set<Employee> employeesNamed = new HashSet<Employee>();
+		for(Employee e: employees) {
 			if (e.isTerminated()) {
 				employeesNamed.add(e);
 			}
@@ -47,7 +47,7 @@ public class DepartmentDerivedReferences {
 	 * @return
 	 */
 	@Derived
-	public ReferencesEmployee getMostRecentJoiner() {
+	public Employee getMostRecentJoiner() {
 		throw new RuntimeException("not implemented");
 	}
 

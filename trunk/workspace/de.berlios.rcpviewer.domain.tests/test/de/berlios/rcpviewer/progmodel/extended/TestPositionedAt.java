@@ -32,7 +32,7 @@ public abstract class TestPositionedAt extends AbstractTestCase {
 	public void testDomainClassWithAllAttributesPositioned() {
 		domainClass = 
 			lookupAny(CustomerWithAllAttributesPositioned.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
 		ExtendedDomainClass<?> extendedDomainClass =
@@ -44,5 +44,6 @@ public abstract class TestPositionedAt extends AbstractTestCase {
 		assertEquals("firstName", orderedAttributes.get(1).getName());
 		assertEquals("lastName", orderedAttributes.get(2).getName());
 	}
+
 	
 }

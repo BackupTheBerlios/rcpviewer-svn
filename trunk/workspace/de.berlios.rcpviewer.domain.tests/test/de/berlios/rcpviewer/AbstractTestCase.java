@@ -12,20 +12,20 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public abstract class AbstractTestCase extends TestCase {
 
-	public AbstractTestCase(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
+	public AbstractTestCase(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
 		this.domainSpecifics = domainSpecifics;
-		this.domainAnalyzer = domainAnalyzer;
+		this.domainBuilder = domainBuilder;
 	}
 	
 	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
 		super(name);
 		this.domainSpecifics = domainSpecifics;
-		this.domainAnalyzer = domainAnalyzer;
+		this.domainBuilder = domainAnalyzer;
 	}
 
-	private final IDomainBuilder domainAnalyzer;
-	protected IDomainBuilder getDomainAnalyzer() {
-		return domainAnalyzer;
+	private final IDomainBuilder domainBuilder;
+	protected IDomainBuilder getDomainBuilder() {
+		return domainBuilder;
 	}
 
 	private final IDeploymentSpecifics domainSpecifics; 

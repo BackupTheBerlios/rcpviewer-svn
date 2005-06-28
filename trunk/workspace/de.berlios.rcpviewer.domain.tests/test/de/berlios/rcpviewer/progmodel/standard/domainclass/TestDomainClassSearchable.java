@@ -35,7 +35,7 @@ public abstract class TestDomainClassSearchable extends AbstractTestCase {
 	public void testSearchableDomainClass() {
 		domainClass = 
 			lookupAny(SearchableCustomer.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		ExtendedDomainClass extendedDomainClass = 
@@ -46,7 +46,7 @@ public abstract class TestDomainClassSearchable extends AbstractTestCase {
 	public void testNonPersistableDomainClass() {
 		domainClass = 
 			lookupAny(NonSearchableCustomer.class);
-		getDomainInstance().addBuilder(getDomainAnalyzer());
+		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
 		ExtendedDomainClass extendedDomainClass = 
