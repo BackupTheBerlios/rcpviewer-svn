@@ -23,8 +23,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setShowCoolBar(false);
-        configurer.setShowStatusLine(true);
+        configurer.setShowCoolBar( true );
+        configurer.setShowStatusLine( true );
         configurer.setTitle( GuiPlugin.getResourceString( TITLE_KEY ) );
     }
 

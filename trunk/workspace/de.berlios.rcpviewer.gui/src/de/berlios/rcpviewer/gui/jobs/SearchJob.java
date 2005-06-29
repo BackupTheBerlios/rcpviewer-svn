@@ -14,7 +14,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  * @author Mike
  *
  */
-public class FindInstanceJob extends UIJob {
+public class SearchJob extends UIJob {
 
 	private final IDomainClass clazz;
 	
@@ -22,8 +22,8 @@ public class FindInstanceJob extends UIJob {
 	 * Constrcutor requires the class to open.
 	 * @param clazz
 	 */
-	public FindInstanceJob( IDomainClass clazz ) {
-		super( GuiPlugin.getResourceString( "FindInstanceJob.Name" ) );
+	public SearchJob( IDomainClass clazz ) {
+		super( GuiPlugin.getResourceString( "SearchJob.Name" ) );
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this.clazz = clazz;
 	}

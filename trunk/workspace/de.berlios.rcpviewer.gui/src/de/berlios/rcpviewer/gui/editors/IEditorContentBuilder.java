@@ -1,16 +1,12 @@
 package de.berlios.rcpviewer.gui.editors;
 
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 
 /**
  * Type for building editor gui structures.
  * @author Mike
  */
 public interface IEditorContentBuilder {
-	
-	public static final String EXTENSION_POINT
-		= "de.berlios.rcpviewer.gui.editorcontentbuilder"; 
-	public static final String CLASS_PROPERTY = "class";
 
 	/**
 	 * Whether can be used to create a GUI for the passed class.
@@ -26,10 +22,12 @@ public interface IEditorContentBuilder {
 	 */
 	public String getDisplay();
 	
+	
+	// REVIEW_CHANGE for mike: create UI for a managed form instead of composite -- ted
 	/**
 	 * Generates a GUI on the passed parent for the passed object.
 	 * @param parent
 	 * @param instance
 	 */
-	public void createGui( Composite parent, Object instance );
+	public void createGui( IManagedForm parent, Object instance );
 }

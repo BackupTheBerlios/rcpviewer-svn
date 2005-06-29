@@ -16,12 +16,17 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	public static final String ID = DefaultPerspective.class.getName();
 	
 	private static final String RIGHT = "right";
-
+	private static final String BOTTOM = "bottom";
+	
 	/**
 	 * Creates:
 	 * <ul>
 	 * <li>an uncloseable ClassBarView on the left hand side
-	 * <li>placeholder on the right-hand side for other views 
+	 * <li>placeholder on the right-hand side for views 
+	 * <li>placeholder on bottom for views:
+	 *   <ul>
+	 *   <li>platform search views
+	 *   </ul>
 	 * </ul>
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 * @see de.berlios.rcpviewer.gui.views.classbar.ClassBarView;
@@ -40,12 +45,21 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		// editor area
 		layout.setEditorAreaVisible( true );
 		
-		// right hand-side placeholders
+		// right hand-side placeholder
         IPlaceholderFolderLayout right = layout.createPlaceholderFolder( 
                 RIGHT, 
                 IPageLayout.RIGHT, 
                 0.90f,
 				layout.getEditorArea() );
+		
+		// bottom placholder
+		IPlaceholderFolderLayout bottom =  layout.createPlaceholderFolder(
+				BOTTOM,
+				IPageLayout.BOTTOM, 
+				0.7f, 
+				layout.getEditorArea() );
+		bottom.addPlaceholder( "org.eclipse.search.ui.views.SearchView" );
+		bottom.addPlaceholder( "org.eclipse.search.SearchResultView" );
 
 	}
 }

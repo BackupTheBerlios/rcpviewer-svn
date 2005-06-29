@@ -9,8 +9,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 import de.berlios.rcpviewer.gui.editors.EditorContentBuilderFactory;
 import de.berlios.rcpviewer.gui.editors.FieldBuilderFactory;
+import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
+import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
 
 
 /**
@@ -76,19 +79,21 @@ public class GuiPlugin extends AbstractUIPlugin {
 		super.start(context);
 		
 		// start domain initialisation
-		Job job = DomainInitialiserFactory.getInitialiserJob();
-		job.schedule();
+		IDomainBootstrap bootstrap = DomainBootstrapFactory.createBootstrap();
+		DomainBootstrapJob domainJob = new DomainBootstrapJob( bootstrap );
+		domainJob.schedule();
+		
+		// start session initialisation (default domain)
+		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
+		sessionJob.schedule();
 		
 		// initialise gui factories
 		editorContentBuilderFactory = new EditorContentBuilderFactory();
 		fieldBuilderFactory = new FieldBuilderFactory();
 		
-		// wait for domain initialisation to end
-		job.join();
-		if ( !job.getResult().isOK() ) {
-			getLog().log( job.getResult() );
-			throw new CoreException( job.getResult() );
-		}
+		// effectively running jobs synchronously
+		waitForJob( domainJob );
+		waitForJob( sessionJob );
 	}
 
 	/**
@@ -114,5 +119,17 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 */
 	public EditorContentBuilderFactory getEditorContentBuilderFactory() {
 		return editorContentBuilderFactory;
+	}
+	
+	/* private methods */
+	
+	// as it says
+	private void waitForJob( Job job ) throws InterruptedException, CoreException {
+		assert job != null;
+		job.join();
+		if ( !job.getResult().isOK() ) {
+			getLog().log( job.getResult() );
+			throw new CoreException( job.getResult() );
+		}
 	}
 }

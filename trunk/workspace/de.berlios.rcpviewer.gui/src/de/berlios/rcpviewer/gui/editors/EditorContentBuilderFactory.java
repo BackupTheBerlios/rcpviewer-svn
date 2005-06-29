@@ -9,33 +9,30 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-
-
 public class EditorContentBuilderFactory {
 	
 	private final IEditorContentBuilder[] builders;
-	private final Map<Class, IEditorContentBuilder[]> allApplicable;
-	private final Map<Class, IEditorContentBuilder> defaults;
+	private final Map allApplicable;
+	private final Map defaults;
 	
 	/**
 	 * Constructor instantiates all implementations of 
-	 * IEditorContentBuilder extension point.
+	 * "mikespike3.editorcontentbuilder" extension point.
 	 * @throws CoreException
 	 */
 	public EditorContentBuilderFactory() throws CoreException {
         IConfigurationElement[] elems
         	= Platform.getExtensionRegistry().getConfigurationElementsFor( 
-					IEditorContentBuilder.EXTENSION_POINT );
+					"mikespike3.editorcontentbuilder" );
 		int num = elems.length;
 		builders = new IEditorContentBuilder[ num ];
 		for ( int i=0 ; i < num ; i++ ) {
-			Object obj = elems[i].createExecutableExtension( 
-					IEditorContentBuilder.CLASS_PROPERTY );
+			Object obj = elems[i].createExecutableExtension( "class" );
 			assert obj instanceof IEditorContentBuilder;
 			builders[i] = (IEditorContentBuilder)obj;
 		}
-		allApplicable = new HashMap<Class, IEditorContentBuilder[]>();
-		defaults = new HashMap<Class, IEditorContentBuilder>();
+		allApplicable = new HashMap();
+		defaults = new HashMap();
 	}
 
 	/**
@@ -44,7 +41,8 @@ public class EditorContentBuilderFactory {
 	 * @return
 	 */
 	public IEditorContentBuilder getDefaultInstance( Class clazz ) {
-		IEditorContentBuilder builder = defaults.get( clazz ) ;
+		IEditorContentBuilder builder
+			= (IEditorContentBuilder)defaults.get( clazz ) ;
 		if ( builder == null ) builder = new DefaultEditorContentBuilder();
 		return builder;
 	}
@@ -65,18 +63,20 @@ public class EditorContentBuilderFactory {
 	 */
 	public IEditorContentBuilder[] getInstances( Class clazz ) {
 		
-		IEditorContentBuilder[] applicable = allApplicable.get( clazz ) ;
+		IEditorContentBuilder[] applicable
+			= (IEditorContentBuilder[])allApplicable.get( clazz ) ;
 		if ( applicable == null ) {
-			List<IEditorContentBuilder> list = null;
+			List list = null;
 			for ( int i=0, num = builders.length ; i < num ; i++ ) {
 				if ( builders[i].isApplicable( clazz ) ) {
-					if ( list == null ) list = new ArrayList<IEditorContentBuilder>();
+					if ( list == null ) list = new ArrayList();
 					list.add( builders[i] );
 				}
 			}
 			if ( list != null ) {
 				list.add( 0,  new DefaultEditorContentBuilder() );
-				applicable = list.toArray( new IEditorContentBuilder[0] );
+				applicable = (IEditorContentBuilder[])list.toArray(
+										new IEditorContentBuilder[0] );
 			}
 			else {
 				applicable =  new IEditorContentBuilder[]{ 

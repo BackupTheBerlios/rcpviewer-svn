@@ -30,6 +30,15 @@
             id="de.berlios.rcpviewer.gui.app.DefaultPerspective">
       </perspective>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.berlios.rcpviewer.gui.editors.DefaultEditor"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.rcp.objectEditor"
+            name="Object Editor"/>
+   </extension>
   
    <extension
          point="org.eclipse.ui.views">

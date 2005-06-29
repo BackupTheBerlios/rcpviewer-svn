@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RcpViewer GUI Runtime
 Bundle-SymbolicName: de.berlios.rcpviewer.gui; singleton:=true
 Bundle-Version: 0.0.1
-Bundle-ClassPath: gui.jar
+Bundle-ClassPath: gui.jar,
+ lib/swtcalendar.jar
 Bundle-Activator: de.berlios.rcpviewer.gui.GuiPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,

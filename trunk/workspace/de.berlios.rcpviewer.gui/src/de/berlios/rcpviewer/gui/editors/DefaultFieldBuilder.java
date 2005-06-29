@@ -1,11 +1,9 @@
 package de.berlios.rcpviewer.gui.editors;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
+import java.lang.reflect.Method;
 
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IFormPart;
 
 public class DefaultFieldBuilder implements IFieldBuilder {
 
@@ -17,20 +15,10 @@ public class DefaultFieldBuilder implements IFieldBuilder {
 	/**
 	 * Creates an editable Text box displaying the toString() value.
 	 */
-	public void createGui(Composite parent, Object value ) {
+	public IFormPart createFormPart(Composite parent, Method getMethod,Method setMethod,Object configuration) {
 		if ( parent == null ) throw new IllegalArgumentException();
 		// value could be null
 		
-		parent.setLayout( new GridLayout() );
-		Text text = new Text( parent, SWT.WRAP );
-		text.setLayoutData( new GridData( GridData.FILL_BOTH ) );
-		String display = null;
-		if ( value == null ) {
-			display = "null";
-		}
-		else {
-			display = value.toString();
-		}
-		text.setText( display );
+		return new DefaultFieldPart(parent, getMethod, setMethod);
 	}
 }

@@ -11,32 +11,30 @@ import org.eclipse.core.runtime.Platform;
 import de.berlios.rcpviewer.gui.util.ConfigElementSorter;
 
 
-
 public class FieldBuilderFactory {
 	
 	private final IFieldBuilder[] builders;
-	private final Map<Class, IFieldBuilder> mappings;
+	private final Map mappings;
 	
 	
 	/**
 	 * Constructor instantiates all implementations of 
-	 * IFieldBuilder extension point.
+	 * "mikespike3.fieldbuilder" extension point.
 	 * @throws CoreException
 	 */
 	public FieldBuilderFactory() throws CoreException {
         IConfigurationElement[] elems
         	= Platform.getExtensionRegistry()
-                  .getConfigurationElementsFor( IFieldBuilder.EXTENSION_POINT );
+                  .getConfigurationElementsFor( IFieldBuilder.EXTENSION_POINT_ID );
 		Arrays.sort( elems, new ConfigElementSorter() );
 		int num = elems.length;
 		builders = new IFieldBuilder[ num ];
 		for ( int i=0 ; i < num ; i++ ) {
-			Object obj = elems[i].createExecutableExtension(
-					IFieldBuilder.CLASS_PROPERTY );
+			Object obj = elems[i].createExecutableExtension( "class" );
 			assert obj instanceof IFieldBuilder;
 			builders[i] = (IFieldBuilder)obj;
 		}
-		mappings = new HashMap<Class, IFieldBuilder>();
+		mappings = new HashMap();
 	}
 
 	/**
@@ -47,7 +45,7 @@ public class FieldBuilderFactory {
 	 */
 	public IFieldBuilder getInstance( Class clazz, Object value ) {
 		// ignoring value for now for simplicity
-		IFieldBuilder builder = mappings.get( clazz );
+		IFieldBuilder builder = (IFieldBuilder)mappings.get( clazz );
 		if ( builder == null ) {
 			for ( int i=0, num = builders.length ; i < num ; i++ ) {
 				if ( builders[i].isApplicable( clazz, value ) ) {
