@@ -1,0 +1,58 @@
+package de.berlios.rcpviewer.gui.jobs;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.progress.UIJob;
+
+import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.editors.DefaultEditor;
+import de.berlios.rcpviewer.gui.editors.DefaultEditorContentBuilder;
+import de.berlios.rcpviewer.gui.editors.DefaultEditorInput;
+import de.berlios.rcpviewer.gui.util.PlatformUtil;
+import de.berlios.rcpviewer.session.IDomainObject;
+
+/**
+ * Opens the passed domain object.
+ * @author Mike
+ *
+ */
+public class OpenDomainObjectJob extends UIJob {
+
+	private final IDomainObject _domainObject;
+	
+	/**
+	 * Constructor requires the class to open.
+	 * @param clazz
+	 */
+	public OpenDomainObjectJob( IDomainObject object ) {
+		super( GuiPlugin.getResourceString( "OpenDomainObjectJob.Name" ) );
+		if ( object == null ) throw new IllegalArgumentException();
+		_domainObject = object;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	@Override
+	public IStatus runInUIThread(IProgressMonitor monitor) {
+		try {
+			DefaultEditorInput input = new DefaultEditorInput( 
+						_domainObject, 
+						new DefaultEditorContentBuilder() );
+			PlatformUtil.getActivePage().openEditor(  input, DefaultEditor.ID );
+			return Status.OK_STATUS;
+		}
+		catch ( CoreException ce ) {
+			GuiPlugin.getDefault().getLog().log( ce.getStatus() );
+			MessageDialog.openError( 
+					null, 
+					GuiPlugin.getResourceString( "OpenDomainObjectJob.Error"), 
+					ce.getMessage() );
+			return ce.getStatus();
+		}
+	}
+
+}
