@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.domain;
 import java.util.Collections;
 import java.util.Map;
 
-import de.berlios.rcpviewer.progmodel.standard.DomainClass;
+import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
@@ -103,7 +103,7 @@ public final class Domain extends AbstractDomain {
 
 	
 	/**
-	 * Looks up the {@link DomainClass} for the supplied {@link Class} from 
+	 * Looks up the {@link RuntimeDomainClass} for the supplied {@link Class} from 
 	 * this domain, creating it if not present, <i>provided</i> that the class 
 	 * in question is annotated with @InDomain with the name of this domain.
 	 * 
@@ -123,7 +123,7 @@ public final class Domain extends AbstractDomain {
 	 * {@link #lookupAny(Class)}. 
 	 * 
 	 * @param javaClass
-	 * @return corresponding {@link DomainClass}
+	 * @return corresponding {@link RuntimeDomainClass}
 	 */
 	public final <V> IRuntimeDomainClass<V> lookup(final Class<V> javaClass) {
 		InDomain domain = javaClass.getAnnotation(InDomain.class);
@@ -135,9 +135,9 @@ public final class Domain extends AbstractDomain {
 		}
 		
 		// HACK
-		DomainClass<V> domainClass = (DomainClass<V>)lookupNoRegister(javaClass);
+		RuntimeDomainClass<V> domainClass = (RuntimeDomainClass<V>)lookupNoRegister(javaClass);
 		if (domainClass == null) {
-			domainClass = new DomainClass<V>(this, javaClass);
+			domainClass = new RuntimeDomainClass<V>(this, javaClass);
 			domainClassesByjavaClass.put(javaClass, domainClass);
 			getPrimaryBuilder().build(domainClass);
 		} else {

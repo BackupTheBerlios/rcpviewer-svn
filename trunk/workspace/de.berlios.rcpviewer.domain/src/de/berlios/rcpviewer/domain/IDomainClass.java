@@ -2,9 +2,11 @@ package de.berlios.rcpviewer.domain;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
@@ -77,7 +79,8 @@ public interface IDomainClass<T> {
 	
 
 	/**
-	 * Obtain an arbitrary extensions attached to this domain object.
+	 * Obtain an arbitrary extension for this domain class, as providing by
+	 * the {@link IDomainBuilder} of some programming model.
 	 * 
 	 * <p>
 	 * This is an instance of the Extension Object pattern, used widely
@@ -85,13 +88,10 @@ public interface IDomainClass<T> {
 	 * our choice of name).
 	 * 
 	 * <p>
-	 * Programming models implementations that wish to provide additional 
-	 * semantics (usually UI-related) can do so by populating the hash.
-	 *  
-	 * <p>
 	 * Usage:
 	 * <code>
-	 * MyAdapter myAdapter = (MyAdapter)someDomainClass.getAdapter(MyAdapter.class);
+	 * SuperDuperDomainClass sddc = 
+	 * 	   (SuperDuperDomainClass)someDomainClass.getAdapter(SuperDuperDomainClass.class);
 	 * </code>
 	 * 
 	 * @param adapterClass
@@ -113,7 +113,7 @@ public interface IDomainClass<T> {
 	 * @param adapterClass
 	 * @return
 	 */
-	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<V> adapterFactory);
+	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<? extends V> adapterFactory);
 
 
 	/**
@@ -657,4 +657,12 @@ public interface IDomainClass<T> {
 	public boolean isDerived(EReference eReference);
 
 
+	/**
+	 * List of all class adapters installed for this class.
+	 * 
+	 * @return
+	 */
+	public List<IDomainClassAdapter> getAdapters();
+
 }
+

@@ -8,6 +8,9 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
+import de.berlios.rcpviewer.progmodel.extended.IConstraintSet;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
@@ -36,7 +39,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public interface IDomainObject<T> {
 
-	public IDomainClass<T> getDomainClass();
+	public IRuntimeDomainClass<T> getDomainClass();
 	
 	public T getPojo();
 	
@@ -221,5 +224,26 @@ public interface IDomainObject<T> {
 	 * @return
 	 */
 	public boolean isAttached();
+
+	/**
+	 * Returns an adapter for this object with respect to the adapter of some
+	 * programming model.
+	 * 
+	 * <p>
+	 * The XxxDomainObject.class of a programming model is used to identify the
+	 * adapter.
+	 * 
+	 * <p>
+	 * For example, to obtain an ExtendedDomainObject for someDomainObject, use:
+	 * <code>
+	 * IDomainObject<T> dobj = ...;
+	 * ExtendedDomainObject<T> edc = dobj.getAdapter(ExtendedDomainObject.class); 
+	 * </code>
+	 *   
+	 * @param <V>
+	 * @param pojoClass
+	 * @return
+	 */
+	public <V> V getAdapter(Class<V> domainObjectClass);
 
 }

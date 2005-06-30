@@ -4,9 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,16 +22,16 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 
-import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.AbstractDomainClass;
 import de.berlios.rcpviewer.domain.EmfFacadeAware;
-import de.berlios.rcpviewer.domain.IAdapterFactory;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.II18nData;
+import de.berlios.rcpviewer.domain.IDomainClassAdapter;
+import de.berlios.rcpviewer.domain.IDomainObjectAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.domain.LinkSemanticsType;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
-import de.berlios.rcpviewer.domain.OperationKind;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -56,22 +54,26 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public class DomainClass<T> 
-		implements IRuntimeDomainClass<T>,
-				   EmfFacadeAware {
+public class RuntimeDomainClass<T> 
+		extends AbstractDomainClass<T> 
+		implements IRuntimeDomainClass<T> {
 	
-	public DomainClass(final IDomain domain, final Class<T> javaClass) {
-		
-		this.domain = domain;
+	public RuntimeDomainClass(final IDomain domain, final Class<T> javaClass) {
+		super(domain, new RuntimeNamingConventions());
 		this.javaClass = javaClass;
-		this.namingConventions = new RuntimeNamingConventions();
-
 		identifyClass();
 	}
 
-	public DomainClass(final Class<T> javaClass) {
+	// TODO: should be using covariance
+	public RuntimeNamingConventions getRuntimeNamingConventions() {
+		return (RuntimeNamingConventions)getNamingConventions();
+	}
+
+
+	public RuntimeDomainClass(final Class<T> javaClass) {
 		this(null, javaClass);
 	}
+
 
 	/**
 	 * Identify attributes, operations, and references.
@@ -96,12 +98,14 @@ public class DomainClass<T>
 	static enum OppRefState {
 		stillBuilding, onceMore, neverAgain;
 	}
+
 	/**
 	 * HACK: This is a horrible hack that allows our 
 	 * {@link #identifyOppositeReferences()} to be called once more, in 
 	 * {@link Domain#lookup(Class)}.
 	 */
-	private OppRefState oppRefState = OppRefState.stillBuilding;
+	protected OppRefState oppRefState = OppRefState.stillBuilding;
+
 	public void identifyOppositeReferences() {
 		
 		if (oppRefState == OppRefState.neverAgain) {
@@ -125,7 +129,7 @@ public class DomainClass<T>
 				getDomain().domainClassFor(referencedEClass);
 
 			String oppositeReferenceName = 
-				getAnnotationDetail(referenceAnnotationFor(reference), StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY);
+				emfFacade.getAnnotationDetail(referenceAnnotationFor(reference), StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY);
 			if (oppositeReferenceName != null) {
 				// annotation on this end, so set up the opposite
 				EReference oppositeReference = 
@@ -134,33 +138,13 @@ public class DomainClass<T>
 					reference.setEOpposite(oppositeReference);
 					oppositeReference.setEOpposite(reference);
 				}
-			} else {
-//				// no annotation this end, but its possible that the referenced
-//				// object does have an annotation its end.
-//				if (referencedClass instanceof DomainClass<?>) {
-//					((DomainClass<?>)referencedClass).identifyOppositeReferences(); 
-//				}
+			}else {
+				// no annotation this end, but its possible that the referenced
+				// object does have an annotation its end.
+				// however, we pick this up by doing postprocessubg when we
+				// do a lookup of any object.
 			}
 		}
-	}
-
-	private final IDomain domain;
-	/**
-	 * The domain to which this DomainClass belongs.
-	 * 
-	 * <p>
-	 * Under the standard programming model, this is default using the @InDomain
-	 * annotation.
-	 * 
-	 * @return
-	 */
-	public IDomain getDomain() {
-		return domain;
-	}
-
-	private final RuntimeNamingConventions namingConventions;
-	public RuntimeNamingConventions getNamingConventions() {
-		return namingConventions;
 	}
 
 	private final Class<T> javaClass;
@@ -168,81 +152,6 @@ public class DomainClass<T>
 		return javaClass;
 	}
 	
-	private EClass eClass;
-	public EClass getEClass() {
-		return eClass;
-	}
-
-	public String getName() {
-		return eClass.getName();
-	}
-
-	public String getDescription() {
-		return descriptionOf(eClass);
-	}
-
-	public boolean isChangeable() {
-		EAnnotation annotation = 
-			eClass.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return false;
-		}
-		String immutable = 
-			(String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY);
-		return "false".equals(immutable);
-	}
-
-
-	public II18nData getI18nData() {
-		throw new RuntimeException("Not yet implemented");
-	}
-
-	
-	private Map<Class<?>, Object> adaptersByClass = new HashMap<Class<?>, Object>();
-	/**
-	 * Extension object pattern - getting an extension.
-	 * 
-	 * @param adapterClass
-	 * @return adapter (extension) that will implement the said class.
-	 */
-	public <V> V getAdapter(Class<V> adapterClass) {
-		Map<String, String> detailsPlusFactoryName = 
-			emfFacade.getAnnotationDetails(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
-		String adapterFactoryName = 
-			(String)detailsPlusFactoryName.get(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
-		if (adapterFactoryName == null) {
-			throw new IllegalArgumentException("No such adapter '" + adapterFactoryName + "'");
-		}
-		IAdapterFactory<V> adapterFactory;
-		try {
-			adapterFactory = (IAdapterFactory<V>)Class.forName(adapterFactoryName).newInstance();
-			return adapterFactory.createAdapter(this, detailsPlusFactoryName);
-		} catch (InstantiationException e) {
-			// TODO - log?
-			return null;
-		} catch (IllegalAccessException e) {
-			// TODO - log?
-			return null;
-		} catch (ClassNotFoundException e) {
-			// TODO - log?
-			return null;
-		}
-	}
-	/**
-	 * Extension object pattern - adding an extension.
-	 * 
-	 * @param adapterClass
-	 * @param adapter
-	 */
-	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<V> adapterFactory) {
-		EAnnotation eAnnotation = 
-			emfFacade.annotationOf(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
-		Map<String,String> detailsPlusFactoryName = new HashMap<String,String>();
-		detailsPlusFactoryName.putAll(adapterFactory.getDetails());
-		detailsPlusFactoryName.put(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
-		emfFacade.putAnnotationDetails(eAnnotation, detailsPlusFactoryName);
-	}
-
 	/**
 	 * Process any semantics on the type itself.
 	 * 
@@ -285,25 +194,14 @@ public class DomainClass<T>
 		if (ea == null) {
 			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
 		}
-		putAnnotationDetails(ea, 
+		emfFacade.putAnnotationDetails(this, ea, 
 			StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
 	}
 
 	private void addIfImmutable(Immutable immutable, EModelElement modelElement) {
-		putAnnotationDetails( 
-			modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, immutable != null);
+		emfFacade.putAnnotationDetails( 
+			this, modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, immutable != null);
 	}
-	private void putAnnotationDetails(EModelElement modelElement, String key, boolean value) {
-		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
-		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
-		}
-		putAnnotationDetails(ea, key, value?"true":"false");
-	}
-
-
-
-
 	/**
 	 * 
 	 * <p>
@@ -331,12 +229,12 @@ public class DomainClass<T>
 			Class<?> dataType = methods[i].getReturnType();
 			EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
 			eAttribute.setEType(eDataType);
-			String attributeName = getNamingConventions().deriveAttributeName(method);
+			String attributeName = getRuntimeNamingConventions().deriveAttributeName(method);
 			eAttribute.setName(attributeName);
 			((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eAttribute), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
 					method.getName());
 			
@@ -399,11 +297,11 @@ public class DomainClass<T>
 
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
-			if (!getNamingConventions().isMutator(method)) {
+			if (!getRuntimeNamingConventions().isMutator(method)) {
 				continue;
 			}
 
-			String attributeName = getNamingConventions().deriveAttributeName(method);
+			String attributeName = getRuntimeNamingConventions().deriveAttributeName(method);
 			EAttribute eAttribute = getEAttributeNamed(attributeName);
 
 			if (eAttribute != null) {
@@ -420,8 +318,8 @@ public class DomainClass<T>
 				emfFacade.annotationOf(eAttribute, StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
 			
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eAttribute), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
 					methods[i].getName());
 			
@@ -439,7 +337,7 @@ public class DomainClass<T>
 		Method unsetMethod = null;
 		for(EAttribute eAttribute: attributes()) {
 			for(int i=0; i<methods.length; i++) {
-				if (getNamingConventions().isIsUnsetMethodFor(methods[i], eAttribute)) {
+				if (getRuntimeNamingConventions().isIsUnsetMethodFor(methods[i], eAttribute)) {
 					isUnsetMethod = methods[i];
 					break;
 				}
@@ -448,7 +346,7 @@ public class DomainClass<T>
 				continue;
 			}
 			for(int i=0; i<methods.length; i++) {
-				if (getNamingConventions().isUnsetMethodFor(methods[i], eAttribute)) {
+				if (getRuntimeNamingConventions().isUnsetMethodFor(methods[i], eAttribute)) {
 					unsetMethod = methods[i];
 					break;
 				}
@@ -459,24 +357,18 @@ public class DomainClass<T>
 			// has both an IsUnset and an unset method for this attribute
 			eAttribute.setUnsettable(true);
 			
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eAttribute), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 			
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eAttribute), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eAttribute), 
 					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
 					isUnsetMethod.getName());
 		}
 	}
 	
-	private boolean isAttribute(Method method) {
-		return (getNamingConventions().isAccessor(method) || 
-				getNamingConventions().isMutator(method)) &&
-				getNamingConventions().isValueType(method.getReturnType());
-	}
-
 	/**
 	 * indicates whether supplied accessor and mutator methods are compatible, 
 	 * that is, that they have the same type and the same name.
@@ -490,77 +382,24 @@ public class DomainClass<T>
 	 * @return
 	 */
 	private final boolean areAttributeMethodsCompatible(final Method accessor, final Method mutator) {
-		getNamingConventions().assertAccessor(accessor);  // TODO: precondition aspect
-		getNamingConventions().assertMutator(mutator);  // TODO: precondition aspect
+		getRuntimeNamingConventions().assertAccessor(accessor);  // TODO: precondition aspect
+		getRuntimeNamingConventions().assertMutator(mutator);  // TODO: precondition aspect
 		// check return type of accessor to the type 
 		// of the first parameter of the mutator
 		if (!accessor.getReturnType().equals(mutator.getParameterTypes()[0])) {
 			return false;
 		}
-		String accessorName = getNamingConventions().deriveAttributeName(accessor);
-		String mutatorName = getNamingConventions().deriveAttributeName(mutator);
+		String accessorName = getRuntimeNamingConventions().deriveAttributeName(accessor);
+		String mutatorName = getRuntimeNamingConventions().deriveAttributeName(mutator);
 		if (!accessorName.equals(mutatorName)) {
 			return false;
 		}
 		return true;
 	}
 
-	public int getNumberOfAttributes() {
-		return getEClass().getEAllAttributes().size();
-	}
-
-	/**
-	 * Returns all the attributes of the class, including inherited attributes.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<EAttribute> attributes() {
-		return attributes(true);
-	}
-
-	/**
-	 * Returns all the attributes of the class, including inherited attributes
-	 * only if requested.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<EAttribute> attributes(boolean includeInherited) {
-		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
-		EList attributes = includeInherited?
-								getEClass().getEAllAttributes():
-								getEClass().getEAttributes();
-		eAttributes.addAll(attributes);
-		return eAttributes;
-	}
-
-	
-	public EAttribute getEAttributeNamed(String attributeName) {
-		for(EAttribute eAttribute: attributes() ) {
-			if (eAttribute.getName().equals(attributeName)) {
-				return eAttribute;
-			}
-		}
-		return null;
-	}
-	
-
-	EAnnotation putMethodNameIn(EAnnotation eAnnotation, String methodKey, String methodName) {
-		return putAnnotationDetails(eAnnotation, methodKey, methodName);
-	}
-	
-	String getMethodNameFrom(EAnnotation eAnnotation, String methodKey) {
-		return getAnnotationDetail(eAnnotation, methodKey);
-	}
-	
 	public Method getAccessorFor(EAttribute eAttribute) {
 		String accessorMethodName = 
-			getMethodNameFrom(
-					methodNamesAnnotationFor(eAttribute), 
-					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -577,9 +416,7 @@ public class DomainClass<T>
 
 	public Method getMutatorFor(EAttribute eAttribute) {
 		String mutatorMethodName = 
-			getMethodNameFrom(
-					methodNamesAnnotationFor(eAttribute), 
-					StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
 		EDataType dataType = (EDataType)eAttribute.getEType();
 		try {
 			Method mutatorMethod = 
@@ -603,58 +440,9 @@ public class DomainClass<T>
 		return getMutatorFor(eAttribute);
 	}
 
-	public boolean isWriteOnly(EAttribute eAttribute) {
-		return eAttribute.getEAnnotation(StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
-	}
-
-	public boolean isChangeable(EAttribute eAttribute) {
-		return eAttribute.isChangeable();
-	}
-
-	public boolean isDerived(EAttribute eAttribute) {
-		return eAttribute.isDerived();
-	}
-
-	public int getLowerBound(EAttribute eAttribute) {
-		return eAttribute.getLowerBound();
-	}
-
-	public int getUpperBound(EAttribute eAttribute) {
-		return eAttribute.getUpperBound();
-	}
-
-	public boolean isRequired(EAttribute eAttribute) {
-		return eAttribute.isRequired();
-	}
-
-	public boolean isMany(EAttribute eAttribute) {
-		return eAttribute.isMany();
-	}
-	
-	public boolean isUnique(EAttribute eAttribute) {
-		return eAttribute.isUnique();
-	}
-
-	public boolean isOrdered(EAttribute eAttribute) {
-		return eAttribute.isOrdered();
-	}
-
-	public boolean isUnsettable(EAttribute eAttribute) {
-		return eAttribute.isUnsettable();
-	}
-
 	public boolean containsAttribute(EAttribute eAttribute) {
 		return this.eClass.getEAllAttributes().contains(eAttribute);
 	}
-
-	public II18nData getI18nDataFor(EAttribute attribute) {
-		throw new RuntimeException("Not yet implemented");
-	}
-
-
-	// ATTRIBUTE SUPPORT: END
-
-	// OPERATION SUPPORT: START
 
 	/**
 	 * TODO
@@ -678,14 +466,14 @@ public class DomainClass<T>
 			if ((method.getModifiers() & Method.PUBLIC) != Method.PUBLIC) {
 				continue;
 			}
-			if (getNamingConventions().isReserved(method)) {
+			if (getRuntimeNamingConventions().isReserved(method)) {
 				continue;
 			}
-			if (getNamingConventions().isAccessor(method) ||
-					getNamingConventions().isMutator(method)) {
+			if (getRuntimeNamingConventions().isAccessor(method) ||
+					getRuntimeNamingConventions().isMutator(method)) {
 				continue;
 			}
-			if (getNamingConventions().isReference(method)) {
+			if (getRuntimeNamingConventions().isReference(method)) {
 				continue;
 			}
 			if (method.getAnnotation(Programmatic.class) != null) {
@@ -803,8 +591,8 @@ public class DomainClass<T>
 //			eOperation.setUnique(..);
 //			eOperation.setOrdered(..);
 			
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eOperation), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eOperation), 
 					StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
 					methods[i].getName());
 			
@@ -812,81 +600,9 @@ public class DomainClass<T>
 	}
 
 
-	/**
-	 * Returns all the operations (both static and instance) of the class, 
-	 * including inherited operations.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<EOperation> operations() {
-		return operations(OperationKind.ALL, true);
-	}
-
-	/**
-	 * Returns all the attributes of the class, of the specified
-	 * {@link OperationKind}, and including inherited operations only if 
-	 * requested.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited) {
-		List<EOperation> eOperations = new ArrayList<EOperation>();
-		EList operations = includeInherited?
-								getEClass().getEAllOperations():
-								getEClass().getEOperations();
-		for(Iterator iter = operations.iterator(); iter.hasNext(); ) {
-			EOperation eOperation = (EOperation)iter.next();
-			switch(operationKind) {
-				case INSTANCE:
-					if (!isStatic(eOperation)) {
-						eOperations.add(eOperation);
-					}
-					break;
-				case STATIC:
-					if (isStatic(eOperation)) {
-						eOperations.add(eOperation);
-					}
-					break;
-				case ALL:
-					eOperations.add(eOperation);
-			}
-		}
-		return eOperations;
-	}
-
-
-	public EOperation getEOperationNamed(String operationName) {
-		for(EOperation eOperation: operations() ) {
-			if (eOperation.getName().equals(operationName)) {
-				return eOperation;
-			}
-		}
-		return null;
-	}
-
-	public boolean containsOperation(EOperation eOperation) {
-		return this.eClass.getEAllOperations().contains(eOperation);
-	}
-		
-	public boolean isStatic(EOperation eOperation) {
-		return eOperation.getEAnnotation(StandardProgModelConstants.ANNOTATION_OPERATION_STATIC) != null;
-	}
-
 	public boolean isParameterAValue(EOperation operation, int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		return parameter.getEType() instanceof EDataType;
-	}
-
-	public EDataType getEDataTypeFor(EOperation operation, int parameterPosition) {
-		if (!isParameterAValue(operation, parameterPosition)) {
-			throw new IllegalArgumentException("Parameter does not represent a value.");
-		}
-		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
-		return (EDataType)parameter.getEType();
 	}
 
 	public boolean isParameterADomainObject(EOperation operation, int parameterPosition) {
@@ -894,39 +610,9 @@ public class DomainClass<T>
 		return parameter.getEType() instanceof EClass;
 	}
 
-	public IDomainClass getDomainClassFor(EOperation operation, int parameterPosition) {
-		if (!isParameterADomainObject(operation, parameterPosition)) {
-			throw new IllegalArgumentException("Parameter does not represent a reference.");
-		}
-		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
-		EClass eClass = (EClass)parameter.getEType();
-		return domain.domainClassFor(eClass);
-	}
-
-	public String getNameFor(EOperation operation, int parameterPosition) {
-		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
-		return parameter.getName();
-	}
-	
-	public String getDescriptionFor(EOperation operation, int parameterPosition) {
-		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
-		return descriptionOf(parameter);
-	}
-
-	public II18nData getI18nDataFor(EOperation operation) {
-		throw new RuntimeException("Not yet implemented");
-	}
-
-	public II18nData getI18nDataFor(EOperation operation, int parameterPosition) {
-		throw new RuntimeException("Not yet implemented");
-	}
-
-
 	public Method getInvokerFor(EOperation eOperation) {
 		String invokerMethodName = 
-			getMethodNameFrom(
-					methodNamesAnnotationFor(eOperation), 
-					StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eOperation), StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
 		EList eParameterList = eOperation.getEParameters();
 		Class[] parameterTypes = new Class[eParameterList.size()];
 		int i=0;
@@ -959,7 +645,7 @@ public class DomainClass<T>
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
 
-			if (!getNamingConventions().isReference(method)) {
+			if (!getRuntimeNamingConventions().isReference(method)) {
 				continue;
 			}
 			
@@ -1004,7 +690,7 @@ public class DomainClass<T>
 			EReference eReference = EcoreFactory.eINSTANCE.createEReference();
 			EReferenceImpl eReferenceImpl = (EReferenceImpl)eReference;
 			eReference.setEType(referencedDomainClass.getEClass()); // sets EReferenceType
-			String referenceName = getNamingConventions().deriveReferenceName(method);
+			String referenceName = getRuntimeNamingConventions().deriveReferenceName(method);
 			eReference.setName(referenceName);
 			linkSemanticsType.setOrderingUniquenessAndMultiplicity(eReference);
 			
@@ -1025,8 +711,8 @@ public class DomainClass<T>
 			// for them.
 			OppositeOf oppositeOf = method.getAnnotation(OppositeOf.class);
 			if (oppositeOf != null) {
-				putAnnotationDetails(
-						referenceAnnotationFor(eReference), 
+				emfFacade.putAnnotationDetails(
+						this, referenceAnnotationFor(eReference), 
 						StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY, 
 						oppositeOf.value());
 			}
@@ -1038,7 +724,6 @@ public class DomainClass<T>
 			
 			// eReference.setUnsettable()
 			// eReference.setDefaultValueLiteral(someDefaultLiteral); // TODO
-			// eReference.setEOpposite(eReferenceOpposite); // TODO
 			
 			// eReference.setResolveProxies(...); // TODO: this is a little like Hibernate lazy loading.
 			
@@ -1047,8 +732,8 @@ public class DomainClass<T>
 
 			((List<? super EReference>)eClass.getEStructuralFeatures()).add(eReference);
 
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eReference), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
 					method.getName());
 
@@ -1069,7 +754,7 @@ public class DomainClass<T>
 		Method dissociatorMethod = null;
 		for(EReference eReference: references()) {
 			for(int i=0; i<methods.length; i++) {
-				if (getNamingConventions().isAssociatorFor(methods[i], eReference)) {
+				if (getRuntimeNamingConventions().isAssociatorFor(methods[i], eReference)) {
 					associatorMethod = methods[i];
 					break;
 				}
@@ -1078,7 +763,7 @@ public class DomainClass<T>
 				continue;
 			}
 			for(int i=0; i<methods.length; i++) {
-				if (getNamingConventions().isDissociatorFor(methods[i], eReference)) {
+				if (getRuntimeNamingConventions().isDissociatorFor(methods[i], eReference)) {
 					dissociatorMethod = methods[i];
 					break;
 				}
@@ -1089,91 +774,22 @@ public class DomainClass<T>
 			// has both an associator and a dissociator method for this reference
 			eReference.setChangeable(true);
 			
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eReference), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY,  
 					associatorMethod.getName());
 			
-			putAnnotationDetails(
-					methodNamesAnnotationFor(eReference), 
+			emfFacade.putAnnotationDetails(
+					this, emfFacade.methodNamesAnnotationFor(eReference), 
 					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY, 
 					dissociatorMethod.getName());
 		}
 	}
 
 
-	/**
-	 * indicates whether supplied associator and dissociator are compatible,
-	 * that is, that they have the same type and the same name. 
-	 * @param associator
-	 * @param dissociator
-	 * @return
-	 */
-	private final boolean isReferencePairCompatible(final Method associator, final Method dissociator) {
-		getNamingConventions().assertAssociator(associator); // TODO: precondition aspect
-		getNamingConventions().assertDissociator(dissociator);  // TODO: precondition aspect
-		if (associator.getParameterTypes()[0] != dissociator.getParameterTypes()[0]) {
-			return false;
-		}
-		String deriveReferenceNameForAssociator = getNamingConventions().deriveReferenceName(associator);
-		String deriveReferenceNameForDissociator = getNamingConventions().deriveReferenceName(dissociator);
-		if (!deriveReferenceNameForAssociator.equals(deriveReferenceNameForDissociator)) {
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
-	 * Returns references from this class to other classes, including those 
-	 * inherited.
-	 */
-	public List<EReference> references() {
-		return references(true);
-	}
-
-	/**
-	 * Returns references from this class to other classes, specifying whether
-	 * inherited references should be included.
-	 * 
-	 * @param includeInherited
-	 * @return
-	 */
-	public List<EReference> references(final boolean includeInherited) {
-		List<EReference> references = new ArrayList<EReference>();
-		EClass eClass = getEClass();
-		EList eReferenceList = includeInherited? eClass.getEAllReferences(): eClass.getEReferences();
-		for(Iterator<?> iter = eReferenceList.iterator(); iter.hasNext(); ) {
-			EReference ref = (EReference)iter.next();
-			references.add(ref);
-		}
-		return references;
-	}
-	
-	public EReference getEReferenceNamed(String referenceName) {
-		for(EReference eReference: references() ) {
-			if (eReference.getName().equals(referenceName)) {
-				return eReference;
-			}
-		}
-		return null;
-	}
-
-	public boolean containsReference(EReference eReference) {
-		return this.eClass.getEAllReferences().contains(eReference);
-	}
-		
-	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
-		EClass eClass = (EClass)eReference.getEReferenceType();
-		return domain.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
-		
-	}
-
 	public Method getAccessorFor(EReference eReference) {
 		String accessorMethodName = 
-			getMethodNameFrom(
-					methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -1190,9 +806,7 @@ public class DomainClass<T>
 
 	public Method getAssociatorFor(EReference eReference) {
 		String associatorMethodName = 
-			getMethodNameFrom(
-					methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method associatorMethod = 
@@ -1210,9 +824,7 @@ public class DomainClass<T>
 
 	public Method getDissociatorFor(EReference eReference) {
 		String dissociatorMethodName = 
-			getMethodNameFrom(
-					methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method dissociatorMethod = 
@@ -1228,89 +840,12 @@ public class DomainClass<T>
 		}
 	}
 
-	public boolean isMultiple(EReference eReference) {
-		return eReference.isMany();
-	}
-
-	public boolean isOrdered(EReference eReference) {
-		return eReference.isOrdered();
-	}
-
-	public boolean isContainer(EReference eReference) {
-		return eReference.isContainer();
-	}
-
-	public boolean isUnique(EReference eReference) {
-		return eReference.isUnique();
-	}
-
-	public boolean isChangeable(EReference eReference) {
-		return eReference.isChangeable();
-	}
-
-	public boolean isDerived(EReference eReference) {
-		return eReference.isDerived();
-	}
-
-	// REFERENCES SUPPORT: END
-
-	// ANNOTATION SUPPORT: START
-
-
-	/**
-	 * Since descriptions are stored as annotations and apply to many model
-	 * elements, this is a convenient way of getting to the description.
-	 * 
-	 * @param modelElement
-	 * @return
-	 */
-	private String descriptionOf(EModelElement modelElement) {
-		EAnnotation annotation = 
-			modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return null;
-		}
-		return (String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
-	}
-
-	EAnnotation methodNamesAnnotationFor(EModelElement eModelElement) {
-		return annotationFor(eModelElement, StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
-	}
-
-	EAnnotation referenceAnnotationFor(EModelElement eModelElement) {
-		return annotationFor(eModelElement, StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE);
-	}
-	
-
-	EAnnotation annotationFor(EModelElement eModelElement, final String annotationSource) {
-		EAnnotation eAnnotation = 
-			eModelElement.getEAnnotation(annotationSource);
-		if (eAnnotation != null) {
-			return eAnnotation;
-		}
-		return emfFacade.annotationOf(eModelElement, annotationSource);
-	}
-
-	// TODO: used also in extended programming model; move to some common library.
-	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
-		Map<String, String> details = new HashMap<String, String>();
-		details.put(key, value);
-		return emfFacade.putAnnotationDetails(eAnnotation, details);
-	}
-	
-	String getAnnotationDetail(EAnnotation eAnnotation, String key) {
-		return (String)emfFacade.getAnnotationDetails(eAnnotation).get(key);
-	}
-	
-	// ANNOTATION SUPPORT: END
-	
-	// DOMAIN OBJECT SUPPORT: START
-
 	public <T> IDomainObject<T> createTransient() {
 		try {
 			Object pojo = getJavaClass().newInstance();
 			Class<T> pojoClass = pojoClass(pojo.getClass());
 			IDomainObject<T> domainObject = new DomainObject(this, pojo);
+			
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
@@ -1333,18 +868,45 @@ public class DomainClass<T>
 
 	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
 
-	// DEPENDENCY INJECTION
-	
-	private EmfFacade emfFacade = new EmfFacade();
-	public EmfFacade getEmfFacade() {
-		return emfFacade;
-	}
-	public void setEmfFacade(EmfFacade emfFacade) {
-		this.emfFacade = emfFacade;
+	protected boolean isAttribute(Method method) {
+		return (getRuntimeNamingConventions().isAccessor(method) || 
+				getRuntimeNamingConventions().isMutator(method)) &&
+				getRuntimeNamingConventions().isValueType(method.getReturnType());
 	}
 
-	// DEPENDENCY INJECTION END
+	/**
+	 * indicates whether supplied associator and dissociator are compatible,
+	 * that is, that they have the same type and the same name. 
+	 * @param associator
+	 * @param dissociator
+	 * @return
+	 */
+	private final boolean isReferencePairCompatible(final Method associator, final Method dissociator) {
+		getRuntimeNamingConventions().assertAssociator(associator); // TODO: precondition aspect
+		getRuntimeNamingConventions().assertDissociator(dissociator);  // TODO: precondition aspect
+		if (associator.getParameterTypes()[0] != dissociator.getParameterTypes()[0]) {
+			return false;
+		}
+		String deriveReferenceNameForAssociator = getRuntimeNamingConventions().deriveReferenceName(associator);
+		String deriveReferenceNameForDissociator = getRuntimeNamingConventions().deriveReferenceName(dissociator);
+		if (!deriveReferenceNameForAssociator.equals(deriveReferenceNameForDissociator)) {
+			return false;
+		}
+		return true;
+	}
 
+	public <V> V getObjectAdapterFor(IDomainObject<T> domainObject, Class<V> objectAdapterClass) {
+		List<IDomainClassAdapter> classAdapters = getAdapters();
+		for(IDomainClassAdapter classAdapter: classAdapters) {
+			// TODO: should be using covariance of getAdapters()
+			IRuntimeDomainClassAdapter runtimeClassAdapter = (IRuntimeDomainClassAdapter)classAdapter;
+			V objectAdapter = (V)runtimeClassAdapter.getObjectAdapterFor(domainObject, objectAdapterClass); 
+			if (objectAdapter != null) {
+				return objectAdapter;
+			}
+		}
+		return null;
+	}
 
 
 }

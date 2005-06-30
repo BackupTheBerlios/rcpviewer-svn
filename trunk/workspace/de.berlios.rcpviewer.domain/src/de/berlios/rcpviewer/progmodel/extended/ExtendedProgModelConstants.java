@@ -37,7 +37,7 @@ public final class ExtendedProgModelConstants {
 	 * <p>
 	 * The value that is held (as a string) can be parsed into an integer.
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY = 
+	public static final String ANNOTATION_ATTRIBUTE_ORDER_KEY = 
 		"positionedAt";
 
 
@@ -56,7 +56,7 @@ public final class ExtendedProgModelConstants {
 	 * <p>
 	 * The value that is held (as a string) can be parsed into an integer.
 	 */
-	public static final String ANNOTATION_OPERATION_POSITIONED_AT_KEY = 
+	public static final String ANNOTATION_OPERATION_ORDER_KEY = 
 		"positionedAt";
 
 	/**
@@ -82,5 +82,28 @@ public final class ExtendedProgModelConstants {
 	 */
 	public static final String ANNOTATION_ELEMENT_SEARCHABLE_KEY = 
 		"searchable";
+
+	/**
+	 * The suffix for a method name that represents the preconditions of
+	 * a read or read/write attribute.
+	 * 
+	 * <p>
+	 * For example, an attribute <i>firstName</i> would correspond to
+	 * <i>getFirstName<b>Pre</b></i> (where <i>Pre</i> is the value of
+	 * this constant).
+	 * 
+	 */
+	public static final String PRECONDITIONS_ATTRIBUTE_SUFFIX = "Pre";
+
+	/**
+	 * Key to EAnnotation details representing (names of) method representing
+	 * preconditions of an attribute.
+	 * 
+	 * <p>
+	 * Holds key to the accessor method (applicable only if not write only).
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_PRECONDITION_METHOD_NAME_KEY = "PRE";
+
+
 
 }

@@ -1,5 +1,9 @@
 package de.berlios.rcpviewer.domain;
 
+import de.berlios.rcpviewer.domain.AbstractDomainClassAdapter;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.session.IDomainObject;
+
 /**
  * All adapters of {@link IDomainClass} (as obtained using 
  * {@link de.berlios.rcpviewer.domain.IDomainClass#getAdapter(Class.class)})
@@ -10,13 +14,15 @@ package de.berlios.rcpviewer.domain;
  * 
  * @author Dan Haywood
  */
-public interface IDomainClassAdapter<T> {
+public interface IDomainObjectAdapter<T> {
 	
 	/**
 	 * The {@link IDomainClass} that this is an adapter for.
 	 *  
 	 * @return
 	 */
-	IDomainClass<T> adapts();
+	IDomainObject<T> adapts();
 	
+	
+
 }

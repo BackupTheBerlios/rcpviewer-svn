@@ -1,5 +1,11 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.emf.ecore.EAnnotation;
+
+import de.berlios.rcpviewer.domain.AbstractDomainClass;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 
 /**

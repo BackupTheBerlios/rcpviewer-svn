@@ -35,9 +35,9 @@ final class AttributeComparator implements Comparator<EAttribute> {
 			emfFacade.getAnnotationDetails(attribute1, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 		
 		String positionedAtStr0 = 
-			attributeDetails0.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY);
+			attributeDetails0.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY);
 		String positionedAtStr1 = 
-			attributeDetails1.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY);
+			attributeDetails1.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY);
 		
 		
 		if (positionedAtStr0 != null && positionedAtStr1 == null) {

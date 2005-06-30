@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -13,6 +15,8 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.ConstraintSet;
+import de.berlios.rcpviewer.progmodel.extended.IConstraintSet;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -31,6 +35,7 @@ import de.berlios.rcpviewer.session.ISession;
  */
 public final class DomainObject<T> implements IDomainObject<T> {
 
+	
 	/**
 	 * Creates a domain object unattached to any session.
 	 * 
@@ -57,8 +62,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public IRuntimeDomainClass<T> getDomainClass() {
 		return domainClass;
 	}
-	public DomainClass<T> getDomainClassImpl() {
-		return (DomainClass<T>)domainClass;
+	public RuntimeDomainClass<T> getDomainClassImpl() {
+		return (RuntimeDomainClass<T>)domainClass;
 	}
 	
 	private final T pojo;
@@ -66,11 +71,27 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return pojo;
 	}
 
+
+	private Map<Class, Object> adapterByClass = new HashMap<Class, Object>();
+	/**
+	 * Returns the adapter of the specified class (if any).
+	 */
+	public <V> V getAdapter(Class<V> domainObjectClass) {
+		Object adapter = adapterByClass.get(domainObjectClass);
+		if (adapter == null) {
+			adapter = getDomainClass().getObjectAdapterFor(this, domainObjectClass);
+			adapterByClass.put(adapter.getClass(), adapter);
+		}
+		return (V)adapter;
+	}
+
+	
 	private boolean persistent;
 	public boolean isPersistent() {
 		return persistent;
 	}
 
+	
 	public void persist() {
 		if (isPersistent()) {
 			throw new IllegalStateException("Already persisted.");

@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.domain;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
@@ -39,8 +40,38 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 */
 	public <T> IDomainObject<T> createTransient();
 
-
 	public Class<T> getJavaClass();
+
+	/**
+	 * Obtain an arbitrary extension for this domain class, as providing by
+	 * the {@link IDomainBuilder} of some programming model.
+	 *
+	 * <p>
+	 * This method mirrors the one on {@link IDomainClass#getAdapter(Class)}.
+	 * However, note that the supplied class will be an XxxDomainObject.class,
+	 * rather than an XxxDomainClass.class.
+	 * 
+	 * <p>
+	 * This is an instance of the Extension Object pattern, used widely
+	 * throughout the Eclipse Platform under the name of an "adapter" (hence
+	 * our choice of name).
+	 * 
+	 * <p>
+	 * Usage:
+	 * <code>
+	 * SuperDuperDomainObject sddo = 
+	 *     (SuperDuperDomainObject).someDomainClass.getObjectAdapterFor(someDomainObject, SuperDuperDomainObject.class);
+	 * </code>
+	 * 
+	 * <p>
+	 * The supplied domain object should have been instantiated via the domain 
+	 * class upon which the method is invoked. 
+	 * 
+	 * @param domainObject - object for which the adapter is required
+	 * @param objectAdapterClass - class of the adapter that is required. 
+	 * @return object that implements said class.
+	 */
+	public <V> V getObjectAdapterFor(IDomainObject<T> domainObject, Class<V> objectAdapterClass);
 
 	/**
 	 * Returns the method to access the value in the underlying object. 
@@ -60,7 +91,7 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 * Returns the method to modify the value in the underlying object. 
 	 * 
 	 * <p>
-	 * May be null if this is a write-only attribute.
+	 * May be null if this is a read-only attribute.
 	 * 
 	 * @see #getAccessorFor()
 	 * @see #getAccessorOrMutatorFor()

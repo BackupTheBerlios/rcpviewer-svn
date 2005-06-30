@@ -16,8 +16,8 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public abstract class TestPositionedAt extends AbstractTestCase {
 
-	public TestPositionedAt(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
+	public TestPositionedAt(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
+		super(domainSpecifics, domainBuilder);
 	}
 
 	private IDomainClass<?> domainClass;

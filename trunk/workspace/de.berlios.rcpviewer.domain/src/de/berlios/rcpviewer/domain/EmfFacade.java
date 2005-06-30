@@ -1,13 +1,16 @@
 package de.berlios.rcpviewer.domain;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.List;
 
 import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -267,6 +270,76 @@ public class EmfFacade {
 		}
 		return retrievedDetails;
 	}
+
+	/**
+	 * Returns all annotations of the element.
+	 * 
+	 * <p>
+	 * The returned list is a copy and may safely be modified by the caller.
+	 *  
+	 * @param eModelElement
+	 * @return
+	 */
+	public List<EAnnotation> annotationsOf(EModelElement eModelElement) {
+		return annotationsPrefixed(eModelElement, null);
+	}
 	
+	/**
+	 * Returns all annotations of the element whose source has a prefix that
+	 * matches the supplied annotation source prefix. 
+	 * 
+	 * <p>
+	 * The returned list is a copy and may safely be modified by the caller.
+	 *  
+	 * @param eModelElement
+	 * @return
+	 */
+	public List<EAnnotation> annotationsPrefixed(EModelElement eModelElement, String annotationPrefix) {
+		List<EAnnotation> annotations = new ArrayList<EAnnotation>();
+		annotations.addAll(eModelElement.getEAnnotations());
+		Iterator<EAnnotation> iter = annotations.iterator();
+		while(iter.hasNext()) {
+			EAnnotation annotation = iter.next();
+			if (!annotation.getSource().startsWith(annotationPrefix)) {
+				iter.remove();
+			}
+		}
+		return annotations;
+	}
+
+	EAnnotation putMethodNameIn(IDomainClass domainClass, EAnnotation eAnnotation, String methodKey, String methodName) {
+		return putAnnotationDetails(domainClass, eAnnotation, methodKey, methodName);
+	}
+
+	public String getAnnotationDetail(EAnnotation eAnnotation, String key) {
+		return (String)getAnnotationDetails(eAnnotation).get(key);
+	}
+	
+	public EAnnotation putAnnotationDetails(IDomainClass domainClass, EAnnotation eAnnotation, String key, String value) {
+		Map<String, String> details = new HashMap<String, String>();
+		details.put(key, value);
+		return putAnnotationDetails(eAnnotation, details);
+	}
+
+	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, boolean value) {
+		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+		if (ea == null) {
+			ea = annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
+		}
+		putAnnotationDetails(domainClass, ea, key, value?"true":"false");
+	}
+
+	public EAnnotation methodNamesAnnotationFor(EModelElement eModelElement) {
+		return annotationFor(eModelElement, StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
+	}
+
+	public EAnnotation annotationFor(EModelElement eModelElement, final String annotationSource) {
+		EAnnotation eAnnotation = 
+			eModelElement.getEAnnotation(annotationSource);
+		if (eAnnotation != null) {
+			return eAnnotation;
+		}
+		return annotationOf(eModelElement, annotationSource);
+	}
 
 }

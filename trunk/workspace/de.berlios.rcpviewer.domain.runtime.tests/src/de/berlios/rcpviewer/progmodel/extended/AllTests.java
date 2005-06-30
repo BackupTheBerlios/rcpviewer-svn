@@ -10,6 +10,7 @@ public class AllTests {
 				"Test for de.berlios.rcpviewer.progmodel.extended");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestPositionedAtRuntime.class);
+		suite.addTestSuite(TestExtendedClassAdapter.class);
 		//$JUnit-END$
 		return suite;
 	}

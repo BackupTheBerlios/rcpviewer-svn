@@ -17,10 +17,10 @@ public abstract class AbstractTestCase extends TestCase {
 		this.domainBuilder = domainBuilder;
 	}
 	
-	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
+	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
 		super(name);
 		this.domainSpecifics = domainSpecifics;
-		this.domainBuilder = domainAnalyzer;
+		this.domainBuilder = domainBuilder;
 	}
 
 	private final IDomainBuilder domainBuilder;

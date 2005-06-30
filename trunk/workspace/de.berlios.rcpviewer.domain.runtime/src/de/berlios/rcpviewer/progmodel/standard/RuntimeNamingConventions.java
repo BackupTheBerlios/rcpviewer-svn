@@ -20,7 +20,7 @@ public final class RuntimeNamingConventions extends NamingConventions {
 	
 	/**
 	 * conforms to the signature of a getter of a value.  References to
-	 * {@link DomainClass}es are treated as {@link Link}s.
+	 * {@link RuntimeDomainClass}es are treated as {@link Link}s.
 	 * @param method
 	 * @return
 	 */

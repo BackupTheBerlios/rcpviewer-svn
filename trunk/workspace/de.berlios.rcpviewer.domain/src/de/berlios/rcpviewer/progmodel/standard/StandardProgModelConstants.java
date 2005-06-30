@@ -170,7 +170,7 @@ public final class StandardProgModelConstants {
 	 * adapter class.
 	 */
 	public static final String ANNOTATION_EXTENSIONS_PREFIX = 
-		"http://rcpviewer.berlios.de/progmodel/extensions/";
+		"http://de.berlios.rcpviewer/progmodel/extensions/";
 
 	/**
 	 * Reserved key name for an element in details map of the EAnnotation on a

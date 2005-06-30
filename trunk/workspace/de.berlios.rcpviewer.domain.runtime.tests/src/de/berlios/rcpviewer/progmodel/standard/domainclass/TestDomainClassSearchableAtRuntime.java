@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
 
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
 
 /**
@@ -13,7 +14,7 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
 public class TestDomainClassSearchableAtRuntime extends TestDomainClassSearchable {
 
 	public TestDomainClassSearchableAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new StandardProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
 	}
 
 }

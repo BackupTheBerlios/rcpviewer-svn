@@ -33,50 +33,59 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		build((IRuntimeDomainClass<V>)domainClass);
 	}
 
+	private final EmfFacade emfFacade = new EmfFacade();
+	
+	// TODO: used in DomainClass itself; move to some common library.
+	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
+		Map<String, String> details = new HashMap<String, String>();
+		details.put(key, value);
+		return emfFacade.putAnnotationDetails(eAnnotation, details);
+	}
+
 	private <V> void build(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
 		
+		// Install one adapter object under two different bindings so can be
+		// obtained in either context.
+		ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass> adapterFactory = 
+					new ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass>();
+		domainClass.setAdapterFactory(ExtendedDomainClass.class, adapterFactory);
+		domainClass.setAdapterFactory(ExtendedRuntimeDomainClass.class, adapterFactory);
+
 		// Instantiable (File>New)
-		addIfInstantiable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
+		processClassInstantiable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
 
 		// Searchable (Search>???)
-		addIfSearchable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
+		processClassSearchable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
 
 		// Saveable (File>Save)
-		addIfSaveable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
+		processClassSaveable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
 
-		// PositionedAt: installs an adapter
-		domainClass.setAdapterFactory(ExtendedDomainClass.class, 
-			new ExtendedDomainClassAdapterFactory<ExtendedDomainClass>());
-		
 		for(EAttribute eAttribute: domainClass.attributes()) {
 			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(eAttribute);
-			Order positionedAt = 
-				accessorOrMutator.getAnnotation(Order.class);
-			if (positionedAt != null) {
-				EAnnotation attributeAnnotation = 
-					emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
-				Map<String,String> details = new HashMap<String,String>();
-				details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_POSITIONED_AT_KEY, "" + positionedAt.value());
-				emfFacade.putAnnotationDetails(attributeAnnotation, details);	
-			}
-		}
 
+			// Order (attributes)
+			processAttributeOrder(eAttribute, accessorOrMutator);
+			
+			// XxxPre method to support constraintFor()
+			processAttributePre(eAttribute, domainClass, javaClass);
+				
+		}
 	}
 	
-	private void addIfInstantiable(Lifecycle lifecycle, EModelElement modelElement) {
+	private void processClassInstantiable(Lifecycle lifecycle, EModelElement modelElement) {
 		putAnnotationDetails(modelElement, 
 				ExtendedProgModelConstants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY, 
 				lifecycle != null && lifecycle.instantiable());	
 	}
 
-	private void addIfSearchable(Lifecycle lifecycle, EModelElement modelElement) {
+	private void processClassSearchable(Lifecycle lifecycle, EModelElement modelElement) {
 		putAnnotationDetails(modelElement, 
 				ExtendedProgModelConstants.ANNOTATION_ELEMENT_SEARCHABLE_KEY, 
 				lifecycle != null && lifecycle.searchable());	
 	}
 	
-	private void addIfSaveable(Lifecycle lifecycle, EModelElement modelElement) {
+	private void processClassSaveable(Lifecycle lifecycle, EModelElement modelElement) {
 		putAnnotationDetails(modelElement, 
 				ExtendedProgModelConstants.ANNOTATION_ELEMENT_SAVEABLE_KEY, 
 				lifecycle != null && lifecycle.saveable());	
@@ -89,14 +98,52 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 		putAnnotationDetails(ea, key, value?"true":"false");
 	}
-	private final EmfFacade emfFacade = new EmfFacade();
 	
-	// TODO: used in DomainClass itself; move to some common library.
-	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
-		Map<String, String> details = new HashMap<String, String>();
-		details.put(key, value);
-		return emfFacade.putAnnotationDetails(eAnnotation, details);
+	private void processAttributeOrder(EAttribute eAttribute, Method accessorOrMutator) {
+		Order positionedAt = 
+			accessorOrMutator.getAnnotation(Order.class);
+		if (positionedAt != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY, "" + positionedAt.value());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
 	}
-	
-	
+
+	private <V> void processAttributePre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		Method accessor = domainClass.getAccessorFor(eAttribute);
+		if (accessor == null) {
+			return;
+		}
+		String accessorPreMethodName = accessor.getName() + 
+			ExtendedProgModelConstants.PRECONDITIONS_ATTRIBUTE_SUFFIX;
+		Method accessorPreCandidate;
+		try {
+			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (accessorPreCandidate == null) {
+			return;
+		}
+		if (!methodReturns(accessorPreCandidate, IConstraintSet.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eAttribute),  
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_PRECONDITION_METHOD_NAME_KEY, 
+				accessorPreCandidate.getName());
+		
+
+	}
+
+
+	private boolean methodReturns(Method method, Class javaClass) {
+		return javaClass.isAssignableFrom(method.getReturnType());
+	}
 }
+

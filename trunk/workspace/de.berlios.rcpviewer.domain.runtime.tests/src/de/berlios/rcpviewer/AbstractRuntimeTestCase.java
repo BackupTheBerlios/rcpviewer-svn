@@ -18,12 +18,12 @@ import de.berlios.rcpviewer.session.local.SessionManager;
  */
 public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 
-	public AbstractRuntimeTestCase(IDomainBuilder domainAnalyzer) {
-		super(new RuntimeDomainSpecifics(), domainAnalyzer);
+	public AbstractRuntimeTestCase(IDomainBuilder domainBuilder) {
+		super(new RuntimeDomainSpecifics(), domainBuilder);
 	}
 	
-	public AbstractRuntimeTestCase(String name, IDomainBuilder domainAnalyzer) {
-		super(name, new RuntimeDomainSpecifics(), domainAnalyzer);
+	public AbstractRuntimeTestCase(String name, IDomainBuilder domainBuilder) {
+		super(name, new RuntimeDomainSpecifics(), domainBuilder);
 	}
 	
 	protected Domain domain;

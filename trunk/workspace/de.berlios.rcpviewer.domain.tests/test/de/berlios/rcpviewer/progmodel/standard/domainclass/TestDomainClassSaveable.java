@@ -19,8 +19,8 @@ import de.berlios.rcpviewer.progmodel.standard.domainclass.ImmutableCustomerCate
  */
 public abstract class TestDomainClassSaveable extends AbstractTestCase {
 
-	public TestDomainClassSaveable(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
+	public TestDomainClassSaveable(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
+		super(domainSpecifics, domainBuilder);
 	}
 
 	private IDomainClass<?> domainClass;

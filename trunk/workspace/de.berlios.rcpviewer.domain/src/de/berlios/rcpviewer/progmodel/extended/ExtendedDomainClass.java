@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,13 +33,13 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
  * @author dkhaywood
  *
  */
-public final class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> {
+public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 
 	
 	public ExtendedDomainClass(IDomainClass<T> adaptedDomainClass) {
 		super(adaptedDomainClass);
 	}
-
+	
 	/**
 	 * Returns the attributes of the extended domain class 
 	 * {@link IDomainClass#attributes()} in the order defined by the
