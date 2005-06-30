@@ -21,7 +21,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPageSite;
 
-import de.berlios.rcpviewer.actions.OpenDomainObjectActionDelegate;
+import de.berlios.rcpviewer.gui.jobs.OpenDomainObjectJob;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class InMemorySearchResultPage
@@ -126,9 +126,13 @@ implements ISearchResultPage
 				if (selection.isEmpty())
 					return;
 				IDomainObject domainObject= (IDomainObject)selection.getFirstElement();
+				// REVIEW_CHANGE for Ted - using job mechanism now
+				/* old ...
 				OpenDomainObjectActionDelegate action= 
 					new  OpenDomainObjectActionDelegate(_pageSite.getWorkbenchWindow(), domainObject);
 				action.run();
+				*/
+				new OpenDomainObjectJob( domainObject ).schedule();
 				
 			};
 		});
