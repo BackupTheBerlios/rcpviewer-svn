@@ -10,23 +10,27 @@ import org.eclipse.jface.action.Action;
  */
 public class JobAction extends Action {
 
-	private final Job job;
+	private final Job _job;
 
 	
 	/**
 	 * Constructor passed the job to use.  
-	 * <br>Note that the job's name is used as the action text.
+	 * <br>Note that the job's name is used as the action text - overwrite after
+	 * this if you want a specific name.
 	 * @param job
 	 */
 	public JobAction( Job job ) {
 		if ( job == null ) throw new IllegalArgumentException();
-		this.job = job;
+		this._job = job;
 		setText( job.getName() );
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.action.IAction#run()
+	 */
 	@Override
 	public void run() {
-		job.schedule();
+		_job.schedule();
 	}
 	
 	

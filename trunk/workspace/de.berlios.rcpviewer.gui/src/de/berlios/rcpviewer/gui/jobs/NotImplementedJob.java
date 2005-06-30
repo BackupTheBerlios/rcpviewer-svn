@@ -15,7 +15,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  */
 public class NotImplementedJob extends UIJob {
 	
-	private final String title;
+	private final String _title;
 
 	/**
 	 * No-arg constructor - title set to <code>null</code>.
@@ -30,14 +30,17 @@ public class NotImplementedJob extends UIJob {
 	 */
 	public NotImplementedJob( String title ) {
 		super( NotImplementedJob.class.getSimpleName() );
-		this.title = title;
+		this._title = title;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+	 */
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		MessageDialog.openWarning( 
 				null, 
-				title,
+				_title,
 				GuiPlugin.getResourceString( "NotImplementedJob.Msg") );
 		return Status.OK_STATUS;
 	}

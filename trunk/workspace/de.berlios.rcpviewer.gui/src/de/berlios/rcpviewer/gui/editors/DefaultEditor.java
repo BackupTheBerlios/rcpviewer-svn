@@ -23,11 +23,8 @@ public final class DefaultEditor extends EditorPart {
 	
 	public static final String ID = "de.berlios.rcpviewer.rcp.objectEditor";
 
-	private IDomainObject _domainObject;
-	private DefaultEditorInput _editorInput;
-	private IEditorContentBuilder  _contentBuilder;
-	private IManagedForm _form;
-	private FormToolkit _toolkit;
+	private IManagedForm _form = null;
+	private FormToolkit _toolkit = null;
 	
 	
 	/* (non-Javadoc)
@@ -35,16 +32,21 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		_editorInput= (DefaultEditorInput)input;
-		_domainObject= _editorInput.getDomainObject();
-		_contentBuilder= _editorInput.getBuilder();
+		if ( site == null ) throw new IllegalArgumentException();
+		if ( input == null ) throw new IllegalArgumentException();
+		if ( !(input instanceof DefaultEditorInput) ) throw new IllegalArgumentException();
+		
 		_toolkit= new FormToolkit( site.getShell().getDisplay() );
 
 		setSite( site );
 		setInput( input );
 		
-		Object pojo= _domainObject.getPojo();
-		setPartName( pojo.getClass().getName()+":"+pojo.hashCode() );
+		Object pojo = ((DefaultEditorInput)input).getDomainObject();
+		StringBuffer sb = new StringBuffer();
+		sb.append( pojo.getClass().getName() );
+		sb.append( ":" );
+		sb.append( pojo.hashCode() );
+		setPartName( sb.toString() );
 	}
 	
 	/* (non-Javadoc)
@@ -52,13 +54,16 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		_form= new ManagedForm(_toolkit, _toolkit.createScrolledForm(parent)) {
+		assert getEditorInput() != null;
+		assert getEditorInput() instanceof DefaultEditorInput;
+		_form = new ManagedForm(_toolkit, _toolkit.createScrolledForm(parent)) {
 			public void dirtyStateChanged() {
 				super.dirtyStateChanged();
 				firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 		};
-		_contentBuilder.createGui( _form, _domainObject.getPojo());
+		DefaultEditorInput input = (DefaultEditorInput)getEditorInput();
+		input.getBuilder().createGui( _form, input.getDomainObject().getPojo());
 	}
 
 	/* (non-Javadoc)
@@ -66,7 +71,9 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void setFocus() {
-		if ( _form != null ) _form.getForm().setFocus();
+		if ( _form != null ) {
+			_form.getForm().setFocus();
+		}
 		
 	}
 	
@@ -86,7 +93,7 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isDirty() {
-		if (_domainObject.isPersistent() == false)
+		if ( getDomainObject().isPersistent() == false)
 			return true;
 		if (_form == null)
 			return false;
@@ -100,7 +107,7 @@ public final class DefaultEditor extends EditorPart {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		_form.commit(true);
-		_domainObject.persist();
+		getDomainObject().persist();
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 	
@@ -119,5 +126,12 @@ public final class DefaultEditor extends EditorPart {
 	public void doSaveAs() {
 		throw new UnsupportedOperationException();
 		
+	}
+	
+	// extract from input
+	private IDomainObject<?> getDomainObject() {
+		assert getEditorInput() != null;
+		assert getEditorInput() instanceof DefaultEditorInput;
+		return ((DefaultEditorInput)getEditorInput()).getDomainObject();
 	}
 }

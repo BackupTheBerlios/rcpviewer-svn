@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Used by DatefiledBuilder - direct cut'n'paste job of supplied demo.
+ * Used by DateFieldBuilder - direct cut'n'paste job of supplied demo.
  * @author Mike
  *
  */

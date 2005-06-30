@@ -16,10 +16,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
 /**
- * Sorts config elements so more specialised ones come before general
- * ones - this is based on the declaring plugins' dependencies so that a plugin
- * 'A' is deemed more specialist than plugin 'B' if its is dependent on plugin
- * 'B'.
+ * Used to sort config elements - see <code>compare()</code> method.
  * @author Mike
  *
  */
@@ -28,7 +25,15 @@ public class ConfigElementSorter implements Comparator<IConfigurationElement> {
     private static final Map<Bundle, Bundle[]> BUNDLE_REQUISITES
     	= new HashMap<Bundle,Bundle[]>();
     private static final Bundle[] EMPTY_BUNDLE_ARRAY = new Bundle[0];
+	
 
+	/**
+	 * Sorts config elements so more specialised ones come before general
+	 * ones - this is based on the declaring plugins' dependencies so that a plugin
+	 * 'A' is deemed more specialist than plugin 'B' if its is dependent on plugin
+	 * 'B'.
+	 * @see java.util.Comparator#compare(T, T)
+	 */
 	public int compare(IConfigurationElement ice1, IConfigurationElement ice2) {
         assert ice1 != null;
         assert ice2 != null;
@@ -56,15 +61,7 @@ public class ConfigElementSorter implements Comparator<IConfigurationElement> {
         }
         return 0;
 	}
-       
-    // is plugin1 dependent on plugin2
-    private boolean isDependent( Bundle bundle1, 
-                                 Bundle bundle2 ) throws BundleException  {
-    	
-    	List required = Arrays.asList( getRequisiteBundles( bundle1 ) );
-        return required.contains( bundle2 );
-    }
-	
+       	
     
     /**
      * Returns all bundles that the passed bundle depends on.  This 
@@ -72,6 +69,7 @@ public class ConfigElementSorter implements Comparator<IConfigurationElement> {
      * Note an implementation detail: results are cached for performance
      * as it is not expected that the plugin dependencies can change during
      * the life of the VM.
+     * TODO - this is fo course incorrect for Eclipse 3
      * @param bundle
      * @return
      */
@@ -107,6 +105,14 @@ public class ConfigElementSorter implements Comparator<IConfigurationElement> {
         }
         assert requisites != null;
         return requisites;
+    }
+	
+    // is plugin 1 dependent on plugin 2?
+    private boolean isDependent( Bundle bundle1, 
+                                 Bundle bundle2 ) throws BundleException  {
+    	
+    	List required = Arrays.asList( getRequisiteBundles( bundle1 ) );
+        return required.contains( bundle2 );
     }
         
 }

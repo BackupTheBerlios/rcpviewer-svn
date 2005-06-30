@@ -16,16 +16,28 @@ import org.eclipse.ui.forms.IManagedForm;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
-public class DefaultFieldPart implements IFormPart {
-	private Composite _parent;
-	private Method _getMethod;
-	private Method _setMethod;
+/**
+ * Creates an editable Text box.
+ * @author Mike
+ */
+class DefaultFieldPart implements IFormPart {
+	
+	private final Composite _parent;
+	private final Method _getMethod;
+	private final Method _setMethod;
+	private final Text _text;
+	
 	private Object _input;
-	private Text _text;
 	private IManagedForm _managedForm;
 	private boolean _isDirty= false;
 
-	public DefaultFieldPart(Composite parent, Method getMethod,Method setMethod) {
+	
+	/**
+	 * @param parent
+	 * @param getMethod
+	 * @param setMethod
+	 */
+	DefaultFieldPart(Composite parent, Method getMethod,Method setMethod) {
 		if ( parent == null ) throw new IllegalArgumentException();
 		// value could be null
 
@@ -39,11 +51,15 @@ public class DefaultFieldPart implements IFormPart {
 		_text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				setDirty(true);
-				_managedForm.dirtyStateChanged();
 			};
 		});
 	}
 	
+	/* IFormPart contract */
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
+	 */
 	public void commit(boolean pOnSave) {
 		try {
 			if (_setMethod != null)
@@ -60,30 +76,38 @@ public class DefaultFieldPart implements IFormPart {
 		} 
 	}
 
-	private void setDirty(boolean value) {
-		if (_isDirty != value) {
-			_isDirty= value;
-			_managedForm.dirtyStateChanged();
-		}
-	}
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#dispose()
+	 */
 	public void dispose() {
 		// do nothing		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+	 */
 	public void initialize(IManagedForm pForm) {
 		_managedForm= pForm;		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#isDirty()
+	 */
 	public boolean isDirty() {
 		return _isDirty;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#isStale()
+	 */
 	public boolean isStale() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#refresh()
+	 */
 	public void refresh() {
 		String display = null;
 		if ( _input != null && _getMethod != null) {
@@ -100,13 +124,31 @@ public class DefaultFieldPart implements IFormPart {
 		setDirty(false);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#setFocus()
+	 */
 	public void setFocus() {
 		_text.setFocus();		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+	 */
 	public boolean setFormInput(Object pInput) {
 		_input= pInput;
 		refresh();
 		return true;		
 	}
+	
+	/* private methods */
+	
+	// as it says
+	private void setDirty(boolean value) {
+		assert _managedForm != null;
+		if (_isDirty != value) {
+			_isDirty= value;
+			_managedForm.dirtyStateChanged();
+		}
+	}
+
 }

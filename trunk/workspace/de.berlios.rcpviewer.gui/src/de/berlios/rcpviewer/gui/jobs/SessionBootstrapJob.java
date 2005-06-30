@@ -6,10 +6,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
+import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.session.ISessionManager;
 
@@ -21,28 +21,33 @@ public class SessionBootstrapJob extends Job {
 	
 	private static final String DEFAULT_DOMAIN_ID = "default";
 	
-	private final String domainId;
+	private final String _domainId;
+	private final IObjectStore _store;
 	
 	/**
-	 * Bootstraps a session on the default domain.
+	 * Bootstraps a session on the default domain using an im-memory object store
 	 */
 	public SessionBootstrapJob() {
-		this( DEFAULT_DOMAIN_ID );
+		this( DEFAULT_DOMAIN_ID, new InMemoryObjectStore()  );
 	}
 	
 	/**
-	 * Bootstraps a session on the domian identified by the passed id.
+	 * Bootstraps a session on the domain identified by the passed id with the
+	 * passed object store
 	 * @param domainId
+	 * @param store
 	 */
-	public SessionBootstrapJob( String domainId ) {
+	public SessionBootstrapJob( String domainId, IObjectStore store ) {
 		super( SessionBootstrapJob.class.getSimpleName() );
 		if ( domainId == null ) throw new IllegalArgumentException();
-		this.domainId = domainId;
+		if ( store == null ) throw new IllegalArgumentException();
+		_domainId = domainId;
+		_store = store;
 	}
 
 
 	/**
-	 * Runs the wrapped <code>IDomainBootstrap</code>.
+	 * Creates a session for the passed domain and object store.
 	 * @see org.eclipse.core.internal.jobs.InternalJob#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
@@ -51,8 +56,8 @@ public class SessionBootstrapJob extends Job {
 			//FIXME In the future there will be a better way to set sessions
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			IDomainRegistry domainRegistry= RuntimePlugin.getDefault().getDomainRegistry();
-			IDomain domain= domainRegistry.getDomain("default");
-			sessionManager.createSession( domain, new InMemoryObjectStore());
+			IDomain domain = domainRegistry.getDomain( _domainId );
+			sessionManager.createSession( domain, _store );
 		}
 		catch ( CoreException ce ) {
 			return ce.getStatus();	

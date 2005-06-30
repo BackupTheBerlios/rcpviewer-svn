@@ -23,11 +23,11 @@ public class GuiPlugin extends AbstractUIPlugin {
 	
 	
 	// the shared instance.
-	private static GuiPlugin plugin = null;
+	private static GuiPlugin __plugin = null;
 
 	
-	private EditorContentBuilderFactory editorContentBuilderFactory = null;
-	private FieldBuilderFactory fieldBuilderFactory = null;
+	private EditorContentBuilderFactory _editorContentBuilderFactory = null;
+	private FieldBuilderFactory __fieldBuilderFactory = null;
 	
 	/* static methods */
 	
@@ -35,7 +35,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 * Returns the shared instance.
 	 */
 	public static GuiPlugin getDefault() {
-		return plugin;
+		return __plugin;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 */
 	public GuiPlugin() {
 		super();
-		plugin = this;
+		__plugin = this;
 	}
 	
 
@@ -83,13 +83,13 @@ public class GuiPlugin extends AbstractUIPlugin {
 		DomainBootstrapJob domainJob = new DomainBootstrapJob( bootstrap );
 		domainJob.schedule();
 		
-		// start session initialisation (default domain)
+		// start session initialisation (default domain & store for now )
 		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
 		sessionJob.schedule();
 		
 		// initialise gui factories
-		editorContentBuilderFactory = new EditorContentBuilderFactory();
-		fieldBuilderFactory = new FieldBuilderFactory();
+		_editorContentBuilderFactory = new EditorContentBuilderFactory();
+		__fieldBuilderFactory = new FieldBuilderFactory();
 		
 		// effectively running jobs synchronously
 		waitForJob( domainJob );
@@ -102,7 +102,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		plugin = null;
+		__plugin = null;
 	}
 	
 	/* accessors */
@@ -111,14 +111,14 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public FieldBuilderFactory getFieldBuilderFactory() {
-		return fieldBuilderFactory;
+		return __fieldBuilderFactory;
 	}
 
 	/**
 	 * @return
 	 */
 	public EditorContentBuilderFactory getEditorContentBuilderFactory() {
-		return editorContentBuilderFactory;
+		return _editorContentBuilderFactory;
 	}
 	
 	/* private methods */

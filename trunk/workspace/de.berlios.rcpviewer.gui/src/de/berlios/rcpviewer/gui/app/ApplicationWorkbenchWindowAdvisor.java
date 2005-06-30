@@ -8,19 +8,31 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
+/**
+ * @author Mike
+ */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public static final String TITLE_KEY = 
 		"ApplicationWorkbenchWindowAdvisor.Title";
 	
+    /**
+     * @param configurer
+     */
     public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
         super(configurer);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
+     */
     public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
         return new ApplicationActionBarAdvisor(configurer);
     }
     
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
+     */
     public void preWindowOpen() {
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
         configurer.setShowCoolBar( true );

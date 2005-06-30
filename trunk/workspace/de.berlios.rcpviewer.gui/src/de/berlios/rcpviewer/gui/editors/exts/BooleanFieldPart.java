@@ -16,16 +16,29 @@ import org.eclipse.ui.forms.IManagedForm;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
-public class BooleanFieldPart implements IFormPart {
-	private Composite _parent;
-	private Method _getMethod;
-	private Method _setMethod;
+
+/**
+ * Generates a label and a checkbox.
+ * @author Mike
+ */
+class BooleanFieldPart implements IFormPart {
+	
+	private final Composite _parent;
+	private final Method _getMethod;
+	private final Method _setMethod;
+	private final Button _button;
+	
 	private Object _input;
-	private Button _button;
 	private IManagedForm _managedForm;
 	private boolean _isDirty= false;
 
-	public BooleanFieldPart(Composite parent, Method getMethod,Method setMethod) {
+	
+	/**
+	 * @param parent
+	 * @param getMethod
+	 * @param setMethod
+	 */
+	BooleanFieldPart(Composite parent, Method getMethod,Method setMethod) {
 		if ( parent == null ) throw new IllegalArgumentException();
 		// value could be null
 
@@ -44,6 +57,9 @@ public class BooleanFieldPart implements IFormPart {
 		});
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
+	 */
 	public void commit(boolean pOnSave) {
 		try {
 			if (_setMethod != null)
@@ -63,6 +79,9 @@ public class BooleanFieldPart implements IFormPart {
 		} 
 	}
 
+	/**
+	 * @param value
+	 */
 	private void setDirty(boolean value) {
 		if (_isDirty != value) {
 			_isDirty= value;
@@ -70,23 +89,38 @@ public class BooleanFieldPart implements IFormPart {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#dispose()
+	 */
 	public void dispose() {
 		// do nothing		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+	 */
 	public void initialize(IManagedForm pForm) {
 		_managedForm= pForm;		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#isDirty()
+	 */
 	public boolean isDirty() {
 		return _isDirty;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#isStale()
+	 */
 	public boolean isStale() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#refresh()
+	 */
 	public void refresh() {
 		Boolean value= Boolean.FALSE;
 		if (_input != null && _getMethod != null) {
@@ -101,20 +135,20 @@ public class BooleanFieldPart implements IFormPart {
 		setDirty(false);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#setFocus()
+	 */
 	public void setFocus() {
 		_button.setFocus();		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+	 */
 	public boolean setFormInput(Object pInput) {
 		_input= pInput;
 		refresh();
 		return true;		
 	}
-
-	
-	public boolean isApplicable(Class clazz, Object value) {
-		return Boolean.class ==  clazz;
-	}
-
 
 }

@@ -16,6 +16,20 @@ public interface IFieldBuilder {
 	
 	public boolean isApplicable( Class clazz, Object value );
 
-	//REVIEW_CHANGE for mike: create a managed for part as well as the UI.  Needed in order to manage dirty state.
-	public IFormPart createFormPart( Composite parent, Method getMethod, Method setMethod, Object configuration);
+	/**
+	 * REVIEW_CHANGE for Ted, Dan.
+	 * This is appropriate whilst the DefaultEditorContentPane uses its own
+	 * reflection rather than querying the domain model.  Should I switch
+	 * the mechansim to use the latter?
+	 * @param parent
+	 * @param getMethod
+	 * @param setMethod
+	 * @param configuration
+	 * @return
+	 */
+	public IFormPart createFormPart( 
+			Composite parent, 
+			Method getMethod, 
+			Method setMethod, 
+			Object configuration );
 }

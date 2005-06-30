@@ -16,7 +16,8 @@ The "main" for the RCP runtime application.  Defines a number of extension point
 To be merged with Eclipse:/de.berlios.rcpviewer.rcp/wiki/Index.wiki
 
 1 Running
-See Eclipse:/de.berlios.rcpviewer.gui.acme/wiki/Index.wiki
+See Eclipse:/de.berlios.rcpviewer.gui.acme/wiki/Index.wiki.
+This also explains how to include search functionality.
 
 1 Suggested Standards
 * wrap all log / complex operations in Job's
@@ -24,3 +25,7 @@ See Eclipse:/de.berlios.rcpviewer.gui.acme/wiki/Index.wiki
 * apart from explicit extension points, am '''not''' writing classes for extension, rather the opposite - trying to make as un-public as possible.
 * use _ notation for fields (?)
 * place constants on appropriate classes - not a global constant interface (an anti-pattern?)
+* STATE IS EVIL, hence:
+** No caching of references - the platform does too much of that already
+** Recalculate rather than store calculation results
+

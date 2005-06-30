@@ -2,6 +2,8 @@ package de.berlios.rcpviewer.gui.editors;
 
 import org.eclipse.ui.forms.IManagedForm;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
+
 /**
  * Creates a scrolled form with a column of labels and a column of 
  * fields as presented by the <code>FieldBuilderFactory</code>.
@@ -20,18 +22,18 @@ public class DefaultEditorContentBuilder implements IEditorContentBuilder {
 	 * @see mikespike3.gui.IEditorContentBuilder#getDisplay()
 	 */
 	public String getDisplay() {
-		return "Default Form";
+		return GuiPlugin.getResourceString( "DefaultEditorContentBuilder.Display");
 	}
 
-	/**
-	 * Currently does model stuff do.
+
+	/* (non-Javadoc)
+	 * @see de.berlios.rcpviewer.gui.editors.IEditorContentBuilder#createGui(org.eclipse.ui.forms.IManagedForm, java.lang.Object)
 	 */
 	public void createGui(IManagedForm parent, Object instance ) {		
 		if ( parent == null ) throw new IllegalArgumentException();
 		if ( instance == null ) throw new IllegalArgumentException();
 		
-		DefaultEditorContentPart contentPart= new DefaultEditorContentPart(parent, instance);
-		parent.addPart(contentPart);
+		parent.addPart( new DefaultEditorContentPart(parent, instance) );
 	}
 
 }

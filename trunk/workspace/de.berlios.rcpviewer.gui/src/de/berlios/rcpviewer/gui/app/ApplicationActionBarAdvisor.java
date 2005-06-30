@@ -57,6 +57,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.application.ActionBarAdvisor#fillCoolBar(org.eclipse.jface.action.ICoolBarManager)
+	 */
 	@Override
 	protected void fillCoolBar(ICoolBarManager coolBar) {
         ToolBarManager toolBarManager

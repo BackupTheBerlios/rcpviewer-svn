@@ -15,12 +15,12 @@ import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
  */
 public class DomainBootstrapJob extends Job {
 	
-	private final IDomainBootstrap bootstrap;
+	private final IDomainBootstrap _bootstrap;
 	
 	public DomainBootstrapJob( IDomainBootstrap bootstrap ) {
 		super( DomainBootstrapJob.class.getSimpleName() );
 		assert bootstrap != null;
-		this.bootstrap = bootstrap;
+		this._bootstrap = bootstrap;
 	}
 
 
@@ -31,7 +31,7 @@ public class DomainBootstrapJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {  
 		try {
-			bootstrap.registerClasses();
+			_bootstrap.registerClasses();
 		}
 		catch ( CoreException ce ) {
 			return ce.getStatus();	

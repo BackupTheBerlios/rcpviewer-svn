@@ -8,9 +8,9 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
- * Wraps an <code>IDomainObject</code>.
+ * Input for the <code>DefaultEditor</code>
  * @author Mike
- *
+ * @see de.berlios.rcpviewer.gui.editors.DefaultEditor
  */
 public class DefaultEditorInput implements IEditorInput {
 
