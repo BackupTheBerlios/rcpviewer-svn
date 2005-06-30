@@ -30,6 +30,14 @@ Previously aspect-1.2 was required; this has now been removed.
 * On the Plugins tab:
 ** Choose plugins and fragments to launch from list
 ** Press ~~Deselect All~~
-** Select ~~de.berlios.rcpviewer.gui~~ and ~~de.berlios.rcpviewer.gui.acme~~
+** ~~de.berlios.rcpviewer.gui.acme~~
+** Press ~~Add Required Plugins~~
+* Run
+
+1 To run the application '''with''' search functionality
+* As above
+* But after deselsting all plugins, then select
+** ~~de.berlios.rcpviewer.gui.acme~~
+** ~~de.berlios.rcpviewer.persistence.inmemory.ui~~
 ** Press ~~Add Required Plugins~~
 * Run
