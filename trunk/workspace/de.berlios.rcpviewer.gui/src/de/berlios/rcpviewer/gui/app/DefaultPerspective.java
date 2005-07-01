@@ -5,6 +5,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 
 import de.berlios.rcpviewer.gui.views.classbar.ClassBarView;
+import de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView;
 
 /**
  * Default perspective opened on startup.
@@ -49,8 +50,9 @@ public class DefaultPerspective implements IPerspectiveFactory {
         IPlaceholderFolderLayout right = layout.createPlaceholderFolder( 
                 RIGHT, 
                 IPageLayout.RIGHT, 
-                0.90f,
+                0.8f,
 				layout.getEditorArea() );
+		right.addPlaceholder( SessionTreeView.ID );
 		
 		// bottom placholder
 		IPlaceholderFolderLayout bottom =  layout.createPlaceholderFolder(

@@ -44,12 +44,18 @@
          point="org.eclipse.ui.views">
       <category
             id="de.berlios.rcpviewer.gui"
-            name="Default Views"/>
+            name="Rcp Views"/>
       <view
             category="de.berlios.rcpviewer.gui"
             class="de.berlios.rcpviewer.gui.views.classbar.ClassBarView"
             icon="icons/sample.gif"
             id="de.berlios.rcpviewer.gui.views.classbar.ClassBarView"
+            name=" "/>
+      <view
+            category="de.berlios.rcpviewer.gui"
+            class="de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView"
             name=" "/>
    </extension>
    

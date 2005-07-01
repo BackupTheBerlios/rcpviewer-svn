@@ -4,6 +4,7 @@
 * Similarly there is a session bootstrap job - this is in the plugin startup rather than the application initialisation so that, eventually, it can be configured via eclipse mechanisms.
 * Ted's dummy authorisation wizard is left out for now.  Don't particularly like the wizard approach to login - I suggest a good ole' dialog.
 * Currently no domains extesnion point - simply uses default - this is where the session bootstrap job could come in.
+* The session tree view opens once there are objects attached to the default session.  It can be closed but will annoyingly re-open every time an object is added to the session.  This will be corrected once I add some GUI preferences.  Note that there is currently a single session so a single session tree view.
  
 '''Current Errors'''
 * second save() fails on editor - re: discussion between save() and persist() methods. 
@@ -23,7 +24,6 @@ This also explains how to include search functionality.
 * wrap all log / complex operations in Job's
 * 'eat your own dogfood' for all extension points  '''unless''' the fall-back default option; hecnce 'exts' sub-directories where extension points are implemented
 * apart from explicit extension points, am '''not''' writing classes for extension, rather the opposite - trying to make as un-public as possible.
-* use _ notation for fields (?)
 * place constants on appropriate classes - not a global constant interface (an anti-pattern?)
 * STATE IS EVIL, hence:
 ** No caching of references - the platform does too much of that already

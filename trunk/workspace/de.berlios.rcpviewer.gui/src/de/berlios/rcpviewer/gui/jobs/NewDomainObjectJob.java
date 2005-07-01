@@ -10,6 +10,8 @@ import org.eclipse.ui.progress.UIJob;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.util.PlatformUtil;
+import de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionManager;
@@ -41,7 +43,10 @@ public class NewDomainObjectJob extends UIJob {
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
-			IDomainObject domainObject= session.createTransient( _clazz );
+			
+			IDomainObject domainObject = session.createTransient( _clazz );
+			PlatformUtil.getActivePage().showView( SessionTreeView.ID );
+
 			new OpenDomainObjectJob( domainObject ).schedule();
 			return Status.OK_STATUS;
 		}

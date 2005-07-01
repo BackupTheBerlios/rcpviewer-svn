@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.UIJob;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
 /**
@@ -17,13 +17,13 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  */
 public class SearchJob extends UIJob {
 
-	private final IDomainClass _clazz;
+	private final IRuntimeDomainClass _clazz;
 	
 	/**
 	 * Constructor requires the class to open.
 	 * @param clazz
 	 */
-	public SearchJob( IDomainClass clazz ) {
+	public SearchJob( IRuntimeDomainClass clazz ) {
 		super( GuiPlugin.getResourceString( "SearchJob.Name" ) );
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this._clazz = clazz;

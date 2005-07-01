@@ -45,7 +45,13 @@ class DefaultEditorContentPart implements IManagedForm, IFormPart {
 		_pojo= pPojo;
 		_parts = new ArrayList<IFormPart>();
 		
-		getForm().setText( pPojo.getClass().getName()+":"+pPojo.hashCode() );
+		// form title
+		StringBuffer sb = new StringBuffer();
+		sb.append( pPojo.getClass().getSimpleName() );
+		sb.append( ":" );
+		sb.append( pPojo.hashCode() );
+		getForm().setText( sb.toString() );
+		
 		createGui();
 		setFormInput( pPojo );
 	}

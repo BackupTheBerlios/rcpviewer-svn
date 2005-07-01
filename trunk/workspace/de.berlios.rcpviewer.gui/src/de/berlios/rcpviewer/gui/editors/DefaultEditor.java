@@ -41,12 +41,7 @@ public final class DefaultEditor extends EditorPart {
 		setSite( site );
 		setInput( input );
 		
-		Object pojo = ((DefaultEditorInput)input).getDomainObject();
-		StringBuffer sb = new StringBuffer();
-		sb.append( pojo.getClass().getName() );
-		sb.append( ":" );
-		sb.append( pojo.hashCode() );
-		setPartName( sb.toString() );
+		setPartName( input.getName() );
 	}
 	
 	/* (non-Javadoc)

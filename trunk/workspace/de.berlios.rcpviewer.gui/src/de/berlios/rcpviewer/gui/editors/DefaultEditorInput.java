@@ -46,16 +46,16 @@ public class DefaultEditorInput implements IEditorInput {
 	}
 
 	
-	/**
-	 * Ensures never <code>null</code> even if domain model has no name
+
+	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	public String getName() {
-		String s = _domainObject.getDomainClass().getName();
-		if ( s == null ) {
-			s = GuiPlugin.getResourceString( "DefaultEditorInput.NoName");
-		}
-		return s;
+		StringBuffer sb = new StringBuffer();
+		sb.append( _domainObject.getPojo().getClass().getSimpleName() );
+		sb.append( ":" );
+		sb.append( _domainObject.getPojo().hashCode() );
+		return sb.toString();
 	}
 
 	
@@ -87,8 +87,44 @@ public class DefaultEditorInput implements IEditorInput {
 		return null;
 	}
 	
+	/**
+	 * Accessor
+	 * @return
+	 */
+	public IDomainObject getDomainObject() {
+		return _domainObject;
+	}
+	
+	/**
+	 * Used to decide whether there is an open editor for the passed input.
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals( Object arg0 ) {
+		if ( arg0 == null ) return false;
+		if ( arg0 == this ) return true;
+		if ( !( arg0 instanceof DefaultEditorInput ) ) return false;
+		DefaultEditorInput other = (DefaultEditorInput)arg0;
+		if ( _domainObject.equals( other.getDomainObject() ) ) {
+			// only builder type matters
+			return _builder.getClass().equals( other.getBuilder().getClass() );
+		}
+		return false;
+	}
+	
+	/**
+	 * Compatible with <code>equals()</code>.
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return 17 + 19*_domainObject.hashCode() + 27*_builder.getClass().hashCode();
+	}
+	
+
+	
 	/* package-private methods */
-		
+
 	/**
 	 * Accessor
 	 * @return
@@ -97,11 +133,5 @@ public class DefaultEditorInput implements IEditorInput {
 		return _builder;
 	}
 
-	/**
-	 * Accessor
-	 * @return
-	 */
-	IDomainObject getDomainObject() {
-		return _domainObject;
-	}
+
 }

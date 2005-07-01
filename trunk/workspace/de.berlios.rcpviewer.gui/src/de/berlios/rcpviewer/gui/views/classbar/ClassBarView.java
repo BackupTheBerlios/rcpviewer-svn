@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.gui.views.classbar;
 
-import java.util.Map;
+import java.util.Iterator;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -16,15 +16,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
-import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.NewDomainObjectJob;
+import de.berlios.rcpviewer.gui.jobs.SearchJob;
+import de.berlios.rcpviewer.gui.util.DomainRegistryUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
@@ -49,20 +47,15 @@ public class ClassBarView extends ViewPart {
 		parent.setLayout( layout );
 		
 		// get all classes from domain(s)
-    	RuntimePlugin runtimePlugin= RuntimePlugin.getDefault();
-    	IDomainRegistry domainRegistry= runtimePlugin.getDomainRegistry();
-    	Map<String, IDomain> domains= domainRegistry.getDomains();
-    	int count = 0;
-		for (IDomain domain: domains.values()) {
-    		for (IDomainClass domainClass: domain.classes()) {
-				assert domain instanceof IRuntimeDomainClass;
-				doAddClass( (IRuntimeDomainClass)domainClass, parent  );
-				count++;
-    		}
+		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses();
+		boolean empty = true;
+		while ( it.hasNext() ) {
+			doAddClass( (IRuntimeDomainClass)it.next(), parent  );
+			empty = false;
     	}
 		
 		// error message on status line if necessary
-		if ( count == 0 ) {
+		if ( empty ) {
 			// error message if no classes
 			getViewSite().getActionBars().getStatusLineManager().setErrorMessage(
 					ImageUtil.resize(
@@ -85,7 +78,7 @@ public class ClassBarView extends ViewPart {
 				new GridData( GridData.HORIZONTAL_ALIGN_CENTER ) );
 		button.setImage( 
 				ImageUtil.resize( 
-						ImageUtil.getImage( clazz), 
+						ImageUtil.getImage( clazz ), 
 						IMAGE_SIZE ) ) ;
 		button.setToolTipText( clazz.getDescription() ); 
 
