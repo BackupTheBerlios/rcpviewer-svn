@@ -1,13 +1,12 @@
 package de.berlios.rcpviewer.gui.editors.exts;
 
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -24,6 +23,8 @@ import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.jobs.SetAttributeJob;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Uses third party library swtcalendar - with thanks.
@@ -33,72 +34,85 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  */
 class DateFieldPart implements IFormPart {
 	
-	private final Composite _parent;
-	private final Method _getMethod;
-	private final Method _setMethod;
 	private final Text _text;
 	private final DateFormat _formatter;
+	private final EAttribute _attribute;
 	
-	private Object _input;
+	private IDomainObject _object;
 	private IManagedForm _managedForm;
 	private boolean _isDirty= false;
 
-
+	
 	/**
 	 * @param parent
-	 * @param getMethod
-	 * @param setMethod
+	 * @param object
+	 * @param attribute
 	 */
-	DateFieldPart(Composite parent, Method getMethod,Method setMethod) {
-		if ( parent == null ) throw new IllegalArgumentException();
-		// value could be null
-
-		_parent= parent;
-		_getMethod= getMethod;
-		_setMethod= setMethod;
+	DateFieldPart( final Composite parent, 
+				   IDomainObject object, 
+				   EAttribute attribute) {
+		assert parent != null;
+		assert object != null;
+		assert attribute != null;
+		
+		_object = object;
+		_attribute = attribute;
 		_formatter = DateFormat.getDateInstance(DateFormat.SHORT);
 		
-		parent.setLayout( new GridLayout( 2, false ) );
+		GridLayout layout = new GridLayout();
+		parent.setLayout( layout );
 		
 		// text box
 		_text = new Text( parent, SWT.SINGLE );
 		_text.setBackground( parent.getBackground() );
 		_text.setEditable( false );
 		_text.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL ) );
-		_text.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				setDirty(true);
-				_managedForm.dirtyStateChanged();
-			};
-		});
 		
-		// change date via calendar widget
-        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );
-		change.setText( "...");
-		GridData buttonData = new GridData();
-		buttonData.heightHint = _text.getLineHeight() ;
-		change.setLayoutData( buttonData );
-		change.addListener( SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                final SWTCalendarDialog cal = new SWTCalendarDialog( _parent.getDisplay() );
-                cal.addDateChangedListener(new SWTCalendarListener() {
-                    public void dateChanged(SWTCalendarEvent calendarEvent) {
-                        _text.setText(_formatter.format(calendarEvent.getCalendar().getTime()));
-                    }
-                });
+		if ( !attribute.isChangeable() ) {
+			_text.setEditable( false );
+		}
+		else {
+			layout.makeColumnsEqualWidth = false;
+			layout.numColumns = 2;
+		
+			_text.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					setDirty(true);
+				};
+			});
+			
+			// change date via calendar widget
+	        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );
+			change.setText( "...");
+			GridData buttonData = new GridData();
+			buttonData.heightHint = _text.getLineHeight() ;
+			change.setLayoutData( buttonData );
+			change.addListener( SWT.Selection, new Listener() {
+	            public void handleEvent(Event event) {
+	                final SWTCalendarDialog cal
+	                	= new SWTCalendarDialog( parent.getDisplay() );
+	                cal.addDateChangedListener(new SWTCalendarListener() {
+	                    public void dateChanged(SWTCalendarEvent calendarEvent) {
+	                        _text.setText(
+								_formatter.format(
+										calendarEvent.getCalendar().getTime()));
+	                    }
+	                });
 
-                if ( _text.getText() != null && _text.getText().length() > 0) {
-                    try {
-                        Date d = _formatter.parse(_text.getText());
-                        cal.setDate(d);
-                    } catch (ParseException pe) {
+	                if ( _text.getText() != null && _text.getText().length() > 0) {
+	                    try {
+	                        Date d = _formatter.parse(_text.getText());
+	                        cal.setDate(d);
+	                    } 
+						catch (ParseException pe) {
+							// do nowt
+	                    }
+	                }
+	                cal.open();
 
-                    }
-                }
-                cal.open();
-
-            }
-        });
+	            }
+	        });
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -106,12 +120,13 @@ class DateFieldPart implements IFormPart {
 	 */
 	public void commit(boolean pOnSave) {
 		try {
-			if (_setMethod != null) {
-				Date date= _formatter.parse(_text.getText());
-				_setMethod.invoke(_input, new Object[] { date });
+			if ( _attribute.isChangeable() ) {
+				Date date = _formatter.parse(_text.getText());
+				new SetAttributeJob( _object, _attribute, date ).schedule();
 			}
 			setDirty(false);
-		} catch (Exception e) {
+		} 
+		catch ( ParseException e) {
 			Status status= new Status(
 					IStatus.WARNING, 
 					GuiPlugin.getDefault().getBundle().getSymbolicName(), 
@@ -165,17 +180,8 @@ class DateFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		if ( _input != null ) {
-			try {
-			Date date= (Date)_getMethod.invoke(_input);
-			_text.setText( _formatter.format( date ) );
-			}
-			catch (Exception x) {
-				throw new RuntimeException(x);
-			}
-		}
-		else
-			_text.setText("");
+		Date date = (Date)_object.get( _attribute );
+		_text.setText( _formatter.format( date ) );
 		setDirty(false);
 	}
 
@@ -190,7 +196,10 @@ class DateFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object pInput) {
-		_input= pInput;
+		if ( !(pInput instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
+		_object = (IDomainObject)pInput;
 		refresh();
 		return true;		
 	}

@@ -63,7 +63,6 @@
          point="de.berlios.rcpviewer.gui.fieldbuilder">
          <impl class="de.berlios.rcpviewer.gui.editors.exts.BooleanFieldBuilder"/>
          <impl class="de.berlios.rcpviewer.gui.editors.exts.DateFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.ExceptionFieldBuilder"/>
    </extension>
 
 </plugin>

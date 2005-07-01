@@ -7,19 +7,19 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.gui.util.ConfigElementSorter;
 
 
 public class FieldBuilderFactory {
 	
-	private final IFieldBuilder[] builders;
-	private final Map mappings;
-	
+	private final IFieldBuilder[] _builders;
+	private final Map<EAttribute, IFieldBuilder> _mappings;
 	
 	/**
 	 * Constructor instantiates all implementations of 
-	 * "mikespike3.fieldbuilder" extension point.
+	 * <code>IFieldBuilder.EXTENSION_POINT_ID </code> extension point.
 	 * @throws CoreException
 	 */
 	public FieldBuilderFactory() throws CoreException {
@@ -28,35 +28,33 @@ public class FieldBuilderFactory {
                   .getConfigurationElementsFor( IFieldBuilder.EXTENSION_POINT_ID );
 		Arrays.sort( elems, new ConfigElementSorter() );
 		int num = elems.length;
-		builders = new IFieldBuilder[ num ];
+		_builders = new IFieldBuilder[ num ];
 		for ( int i=0 ; i < num ; i++ ) {
 			Object obj = elems[i].createExecutableExtension( "class" );
 			assert obj instanceof IFieldBuilder;
-			builders[i] = (IFieldBuilder)obj;
+			_builders[i] = (IFieldBuilder)obj;
 		}
-		mappings = new HashMap();
+		_mappings = new HashMap<EAttribute, IFieldBuilder>();
 	}
 
 	/**
-	 * Selects and generates IFieldBuilder appropriate for passed method on the
-	 * passed instance
-	 * @param instance
+	 * Selects and generates IFieldBuilder appropriate for passed attribute
+	 * @param attribute
 	 * @return
 	 */
-	public IFieldBuilder getInstance( Class clazz, Object value ) {
-		// ignoring value for now for simplicity
-		IFieldBuilder builder = (IFieldBuilder)mappings.get( clazz );
+	public IFieldBuilder getInstance( EAttribute attribute ) {
+		IFieldBuilder builder = _mappings.get( attribute );
 		if ( builder == null ) {
-			for ( int i=0, num = builders.length ; i < num ; i++ ) {
-				if ( builders[i].isApplicable( clazz, value ) ) {
-					builder = builders[i];
+			for ( int i=0, num = _builders.length ; i < num ; i++ ) {
+				if ( _builders[i].isApplicable( attribute ) ) {
+					builder = _builders[i];
 					break;
 				}
 			}
 			if ( builder == null ) {
 				builder = new DefaultFieldBuilder();
 			}
-			mappings.put( clazz, builder );
+			_mappings.put( attribute, builder );
 		}
 		return builder;
 	}

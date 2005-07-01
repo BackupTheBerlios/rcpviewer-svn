@@ -1,9 +1,6 @@
 package de.berlios.rcpviewer.gui.editors.exts;
 
-import java.lang.reflect.Method;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,37 +11,39 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 
-import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.jobs.SetAttributeJob;
+import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 
 /**
- * Generates a label and a checkbox.
+ * Generates a checkbox.
  * @author Mike
  */
 class BooleanFieldPart implements IFormPart {
 	
-	private final Composite _parent;
-	private final Method _getMethod;
-	private final Method _setMethod;
 	private final Button _button;
+	private final EAttribute _attribute;
 	
-	private Object _input;
+	private IDomainObject _object;
 	private IManagedForm _managedForm;
 	private boolean _isDirty= false;
 
 	
 	/**
 	 * @param parent
-	 * @param getMethod
-	 * @param setMethod
+	 * @param object
+	 * @param attribute
 	 */
-	BooleanFieldPart(Composite parent, Method getMethod,Method setMethod) {
-		if ( parent == null ) throw new IllegalArgumentException();
-		// value could be null
-
-		_parent= parent;
-		_getMethod= getMethod;
-		_setMethod= setMethod;
+	BooleanFieldPart( Composite parent, 
+					  IDomainObject object, 
+					  EAttribute attribute) {
+		assert parent != null;
+		assert object != null;
+		assert attribute != null;
+		
+		_object = object;
+		_attribute = attribute;
 		
 		parent.setLayout( new GridLayout() );
 		_button= new Button( parent, SWT.CHECK );
@@ -55,28 +54,28 @@ class BooleanFieldPart implements IFormPart {
 				setDirty(true);
 			}
 		});
+		
+		if ( attribute.isChangeable() ) {
+			_button.addSelectionListener( new DefaultSelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent pE) {
+					setDirty(true);
+				}
+			});
+		}
+		else {
+			_button.setEnabled( false );
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
 	public void commit(boolean pOnSave) {
-		try {
-			if (_setMethod != null)
-				_setMethod.invoke(_input, new Object[] { _button.getSelection() ? Boolean.TRUE : Boolean.FALSE });
-			setDirty(false);
-		} catch (Exception e) {
-			String msg= e.getMessage();
-			if (msg == null)
-				msg= "";
-			Status status= new Status(
-					IStatus.WARNING, 
-					GuiPlugin.getDefault().getBundle().getSymbolicName(), 
-					0, 
-					msg, 
-					e);
-			GuiPlugin.getDefault().getLog().log(status);
-		} 
+		if ( _attribute.isChangeable() ) {
+			new SetAttributeJob( _object, _attribute, _button.getSelection() ).schedule();
+		}
+		setDirty(false);
 	}
 
 	/**
@@ -122,16 +121,7 @@ class BooleanFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		Boolean value= Boolean.FALSE;
-		if (_input != null && _getMethod != null) {
-			try {
-				value= (Boolean)_getMethod.invoke(_input, null);
-			}
-			catch (Exception x) {
-				throw new RuntimeException(x);
-			}
-		}
-		_button.setSelection(value);
+		_button.setSelection( (Boolean)_object.get( _attribute ) );
 		setDirty(false);
 	}
 
@@ -146,7 +136,10 @@ class BooleanFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object pInput) {
-		_input= pInput;
+		if ( !(pInput instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
+		_object = (IDomainObject)pInput;
 		refresh();
 		return true;		
 	}

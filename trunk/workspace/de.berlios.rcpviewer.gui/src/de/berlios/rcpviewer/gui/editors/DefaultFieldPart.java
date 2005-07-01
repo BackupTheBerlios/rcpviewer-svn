@@ -1,9 +1,6 @@
 package de.berlios.rcpviewer.gui.editors;
 
-import java.lang.reflect.Method;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -14,7 +11,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 
-import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.jobs.SetAttributeJob;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Creates an editable Text box.
@@ -22,37 +20,43 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  */
 class DefaultFieldPart implements IFormPart {
 	
-	private final Composite _parent;
-	private final Method _getMethod;
-	private final Method _setMethod;
 	private final Text _text;
+	private final EAttribute _attribute;
 	
-	private Object _input;
+	private IDomainObject _object;
 	private IManagedForm _managedForm;
 	private boolean _isDirty= false;
 
 	
 	/**
 	 * @param parent
-	 * @param getMethod
-	 * @param setMethod
+	 * @param object
+	 * @param attribute
 	 */
-	DefaultFieldPart(Composite parent, Method getMethod,Method setMethod) {
-		if ( parent == null ) throw new IllegalArgumentException();
-		// value could be null
-
-		_parent= parent;
-		_getMethod= getMethod;
-		_setMethod= setMethod;
+	DefaultFieldPart( Composite parent, 
+					  IDomainObject object, 
+					  EAttribute attribute) {
+		assert parent != null;
+		assert object != null;
+		assert attribute != null;
+		
+		_object = object;
+		_attribute = attribute;
 		
 		parent.setLayout( new GridLayout() );
 		_text = new Text( parent, SWT.WRAP );
 		_text.setLayoutData( new GridData( GridData.FILL_BOTH ) );
-		_text.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				setDirty(true);
-			};
-		});
+		
+		if ( attribute.isChangeable() ) {
+			_text.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					setDirty(true);
+				};
+			});
+		}
+		else {
+			_text.setEditable( false );
+		}
 	}
 	
 	/* IFormPart contract */
@@ -61,19 +65,10 @@ class DefaultFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
 	public void commit(boolean pOnSave) {
-		try {
-			if (_setMethod != null)
-				_setMethod.invoke(_input, new Object[] { _text.getText() });
-			setDirty(false);
-		} catch (Exception e) {
-			Status status= new Status(
-					IStatus.WARNING, 
-					GuiPlugin.getDefault().getBundle().getSymbolicName(), 
-					0, 
-					e.getMessage(), 
-					e);
-			GuiPlugin.getDefault().getLog().log(status);
-		} 
+		if ( _attribute.isChangeable() ) {
+			new SetAttributeJob( _object, _attribute, _text.getText() ).schedule();
+		}
+		setDirty(false);
 	}
 
 	/* (non-Javadoc)
@@ -109,18 +104,7 @@ class DefaultFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		String display = null;
-		if ( _input != null && _getMethod != null) {
-			try {
-				display = (String)_getMethod.invoke(_input, null);
-			}
-			catch (Exception x) {
-				// do nothin
-			}
-		}
-		if (display == null)
-			display = "null";
-		_text.setText( display );
+		_text.setText( String.valueOf( _object.get( _attribute ) ) );
 		setDirty(false);
 	}
 
@@ -135,7 +119,10 @@ class DefaultFieldPart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object pInput) {
-		_input= pInput;
+		if ( !(pInput instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
+		_object = (IDomainObject)pInput;
 		refresh();
 		return true;		
 	}

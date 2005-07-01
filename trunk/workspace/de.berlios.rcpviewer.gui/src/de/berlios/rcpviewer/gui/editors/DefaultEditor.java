@@ -58,7 +58,7 @@ public final class DefaultEditor extends EditorPart {
 			}
 		};
 		DefaultEditorInput input = (DefaultEditorInput)getEditorInput();
-		input.getBuilder().createGui( _form, input.getDomainObject().getPojo());
+		input.getBuilder().createGui( _form, input.getDomainObject() );
 	}
 
 	/* (non-Javadoc)

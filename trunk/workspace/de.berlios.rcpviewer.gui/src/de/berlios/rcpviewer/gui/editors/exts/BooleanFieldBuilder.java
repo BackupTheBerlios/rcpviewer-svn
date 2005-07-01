@@ -1,28 +1,30 @@
 package de.berlios.rcpviewer.gui.editors.exts;
 
-import java.lang.reflect.Method;
+import java.util.Date;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
 
 import de.berlios.rcpviewer.gui.editors.IFieldBuilder;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 public class BooleanFieldBuilder implements IFieldBuilder {
 
-	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(java.lang.Class, java.lang.Object)
+	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
 	 */
-	public boolean isApplicable(Class clazz, Object value) {
-		return Boolean.class ==  clazz;
+	public boolean isApplicable(EAttribute attribute) {
+		return Boolean.class == attribute.getEType().getInstanceClass();
 	}
-
-
-	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createFormPart(org.eclipse.swt.widgets.Composite, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.Object)
+	
+	/**
+	 * Creates a check box
+	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createFormPart(org.eclipse.swt.widgets.Composite, de.berlios.rcpviewer.session.IDomainObject, org.eclipse.emf.ecore.EAttribute)
 	 */
-	public IFormPart createFormPart(Composite parent,Method getMethod,Method setMethod,Object configuration) {
-		return new BooleanFieldPart(parent, getMethod, setMethod);
+	public IFormPart createFormPart(
+			Composite parent, IDomainObject object, EAttribute attribute) {
+		return new BooleanFieldPart(parent, object, attribute );
 	}
 
 }

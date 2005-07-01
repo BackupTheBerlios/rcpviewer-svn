@@ -1,9 +1,10 @@
 package de.berlios.rcpviewer.gui.editors;
 
-import java.lang.reflect.Method;
-
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
+
+import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Type for building individual fields within a gui.
@@ -14,22 +15,23 @@ public interface IFieldBuilder {
 	public static final String EXTENSION_POINT_ID
 		= "de.berlios.rcpviewer.gui.fieldbuilder";
 	
-	public boolean isApplicable( Class clazz, Object value );
+	/**
+	 * Whether this field builder is applicable for the passed attribute.
+	 * @param attribute
+	 * @return
+	 */
+	public boolean isApplicable( EAttribute attribute );
 
 	/**
-	 * REVIEW_CHANGE for Ted, Dan.
-	 * This is appropriate whilst the DefaultEditorContentPane uses its own
-	 * reflection rather than querying the domain model.  Should I switch
-	 * the mechansim to use the latter?
+	 * Create the gui within the supplied parent composite for the passed
+	 * attribute of the passed domain object.
 	 * @param parent
-	 * @param getMethod
-	 * @param setMethod
-	 * @param configuration
+	 * @param object
+	 * @param attribute
 	 * @return
 	 */
 	public IFormPart createFormPart( 
 			Composite parent, 
-			Method getMethod, 
-			Method setMethod, 
-			Object configuration );
+			IDomainObject object,
+			EAttribute attribute );
 }

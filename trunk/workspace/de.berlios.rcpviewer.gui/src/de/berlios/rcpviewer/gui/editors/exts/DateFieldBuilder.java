@@ -1,12 +1,13 @@
 package de.berlios.rcpviewer.gui.editors.exts;
 
-import java.lang.reflect.Method;
 import java.util.Date;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
 
 import de.berlios.rcpviewer.gui.editors.IFieldBuilder;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Uses third party library swtcalendar - with thanks.
@@ -16,19 +17,21 @@ import de.berlios.rcpviewer.gui.editors.IFieldBuilder;
  */
 public class DateFieldBuilder implements IFieldBuilder {
 
-	
-	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(java.lang.Class, java.lang.Object)
+	/**
+	 * Only if the class is a <code>Date</code> or subclass.
+	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
 	 */
-	public boolean isApplicable(Class clazz, Object value) {
-		return Date.class ==  clazz;
+	public boolean isApplicable(EAttribute attribute) {
+		return Date.class.isAssignableFrom(
+				attribute.getEType().getInstanceClass() );
 	}
 
-	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createFormPart(org.eclipse.swt.widgets.Composite, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.Object)
+	/**
+	 * Displays date with button option to change it.
+	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createFormPart(org.eclipse.swt.widgets.Composite, de.berlios.rcpviewer.session.IDomainObject, org.eclipse.emf.ecore.EAttribute)
 	 */
-	public IFormPart createFormPart(Composite parent, Method getMethod, Method setMethod,Object configuration) {
-		if ( parent == null ) throw new IllegalArgumentException();
-		return new DateFieldPart(parent, getMethod, setMethod);
+	public IFormPart createFormPart(
+			Composite parent, IDomainObject object, EAttribute attribute) {
+		return new DateFieldPart( parent, object, attribute );
 	}
 }

@@ -1,8 +1,8 @@
 package de.berlios.rcpviewer.gui.editors;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -15,15 +15,18 @@ import org.eclipse.ui.forms.IPartSelectionListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
- * A nested form that contains an IFormPart for every attribute in a given POJO.
+ * A nested form that contains an IFormPart for every attribute in a given 
+ * <code>IDomainObject</code>
  */
 class DefaultEditorContentPart implements IManagedForm, IFormPart {
 	
 	private final IManagedForm _parentForm;
-	private final Object _pojo;
+	private final IDomainObject _object;
 	private final ArrayList<IFormPart> _parts;
 	
 	// REVIEW_CHANGE for Ted - actually no change but why can we not delegate to
@@ -35,90 +38,58 @@ class DefaultEditorContentPart implements IManagedForm, IFormPart {
 
 	/**
 	 * @param parentForm
-	 * @param pPojo
+	 * @param object
 	 */
-	DefaultEditorContentPart( IManagedForm parentForm, Object pPojo) {
+	DefaultEditorContentPart( IManagedForm parentForm, IDomainObject object) {
 		if ( parentForm == null ) throw new IllegalArgumentException();
-		if ( pPojo == null ) throw new IllegalArgumentException();
+		if ( object == null ) throw new IllegalArgumentException();
 		
 		_parentForm= parentForm;
-		_pojo= pPojo;
+		_object= object;
 		_parts = new ArrayList<IFormPart>();
 		
 		// form title
 		StringBuffer sb = new StringBuffer();
-		sb.append( pPojo.getClass().getSimpleName() );
+		sb.append( _object.getPojo().getClass().getSimpleName() );
 		sb.append( ":" );
-		sb.append( pPojo.hashCode() );
+		sb.append( _object.getPojo().hashCode() );
 		getForm().setText( sb.toString() );
 		
 		createGui();
-		setFormInput( pPojo );
+		setFormInput( object );
 	}
 	
-	/**
-	 * Currently does own reflction to wokr out attributes.
-	 * REVIEW_CHANGE for Ted - any reason not using IDomainObject?
-	 */
-	protected void createGui() {
+	// as it says
+	private void createGui() {
 		
 		Composite body = getForm().getBody();
 		body.setLayout( new GridLayout( 2, false ) );
-
-		// discover methods - stuff the model should do
-		Method[] methods = _pojo.getClass().getMethods();
 		
-		// add a field for each getter method:
-		for ( int i=0, num = methods.length; i < num ; i++ ) {
-			String name = methods[i].getName();
-			if ( name.startsWith( "get" ) ) {
-				
-				Method getMethod= methods[i];
-				Method setMethod= null;
-				try {
-					String setMethodName= "set"+name.substring(3);
-					setMethod= _pojo.getClass().getMethod(setMethodName, new Class[] { getMethod.getReturnType() });
-				}
-				catch (NoSuchMethodException x) {
-					// fall through
-				}
-				if (setMethod != null) {
-					
-					// label
-					Label label = new Label( body, SWT.NONE );
-					label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
-					label.setText( name.substring( 3 ) + ":" );
-					label.setBackground( body.getBackground() );
-					
-					// create parent composite for field
-					Composite fieldComposite = new Composite( body, SWT.NONE );
-					fieldComposite.setLayoutData( 
-							new GridData( GridData.FILL_HORIZONTAL ) );
-					fieldComposite.setBackground( body.getBackground() );
-					getToolkit().paintBordersFor( fieldComposite );
-					
-					// get value and create approriate gui
-					Object value = null;
-					try {
-						assert methods[i].getParameterTypes().length == 0;
-						value = methods[i].invoke( _pojo, (Object[])null );
-						// create correct field builder
-						IFieldBuilder fieldBuilder
-							= GuiPlugin.getDefault().getFieldBuilderFactory().getInstance( 
-									methods[i].getReturnType(), value  );
-						IFormPart formPart= fieldBuilder.createFormPart( fieldComposite,getMethod, setMethod, null);
-						addPart(formPart);
-					}
-					catch ( Exception ex ) {
-						// exceptions must have specialist displays...
-						IFieldBuilder fieldBuilder
-							= GuiPlugin.getDefault().getFieldBuilderFactory().getInstance( 
-									ex.getClass(), ex  );
-						IFormPart formPart= fieldBuilder.createFormPart( fieldComposite, null, null, ex );
-						addPart(formPart);
-					}	
-				}
-			}
+		// loop through all attributes - add a field for each
+		IDomainClass clazz = _object.getDomainClass();
+		for ( Object a : clazz.attributes() ) {
+			EAttribute attribute = (EAttribute)a;
+			
+			// label
+			Label label = new Label( body, SWT.NONE );
+			label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
+			label.setText( attribute.getName() + ":" );
+			label.setBackground( body.getBackground() );
+			
+			// create parent composite for field
+			Composite fieldComposite = new Composite( body, SWT.NONE );
+			fieldComposite.setLayoutData( 
+					new GridData( GridData.FILL_HORIZONTAL ) );
+			fieldComposite.setBackground( body.getBackground() );
+			getToolkit().paintBordersFor( fieldComposite );
+			
+			IFieldBuilder fieldBuilder
+				= GuiPlugin.getDefault()
+							.getFieldBuilderFactory()
+							.getInstance( attribute );
+			IFormPart formPart= fieldBuilder.createFormPart( 
+					fieldComposite, _object, attribute);
+			addPart(formPart);
 		}
 	}
 
@@ -224,6 +195,9 @@ class DefaultEditorContentPart implements IManagedForm, IFormPart {
 	 * @see org.eclipse.ui.forms.IManagedForm#setInput(java.lang.Object)
 	 */
 	public boolean setInput(Object pInput) {
+		if ( !(pInput instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
 		boolean pageResult=false;		
 		_input = pInput;
 		for (IFormPart part: _parts) {
@@ -272,6 +246,9 @@ class DefaultEditorContentPart implements IManagedForm, IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object pInput) {
+		if ( !(pInput instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
 		boolean result= true;
 		for (IFormPart formPart: _parts) {
 			if (formPart.setFormInput(pInput) == false)
