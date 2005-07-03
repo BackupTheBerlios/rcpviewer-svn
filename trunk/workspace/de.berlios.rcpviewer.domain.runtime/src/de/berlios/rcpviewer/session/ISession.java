@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import java.util.List;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -38,7 +38,7 @@ public interface ISession {
 	public String getId();
 	
 	/**
-	 * The {@link Domain} (or schema, or metamodel) that holds the
+	 * The {@link RuntimeDomain} (or schema, or metamodel) that holds the
 	 * {@link IDomainClass}es for which every {@link IDomainObject} managed
 	 * by this session must correspond.
 	 *   

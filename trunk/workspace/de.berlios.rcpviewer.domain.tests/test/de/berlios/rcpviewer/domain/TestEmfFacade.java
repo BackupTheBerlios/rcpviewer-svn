@@ -9,6 +9,8 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
 
@@ -93,7 +95,7 @@ public class TestEmfFacade extends TestCase {
 	public void testGetEPackageForDefaultPackage() {
 		Package javaPackage = Package.getPackage("");
 		EPackage ePackage = 
-			emfFacade.getEPackageFor(javaPackage);
+			emfFacade.getEPackageFor(javaPackage, null);
 		assertNotNull(ePackage);
 		assertEquals("http://www.eclipse.org/emf/2002/Ecore", ePackage.getNsURI());
 	}
@@ -107,7 +109,7 @@ public class TestEmfFacade extends TestCase {
 		for(Class c: primitiveClasses) {
 			Package javaPackage = c.getPackage();
 			EPackage ePackage = 
-				emfFacade.getEPackageFor(javaPackage);
+				emfFacade.getEPackageFor(javaPackage, null);
 			assertNotNull(ePackage);
 			assertEquals("http://www.eclipse.org/emf/2002/Ecore", ePackage.getNsURI());
 		}
@@ -117,7 +119,7 @@ public class TestEmfFacade extends TestCase {
 		Package javaPackage = 
 			de.berlios.rcpviewer.domain.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
-			emfFacade.getEPackageFor(javaPackage);
+			emfFacade.getEPackageFor(javaPackage, new ResourceSetImpl());
 		assertNotNull(ePackage);
 		assertEquals("http://de.berlios.rcpviewer.domain/2005/de.berlios.rcpviewer.domain", ePackage.getNsURI());
 		assertEquals("de.berlios.rcpviewer.domain", ePackage.getName());
@@ -127,7 +129,7 @@ public class TestEmfFacade extends TestCase {
 		Package javaPackage = 
 			de.berlios.rcpviewer.domain.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
-			emfFacade.findPackageWithName(javaPackage.getName());
+			emfFacade.findPackageWithName(javaPackage.getName(), new ResourceSetImpl());
 		assertNull(ePackage);
 	}
 
@@ -136,12 +138,14 @@ public class TestEmfFacade extends TestCase {
 		Package javaPackage = 
 			de.berlios.rcpviewer.domain.ClassInRegularPackage.class.getPackage();
 		
+		ResourceSet resourceSet = new ResourceSetImpl();
+		
 		// cause to get created
-		emfFacade.getEPackageFor(javaPackage);
+		emfFacade.getEPackageFor(javaPackage, resourceSet);
 
 		// should now be there
 		EPackage ePackage = 
-			emfFacade.findPackageWithName(javaPackage.getName());
+			emfFacade.findPackageWithName(javaPackage.getName(), resourceSet);
 		
 		assertNotNull(ePackage);
 		assertEquals("http://de.berlios.rcpviewer.domain/2005/de.berlios.rcpviewer.domain", ePackage.getNsURI());
@@ -150,13 +154,13 @@ public class TestEmfFacade extends TestCase {
 	
 	public void testFindPackageWithNameUsingNonExistentPackage() {
 		EPackage ePackage = 
-			emfFacade.findPackageWithName("no.such.named.package");
+			emfFacade.findPackageWithName("no.such.named.package", new ResourceSetImpl());
 		assertNull(ePackage);
 	}
 
 	public void testGetEDataTypeForPrimitives() {
 		for(Class c: primitiveClasses) {
-			EDataType eDataType = emfFacade.getEDataTypeFor(c);
+			EDataType eDataType = emfFacade.getEDataTypeFor(c, null);
 			assertNotNull(eDataType);
 			assertEquals(c.getCanonicalName(), eDataType.getInstanceClassName());
 		}
@@ -164,7 +168,7 @@ public class TestEmfFacade extends TestCase {
 	
 	public void testGetEDataTypeForPrimitiveArrays() {
 		for(Class c: primitiveArrayClasses) {
-			EDataType eDataType = emfFacade.getEDataTypeFor(c);
+			EDataType eDataType = emfFacade.getEDataTypeFor(c, null);
 			assertNotNull(eDataType);
 			assertEquals(c.getCanonicalName(), eDataType.getInstanceClassName());
 		}
@@ -173,7 +177,7 @@ public class TestEmfFacade extends TestCase {
 
 	public void testGetEDataTypeForWrappers() {
 		for(Class c: wrapperClasses) {
-			EDataType eDataType = emfFacade.getEDataTypeFor(c);
+			EDataType eDataType = emfFacade.getEDataTypeFor(c, null);
 			assertNotNull(eDataType);
 			assertEquals(c.getCanonicalName(), eDataType.getInstanceClassName());
 		}
@@ -182,23 +186,25 @@ public class TestEmfFacade extends TestCase {
 
 	public void testGetEDataTypeForBuiltInValueObjects() {
 		for(Class c: builtInValueObjectClasses) {
-			EDataType eDataType = emfFacade.getEDataTypeFor(c);
+			EDataType eDataType = emfFacade.getEDataTypeFor(c, null);
 			assertNotNull(eDataType);
 			assertEquals(c.getCanonicalName(), eDataType.getInstanceClassName());
 		}
 	}
 	
 	public void testGetEDataTypeForValueObject() {
+		ResourceSet resourceSet = new ResourceSetImpl();
 		EDataType eDataType = 
-			emfFacade.getEDataTypeFor(EmfFacadeDatePeriod.class);
+			emfFacade.getEDataTypeFor(EmfFacadeDatePeriod.class, resourceSet);
 		assertNotNull(eDataType);
 		assertEquals(EmfFacadeDatePeriod.class.getName(), 
 					 eDataType.getInstanceClassName());
 	}
 
 	public void testGetEDataTypeForClassThatIsntAValueObject() {
+		ResourceSet resourceSet = new ResourceSetImpl();
 		EDataType eDataType = 
-			emfFacade.getEDataTypeFor(EmfFacadeCustomer.class);
+			emfFacade.getEDataTypeFor(EmfFacadeCustomer.class, resourceSet);
 		assertNull(eDataType);
 	}
 

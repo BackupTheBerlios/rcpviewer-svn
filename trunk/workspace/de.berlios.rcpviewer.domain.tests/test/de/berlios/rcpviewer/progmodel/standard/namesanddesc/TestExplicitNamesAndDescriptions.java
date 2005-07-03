@@ -4,9 +4,10 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.namesanddesc.Appointment;
 import de.berlios.rcpviewer.progmodel.standard.namesanddesc.CustomerWithNoExplicitName;
 import de.berlios.rcpviewer.progmodel.standard.namesanddesc.ProspectiveSale;
@@ -41,7 +42,8 @@ public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase 
 		domainClass = lookupAny(ProspectiveSale.class);
 		
 		assertEquals("Customer", domainClass.getName());
-		assertEquals("Customer", domainClass.getEClass().getName());
+		assertEquals("ProspectiveSale", domainClass.getEClass().getName());
+		assertEquals("ProspectiveSale", domainClass.getEClassName());
 		assertEquals(
 				"A Customer who may have originally become known to us via " +
 			    "the marketing system or who may have contacted us directly.", 

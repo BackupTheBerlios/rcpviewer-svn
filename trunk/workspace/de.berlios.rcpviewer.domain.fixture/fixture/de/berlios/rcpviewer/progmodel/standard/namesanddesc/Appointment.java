@@ -2,6 +2,7 @@
  * 
  */
 package de.berlios.rcpviewer.progmodel.standard.namesanddesc;
+import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 

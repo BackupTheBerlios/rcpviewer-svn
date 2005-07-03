@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcoreFactory;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 
 
@@ -45,7 +50,8 @@ public abstract class AbstractDomain implements IDomain {
 			throw new IllegalArgumentException("Domain named '" + name + "' already exists.");
 		}
 		this.name = name;
-		this.primaryBuilder = primaryBuilder; 
+		this.primaryBuilder = primaryBuilder;
+		resourceSet = new ResourceSetImpl(); 
 	}
 	
 	private String name;
@@ -89,7 +95,7 @@ public abstract class AbstractDomain implements IDomain {
 	 * @return
 	 */
 	public final Collection<IDomainClass<?>> classes() {
-		return Collections.unmodifiableCollection((Collection<IDomainClass<?>>)domainClassesByjavaClass.values());
+		return Collections.unmodifiableCollection((Collection<IDomainClass<?>>)domainClassesByJavaClass.values());
 	}
 	
 	
@@ -108,7 +114,25 @@ public abstract class AbstractDomain implements IDomain {
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
 	public final <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass) {
-		return (IDomainClass<V>)domainClassesByjavaClass.get(javaClass);
+
+		// check class is in the EMF resource set for this domain ...
+		Package javaPackage = javaClass.getPackage();
+		EPackage ePackage = resourceSet.getPackageRegistry().getEPackage(javaPackage.getName());
+		if (ePackage == null) {
+			return null;
+		}
+		
+		EClass eClass = null;
+		EClassifier eClassifier = ePackage.getEClassifier(javaClass.getSimpleName());
+		if (eClassifier == null) {
+			return null;
+		}
+		if  ( ! (eClassifier instanceof EClass) ) {
+			return null;
+		}
+		
+		// ... but just return from our local hash
+		return (IDomainClass<V>)domainClassesByJavaClass.get(javaClass);
 	}
 
 	/**
@@ -129,18 +153,54 @@ public abstract class AbstractDomain implements IDomain {
 	
 
 	public void reset() {
-		domainClassesByjavaClass.clear();
+		domainClassesByJavaClass.clear();
 		builders.clear();
 	}
 	
 	public final int size() {
-		return domainClassesByjavaClass.keySet().size();
+		return domainClassesByJavaClass.keySet().size();
 	}
 
-	protected final Map<Class<?>, IDomainClass<?>> domainClassesByjavaClass = 
+	/**
+	 * Supports functionality to obtain the {@link IDomainClass} from a
+	 * {@link EClass}.
+	 * 
+	 * <p>
+	 * When we perform a lookup (see {@link IDomain#lookup(Class)}) we always
+	 * check the {@link ResourceSet} held by the relevant {@link IDomain} for
+	 * an {@link EClass} in the {@link EPackage} corresponding to the supplied
+	 * {@link java.lang.Class}.  However, the {@link IDomainClass} cannot
+	 * be serialized within EMF itself (at least, not unless we were to store
+	 * the information to allow a new one to be instantiated - something we
+	 * don't want to do because we want {@link IDomainClass} implementations
+	 * to be reference equality rather than value equality semantics.
+	 * 
+	 * <p>
+	 * This hash therefore allows the actual {@link IDomainClass} corresponding
+	 * to an {@link EClass} to be obtained.
+	 * 
+	 * <p>
+	 * Note: the eagle-eyed will have noticed that in fact this hash is keyed
+	 * on {@link java.lang.Class} rather than {@link EClass}.  For whatever 
+	 * reason, hashing on {@link EClass} doesn't seem to work.
+	 * 
+	 */
+	protected final Map<Class<?>, IDomainClass<?>> domainClassesByJavaClass = 
 		new HashMap<Class<?>, IDomainClass<?>>();
+	
+	
+	protected final ResourceSet resourceSet;
 	public final <V> IDomainClass<V> domainClassFor(EClass eClass) {
 		Class<V> javaClass = (Class<V>)eClass.getInstanceClass();
 		return lookupNoRegister(javaClass);
+	}
+	/**
+	 * The EMF {@link ResourceSet} that will hold the {@link EClass}es that
+	 * correspond to the {@link IDomainClass}es of this domain instance.
+	 *  
+	 * @return
+	 */
+	public ResourceSet getResourceSet() {
+		return resourceSet;
 	}
 }

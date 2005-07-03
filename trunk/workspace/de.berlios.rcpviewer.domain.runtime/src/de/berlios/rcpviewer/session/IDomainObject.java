@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
@@ -208,7 +208,7 @@ public interface IDomainObject<T> {
 	 * However, if an object has been detached from a session then it is 
 	 * possible using this method to clear this session id, thereby allowing
 	 * the domain object to be attached to some other {@link ISession}, 
-	 * providing that this new session references to the same {@link Domain}.
+	 * providing that this new session references to the same {@link RuntimeDomain}.
 	 * This capability may be useful for "what-if" analysis and the like.
 	 * 
 	 * @throws IllegalStateException - if currently attached.

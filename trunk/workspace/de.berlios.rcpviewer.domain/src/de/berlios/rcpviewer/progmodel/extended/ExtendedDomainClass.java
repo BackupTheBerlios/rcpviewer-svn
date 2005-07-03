@@ -39,7 +39,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	public ExtendedDomainClass(IDomainClass<T> adaptedDomainClass) {
 		super(adaptedDomainClass);
 	}
-	
+
+
 	/**
 	 * Returns the attributes of the extended domain class 
 	 * {@link IDomainClass#attributes()} in the order defined by the
@@ -66,7 +67,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			return false;
 		}
 		String searchable = 
-			(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_ELEMENT_SEARCHABLE_KEY);
+			(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_CLASS_SEARCHABLE_KEY);
 		return "true".equals(searchable);
 	}
 
@@ -89,7 +90,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			return false;
 		}
 		String instantiable = 
-			(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY);
+			(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_CLASS_INSTANTIABLE_KEY);
 		return "true".equals(instantiable);
 	}
 
@@ -112,7 +113,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			return false;
 		}
 		String saveable = 
-				(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_ELEMENT_SAVEABLE_KEY);
+				(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_CLASS_SAVEABLE_KEY);
 		return "true".equals(saveable);
 	}
 

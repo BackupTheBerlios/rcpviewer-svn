@@ -29,8 +29,7 @@ class DefaultEditorContentPart implements IManagedForm, IFormPart {
 	private final IDomainObject _object;
 	private final ArrayList<IFormPart> _parts;
 	
-	// REVIEW_CHANGE for Ted - actually no change but why can we not delegate to
-	// parentForm?
+	// REVIEW_CHANGE for Ted - actually no change but why can we not delegate to parentForm? -- mike
 	private Object _container;
 	private Object _input;
 
@@ -295,6 +294,11 @@ class DefaultEditorContentPart implements IManagedForm, IFormPart {
 		for (IFormPart formPart: _parts) {
 			formPart.refresh();
 		}
+	}
+
+	// REVIEW_CHANGE for Mike added to get clean compile on 3.1 -- dan
+	public void initialize() {
+		
 	}
 
 	

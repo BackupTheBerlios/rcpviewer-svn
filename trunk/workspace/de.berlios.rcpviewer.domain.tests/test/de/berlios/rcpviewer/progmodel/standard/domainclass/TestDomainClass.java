@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.EPackage;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -76,7 +76,7 @@ public abstract class TestDomainClass extends AbstractTestCase {
 	 *
 	 */
 	public void testGetDomainClassFromWrongDomainWillFindNothing() {
-		domainClass = Domain.instance().lookup(Prospect.class);
+		domainClass = RuntimeDomain.instance().lookup(Prospect.class);
 		
 		assertNull(domainClass);
 	}

@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.session.local.SessionManager;
@@ -187,7 +187,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		ISession sessionForDefaultDomain = session;
 		assertEquals("default", sessionForDefaultDomain.getDomain().getName());
 		
-		Domain marketingDomain = Domain.instance("marketing");
+		RuntimeDomain marketingDomain = RuntimeDomain.instance("marketing");
 		
 		ISession sessionForMarketingDomain = sessionManager.createSession(marketingDomain, new InMemoryObjectStore());
 		

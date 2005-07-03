@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -14,8 +14,8 @@ import de.berlios.rcpviewer.domain.OperationKind;
 
 
 /**
- * We use the {@link Domain} to register classes since the operations are
- * only identified via {@link Domain#done()}.
+ * We use the {@link RuntimeDomain} to register classes since the operations are
+ * only identified via {@link RuntimeDomain#done()}.
  * 
  * @author Dan Haywood
  *
@@ -321,17 +321,17 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 	}
 
 	public void testMutatorsNotPickedUpAsOperation() {
-		domainClass = lookupAny(AppointmentWithAccessor.class);
+		domainClass = lookupAny(AppointmentWithMutator.class);
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testSingleReferencessNotPickedUpAsOperation() {
-		domainClass = lookupAny(AppointmentWithAccessor.class);
+		domainClass = lookupAny(AppointmentWithSingleReference.class);
 		assertEquals(2, domainClass.operations().size());
 	}
 
 	public void testCollectionsNotPickedUpAsOperation() {
-		domainClass = lookupAny(AppointmentWithAccessor.class);
+		domainClass = lookupAny(AppointmentWithCollection.class);
 		assertEquals(2, domainClass.operations().size());
 	}
 

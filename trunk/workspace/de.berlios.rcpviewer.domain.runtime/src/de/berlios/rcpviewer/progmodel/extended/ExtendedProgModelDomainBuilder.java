@@ -12,6 +12,7 @@ import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
@@ -75,28 +76,32 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	
 	private void processClassInstantiable(Lifecycle lifecycle, EModelElement modelElement) {
 		putAnnotationDetails(modelElement, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_INSTANTIABLE_KEY, 
+				ExtendedProgModelConstants.ANNOTATION_CLASS_INSTANTIABLE_KEY, 
 				lifecycle != null && lifecycle.instantiable());	
 	}
 
 	private void processClassSearchable(Lifecycle lifecycle, EModelElement modelElement) {
 		putAnnotationDetails(modelElement, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_SEARCHABLE_KEY, 
+				ExtendedProgModelConstants.ANNOTATION_CLASS_SEARCHABLE_KEY, 
 				lifecycle != null && lifecycle.searchable());	
 	}
 	
 	private void processClassSaveable(Lifecycle lifecycle, EModelElement modelElement) {
 		putAnnotationDetails(modelElement, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_SAVEABLE_KEY, 
+				ExtendedProgModelConstants.ANNOTATION_CLASS_SAVEABLE_KEY, 
 				lifecycle != null && lifecycle.saveable());	
 	}
 
 	private void putAnnotationDetails(EModelElement modelElement, String key, boolean value) {
+		putAnnotationDetails(modelElement, key, value?"true":"false");
+	}
+	
+	private void putAnnotationDetails(EModelElement modelElement, String key, String value) {
 		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (ea == null) {
 			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
 		}
-		putAnnotationDetails(ea, key, value?"true":"false");
+		putAnnotationDetails(ea, key, value);
 	}
 	
 	private void processAttributeOrder(EAttribute eAttribute, Method accessorOrMutator) {

@@ -53,13 +53,13 @@ public interface IDomainClass<T> {
 	 * {@link EClass}.
 	 * 
 	 * <p>
-	 * The class may have been explicitly named or its name may have been 
-	 * implied.  The standard programming model uses the <tt>Named</tt> 
-	 * annotation.
+	 * Any renaming of the class, eg by the <tt>Named</tt> annotation of the
+	 * extended programming model, is ignored.  
 	 * 
 	 * @return
 	 */
 	public String getName();
+
 
 	/**
 	 * Whether this class overall is immutable, meaning that non of its
@@ -663,6 +663,17 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public List<IDomainClassAdapter> getAdapters();
+
+	/**
+	 * The name of the underlying POJO class.
+	 * 
+	 * <p>
+	 * Typically the same as {~link #Name()}, unless the class has been 
+	 * explicitly renamed with the {@link Named} annotation.
+	 *  
+	 * @return
+	 */
+	public String getEClassName();
 
 }
 

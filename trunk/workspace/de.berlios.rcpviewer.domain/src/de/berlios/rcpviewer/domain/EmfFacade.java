@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.Value;
 
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -36,7 +37,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  */
 public class EmfFacade {
 
-	private final ResourceSet resourceSet;
+//	private final ResourceSet resourceSet;
 	public final Map<Class,EDataTypeData> coreDataTypes; 
 
 	/**
@@ -61,7 +62,7 @@ public class EmfFacade {
 	public EmfFacade() {
 		// seems to cause the core package registry to get populated
 		EcoreFactory.eINSTANCE.createEPackage();
-		resourceSet = new ResourceSetImpl();
+//		resourceSet = new ResourceSetImpl();
 		
 //		for(Object eClassifier: getEcorePackage().getEClassifiers()) {
 //			System.out.println(((EClassifier)eClassifier).toString());
@@ -120,11 +121,15 @@ public class EmfFacade {
 		return EPackage.Registry.INSTANCE.getEPackage("http://www.eclipse.org/emf/2002/Ecore");
 	}
 
-	public EPackage getEPackageFor(Package javaPackage) {
+	public EPackage getEPackageFor(Package javaPackage, ResourceSet resourceSet) {
 		if (javaPackage == null) {
 			return EPackage.Registry.INSTANCE.getEPackage("http://www.eclipse.org/emf/2002/Ecore");
 		}
-		EPackage ePackage = findPackageWithName(javaPackage.getName()); 
+		if (resourceSet == null) {
+			throw new IllegalArgumentException("Must supply resourceSet if java package is not null");
+		}
+		
+		EPackage ePackage = findPackageWithName(javaPackage.getName(), resourceSet); 
 		if (ePackage == null) {
 			ePackage = EcoreFactory.eINSTANCE.createEPackage();
 			ePackage.setName(javaPackage.getName());
@@ -138,12 +143,13 @@ public class EmfFacade {
 	 * @param packageName
 	 * @return the package, or null if cannot be found
 	 */
-	public EPackage findPackageWithName(String packageName) {
-		EPackage ePackage = findPackageInRegistryWithName(
-								EPackage.Registry.INSTANCE, packageName); 
+	public EPackage findPackageWithName(String packageName, ResourceSet resourceSet) {
+		EPackage ePackage = null;
+		ePackage = findPackageInRegistryWithName(
+				EPackage.Registry.INSTANCE, packageName); 
 		if (ePackage == null) {
 			ePackage = findPackageInRegistryWithName(
-						resourceSet.getPackageRegistry(), packageName);
+					resourceSet.getPackageRegistry(), packageName);
 		}
 		return ePackage;
 	}
@@ -162,7 +168,7 @@ public class EmfFacade {
 		return null;
 	}
 
-	public EDataType getEDataTypeFor(Class<?> javaDataType) {
+	public EDataType getEDataTypeFor(Class<?> javaDataType, ResourceSet resourceSet) {
 
 		EDataTypeData coreDataTypeData = coreDataTypes.get(javaDataType); 
 		if (coreDataTypeData != null) {
@@ -174,7 +180,7 @@ public class EmfFacade {
 		}
 
 		Package javaPackage = javaDataType.getPackage();
-		EPackage ePackage = getEPackageFor(javaPackage);
+		EPackage ePackage = getEPackageFor(javaPackage, resourceSet);
 		for(Object eClassifierAsObject: ePackage.getEClassifiers()) {
 			EClassifier eClassifier = (EClassifier)eClassifierAsObject;
 			if (eClassifier.getInstanceClass() == javaDataType) {
@@ -207,14 +213,14 @@ public class EmfFacade {
 	 * @param javaDataType
 	 * @return
 	 */
-	public boolean isIsUnsettableFor(Class<?> javaDataType) {
+	public boolean isIsUnsettableFor(Class<?> javaDataType, ResourceSet resourceSet) {
 		EDataTypeData builtInDataTypeData = coreDataTypes.get(javaDataType); 
 		if (builtInDataTypeData != null) {
 			return builtInDataTypeData.getIsUnsettable();
 		}
 		
 		Package javaPackage = javaDataType.getPackage();
-		EPackage ePackage = getEPackageFor(javaPackage);
+		EPackage ePackage = getEPackageFor(javaPackage, resourceSet);
 		for(Object eClassifierAsObject: ePackage.getEClassifiers()) {
 			EClassifier eClassifier = (EClassifier)eClassifierAsObject;
 			if (eClassifier.getInstanceClass() == javaDataType) {
@@ -322,11 +328,15 @@ public class EmfFacade {
 	}
 
 	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, boolean value) {
+		putAnnotationDetails(domainClass, modelElement, key, value?"true":"false");
+	}
+
+	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, String value) {
 		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (ea == null) {
 			ea = annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
 		}
-		putAnnotationDetails(domainClass, ea, key, value?"true":"false");
+		putAnnotationDetails(domainClass, ea, key, value);
 	}
 
 	public EAnnotation methodNamesAnnotationFor(EModelElement eModelElement) {

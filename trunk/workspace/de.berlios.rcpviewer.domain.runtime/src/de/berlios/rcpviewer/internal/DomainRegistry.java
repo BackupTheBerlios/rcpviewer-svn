@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
@@ -34,11 +34,11 @@ implements IDomainRegistry
 
 
 	public IDomain getDomain(final String domainName) {
-		return Domain.instance(domainName);
+		return RuntimeDomain.instance(domainName);
 	}
 
 	public Map<String, IDomain> getDomains() {
-		return Domain.getDomains();
+		return RuntimeDomain.getDomains();
 	}
 
 }

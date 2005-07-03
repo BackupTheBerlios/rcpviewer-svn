@@ -2,11 +2,11 @@ package de.berlios.rcpviewer.domain;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 
-public class TestDomain extends AbstractRuntimeTestCase {
+public class TestRuntimeDomain extends AbstractRuntimeTestCase {
 
-	public TestDomain() {
+	public TestRuntimeDomain() {
 		super(null);
 	}
 
@@ -29,7 +29,7 @@ public class TestDomain extends AbstractRuntimeTestCase {
 		IDomainClass<ClassInOtherDomain> domainClass = 
 			lookupAny(ClassInOtherDomain.class);
 		
-		assertEquals(1, Domain.instance("other").classes().size());
+		assertEquals(1, RuntimeDomain.instance("other").classes().size());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainImplicitly() {
@@ -51,12 +51,12 @@ public class TestDomain extends AbstractRuntimeTestCase {
 	}
 	
 	public void testDomainsSharedAcrossThreads() throws InterruptedException {
-		final Domain[] domains = new Domain[2];
+		final RuntimeDomain[] domains = new RuntimeDomain[2];
 		for (int i = 0; i<domains.length; i++) {
 			final int j = i;
 			Thread t = new Thread() {
 				public void run() {
-					domains[j] = Domain.instance();
+					domains[j] = RuntimeDomain.instance();
 				}
 			};
 			t.start();

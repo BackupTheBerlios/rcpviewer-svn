@@ -6,7 +6,7 @@ import sun.security.action.GetBooleanAction;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;

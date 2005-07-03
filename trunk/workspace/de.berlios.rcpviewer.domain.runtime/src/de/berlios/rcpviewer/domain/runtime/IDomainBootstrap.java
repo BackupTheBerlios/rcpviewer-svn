@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.domain.runtime;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Registers (via {@link de.berlios.rcpviewer.domain.Domain#lookup(Class)})
+ * Registers (via {@link de.berlios.rcpviewer.domain.RuntimeDomain#lookup(Class)})
  * one or several domain classes in order to create a 
  * {@link de.berlios.rcpviewer.domain.IDomain}domain to hold those classes.
  * 

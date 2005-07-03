@@ -52,14 +52,16 @@ public abstract class AbstractDomainClass<T>
 		return eClass;
 	}
 
-	public String getName() {
+	public abstract String getName();
+	
+	public String getEClassName() {
 		return eClass.getName();
 	}
 
 	public String getDescription() {
 		return descriptionOf(eClass);
 	}
-
+	
 	public boolean isChangeable() {
 		EAnnotation annotation = 
 			eClass.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
@@ -368,6 +370,23 @@ public abstract class AbstractDomainClass<T>
 		return descriptionOf(parameter);
 	}
 
+	/**
+	 * Since descriptions are stored as annotations and apply to many model
+	 * elements, this is a convenient way of getting to the description.
+	 * 
+	 * @param modelElement
+	 * @return
+	 */
+	private String descriptionOf(EModelElement modelElement) {
+		EAnnotation annotation = 
+			modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return null;
+		}
+		return (String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
+	}
+
+
 	public II18nData getI18nDataFor(EOperation operation) {
 		throw new RuntimeException("Not yet implemented");
 	}
@@ -443,22 +462,6 @@ public abstract class AbstractDomainClass<T>
 
 	public boolean isDerived(EReference eReference) {
 		return eReference.isDerived();
-	}
-
-	/**
-	 * Since descriptions are stored as annotations and apply to many model
-	 * elements, this is a convenient way of getting to the description.
-	 * 
-	 * @param modelElement
-	 * @return
-	 */
-	private String descriptionOf(EModelElement modelElement) {
-		EAnnotation annotation = 
-			modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return null;
-		}
-		return (String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
 	}
 
 	protected EAnnotation referenceAnnotationFor(EModelElement eModelElement) {

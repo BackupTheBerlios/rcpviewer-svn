@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 
@@ -21,14 +21,14 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCreatingSessionAllocatesId() {
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		IObjectStore objectStore = new InMemoryObjectStore();
 		ISession session = sessionManager.createSession(domain, objectStore);
 		assertNotNull(session.getId());
 	}
 
 	public void testEachSessionGetsADifferentId() {
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		ISession session1 = sessionManager.createSession(domain, new InMemoryObjectStore());
 		ISession session2 = sessionManager.createSession(domain, new InMemoryObjectStore());
 		ISession session3 = sessionManager.createSession(domain, new InMemoryObjectStore());
@@ -58,7 +58,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	}
 
 	public void testGetAllSessions() {
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		ISession[] sessions = new ISession[5];
 		for(int i=0; i<sessions.length; i++) {
 			sessions[i] = sessionManager.createSession(domain, new InMemoryObjectStore());
@@ -71,7 +71,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanSwitchCurrentSession() {
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		ISession session1 = sessionManager.createSession(domain, new InMemoryObjectStore());
 		assertEquals(session1.getId(), sessionManager.getCurrentSessionId());
 		ISession session2 = sessionManager.createSession(domain, new InMemoryObjectStore());
@@ -105,7 +105,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	public void testSessionManagerListenerCalledWhenCreateSession() {
 		MySessionManagerListener sml = new MySessionManagerListener();
 		sessionManager.addSessionManagerListener(sml);
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		assertFalse(sml.sessionCreated);
 		assertNull(sml.session);
 		ISession session1 = sessionManager.createSession(domain, new InMemoryObjectStore());
@@ -116,7 +116,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	public void testSessionManagerListenerCalledWhenRemoveSession() {
 		MySessionManagerListener sml = new MySessionManagerListener();
 		sessionManager.addSessionManagerListener(sml);
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		ISession session1 = sessionManager.createSession(domain, new InMemoryObjectStore());
 
 		sml.session = null; // reset since creating session would have populated
@@ -130,7 +130,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	public void testSessionManagerListenerCalledWhenSwitchSession() {
 		MySessionManagerListener sml = new MySessionManagerListener();
 		sessionManager.addSessionManagerListener(sml);
-		Domain domain = Domain.instance();
+		RuntimeDomain domain = RuntimeDomain.instance();
 		
 		assertFalse(sml.sessionNowCurrent);
 		assertNull(sml.session);

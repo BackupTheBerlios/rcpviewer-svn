@@ -1,12 +1,14 @@
 package de.berlios.rcpviewer.domain;
 
+import java.io.PrintWriter;
+
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.IDomainObject;
 
-public class TestDomainClass extends AbstractRuntimeTestCase  {
+public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 
-	public TestDomainClass() {
+	public TestRuntimeDomainClass() {
 		super(null);
 	}
 
@@ -66,6 +68,10 @@ public class TestDomainClass extends AbstractRuntimeTestCase  {
 		}
 	}
 
-	
+	public void incompletetestSerializeEmfResourceSet() {
+		IRuntimeDomainClass<Department> domainClass = 
+			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		domainClass.getDomain().serializeTo(new PrintWriter(System.out));
+	}
 
 }

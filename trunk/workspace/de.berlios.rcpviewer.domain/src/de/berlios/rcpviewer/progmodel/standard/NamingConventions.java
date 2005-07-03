@@ -81,18 +81,50 @@ public class NamingConventions {
 
 
 	/**
-	 * If one of the (hard-coded) classes in {@link StandardProgModelConstants#JDK_VALUE_TYPES},
-	 * or implements a {@link ValueObject}.
-	 * 
-	 * TODO: use annotations rather than interface inheritance.
+	 * If a core value type, or is annotated as a Value.
 	 * 
 	 */
 	public final boolean isValueType(final Class<?> javaClass) {
-		if (de.berlios.rcpviewer.domain.TypeConstants.JDK_VALUE_TYPES.contains(javaClass)) {
+		if (isCoreValueType(javaClass)) {
 			return true;
 		}
 		Value valueAnnotation = javaClass.getAnnotation(Value.class);
 		return valueAnnotation != null;
+	}
+	
+	/**
+	 * If one of the (hard-coded) classes in 
+	 * {@link StandardProgModelConstants#JDK_VALUE_TYPES}.
+	 * 
+	 */
+	public final boolean isCoreValueType(final Class<?> javaClass) {
+		return de.berlios.rcpviewer.domain.TypeConstants.JDK_VALUE_TYPES.contains(javaClass);
+	}
+	
+	/**
+	 * Returns the name of the domain to which a non-core value type belongs.
+	 * 
+	 * <p>
+	 * If the supplied class does not repreesnt a non-core value type then an
+	 * {@link IllegalArgumentException} will be thrown.
+	 * 
+	 * @param javaClass
+	 * @return
+	 */
+	public final String getValueTypeDomainName(final Class<?> javaClass) {
+		if (!isValueType(javaClass)) {
+			throw new IllegalArgumentException("Class must represent a value type");
+		}
+		if (isCoreValueType(javaClass)) {
+			throw new IllegalArgumentException("Class must not be a core value type");
+		}
+		// should have a Value annotation.
+		Value value = javaClass.getAnnotation(Value.class);
+		if (value == null) {
+			// shouldn't happen.
+			throw new IllegalArgumentException("Class is non-core value and so should have an @Value annotation!");
+		}
+		return value.value();
 	}
 	
 	/**

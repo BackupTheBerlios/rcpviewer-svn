@@ -13,4 +13,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(ElementType.TYPE)
-public @interface Value { }
+public @interface Value {
+	String value() default ProgModelConstants.DEFAULT_DOMAIN_NAME;
+}

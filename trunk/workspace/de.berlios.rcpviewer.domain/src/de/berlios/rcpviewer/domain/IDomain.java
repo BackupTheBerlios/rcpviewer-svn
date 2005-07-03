@@ -1,8 +1,12 @@
 package de.berlios.rcpviewer.domain;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Collection;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 /**
  * A registry of {@link IDomainClass}es within a given domain (or meta-model, 
@@ -16,6 +20,8 @@ import org.eclipse.emf.ecore.EClass;
  * @author Dan Haywood
  */
 public interface IDomain {
+
+	public ResourceSet getResourceSet();
 
 	public String getName();
 	
@@ -75,8 +81,6 @@ public interface IDomain {
 	 */
 	public <V> IDomainClass<V> lookup(final Class<V> javaClass);
 	
-	public <V> IDomainClass<V> lookup(final IDomainClass<V> domainClass);
-
 	/**
 	 * Looks up the {@link DomainClass} for the supplied {@link Class}.
 	 * 
@@ -113,5 +117,13 @@ public interface IDomain {
 	 * Reverse lookup of {@link IDomainClass} from an EMF EClass.
 	 */
 	public <V> IDomainClass<V> domainClassFor(EClass eClass);
+
+
+	/**
+	 * Serializes the EMF {@link ResourceSet} to the specified writer.
+	 * 
+	 * @param out
+	 */
+	public void serializeTo(Writer writer);
 	
 }

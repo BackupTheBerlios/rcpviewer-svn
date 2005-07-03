@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 
 /**
@@ -21,6 +21,7 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 	
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.domain.runtime.IDomainBootstrap#registerClasses()
+	 * 
 	 */
 	public void registerClasses() throws CoreException {
 		// fetch config elements
@@ -35,11 +36,16 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 			// nb: this demands a no-arg constructor
 			Object obj = elems[i].createExecutableExtension(
 					CLASS_PROPERTY );
+
+			System.out.println("Registering " + obj.getClass().getName());
+
 			classes[i] = obj.getClass();
 		}		
 		// add to domain
 		for ( int i=0 ; i < num ; i++ ) {
-			Domain.instance().lookup( classes[i] );
+			RuntimeDomain.instance().lookup( classes[i] );
 		}
 	}
+	
+
 }

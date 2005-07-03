@@ -21,8 +21,10 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import de.berlios.rcpviewer.domain.AbstractDomainClass;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.EmfFacadeAware;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -33,6 +35,8 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.domain.LinkSemanticsType;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
+import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 
@@ -58,22 +62,12 @@ public class RuntimeDomainClass<T>
 		extends AbstractDomainClass<T> 
 		implements IRuntimeDomainClass<T> {
 	
-	public RuntimeDomainClass(final IDomain domain, final Class<T> javaClass) {
+	public RuntimeDomainClass(final IDomain domain, final EClass eClass, final Class<T> javaClass) {
 		super(domain, new RuntimeNamingConventions());
+		this.eClass = eClass;
 		this.javaClass = javaClass;
 		identifyClass();
 	}
-
-	// TODO: should be using covariance
-	public RuntimeNamingConventions getRuntimeNamingConventions() {
-		return (RuntimeNamingConventions)getNamingConventions();
-	}
-
-
-	public RuntimeDomainClass(final Class<T> javaClass) {
-		this(null, javaClass);
-	}
-
 
 	/**
 	 * Identify attributes, operations, and references.
@@ -102,7 +96,7 @@ public class RuntimeDomainClass<T>
 	/**
 	 * HACK: This is a horrible hack that allows our 
 	 * {@link #identifyOppositeReferences()} to be called once more, in 
-	 * {@link Domain#lookup(Class)}.
+	 * {@link RuntimeDomain#lookup(Class)}.
 	 */
 	protected OppRefState oppRefState = OppRefState.stillBuilding;
 
@@ -112,7 +106,7 @@ public class RuntimeDomainClass<T>
 			return;
 		} else if (oppRefState == OppRefState.stillBuilding) {
 			// do nothing
-		} else if (oppRefState == OppRefState.stillBuilding) {
+		} else if (oppRefState == OppRefState.onceMore) {
 			oppRefState = OppRefState.neverAgain;
 		}
 		
@@ -138,7 +132,7 @@ public class RuntimeDomainClass<T>
 					reference.setEOpposite(oppositeReference);
 					oppositeReference.setEOpposite(reference);
 				}
-			}else {
+			} else {
 				// no annotation this end, but its possible that the referenced
 				// object does have an annotation its end.
 				// however, we pick this up by doing postprocessubg when we
@@ -159,49 +153,59 @@ public class RuntimeDomainClass<T>
 	 * TODO: should also identify class hierarchy
 	 */
 	private void identifyClass() {
-		Package javaPackage = javaClass.getPackage();
-		this.eClass = EcoreFactory.eINSTANCE.createEClass();
+		InDomain domainAnnotation = javaClass.getAnnotation(InDomain.class);
+		String domainName = domainAnnotation.value();
+		RuntimeDomain domain = RuntimeDomain.instance(domainName);
+
+		addNamed(javaClass.getAnnotation(Named.class), eClass);
 		
-		// EPackage
-		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(javaPackage.getName());
-		if (ePackage == null) {
-			ePackage = EcoreFactory.eINSTANCE.createEPackage();
-			((List<? super EClass>)ePackage.getEClassifiers()).add(this.eClass);
-			ePackage.setName(javaPackage.getName());
-		}
-
-		// InstanceClass
-		eClass.setInstanceClass(javaClass);
-
-		// Name
-		String name = null;
-		Named named = javaClass.getAnnotation(Named.class);
-		name = named != null? named.value(): javaClass.getSimpleName();
-		eClass.setName(name);
-
-		// Description
 		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
-
+		
 		// Immutable (to support isChangeable)
 		addIfImmutable(javaClass.getAnnotation(Immutable.class), eClass);
+	}
+
+	private void addNamed(Named named, EModelElement modelElement) {
+		String name = named != null ? named.value() : getEClassName();
+		emfFacade.putAnnotationDetails(this, modelElement, 
+				StandardProgModelConstants.ANNOTATION_ELEMENT_NAMED_KEY, 
+				name);	
 	}
 
 	private void addDescription(DescribedAs describedAs, EModelElement modelElement) {
 		if (describedAs == null) {
 			return;
 		}
-		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
-		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
-		}
-		emfFacade.putAnnotationDetails(this, ea, 
-			StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, describedAs.value());
+		emfFacade.putAnnotationDetails(this, modelElement, 
+			StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, 
+			describedAs.value());
 	}
+
 
 	private void addIfImmutable(Immutable immutable, EModelElement modelElement) {
 		emfFacade.putAnnotationDetails( 
 			this, modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, immutable != null);
 	}
+	
+	
+	/**
+	 * Returns either the name of the class according to the {@link @Named}
+	 * annotation, or just the name of the underlying {@link EClass} if no
+	 * such annotation exists.
+	 * @return
+	 */
+	@Override
+	public String getName() {
+		EAnnotation annotation = 
+			getEClass().getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+		if (annotation == null) {
+			return getEClassName();
+		}
+		String explicitName = 
+			(String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_NAMED_KEY);
+		return explicitName;
+	}
+
 	/**
 	 * 
 	 * <p>
@@ -227,7 +231,8 @@ public class RuntimeDomainClass<T>
 			
 			EAttribute eAttribute = EcoreFactory.eINSTANCE.createEAttribute();
 			Class<?> dataType = methods[i].getReturnType();
-			EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
+						
+			EDataType eDataType = getEDataTypeFor(dataType);
 			eAttribute.setEType(eDataType);
 			String attributeName = getRuntimeNamingConventions().deriveAttributeName(method);
 			eAttribute.setName(attributeName);
@@ -277,6 +282,20 @@ public class RuntimeDomainClass<T>
 		}
 	}
 	
+	private EDataType getEDataTypeFor(Class<?> dataType) {
+		if (!getNamingConventions().isValueType(dataType)) {
+			return null;
+		}
+		if (getNamingConventions().isCoreValueType(dataType)) {
+			return getEmfFacade().getEDataTypeFor(dataType, null);
+		}
+		String domainName = 
+			getNamingConventions().getValueTypeDomainName(dataType);
+		IDomain domain = RuntimeDomain.instance(domainName);
+					
+		return getEmfFacade().getEDataTypeFor(dataType, domain.getResourceSet());
+	}
+	
 
 
 	/**
@@ -309,7 +328,7 @@ public class RuntimeDomainClass<T>
 			} else {
 				eAttribute = EcoreFactory.eINSTANCE.createEAttribute();
 				Class<?> dataType = methods[i].getParameterTypes()[0];
-				EDataType eDataType = getEmfFacade().getEDataTypeFor(dataType);
+				EDataType eDataType = getEDataTypeFor(dataType);
 				eAttribute.setEType(eDataType);
 				eAttribute.setName(attributeName);
 
@@ -502,7 +521,7 @@ public class RuntimeDomainClass<T>
 			eOperation.setName(method.getName());
 
 			if (returnsValue) {
-				EDataType returnDataType = getEmfFacade().getEDataTypeFor(returnType);
+				EDataType returnDataType = getEDataTypeFor(returnType);
 				eOperation.setEType(returnDataType);
 			} else if (returnsReference) {
 				IDomainClass<?> returnDomainClass = domain.lookup(returnType);
@@ -517,7 +536,7 @@ public class RuntimeDomainClass<T>
 				Annotation[] parameterAnnotationSet = parameterAnnotationSets[j];
 				
 				// try to match as a data type or a reference (domain class)
-				EDataType parameterDataType = getEmfFacade().getEDataTypeFor(parameterType);
+				EDataType parameterDataType = getEDataTypeFor(parameterType);
 				IDomainClass parameterDomainClass = null;
 				boolean isValue = (parameterDataType != null);
 				boolean isReference = false;
@@ -687,10 +706,14 @@ public class RuntimeDomainClass<T>
 					linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
 				} 				
 			}
+			String referenceName = getRuntimeNamingConventions().deriveReferenceName(method);
+			if (this.getEReferenceNamed(referenceName) != null) {
+				continue;
+			}
+
 			EReference eReference = EcoreFactory.eINSTANCE.createEReference();
 			EReferenceImpl eReferenceImpl = (EReferenceImpl)eReference;
 			eReference.setEType(referencedDomainClass.getEClass()); // sets EReferenceType
-			String referenceName = getRuntimeNamingConventions().deriveReferenceName(method);
 			eReference.setName(referenceName);
 			linkSemanticsType.setOrderingUniquenessAndMultiplicity(eReference);
 			
@@ -906,6 +929,15 @@ public class RuntimeDomainClass<T>
 			}
 		}
 		return null;
+	}
+
+	// TODO: should be using covariance
+	public RuntimeNamingConventions getRuntimeNamingConventions() {
+		return (RuntimeNamingConventions)getNamingConventions();
+	}
+
+	public String getEClassName() {
+		return getEClass().getName();
 	}
 
 

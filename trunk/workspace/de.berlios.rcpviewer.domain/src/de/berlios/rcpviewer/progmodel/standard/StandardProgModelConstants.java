@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
+
 /**
  * Set of constants relating to this package.
  * 
@@ -19,6 +21,19 @@ public final class StandardProgModelConstants {
 	 */
 	public static final String ANNOTATION_ELEMENT = 
 		"http://rcpviewer.berlios.de/progmodel/standard/element";
+
+	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose presence indicates that the annotated class has been explicitly 
+	 * named (using @Named) and so whose name should use this rather than the 
+	 * implicit name determined from the POJO Class name.
+	 * 
+	 * <p>
+	 * Note: the POJO class name is still available as simply 
+	 * {@link de.berlios.rcpviewer.domain.IDomainClass#getName()}.
+	 */
+	public static final String ANNOTATION_ELEMENT_NAMED_KEY = "name";
+
 
 	/**
 	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
