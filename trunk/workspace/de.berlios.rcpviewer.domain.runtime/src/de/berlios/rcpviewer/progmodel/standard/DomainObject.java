@@ -171,14 +171,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return getDomainClass().getEOperationNamed(operationName);
 	}
 	
-	public void invokeOperation(final EOperation operation, final Object[] args) {
+	public Object invokeOperation(final EOperation operation, final Object[] args) {
 		Method operationMethod = getDomainClass().getInvokerFor(operation);
 		if (operationMethod == null) {
 			throw new UnsupportedOperationException("Operation method '" + operationMethod + "' not accessible / could not be found");
 		}
 		String operationMethodName = operationMethod.getName();
 		try {
-			operationMethod.invoke(this.getPojo(), args);
+			return operationMethod.invoke(this.getPojo(), args);
 		} catch (SecurityException e) {
 			throw new UnsupportedOperationException("Mutator method '" + operationMethodName + "' not accessible");
 		} catch (IllegalAccessException e) {

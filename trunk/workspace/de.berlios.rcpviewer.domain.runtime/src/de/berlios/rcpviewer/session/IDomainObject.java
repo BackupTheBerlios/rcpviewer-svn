@@ -113,8 +113,9 @@ public interface IDomainObject<T> {
 	 * Invoke the operation, applying any preconditions before hand.
 	 * 
 	 * @param operation
+	 * @return the return value from the operation (if not void).
 	 */
-	public void invokeOperation(EOperation operation, Object[] args);
+	public Object invokeOperation(EOperation operation, Object[] args);
 
 	/**
 	 * Convenience method that should return the same as the 
