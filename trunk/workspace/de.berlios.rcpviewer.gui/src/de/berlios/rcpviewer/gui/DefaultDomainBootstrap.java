@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 
 /**
@@ -43,7 +43,7 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 		}		
 		// add to domain
 		for ( int i=0 ; i < num ; i++ ) {
-			RuntimeDomain.instance().lookup( classes[i] );
+			Domain.instance().lookup( classes[i] );
 		}
 	}
 	
