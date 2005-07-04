@@ -12,7 +12,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.gui.util.ConfigElementSorter;
 
 
-public class FieldBuilderFactory {
+class FieldBuilderFactory {
 	
 	private final IFieldBuilder[] _builders;
 	private final Map<EAttribute, IFieldBuilder> _mappings;
@@ -22,7 +22,7 @@ public class FieldBuilderFactory {
 	 * <code>IFieldBuilder.EXTENSION_POINT_ID </code> extension point.
 	 * @throws CoreException
 	 */
-	public FieldBuilderFactory() throws CoreException {
+	FieldBuilderFactory() throws CoreException {
         IConfigurationElement[] elems
         	= Platform.getExtensionRegistry()
                   .getConfigurationElementsFor( IFieldBuilder.EXTENSION_POINT_ID );
@@ -42,7 +42,7 @@ public class FieldBuilderFactory {
 	 * @param attribute
 	 * @return
 	 */
-	public IFieldBuilder getInstance( EAttribute attribute ) {
+	IFieldBuilder getInstance( EAttribute attribute ) {
 		IFieldBuilder builder = _mappings.get( attribute );
 		if ( builder == null ) {
 			for ( int i=0, num = _builders.length ; i < num ; i++ ) {

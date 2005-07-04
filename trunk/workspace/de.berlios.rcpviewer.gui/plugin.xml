@@ -18,9 +18,6 @@
    <extension-point id="fieldbuilder" 
                     name="Field Builder" 
                     schema="schema/fieldbuilder.exsd"/>
-   <extension-point id="editorcontentbuilder" 
-                    name="Editor Content Builder" 
-                    schema="schema/editorcontentbuilder.exsd"/>
    
    <extension
          point="org.eclipse.ui.perspectives">

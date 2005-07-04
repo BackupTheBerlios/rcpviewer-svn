@@ -10,8 +10,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
-import de.berlios.rcpviewer.gui.editors.EditorContentBuilderFactory;
-import de.berlios.rcpviewer.gui.editors.FieldBuilderFactory;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
 
@@ -24,10 +22,6 @@ public class GuiPlugin extends AbstractUIPlugin {
 	
 	// the shared instance.
 	private static GuiPlugin __plugin = null;
-
-	
-	private EditorContentBuilderFactory _editorContentBuilderFactory = null;
-	private FieldBuilderFactory __fieldBuilderFactory = null;
 	
 	/* static methods */
 	
@@ -87,10 +81,6 @@ public class GuiPlugin extends AbstractUIPlugin {
 		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
 		sessionJob.schedule();
 		
-		// initialise gui factories
-		_editorContentBuilderFactory = new EditorContentBuilderFactory();
-		__fieldBuilderFactory = new FieldBuilderFactory();
-		
 		// effectively running jobs synchronously
 		waitForJob( domainJob );
 		waitForJob( sessionJob );
@@ -103,22 +93,6 @@ public class GuiPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		__plugin = null;
-	}
-	
-	/* accessors */
-	
-	/**
-	 * @return
-	 */
-	public FieldBuilderFactory getFieldBuilderFactory() {
-		return __fieldBuilderFactory;
-	}
-
-	/**
-	 * @return
-	 */
-	public EditorContentBuilderFactory getEditorContentBuilderFactory() {
-		return _editorContentBuilderFactory;
 	}
 	
 	/* private methods */

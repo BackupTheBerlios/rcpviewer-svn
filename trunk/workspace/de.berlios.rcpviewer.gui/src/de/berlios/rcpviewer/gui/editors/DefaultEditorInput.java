@@ -15,17 +15,14 @@ import de.berlios.rcpviewer.session.IDomainObject;
 public class DefaultEditorInput implements IEditorInput {
 
 	private final IDomainObject _domainObject;
-	private final IEditorContentBuilder _builder;
 
 	/**
 	 * @param obj
 	 * @param builder
 	 */
-	public DefaultEditorInput(IDomainObject obj, IEditorContentBuilder builder ) {
+	public DefaultEditorInput( IDomainObject obj ) {
 		if ( obj == null ) throw new IllegalArgumentException();
-		if ( builder == null ) throw new IllegalArgumentException();
 		_domainObject = obj;
-		_builder = builder;
 	}
 
 
@@ -104,12 +101,9 @@ public class DefaultEditorInput implements IEditorInput {
 		if ( arg0 == null ) return false;
 		if ( arg0 == this ) return true;
 		if ( !( arg0 instanceof DefaultEditorInput ) ) return false;
-		DefaultEditorInput other = (DefaultEditorInput)arg0;
-		if ( _domainObject.equals( other.getDomainObject() ) ) {
-			// only builder type matters
-			return _builder.getClass().equals( other.getBuilder().getClass() );
-		}
-		return false;
+		return _domainObject.equals( 
+				((DefaultEditorInput)arg0).getDomainObject() ) ;
+
 	}
 	
 	/**
@@ -118,20 +112,9 @@ public class DefaultEditorInput implements IEditorInput {
 	 */
 	@Override
 	public int hashCode() {
-		return 17 + 19*_domainObject.hashCode() + 27*_builder.getClass().hashCode();
+		return 17 + 19*_domainObject.hashCode();
 	}
-	
 
-	
-	/* package-private methods */
-
-	/**
-	 * Accessor
-	 * @return
-	 */
-	IEditorContentBuilder getBuilder() {
-		return _builder;
-	}
 
 
 }
