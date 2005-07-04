@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 
 /**
@@ -36,7 +36,7 @@ public class DomainBootstrapJob extends Job {
 		catch ( CoreException ce ) {
 			return ce.getStatus();	
 		}
-		Domain.instance().done();	
+		RuntimeDomain.instance().done();	
 		return Status.OK_STATUS;	
 	}
 }

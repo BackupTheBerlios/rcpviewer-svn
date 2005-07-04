@@ -20,7 +20,6 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 		super.tearDown();
 	}
 
-
 	public void testCreateTransientCreatesUnderlyingPojo() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
