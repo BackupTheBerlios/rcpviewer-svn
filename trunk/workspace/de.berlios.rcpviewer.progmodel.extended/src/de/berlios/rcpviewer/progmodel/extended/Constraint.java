@@ -1,5 +1,9 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Constraint implements IConstraint {
 
 	/**
@@ -34,11 +38,36 @@ public class Constraint implements IConstraint {
 	 */
 	public static IConstraint or(
 			String message, IConstraint constraint1, IConstraint... constraintOthers) {
-		boolean whetherApplies = constraint1.applies();
-		for(IConstraint constraint: constraintOthers) {
-			whetherApplies = whetherApplies || constraint.applies();
+		
+		boolean whetherApplies = false;
+		String applicableMessage = null;
+		int applicableCount = 0;
+		for(IConstraint constraint: asList(constraint1, constraintOthers)) {
+			if (constraint.applies()) {
+				whetherApplies = true;
+				applicableMessage = constraint.getMessage();
+				applicableCount++;
+			}
 		}
-		return Constraint.create(whetherApplies, message);
+		switch(applicableCount) {
+		case 0:
+			applicableMessage = null;
+			break;
+		case 1:
+			// already set to the message of the constraint which applied
+			break;
+		default:
+			applicableMessage = message; // use the one provided
+			break;
+		}
+		return Constraint.create(whetherApplies, applicableMessage); 
+	}
+
+	private static List<IConstraint> asList(IConstraint constraint1, IConstraint... constraintOthers) {
+		List<IConstraint> constraints = new ArrayList<IConstraint>();
+		constraints.add(constraint1);
+		constraints.addAll(Arrays.asList(constraintOthers));
+		return constraints;
 	}
 
 	/**
@@ -69,13 +98,24 @@ public class Constraint implements IConstraint {
 	 */
 	public static IConstraint and(
 			IConstraint constraint1, IConstraint... constraintOthers) {
-		boolean whetherApplies = constraint1.applies();
-		StringBuffer buf = new StringBuffer(constraint1.getMessage());
-		for(IConstraint constraint: constraintOthers) {
-			whetherApplies = whetherApplies && constraint.applies();
-			buf.append("; also ").append(constraint.getMessage());
+
+		boolean whetherApplies = true;
+		StringBuffer applicableMessageBuf = new StringBuffer();
+		
+		for(IConstraint constraint: asList(constraint1, constraintOthers)) {
+			if (constraint.applies()) {
+				if (applicableMessageBuf.length() > 0) {
+					applicableMessageBuf.append("; ");
+				}
+				applicableMessageBuf.append(constraint.getMessage());	
+			} else {
+				whetherApplies = false;
+			}
 		}
-		return Constraint.create(whetherApplies, buf.toString());
+		
+		return Constraint.create(
+				whetherApplies, 
+				whetherApplies?applicableMessageBuf.toString():null);
 	}
 
 	/**
@@ -107,7 +147,7 @@ public class Constraint implements IConstraint {
 	 * Constructor for a noop-constraint.
 	 */
 	private Constraint() {
-		this(false, "(no restriction)");
+		this(false, null);
 		noop = true;
 	}
 
@@ -133,7 +173,8 @@ public class Constraint implements IConstraint {
 	 * @see de.berlios.rcpviewer.progmodel.extended.IConstraint#getMessage()
 	 */
 	public String getMessage() {
-		return message;
+		return applies() ? message : null;
 	}
-	
+
+
 }

@@ -1,22 +1,14 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EModelElement;
 
 import de.berlios.rcpviewer.domain.AbstractDomainClassAdapter;
-import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 
 /**

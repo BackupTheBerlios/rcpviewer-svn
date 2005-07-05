@@ -18,7 +18,6 @@ import de.berlios.rcpviewer.gui.util.DomainRegistryUtil;
 import de.berlios.rcpviewer.gui.widgets.ErrorInput;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.ISessionManager;
 
 /**
  * @author Mike

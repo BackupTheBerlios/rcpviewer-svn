@@ -1,8 +1,7 @@
 package de.berlios.rcpviewer;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
-import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 
 public class RuntimeDomainSpecifics implements IDeploymentSpecifics {
 

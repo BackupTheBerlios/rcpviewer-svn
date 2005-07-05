@@ -3,8 +3,6 @@ package de.berlios.rcpviewer.session;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.operation.CustomerOperationReturningDomainObject;
 import de.berlios.rcpviewer.progmodel.standard.operation.CustomerOperationReturningVoid;

@@ -12,9 +12,7 @@ import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
  * Adds annotations specific to the RCPViewer.

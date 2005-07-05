@@ -6,11 +6,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
-import de.berlios.rcpviewer.progmodel.extended.IConstraintSet;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that

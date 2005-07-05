@@ -1,10 +1,8 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import de.berlios.rcpviewer.domain.AbstractAdapterFactory;
-import de.berlios.rcpviewer.domain.IAdapterFactory;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**

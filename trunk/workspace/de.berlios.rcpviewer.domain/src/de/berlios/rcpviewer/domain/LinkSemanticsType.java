@@ -25,31 +25,31 @@ public final class LinkSemanticsType {
 	 */
 	public final static LinkSemanticsType SIMPLE_REF =
 		new LinkSemanticsType("SimpleRef", Boolean.FALSE, Object.class,
-				new Constraint[] {} );
+				new LinkConstraint[] {} );
 	
 	public final static LinkSemanticsType LIST =
 		new LinkSemanticsType("List", Boolean.TRUE, java.util.List.class,
-				new Constraint[] { Constraint.ORDERED } );
+				new LinkConstraint[] { LinkConstraint.ORDERED } );
 	
 	public final static LinkSemanticsType SET =
 		new LinkSemanticsType("Set", Boolean.TRUE, java.util.Set.class,
-				new Constraint[] { Constraint.UNIQUE } );
+				new LinkConstraint[] { LinkConstraint.UNIQUE } );
 	
 	public final static LinkSemanticsType SORTED_SET =
 		new LinkSemanticsType("SortedSet", Boolean.TRUE, java.util.SortedSet.class,
-				new Constraint[] { Constraint.UNIQUE, Constraint.SORTED } );
+				new LinkConstraint[] { LinkConstraint.UNIQUE, LinkConstraint.SORTED } );
 	
 	public final static LinkSemanticsType MAP =
 		new LinkSemanticsType("Map", Boolean.TRUE, java.util.Map.class,
-				new Constraint[] { Constraint.QUALIFIED } );
+				new LinkConstraint[] { LinkConstraint.QUALIFIED } );
 	
 	public final static LinkSemanticsType SORTED_MAP =
 		new LinkSemanticsType("SortedMap", Boolean.TRUE, java.util.SortedMap.class,
-				new Constraint[] { Constraint.QUALIFIED, Constraint.SORTED } );
+				new LinkConstraint[] { LinkConstraint.QUALIFIED, LinkConstraint.SORTED } );
 	
 	public final static LinkSemanticsType UNKNOWN =
 		new LinkSemanticsType("Unknown", null, null,
-				new Constraint[] { } );
+				new LinkConstraint[] { } );
 	
 	private final static LinkSemanticsType[] semanticTypes = 
 		new LinkSemanticsType[] {
@@ -80,7 +80,7 @@ public final class LinkSemanticsType {
 		return null;
 	}
 
-	private LinkSemanticsType(final String name, final Boolean multiple, final Class<?> javaType, final Constraint[] constraints) {
+	private LinkSemanticsType(final String name, final Boolean multiple, final Class<?> javaType, final LinkConstraint[] constraints) {
 		this.name = name;
 		this.multiple = multiple;
 		this.javaType = javaType;
@@ -107,8 +107,8 @@ public final class LinkSemanticsType {
 	 * TODO: <T>
 	 * @return
 	 */
-	private final Set<Constraint> constraints = new HashSet<Constraint>();
-	public Set<Constraint> getConstraints() {
+	private final Set<LinkConstraint> constraints = new HashSet<LinkConstraint>();
+	public Set<LinkConstraint> getConstraints() {
 		return Collections.unmodifiableSet(constraints);
 	}
 	
@@ -117,8 +117,8 @@ public final class LinkSemanticsType {
 	}
 
 	public void setOrderingUniquenessAndMultiplicity(EReference eReference) {
-		eReference.setOrdered(constraints.contains(Constraint.ORDERED));
-		eReference.setUnique(constraints.contains(Constraint.UNIQUE));
+		eReference.setOrdered(constraints.contains(LinkConstraint.ORDERED));
+		eReference.setUnique(constraints.contains(LinkConstraint.UNIQUE));
 		eReference.setUpperBound(multiple? -1 : 1);
 	}
 	

@@ -4,13 +4,8 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.namesanddesc.Appointment;
-import de.berlios.rcpviewer.progmodel.standard.namesanddesc.CustomerWithNoExplicitName;
-import de.berlios.rcpviewer.progmodel.standard.namesanddesc.ProspectiveSale;
 
 /**
  * Tests for the use of the <tt>Named</tt> and <tt>DescribedAs</tt>.

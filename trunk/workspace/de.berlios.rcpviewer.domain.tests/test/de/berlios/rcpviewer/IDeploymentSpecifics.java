@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer;
 
 import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**

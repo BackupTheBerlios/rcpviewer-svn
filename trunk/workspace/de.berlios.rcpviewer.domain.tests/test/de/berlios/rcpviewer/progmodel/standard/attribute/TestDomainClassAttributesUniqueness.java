@@ -4,12 +4,8 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithNoUniquenessReadOnlyAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithNonUniqueReadOnlyAttribute;
-import de.berlios.rcpviewer.progmodel.standard.attribute.CustomerWithUniqueReadOnlyAttribute;
 
 public abstract class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 

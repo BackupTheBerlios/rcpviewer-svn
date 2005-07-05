@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.AbstractTestCase;
 
 public class TestDomainObjectReference extends AbstractRuntimeTestCase  {
 

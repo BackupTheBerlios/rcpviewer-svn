@@ -1,10 +1,7 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import org.eclipse.emf.ecore.EAttribute;
-
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.session.Department;
 import de.berlios.rcpviewer.session.IDomainObject;
 

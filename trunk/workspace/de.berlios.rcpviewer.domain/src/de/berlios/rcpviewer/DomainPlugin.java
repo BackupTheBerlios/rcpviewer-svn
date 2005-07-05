@@ -6,15 +6,18 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-public class CorePlugin extends Plugin {
+public class DomainPlugin extends Plugin {
 
-	private static CorePlugin instance;
+	private static DomainPlugin instance;
+	
+	public static final String ID = "de.berlios.rcpviewer.domain";
+	
 	private ResourceBundle resourceBundle;
-	public static CorePlugin getInstance() {
+	public static DomainPlugin getInstance() {
 		return instance;
 	}
 
-	public CorePlugin() {
+	public DomainPlugin() {
 		super();
 		instance = this;
 	}

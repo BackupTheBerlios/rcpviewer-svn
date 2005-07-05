@@ -43,9 +43,6 @@ public final class TypeConstants {
 			}
 		});
 
-	/**
-	 * TODO: not yet being used, for derivation of links.
-	 */
 	public final static Set<Class<?>> COLLECTION_TYPES = 
 		Collections.unmodifiableSet(
 			new HashSet<Class<?>>() {

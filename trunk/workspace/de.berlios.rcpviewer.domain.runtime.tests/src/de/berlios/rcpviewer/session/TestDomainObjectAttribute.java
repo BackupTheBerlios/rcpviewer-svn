@@ -2,13 +2,8 @@ package de.berlios.rcpviewer.session;
 
 import org.eclipse.emf.ecore.EAttribute;
 
-import sun.security.action.GetBooleanAction;
-
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.AbstractTestCase;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.extended.IConstraintSet;

@@ -1,8 +1,6 @@
 package de.berlios.rcpviewer.progmodel.rcpviewer;
 
-import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
-import de.berlios.rcpviewer.domain.IDomainBuilder;
 
 /**
  * Binds the tests in {@link TestImageDescriptor} to the runtime environment.

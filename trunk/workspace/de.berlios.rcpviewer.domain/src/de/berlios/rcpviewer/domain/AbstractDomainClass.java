@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -16,6 +17,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.DomainPlugin;
 import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
@@ -129,9 +131,8 @@ public abstract class AbstractDomainClass<T>
 		}
 		IAdapterFactory<V> adapterFactory;
 		try {
-			adapterFactory = (IAdapterFactory<V>)Class.forName(adapterFactoryName).newInstance();
+			adapterFactory = (IAdapterFactory<V>)loadClass(adapterFactoryName).newInstance(); 
 			V adapter = adapterFactory.createAdapter(this, detailsPlusFactoryName);
-			
 			adaptersByAnnotationSource.put(annotationSource, adapter); // cache
 			return adapter;
 		} catch (InstantiationException e) {
@@ -144,6 +145,10 @@ public abstract class AbstractDomainClass<T>
 			// TODO - log?
 			return null;
 		}
+	}
+	
+	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException  {
+		return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
 	}
 
 	/**

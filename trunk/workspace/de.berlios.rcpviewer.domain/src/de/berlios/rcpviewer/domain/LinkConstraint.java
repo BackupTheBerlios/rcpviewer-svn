@@ -6,7 +6,7 @@ package de.berlios.rcpviewer.domain;
  * 
  * @author Dan Haywood
  */
-public enum Constraint {
+public enum LinkConstraint {
 	ORDERED,    // cf java.util.List 
 	UNIQUE,     // cf java.util.Set
 	QUALIFIED,  // cf java.util.Map

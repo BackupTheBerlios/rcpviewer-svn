@@ -1,41 +1,37 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Inherited;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import de.berlios.rcpviewer.DomainPlugin;
 import de.berlios.rcpviewer.domain.AbstractDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
-import de.berlios.rcpviewer.domain.EmfFacadeAware;
+import de.berlios.rcpviewer.domain.IAdapterFactory;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainClassAdapter;
-import de.berlios.rcpviewer.domain.IDomainObjectAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.domain.LinkSemanticsType;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -68,6 +64,21 @@ public class RuntimeDomainClass<T>
 		this.javaClass = javaClass;
 		identifyClass();
 	}
+
+//	@Override
+//	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException {
+//		
+////		try {
+////			return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
+////		} catch (ClassNotFoundException ex) {
+////			return null;
+////		}
+//		
+//		//return (Class<IAdapterFactory>)Platform.getBundle("de.berlios.rcpviewer.domain.runtime").loadClass(adapterFactoryName);
+//		//return (Class<IAdapterFactory>)DomainPlugin.getInstance().getBundle().loadClass(adapterFactoryName);
+//		
+//	}
+
 
 	/**
 	 * Identify attributes, operations, and references.
@@ -939,6 +950,7 @@ public class RuntimeDomainClass<T>
 	public String getEClassName() {
 		return getEClass().getName();
 	}
+
 
 
 }
