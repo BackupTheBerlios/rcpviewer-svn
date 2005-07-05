@@ -147,9 +147,7 @@ public abstract class AbstractDomainClass<T>
 		}
 	}
 	
-	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException  {
-		return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
-	}
+	protected abstract Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException ;
 
 	/**
 	 * Installs an adapter on this domain class, (that is, the extension object 

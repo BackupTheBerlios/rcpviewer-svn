@@ -10,7 +10,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
- org.junit,
+ org.junit;visibility:=reexport,
  de.berlios.rcpviewer.domain;visibility:=reexport,
  de.berlios.rcpviewer.domain.fixture;visibility:=reexport,
  de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,

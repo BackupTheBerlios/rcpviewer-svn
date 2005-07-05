@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  de.berlios.rcpviewer.domain.tests;visibility:=reexport,
  de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
  de.berlios.rcpviewer.domain;visibility:=reexport,
- org.junit
+ org.junit;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team
 Export-Package: de.berlios.rcpviewer,

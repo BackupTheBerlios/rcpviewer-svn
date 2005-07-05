@@ -65,19 +65,19 @@ public class RuntimeDomainClass<T>
 		identifyClass();
 	}
 
-//	@Override
-//	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException {
-//		
-////		try {
-////			return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
-////		} catch (ClassNotFoundException ex) {
-////			return null;
-////		}
-//		
-//		//return (Class<IAdapterFactory>)Platform.getBundle("de.berlios.rcpviewer.domain.runtime").loadClass(adapterFactoryName);
-//		//return (Class<IAdapterFactory>)DomainPlugin.getInstance().getBundle().loadClass(adapterFactoryName);
-//		
-//	}
+	@Override
+	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException {
+		
+		try {
+			return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
+		} catch (ClassNotFoundException ex) {
+			// do nothing
+		}
+		
+		return (Class<IAdapterFactory>)Platform.getBundle("de.berlios.rcpviewer.domain.runtime").loadClass(adapterFactoryName);
+		//return (Class<IAdapterFactory>)DomainPlugin.getInstance().getBundle().loadClass(adapterFactoryName);
+		
+	}
 
 
 	/**
