@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.DomainPlugin;
+import de.berlios.rcpviewer.CorePlugin;
 import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 

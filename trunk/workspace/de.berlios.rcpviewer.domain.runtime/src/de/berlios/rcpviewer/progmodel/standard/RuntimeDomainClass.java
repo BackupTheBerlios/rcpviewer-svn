@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 
-import de.berlios.rcpviewer.DomainPlugin;
+import de.berlios.rcpviewer.CorePlugin;
 import de.berlios.rcpviewer.domain.AbstractDomainClass;
 import de.berlios.rcpviewer.domain.IAdapterFactory;
 import de.berlios.rcpviewer.domain.IDomain;
