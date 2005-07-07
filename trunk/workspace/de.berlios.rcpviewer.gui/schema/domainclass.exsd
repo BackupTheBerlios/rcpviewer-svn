@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="mikespike3">
+<schema targetNamespace="de.berlios.rcpviewer.gui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="mikespike3" id="fieldbuilder" name="Field Builder"/>
+         <meta.schema plugin="de.berlios.rcpviewer.gui" id="fieldbuilder" name="Field Builder"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]

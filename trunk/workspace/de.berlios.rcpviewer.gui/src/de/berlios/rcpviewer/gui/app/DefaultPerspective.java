@@ -4,6 +4,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 
+import de.berlios.rcpviewer.gui.views.actions.ActionsView;
 import de.berlios.rcpviewer.gui.views.classbar.ClassBarView;
 import de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView;
 
@@ -14,16 +15,27 @@ import de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView;
  */
 public class DefaultPerspective implements IPerspectiveFactory {
 	
+	/**
+	 * ID used in plugin.xml.
+	 */
 	public static final String ID = DefaultPerspective.class.getName();
 	
-	private static final String RIGHT = "right";
+	private static final String TOP_RIGHT = "topright";
+	private static final String BOTTOM_RIGHT = "bottomright";
 	private static final String BOTTOM = "bottom";
 	
 	/**
 	 * Creates:
 	 * <ul>
 	 * <li>an uncloseable ClassBarView on the left hand side
-	 * <li>placeholder on the right-hand side for views 
+	 * <li>placeholder on the top right-hand side for views:
+	 *   <ul>
+	 *   <li>session tree
+	 *   </ul>
+	 * <li>placeholder on the bottom right-hand side for views:
+	 *   <ul>
+	 *   <li>actions view
+	 *   </ul>
 	 * <li>placeholder on bottom for views:
 	 *   <ul>
 	 *   <li>platform search views
@@ -46,15 +58,23 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		// editor area
 		layout.setEditorAreaVisible( true );
 		
-		// right hand-side placeholder
-        IPlaceholderFolderLayout right = layout.createPlaceholderFolder( 
-                RIGHT, 
+		// top right hand-side placeholder
+        IPlaceholderFolderLayout topRight = layout.createPlaceholderFolder( 
+                TOP_RIGHT, 
                 IPageLayout.RIGHT, 
                 0.8f,
 				layout.getEditorArea() );
-		right.addPlaceholder( SessionTreeView.ID );
+        topRight.addPlaceholder( SessionTreeView.ID );
+        
+        // bottom right hand-side placeholder
+        IPlaceholderFolderLayout bottomRight = layout.createPlaceholderFolder( 
+                BOTTOM_RIGHT, 
+                IPageLayout.BOTTOM, 
+                0.7f,
+				TOP_RIGHT );        
+        bottomRight.addPlaceholder( ActionsView.ID );
 		
-		// bottom placholder
+		// bottom placeholder
 		IPlaceholderFolderLayout bottom =  layout.createPlaceholderFolder(
 				BOTTOM,
 				IPageLayout.BOTTOM, 

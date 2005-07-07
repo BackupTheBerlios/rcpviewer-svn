@@ -53,7 +53,13 @@
             class="de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView"
             icon="icons/sample.gif"
             id="de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView"
-            name=" "/>
+            name="%plugin.sessionTreeViewName"/>
+      <view
+            category="de.berlios.rcpviewer.gui"
+            class="de.berlios.rcpviewer.gui.views.actions.ActionsView"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.gui.views.actions.ActionsView"
+            name="%plugin.actionsViewName"/>     
    </extension>
    
    <extension

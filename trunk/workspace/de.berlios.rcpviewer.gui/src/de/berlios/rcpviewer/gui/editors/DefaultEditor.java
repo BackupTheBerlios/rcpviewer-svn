@@ -19,6 +19,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.EditorPart;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -38,6 +39,7 @@ public final class DefaultEditor extends EditorPart {
 
 	private IManagedForm _form = null;
 	private FormToolkit _toolkit = null;
+	private ActionsViewPage _actions = null;
 	
 	
 	/* (non-Javadoc)
@@ -134,9 +136,12 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void dispose() {
-		if (_toolkit != null)
+		if (_toolkit != null) {
 			_toolkit.dispose();
-		
+		}
+		if ( _actions != null ) {
+			_actions.dispose();
+		}
 		super.dispose();
 	}
 
@@ -163,7 +168,8 @@ public final class DefaultEditor extends EditorPart {
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * Always returns <code>false</code>
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
 	 */
 	@Override
@@ -171,7 +177,8 @@ public final class DefaultEditor extends EditorPart {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Always throws an <code>UnsupportedOperationException</code>
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	@Override
@@ -180,6 +187,27 @@ public final class DefaultEditor extends EditorPart {
 		
 	}
 	
+	/**
+	 * Returns:
+	 * <ol>
+	 * <li>if Class is IPropertySheetPage, the individual instance of 
+	 * actions page for this editor / object
+	 * <li>super()
+	 * </ol>
+	 * @see org.eclipse.ui.part.WorkbenchPart#getAdapter(java.lang.Class)
+	 * @see org.eclipse.ui.views.properties.IPropertySheetPage
+	 */
+	@Override
+	public Object getAdapter(Class adapter) {
+		if ( adapter.equals( IActionsViewPage.class ) ) {
+			if ( _actions == null ) {
+				_actions = new ActionsViewPage( getDomainObject() );
+			}
+			return _actions;
+		}
+		return super.getAdapter(adapter);
+	}
+
 	// extract from input
 	private IDomainObject<?> getDomainObject() {
 		assert getEditorInput() != null;

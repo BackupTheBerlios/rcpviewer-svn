@@ -11,6 +11,8 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.editors.DefaultEditor;
 import de.berlios.rcpviewer.gui.editors.DefaultEditorInput;
 import de.berlios.rcpviewer.gui.util.PlatformUtil;
+import de.berlios.rcpviewer.gui.views.actions.ActionsView;
+import de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -38,6 +40,11 @@ public class OpenDomainObjectJob extends UIJob {
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		try {
+			// ensure instance-related views are open
+			PlatformUtil.getActivePage().showView( SessionTreeView.ID );
+			PlatformUtil.getActivePage().showView( ActionsView.ID );
+			
+			// open editor
 			DefaultEditorInput input = new DefaultEditorInput( _domainObject );
 			PlatformUtil.getActivePage().openEditor(  input, DefaultEditor.ID );
 			return Status.OK_STATUS;
