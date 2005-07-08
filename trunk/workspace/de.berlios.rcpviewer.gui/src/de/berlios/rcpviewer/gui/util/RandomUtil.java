@@ -135,7 +135,7 @@ public class RandomUtil {
         // 
         if ( minLength == 0 ) {
             if ( getRandom().nextFloat() < 0.3f ) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
             minLength = 1; 
         }
@@ -156,9 +156,9 @@ public class RandomUtil {
         StringBuffer sb = new StringBuffer() ;
         for ( int i=0 ; i < numWords ; i ++ ) {
             sb.append( RandomUtil.createString( 1, 10 ) );
-            sb.append( " " );
+            sb.append( " " ); //$NON-NLS-1$
         }
-        sb.append( "." );
+        sb.append( "." ); //$NON-NLS-1$
         return sb.toString();
     }
     
@@ -171,7 +171,7 @@ public class RandomUtil {
         int numLines = RandomUtil.createInt( 5, 25 );
         for ( int i=0 ; i < numLines ; i++ ) {
            sb.append( createRandomSentence() );
-           sb.append( System.getProperty( "line.separator" ) ) ;
+           sb.append( System.getProperty( "line.separator" ) ) ; //$NON-NLS-1$
         }
         sb.append( createRandomSentence() );
         return sb.toString();       
@@ -237,23 +237,23 @@ public class RandomUtil {
         StringBuffer sb = new StringBuffer();
         if ( pointIndex < 0 ) {
         	for ( int i=0 ; i < Math.abs( pointIndex) ; i++ ) {
-        		sb.append( "0" );
+        		sb.append( "0" ); //$NON-NLS-1$
             }
             pointIndex = 0;
         }
         else if ( pointIndex == 0 ) {
-            sb.append( "0" );
+            sb.append( "0" ); //$NON-NLS-1$
         }
         else {
         	sb.append( s.substring( 0, pointIndex ) );
         }
-        sb.append ( "." );
+        sb.append ( "." ); //$NON-NLS-1$
         String end = s.substring( pointIndex );
         sb.append( end );
         int numTrailingZeroesRequired = decimalpoints - end.length();
         if (  numTrailingZeroesRequired > 0  ) {
         	for ( int i=0 ; i < numTrailingZeroesRequired; i++ ) {
-                sb.append( "0" );
+                sb.append( "0" ); //$NON-NLS-1$
             }
         }
         return sb.toString(); 
@@ -443,9 +443,9 @@ public class RandomUtil {
         // this StringBuffer can be a long as you need; the MD5
         // hash will always return 128 bits.
         preMD5.append( getHostName() );
-        preMD5.append( ":" );
+        preMD5.append( ":" ); //$NON-NLS-1$
         preMD5.append(Long.toString( time ) );
-        preMD5.append( ":" );
+        preMD5.append( ":" ); //$NON-NLS-1$
         preMD5.append(Long.toString( rand ) );
         
         MessageDigest digest = getMessageDigest();
@@ -463,13 +463,13 @@ public class RandomUtil {
         // e.g. C2FEEEAC-CFCD-11D1-8B05-00600806D9B6
         StringBuffer formatted = new StringBuffer();
         formatted.append( postMD5.substring(0, 8).toUpperCase() );
-        formatted.append( "-" );
+        formatted.append( "-" ); //$NON-NLS-1$
         formatted.append( postMD5.substring(8, 12).toUpperCase() );
-        formatted.append( "-" );
+        formatted.append( "-" ); //$NON-NLS-1$
         formatted.append( postMD5.substring(12, 16).toUpperCase() );
-        formatted.append( "-" );
+        formatted.append( "-" ); //$NON-NLS-1$
         formatted.append( postMD5.substring(16, 20).toUpperCase() );
-        formatted.append( "-" );
+        formatted.append( "-" ); //$NON-NLS-1$
         formatted.append( postMD5.substring(20).toUpperCase() );       
 
         return formatted.toString();

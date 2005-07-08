@@ -29,7 +29,7 @@ public class OpenDomainObjectJob extends UIJob {
 	 * @param clazz
 	 */
 	public OpenDomainObjectJob( IDomainObject object ) {
-		super( GuiPlugin.getResourceString( "OpenDomainObjectJob.Name" ) );
+		super( GuiPlugin.getResourceString( "OpenDomainObjectJob.Name" ) ); //$NON-NLS-1$
 		if ( object == null ) throw new IllegalArgumentException();
 		_domainObject = object;
 	}
@@ -53,7 +53,7 @@ public class OpenDomainObjectJob extends UIJob {
 			GuiPlugin.getDefault().getLog().log( ce.getStatus() );
 			MessageDialog.openError( 
 					null, 
-					GuiPlugin.getResourceString( "OpenDomainObjectJob.Error"), 
+					GuiPlugin.getResourceString( "OpenDomainObjectJob.Error"), //$NON-NLS-1$
 					ce.getMessage() );
 			return ce.getStatus();
 		}

@@ -16,8 +16,8 @@ import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 class DefaultDomainBootstrap implements IDomainBootstrap {
 	
 	public static final String DOMAIN_CLASS_EXTENSION_POINT
-		= "de.berlios.rcpviewer.gui.domainclass"; 
-	public static final String CLASS_PROPERTY = "class";
+		= "de.berlios.rcpviewer.gui.domainclass";  //$NON-NLS-1$
+	public static final String CLASS_PROPERTY = "class"; //$NON-NLS-1$
 	
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.domain.runtime.IDomainBootstrap#registerClasses()
@@ -37,7 +37,7 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 			Object obj = elems[i].createExecutableExtension(
 					CLASS_PROPERTY );
 
-			System.out.println("Registering " + obj.getClass().getName());
+			System.out.println("Registering " + obj.getClass().getName()); //$NON-NLS-1$
 
 			classes[i] = obj.getClass();
 		}		

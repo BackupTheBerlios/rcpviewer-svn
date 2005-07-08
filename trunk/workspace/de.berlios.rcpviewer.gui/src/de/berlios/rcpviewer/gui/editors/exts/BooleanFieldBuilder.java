@@ -9,7 +9,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import de.berlios.rcpviewer.gui.editors.IFieldBuilder;
+import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 public class BooleanFieldBuilder implements IFieldBuilder {

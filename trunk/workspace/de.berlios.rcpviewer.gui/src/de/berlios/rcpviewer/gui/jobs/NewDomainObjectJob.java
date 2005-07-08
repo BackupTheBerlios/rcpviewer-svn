@@ -28,7 +28,7 @@ public class NewDomainObjectJob extends UIJob {
 	 * @param clazz
 	 */
 	public NewDomainObjectJob( IRuntimeDomainClass clazz ) {
-		super( GuiPlugin.getResourceString( "NewDomainObjectJob.Name" ) );
+		super( GuiPlugin.getResourceString( "NewDomainObjectJob.Name" ) ); //$NON-NLS-1$
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this._clazz = clazz;
 	}
@@ -41,7 +41,7 @@ public class NewDomainObjectJob extends UIJob {
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
-			IDomainObject domainObject = session.createTransient( _clazz );
+			IDomainObject domainObject = session.createTransient( _clazz ); // JAVA_5_FIXME
 			new OpenDomainObjectJob( domainObject ).schedule();
 			return Status.OK_STATUS;
 		}
@@ -49,7 +49,7 @@ public class NewDomainObjectJob extends UIJob {
 			GuiPlugin.getDefault().getLog().log( ce.getStatus() );
 			MessageDialog.openError( 
 					null, 
-					GuiPlugin.getResourceString( "NewDomainObjectJob.Error"), 
+					GuiPlugin.getResourceString( "NewDomainObjectJob.Error"), //$NON-NLS-1$
 					ce.getMessage() );
 			return ce.getStatus();
 		}

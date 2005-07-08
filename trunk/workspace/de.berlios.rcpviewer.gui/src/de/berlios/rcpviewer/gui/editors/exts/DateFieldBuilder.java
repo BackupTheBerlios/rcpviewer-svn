@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
-import de.berlios.rcpviewer.gui.editors.IFieldBuilder;
+import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 
 /**
  * Uses third party library swtcalendar - with thanks.
@@ -33,7 +33,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 
 	/**
 	 * Only if the class is a <code>Date</code> or subclass.
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
+	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isApplicable(EAttribute attribute) {
 		return Date.class.isAssignableFrom(
@@ -79,7 +79,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 				
 				// change date via calendar widget
 		        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );
-				change.setText( "...");
+				change.setText( "..."); //$NON-NLS-1$
 				GridData buttonData = new GridData();
 				buttonData.heightHint = _text.getLineHeight() ;
 				change.setLayoutData( buttonData );

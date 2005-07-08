@@ -49,9 +49,9 @@ public class DefaultEditorInput implements IEditorInput {
 	 */
 	public String getName() {
 		StringBuffer sb = new StringBuffer();
-		sb.append( _domainObject.getPojo().getClass().getSimpleName() );
+		sb.append( _domainObject.getPojo().getClass().getSimpleName() ); 
 		sb.append( ":" );
-		sb.append( _domainObject.getPojo().hashCode() );
+		sb.append( _domainObject.getPojo().hashCode() ); 
 		return sb.toString();
 	}
 
@@ -71,7 +71,7 @@ public class DefaultEditorInput implements IEditorInput {
 	public String getToolTipText() {
 		String s = _domainObject.getDomainClass().getDescription();
 		if ( s == null ) {
-			s = GuiPlugin.getResourceString( "DefaultEditorInput.NoDescription");
+			s = GuiPlugin.getResourceString( "DefaultEditorInput.NoDescription"); //$NON-NLS-1$
 		}
 		return s;
 	}

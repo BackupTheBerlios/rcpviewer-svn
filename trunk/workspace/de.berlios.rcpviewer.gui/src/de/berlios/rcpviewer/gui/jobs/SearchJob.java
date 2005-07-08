@@ -24,7 +24,7 @@ public class SearchJob extends UIJob {
 	 * @param clazz
 	 */
 	public SearchJob( IRuntimeDomainClass clazz ) {
-		super( GuiPlugin.getResourceString( "SearchJob.Name" ) );
+		super( GuiPlugin.getResourceString( "SearchJob.Name" ) ); //$NON-NLS-1$
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this._clazz = clazz;
 	}

@@ -6,10 +6,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 
-import de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField;
-import de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener;
+import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
+import de.berlios.rcpviewer.gui.fields.IFieldBuilder.IField;
+import de.berlios.rcpviewer.gui.fields.IFieldBuilder.IFieldListener;
 import de.berlios.rcpviewer.gui.jobs.SetAttributeJob;
+import de.berlios.rcpviewer.gui.util.NullUtil;
+import de.berlios.rcpviewer.gui.widgets.DomainObjectListener;
+import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.session.IDomainObjectListener;
 
 /**
  * Generic form part for fields
@@ -19,6 +24,7 @@ class FieldPart implements IFormPart, IFieldListener {
 	
 	private final IField _field;
 	private final EAttribute _attribute;
+	private final IDomainObjectListener _listener;
 	
 	private IDomainObject _object;
 	private IManagedForm _managedForm;
@@ -26,7 +32,9 @@ class FieldPart implements IFormPart, IFieldListener {
 
 	
 	/**
+	 * No-arg can be <code>null</code>.
 	 * @param parent
+	 * @param builder
 	 * @param object
 	 * @param attribute
 	 */
@@ -34,14 +42,29 @@ class FieldPart implements IFormPart, IFieldListener {
 			   IFieldBuilder builder,
 			   IDomainObject object, 
 			   EAttribute attribute) {
-		assert parent != null;
-		assert builder != null;
-		assert object != null;
-		assert attribute != null;
+		if ( parent == null ) throw new IllegalArgumentException();
+		if ( builder == null ) throw new IllegalArgumentException();
+		if ( object == null ) throw new IllegalArgumentException();
+		if ( attribute == null ) throw new IllegalArgumentException();
 		
 		_object = object;
 		_attribute = attribute;
 		_field = builder.createField( parent, attribute.isChangeable(), this );
+		
+		// add listener that updates display whenever domain object updated
+		// outside of this field
+		_listener = new DomainObjectListener(){
+			public void attributeChanged(DomainObjectAttributeEvent event) {
+				if ( event.getEAttribute().equals( _attribute ) // JAVA_5_FIXME
+						&& !NullUtil.nullSafeEquals(
+								event.getNewValue(), // JAVA_5_FIXME
+								_field.getGuiValue() ) ) {
+					_field.setGuiValue( event.getNewValue() );
+				}
+			}
+		};
+		_object.addDomainObjectListener( _listener );	// JAVA_5_FIXME
+		
 	}
 	
 	/* IFormPart contract */
@@ -64,7 +87,7 @@ class FieldPart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
 	public void dispose() {
-		// do nothing		
+		_object.removeDomainObjectListener( _listener );	
 	}
 
 	/* (non-Javadoc)
@@ -134,7 +157,5 @@ class FieldPart implements IFormPart, IFieldListener {
 			_managedForm.dirtyStateChanged();
 		}
 	}
-
-
 
 }

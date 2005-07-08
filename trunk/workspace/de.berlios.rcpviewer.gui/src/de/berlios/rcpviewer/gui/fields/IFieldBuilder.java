@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.fields;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Composite;
@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 public interface IFieldBuilder {
 	
 	public static final String EXTENSION_POINT_ID
-		= "de.berlios.rcpviewer.gui.fieldbuilder";
+		= "de.berlios.rcpviewer.gui.fieldbuilder"; //$NON-NLS-1$
 	
 	/**
 	 * Whether this field builder is applicable for the passed attribute.

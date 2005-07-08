@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.fields;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+
 /**
  * Used when no other available <code>IFieldBuilder</code> is applicable.
  * @author Mike
@@ -18,7 +19,7 @@ class DefaultFieldBuilder implements IFieldBuilder {
 
 	/**
 	 * Always returns <code>true</code> - always applicable
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
+	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isApplicable(EAttribute attribute) {
 		return true;

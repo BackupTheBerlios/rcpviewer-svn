@@ -24,9 +24,9 @@ public class DomainBootstrapJob extends Job {
 	}
 
 
+
 	/**
 	 * Runs the wrapped <code>IDomainBootstrap</code>.
-	 * @see org.eclipse.core.internal.jobs.InternalJob#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {  

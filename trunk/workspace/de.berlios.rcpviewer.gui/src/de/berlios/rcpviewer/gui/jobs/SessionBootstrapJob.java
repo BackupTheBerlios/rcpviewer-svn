@@ -19,7 +19,7 @@ import de.berlios.rcpviewer.session.ISessionManager;
  */
 public class SessionBootstrapJob extends Job {
 	
-	private static final String DEFAULT_DOMAIN_ID = "default";
+	private static final String DEFAULT_DOMAIN_ID = "default"; //$NON-NLS-1$
 	
 	private final String _domainId;
 	private final IObjectStore _store;
@@ -48,7 +48,6 @@ public class SessionBootstrapJob extends Job {
 
 	/**
 	 * Creates a session for the passed domain and object store.
-	 * @see org.eclipse.core.internal.jobs.InternalJob#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {  

@@ -41,7 +41,7 @@ public class NotImplementedJob extends UIJob {
 		MessageDialog.openWarning( 
 				null, 
 				_title,
-				GuiPlugin.getResourceString( "NotImplementedJob.Msg") );
+				GuiPlugin.getResourceString( "NotImplementedJob.Msg") ); //$NON-NLS-1$
 		return Status.OK_STATUS;
 	}
 	

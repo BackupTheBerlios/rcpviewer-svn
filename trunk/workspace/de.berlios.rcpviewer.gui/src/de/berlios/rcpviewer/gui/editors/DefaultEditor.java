@@ -19,6 +19,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.EditorPart;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.gui.fields.FieldBuilderFactory;
+import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -27,16 +29,14 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * <br>Gui built up of <code>IField</code>s provided by 
  * <code>IFieldBuilder</code>'s.
  * @author Mike
- * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder
- * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField
+ * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder
+ * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder.IField
  */
 public final class DefaultEditor extends EditorPart {
 	
 	public static final String ID = "de.berlios.rcpviewer.rcp.objectEditor";
 	
-	// lazily instantiated
-	private static FieldBuilderFactory __fieldBuilderFactory = null;
-
+	private FieldBuilderFactory _fieldBuilderFactory = null;
 	private IManagedForm _form = null;
 	private FormToolkit _toolkit = null;
 	private ActionsViewPage _actions = null;
@@ -52,13 +52,11 @@ public final class DefaultEditor extends EditorPart {
 		if ( !(input instanceof DefaultEditorInput) ) throw new IllegalArgumentException();
 		
 		// instantiate field build factory if necessary
-		if ( __fieldBuilderFactory == null ) {
-			try {
-				__fieldBuilderFactory = new FieldBuilderFactory();
-			}
-			catch ( CoreException ce ) {
-				throw new PartInitException( ce.getStatus() );
-			}
+		try {
+			_fieldBuilderFactory = FieldBuilderFactory.instance();
+		}
+		catch ( CoreException ce ) {
+			throw new PartInitException( ce.getStatus() );
 		}
 
 		setSite( site );
@@ -72,6 +70,7 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		assert _fieldBuilderFactory != null;
 		
 		// main form
 		_form = new ManagedForm( _toolkit, _toolkit.createScrolledForm(parent)) {
@@ -88,8 +87,8 @@ public final class DefaultEditor extends EditorPart {
 		
 		// loop through all attributes - add a label and an IField for each
 		IDomainObject object = getDomainObject();
-		IDomainClass clazz = object.getDomainClass();
-		for ( Object a : clazz.attributes() ) {
+		IDomainClass clazz = object.getDomainClass(); // JAVA_5_FIXME
+		for ( Object a : clazz.attributes() ) {       // JAVA_5_FIXME
 			EAttribute attribute = (EAttribute)a;
 			
 			// label
@@ -107,7 +106,7 @@ public final class DefaultEditor extends EditorPart {
 			
 			// create IField
 			IFieldBuilder fieldBuilder
-				= __fieldBuilderFactory.getInstance( attribute );
+				= _fieldBuilderFactory.getInstance( attribute );
 			FieldPart fieldPart = new FieldPart(
 					fieldComposite,
 					fieldBuilder,

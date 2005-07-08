@@ -17,7 +17,7 @@ public class ErrorInput {
 	 * No-arg constructor uses default message.
 	 */
 	public ErrorInput() {
-		this ( GuiPlugin.getResourceString( "ErrorInput.DefaultMsg" ) );
+		this ( GuiPlugin.getResourceString( "ErrorInput.DefaultMsg" ) ); //$NON-NLS-1$
 	}
 	
 	/**
