@@ -13,36 +13,36 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 @InDomain
 public class EasyBean {
 	
-	private Boolean field0 = null;
+	private int field0 = 0;
 	private String field1 = null;
 	private Date field2 = null;
 	private String field3 = null;
 	private String field4 = null;
-	private Boolean field5 = null;
+	private int field5 = 0;
 	private Boolean field6 = null;
 	private Date field7 = null;
-	private String field8 = null;
+	private int field8 = 0;
 	private String field9 = null;
 	
 
 	public EasyBean() {
-		field0 = RandomUtil.oneHalfLikely();
+		field0 = RandomUtil.createInt( 0, 5000 );
 		field1 = RandomUtil.createString( 0, 10 );
 		field2 = RandomUtil.createDate( RandomUtil.DATE_HINT_LAST_YEAR );
 		field3 = RandomUtil.createString( 0, 10 );
-		field5 = RandomUtil.oneHalfLikely();
+		field5 = RandomUtil.createInt( 0, 5000 );
 		field4 = RandomUtil.createString( 0, 10 );
 		field6 = RandomUtil.oneHalfLikely();
 		field7 = RandomUtil.createDate( RandomUtil.DATE_HINT_LAST_YEAR );
-		field8 = RandomUtil.createString( 0, 10 );
+		field8 = RandomUtil.createInt( 0, 5000 );
 		field9 = RandomUtil.createString( 0, 10 );
 	}
 
-	public Boolean getField0() {
+	public int getField0() {
 		return field0;
 	}
 
-	public void setField0(Boolean field0) {
+	public void setField0(int field0) {
 		this.field0 = field0;
 	}
 
@@ -62,11 +62,11 @@ public class EasyBean {
 		this.field2 = field2;
 	}
 
-	public Boolean getField5() {
+	public int getField5() {
 		return field5;
 	}
 
-	public void setField5(Boolean field5) {
+	public void setField5(int field5) {
 		this.field5 = field5;
 	}
 
@@ -102,11 +102,11 @@ public class EasyBean {
 		this.field7 = field7;
 	}
 
-	public String getField8() {
+	public int getField8() {
 		return field8;
 	}
 
-	public void setField8(String field8) {
+	public void setField8(int field8) {
 		this.field8 = field8;
 	}
 
