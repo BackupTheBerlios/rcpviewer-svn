@@ -1,0 +1,18 @@
+News in EasyMock 1.1 (since 1.0.1b):
+
+- ParameterMatcher renamed to ArgumentsMatcher,
+  since it matches arguments, not parameters
+- parameterMatches() and parameterToString() on
+  AbstractMatcher renamed to
+  argumentMatches() and argumentToString(), since
+  they work on arguments, not parameters 
+- tests extended to gain 100% clover coverage
+- internal refactorings
+
+News in EasyMock 1.0.1b (since 1.0.1):
+
+- src.zip now contains the classes of the package
+  org.easymock.internal
+
+
+

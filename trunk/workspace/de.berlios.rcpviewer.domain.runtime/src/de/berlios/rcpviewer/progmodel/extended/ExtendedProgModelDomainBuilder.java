@@ -132,7 +132,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (accessorPreCandidate == null) {
 			return;
 		}
-		if (!methodReturns(accessorPreCandidate, IConstraintSet.class)) {
+		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
 			return;
 		}
 		emfFacade.putAnnotationDetails(

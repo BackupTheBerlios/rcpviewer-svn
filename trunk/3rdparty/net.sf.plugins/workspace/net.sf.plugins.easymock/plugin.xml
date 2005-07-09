@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+  <runtime>
+    <library name="easymock.jar">
+    	<export name="*"/>
+         <packages prefixes="org.easymock"/>
+    </library>
+
+    <library name="./"><export name="*"/></library>
+  </runtime>
+
+</plugin>

@@ -49,9 +49,10 @@ public interface IDomainClass<T> {
 	public EClass getEClass();
 
 	/**
-	 * Convenience method that simply returns the name of the underlying
-	 * {@link EClass}.
-	 * 
+	 * Returns either the name of the class according to the {@link @Named}
+	 * annotation, or just the name of the underlying {@link EClass} if no
+	 * such annotation exists.
+	 *
 	 * <p>
 	 * Any renaming of the class, eg by the <tt>Named</tt> annotation of the
 	 * extended programming model, is ignored.  

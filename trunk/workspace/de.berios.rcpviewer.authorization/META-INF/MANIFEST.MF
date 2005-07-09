@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Authorization Plug-in
+Bundle-SymbolicName: de.berios.rcpviewer.authorization
+Bundle-Version: 1.0.0
+Bundle-Activator: de.berios.rcpviewer.authorization.AuthorizationPlugin
+Bundle-Vendor: RcpViewer Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ de.berlios.rcpviewer.progmodel.extended,
+ de.berlios.rcpviewer.domain.runtime
+Eclipse-AutoStart: true

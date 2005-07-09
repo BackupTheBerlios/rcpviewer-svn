@@ -11,6 +11,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
+import de.berlios.rcpviewer.authorization.IAuthorizationManager;
+import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
@@ -32,7 +34,14 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
  * 
  * @author Dan Haywood
  */
-public final class RuntimeDomain extends AbstractDomain {
+public final class RuntimeDomain extends AbstractDomain 
+	implements IRuntimeDomain {
+
+	/**
+	 * Defaults to {@link IAuthorizationManager#NOOP} but can be overridden
+	 * by dependency injection if required.
+	 */
+	private IAuthorizationManager _authorizationManager = IAuthorizationManager.NOOP;
 
 	/**
 	 * Returns the Domain instance with the given name (creating it if
@@ -195,20 +204,43 @@ public final class RuntimeDomain extends AbstractDomain {
 		// ... but store the domain class itself in a local hash
 		domainClassesByJavaClass.put(javaClass, domainClass);
 
-		
 		getPrimaryBuilder().build(domainClass);
 
 		return domainClass;
 	}
 
-	/**
+	/*
 	 * TODO: not yet implemented
 	 * 
 	 * <p>
 	 * Would an ECore2XMLFactoryImpl be able to help us?
+	 * 
+	 * @see de.berlios.rcpviewer.domain.IDomain#serializeTo(java.io.Writer)
 	 */
 	public void serializeTo(Writer writer) {
 		throw new RuntimeException("not yet implemented");
+	}
+
+	/**
+	 * Authorization manager to enforce constraints.
+	 * 
+	 * <p> 
+	 * Defaults to {@link IAuthorizationManager#NOOP} but can be overridden
+	 * using dependency injection, see {@link #setAuthorizationManager(IAuthorizationManager)}.
+	 * 
+	 * @see de.berlios.rcpviewer.domain.runtime.IRuntimeDomain#getAuthorizationManager()
+	 */
+	public IAuthorizationManager getAuthorizationManager() {
+		return _authorizationManager;
+	}
+	/*
+	 * @see de.berlios.rcpviewer.domain.runtime.IRuntimeDomain#setAuthorizationManager(de.berlios.rcpviewer.authorization.IAuthorizationManager)
+	 */
+	public void setAuthorizationManager(IAuthorizationManager authorizationManager) {
+		if (authorizationManager == null) {
+			throw new IllegalArgumentException("IAuthorizationManager may not be null - consider IAuthorizationManager.NOOP instead");
+		}
+		_authorizationManager = authorizationManager;
 	}
 
 }

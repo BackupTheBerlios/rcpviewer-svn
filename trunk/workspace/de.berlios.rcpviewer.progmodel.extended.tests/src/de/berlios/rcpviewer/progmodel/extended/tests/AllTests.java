@@ -9,7 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.progmodel.extended.tests");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestConstraint.class);
+		suite.addTestSuite(TestPrerequisites.class);
 		//$JUnit-END$
 		return suite;
 	}

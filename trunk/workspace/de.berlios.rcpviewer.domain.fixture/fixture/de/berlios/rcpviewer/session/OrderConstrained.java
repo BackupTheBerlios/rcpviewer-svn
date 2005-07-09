@@ -1,7 +1,9 @@
 package de.berlios.rcpviewer.session;
 
-import de.berlios.rcpviewer.progmodel.extended.ConstraintSet;
-import de.berlios.rcpviewer.progmodel.extended.IConstraintSet;
+import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
+import static de.berlios.rcpviewer.progmodel.extended.IPrerequisites.Constraint.*;
+import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 @InDomain
@@ -19,10 +21,10 @@ public class OrderConstrained {
 	 *  
 	 * @return
 	 */
-	public IConstraintSet getQuantityPre() {
-		return ConstraintSet.create()
-			.unusableIf(isShipped(), "Cannot change quantity once shipped")
-			.invisibleIf(isHidden());
+	public IPrerequisites getQuantityPre() {
+		return 
+			require(!isShipped(), "Cannot change quantity once shipped")
+			.andRequire(!isRestricted(), INVISIBLE);
 	}
 	
 	private boolean shipped;
@@ -33,26 +35,26 @@ public class OrderConstrained {
 		this.shipped = shipped;
 	}
 
-	private boolean hidden;
-	public boolean isHidden() {
-		return hidden;
+	private boolean restricted;
+	public boolean isRestricted() {
+		return restricted;
 	}
-	private void setHidden(boolean hidden) {
-		this.hidden = hidden;
+	private void setRestricted(boolean restricted) {
+		this.restricted = restricted;
 	}
 	
 	public void ship() {
 		setShipped(true);
 	}
-	public IConstraintSet shipPre() {
-		return ConstraintSet.create()
-			.unusableIf(isShipped(), "Cannot change quantity once shipped")
-			.invisibleIf(isHidden());
+	public IPrerequisites shipPre() {
+		return 
+			require(!isShipped(), "Cannot change quantity once shipped")
+			.andRequire(!isRestricted(), INVISIBLE);
 	}
 	
-	public void shipAndHide() {
+	public void shipAndRestrict() {
 		ship();
-		setHidden(true);
+		setRestricted(true);
 	}
 	
 

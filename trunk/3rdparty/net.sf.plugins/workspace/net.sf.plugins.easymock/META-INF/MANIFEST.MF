@@ -1,0 +1,17 @@
+Bundle-ManifestVersion: 2
+Bundle-Name: EasyMock
+Bundle-Vendor: easymock.org
+Bundle-GlobalName: org.easymock
+Bundle-SymbolicName: net.sf.plugins.easymock
+Bundle-Version: 1.1.0
+Bundle-ClassPath: 
+ easymock.jar
+Eclipse-AutoStart: true
+Manifest-Version: 1.0
+Provide-Package: 
+ org.easymock
+Export-Package: 
+ org.easymock
+Require-Bundle: 
+ org.eclipse.core.runtime.compatibility
+

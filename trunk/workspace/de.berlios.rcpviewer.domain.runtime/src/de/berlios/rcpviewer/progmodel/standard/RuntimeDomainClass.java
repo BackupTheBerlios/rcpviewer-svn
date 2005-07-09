@@ -31,7 +31,9 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.domain.LinkSemanticsType;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -98,6 +100,9 @@ public class RuntimeDomainClass<T>
 		identifyOppositeReferences();
 		identifyAssociatorsAndDissociators();
 		oppRefState = OppRefState.onceMore;
+		
+		EOperation op;
+	
 	}
 
 	static enum OppRefState {
@@ -198,12 +203,9 @@ public class RuntimeDomainClass<T>
 			this, modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, immutable != null);
 	}
 	
-	
-	/**
-	 * Returns either the name of the class according to the {@link @Named}
-	 * annotation, or just the name of the underlying {@link EClass} if no
-	 * such annotation exists.
-	 * @return
+
+	/*
+	 * @see de.berlios.rcpviewer.domain.IDomainClass#getName()
 	 */
 	@Override
 	public String getName() {
@@ -427,6 +429,9 @@ public class RuntimeDomainClass<T>
 		return true;
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getAccessorFor(org.eclipse.emf.ecore.EAttribute)
+	 */
 	public Method getAccessorFor(EAttribute eAttribute) {
 		String accessorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
@@ -444,6 +449,9 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getMutatorFor(org.eclipse.emf.ecore.EAttribute)
+	 */
 	public Method getMutatorFor(EAttribute eAttribute) {
 		String mutatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
@@ -462,6 +470,9 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getAccessorOrMutatorFor(org.eclipse.emf.ecore.EAttribute)
+	 */
 	public Method getAccessorOrMutatorFor(EAttribute eAttribute) {
 		Method accessorMethod = getAccessorFor(eAttribute);
 		if (accessorMethod != null) {
@@ -629,17 +640,25 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
-
+	/*
+	 * @see de.berlios.rcpviewer.domain.IDomainClass#isParameterAValue(org.eclipse.emf.ecore.EOperation, int)
+	 */
 	public boolean isParameterAValue(EOperation operation, int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		return parameter.getEType() instanceof EDataType;
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IDomainClass#isParameterADomainObject(org.eclipse.emf.ecore.EOperation, int)
+	 */
 	public boolean isParameterADomainObject(EOperation operation, int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		return parameter.getEType() instanceof EClass;
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getInvokerFor(org.eclipse.emf.ecore.EOperation)
+	 */
 	public Method getInvokerFor(EOperation eOperation) {
 		String invokerMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eOperation), StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
@@ -821,6 +840,9 @@ public class RuntimeDomainClass<T>
 	}
 
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getAccessorFor(org.eclipse.emf.ecore.EReference)
+	 */
 	public Method getAccessorFor(EReference eReference) {
 		String accessorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
@@ -838,6 +860,9 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getAssociatorFor(org.eclipse.emf.ecore.EReference)
+	 */
 	public Method getAssociatorFor(EReference eReference) {
 		String associatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
@@ -856,6 +881,9 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getDissociatorFor(org.eclipse.emf.ecore.EReference)
+	 */
 	public Method getDissociatorFor(EReference eReference) {
 		String dissociatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
@@ -874,6 +902,9 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#createTransient()
+	 */
 	public <T> IDomainObject<T> createTransient() {
 		try {
 			Object pojo = getJavaClass().newInstance();
@@ -899,8 +930,6 @@ public class RuntimeDomainClass<T>
 	 * @param message
 	 */
 	private void logWarning(String message) {}
-
-	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
 
 	protected boolean isAttribute(Method method) {
 		return (getRuntimeNamingConventions().isAccessor(method) || 
@@ -929,6 +958,9 @@ public class RuntimeDomainClass<T>
 		return true;
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getObjectAdapterFor(de.berlios.rcpviewer.session.IDomainObject, java.lang.Class)
+	 */
 	public <V> V getObjectAdapterFor(IDomainObject<T> domainObject, Class<V> objectAdapterClass) {
 		List<IDomainClassAdapter> classAdapters = getAdapters();
 		for(IDomainClassAdapter classAdapter: classAdapters) {
@@ -947,10 +979,34 @@ public class RuntimeDomainClass<T>
 		return (RuntimeNamingConventions)getNamingConventions();
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IDomainClass#getEClassName()
+	 */
 	public String getEClassName() {
 		return getEClass().getName();
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#attributeIdFor(org.eclipse.emf.ecore.EAttribute)
+	 */
+	public IFeatureId attributeIdFor(EAttribute attribute) {
+		return FeatureId.create(attribute.getName(), this, IFeatureId.Type.ATTRIBUTE); 
+	}
+	
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#authorizationConstraintFor(org.eclipse.emf.ecore.EAttribute)
+	 */
+	public IPrerequisites authorizationConstraintFor(EAttribute attribute) {
+		IRuntimeDomain rd = (IRuntimeDomain)this.getDomain();
+		return rd.getAuthorizationManager().preconditionsFor(attributeIdFor(attribute));
+	}
+
+
+	/*
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
 
 
 }

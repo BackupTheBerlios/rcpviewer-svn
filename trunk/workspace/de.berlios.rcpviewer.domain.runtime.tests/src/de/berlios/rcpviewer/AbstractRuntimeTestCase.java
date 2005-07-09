@@ -2,6 +2,7 @@ package de.berlios.rcpviewer;
 
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
+import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
@@ -48,6 +49,16 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		RuntimeDomain.resetAll();
 		SessionManager.instance().reset();
 		super.tearDown();
+	}
+	
+	/**
+	 * downcast {@link #getDomainInstance} to runtime.
+	 * 
+	 * TODO: fix covariance
+	 * @return
+	 */
+	protected IRuntimeDomain getRuntimeDomainInstance() {
+		return (IRuntimeDomain)getDomainInstance();
 	}
 
 

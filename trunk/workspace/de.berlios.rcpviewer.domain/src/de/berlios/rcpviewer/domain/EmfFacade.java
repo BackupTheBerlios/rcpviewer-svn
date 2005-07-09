@@ -27,8 +27,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  * Collection of methods to access various EMF-related functionality.
  * 
  * <p>
- * Stateless class; an alternative design would have been a collection of 
- * static methods.
+ * Wraps the core registry (from which we pick up EMF equivalents of primitive
+ * types). 
  * 
  * <p>
  * TODO: shouldn't be using NamingConventions really.
@@ -37,8 +37,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  */
 public class EmfFacade {
 
-//	private final ResourceSet resourceSet;
-	public final Map<Class,EDataTypeData> coreDataTypes; 
+	private final Map<Class,EDataTypeData> coreDataTypes; 
 
 	/**
 	 * Wraps an EDataType to allow additional semantics to be provided.
@@ -62,12 +61,7 @@ public class EmfFacade {
 	public EmfFacade() {
 		// seems to cause the core package registry to get populated
 		EcoreFactory.eINSTANCE.createEPackage();
-//		resourceSet = new ResourceSetImpl();
-		
-//		for(Object eClassifier: getEcorePackage().getEClassifiers()) {
-//			System.out.println(((EClassifier)eClassifier).toString());
-//		}
-		
+
 		coreDataTypes = new HashMap<Class,EDataTypeData>() {
 			private static final long serialVersionUID = 1L;
 			{

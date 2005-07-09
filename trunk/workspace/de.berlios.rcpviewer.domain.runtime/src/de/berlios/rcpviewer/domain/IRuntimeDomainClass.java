@@ -7,6 +7,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 
@@ -179,5 +181,24 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 * @return
 	 */
 	public Method getDissociatorFor(EReference reference);
+
+	/**
+	 * Returns a feature identifier for the supplied attribute.
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public IFeatureId attributeIdFor(EAttribute attribute);
+
+	/**
+	 * The {@link IPrerequisites} that the 
+	 * {@link de.berlios.rcpviewer.authorization.IAuthorizationManager} of the 
+	 * domain class' {@link de.berlios.rcpviewer.domain.runtime.IRuntimeDomain}
+	 * applies to this attribute.
+	 * 
+	 * @param attribute
+	 * @return
+	 */
+	public IPrerequisites authorizationConstraintFor(EAttribute attribute);
 
 }

@@ -18,4 +18,5 @@ Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard,
  de.berlios.rcpviewer.session,
- de.berlios.rcpviewer.session.local
+ de.berlios.rcpviewer.session.local,
+ de.berlios.rcpviewer.authorization

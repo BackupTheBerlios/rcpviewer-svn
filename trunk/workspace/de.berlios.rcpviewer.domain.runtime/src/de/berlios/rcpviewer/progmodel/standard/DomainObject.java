@@ -15,8 +15,8 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ConstraintSet;
-import de.berlios.rcpviewer.progmodel.extended.IConstraintSet;
+import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
