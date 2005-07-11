@@ -131,6 +131,18 @@ public class SessionTreeView extends ViewPart {
 		super.dispose();
 	}
 
+	/* non-platform public methods */
+	
+	
+	/**
+	 * Refrehses the display of the passed object (if  displayed).
+	 * @param object
+	 */
+	public void refresh( IDomainObject object ) {
+		if ( object == null ) throw new IllegalArgumentException();
+		_viewer.refresh( object );
+	}
+
 	/* private methods */
 
 	// as it says - dependent on current viewer selection

@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
@@ -19,7 +18,7 @@ import de.berlios.rcpviewer.session.ISessionManager;
  * @author Mike
  *
  */
-public class NewDomainObjectJob extends UIJob {
+public class NewDomainObjectJob extends AbstractUserJob {
 
 	private final IRuntimeDomainClass _clazz;
 	

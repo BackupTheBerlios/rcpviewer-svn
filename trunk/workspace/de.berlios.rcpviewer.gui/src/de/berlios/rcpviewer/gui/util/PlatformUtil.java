@@ -3,8 +3,15 @@
  */
 package de.berlios.rcpviewer.gui.util;
 
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+
+import de.berlios.rcpviewer.gui.editors.DefaultEditor;
+import de.berlios.rcpviewer.gui.editors.DefaultEditorInput;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 
 
@@ -25,6 +32,35 @@ public class PlatformUtil {
         return PlatformUI.getWorkbench()
           .getActiveWorkbenchWindow()
           .getActivePage();
+    }
+        
+    /**
+     * Looks for and returns the <b>active</b> editor 
+     * displaying the passed object or <code>null</code> if none.
+     * <br>This compliments <code>IWorkbenchPage.openEditor()</code> which
+     * would automatically open the editor if it was not already.
+     * <br>Note this currently assumes that only one editor can display 
+     * an object at a time so returns the first it finds.  This may not hold
+     * true in the future.
+     * @param obj
+     * @return
+     * @see org.eclipse.ui.IWorkbenchPage
+     */
+    public static final DefaultEditor getActiveEditor( IDomainObject obj ) {
+    	if ( obj == null ) throw new IllegalArgumentException();
+    	IEditorReference[] refs = getActivePage().getEditorReferences();
+    	for ( IEditorReference ref : refs ) {
+    		IEditorPart part =  ref.getEditor( false );
+    		assert part != null;
+    		IEditorInput input = part.getEditorInput();
+    		if (input instanceof DefaultEditorInput ) {
+				DefaultEditorInput defInput = (DefaultEditorInput )input;
+				if ( obj.equals( defInput.getDomainObject() ) ) {
+					return (DefaultEditor)part;
+				}
+			}
+    	}
+    	return null;
     }
 
   

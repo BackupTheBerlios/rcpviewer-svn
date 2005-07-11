@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -14,9 +13,8 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * @author Mike
  *
  */
-public class RunOperationJob extends UIJob {
+public class RunOperationJob extends AbstractDomainObjectJob {
 
-	private final IDomainObject _domainObject;
 	private final EOperation _op;
 	private final Object[] _args;
 	
@@ -49,14 +47,12 @@ public class RunOperationJob extends UIJob {
 	public RunOperationJob( IDomainObject object,
 							EOperation operation,
 							Object[] args ) {
-		super( RunOperationJob.class.getName() );
-		if ( object == null ) throw new IllegalArgumentException();
+		super( RunOperationJob.class.getName(), object );
 		if ( operation == null ) throw new IllegalArgumentException();
 		if ( args == null ) throw new IllegalArgumentException();
 		if ( args.length != operation.getEParameters().size() ) {
 			 throw new IllegalArgumentException();
 		}
-		_domainObject = object;
 		_op = operation;
 		_args = args;
 	}
@@ -68,7 +64,7 @@ public class RunOperationJob extends UIJob {
 	 */
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
-		_domainObject.invokeOperation( _op, _args );
+		getDomainObject().invokeOperation( _op, _args );
 		return Status.OK_STATUS;
 	}
 

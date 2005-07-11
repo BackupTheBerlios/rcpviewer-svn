@@ -33,7 +33,7 @@ class DefaultActionsViewPage extends Page implements IActionsViewPage {
 	 */
 	public void createControl(Composite parent) {
 		_text = new Text(parent, SWT.NONE );
-		_text.setText( GuiPlugin.getResourceString( "DefaultActionsViewPage.Text") );
+		_text.setText( GuiPlugin.getResourceString( "DefaultActionsViewPage.Text") ); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)

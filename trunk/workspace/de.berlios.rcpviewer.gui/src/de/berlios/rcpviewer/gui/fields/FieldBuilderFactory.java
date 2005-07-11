@@ -12,28 +12,13 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.gui.util.ConfigElementSorter;
 
 /**
- * Singleton implementation.
+ *As it says.
  * @author Mike
  */
 public class FieldBuilderFactory {
 	
-	private static FieldBuilderFactory __instance = null;
-	
 	private final IFieldBuilder[] _builders;
 	private final Map<EAttribute, IFieldBuilder> _mappings;
-	
-	/**
-	 * Singleton accessor.
-	 * @return
-	 * @throws CoreException
-	 */
-	public static synchronized FieldBuilderFactory instance() 
-			throws CoreException {
-		if ( __instance == null ) {
-			__instance = new FieldBuilderFactory();
-		}
-		return __instance;
-	}
 	
 	
 	/**
@@ -41,7 +26,7 @@ public class FieldBuilderFactory {
 	 * <code>IFieldBuilder.EXTENSION_POINT_ID </code> extension point.
 	 * @throws CoreException
 	 */
-	private FieldBuilderFactory() throws CoreException {
+	public FieldBuilderFactory() throws CoreException {
         IConfigurationElement[] elems
         	= Platform.getExtensionRegistry()
                   .getConfigurationElementsFor( IFieldBuilder.EXTENSION_POINT_ID );

@@ -10,6 +10,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
+import de.berlios.rcpviewer.gui.fields.FieldBuilderFactory;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
 
@@ -22,6 +23,9 @@ public class GuiPlugin extends AbstractUIPlugin {
 	
 	// the shared instance.
 	private static GuiPlugin __plugin = null;
+	
+	// fields
+	private FieldBuilderFactory _fieldBuilderFactory = null;
 	
 	/* static methods */
 	
@@ -81,6 +85,9 @@ public class GuiPlugin extends AbstractUIPlugin {
 		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
 		sessionJob.schedule();
 		
+		// instantiate field build factory
+		_fieldBuilderFactory = new FieldBuilderFactory();
+		
 		// effectively running jobs synchronously
 		waitForJob( domainJob );
 		waitForJob( sessionJob );
@@ -95,6 +102,16 @@ public class GuiPlugin extends AbstractUIPlugin {
 		__plugin = null;
 	}
 	
+	/* public accessors */
+	
+	/**
+	 * @return Returns the fieldBuilderFactory.
+	 */
+	public FieldBuilderFactory getFieldBuilderFactory() {
+		return _fieldBuilderFactory;
+	}
+	
+	
 	/* private methods */
 	
 	// as it says
@@ -106,4 +123,6 @@ public class GuiPlugin extends AbstractUIPlugin {
 			throw new CoreException( job.getResult() );
 		}
 	}
+
+
 }

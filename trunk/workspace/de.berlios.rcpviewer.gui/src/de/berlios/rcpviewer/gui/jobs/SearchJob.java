@@ -3,7 +3,6 @@ package de.berlios.rcpviewer.gui.jobs;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
@@ -15,7 +14,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  * @author Mike
  *
  */
-public class SearchJob extends UIJob {
+public class SearchJob extends AbstractUserJob {
 
 	private final IRuntimeDomainClass _clazz;
 	

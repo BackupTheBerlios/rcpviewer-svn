@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.gui.editors;
 
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
@@ -13,14 +12,18 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.EditorPart;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.fields.FieldBuilderFactory;
 import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
+import de.berlios.rcpviewer.gui.jobs.JobAction;
+import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -34,12 +37,11 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public final class DefaultEditor extends EditorPart {
 	
-	public static final String ID = "de.berlios.rcpviewer.rcp.objectEditor";
+	public static final String ID = "de.berlios.rcpviewer.rcp.objectEditor"; //$NON-NLS-1$
 	
-	private FieldBuilderFactory _fieldBuilderFactory = null;
 	private IManagedForm _form = null;
 	private FormToolkit _toolkit = null;
-	private ActionsViewPage _actions = null;
+	private ActionsViewPage _actionsView = null;
 	
 	
 	/* (non-Javadoc)
@@ -51,18 +53,15 @@ public final class DefaultEditor extends EditorPart {
 		if ( input == null ) throw new IllegalArgumentException();
 		if ( !(input instanceof DefaultEditorInput) ) throw new IllegalArgumentException();
 		
-		// instantiate field build factory if necessary
-		try {
-			_fieldBuilderFactory = FieldBuilderFactory.instance();
-		}
-		catch ( CoreException ce ) {
-			throw new PartInitException( ce.getStatus() );
-		}
-
 		setSite( site );
 		setInput( input );
 		setPartName( input.getName() );
 		_toolkit = new FormToolkit( site.getShell().getDisplay() );
+		
+		// refresh action
+		site.getActionBars().setGlobalActionHandler(
+			ActionFactory.REFRESH.getId(),
+			new JobAction( new RefreshDomainObjectJob( getDomainObject() ) ) ) ;
 	}
 	
 	/* (non-Javadoc)
@@ -70,7 +69,6 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		assert _fieldBuilderFactory != null;
 		
 		// main form
 		_form = new ManagedForm( _toolkit, _toolkit.createScrolledForm(parent)) {
@@ -88,13 +86,15 @@ public final class DefaultEditor extends EditorPart {
 		// loop through all attributes - add a label and an IField for each
 		IDomainObject object = getDomainObject();
 		IDomainClass clazz = object.getDomainClass(); // JAVA_5_FIXME
+		FieldBuilderFactory factory
+			= GuiPlugin.getDefault().getFieldBuilderFactory();
 		for ( Object a : clazz.attributes() ) {       // JAVA_5_FIXME
 			EAttribute attribute = (EAttribute)a;
 			
 			// label
 			Label label = new Label( body, SWT.NONE );
 			label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
-			label.setText( attribute.getName() + ":" );
+			label.setText( attribute.getName() + ":" ); //$NON-NLS-1$
 			label.setBackground( body.getBackground() );
 			
 			// create parent composite for IField
@@ -105,8 +105,7 @@ public final class DefaultEditor extends EditorPart {
 			_toolkit.paintBordersFor( fieldComposite );
 			
 			// create IField
-			IFieldBuilder fieldBuilder
-				= _fieldBuilderFactory.getInstance( attribute );
+			IFieldBuilder fieldBuilder = factory.getInstance( attribute );
 			FieldPart fieldPart = new FieldPart(
 					fieldComposite,
 					fieldBuilder,
@@ -138,8 +137,8 @@ public final class DefaultEditor extends EditorPart {
 		if (_toolkit != null) {
 			_toolkit.dispose();
 		}
-		if ( _actions != null ) {
-			_actions.dispose();
+		if ( _actionsView != null ) {
+			_actionsView.dispose();
 		}
 		super.dispose();
 	}
@@ -199,12 +198,21 @@ public final class DefaultEditor extends EditorPart {
 	@Override
 	public Object getAdapter(Class adapter) {
 		if ( adapter.equals( IActionsViewPage.class ) ) {
-			if ( _actions == null ) {
-				_actions = new ActionsViewPage( getDomainObject() );
+			if ( _actionsView == null ) {
+				_actionsView = new ActionsViewPage( getDomainObject() );
 			}
-			return _actions;
+			return _actionsView;
 		}
 		return super.getAdapter(adapter);
+	}
+	
+	/* Non-platform public methods */
+	
+	/**
+	 * Refreshes the display if any.
+	 */
+	public void refresh() {
+		if ( _form != null ) _form.refresh();
 	}
 
 	// extract from input

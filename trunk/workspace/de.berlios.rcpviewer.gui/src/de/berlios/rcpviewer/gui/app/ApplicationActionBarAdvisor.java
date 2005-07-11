@@ -18,6 +18,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -30,9 +31,9 @@ import de.berlios.rcpviewer.gui.jobs.NewDomainObjectJob;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
-	public static final String CONTRIBUTION_ITEM_ID = "de.berlios.rcpviewer";
+	public static final String CONTRIBUTION_ITEM_ID = "de.berlios.rcpviewer"; //$NON-NLS-1$
 	
-	private static final String ADDITIONS_GROUP_ID = "additions";
+	private static final String ADDITIONS_GROUP_ID = "additions"; //$NON-NLS-1$
 
     /**
      * @param configurer
@@ -66,14 +67,30 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         	= new ToolBarManager(SWT.HORIZONTAL | SWT.FLAT);
         toolBarManager.add( new GroupMarker( ADDITIONS_GROUP_ID ));
 
-		// save button
 	 	IWorkbenchWindow window
-	 		= getActionBarConfigurer().getWindowConfigurer().getWindow();
+ 			= getActionBarConfigurer().getWindowConfigurer().getWindow();
+        
+	    // refresh button - standard action but add images.
+	   	IAction refresh = ActionFactory.REFRESH.create(window);
+	   	refresh.setImageDescriptor( 
+	   			AbstractUIPlugin.imageDescriptorFromPlugin(
+	   					GuiPlugin.getDefault().getBundle().getSymbolicName(),
+	   					"/icons/refresh.png" ) ) ; //$NON-NLS-1$
+	   	refresh.setDisabledImageDescriptor( 
+	   			AbstractUIPlugin.imageDescriptorFromPlugin(
+	   					GuiPlugin.getDefault().getBundle().getSymbolicName(),
+	   					"/icons/refresh_disabled.png" ) ) ; //$NON-NLS-1$
+	    ActionContributionItem refreshContributionItem
+	    	= new ActionContributionItem(refresh);
+	    getActionBarConfigurer().registerGlobalAction(refresh);
+	    toolBarManager.prependToGroup( ADDITIONS_GROUP_ID , refreshContributionItem);	    
+	    
+		// save button
 	   	IAction save = ActionFactory.SAVE.create(window);
-	    ActionContributionItem actionContributionItem
+	    ActionContributionItem saveContributionItem
 	    	= new ActionContributionItem(save);
 	    getActionBarConfigurer().registerGlobalAction(save);
-	    toolBarManager.prependToGroup( ADDITIONS_GROUP_ID , actionContributionItem);
+	    toolBarManager.prependToGroup( ADDITIONS_GROUP_ID , saveContributionItem);
 	     
 		// additional contribution items
 	    ToolBarContributionItem tbItem
@@ -88,16 +105,16 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	IWorkbenchWindow window
     		= getActionBarConfigurer().getWindowConfigurer().getWindow();
         MenuManager menu = new MenuManager(
-				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.File" ), 
+				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.File" ),  //$NON-NLS-1$
 				IWorkbenchActionConstants.M_FILE);
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
 
 		MenuManager newmenu = new MenuManager(
-				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.New" ), 
+				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.New" ), //$NON-NLS-1$
 				ActionFactory.NEW.getId());
 	    menu.add(newmenu);
 	    createClassItems( newmenu );
-	    newmenu.add(new GroupMarker("newStart"));
+	    newmenu.add(new GroupMarker("newStart")); //$NON-NLS-1$
 		newmenu.add( ContributionItemFactory.NEW_WIZARD_SHORTLIST.create(window));
         
         menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
@@ -136,8 +153,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 						(IRuntimeDomainClass)domainClass );
 				JobAction action = new JobAction( job );
 				// overwrite default name for action with class name
-				action.setText( domainClass.getName() );
-				action.setToolTipText( domainClass.getDescription() );
+				action.setText( domainClass.getName() ); // JAVA_5_FIXME
+				action.setToolTipText( domainClass.getDescription() ); // JAVA_5_FIXME
 				newMenu.add( action );
     		}
 			newMenu.add( new Separator() );
