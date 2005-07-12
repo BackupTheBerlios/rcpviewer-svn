@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,13 +31,14 @@ public class DateFieldBuilder implements IFieldBuilder {
 	private static final DateFormat FORMATTER
 		= DateFormat.getDateInstance(DateFormat.SHORT);
 
+
 	/**
 	 * Only if the class is a <code>Date</code> or subclass.
-	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
+	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
-	public boolean isApplicable(EAttribute attribute) {
+	public boolean isApplicable(ETypedElement element) {
 		return Date.class.isAssignableFrom(
-				attribute.getEType().getInstanceClass() );
+				element.getEType().getInstanceClass() );
 	}
 
 	/* (non-Javadoc)
@@ -73,7 +74,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 			
 				_text.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent e) {
-						listener.fieldModified();
+						listener.fieldModified( DateField.this );
 					};
 				});
 				

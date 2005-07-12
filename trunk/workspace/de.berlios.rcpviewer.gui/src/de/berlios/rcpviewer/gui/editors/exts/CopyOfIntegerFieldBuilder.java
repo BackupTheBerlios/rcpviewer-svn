@@ -9,6 +9,7 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -19,7 +20,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import de.berlios.rcpviewer.gui.dnd.IntegerTransfer;
 import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 
 
@@ -28,7 +28,7 @@ import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
  * <br>Can handle DnD operations.
  * @author Mike
  */
-public class IntegerFieldBuilder implements IFieldBuilder {
+public class CopyOfIntegerFieldBuilder implements IFieldBuilder {
 
 
 	/**
@@ -112,8 +112,7 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 		private void addDnD( final Text text, boolean editable ) {
 			assert text != null;
 			
-			Transfer[] types = new Transfer[] {
-					IntegerTransfer.getInstance() };
+			Transfer[] types = new Transfer[] {TextTransfer.getInstance()};
 			int operations = DND.DROP_MOVE | DND.DROP_COPY ;
 			
 			final DragSource source = new DragSource (text, operations);
@@ -123,7 +122,7 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 					event.doit = (text.getText ().length () != 0);
 				}
 				public void dragSetData (DragSourceEvent event) {
-					event.data = new Integer( text.getText () ) ;
+					event.data = text.getText ();
 				}
 				public void dragFinished(DragSourceEvent event) {
 					// does nowt
@@ -134,20 +133,21 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 				DropTarget target = new DropTarget(text, operations);
 				target.setTransfer(types);
 				target.addDropListener (new DropTargetAdapter() {
-					public void dragEnter(DropTargetEvent event){
-						if ( !IntegerTransfer.getInstance().isSupportedType(
-								event.currentDataType ) ) {
-							event.detail = DND.DROP_NONE;
-						}
-					}
 					public void drop(DropTargetEvent event) {
 						if ( event.data == null) {
 							event.detail = DND.DROP_NONE;
-							return;
 						}
-						// note that all DnD ops converted to copy's 
-						event.detail = DND.DROP_COPY;
-						text.setText( String.valueOf( event.data)  );
+						else {
+							try {
+								Integer.valueOf( (String)event.data );
+								// note that all DnD ops converted to copy's 
+								event.detail = DND.DROP_COPY;
+								text.setText ((String) event.data );
+							}
+							catch ( NumberFormatException nfe ) {
+								event.detail = DND.DROP_NONE;
+							}
+						}
 					}
 				});
 			}

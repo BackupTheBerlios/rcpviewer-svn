@@ -5,11 +5,11 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -18,26 +18,32 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
 /**
- * Base class for dialogs that use a form gui
+ * Base class for displays that use a form gui
  */
-public class AbstractFormDialog extends Dialog {
+public class AbstractFormDisplay {
 	
 	protected static final boolean ADD_DEFAULT_BEHAVIOUR = true;
 	protected static final boolean ADD_NO_BEHAVIOUR = false;
 	
+	private final Shell _shell;
+	
+	// access via lazy instantiators
 	private FormToolkit _toolkit = null;
-	private Shell _shell = null;
 	private ScrolledForm _form = null;
 	private Composite _buttonsArea = null;
+	
+	// modifed by subclasses via protected methods
 	private int _buttonCount = 0;
 	private Point _minSize = null;
 	private int _closeCode = SWT.CANCEL;
 	
+
 	/**
 	 * @param parent
 	 */
-	public AbstractFormDialog( Shell parent ) {
-		super( parent );
+	public AbstractFormDisplay( Shell parent ) {
+		if ( parent == null ) throw new IllegalArgumentException();
+		_shell = parent;
 	}
 	
 	/** 
@@ -46,45 +52,40 @@ public class AbstractFormDialog extends Dialog {
 	 * via<code>setCloseCode()</code>
 	 * @return
 	 */
-	public int open() {
+	public int open() {	
 		
-		Shell shell = getShell();
+		// layout
+		GridLayout layout = new GridLayout();
+        layout.horizontalSpacing= 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.verticalSpacing = 0;
+		getShell().setLayout( layout );
+		getShell().setBackground( getFormToolkit().getColors().getBackground() );
+		
 		
 		// maybe a preferred size
 		if ( _minSize != null ) {
 			// default sizing looks daft so this is worth it
-			Point preferredSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+			Point preferredSize = getShell().computeSize( SWT.DEFAULT, SWT.DEFAULT );
 			if ( preferredSize.x < _minSize.x ) preferredSize.x = _minSize.x;
 			if ( preferredSize.y < _minSize.y ) preferredSize.y = _minSize.y;
-			shell.setSize( preferredSize );
+			getShell().setSize( preferredSize );
 		}
 		
-		shell.open();
-		Display display = getParent().getDisplay();
-		while (!shell.isDisposed()) {
+		// position in middle of screen
+		Rectangle displayArea
+			= getShell().getDisplay().getPrimaryMonitor().getClientArea();
+		getShell().setLocation( 
+				displayArea.width/2 - getShell().getSize().x/2, 
+				displayArea.height/2 - getShell().getSize().y/2);
+		
+		getShell().open();
+		Display display = getShell().getDisplay();
+		while (!getShell().isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}
 		return _closeCode;
-	}
-	
-	/**
-	 * Accessor to shell.
-	 * @return
-	 */
-	protected Shell getShell() {
-		if ( _shell == null ) {
-			Shell parent = getParent();
-			_shell = new Shell( parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL ) ;
-			GridLayout layout = new GridLayout();
-	        layout.horizontalSpacing= 0;
-	        layout.marginHeight = 0;
-	        layout.marginWidth = 0;
-	        layout.verticalSpacing = 0;
-			_shell.setLayout( layout );
-			_shell.setBackground( _toolkit.getColors().getBackground() );
-			
-		}
-		return _shell;
 	}
 	
 	/**
@@ -110,7 +111,7 @@ public class AbstractFormDialog extends Dialog {
 	 */
 	protected ScrolledForm getForm() {
 		if ( _form == null ) {
-	    	_form = _toolkit.createScrolledForm( getShell()  );
+	    	_form = getFormToolkit().createScrolledForm( getShell()  );
 			_toolkit.paintBordersFor( _form.getBody() );
 			_form.setLayoutData( new GridData( GridData.FILL_BOTH ) );
 		}
@@ -186,6 +187,14 @@ public class AbstractFormDialog extends Dialog {
 	protected void setMinSize( Point size ) {
 		assert size != null;
 		_minSize = size;
+	}
+	
+	/**
+	 * Accessor
+	 * @return
+	 */
+	protected Shell getShell() {
+		return _shell;
 	}
 	
 	// lazily built

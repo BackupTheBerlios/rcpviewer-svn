@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.gui.editors.exts;
 
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,14 +14,15 @@ import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 public class BooleanFieldBuilder implements IFieldBuilder {
 
-	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.EAttribute)
+	/**
+	 * Only if class is a <code>Boolean</code>
+	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
-	public boolean isApplicable(EAttribute attribute) {
-		return Boolean.class == attribute.getEType().getInstanceClass();
+	public boolean isApplicable(ETypedElement element) {
+		return Boolean.class == element.getEType().getInstanceClass();
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
 	public IField createField(Composite parent, boolean editable, IFieldListener listener) {
@@ -43,7 +44,7 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 			_button.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent pE) {
-					listener.fieldModified();
+					listener.fieldModified( BooleanField.this );
 				}
 			});
 			
@@ -51,7 +52,7 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 				_button.addSelectionListener( new DefaultSelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent pE) {
-						listener.fieldModified();
+						listener.fieldModified( BooleanField.this );
 					}
 				});
 			}

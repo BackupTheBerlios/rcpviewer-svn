@@ -3,6 +3,7 @@
  */
 package de.berlios.rcpviewer.gui.util;
 
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -24,14 +25,22 @@ public class PlatformUtil {
     
     /**
      * Tidy access to <code>getActivePage</code>
-     * @param editor
-     * @param save
      * @return
      */
     public static final IWorkbenchPage getActivePage() {
         return PlatformUI.getWorkbench()
           .getActiveWorkbenchWindow()
           .getActivePage();
+    }
+    
+    /**
+     * Tidy access to workbench's <code>Shell</code>
+     * @return
+     */
+    public static final Shell getActiveShell() {
+        return PlatformUI.getWorkbench()
+          .getActiveWorkbenchWindow()
+          .getShell();
     }
         
     /**

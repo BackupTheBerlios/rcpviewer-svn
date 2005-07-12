@@ -141,9 +141,9 @@ class FieldPart implements IFormPart, IFieldListener {
 	/* IFieldListener contract */
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener#fieldModified()
+	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder.IFieldListener#fieldModified(de.berlios.rcpviewer.gui.fields.IFieldBuilder.IField)
 	 */
-	public void fieldModified() {
+	public void fieldModified( IField field) {
 		setDirty( true );
 	}
 	

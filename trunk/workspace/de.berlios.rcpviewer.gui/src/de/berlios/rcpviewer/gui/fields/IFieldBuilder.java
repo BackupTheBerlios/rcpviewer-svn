@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.gui.fields;
 
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -14,11 +14,11 @@ public interface IFieldBuilder {
 		= "de.berlios.rcpviewer.gui.fieldbuilder"; //$NON-NLS-1$
 	
 	/**
-	 * Whether this field builder is applicable for the passed attribute.
+	 * Whether this field builder is applicable for the passed element.
 	 * @param attribute
 	 * @return
 	 */
-	public boolean isApplicable( EAttribute attribute );
+	public boolean isApplicable( ETypedElement element );
 
 	/**
 	 * Create the <code>IField</code> within the supplied parent composite.
@@ -61,12 +61,12 @@ public interface IFieldBuilder {
 	}
 	
 	/**
-	 * Implementatiosn want to know whever the field is modified via the gui.
+	 * Implementatiosn want to know whenever the field is modified via the gui.
 	 * @author Mike
 	 */
 	public interface IFieldListener {
 		
-		public void fieldModified();
+		public void fieldModified( IField field );
 	}
 
 	

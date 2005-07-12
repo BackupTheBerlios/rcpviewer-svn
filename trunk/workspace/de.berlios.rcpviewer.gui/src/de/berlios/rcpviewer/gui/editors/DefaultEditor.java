@@ -98,10 +98,9 @@ public final class DefaultEditor extends EditorPart {
 			label.setBackground( body.getBackground() );
 			
 			// create parent composite for IField
-			Composite fieldComposite = new Composite( body, SWT.NONE );
+			Composite fieldComposite = _toolkit.createComposite( body );
 			fieldComposite.setLayoutData( 
 					new GridData( GridData.FILL_HORIZONTAL ) );
-			fieldComposite.setBackground( body.getBackground() );
 			_toolkit.paintBordersFor( fieldComposite );
 			
 			// create IField

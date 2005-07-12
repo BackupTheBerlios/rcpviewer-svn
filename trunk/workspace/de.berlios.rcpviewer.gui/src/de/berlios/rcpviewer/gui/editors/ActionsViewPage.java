@@ -3,7 +3,6 @@
  */
 package de.berlios.rcpviewer.gui.editors;
 
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ListViewer;
@@ -14,7 +13,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.Page;
 
-import de.berlios.rcpviewer.gui.jobs.NotImplementedJob;
 import de.berlios.rcpviewer.gui.jobs.RunOperationJob;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
 import de.berlios.rcpviewer.gui.widgets.ErrorInput;
@@ -80,26 +78,16 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 	
 	// run the selected operation
 	private void runOp() {
-    	// get op
+    	
+		// get op
 		if ( _viewer.getSelection().isEmpty() ) return;
     	Object selected
     		= ((StructuredSelection)_viewer.getSelection()).getFirstElement();
     	if ( selected instanceof ErrorInput ) return;
     	assert selected instanceof EOperation;
-    	EOperation op = (EOperation)selected;
-    	
-    	// choose job
-    	Job job;
-    	if ( op.getEParameters().isEmpty() ) {
-    		// no-arg op can be run immediately
-    		job = new RunOperationJob( _domainObject, op );
-    	}
-    	else {
-    		job = new NotImplementedJob();
-    	}
     	
     	// run job
-    	job.schedule();
+    	new RunOperationJob( _domainObject, (EOperation)selected ).schedule();
     	
 	}
 

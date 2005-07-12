@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.ETypedElement;
 
 import de.berlios.rcpviewer.gui.util.ConfigElementSorter;
 
@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.gui.util.ConfigElementSorter;
 public class FieldBuilderFactory {
 	
 	private final IFieldBuilder[] _builders;
-	private final Map<EAttribute, IFieldBuilder> _mappings;
+	private final Map<ETypedElement, IFieldBuilder> _mappings;
 	
 	
 	/**
@@ -38,20 +38,20 @@ public class FieldBuilderFactory {
 			assert obj instanceof IFieldBuilder;
 			_builders[i] = (IFieldBuilder)obj;
 		}
-		_mappings = new HashMap<EAttribute, IFieldBuilder>();
+		_mappings = new HashMap<ETypedElement, IFieldBuilder>();
 	}
 	
 	/**
-	 * Selects and generates IFieldBuilder appropriate for passed attribute
-	 * @param attribute
+	 * Selects and generates IFieldBuilder appropriate for passed element
+	 * @param element
 	 * @return
 	 */
-	public IFieldBuilder getInstance( EAttribute attribute ) {
-		if ( attribute == null ) throw new IllegalArgumentException();
-		IFieldBuilder builder = _mappings.get( attribute );
+	public IFieldBuilder getInstance( ETypedElement element ) {
+		if ( element == null ) throw new IllegalArgumentException();
+		IFieldBuilder builder = _mappings.get( element );
 		if ( builder == null ) {
 			for ( int i=0, num = _builders.length ; i < num ; i++ ) {
-				if ( _builders[i].isApplicable( attribute ) ) {
+				if ( _builders[i].isApplicable( element ) ) {
 					builder = _builders[i];
 					break;
 				}
@@ -59,7 +59,7 @@ public class FieldBuilderFactory {
 			if ( builder == null ) {
 				builder = new DefaultFieldBuilder();
 			}
-			_mappings.put( attribute, builder );
+			_mappings.put( element, builder );
 		}
 		return builder;
 	}
