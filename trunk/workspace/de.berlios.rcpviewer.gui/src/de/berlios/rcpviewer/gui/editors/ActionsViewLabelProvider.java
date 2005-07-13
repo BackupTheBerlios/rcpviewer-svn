@@ -41,6 +41,7 @@ public class ActionsViewLabelProvider extends LabelProvider {
 	
 	private String buildName( EOperation op ) {
 		assert op != null;
+		
 		StringBuffer sb = new StringBuffer();
 		sb.append( op.getName() );
 		sb.append( "(" ); //$NON-NLS-1$

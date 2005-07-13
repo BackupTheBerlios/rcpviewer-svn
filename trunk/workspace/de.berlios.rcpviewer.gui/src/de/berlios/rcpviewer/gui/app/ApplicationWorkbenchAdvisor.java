@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.gui.app;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
@@ -8,13 +9,22 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
-
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.application.WorkbenchAdvisor#initialize(org.eclipse.ui.application.IWorkbenchConfigurer)
+	 */
+	@Override
+	public void initialize(IWorkbenchConfigurer configurer) {
+		super.initialize(configurer);
+    	if ( configurer == null ) throw new IllegalArgumentException();
+    	configurer.setSaveAndRestore( true );
+	}
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.application.WorkbenchAdvisor#createWorkbenchWindowAdvisor(org.eclipse.ui.application.IWorkbenchWindowConfigurer)
      */
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
+    	return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
 
 	/* (non-Javadoc)
@@ -34,11 +44,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		MessageDialog.openError(
 				null,
 				GuiPlugin.getResourceString( 
-						"ApplicationWorkbenchAdvisor.UncaughtError"),
+						"ApplicationWorkbenchAdvisor.UncaughtError"), //$NON-NLS-1$
 				exception.toString() );
-	}
-	
-	
-
-	
+	}	
 }

@@ -96,8 +96,11 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 			EParameter param = (EParameter)obj;
 			Label label = getFormToolkit().createLabel( 
 					body, 
-					param.getName() + ":" ); //$NON-NLS-1$
+					param.getName() + ":" ) ; //$NON-NLS-1$
 			label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
+			label.setToolTipText(
+					_object.getDomainClass()   // JAVA_5_FIXME
+					       .getDescriptionFor( _op, finalIndex ) ) ;
 			
 			Composite fieldComposite = getFormToolkit().createComposite( body );
 			fieldComposite.setLayoutData( 

@@ -25,7 +25,7 @@ import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 
 /**
  * Used for integers.
- * <br>Can handle DnD operations.
+ * <br>Can handle DnD operations but only within the app.
  * @author Mike
  */
 public class IntegerFieldBuilder implements IFieldBuilder {

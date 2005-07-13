@@ -1,12 +1,12 @@
 package de.berlios.rcpviewer.gui.app;
 
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.util.PlatformUtil;
 
 /**
  * @author Mike
@@ -14,7 +14,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public static final String TITLE_KEY = 
-		"ApplicationWorkbenchWindowAdvisor.Title";
+		"ApplicationWorkbenchWindowAdvisor.Title"; //$NON-NLS-1$
 	
     /**
      * @param configurer
@@ -40,16 +40,18 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setTitle( GuiPlugin.getResourceString( TITLE_KEY ) );
     }
 
-
-	/**
-	 * Maximises the window.
-	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createWindowContents(org.eclipse.swt.widgets.Shell)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowShellClose()
 	 */
 	@Override
-	public void createWindowContents(Shell shell) {
-		super.createWindowContents(shell);
-		shell.setMaximized(true);
+	public boolean preWindowShellClose() {
+		// ensures all editors are closed on exit - this way no restore is
+		// attempted on them.
+		PlatformUtil.getActivePage().closeAllEditors( true );
+		return true;
 	}
-	
-	
+    
+    
+
+
 }

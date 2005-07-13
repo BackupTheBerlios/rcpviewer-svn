@@ -6,6 +6,14 @@ import java.util.Date;
 
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -18,10 +26,13 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import de.berlios.rcpviewer.gui.dnd.DateTransfer;
 import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 
 /**
- * Uses third party library swtcalendar - with thanks.
+ * Used for dates.
+ * <br>Can handle DnD operations but only within the app.
+ * <br>Uses third party library swtcalendar - with thanks.
  * @ref http://swtcalendar.sourceforge.net/
  * @author Mike
  *
@@ -109,6 +120,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 		            }
 		        });
 			}
+			addDnD( _text, editable );
 		}
 
 		/* (non-Javadoc)
@@ -138,6 +150,62 @@ public class DateFieldBuilder implements IFieldBuilder {
 			if ( !(obj instanceof Date) ) throw new IllegalArgumentException();
 			_text.setText( FORMATTER.format( (Date)obj ) );
 			
+		}
+		
+		// add DnD functionality
+		private void addDnD( final Text text, boolean editable ) {
+			assert text != null;
+			
+			Transfer[] types = new Transfer[] {
+					DateTransfer.getInstance() };
+			int operations = DND.DROP_MOVE | DND.DROP_COPY ;
+			
+			final DragSource source = new DragSource (text, operations);
+			source.setTransfer(types);
+			source.addDragListener (new DragSourceListener () {
+				public void dragStart(DragSourceEvent event) {
+					try {
+						FORMATTER.parse( text.getText () );
+						event.doit = true;
+					}
+					catch (ParseException pe ) {
+						event.doit = false;
+					}
+				}
+				public void dragSetData (DragSourceEvent event) {
+					try {
+						event.data = FORMATTER.parse( text.getText () );
+					}
+					catch (ParseException pe ) {
+						event.doit = false;
+					}
+				}
+				public void dragFinished(DragSourceEvent event) {
+					// does nowt
+				}
+			});
+
+			if ( editable ) {
+				DropTarget target = new DropTarget(text, operations);
+				target.setTransfer(types);
+				target.addDropListener (new DropTargetAdapter() {
+					public void dragEnter(DropTargetEvent event){
+						if ( !DateTransfer.getInstance().isSupportedType(
+								event.currentDataType ) ) {
+							event.detail = DND.DROP_NONE;
+						}
+					}
+					public void drop(DropTargetEvent event) {
+						if ( event.data == null) {
+							event.detail = DND.DROP_NONE;
+							return;
+						}
+						// note that all DnD ops converted to copy's 
+						event.detail = DND.DROP_COPY;
+						text.setText( FORMATTER.format( (Date)event.data  ) );
+					}
+				});
+			}
 		}
 	}
 }

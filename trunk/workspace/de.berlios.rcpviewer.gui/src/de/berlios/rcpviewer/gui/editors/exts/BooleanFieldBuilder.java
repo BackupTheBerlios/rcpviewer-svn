@@ -2,6 +2,14 @@ package de.berlios.rcpviewer.gui.editors.exts;
 
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -9,9 +17,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import de.berlios.rcpviewer.gui.dnd.BooleanTransfer;
 import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
+/**
+ * Used for booleans.
+ * <br>Can handle DnD operations but only within the app.
+ * @author Mike
+ */
 public class BooleanFieldBuilder implements IFieldBuilder {
 
 	/**
@@ -59,6 +73,7 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 			else {
 				_button.setEnabled( false );
 			}
+			addDnD( _button, editable );
 		}
 
 		/* (non-Javadoc)
@@ -82,6 +97,51 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 			if ( !(obj instanceof Boolean) ) throw new IllegalArgumentException();
 			_button.setSelection( (Boolean)obj );
 			
+		}
+		
+		// add DnD functionality
+		private void addDnD( final Button button, boolean editable ) {
+			assert button != null;
+			
+			Transfer[] types = new Transfer[] {
+					BooleanTransfer.getInstance() };
+			int operations = DND.DROP_MOVE | DND.DROP_COPY ;
+			
+			final DragSource source = new DragSource (button, operations);
+			source.setTransfer(types);
+			source.addDragListener (new DragSourceListener () {
+				public void dragStart(DragSourceEvent event) {
+					event.doit = true;
+				}
+				public void dragSetData (DragSourceEvent event) {
+					event.data = button.getSelection();
+				}
+				public void dragFinished(DragSourceEvent event) {
+					// does nowt
+				}
+			});
+
+			if ( editable ) {
+				DropTarget target = new DropTarget(button, operations);
+				target.setTransfer(types);
+				target.addDropListener (new DropTargetAdapter() {
+					public void dragEnter(DropTargetEvent event){
+						if ( !BooleanTransfer.getInstance().isSupportedType(
+								event.currentDataType ) ) {
+							event.detail = DND.DROP_NONE;
+						}
+					}
+					public void drop(DropTargetEvent event) {
+						if ( event.data == null) {
+							event.detail = DND.DROP_NONE;
+							return;
+						}
+						// note that all DnD ops converted to copy's 
+						event.detail = DND.DROP_COPY;
+						button.setSelection( (Boolean)event.data );
+					}
+				});
+			}
 		}
 	}
 }

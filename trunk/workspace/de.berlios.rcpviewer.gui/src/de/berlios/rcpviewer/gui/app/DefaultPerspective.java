@@ -20,9 +20,9 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	 */
 	public static final String ID = DefaultPerspective.class.getName();
 	
-	private static final String TOP_RIGHT = "topright";
-	private static final String BOTTOM_RIGHT = "bottomright";
-	private static final String BOTTOM = "bottom";
+	private static final String TOP_RIGHT = "topright"; //$NON-NLS-1$
+	private static final String BOTTOM_RIGHT = "bottomright"; //$NON-NLS-1$
+	private static final String BOTTOM = "bottom"; //$NON-NLS-1$
 	
 	/**
 	 * Creates:
@@ -80,8 +80,8 @@ public class DefaultPerspective implements IPerspectiveFactory {
 				IPageLayout.BOTTOM, 
 				0.7f, 
 				layout.getEditorArea() );
-		bottom.addPlaceholder( "org.eclipse.search.ui.views.SearchView" );
-		bottom.addPlaceholder( "org.eclipse.search.SearchResultView" );
+		bottom.addPlaceholder( "org.eclipse.search.ui.views.SearchView" ); //$NON-NLS-1$
+		bottom.addPlaceholder( "org.eclipse.search.SearchResultView" ); //$NON-NLS-1$
 
 	}
 }
