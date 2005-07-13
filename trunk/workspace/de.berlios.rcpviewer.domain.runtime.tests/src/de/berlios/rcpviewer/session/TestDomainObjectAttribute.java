@@ -3,16 +3,13 @@ package de.berlios.rcpviewer.session;
 import org.easymock.MockControl;
 import org.eclipse.emf.ecore.EAttribute;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.standard.FeatureId;
+import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 
 public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {

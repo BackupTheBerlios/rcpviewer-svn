@@ -8,7 +8,7 @@ package de.berlios.rcpviewer.domain;
  *
  * @author Dan Haywood
  */
-public interface EmfFacadeAware {
+public interface IEmfFacadeAware {
 
 	EmfFacade getEmfFacade();
 	void setEmfFacade(EmfFacade emfFacade);

@@ -13,59 +13,67 @@
 
     <!-- Checks that a package.html file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#PackageHtml -->
-    <module name="PackageHtml"/>
+	<!--
+    <module name="PackageHtml"/> Dan=yes Mike=... Ted=... Eoin=...
+	-->
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile"/>
+	<!--
+    <module name="NewlineAtEndOfFile"/>  Dan=yes Mike=... Ted=... Eoin=...
+	-->
 
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
-    <module name="Translation"/>
+	<!--
+    <module name="Translation"/>  Dan=yes Mike=... Ted=... Eoin=...
+	-->
 
-    <module name="TreeWalker">
+    <module name="TreeWalker"> 
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocType"/>
-        <module name="JavadocStyle"/>
         <!--
-        <module name="JavadocMethod"/>
-        <module name="JavadocVariable"/>
+        <module name="JavadocType"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="JavadocStyle"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="JavadocMethod"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="JavadocVariable"/>  Dan=no Mike=... Ted=... Eoin=...
 		-->
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
-        <module name="ConstantName"/>
-        <module name="LocalFinalVariableName"/>
-        <module name="LocalVariableName"/>
-        <module name="MemberName">
-			<property name="format"
-				  value="^[_](\.[a-z][a-zA-Z0-9]*)*$"/>
-		</module>
-        <module name="PackageName">
-			<property name="format"
-				  value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
-		</module>
-        <module name="MethodName"/>
-        <module name="ParameterName"/>
-        <module name="StaticVariableName">
-			<property name="format"
-				  value="^[__](\.[a-z][a-zA-Z0-9]*)*$"/>
-		</module>
 		<module name="TypeName">
 		    <property name="format"
                 value="^I[A-Z][a-zA-Z0-9]*$"/>
 		    <property name="tokens"
 			    value="INTERFACE_DEF"/>
 		</module>
-		<module name="TypeName">
+        <module name="PackageName"> 
+			<property name="format"
+				  value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+		</module>
+		<!--
+        <module name="ConstantName"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="LocalFinalVariableName"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="LocalVariableName"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="MemberName">  Dan=yes Mike=... Ted=... Eoin=...
+			<property name="format"
+				  value="^[_](\.[a-z][a-zA-Z0-9]*)*$"/>
+		</module>
+        <module name="MethodName"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="ParameterName"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="StaticVariableName">  Dan=yes Mike=... Ted=... Eoin=...
+			<property name="format"
+				  value="^[__](\.[a-z][a-zA-Z0-9]*)*$"/>
+		</module>
+		<module name="TypeName">  Dan=yes Mike=... Ted=... Eoin=...
 		    <property name="format"
                 value="^[A-Z][a-z0-9][a-zA-Z0-9]*$"/>
 		    <property name="tokens"
-			    value="INTERFACE_DEF"/>
+			    value="CLASS_DEF"/>
 		</module>
-         <!--
+		-->
+        <!--
         <module name="AbstractClassName"/>
 		-->
 
@@ -98,27 +106,27 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="ParameterNumber"/>
         <!--
-        <module name="FileLength"/>
-        <module name="LineLength"/>
-        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="FileLength"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="LineLength"/>   Dan=yes Mike=... Ted=... Eoin=...
+        <module name="MethodLength"/>   Dan=no Mike=... Ted=... Eoin=...
 		-->
 
 
         <!-- Checks for whitespace                               -->
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->
         <!--
-        <module name="EmptyForIteratorPad"/>
-        <module name="MethodParamPad"/>
-		<module name="NoWhitespaceAfter"/>
-        <module name="NoWhitespaceBefore"/> 
-        <module name="OperatorWrap"/>
-        <module name="ParenPad"/>
-        <module name="TypecastParenPad"/>
-        <module name="TabCharacter"/>
-        <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround"/>
+        <module name="EmptyForIteratorPad"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="MethodParamPad"/>   Dan=no Mike=... Ted=... Eoin=...
+		<module name="NoWhitespaceAfter"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="NoWhitespaceBefore"/>    Dan=no Mike=... Ted=... Eoin=...
+        <module name="OperatorWrap"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="ParenPad"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="TypecastParenPad"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="TabCharacter"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="WhitespaceAfter"/>   Dan=no Mike=... Ted=... Eoin=...
+        <module name="WhitespaceAround"/>   Dan=no Mike=... Ted=... Eoin=...
 		-->
 
 
@@ -132,95 +140,102 @@
 
         <!-- Checks for blocks. You know, those {}'s         -->
         <!-- See http://checkstyle.sf.net/config_blocks.html -->
-		<!--
-        <module name="AvoidNestedBlocks">
-			<property name='allowInSwitchCase' value='true'/>
-        </module>
-		-->
-        <module name="EmptyBlock">
-			<!-- property name='allowInSwitchCase' value='true'/ -->
-			<property name='option' value='text'/>
-		</module>
         <module name="LeftCurly">
 			<property name='option' value='eol'></property>
         </module>
-        <module name="NeedBraces">
-			<!-- property  name='option' value='same'/ -->
+		
+		<!--
+        <module name="AvoidNestedBlocks">  Dan=no Mike=... Ted=... Eoin=...
+			<property name='allowInSwitchCase' value='true'/>
+        </module>
+		-->
+		<!--
+        <module name="EmptyBlock">  Dan=yes Mike=... Ted=... Eoin=...
+			<property name='option' value='text'/>
 		</module>
-        <module name="RightCurly"/>
+        <module name="NeedBraces">  Dan=yes Mike=... Ted=... Eoin=...
+		</module>
+        <module name="RightCurly"/>  Dan=yes Mike=... Ted=... Eoin=...
+		-->
 
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="ArrayTrailingComma"/>
-        <module name="DoubleCheckedLocking"/>
-        <module name="EmptyStatement"/>
-        <module name="EqualsHashCode"/>
-		<module name="FinalLocalVariable">
+		<!--
+        <module name="ArrayTrailingComma"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="DoubleCheckedLocking"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="EmptyStatement"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="EqualsHashCode"/>  Dan=yes Mike=... Ted=... Eoin=...
+		<module name="FinalLocalVariable">  Dan=yes Mike=... Ted=... Eoin=...
 		    <property name="tokens" value="PARAMETER_DEF"/>
 		</module>
-        <module name="HiddenField"/>
-        <module name="IllegalInstantiation"/>
-        <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
-        <module name="MissingSwitchDefault"/>
-        <module name="ModifiedControlVariable"/>
-        <module name="RedundantThrows">
+        <module name="HiddenField"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="IllegalInstantiation"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="InnerAssignment"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="MagicNumber"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="MissingSwitchDefault"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="ModifiedControlVariable"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="RedundantThrows">  Dan=yes Mike=... Ted=... Eoin=...
 			<property name="allowUnchecked" value="true"/>
 		</module>
-        <module name="SimplifyBooleanExpression"/>
-        <module name="SimplifyBooleanReturn"/>
-        <module name="StringLiteralEquality"/>
-		<module name="NestedIfDepth">
+        <module name="SimplifyBooleanExpression"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="SimplifyBooleanReturn"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="StringLiteralEquality"/>  Dan=yes Mike=... Ted=... Eoin=...
+		<module name="NestedIfDepth">  Dan=yes Mike=... Ted=... Eoin=...
 		    <property name="max" value="3"/>
 		</module>
-		<module name="NestedTryDepth">
+		<module n  Dan=yes Mike=... Ted=... Eoin=...ame="NestedTryDepth">
 		    <property name="max" value="1"/>
 		</module>
-        <module name="SuperClone"/>
-        <module name="SuperFinalize"/>
-        <module name="IllegalCatch"/>
-        <module name="PackageDeclaration"/>
-        <module name="JUnitTestCase"/>
-        <module name="DeclarationOrder"/>
-        <module name="ParameterAssignment"/>
-        <module name="ExplicitInitialization"/>
-        <module name="DefaultComesLast"/>
-		<module name="MultipleStringLiterals">
+        <module name="SuperClone"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="SuperFinalize"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="IllegalCatch"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="PackageDeclaration"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="JUnitTestCase"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="DeclarationOrder"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="ParameterAssignment"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="ExplicitInitialization"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="DefaultComesLast"/>  Dan=yes Mike=... Ted=... Eoin=...
+		<module name="MultipleStringLiterals">  Dan=yes Mike=... Ted=... Eoin=...
 		    <property name="allowedDuplicates" value="2"/>
 		</module>
-        <module name="MultipleVariableDeclarations"/>
-        <module name="UnnecessaryParentheses"/>
+        <module name="MultipleVariableDeclarations"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="UnnecessaryParentheses"/>  Dan=yes Mike=... Ted=... Eoin=...
+		-->
 		<!--
-        <module name="AvoidInlineConditionals"/>
-        <module name="IllegalToken"/>
-        <module name="IllegalTokenText"/>
-        <module name="ReturnCount"/>
-        <module name="IllegalType"/>
-        <module name="MissingCtor"/>
-        <module name="FallThrough"/>
+        <module name="AvoidInlineConditionals"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="IllegalToken"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="IllegalTokenText"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="ReturnCount"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="IllegalType"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="MissingCtor"/>  Dan=no Mike=... Ted=... Eoin=...
+        <module name="FallThrough"/>  Dan=no Mike=... Ted=... Eoin=...
 		-->
 		
 		
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
-        <module name="DesignForExtension"/>
-        <module name="FinalClass"/>
-        <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType"/>
-        <module name="VisibilityModifier"/>
+		<!--
+        <module name="DesignForExtension"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="FinalClass"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="HideUtilityClassConstructor"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="InterfaceIsType"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="VisibilityModifier"/>  Dan=yes Mike=... Ted=... Eoin=...
+		-->
 
 
         <!-- Miscellaneous other checks.                   -->
         <!-- See http://checkstyle.sf.net/config_misc.html -->
-        <module name="ArrayTypeStyle"/>
-        <module name="FinalParameters"/>
-        <module name="GenericIllegalRegexp">
-            <property name="format" value="\s+$"/>
+		<!--
+        <module name="ArrayTypeStyle"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="FinalParameters"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="GenericIllegalRegexp">  Dan=yes Mike=... Ted=... Eoin=...
+            <property name="format" value="\s+$"/>  Dan=yes Mike=... Ted=... Eoin=...
             <property name="message" value="Line has trailing spaces."/>
         </module>
-        <module name="TodoComment"/>
-        <module name="UpperEll"/>
+        <module name="TodoComment"/>  Dan=yes Mike=... Ted=... Eoin=...
+        <module name="UpperEll"/>  Dan=yes Mike=... Ted=... Eoin=...
+		-->
 
     </module>
 

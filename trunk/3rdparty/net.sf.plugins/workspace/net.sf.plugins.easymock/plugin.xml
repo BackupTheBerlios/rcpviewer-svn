@@ -3,13 +3,4 @@
 
 <plugin>
 
-  <runtime>
-    <library name="easymock.jar">
-    	<export name="*"/>
-         <packages prefixes="org.easymock"/>
-    </library>
-
-    <library name="./"><export name="*"/></library>
-  </runtime>
-
 </plugin>

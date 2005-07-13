@@ -6,8 +6,7 @@ import org.eclipse.core.runtime.Status;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 
 public abstract class AbstractDomainBootstrap 
-implements IDomainBootstrap
-{
+implements IDomainBootstrap {
 
 	private String pluginId;
 

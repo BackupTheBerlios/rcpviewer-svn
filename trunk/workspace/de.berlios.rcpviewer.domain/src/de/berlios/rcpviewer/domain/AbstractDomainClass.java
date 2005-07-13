@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -17,19 +16,20 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.CorePlugin;
 import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 public abstract class AbstractDomainClass<T> 
-	implements IDomainClass<T>, EmfFacadeAware {
+	implements IDomainClass<T>, IEmfFacadeAware {
+
+	protected final IDomain _domain;
+	protected EClass _eClass;
 
 	public AbstractDomainClass(final IDomain domain, final NamingConventions namingConventions) {
-		this.domain = domain;
+		this._domain = domain;
 		this.namingConventions = namingConventions;
 	}
 
-	protected final IDomain domain;
 
 	protected final NamingConventions namingConventions;
 	public NamingConventions getNamingConventions() {
@@ -46,27 +46,26 @@ public abstract class AbstractDomainClass<T>
 	 * @return
 	 */
 	public IDomain getDomain() {
-		return domain;
+		return _domain;
 	}
 
-	protected EClass eClass;
 	public EClass getEClass() {
-		return eClass;
+		return _eClass;
 	}
 
 	public abstract String getName();
 	
 	public String getEClassName() {
-		return eClass.getName();
+		return _eClass.getName();
 	}
 
 	public String getDescription() {
-		return descriptionOf(eClass);
+		return descriptionOf(_eClass);
 	}
 	
 	public boolean isChangeable() {
 		EAnnotation annotation = 
-			eClass.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+			_eClass.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
 			return false;
 		}
@@ -95,7 +94,7 @@ public abstract class AbstractDomainClass<T>
 
 	public List<IDomainClassAdapter> getAdapters() {
 		List<EAnnotation> annotations = 
-			emfFacade.annotationsPrefixed(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX);
+			emfFacade.annotationsPrefixed(_eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX);
 		
 		List<IDomainClassAdapter> adapters = new ArrayList<IDomainClassAdapter>();
 		for(EAnnotation annotation: annotations) {
@@ -123,7 +122,7 @@ public abstract class AbstractDomainClass<T>
 		}
 		
 		Map<String, String> detailsPlusFactoryName = 
-			emfFacade.getAnnotationDetails(eClass, annotationSource);
+			emfFacade.getAnnotationDetails(_eClass, annotationSource);
 		String adapterFactoryName = 
 			detailsPlusFactoryName.get(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
 		if (adapterFactoryName == null) {
@@ -191,7 +190,7 @@ public abstract class AbstractDomainClass<T>
 	 */
 	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<? extends V> adapterFactory) {
 		EAnnotation eAnnotation = 
-			emfFacade.annotationOf(eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
+			emfFacade.annotationOf(_eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		Map<String,String> detailsPlusFactoryName = new HashMap<String,String>();
 		detailsPlusFactoryName.putAll(adapterFactory.getDetails());
 		detailsPlusFactoryName.put(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
@@ -339,7 +338,7 @@ public abstract class AbstractDomainClass<T>
 	}
 
 	public boolean containsOperation(EOperation eOperation) {
-		return this.eClass.getEAllOperations().contains(eOperation);
+		return this._eClass.getEAllOperations().contains(eOperation);
 	}
 
 	public boolean isStatic(EOperation eOperation) {
@@ -360,7 +359,7 @@ public abstract class AbstractDomainClass<T>
 		}
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 		EClass eClass = (EClass)parameter.getEType();
-		return domain.domainClassFor(eClass);
+		return _domain.domainClassFor(eClass);
 	}
 
 	public String getNameFor(EOperation operation, int parameterPosition) {
@@ -434,12 +433,12 @@ public abstract class AbstractDomainClass<T>
 	}
 
 	public boolean containsReference(EReference eReference) {
-		return this.eClass.getEAllReferences().contains(eReference);
+		return this._eClass.getEAllReferences().contains(eReference);
 	}
 
 	public <V> IDomainClass<V> getReferencedClass(EReference eReference) {
 		EClass eClass = (EClass)eReference.getEReferenceType();
-		return domain.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
+		return _domain.lookupNoRegister(((Class<V>)eClass.getInstanceClass()));
 		
 	}
 

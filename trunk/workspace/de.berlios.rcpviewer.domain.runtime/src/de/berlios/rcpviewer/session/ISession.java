@@ -214,11 +214,25 @@ public interface ISession {
 	 * The class of the pojo is required so that the returned
 	 * {@link IDomainObject} is correct parameterized. 
 	 * 
+	 * <p>
+	 * Use {@link #hasDomainObjectFor(Object)} to check before hand (to avoid
+	 * an exception being thrown).
+	 * 
 	 * @param <T>
 	 * @param pojo
-	 * @param pojoClass
+	 * @param pojoClass to parameterize the return. 
 	 * @return
+	 * @throws IllegalStateException if no such domain object.
 	 */
 	<T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass);
+
+	/**
+	 * Whether there is a {@link IDomainObject} in this session that
+	 * is wrapping the supplied pojo.
+	 * 
+	 * @param pojo
+	 * @return true if there is a wrapper. 
+	 */
+	public boolean hasDomainObjectFor(Object pojo);
 
 }

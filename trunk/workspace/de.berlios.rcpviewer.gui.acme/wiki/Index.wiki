@@ -1,22 +1,6 @@
 Example of a domain-specific plugin developed on top of RCPViewer.
 
-1 What you need to do:
-
-* create POJO model
-* for each class:
-** ensure all class has @InDomain annotation
-** add each class as an ~~de.berlios.rcpviewer.gui.domainclass extension~~ in plugin.xml 
-
-1 Prerequisites
-
-To run these tests, you need the following:
-* Eclipse 3.1
-* JRE 1.5.0_02
-* Compiler compliance level: 5.0
-
-Previously aspect-1.2 was required; this has now been removed.
-
-1 To run the application
+1 To run the application (without search functionality)
 
 * Run > Run...
 * Create a new ~~Eclipse Application~~ configuration:
@@ -39,5 +23,15 @@ Previously aspect-1.2 was required; this has now been removed.
 * But after deselsting all plugins, then select
 ** ~~de.berlios.rcpviewer.gui.acme~~
 ** ~~de.berlios.rcpviewer.persistence.inmemory.ui~~
+** ~~net.sf.plugins.utils~~
 ** Press ~~Add Required Plugins~~
 * Run
+
+1 Extending the example
+
+If you want to develop some more realistic pojos, then these are the steps:
+* create POJO classes
+* for each class:
+** ensure all class has @InDomain annotation
+** add each class as an ~~de.berlios.rcpviewer.gui.domainclass extension~~ in plugin.xml 
+* er, that's it!

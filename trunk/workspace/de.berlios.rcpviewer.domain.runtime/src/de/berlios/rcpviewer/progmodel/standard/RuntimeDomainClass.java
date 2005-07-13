@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 
-import de.berlios.rcpviewer.CorePlugin;
 import de.berlios.rcpviewer.domain.AbstractDomainClass;
 import de.berlios.rcpviewer.domain.IAdapterFactory;
 import de.berlios.rcpviewer.domain.IDomain;
@@ -60,10 +59,12 @@ public class RuntimeDomainClass<T>
 		extends AbstractDomainClass<T> 
 		implements IRuntimeDomainClass<T> {
 	
+	private final Class<T> _javaClass;
+
 	public RuntimeDomainClass(final IDomain domain, final EClass eClass, final Class<T> javaClass) {
 		super(domain, new RuntimeNamingConventions());
-		this.eClass = eClass;
-		this.javaClass = javaClass;
+		this._eClass = eClass;
+		this._javaClass = javaClass;
 		identifyClass();
 	}
 
@@ -100,9 +101,6 @@ public class RuntimeDomainClass<T>
 		identifyOppositeReferences();
 		identifyAssociatorsAndDissociators();
 		oppRefState = OppRefState.onceMore;
-		
-		EOperation op;
-	
 	}
 
 	static enum OppRefState {
@@ -157,9 +155,8 @@ public class RuntimeDomainClass<T>
 		}
 	}
 
-	private final Class<T> javaClass;
 	public Class<T> getJavaClass() {
-		return javaClass;
+		return _javaClass;
 	}
 	
 	/**
@@ -169,16 +166,16 @@ public class RuntimeDomainClass<T>
 	 * TODO: should also identify class hierarchy
 	 */
 	private void identifyClass() {
-		InDomain domainAnnotation = javaClass.getAnnotation(InDomain.class);
+		InDomain domainAnnotation = _javaClass.getAnnotation(InDomain.class);
 		String domainName = domainAnnotation.value();
 		RuntimeDomain domain = RuntimeDomain.instance(domainName);
 
-		addNamed(javaClass.getAnnotation(Named.class), eClass);
+		addNamed(_javaClass.getAnnotation(Named.class), _eClass);
 		
-		addDescription(javaClass.getAnnotation(DescribedAs.class), eClass);
+		addDescription(_javaClass.getAnnotation(DescribedAs.class), _eClass);
 		
 		// Immutable (to support isChangeable)
-		addIfImmutable(javaClass.getAnnotation(Immutable.class), eClass);
+		addIfImmutable(_javaClass.getAnnotation(Immutable.class), _eClass);
 	}
 
 	private void addNamed(Named named, EModelElement modelElement) {
@@ -233,7 +230,7 @@ public class RuntimeDomainClass<T>
 	 */
 	private void identifyAccessors() {
 		
-		Method[] methods = javaClass.getMethods();
+		Method[] methods = _javaClass.getMethods();
 		// search for accessors of value types
 		// initially all attributes start off read-only
 		for(int i=0; i<methods.length; i++) {
@@ -249,7 +246,7 @@ public class RuntimeDomainClass<T>
 			eAttribute.setEType(eDataType);
 			String attributeName = getRuntimeNamingConventions().deriveAttributeName(method);
 			eAttribute.setName(attributeName);
-			((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
+			((List<? super EAttribute>)_eClass.getEStructuralFeatures()).add(eAttribute);
 
 			emfFacade.putAnnotationDetails(
 					this, emfFacade.methodNamesAnnotationFor(eAttribute), 
@@ -325,7 +322,7 @@ public class RuntimeDomainClass<T>
 	 */
 	private void identifyMutators() {
 
-		Method[] methods = javaClass.getMethods();
+		Method[] methods = _javaClass.getMethods();
 
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
@@ -345,7 +342,7 @@ public class RuntimeDomainClass<T>
 				eAttribute.setEType(eDataType);
 				eAttribute.setName(attributeName);
 
-				((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
+				((List<? super EAttribute>)_eClass.getEStructuralFeatures()).add(eAttribute);
 
 				emfFacade.annotationOf(eAttribute, StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 			}
@@ -364,7 +361,7 @@ public class RuntimeDomainClass<T>
 	 */
 	private void identifyUnSettableAttributes() {
 	
-		Method[] methods = javaClass.getMethods();
+		Method[] methods = _javaClass.getMethods();
 		Method isUnsetMethod = null;
 		Method unsetMethod = null;
 		for(EAttribute eAttribute: attributes()) {
@@ -482,7 +479,7 @@ public class RuntimeDomainClass<T>
 	}
 
 	public boolean containsAttribute(EAttribute eAttribute) {
-		return this.eClass.getEAllAttributes().contains(eAttribute);
+		return this._eClass.getEAllAttributes().contains(eAttribute);
 	}
 
 	/**
@@ -499,7 +496,7 @@ public class RuntimeDomainClass<T>
 	 * not yet exposing them (what would they mean?)
 	 */
 	private void identifyOperations() {
-		Method[] methods = javaClass.getMethods();
+		Method[] methods = _javaClass.getMethods();
 
 		eachMethod: 
 		for(int i=0; i<methods.length; i++) {
@@ -546,7 +543,7 @@ public class RuntimeDomainClass<T>
 				EDataType returnDataType = getEDataTypeFor(returnType);
 				eOperation.setEType(returnDataType);
 			} else if (returnsReference) {
-				IDomainClass<?> returnDomainClass = domain.lookup(returnType);
+				IDomainClass<?> returnDomainClass = _domain.lookup(returnType);
 				eOperation.setEType(returnDomainClass.getEClass());
 			} else {
 				// do nothing; EMF does not apparently have a built-in classifier for Void 
@@ -565,7 +562,7 @@ public class RuntimeDomainClass<T>
 				if (!isValue) {
 					// register rather than lookup since we may not have seen
 					// the referenced DomainClass yet.
-					parameterDomainClass = domain.lookup(parameterType);
+					parameterDomainClass = _domain.lookup(parameterType);
 					isReference = (parameterDomainClass != null);
 				}
 				if (!isValue && !isReference) {
@@ -623,7 +620,7 @@ public class RuntimeDomainClass<T>
 				emfFacade.annotationOf(eOperation, StandardProgModelConstants.ANNOTATION_OPERATION_STATIC);
 			}
 			
-			((List<? super EOperation>)eClass.getEOperations()).add(eOperation);
+			((List<? super EOperation>)_eClass.getEOperations()).add(eOperation);
 			
 			// these are supported by EMF, but not (yet) by our metamodel.
 //			eOperation.setLowerBound(..);
@@ -690,7 +687,7 @@ public class RuntimeDomainClass<T>
 
 	private void identifyReferences() {
 
-		Method[] methods = javaClass.getMethods();
+		Method[] methods = _javaClass.getMethods();
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
 
@@ -722,7 +719,7 @@ public class RuntimeDomainClass<T>
 			}
 			if (couldBeCollection) {
 				referencedJavaClass = associates.value();
-				referencedDomainClass = domain.lookup(referencedJavaClass);
+				referencedDomainClass = _domain.lookup(referencedJavaClass);
 				if (referencedDomainClass == null) {
 					// what they're referencing isn't a domain class
 					couldBeCollection = false;
@@ -730,7 +727,7 @@ public class RuntimeDomainClass<T>
 			}
 			if (!couldBeCollection) {
 				// treat as a 1:1 reference
-				referencedDomainClass = domain.lookup(referencedJavaClass);
+				referencedDomainClass = _domain.lookup(referencedJavaClass);
 				if (referencedDomainClass != null) {
 					// 1:1
 					linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
@@ -742,7 +739,6 @@ public class RuntimeDomainClass<T>
 			}
 
 			EReference eReference = EcoreFactory.eINSTANCE.createEReference();
-			EReferenceImpl eReferenceImpl = (EReferenceImpl)eReference;
 			eReference.setEType(referencedDomainClass.getEClass()); // sets EReferenceType
 			eReference.setName(referenceName);
 			linkSemanticsType.setOrderingUniquenessAndMultiplicity(eReference);
@@ -783,7 +779,7 @@ public class RuntimeDomainClass<T>
 			// eReference.setLowerBound( ... set by linkSemanticsType ...);
 
 
-			((List<? super EReference>)eClass.getEStructuralFeatures()).add(eReference);
+			((List<? super EReference>)_eClass.getEStructuralFeatures()).add(eReference);
 
 			emfFacade.putAnnotationDetails(
 					this, emfFacade.methodNamesAnnotationFor(eReference), 
@@ -802,7 +798,7 @@ public class RuntimeDomainClass<T>
 	
 	
 	private void identifyAssociatorsAndDissociators() {
-		Method[] methods = javaClass.getMethods();
+		Method[] methods = _javaClass.getMethods();
 		Method associatorMethod = null;
 		Method dissociatorMethod = null;
 		for(EReference eReference: references()) {
@@ -908,7 +904,6 @@ public class RuntimeDomainClass<T>
 	public <T> IDomainObject<T> createTransient() {
 		try {
 			Object pojo = getJavaClass().newInstance();
-			Class<T> pojoClass = pojoClass(pojo.getClass());
 			IDomainObject<T> domainObject = new DomainObject(this, pojo);
 			
 			return domainObject;
@@ -1006,7 +1001,7 @@ public class RuntimeDomainClass<T>
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() { return "DomainClass.javaClass = " + javaClass ; }
+	public String toString() { return "DomainClass.javaClass = " + _javaClass ; }
 
 
 }

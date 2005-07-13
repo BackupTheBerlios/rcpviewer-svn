@@ -8,15 +8,18 @@ Bundle-Activator: de.berlios.rcpviewer.domain.runtime.RuntimePlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
- de.berlios.rcpviewer.domain;visibility:=reexport
+ de.berlios.rcpviewer.domain;visibility:=reexport,
+ org.aspectj.runtime
 Eclipse-AutoStart: true
-Export-Package: de.berlios.rcpviewer.domain,
+Export-Package: de.berlios.rcpviewer.authorization,
+ de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.domain.runtime,
  de.berlios.rcpviewer.persistence,
  de.berlios.rcpviewer.persistence.inmemory,
  de.berlios.rcpviewer.progmodel.extended,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard,
+ de.berlios.rcpviewer.progmodel.standard.aspects,
  de.berlios.rcpviewer.session,
- de.berlios.rcpviewer.session.local,
- de.berlios.rcpviewer.authorization
+ de.berlios.rcpviewer.session.internal,
+ de.berlios.rcpviewer.session.local

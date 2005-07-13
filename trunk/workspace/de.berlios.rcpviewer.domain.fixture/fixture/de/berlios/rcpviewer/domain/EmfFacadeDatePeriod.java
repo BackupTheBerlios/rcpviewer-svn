@@ -14,4 +14,10 @@ import de.berlios.rcpviewer.progmodel.standard.Value;
 public class EmfFacadeDatePeriod  {
 	private Date from;
 	private Date to;
+	public Date getFrom() {
+		return from;
+	}
+	public Date getTo() {
+		return to;
+	}
 }

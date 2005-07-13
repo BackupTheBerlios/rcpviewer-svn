@@ -225,7 +225,17 @@ public class Session implements ISession, IObjectStoreAware {
 			listeners.remove(listener);
 		}
 	}
-	
+
+	/*
+	 * See interface definition.
+	 */
+	public boolean hasDomainObjectFor(Object pojo) {
+		return domainObjectByPojo.get(pojo) != null;
+	}
+
+	/*
+	 * See interface definition.
+	 */
 	public <T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass) {
 		IDomainObject<T> domainObject = domainObjectByPojo.get(pojo);
 		if (domainObject == null) {

@@ -95,9 +95,6 @@ public class RuntimePlugin extends Plugin {
 	}
 
 	public synchronized ISessionManager getSessionManager() throws CoreException {
-		if (_sessionManager == null) {
-			_sessionManager= new SessionManager();
-		}
-		return _sessionManager;
+		return SessionManager.instance();
 	}
 }

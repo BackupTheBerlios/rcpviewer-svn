@@ -15,17 +15,25 @@ import de.berlios.rcpviewer.session.SessionManagerEvent;
 
 public final class SessionManager implements ISessionManager {
 
-	private static SessionManager instance = new SessionManager();
-	private static String currentSessionId= null;
-	private Map<String, ISession> sessionById = new HashMap<String, ISession>();
-	private ArrayList<ISessionManagerListener> listeners= new ArrayList<ISessionManagerListener>();
+	/**
+	 * Private visibility so can only be instantiated as a singleton.
+	 *
+	 */
+	private SessionManager() {
+		// do nothing
+	}
+	
+	private static SessionManager _instance = new SessionManager();
+	private String _currentSessionId = null;
+	private Map<String, ISession> _sessionsById = new HashMap<String, ISession>();
+	private ArrayList<ISessionManagerListener> _listeners = new ArrayList<ISessionManagerListener>();
 	
 
 	public ISession createSession(IDomain domain, IObjectStore objectStore) {
 		Session session = new Session(nextId(), domain, objectStore);
-		sessionById.put(session.getId(), session);
+		_sessionsById.put(session.getId(), session);
 		SessionManagerEvent event = new SessionManagerEvent(this, session);
-		for(ISessionManagerListener listener: listeners) {
+		for(ISessionManagerListener listener: _listeners) {
 			listener.sessionCreated(event);
 		}
 		this.switchSessionTo(session.getId());						
@@ -36,20 +44,20 @@ public final class SessionManager implements ISessionManager {
 	 * The id of the {@link ISession} set to be the current session.
 	 */
 	public String getCurrentSessionId() {
-		return currentSessionId;
+		return _currentSessionId;
 	}
 
 	/**
 	 * Change the current session to that indicated by the session Id.
 	 */
 	public void switchSessionTo(final String currentSessionId) {
-		ISession session = sessionById.get(currentSessionId);
+		ISession session = _sessionsById.get(currentSessionId);
 		if (session == null) {
 			throw new IllegalArgumentException("No such session id:"+currentSessionId);
 		}
-		this.currentSessionId = currentSessionId;
+		_currentSessionId = currentSessionId;
 		SessionManagerEvent event = new SessionManagerEvent(this, session);
-		for(ISessionManagerListener listener: listeners) {
+		for(ISessionManagerListener listener: _listeners) {
 			listener.sessionNowCurrent(event);
 		}
 
@@ -61,7 +69,7 @@ public final class SessionManager implements ISessionManager {
 	 * @return
 	 */
 	public static SessionManager instance() {
-		return instance;
+		return _instance;
 	}
 	
 	/**
@@ -75,7 +83,7 @@ public final class SessionManager implements ISessionManager {
 	}
 
 	public ISession get(String id) {
-		return sessionById.get(id);
+		return _sessionsById.get(id);
 	}
 
 
@@ -86,33 +94,33 @@ public final class SessionManager implements ISessionManager {
 	 * 
 	 */
 	public void reset() {
-		for(ISession session: sessionById.values()) {
+		for(ISession session: _sessionsById.values()) {
 			session.reset();
 		}
-		this.sessionById.clear();
+		this._sessionsById.clear();
 	}
 
 	public synchronized void addSessionManagerListener(final ISessionManagerListener listener) {
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
+		if (!_listeners.contains(listener)) {
+			_listeners.add(listener);
 		}
 	}
 
 	public void removeSession(String sessionId) {
-		ISession session = sessionById.get(sessionId);
-		sessionById.remove(session);		
+		ISession session = _sessionsById.get(sessionId);
+		_sessionsById.remove(session);		
 		SessionManagerEvent event = new SessionManagerEvent(this, session);
-		for(ISessionManagerListener listener: listeners) {
+		for(ISessionManagerListener listener: _listeners) {
 			listener.sessionRemoved(event);
 		}
 	}
 
 	public synchronized void removeSessionManagerListener(ISessionManagerListener pListener) {
-		listeners.remove(pListener);
+		_listeners.remove(pListener);
 	}
 
 	public Collection<ISession> getAllSessions() {
-		return new ArrayList<ISession>(sessionById.values());
+		return new ArrayList<ISession>(_sessionsById.values());
 	}
 	
 

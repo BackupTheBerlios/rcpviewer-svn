@@ -2,16 +2,12 @@ package de.berlios.rcpviewer.domain;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.List;
-
-import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.Value;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -21,7 +17,9 @@ import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+
+import de.berlios.rcpviewer.progmodel.standard.NamingConventions;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 /**
  * Collection of methods to access various EMF-related functionality.

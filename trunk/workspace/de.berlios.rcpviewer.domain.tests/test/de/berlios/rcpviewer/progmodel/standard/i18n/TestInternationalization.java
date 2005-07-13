@@ -3,7 +3,6 @@ package de.berlios.rcpviewer.progmodel.standard.i18n;
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
-import de.berlios.rcpviewer.domain.IDomainClass;
 
 public abstract class TestInternationalization extends AbstractTestCase {
 

@@ -5,15 +5,8 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.reference.Department;
-import de.berlios.rcpviewer.progmodel.standard.reference.DepartmentDerivedReferences;
-import de.berlios.rcpviewer.progmodel.standard.reference.DepartmentImmutableEmployeeCollection;
-import de.berlios.rcpviewer.progmodel.standard.reference.Employee;
-import de.berlios.rcpviewer.progmodel.standard.reference.EmployeeImmutableNameRef;
-import de.berlios.rcpviewer.progmodel.standard.reference.ReferencesName;
 
 public abstract class TestDomainClassReferences extends AbstractTestCase {
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension point="de.berlios.rcpviewer.gui.domainclass">
+   		<impl class="xpetstore.domain.Customer"/>
+   		<impl class="xpetstore.domain.Account"/>
+   		<impl class="xpetstore.domain.Order"/>
+   		<impl class="xpetstore.domain.Category"/>
+   		<impl class="xpetstore.domain.Product"/>
+   		<!--
+   		<impl class="xpetstore.domain.Address"/>
+   		<impl class="xpetstore.domain.CreditCard"/>
+   		<impl class="xpetstore.domain.Item"/>
+   		<impl class="xpetstore.domain.OrderItem"/>
+   		-->
+   </extension>
+
+
+</plugin>

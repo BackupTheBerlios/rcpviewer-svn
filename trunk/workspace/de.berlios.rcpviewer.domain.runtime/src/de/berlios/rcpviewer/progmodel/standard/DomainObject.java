@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
@@ -15,8 +15,6 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -152,18 +150,27 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		String mutatorMethodName = mutatorMethod.getName();
 		try {
 			mutatorMethod.invoke(this.getPojo(), newValue);
-			// notify listeners
-			DomainObjectAttributeEvent event = 
-				new DomainObjectAttributeEvent(this, attribute, newValue);
-			for(IDomainObjectListener listener: listeners) {
-				listener.attributeChanged(event);
-			}
+			notifyAttributeListeners(attribute, newValue);
 		} catch (SecurityException e) {
 			throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
 		} catch (IllegalAccessException e) {
 			throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
 		} catch (InvocationTargetException e) {
 			throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
+		}
+	}
+
+	/**
+	 * public so that it can be invoked by NotifyListenersAspect.
+	 * 
+	 * @param attribute
+	 * @param newValue
+	 */
+	public void notifyAttributeListeners(EAttribute attribute, Object newValue) {
+		DomainObjectAttributeEvent event = 
+			new DomainObjectAttributeEvent(this, attribute, newValue);
+		for(IDomainObjectListener listener: listeners) {
+			listener.attributeChanged(event);
 		}
 	}
 

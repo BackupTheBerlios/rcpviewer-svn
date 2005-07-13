@@ -17,6 +17,10 @@ public final class FeatureId<V> implements IFeatureId {
 	private final IDomainClass<V> _domainClass;
 	private final Type _featureType;
 	private final String _name;
+	/**
+	 * derived string representation.
+	 */
+	private final String _asString;
 	
 	public static <T> IFeatureId create( 
 			final String name, 
@@ -33,6 +37,7 @@ public final class FeatureId<V> implements IFeatureId {
 		_name = name;
 		_domainClass = domainClass;
 		_featureType = featureType;
+		_asString = _domainClass.getEClass().getInstanceClassName() + "#" + _name;
 	}
 
 	/*
@@ -83,7 +88,8 @@ public final class FeatureId<V> implements IFeatureId {
 	 * @return
 	 */
 	public boolean equals(final IFeatureId other) {
-		return getName().equals(other.getName());
+		return getDomainClass() == other.getDomainClass() &&
+		       getName().equals(other.getName());
 	}
 	
 	/**
@@ -93,4 +99,7 @@ public final class FeatureId<V> implements IFeatureId {
 		return getName().hashCode();
 	}
 
+	public String toString() {
+		return _asString;
+	}
 }

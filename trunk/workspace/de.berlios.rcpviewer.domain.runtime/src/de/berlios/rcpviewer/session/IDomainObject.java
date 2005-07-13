@@ -99,6 +99,17 @@ public interface IDomainObject<T> {
 	public void set(EAttribute nameAttribute, Object newValue);
 
 	/**
+	 * Used internally and by aspects.
+	 * 
+	 * <p>
+	 * Do not use otherwise.
+	 * 
+	 * @param attribute
+	 * @param newValue
+	 */
+	public void notifyAttributeListeners(EAttribute attribute, Object newValue);
+
+	/**
 	 * Convenience method that should return the same as the 
 	 * corresponding method in {@link IDomainClass}.
 	 * 

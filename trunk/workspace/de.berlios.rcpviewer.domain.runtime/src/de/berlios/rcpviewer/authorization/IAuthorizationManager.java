@@ -1,6 +1,5 @@
 package de.berlios.rcpviewer.authorization;
 
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 import de.berlios.rcpviewer.session.IDomainObject;

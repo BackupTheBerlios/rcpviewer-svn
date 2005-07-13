@@ -1,6 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Set of constants relating to this package.

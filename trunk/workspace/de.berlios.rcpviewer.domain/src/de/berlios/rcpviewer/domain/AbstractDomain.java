@@ -10,7 +10,6 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
@@ -122,7 +121,6 @@ public abstract class AbstractDomain implements IDomain {
 			return null;
 		}
 		
-		EClass eClass = null;
 		EClassifier eClassifier = ePackage.getEClassifier(javaClass.getSimpleName());
 		if (eClassifier == null) {
 			return null;

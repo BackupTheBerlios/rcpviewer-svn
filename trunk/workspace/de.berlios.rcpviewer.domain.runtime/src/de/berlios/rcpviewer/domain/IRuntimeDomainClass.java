@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.domain;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
@@ -181,14 +180,6 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 * @return
 	 */
 	public Method getDissociatorFor(EReference reference);
-
-	/**
-	 * Returns a feature identifier for the supplied attribute.
-	 * 
-	 * @param attributeName
-	 * @return
-	 */
-	public IFeatureId attributeIdFor(EAttribute attribute);
 
 	/**
 	 * The {@link IPrerequisites} that the 

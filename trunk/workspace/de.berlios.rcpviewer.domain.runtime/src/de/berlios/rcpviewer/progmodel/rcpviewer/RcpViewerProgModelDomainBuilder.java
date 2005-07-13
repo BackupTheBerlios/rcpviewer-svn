@@ -3,8 +3,6 @@ package de.berlios.rcpviewer.progmodel.rcpviewer;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -36,7 +34,7 @@ public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 		if (imageUrlAt != null) {
 			try {
 				// check URL is ok
-				final URL imageUrl = new URL(imageUrlAt.value());
+				new URL(imageUrlAt.value());
 		
 				domainClass.setAdapterFactory(RcpViewerDomainClass.class, 
 						new RcpViewerProgModelAdapterFactory<RcpViewerDomainClass>(imageUrlAt.value()));

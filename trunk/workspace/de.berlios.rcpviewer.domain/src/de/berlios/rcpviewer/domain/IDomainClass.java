@@ -2,13 +2,14 @@ package de.berlios.rcpviewer.domain;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
+
+import de.berlios.rcpviewer.progmodel.extended.Named;
+import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 
 
 /**
@@ -675,6 +676,15 @@ public interface IDomainClass<T> {
 	 * @return
 	 */
 	public String getEClassName();
+
+	/**
+	 * Returns a feature identifier for the supplied attribute.
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public IFeatureId attributeIdFor(EAttribute attribute);
+
 
 }
 

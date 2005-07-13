@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.domain.AbstractDomainObjectAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> {

@@ -25,8 +25,7 @@ import de.berlios.rcpviewer.gui.jobs.OpenDomainObjectJob;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class InMemorySearchResultPage
-implements ISearchResultPage
-{
+implements ISearchResultPage {
 	
 	private String _id;
 	private InMemorySearchQuery _searchResult;

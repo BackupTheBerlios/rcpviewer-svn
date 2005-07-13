@@ -12,8 +12,7 @@ import org.eclipse.swt.widgets.Label;
 
 public class InMemorySearchPage
 extends DialogPage
-implements ISearchPage
-{
+implements ISearchPage {
 	
 	ISearchPageContainer _searchPageContainer;
 	

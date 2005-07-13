@@ -6,6 +6,7 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 
 public abstract class TestDomainClassAttributes extends AbstractTestCase {
 
@@ -120,5 +121,18 @@ public abstract class TestDomainClassAttributes extends AbstractTestCase {
 		// TODO
 	}
 
+	public void testFeatureIdForAttribute() {
+		domainClass = lookupAny(CustomerToTestFeatureIds.class);
+		IFeatureId firstNameFeatureId = 
+			domainClass.attributeIdFor(domainClass.getEAttributeNamed("firstName"));
+		assertSame(domainClass, firstNameFeatureId.getDomainClass());
+		assertSame(IFeatureId.Type.ATTRIBUTE, firstNameFeatureId.getFeatureType());
+		assertEquals("firstName", firstNameFeatureId.getName());
+		assertEquals(
+				CustomerToTestFeatureIds.class.getCanonicalName() + "#firstName", // in case we move fixture classes around later 
+				firstNameFeatureId.toString());
+		
+		
+	}
 
 }

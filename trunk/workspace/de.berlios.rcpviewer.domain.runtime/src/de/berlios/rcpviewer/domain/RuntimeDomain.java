@@ -9,13 +9,12 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
-import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
 
 /**

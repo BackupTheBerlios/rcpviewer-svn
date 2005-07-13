@@ -1,7 +1,5 @@
 package de.berlios.rcpviewer.domain;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 

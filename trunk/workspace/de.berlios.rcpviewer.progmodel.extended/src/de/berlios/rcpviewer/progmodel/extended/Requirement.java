@@ -1,8 +1,5 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Immutable implementation of {@link IRequirement}.

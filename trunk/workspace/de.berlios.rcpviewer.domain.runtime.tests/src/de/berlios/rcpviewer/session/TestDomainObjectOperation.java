@@ -43,7 +43,6 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 
 		IDomainObject<CustomerOperationReturningDomainObject> domainObject = 
 			(IDomainObject<CustomerOperationReturningDomainObject>) session.createTransient(domainClass);
-		CustomerOperationReturningDomainObject pojo = domainObject.getPojo();
 		
 		EOperation placeOrderOperation = domainObject.getEOperationNamed("placeOrder");
 		Object retval = domainObject.invokeOperation(placeOrderOperation, new Object[] {});
@@ -57,7 +56,6 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 
 		IDomainObject<CustomerOperationReturningDomainObject> domainObject = 
 			(IDomainObject<CustomerOperationReturningDomainObject>) session.createTransient(domainClass);
-		CustomerOperationReturningDomainObject pojo = domainObject.getPojo();
 
 		// place a few orders...
 		EOperation placeOrderOperation = domainObject.getEOperationNamed("placeOrder");

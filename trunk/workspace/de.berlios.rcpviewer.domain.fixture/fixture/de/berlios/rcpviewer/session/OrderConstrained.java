@@ -1,8 +1,7 @@
 package de.berlios.rcpviewer.session;
 
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import static de.berlios.rcpviewer.progmodel.extended.IPrerequisites.Constraint.*;
-import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
+import static de.berlios.rcpviewer.progmodel.extended.IPrerequisites.Constraint.INVISIBLE;
+import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.require;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 

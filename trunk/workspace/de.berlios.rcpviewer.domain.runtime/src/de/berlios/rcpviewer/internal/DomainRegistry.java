@@ -13,16 +13,13 @@ import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 
 public class DomainRegistry
-implements IDomainRegistry
-{
-	public DomainRegistry() throws CoreException
-	{
+implements IDomainRegistry {
+	public DomainRegistry() throws CoreException {
 		registerClassesInDomains();
 	}
 	
 	
-	private void registerClassesInDomains() throws CoreException
-	{
+	private void registerClassesInDomains() throws CoreException {
 		IExtensionPoint extensionPoint=  
 			Platform.getExtensionRegistry().getExtensionPoint("de.berlios.rcpviewer.domain.runtime.domains");
 		for (IConfigurationElement configurationElement: extensionPoint.getConfigurationElements()) {

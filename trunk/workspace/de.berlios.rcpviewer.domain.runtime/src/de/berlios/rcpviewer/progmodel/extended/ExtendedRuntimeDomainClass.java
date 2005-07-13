@@ -3,14 +3,11 @@ package de.berlios.rcpviewer.progmodel.extended;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainClassAdapter;
-import de.berlios.rcpviewer.domain.IDomainObjectAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -24,12 +21,13 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 
 	private EmfFacade emf = new EmfFacade();
 
-	public IDomainObjectAdapter<T> adapterFor(IDomainObject<T> domainObject) {
-		IRuntimeDomainClass<T> rdc = domainObject.getDomainClass();
-		List<IDomainClassAdapter> adapters = rdc.getAdapters();
-		// TODO Auto-generated method stub
-		return null;
-	}
+// think this code is not needed - it clearly was never finished -- dan
+//	public IDomainObjectAdapter<T> adapterFor(IDomainObject<T> domainObject) {
+//		IRuntimeDomainClass<T> rdc = domainObject.getDomainClass();
+//		List<IDomainClassAdapter> adapters = rdc.getAdapters();
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
 	// TODO: use covariance on adapts()
 	public IRuntimeDomainClass<T> runtimeAdapts() {

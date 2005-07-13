@@ -38,6 +38,7 @@ public class EasyBean {
 		field9 = RandomUtil.createString( 0, 10 );
 	}
 
+	
 	public int getField0() {
 		return field0;
 	}
