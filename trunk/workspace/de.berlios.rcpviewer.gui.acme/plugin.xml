@@ -6,7 +6,6 @@
    		<impl class="de.berlios.rcpviewer.gui.acme.model.EasyBean"/>
    		<impl class="de.berlios.rcpviewer.gui.acme.model.AnotherEasyBean"/>
    		<impl class="de.berlios.rcpviewer.gui.acme.model.Counter"/>
-   		<impl class="de.berlios.rcpviewer.gui.acme.model.Customer"/>
    </extension>
 
 

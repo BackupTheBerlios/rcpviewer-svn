@@ -21,5 +21,4 @@ Export-Package: de.berlios.rcpviewer.authorization,
  de.berlios.rcpviewer.progmodel.standard,
  de.berlios.rcpviewer.progmodel.standard.aspects,
  de.berlios.rcpviewer.session,
- de.berlios.rcpviewer.session.internal,
  de.berlios.rcpviewer.session.local
