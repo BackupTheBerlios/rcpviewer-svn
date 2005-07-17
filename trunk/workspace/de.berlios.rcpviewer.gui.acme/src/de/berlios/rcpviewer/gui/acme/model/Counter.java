@@ -6,10 +6,6 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 @InDomain
 public class Counter {
-
-	public Counter() {
-		
-	}
 	
 	int count = 0;
 	
