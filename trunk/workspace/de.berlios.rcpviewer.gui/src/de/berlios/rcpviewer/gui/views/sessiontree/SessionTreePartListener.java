@@ -5,8 +5,11 @@ package de.berlios.rcpviewer.gui.views.sessiontree;
 
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 import de.berlios.rcpviewer.gui.editors.DefaultEditor;
 import de.berlios.rcpviewer.gui.editors.DefaultEditorInput;
@@ -23,13 +26,34 @@ public class SessionTreePartListener implements IPartListener {
 
 	/**
 	 * Constructor requires viewer.
-	 * <br>Adds itself as a listener on the current page.
+	 * <br>Adds itself as a listener on the current page, or if none - on the 
+	 * next opened page.
 	 * @param viewer
 	 */
 	SessionTreePartListener( TreeViewer viewer ) {
 		assert viewer != null;
 		_viewer = viewer;
-		PlatformUtil.getActivePage().addPartListener( this );
+		IWorkbenchPage page = PlatformUtil.getActivePage();
+		if ( page != null ) {
+			page.addPartListener( this );
+		}
+		else {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPageListener(
+				new IPageListener() {
+				    public void pageActivated(IWorkbenchPage page){
+				    	// does nowt
+				    }
+				    public void pageClosed(IWorkbenchPage page){
+				    	// does nowt
+				    }
+				    public void pageOpened(IWorkbenchPage page){
+				    	page.addPartListener( SessionTreePartListener.this );
+				    	PlatformUI.getWorkbench()
+				    			  .getActiveWorkbenchWindow()
+				    			  .removePageListener( this );
+				    }
+				} );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -82,7 +106,8 @@ public class SessionTreePartListener implements IPartListener {
 	 * Stops listening.
 	 */
 	void dispose() {
-		PlatformUtil.getActivePage().removePartListener( this );
+		IWorkbenchPage page = PlatformUtil.getActivePage();
+		page.removePartListener( this );
 	}
 	
 	// just to tidy code

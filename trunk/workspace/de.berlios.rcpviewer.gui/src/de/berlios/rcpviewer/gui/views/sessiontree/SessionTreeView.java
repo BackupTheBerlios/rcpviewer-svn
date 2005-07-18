@@ -58,7 +58,10 @@ public class SessionTreeView extends ViewPart {
 				| SWT.V_SCROLL);
 		_viewer.setLabelProvider(new SessionTreeLabelProvider());
 		_viewer.setContentProvider(new SessionTreeContentProvider());
-
+		
+		// DnD - logic delegated to a specialist controller
+		new SessionTreeDnDController( _viewer );
+		
 		// tie viewer to current session
 		try {
 			ISessionManager mgr = RuntimePlugin.getDefault().getSessionManager();
@@ -162,4 +165,5 @@ public class SessionTreeView extends ViewPart {
 			IDomainObject object = (IDomainObject)selected;
 			mgr.add( new JobAction( new OpenDomainObjectJob( object  ) ) );
 		}
-	}}
+	}
+}

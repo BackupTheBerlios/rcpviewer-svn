@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.gui.widgets.ErrorInput;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -60,7 +61,10 @@ class SessionTreeLabelProvider extends LabelProvider
 			return ((IDomainClass)element).getName();
 		}
 		else if ( element instanceof IDomainObject ) {
-			return String.valueOf( ((IDomainObject)element).getPojo().hashCode() );
+			IDomainObject obj = (IDomainObject)element;
+			return GuiPlugin.getDefault()
+							.getLabelProvider( obj )
+							.getText( obj );
 		}
 		else if ( element instanceof ErrorInput ) {
 			return ((ErrorInput)element).getMessage();
