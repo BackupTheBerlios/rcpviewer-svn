@@ -3,7 +3,7 @@
 <schema targetNamespace="de.berlios.rcpviewer.gui">
 <annotation>
       <appInfo>
-         <meta.schema plugin="de.berlios.rcpviewer.gui" id="fieldbuilder" name="Field Builder"/>
+         <meta.schema plugin="de.berlios.rcpviewer.gui" id="domainclass" name="Domain Class"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -13,7 +13,7 @@
    <element name="extension">
       <annotation>
          <documentation>
-            Implementations of IFieldBuilder; must have no-arg constructor.
+            Defines class to be picked up as domain classes.
          </documentation>
       </annotation>
       <complexType>
