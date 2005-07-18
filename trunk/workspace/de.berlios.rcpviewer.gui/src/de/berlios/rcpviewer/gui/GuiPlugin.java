@@ -6,13 +6,15 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.ecore.ETypedElement;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
-import de.berlios.rcpviewer.gui.fields.FieldBuilderFactory;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
+import de.berlios.rcpviewer.session.IDomainObject;
 
 
 /**
@@ -26,6 +28,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	
 	// fields
 	private FieldBuilderFactory _fieldBuilderFactory = null;
+	private LabelProviderFactory _labelProviderFactory = null;
 	
 	/* static methods */
 	
@@ -85,8 +88,9 @@ public class GuiPlugin extends AbstractUIPlugin {
 		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
 		sessionJob.schedule();
 		
-		// instantiate field build factory
+		// instantiate gui factoried
 		_fieldBuilderFactory = new FieldBuilderFactory();
+		_labelProviderFactory = new LabelProviderFactory();
 		
 		// effectively running jobs synchronously
 		waitForJob( domainJob );
@@ -105,12 +109,23 @@ public class GuiPlugin extends AbstractUIPlugin {
 	/* public accessors */
 	
 	/**
-	 * @return Returns the fieldBuilderFactory.
+	 * Accessor to field builders
+	 * @param element
+	 * @return field builder
 	 */
-	public FieldBuilderFactory getFieldBuilderFactory() {
-		return _fieldBuilderFactory;
+	public IFieldBuilder getFieldBuilder(  ETypedElement element ) {
+		return _fieldBuilderFactory.getFieldBuilder( element );
 	}
 	
+	/**
+	 * Accessor to label providers  for domain objects
+	 * @param object
+	 * @return Returns the fieldBuilderFactory.
+	 */
+	public ILabelProvider getLabelProvider(  IDomainObject object  ) {
+		if ( object == null ) throw new IllegalArgumentException();
+		return _labelProviderFactory.getLabelProvider( object.getDomainClass() ); // JAVA_5_FIXME
+	}
 	
 	/* private methods */
 	

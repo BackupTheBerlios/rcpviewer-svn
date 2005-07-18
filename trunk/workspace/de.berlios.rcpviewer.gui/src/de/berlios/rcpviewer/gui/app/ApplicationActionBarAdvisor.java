@@ -148,7 +148,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	int count = 0;
 		for (IDomain domain: domains.values()) {
     		for (IDomainClass domainClass: domain.classes()) {
-				assert domain instanceof IRuntimeDomainClass;
+				assert domainClass instanceof IRuntimeDomainClass;
 				NewDomainObjectJob job = new NewDomainObjectJob( 
 						(IRuntimeDomainClass)domainClass );
 				JobAction action = new JobAction( job );

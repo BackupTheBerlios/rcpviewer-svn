@@ -21,9 +21,9 @@ public class DateTransfer extends ByteArrayTransfer {
 	private static DateTransfer __instance = new DateTransfer();
 
 	/**
-	 * Returns the singleton instance of the IntegerTransfer class.
+	 * Returns the singleton instance of the DateTransfer class.
 	 *
-	 * @return the singleton instance of the IntegerTransfer class
+	 * @return the singleton instance of the DateTransfer class
 	 */
 	public static DateTransfer getInstance () {
 		return __instance;

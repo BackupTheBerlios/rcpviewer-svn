@@ -22,9 +22,9 @@ public class BooleanTransfer extends ByteArrayTransfer {
 	private static BooleanTransfer __instance = new BooleanTransfer();
 
 	/**
-	 * Returns the singleton instance of the IntegerTransfer class.
+	 * Returns the singleton instance of the BooleanTransfer class.
 	 *
-	 * @return the singleton instance of the IntegerTransfer class
+	 * @return the singleton instance of the BooleanTransfer class
 	 */
 	public static BooleanTransfer getInstance () {
 		return __instance;
