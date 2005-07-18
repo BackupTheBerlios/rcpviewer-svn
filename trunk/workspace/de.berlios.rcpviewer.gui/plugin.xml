@@ -18,7 +18,10 @@
    <extension-point id="fieldbuilder" 
                     name="Field Builder" 
                     schema="schema/fieldbuilder.exsd"/>
-   
+  <extension-point id="labelprovider" 
+                    name="Label Provider" 
+                    schema="schema/labelprovider.exsd"/>
+                    
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -67,6 +70,7 @@
          <impl class="de.berlios.rcpviewer.gui.editors.exts.BooleanFieldBuilder"/>
          <impl class="de.berlios.rcpviewer.gui.editors.exts.DateFieldBuilder"/>
          <impl class="de.berlios.rcpviewer.gui.editors.exts.IntegerFieldBuilder"/>
+         <impl class="de.berlios.rcpviewer.gui.editors.exts.DomainObjectFieldBuilder"/>
    </extension>
 
 </plugin>
