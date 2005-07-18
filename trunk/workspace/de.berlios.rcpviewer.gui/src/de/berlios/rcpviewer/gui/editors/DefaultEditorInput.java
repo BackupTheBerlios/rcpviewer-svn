@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.gui.editors;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -35,24 +36,30 @@ public class DefaultEditorInput implements IEditorInput {
 	}
 
 	/**
-	 * Currently always the default missing image descriptor
+	 * Takes image from label provider for domain object.
 	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
 	 */
 	public ImageDescriptor getImageDescriptor() {
+		Image image = GuiPlugin.getDefault()
+						       .getLabelProvider( _domainObject )
+						       .getImage( _domainObject );
+		if ( image != null ) {
+			return ImageDescriptor.createFromImage( image );
+		}
 		return ImageDescriptor.getMissingImageDescriptor();
 	}
 
 	
 
-	/* (non-Javadoc)
+	/**
+	 * Takes name from label provider for domain object.
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	public String getName() {
-		StringBuffer sb = new StringBuffer();
-		sb.append( _domainObject.getPojo().getClass().getSimpleName() ); 
-		sb.append( ":" );
-		sb.append( _domainObject.getPojo().hashCode() ); 
-		return sb.toString();
+		return GuiPlugin.getDefault()
+			            .getLabelProvider( _domainObject )
+			            .getText( _domainObject );
+
 	}
 
 	

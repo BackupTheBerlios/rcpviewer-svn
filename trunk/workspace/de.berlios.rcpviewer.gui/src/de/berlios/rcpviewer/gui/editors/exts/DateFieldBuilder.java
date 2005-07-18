@@ -26,8 +26,9 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import de.berlios.rcpviewer.gui.IFieldBuilder;
 import de.berlios.rcpviewer.gui.dnd.DateTransfer;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
+import de.berlios.rcpviewer.gui.util.EmfUtil;
 
 /**
  * Used for dates.
@@ -45,7 +46,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 
 	/**
 	 * Only if the class is a <code>Date</code> or subclass.
-	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
+	 * @see de.berlios.rcpviewer.gui.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
 	public boolean isApplicable(ETypedElement element) {
 		return Date.class.isAssignableFrom(
@@ -55,8 +56,11 @@ public class DateFieldBuilder implements IFieldBuilder {
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, boolean editable, IFieldListener listener) {
-		return new DateField( parent, editable, listener );
+	public IField createField(Composite parent, ETypedElement element, IFieldListener listener) {
+		if( parent == null ) throw new IllegalArgumentException();
+		if( element == null ) throw new IllegalArgumentException();
+		if( listener == null ) throw new IllegalArgumentException();
+		return new DateField( parent, element, listener );
 	}
 
 	private class DateField implements IField {
@@ -64,7 +68,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 		private final Text _text;
 		
 		DateField( final Composite parent, 
-				   boolean editable,
+				   ETypedElement element,
 				   final IFieldListener listener ) {
 			
 			GridLayout layout = new GridLayout();
@@ -76,8 +80,9 @@ public class DateFieldBuilder implements IFieldBuilder {
 			_text.setEditable( false );
 			_text.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL ) );
 			
-			if ( !editable ) {
+			if ( !EmfUtil.isModifiable( element ) ) {
 				_text.setEditable( false );
+				addDnD( _text, false );
 			}
 			else {
 				layout.makeColumnsEqualWidth = false;
@@ -119,8 +124,8 @@ public class DateFieldBuilder implements IFieldBuilder {
 		                cal.open();
 		            }
 		        });
+				addDnD( _text, true );
 			}
-			addDnD( _text, editable );
 		}
 
 		/* (non-Javadoc)

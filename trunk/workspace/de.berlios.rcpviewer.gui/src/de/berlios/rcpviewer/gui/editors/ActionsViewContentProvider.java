@@ -34,7 +34,7 @@ class ActionsViewContentProvider implements IStructuredContentProvider {
 			throw new IllegalArgumentException();
 		}
 		List<EOperation> ops = 
-			((IDomainObject)inputElement).getDomainClass().operations(); // JAVA_5_FIXME
+			((IDomainObject<?>)inputElement).getDomainClass().operations(); 
 		if ( ops.isEmpty() ) {
 			return new Object[]{ new ErrorInput( 
 				GuiPlugin.getResourceString( "ActionsViewContentProvider.NoOps" )) }; //$NON-NLS-1$

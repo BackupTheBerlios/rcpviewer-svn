@@ -19,8 +19,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import de.berlios.rcpviewer.gui.IFieldBuilder;
 import de.berlios.rcpviewer.gui.dnd.IntegerTransfer;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
+import de.berlios.rcpviewer.gui.util.EmfUtil;
 
 
 /**
@@ -33,7 +34,7 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 
 	/**
 	 * Only if the class is an <code>Integer</code>
-	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
+	 * @see de.berlios.rcpviewer.gui.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
 	public boolean isApplicable(ETypedElement element) {
 		Class attributeClass = element.getEType().getInstanceClass();
@@ -45,8 +46,11 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, boolean editable, IFieldListener listener) {
-		return new IntegerField( parent, editable, listener );
+	public IField createField(Composite parent, ETypedElement element, IFieldListener listener) {
+		if( parent == null ) throw new IllegalArgumentException();
+		if( element == null ) throw new IllegalArgumentException();
+		if( listener == null ) throw new IllegalArgumentException();
+		return new IntegerField( parent, element, listener );
 	}
 	
 	private class IntegerField implements IField {
@@ -54,12 +58,12 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 		private final Text _text;
 		
 		IntegerField( Composite parent, 
-				      boolean editable,
+				      ETypedElement element,
 				      final IFieldListener listener ) {
 			parent.setLayout( new GridLayout() );
 			_text = new Text( parent, SWT.WRAP );
 			_text.setLayoutData( new GridData( GridData.FILL_BOTH ) );
-			if ( editable ) {
+			if ( EmfUtil.isModifiable( element ) ) {
 				_text.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent e) {
 						listener.fieldModified( IntegerField.this );
@@ -79,11 +83,12 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 		            	}
 		            }
 		        } );
+				addDnD( _text, true );
 			}
 			else {
 				_text.setEditable( false );
-			}
-			addDnD( _text, editable );
+				addDnD( _text, false );
+			};
 		}
 
 		/* (non-Javadoc)

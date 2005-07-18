@@ -6,9 +6,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder.IField;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder.IFieldListener;
+import de.berlios.rcpviewer.gui.IFieldBuilder;
+import de.berlios.rcpviewer.gui.IFieldBuilder.IField;
+import de.berlios.rcpviewer.gui.IFieldBuilder.IFieldListener;
 import de.berlios.rcpviewer.gui.jobs.SetAttributeJob;
 import de.berlios.rcpviewer.gui.util.NullUtil;
 import de.berlios.rcpviewer.gui.widgets.DomainObjectListener;
@@ -49,7 +49,7 @@ class FieldPart implements IFormPart, IFieldListener {
 		
 		_object = object;
 		_attribute = attribute;
-		_field = builder.createField( parent, attribute.isChangeable(), this );
+		_field = builder.createField( parent, attribute, this );
 		
 		// add listener that updates display whenever domain object updated
 		// outside of this field

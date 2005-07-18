@@ -13,10 +13,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.fields.FieldBuilderFactory;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder.IField;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder.IFieldListener;
+import de.berlios.rcpviewer.gui.IFieldBuilder;
+import de.berlios.rcpviewer.gui.IFieldBuilder.IField;
+import de.berlios.rcpviewer.gui.IFieldBuilder.IFieldListener;
 import de.berlios.rcpviewer.gui.widgets.AbstractFormDisplay;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -88,8 +87,6 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 		body.setLayout( new GridLayout( 2, false ) );
 		
 		// loop through each parameter add gui field
-		FieldBuilderFactory factory
-			= GuiPlugin.getDefault().getFieldBuilderFactory();
 		int index = 0;
 		for ( Object obj : _op.getEParameters() ) {
 			final int finalIndex = index++;
@@ -106,13 +103,18 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 			fieldComposite.setLayoutData( 
 					new GridData( GridData.FILL_HORIZONTAL ) );
 			getFormToolkit().paintBordersFor( fieldComposite );
-			IFieldBuilder fieldBuilder = factory.getInstance( param );
+			IFieldBuilder fieldBuilder
+				= GuiPlugin.getDefault().getFieldBuilder( param );
 			fieldBuilder.createField(
 					fieldComposite,
-					true,
+					param,
 					new IFieldListener(){
 						public void fieldModified( IField field ){
-							_args[finalIndex]= field.getGuiValue();
+							Object guiValue = field.getGuiValue();
+							if ( guiValue instanceof IDomainObject ) {
+								guiValue = ((IDomainObject)guiValue).getPojo();
+							}
+							_args[finalIndex] = guiValue;
 							setOKEnablement( ok );
 						}
 					} );

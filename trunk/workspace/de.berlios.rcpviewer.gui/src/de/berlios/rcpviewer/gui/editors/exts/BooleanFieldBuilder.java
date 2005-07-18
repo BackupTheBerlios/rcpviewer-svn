@@ -17,8 +17,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import de.berlios.rcpviewer.gui.IFieldBuilder;
 import de.berlios.rcpviewer.gui.dnd.BooleanTransfer;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
+import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 /**
@@ -30,17 +31,23 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 
 	/**
 	 * Only if class is a <code>Boolean</code>
-	 * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
+	 * @see de.berlios.rcpviewer.gui.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
 	public boolean isApplicable(ETypedElement element) {
 		return Boolean.class == element.getEType().getInstanceClass();
 	}
 
 	/**
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
+	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, ETypeElement, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, boolean editable, IFieldListener listener) {
-		return new BooleanField( parent, editable, listener );
+	public IField createField(
+			Composite parent, 
+			ETypedElement element, 
+			IFieldListener listener) {
+		if( parent == null ) throw new IllegalArgumentException();
+		if( element == null ) throw new IllegalArgumentException();
+		if( listener == null ) throw new IllegalArgumentException();
+		return new BooleanField( parent, element, listener );
 	}
 	
 	private class BooleanField implements IField {
@@ -48,7 +55,7 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 		private final Button _button;
 		
 		BooleanField( Composite parent, 
-				      boolean editable,
+					  ETypedElement element, 
 				      final IFieldListener listener ) {
 			parent.setLayout( new GridLayout() );
 
@@ -62,18 +69,20 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 				}
 			});
 			
-			if ( editable ) {
+			
+			if ( EmfUtil.isModifiable( element ) ) {
 				_button.addSelectionListener( new DefaultSelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent pE) {
 						listener.fieldModified( BooleanField.this );
 					}
 				});
+				addDnD( _button, true );
 			}
 			else {
 				_button.setEnabled( false );
+				addDnD( _button, false );
 			}
-			addDnD( _button, editable );
 		}
 
 		/* (non-Javadoc)

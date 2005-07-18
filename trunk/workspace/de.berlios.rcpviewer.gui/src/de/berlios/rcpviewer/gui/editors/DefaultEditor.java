@@ -20,8 +20,7 @@ import org.eclipse.ui.part.EditorPart;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.fields.FieldBuilderFactory;
-import de.berlios.rcpviewer.gui.fields.IFieldBuilder;
+import de.berlios.rcpviewer.gui.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
@@ -32,8 +31,8 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * <br>Gui built up of <code>IField</code>s provided by 
  * <code>IFieldBuilder</code>'s.
  * @author Mike
- * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder
- * @see de.berlios.rcpviewer.gui.fields.IFieldBuilder.IField
+ * @see de.berlios.rcpviewer.gui.IFieldBuilder
+ * @see de.berlios.rcpviewer.gui.IFieldBuilder.IField
  */
 public final class DefaultEditor extends EditorPart {
 	
@@ -86,8 +85,6 @@ public final class DefaultEditor extends EditorPart {
 		// loop through all attributes - add a label and an IField for each
 		IDomainObject object = getDomainObject();
 		IDomainClass clazz = object.getDomainClass(); // JAVA_5_FIXME
-		FieldBuilderFactory factory
-			= GuiPlugin.getDefault().getFieldBuilderFactory();
 		for ( Object a : clazz.attributes() ) {       // JAVA_5_FIXME
 			EAttribute attribute = (EAttribute)a;
 			
@@ -104,7 +101,8 @@ public final class DefaultEditor extends EditorPart {
 			_toolkit.paintBordersFor( fieldComposite );
 			
 			// create IField
-			IFieldBuilder fieldBuilder = factory.getInstance( attribute );
+			IFieldBuilder fieldBuilder
+				= GuiPlugin.getDefault().getFieldBuilder( attribute );
 			FieldPart fieldPart = new FieldPart(
 					fieldComposite,
 					fieldBuilder,
