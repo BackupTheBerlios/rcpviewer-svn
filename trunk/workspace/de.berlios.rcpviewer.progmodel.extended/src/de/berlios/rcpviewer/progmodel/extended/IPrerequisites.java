@@ -108,6 +108,21 @@ public interface IPrerequisites {
 
 	/**
 	 * Overloaded version of {@link #andRequire(IPrerequisites)} that creates an
+	 * IPrerequisite object with either an usability requirement
+	 * based upon the passed in arguments.
+	 * 
+	 * <p>
+	 * A default description is used.
+	 * 
+	 * @param isRequirementMet
+	 * @param constraintIfNotMet
+	 * @return
+	 */
+	IPrerequisites andRequire(boolean isRequirementMet, String requirementDescription);
+
+
+	/**
+	 * Overloaded version of {@link #andRequire(IPrerequisites)} that creates an
 	 * IPrerequisite object with either an visibility or a usability requirement
 	 * based upon the passed in arguments.
 	 * 
@@ -153,6 +168,20 @@ public interface IPrerequisites {
 	 */
 	IPrerequisites orRequire(IPrerequisites prerequisites);
 
+
+
+	/**
+	 * Overloaded version of {@link #orRequire(IPrerequisites)} that creates an
+	 * IPrerequisite object with either an visibility or a usability requirement
+	 * based upon the passed in arguments.
+	 * 
+	 * @param isRequirementMet
+	 * @param requirementDescription
+	 * @param constraintIfNotMet
+	 * @return
+	 */
+	IPrerequisites orRequire(boolean isRequirementMet, String requirementDescription);
+
 	/**
 	 * Overloaded version of {@link #orRequire(IPrerequisites)} that creates an
 	 * IPrerequisite object with a <i>usability</i> requirement
@@ -192,6 +221,5 @@ public interface IPrerequisites {
 	 * @return
 	 */
 	IPrerequisites orRequire(boolean isRequirementMet, String requirementDescription, Constraint constraintIfNotMet);
-
 
 }

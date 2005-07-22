@@ -745,7 +745,7 @@ public class RuntimeDomainClass<T>
 			
 			// TODO: use EAnnotations to specify if qualified and if sorted
 			
-			Container container = method.getAnnotation(Container.class);
+			ContainerOf container = method.getAnnotation(ContainerOf.class);
 			if (container != null) {
 				eReference.setContainment(true);
 			}

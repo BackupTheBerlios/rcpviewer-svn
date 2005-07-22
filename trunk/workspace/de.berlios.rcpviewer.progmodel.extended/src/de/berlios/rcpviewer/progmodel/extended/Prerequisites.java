@@ -54,6 +54,32 @@ public final class Prerequisites implements IPrerequisites {
 	}
 
 
+	/**
+	 * Factory method that creates prerequisites with usability constrained.
+	 */
+	public static IPrerequisites unusable() {
+		return unusable("Unusable");
+	}
+
+
+	
+	/**
+	 * Factory method that creates prerequisites with usability constrained.
+	 */
+	public static IPrerequisites unusable(final String description) {
+		return require(false, description);
+	}
+
+
+	/**
+	 * Factory method that creates prerequisites with visibility constrained.
+	 */
+	public static IPrerequisites invisible() {
+		return require(false, Constraint.INVISIBLE);
+	}
+
+
+
 
 	/**
 	 * Factory method that creates prerequisites with either visibility or
@@ -160,6 +186,16 @@ public final class Prerequisites implements IPrerequisites {
 	}
 	
 
+
+
+	/**
+	 * See interface definition.
+	 */
+	public IPrerequisites andRequire(boolean isRequirementMet, String requirementDescription) {
+		return andRequire(Prerequisites.require(isRequirementMet, requirementDescription));
+	}
+
+	
 	/**
 	 * See interface definition.
 	 */
@@ -200,6 +236,13 @@ public final class Prerequisites implements IPrerequisites {
 	/**
 	 * See interface definition.
 	 */
+	public IPrerequisites orRequire(boolean isRequirementMet, String requirementDescription) {
+		return orRequire(Prerequisites.require(isRequirementMet, requirementDescription));
+	}
+
+	/**
+	 * See interface definition.
+	 */
 	public IPrerequisites orRequire(boolean isRequirementMet, Constraint constraintIfNotMet) {
 		return orRequire(Prerequisites.require(isRequirementMet, constraintIfNotMet));
 	}
@@ -211,5 +254,7 @@ public final class Prerequisites implements IPrerequisites {
 	public IPrerequisites orRequire(boolean isRequirementMet, String requirementDescription, Constraint constraintIfNotMet) {
 		return orRequire(Prerequisites.require(isRequirementMet, requirementDescription, constraintIfNotMet));
 	}
+
+
 	
 }
