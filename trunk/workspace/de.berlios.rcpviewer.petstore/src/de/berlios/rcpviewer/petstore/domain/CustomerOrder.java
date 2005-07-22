@@ -16,7 +16,7 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.OppositeOf;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.standard.TypeOf;
-import de.berlios.rcpviewer.progmodel.extended.AppContainer;
+import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
 import de.berlios.rcpviewer.progmodel.extended.Order;
@@ -510,16 +510,16 @@ public class CustomerOrder {
      * </ul>
      * </i>
      */
-	public AppContainer getAppContainer() {
+	public IAppContainer getAppContainer() {
 		return _appContainer;
 	}
 	/**
 	 * Allows framework to inject application container.
 	 */
-	public void setAppContainer(final AppContainer appContainer) {
+	public void setAppContainer(final IAppContainer appContainer) {
 		_appContainer = appContainer;
 	}
-	private AppContainer _appContainer;
+	private IAppContainer _appContainer;
 
 
 

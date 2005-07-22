@@ -5,7 +5,7 @@ package de.berlios.rcpviewer.petstore.domain;
 
 import java.io.Serializable;
 
-import de.berlios.rcpviewer.progmodel.extended.AppContainer;
+import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
@@ -331,16 +331,16 @@ public class Customer {
      * </ul>
      * </i>
      */
-	public AppContainer getAppContainer() {
+	public IAppContainer getAppContainer() {
 		return _appContainer;
 	}
 	/**
 	 * Allows framework to inject application container.
 	 */
-	public void setAppContainer(final AppContainer appContainer) {
+	public void setAppContainer(final IAppContainer appContainer) {
 		_appContainer = appContainer;
 	}
-	private AppContainer _appContainer;
+	private IAppContainer _appContainer;
 
 
 }

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import de.berlios.rcpviewer.progmodel.extended.AppContainer;
+import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
 import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
@@ -335,16 +335,16 @@ public class Product {
      * </ul>
      * </i>
      */
-	public AppContainer getAppContainer() {
+	public IAppContainer getAppContainer() {
 		return _appContainer;
 	}
 	/**
 	 * Allows framework to inject application container.
 	 */
-	public void setAppContainer(final AppContainer appContainer) {
+	public void setAppContainer(final IAppContainer appContainer) {
 		_appContainer = appContainer;
 	}
-	private AppContainer _appContainer;
+	private IAppContainer _appContainer;
 
 
 
