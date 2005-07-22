@@ -4,113 +4,199 @@
  * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code Template
  */
-package xpetstore.domain;
+package de.berlios.rcpviewer.petstore.domain;
+
+import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.invisible;
 
 import java.io.Serializable;
 
+import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
+import de.berlios.rcpviewer.progmodel.extended.Invisible;
+import de.berlios.rcpviewer.progmodel.extended.Mask;
+import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
+import de.berlios.rcpviewer.progmodel.extended.Order;
 
 
 /**
- * @author <a href="mailto:tchbansi@sourceforge.net">Herve Tchepannou</a>
+ * Holds a credit card details for a {@link Customer}.
+ * 
+ * <p>
+ * Is also held on an Order when placed.
+ * 
+ * <p>
+ * Adapted from original xpetstore implementation by Herve Tchepannou.
+ * 
+ * <p>
+ * <i>
+ * Programming Model notes:
+ * <ul>
+ * <li> ...
+ * </ul>
+ * </i>
+ * 
+ * @author Dan Haywood
  */
 @InDomain
-public class CreditCard
-    implements Serializable
-{
-    //~ Static fields/initializers ---------------------------------------------
+public class CreditCard {
 
-    public static final String VISA = "Visa";
-    public static final String MASTERCARD = "MasterCard";
-    public static final String AMEX = "American Express";
-
-    //~ Instance fields --------------------------------------------------------
-
-    private String _number = "";
-    private String _type = "";
-    private String _expiryDate = "";
-
-    //~ Constructors -----------------------------------------------------------
-
-    public CreditCard(  )
-    {
-        super(  );
-    }
-
-    public CreditCard( CreditCard cc )
-    {
-        set( cc );
-    }
-
-    //~ Methods ----------------------------------------------------------------
-
-    /**
-     * @return String
-     *
-     * @hibernate.property
-     *         column="creditCardExpiryDate"
-     *      length="10"
-     */
-    public String getExpiryDate(  )
-    {
-        return _expiryDate;
+	/**
+	 * No-arg constructor, required for persistence layer.
+	 * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> ...
+     * </ul>
+     * </i>
+	 */
+    public CreditCard() {
     }
 
     /**
-     * @return String
-     *
-     * @hibernate.property
-     *         column="creditCardNumber"
-     *      length="25"
+     * Initialize CreditCard using another CreditCard.
+     * 
+     * <p>
+     * The resultant object will be immutable.
+     * 
+     * <p>
+     * Used when copying down a CreditCard from its {@link Customer} to place
+     * an {@link Order}.
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> ...
+     * </ul>
+     * </i>
+     * 
+     * @param address
      */
-    public String getNumber(  )
-    {
+    public void init(final CreditCard creditCard) {
+    	setExpiryDate(creditCard.getExpiryDate());
+    	setNumber(creditCard.getNumber());
+    	setType(creditCard.getType());
+
+    	setMutable(false);
+    }
+    
+    
+    /**
+     * Unique identifier for this card (for this type of card).
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes: 
+     * <ul>
+     * <li>the <code>@ImmutableOncePersisted</code> annotation will prevent
+     *     this attribute from being edited through the UI once the credit card
+     *     object has been saved.  (It would also have been possible to put this
+     *     annotation on the entire class, to affect every attribute).
+     * <li>the <code>@FieldLengthOf</code> annotation is not specified so 
+     *     defaults from <code>@MaxLengthOf</code>.
+     * </i>
+     */
+    @Order(1)
+    @DescribedAs("Unique identifier for this card (for this type of card).")
+    @MaxLengthOf(10) 
+    @ImmutableOncePersisted
+    public String getNumber() {
         return _number;
     }
+    public void setNumber(final String number) {
+    	_number = number;
+    }
+    
+    private String _number;
 
+    
+
+    public static enum Type {
+    	VISA,MASTERCARD,AMEX
+    }
     /**
-     * @return String
-     *
-     * @hibernate.property
-     *         column="creditCardType"
-     *      length="25"
+     * The clearing organization that operates this type of credit card.
+     * 
+     * <p>
+     * <i>Programming Model notes: using an enumeration which should be
+     * rendered as a drop-down or radio buttons (depending on number of 
+     * elements in the enumeration.</i>
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> ...
+     * </ul>
+     * </i>
+     * 
+     * @return
      */
-    public String getType(  )
-    {
+    @Order(2)
+    @DescribedAs("The clearing organization that operates this type of credit card")
+    public Type getType() {
         return _type;
     }
-
-    public void set( CreditCard cc )
-    {
-        _type       = cc.getType(  );
-        _number     = cc.getNumber(  );
-        _expiryDate = cc.getExpiryDate(  );
+    public void setType(Type type) {
+    	_type = type;
     }
+    private Type _type;
+    
 
+    
     /**
-     * Sets the expiryDate.
-     * @param expiryDate The expiryDate to set
+     * Expiry date, as written on this credit card
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes: <code>@Mask</code> uses the same conventions
+     * as <code>java.util.DateFormat</code>.
+     * </i>
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> ...
+     * </ul>
+     * </i>
      */
-    public void setExpiryDate( String expiryDate )
-    {
+    @Order(2)
+    @DescribedAs("Expiry date, as written on this credit card")
+    @Mask("MM-yyyy")
+    public String getExpiryDate() {
+        return _expiryDate;
+    }
+    public void setExpiryDate(final String expiryDate) {
         _expiryDate = expiryDate;
     }
+    private String _expiryDate;
+
 
     /**
-     * Sets the number.
-     * @param number The number to set
+     * Whether this CreditCard' attributes can be modified.
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul> 
+     * <li> The <code>Invisible</code> annotation indicates that the attribute
+     *      should not be displayed in the UI.  (A more verbose way would to
+     *      have returned a <code>Prerequisites.invisible()</code> from a 
+     *      <code>...Pre()</code> method).
+     * </i>
      */
-    public void setNumber( String number )
-    {
-        _number = number;
-    }
+    @Invisible
+    private boolean isMutable() {
+		return _mutable;
+	}
+    private void setMutable(boolean mutable) {
+		this._mutable = mutable;
+	}
+    private boolean _mutable;
 
-    /**
-     * Sets the type.
-     * @param type The type to set
-     */
-    public void setType( String type )
-    {
-        _type = type;
-    }
 }
