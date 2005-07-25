@@ -70,7 +70,17 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 			}
 		}
 		if ( !argsRequired ) {
-			getDomainObject().invokeOperation( _op, _args );
+			int num = _args.length;
+			Object[] args = new Object[num];
+			for ( int i=0 ; i < num ; i++ ) {
+				if ( _args[i] instanceof IDomainObject ) {
+					args[i] = ((IDomainObject<?>)_args[i]).getPojo();
+				}
+				else {
+					args[i] = _args[i];
+				}
+			}
+			getDomainObject().invokeOperation( _op, args );
 		}
 		else {
 			ActionArgsDisplay display = new ActionArgsDisplay(
@@ -81,5 +91,26 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 		}
 		return Status.OK_STATUS;
 	}
+
+	
+	/* protected methods */
+
+	/**
+	 * @return Returns the args.
+	 */
+	protected Object[] getArgs() {
+		return _args;
+	}
+
+
+	/**
+	 * @return Returns the op.
+	 */
+	protected EOperation getOp() {
+		return _op;
+	}
+
+	
+	
 
 }

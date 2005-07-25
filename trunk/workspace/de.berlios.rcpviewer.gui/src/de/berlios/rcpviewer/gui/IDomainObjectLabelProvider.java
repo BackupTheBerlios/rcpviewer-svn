@@ -7,7 +7,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 /**
  * Type providing display values for individual instances of 
  * <code>IDomainObject</code>.
- * <br>Implementations are distimguished using the <code>IDomainClass</code>
+ * <br>Implementations are distinguished using the <code>IDomainClass</code>
  * of the objects.
  * <br>Implementations must be stateless as they are repeatedly used.
  * @author Mike

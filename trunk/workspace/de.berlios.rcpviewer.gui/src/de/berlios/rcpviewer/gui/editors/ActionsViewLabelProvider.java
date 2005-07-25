@@ -3,8 +3,6 @@
  */
 package de.berlios.rcpviewer.gui.editors;
 
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.jface.viewers.LabelProvider;
 
 import de.berlios.rcpviewer.gui.widgets.ErrorInput;
@@ -31,34 +29,14 @@ public class ActionsViewLabelProvider extends LabelProvider {
 		if ( element instanceof ErrorInput ) {
 			return ((ErrorInput)element).getMessage();
 		}
-		else if ( element instanceof EOperation ) {
-			return buildName( (EOperation)element );
+		else if ( element instanceof ActionsViewActionProxy ) {
+			return ((ActionsViewActionProxy)element).getText();
+		}
+		else if ( element instanceof ActionsViewParameterProxy ) {
+			return ((ActionsViewParameterProxy)element).getText();
 		}
 		else {
 			throw new IllegalArgumentException();
 		}
 	}
-	
-	private String buildName( EOperation op ) {
-		assert op != null;
-		
-		StringBuffer sb = new StringBuffer();
-		sb.append( op.getName() );
-		sb.append( "(" ); //$NON-NLS-1$
-		boolean firstParam = true;
-		for ( Object param : op.getEParameters() ) {
-			if ( firstParam ) {
-				firstParam = false;
-			}
-			else {
-				sb.append( ", "); //$NON-NLS-1$
-			}
-			sb.append( ((EParameter)param).getName() );
-		}	
-		sb.append( ")" ); //$NON-NLS-1$
-		return sb.toString();
-	}
-	
-	
-
 }

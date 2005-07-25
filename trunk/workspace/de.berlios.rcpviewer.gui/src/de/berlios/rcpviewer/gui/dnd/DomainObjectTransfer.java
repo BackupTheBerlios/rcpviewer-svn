@@ -18,13 +18,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * @author Mike
  */
 public class DomainObjectTransfer extends ByteArrayTransfer {
-	
-	private static final String BOOLEAN_TYPE_NAME
-		= DomainObjectTransfer.class.getName();
-	private static final int BOOLEAN_TYPE_ID
-		= registerType ( BOOLEAN_TYPE_NAME );
-	
-	
+
 	private static Map<IDomainClass, DomainObjectTransfer> __instances 
 		= new HashMap<IDomainClass, DomainObjectTransfer>();
 	
@@ -46,6 +40,14 @@ public class DomainObjectTransfer extends ByteArrayTransfer {
 			__instances.put( clazz, transfer );
 		}
 		return transfer;
+	}
+	
+	/**
+	 * Return all instances
+	 * @return
+	 */
+	public static DomainObjectTransfer[] getInstances() {
+		return __instances.values().toArray( new DomainObjectTransfer[0] );
 	}
 	
 	/* (non-Javadoc)

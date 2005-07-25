@@ -105,7 +105,7 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 			getFormToolkit().paintBordersFor( fieldComposite );
 			IFieldBuilder fieldBuilder
 				= GuiPlugin.getDefault().getFieldBuilder( param );
-			fieldBuilder.createField(
+			IField field = fieldBuilder.createField(
 					fieldComposite,
 					param,
 					new IFieldListener(){
@@ -118,6 +118,7 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 							setOKEnablement( ok );
 						}
 					} );
+			field.setGuiValue( _args[finalIndex] );
 		}
 		
 		setOKEnablement( ok );

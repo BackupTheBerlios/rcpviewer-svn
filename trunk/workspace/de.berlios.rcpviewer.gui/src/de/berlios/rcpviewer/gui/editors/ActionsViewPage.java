@@ -3,19 +3,16 @@
  */
 package de.berlios.rcpviewer.gui.editors;
 
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.jface.viewers.IOpenListener;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.Page;
 
-import de.berlios.rcpviewer.gui.jobs.RunOperationJob;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
-import de.berlios.rcpviewer.gui.widgets.ErrorInput;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -28,7 +25,7 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 	private final IDomainObject _domainObject; 
 	
 	// temporary
-	private ListViewer _viewer = null;
+	private TreeViewer _viewer = null;
 
 	/**
 	 * Constructor passed parent domain object.
@@ -45,16 +42,26 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		_viewer = new ListViewer( 
+		
+		// create viewer
+		_viewer = new TreeViewer( 
 				parent, 
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER );
 		_viewer.setContentProvider( new ActionsViewContentProvider() );
 		_viewer.setLabelProvider( new ActionsViewLabelProvider() );
+		
+		// dbl click logic
 		_viewer.addOpenListener( new IOpenListener(){
 		    public void open(OpenEvent event) {
-		    	runOp();
+		    	Object selected = getSelected( ActionsViewActionProxy.class );
+		    	if ( selected != null ) {
+					((ActionsViewActionProxy)selected).schedule();
+				}
 		    }
 		});
+		
+		// DnD logic delegated
+		new ActionsViewDnDController( _viewer );
 		
 		_viewer.setInput( _domainObject );
 		
@@ -75,20 +82,18 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 	public void setFocus() {
 		_viewer.getControl().setFocus();
 	}
-	
-	// run the selected operation
-	private void runOp() {
-    	
-		// get op
-		if ( _viewer.getSelection().isEmpty() ) return;
-    	Object selected
-    		= ((StructuredSelection)_viewer.getSelection()).getFirstElement();
-    	if ( selected instanceof ErrorInput ) return;
-    	assert selected instanceof EOperation;
-    	
-    	// run job
-    	new RunOperationJob( _domainObject, (EOperation)selected ).schedule();
-    	
+
+	// commonly used - predicated on SWT.SINGLE viewer
+	private Object getSelected( Class expectedClass ) {
+		assert expectedClass != null;
+		assert _viewer != null;
+    	if ( _viewer.getSelection().isEmpty() ) return null;
+    	Object obj = ((StructuredSelection)
+    			_viewer.getSelection()).getFirstElement();
+    	if ( expectedClass.equals( obj.getClass() ) ){
+    		return obj;
+    	}
+    	return null;
 	}
 
 }
