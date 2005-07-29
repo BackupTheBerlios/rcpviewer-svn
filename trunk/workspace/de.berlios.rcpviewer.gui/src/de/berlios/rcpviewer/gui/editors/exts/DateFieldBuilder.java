@@ -132,8 +132,10 @@ public class DateFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#getGuiValue()
 		 */
 		public Object getGuiValue() {
+			String s = _text.getText();
+			if ( s.length() == 0 ) return null;
 			try {
-				Date date = FORMATTER.parse(_text.getText());
+				Date date = FORMATTER.parse( s );
 				return date;
 			}
 			catch ( ParseException pe ) {

@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
@@ -122,9 +123,19 @@ public class GuiPlugin extends AbstractUIPlugin {
 	 * @param object
 	 * @return Returns the fieldBuilderFactory.
 	 */
-	public ILabelProvider getLabelProvider(  IDomainObject object  ) {
+	public ILabelProvider getLabelProvider(  IDomainObject<?> object  ) {
 		if ( object == null ) throw new IllegalArgumentException();
-		return _labelProviderFactory.getLabelProvider( object.getDomainClass() ); // JAVA_5_FIXME
+		return getLabelProvider( object.getDomainClass() );
+	}
+	
+	/**
+	 * Accessor to label providers for domain classes
+	 * @param object
+	 * @return Returns the fieldBuilderFactory.
+	 */
+	public ILabelProvider getLabelProvider(  IDomainClass<?> clazz  ) {
+		if ( clazz == null ) throw new IllegalArgumentException();
+		return _labelProviderFactory.getLabelProvider( clazz ); 
 	}
 	
 	/* private methods */

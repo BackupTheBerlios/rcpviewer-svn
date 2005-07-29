@@ -15,7 +15,7 @@
    <extension-point id="domainclass" 
                     name="Domain Class" 
                     schema="schema/domainclass.exsd"/>
-   <extension-point id="fieldbuilder" 
+  <extension-point id="fieldbuilder" 
                     name="Field Builder" 
                     schema="schema/fieldbuilder.exsd"/>
   <extension-point id="labelprovider" 
@@ -72,5 +72,7 @@
          <impl class="de.berlios.rcpviewer.gui.editors.exts.IntegerFieldBuilder"/>
          <impl class="de.berlios.rcpviewer.gui.editors.exts.DomainObjectFieldBuilder"/>
    </extension>
+
+
 
 </plugin>

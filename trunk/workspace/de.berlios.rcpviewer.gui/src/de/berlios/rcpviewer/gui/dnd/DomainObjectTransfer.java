@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.gui.dnd;
 
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
@@ -9,6 +10,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.gui.util.DomainRegistryUtil;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -43,10 +45,14 @@ public class DomainObjectTransfer extends ByteArrayTransfer {
 	}
 	
 	/**
-	 * Return all instances
+	 * Return all possible instances.
 	 * @return
 	 */
-	public static DomainObjectTransfer[] getInstances() {
+	static DomainObjectTransfer[] getInstances() {
+		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses();
+		while( it.hasNext() ) {
+			getInstance( it.next() );
+		}
 		return __instances.values().toArray( new DomainObjectTransfer[0] );
 	}
 	

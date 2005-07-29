@@ -3,7 +3,9 @@
  */
 package de.berlios.rcpviewer.gui.editors;
 
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 
 import de.berlios.rcpviewer.gui.widgets.ErrorInput;
 
@@ -11,7 +13,8 @@ import de.berlios.rcpviewer.gui.widgets.ErrorInput;
  * @author Mike
  *
  */
-public class ActionsViewLabelProvider extends LabelProvider {
+class ActionsViewLabelProvider extends LabelProvider 
+		implements ITableLabelProvider {
 
 	/**
 	 * 
@@ -21,22 +24,40 @@ public class ActionsViewLabelProvider extends LabelProvider {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
 	 */
-	@Override
-	public String getText(Object element) {
+	public Image getColumnImage(Object element, int columnIndex) {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+	 */
+	public String getColumnText(Object element, int columnIndex) {
 		if ( element == null ) throw new IllegalArgumentException();
-		if ( element instanceof ErrorInput ) {
-			return ((ErrorInput)element).getMessage();
-		}
-		else if ( element instanceof ActionsViewActionProxy ) {
-			return ((ActionsViewActionProxy)element).getText();
-		}
-		else if ( element instanceof ActionsViewParameterProxy ) {
-			return ((ActionsViewParameterProxy)element).getText();
-		}
-		else {
-			throw new IllegalArgumentException();
+		switch( columnIndex ) {
+			case 0: // label column
+				if ( element instanceof ErrorInput ) {
+					return ((ErrorInput)element).getMessage();
+				}
+				else if ( element instanceof ActionsViewActionProxy ) {
+					return ((ActionsViewActionProxy)element).getText();
+				}
+				else if ( element instanceof ActionsViewParameterProxy ) {
+					return ((ActionsViewParameterProxy)element).getDisplayLabel();
+				}
+				else {
+					throw new IllegalArgumentException();
+				}
+			case 1: // value column
+				 if ( element instanceof ActionsViewParameterProxy ) {
+					 return ((ActionsViewParameterProxy)element).getDisplayValue();
+				 }
+				 else {
+					 return ""; //$NON-NLS-1$
+				 }
+			default:
+				throw new IllegalArgumentException();
 		}
 	}
 }

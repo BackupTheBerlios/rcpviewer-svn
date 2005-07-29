@@ -27,7 +27,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 class ActionArgsDisplay extends AbstractFormDisplay {
 
-	private final IDomainObject _object;
+	private final IDomainObject<?> _object;
 	private final EOperation _op;
 	private final Object[] _args;
 	
@@ -96,8 +96,7 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 					param.getName() + ":" ) ; //$NON-NLS-1$
 			label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
 			label.setToolTipText(
-					_object.getDomainClass()   // JAVA_5_FIXME
-					       .getDescriptionFor( _op, finalIndex ) ) ;
+					_object.getDomainClass().getDescriptionFor( _op, finalIndex ) ) ;
 			
 			Composite fieldComposite = getFormToolkit().createComposite( body );
 			fieldComposite.setLayoutData( 
@@ -112,7 +111,7 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 						public void fieldModified( IField field ){
 							Object guiValue = field.getGuiValue();
 							if ( guiValue instanceof IDomainObject ) {
-								guiValue = ((IDomainObject)guiValue).getPojo();
+								guiValue = ((IDomainObject<?>)guiValue).getPojo();
 							}
 							_args[finalIndex] = guiValue;
 							setOKEnablement( ok );

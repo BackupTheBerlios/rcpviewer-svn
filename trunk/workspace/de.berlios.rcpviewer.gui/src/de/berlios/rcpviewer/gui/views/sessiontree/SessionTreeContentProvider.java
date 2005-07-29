@@ -44,7 +44,7 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 				ISession session = RuntimePlugin.getDefault()
 												.getSessionManager()
 												.get( _sessionId );
-				return session.footprintFor( (IDomainClass)element ).toArray(); // JAVA_5_FIXME
+				return session.footprintFor( (IDomainClass<?>)element ).toArray(); 
 			}
 			catch ( CoreException ce ) {
 				GuiPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -67,7 +67,7 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 			return null;
 		}
 		else if ( element instanceof IDomainObject ) {
-			return ((IDomainObject)element).getDomainClass(); // JAVA_5_FIXME
+			return ((IDomainObject<?>)element).getDomainClass();
 		}
 		else {
 			throw new IllegalArgumentException();
@@ -106,8 +106,8 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 
 			Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses();
 			while ( it.hasNext() ) {
-				IDomainClass clazz = it.next();
-				if ( !session.footprintFor( clazz ).isEmpty() ) { // JAVA_5_FIXME
+				IDomainClass<?> clazz = it.next();
+				if ( !session.footprintFor( clazz ).isEmpty() ) { 
 					populatedClasses.add( clazz );
 				}
 			}

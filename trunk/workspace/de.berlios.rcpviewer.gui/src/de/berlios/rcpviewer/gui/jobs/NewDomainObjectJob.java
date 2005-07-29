@@ -20,7 +20,7 @@ import de.berlios.rcpviewer.session.ISessionManager;
  */
 public class NewDomainObjectJob extends AbstractUserJob {
 
-	private final IRuntimeDomainClass _clazz;
+	private final IRuntimeDomainClass<?> _clazz;
 	
 	/**
 	 * Constructor requires the class to open.
@@ -40,7 +40,7 @@ public class NewDomainObjectJob extends AbstractUserJob {
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
-			IDomainObject domainObject = session.createTransient( _clazz ); // JAVA_5_FIXME
+			IDomainObject domainObject = session.createTransient( _clazz ); 
 			new OpenDomainObjectJob( domainObject ).schedule();
 			return Status.OK_STATUS;
 		}

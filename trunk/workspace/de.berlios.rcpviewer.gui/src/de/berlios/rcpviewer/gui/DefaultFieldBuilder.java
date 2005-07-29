@@ -52,6 +52,8 @@ class DefaultFieldBuilder implements IFieldBuilder {
 		
 		private final Text _text;
 		
+		private Object _obj = null;
+		
 		DefaultField( Composite parent, 
 				      ETypedElement element,
 				      final IFieldListener listener ) {
@@ -77,7 +79,7 @@ class DefaultFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#getGuiValue()
 		 */
 		public Object getGuiValue() {
-			return _text.getText();
+			return _obj;
 		}
 
 		/* (non-Javadoc)
@@ -91,7 +93,13 @@ class DefaultFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#setGuiValue(java.lang.Object)
 		 */
 		public void setGuiValue(Object obj) {
-			_text.setText( String.valueOf( obj ) );
+			_obj = obj;
+			if ( _obj == null ) {
+				_text.setText( "" ); //$NON-NLS-1$
+			}
+			else {
+				_text.setText( String.valueOf( obj ) );
+			}
 			
 		}
 		

@@ -44,7 +44,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 	 */
 	public boolean isApplicable(ETypedElement element) {
 		return ( RuntimeDomain.instance().lookupNoRegister( 
-					element.getEType().getInstanceClass() ) != null ); // JAVA_5_FIXME
+					(Class<?>)element.getEType().getInstanceClass() ) != null ); 
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 			
 			 final IDomainClass domainClass
 			 	= RuntimeDomain.instance().lookupNoRegister( 
-			 			element.getEType().getInstanceClass() ); // JAVA_5_FIXME
+			 			(Class<?>)element.getEType().getInstanceClass() ); 
 			if ( domainClass == null ) throw new IllegalArgumentException();
 			
 			GridLayout layout = new GridLayout();
@@ -106,7 +106,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 				
 				// can change object via search op ...
 		        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );
-				change.setText( GuiPlugin.getResourceString( "SearchJob.Name" ) ); //$NON-NLS-1$
+				change.setText( "..." ); //$NON-NLS-1$
 				GridData buttonData = new GridData();
 				buttonData.heightHint = _text.getLineHeight() ;
 				change.setLayoutData( buttonData );
@@ -175,7 +175,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 				_text.setText( "" ); //$NON-NLS-1$
 			}
 			else {
-				if ( !(obj instanceof IDomainObject) ) { // JAVA_5_FIXME
+				if ( !(obj instanceof IDomainObject) ) { 
 					throw new IllegalArgumentException();
 				}
 				_obj = (IDomainObject)obj;

@@ -34,7 +34,7 @@ import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 public class ClassBarView extends ViewPart {
 
 	public static final String ID = ClassBarView.class.getName();
-	public static final String EMPTY_DOMAIN_MSG_KEY = "ClassBarView.EmptyDomain";
+	public static final String EMPTY_DOMAIN_MSG_KEY = "ClassBarView.EmptyDomain"; //$NON-NLS-1$
 	
 	private static final Point IMAGE_SIZE = new Point( 32, 32 );
 	
@@ -69,7 +69,7 @@ public class ClassBarView extends ViewPart {
 	 * As it says
 	 * @param clazz
 	 */
-	private void doAddClass( IRuntimeDomainClass clazz, Composite parent ) {
+	private void doAddClass( IRuntimeDomainClass<?> clazz, Composite parent ) {
 		assert clazz != null;
 		assert parent != null;
 		

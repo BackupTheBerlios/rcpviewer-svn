@@ -26,7 +26,7 @@ class FieldPart implements IFormPart, IFieldListener {
 	private final EAttribute _attribute;
 	private final IDomainObjectListener _listener;
 	
-	private IDomainObject _object;
+	private IDomainObject<?> _object;
 	private IManagedForm _managedForm;
 	private boolean _isDirty= false;
 
@@ -63,7 +63,7 @@ class FieldPart implements IFormPart, IFieldListener {
 				}
 			}
 		};
-		_object.addDomainObjectListener( _listener );	// JAVA_5_FIXME
+		_object.addDomainObjectListener( _listener );
 		
 	}
 	

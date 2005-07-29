@@ -95,7 +95,9 @@ public class IntegerFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#getGuiValue()
 		 */
 		public Object getGuiValue() {
-			return Integer.valueOf( _text.getText() ) ;
+			String s = _text.getText();
+			if ( s.length() == 0 ) return null;
+			return Integer.valueOf( s ) ;
 		}
 
 		/* (non-Javadoc)

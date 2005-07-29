@@ -1,7 +1,10 @@
 package de.berlios.rcpviewer.gui.dnd;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.dnd.TextTransfer;
@@ -10,13 +13,27 @@ import org.eclipse.swt.dnd.Transfer;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 
 /**
- * Static utitlity methods
+ * Static factory methods
  * @author Mike
  */
-public class DndUtil {
+public class DndTransferFactory {
 	
 	private static final Map<Class,Transfer> TRANSFERS
 		= new HashMap<Class,Transfer>();
+	
+	/**
+	 * Returns all transfer types known to this factory.
+	 * @return
+	 */
+	public static Transfer[] getTransfers() {
+		List<Transfer> all = new ArrayList<Transfer>();
+		all.addAll( Arrays.asList( DomainObjectTransfer.getInstances() ) );
+		all.add( IntegerTransfer.getInstance() );
+		all.add( BooleanTransfer.getInstance() );
+		all.add( TextTransfer.getInstance() );
+		return all.toArray( new Transfer[0] );
+	}
+	
 	
 	/**
 	 * Returns the DnD transfer type appropriate for the passed class.
@@ -24,7 +41,7 @@ public class DndUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static Transfer getTransfer( Class clazz ) {
+	public static Transfer getTransfer( Class<?> clazz ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		Transfer transfer = TRANSFERS.get( clazz );
 		if ( transfer == null ) {
@@ -50,7 +67,7 @@ public class DndUtil {
 			}
 			else {	
 				transfer = DomainObjectTransfer.getInstance(
-					 RuntimeDomain.instance().lookupNoRegister( clazz ) ); // JAVA_5_FIXME 
+					 RuntimeDomain.instance().lookupNoRegister( clazz ) );
 			}
 			TRANSFERS.put( clazz, transfer );
 		}
@@ -60,7 +77,7 @@ public class DndUtil {
 	
 
 	// prevent instantiation
-	private DndUtil() {
+	private DndTransferFactory() {
 		super();
 	}
 

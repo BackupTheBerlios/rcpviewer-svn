@@ -23,7 +23,6 @@ public abstract class AbstractUserJob extends UIJob {
 	 */
 	public AbstractUserJob(Display jobDisplay, String name) {
 		super(jobDisplay, name);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -31,7 +30,6 @@ public abstract class AbstractUserJob extends UIJob {
 	 */
 	public AbstractUserJob(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

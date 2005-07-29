@@ -11,7 +11,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.TreeItem;
 
-import de.berlios.rcpviewer.gui.dnd.DomainObjectTransfer;
+import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 
 /**
  * Wraps a <code>DropTarget</code> dynamically modifying this so that DnD
@@ -28,7 +28,7 @@ class ActionsViewDnDController {
 		final DropTarget target = new DropTarget( 
 				viewer.getTree(), 
 				DND.DROP_MOVE | DND.DROP_COPY );
-		target.setTransfer( DomainObjectTransfer.getInstances() );
+		target.setTransfer( DndTransferFactory.getTransfers() ) ;
 		target.addDropListener ( new DropTargetAdapter() {
 			public void dragEnter(DropTargetEvent event){
 				if ( event.detail == DND.DROP_NONE ) {
@@ -50,10 +50,24 @@ class ActionsViewDnDController {
 					}
 					if ( item.getData() instanceof ActionsViewActionProxy ) {
 						if ( !item.getExpanded() ) {
-							viewer.collapseAll();
-							viewer.expandToLevel( 
-									item.getData(), 
-									AbstractTreeViewer.ALL_LEVELS );
+							// only expand if one or more params fits the 
+							// dragged item
+							boolean expand = false;
+							paramLoop: for ( ActionsViewParameterProxy param :
+									((ActionsViewActionProxy)item.getData()).getParams() ) {
+								Transfer transfer = param.getTransfer();
+								for ( TransferData data : event.dataTypes ) {
+									if ( transfer.isSupportedType( data ) ) {
+										expand = true;
+										break paramLoop;
+									}
+								}
+							}
+							if ( expand ) {
+								viewer.expandToLevel( 
+										item.getData(), 
+										AbstractTreeViewer.ALL_LEVELS );
+							}
 						}
 						
 					}
