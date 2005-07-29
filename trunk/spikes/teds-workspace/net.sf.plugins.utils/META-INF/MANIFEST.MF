@@ -7,8 +7,8 @@ Bundle-Localization: plugin
 Eclipse-AutoStart: true
 Require-Bundle: org.eclipse.jface,
  org.eclipse.swt,
- org.eclipse.core.runtime.compatibility,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ org.eclipse.core.runtime
 Bundle-ClassPath: library.jar
 Export-Package: net.sf.plugins.utils,
  net.sf.plugins.utils.ui.forms

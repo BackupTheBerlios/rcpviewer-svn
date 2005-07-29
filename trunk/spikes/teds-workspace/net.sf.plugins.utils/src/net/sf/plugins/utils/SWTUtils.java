@@ -12,13 +12,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.Widget;
 
 /**
  * Miscellaneous UI utilities.
  */
 public class SWTUtils {
-    
+	   
     /**
      * Returns true of the given control or any of it's children has the focus.
      */
@@ -81,8 +83,10 @@ public class SWTUtils {
      * 
      * This method should only be called on hidden tables since it will 
      * cause crazy insane flicker otherwise. 
+     * @param table
      */
-    static public void evenlyWidenTableColumns(Table table) {
+    static public void evenlyWidenColumns(Table table) {
+    	if ( table == null ) throw new IllegalArgumentException();
         TableColumn[] columns = table.getColumns();
         if (0 < columns.length) {
             int clientWidth = table.getClientArea().width;
@@ -110,7 +114,7 @@ public class SWTUtils {
             }
             
             if (totPackedWidth < clientWidth) {
-                autosizeLastColumnInTable(table);
+                autosizeLastColumn(table);
                 return;
             }
             
@@ -130,21 +134,96 @@ public class SWTUtils {
             }
         }
     }
+    
+    /**
+     * Evenly expands column widths to suck up any leftover space in the table.
+     * Does not expand a column past it's packed width.
+     * 
+     * This method should only be called on hidden tables since it will 
+     * cause crazy insane flicker otherwise. 
+     * @param tree
+     */
+    static public void evenlyWidenColumns(Tree tree) {
+    	if ( tree == null ) throw new IllegalArgumentException();
+        TreeColumn[] columns = tree.getColumns();
+        if (0 < columns.length) {
+            int clientWidth = tree.getClientArea().width;
+            clientWidth -= tree.getBorderWidth() * 2;
+
+            int totStartWidth = 0;
+            int[] startWidths= new int[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+            	TreeColumn column= columns[i]; 
+                totStartWidth += startWidths[i]= column.getWidth();
+                column.pack();
+            }
+            
+            if (clientWidth <= totStartWidth) { 
+                return;
+            }
+            int[] packedWidths= new int[columns.length];
+            int totPackedWidth = 0;
+            for (int i = 0; i < columns.length; i++) {
+            	TreeColumn column= columns[i]; 
+                int width= column.getWidth();
+                if (width < startWidths[i]) 
+                    column.setWidth(width= startWidths[i]);
+                totPackedWidth += packedWidths[i]= width;
+            }
+            
+            if (totPackedWidth < clientWidth) {
+                autosizeLastColumn(tree);
+                return;
+            }
+            
+            int totExcess= totPackedWidth - clientWidth;
+            int totDiff= totPackedWidth - totStartWidth;
+            int totFinalWidth= 0;
+            for (int i = 0; i < columns.length; i++) {
+            	TreeColumn column= columns[i];
+                int packedWidth= packedWidths[i];
+                int diff= packedWidth - startWidths[i];
+                int excess= (totExcess * diff) / totDiff;
+                if (0 < excess) {
+                    int w= packedWidth - excess;
+                    totFinalWidth+= w;
+                    column.setWidth(w);
+                }
+            }
+        }
+    }
         
 
     /**
      * Expands the last column in a table to suck up any left over space in 
      * it's table.
+     * @param table
      */
-    static public void autosizeLastColumnInTable(Table table) {
-        autosizeColumnInTable(table, table.getColumns().length - 1);
+    static public void autosizeLastColumn(Table table) {
+    	if ( table == null ) throw new IllegalArgumentException();
+        autosizeColumn(table, table.getColumns().length - 1);
+    }
+    
+    /**
+     * Expands the last column in a table to suck up any left over space in 
+     * it's table.
+     * @param tree
+     */
+    static public void autosizeLastColumn(Tree tree) {
+    	if ( tree == null ) throw new IllegalArgumentException();
+        autosizeColumn( tree, tree.getColumns().length - 1);
     }
 
     /**
      * Expands the denoted column in a table to suck up any left over space in 
      * it's table.
+     * @param table
+     * @param column index
      */
-    static public void autosizeColumnInTable(Table table, int columnIndex) {
+    static public void autosizeColumn(Table table, int columnIndex) {
+    	if( table == null ) throw new IllegalArgumentException();
+    	if( columnIndex < 0 ) throw new IllegalArgumentException();
+    	if( columnIndex >= table.getColumnCount() ) throw new IllegalArgumentException();
         TableColumn[] columns = table.getColumns();
         if (0 < columns.length) {
             int totColumnWidth = 0;
@@ -156,6 +235,31 @@ public class SWTUtils {
             clientWidth -= table.getBorderWidth() * 2;
             int lastColWidth = clientWidth - totColumnWidth;
             TableColumn lastColumn = columns[columnIndex];
+            if (lastColumn.getWidth() < lastColWidth)
+                lastColumn.setWidth(lastColWidth);
+        }
+    }
+    
+    /**
+     * Expands the denoted column in a tree to suck up any left over space in 
+     * it's tree.
+     * @param tree
+     * @param column index
+     */
+    static public void autosizeColumn(Tree tree, int columnIndex) {
+    	if ( tree == null ) throw new IllegalArgumentException();
+    	if ( columnIndex < 0 ) throw new IllegalArgumentException();
+    	if ( columnIndex >= tree.getColumnCount() ) throw new IllegalArgumentException();
+        TreeColumn[] columns = tree.getColumns();
+        if (0 < columns.length) {
+            int totColumnWidth = 0;
+            for (int i = 0; i < columns.length; i++) 
+                if (i != columnIndex)
+                    totColumnWidth += columns[i].getWidth();
+            int clientWidth = tree.getClientArea().width;
+            clientWidth -= tree.getBorderWidth() * 2;
+            int lastColWidth = clientWidth - totColumnWidth;
+            TreeColumn lastColumn = columns[columnIndex];
             if (lastColumn.getWidth() < lastColWidth)
                 lastColumn.setWidth(lastColWidth);
         }
@@ -242,13 +346,6 @@ public class SWTUtils {
   
 
 
-
-
-
-
-   
-    
-    
  
     
  
