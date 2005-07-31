@@ -113,7 +113,10 @@ public abstract class AbstractDomain implements IDomain {
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
 	public final <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass) {
-
+		
+		if ( javaClass == null ) throw new IllegalArgumentException();
+		if ( javaClass.isPrimitive() ) throw new IllegalArgumentException();
+		
 		// check class is in the EMF resource set for this domain ...
 		Package javaPackage = javaClass.getPackage();
 		EPackage ePackage = resourceSet.getPackageRegistry().getEPackage(javaPackage.getName());
