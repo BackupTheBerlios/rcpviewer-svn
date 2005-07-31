@@ -18,23 +18,25 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import de.berlios.rcpviewer.gui.IFieldBuilder;
-import de.berlios.rcpviewer.gui.dnd.BooleanTransfer;
+import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 /**
  * Used for booleans.
- * <br>Can handle DnD operations but only within the app.
  * @author Mike
  */
 public class BooleanFieldBuilder implements IFieldBuilder {
 
 	/**
-	 * Only if class is a <code>Boolean</code>
+	 * Only if class is a <code>Boolean</code> or a <code>boolean</code>
 	 * @see de.berlios.rcpviewer.gui.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
 	public boolean isApplicable(ETypedElement element) {
-		return Boolean.class == element.getEType().getInstanceClass();
+		Class attributeClass = element.getEType().getInstanceClass();
+		if ( boolean.class == attributeClass ) return true;
+		if ( Boolean.class == attributeClass ) return true;
+		return false;
 	}
 
 	/**
@@ -103,21 +105,28 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#setGuiValue(java.lang.Object)
 		 */
 		public void setGuiValue(Object obj) {
-			if ( !(obj instanceof Boolean) ) throw new IllegalArgumentException();
-			_button.setSelection( (Boolean)obj );
-			
+			if ( obj == null ) {
+				_button.setSelection( false );
+			}
+			else {
+				if ( !(obj instanceof Boolean) ) {
+					throw new IllegalArgumentException();
+				}
+				_button.setSelection( (Boolean)obj );
+			}
 		}
 		
 		// add DnD functionality
 		private void addDnD( final Button button, boolean editable ) {
 			assert button != null;
 			
-			Transfer[] types = new Transfer[] {
-					BooleanTransfer.getInstance() };
+			final Transfer transferType
+				= DndTransferFactory.getTransfer( boolean.class );
+			assert transferType != null;
 			int operations = DND.DROP_MOVE | DND.DROP_COPY ;
 			
 			final DragSource source = new DragSource (button, operations);
-			source.setTransfer(types);
+			source.setTransfer( new Transfer[]{ transferType } );
 			source.addDragListener (new DragSourceListener () {
 				public void dragStart(DragSourceEvent event) {
 					event.doit = true;
@@ -132,10 +141,10 @@ public class BooleanFieldBuilder implements IFieldBuilder {
 
 			if ( editable ) {
 				DropTarget target = new DropTarget(button, operations);
-				target.setTransfer(types);
+				target.setTransfer( new Transfer[]{ transferType } );
 				target.addDropListener (new DropTargetAdapter() {
 					public void dragEnter(DropTargetEvent event){
-						if ( !BooleanTransfer.getInstance().isSupportedType(
+						if ( !transferType.isSupportedType(
 								event.currentDataType ) ) {
 							event.detail = DND.DROP_NONE;
 						}

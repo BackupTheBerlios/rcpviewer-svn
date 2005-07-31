@@ -58,9 +58,11 @@ class ActionsViewCellModifier implements ICellModifier {
 		if ( !(data instanceof ActionsViewParameterProxy) ) {
 			throw new IllegalArgumentException();
 		}
-		((ActionsViewParameterProxy)data).setValue( value );
-		_parent.update( data, new String[]{ property } );
-
+		ActionsViewParameterProxy proxy = (ActionsViewParameterProxy)data;
+		proxy.setValue( value );
+		// update parent too for colours
+		_parent.update( new Object[]{ proxy, proxy.getParent() }, 
+						new String[]{ property } );
 	}
 
 }

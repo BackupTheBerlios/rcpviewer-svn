@@ -120,5 +120,14 @@ class ActionsViewParameterProxy {
 		return _transfer;
 	}
 	
+	/**
+	 * Whether the value is for valid to be used in the operation.
+	 * <br>Currenly simply a <code>null</code> check.
+	 * @return
+	 */
+	boolean isValid() {
+		return getValue() != null;
+	}
+	
 
 }

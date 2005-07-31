@@ -81,7 +81,8 @@ class ActionsViewDnDController {
 					ActionsViewParameterProxy param =
 						((ActionsViewParameterProxy)item.getData());
 					param.setValue( event.data );
-					viewer.update( param, null );
+					viewer.update( new Object[]{ param, param.getParent() },
+								   null );
 					return;
 				}
 				event.detail = DND.DROP_NONE;

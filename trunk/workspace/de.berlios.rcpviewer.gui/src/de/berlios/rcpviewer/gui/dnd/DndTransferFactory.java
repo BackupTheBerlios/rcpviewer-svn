@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.gui.dnd;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,16 +20,35 @@ public class DndTransferFactory {
 	private static final Map<Class,Transfer> TRANSFERS
 		= new HashMap<Class,Transfer>();
 	
+	static {
+		TRANSFERS.put( boolean.class, new PrimitiveTransfer( boolean.class ) );
+		TRANSFERS.put( byte.class, new PrimitiveTransfer( byte.class ) );
+		TRANSFERS.put( char.class, new PrimitiveTransfer( char.class ) );
+		TRANSFERS.put( short.class, new PrimitiveTransfer( short.class ) );
+		TRANSFERS.put( int.class, new PrimitiveTransfer( int.class ) ); 
+		TRANSFERS.put( long.class, new PrimitiveTransfer( long.class ) ); 
+		TRANSFERS.put( float.class, new PrimitiveTransfer( float.class ) );
+		TRANSFERS.put( double.class, new PrimitiveTransfer( double.class ) ); 
+		TRANSFERS.put( Boolean.class, new PrimitiveTransfer( boolean.class ) );
+		TRANSFERS.put( Byte.class, new PrimitiveTransfer( byte.class ) );
+		TRANSFERS.put( Character.class, new PrimitiveTransfer( char.class ) );
+		TRANSFERS.put( Short.class, new PrimitiveTransfer( short.class ) );
+		TRANSFERS.put( Integer.class, new PrimitiveTransfer( int.class ) ); 
+		TRANSFERS.put( Long.class, new PrimitiveTransfer( long.class ) ); 
+		TRANSFERS.put( Float.class, new PrimitiveTransfer( float.class ) );
+		TRANSFERS.put( Double.class, new PrimitiveTransfer( double.class ) ); 
+		TRANSFERS.put( Date.class, DateTransfer.getInstance() );
+		TRANSFERS.put( String.class, TextTransfer.getInstance() );
+	}
+	
 	/**
 	 * Returns all transfer types known to this factory.
 	 * @return
 	 */
 	public static Transfer[] getTransfers() {
 		List<Transfer> all = new ArrayList<Transfer>();
-		all.addAll( Arrays.asList( DomainObjectTransfer.getInstances() ) );
-		all.add( IntegerTransfer.getInstance() );
-		all.add( BooleanTransfer.getInstance() );
-		all.add( TextTransfer.getInstance() );
+		all.addAll( TRANSFERS.values() );
+		all.addAll( DomainObjectTransfer.getInstances() );
 		return all.toArray( new Transfer[0] );
 	}
 	
@@ -45,30 +63,9 @@ public class DndTransferFactory {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		Transfer transfer = TRANSFERS.get( clazz );
 		if ( transfer == null ) {
-			if ( clazz.isPrimitive() ) {
-			    if ( int.class == clazz ) {
-					transfer = IntegerTransfer.getInstance();
-				}
-				else if ( boolean.class == clazz ) {
-					transfer = BooleanTransfer.getInstance();
-				}
-			}
-			else if ( String.class == clazz ) {
-				transfer = TextTransfer.getInstance();
-			}
-			else if ( Integer.class == clazz ) {
-				transfer = IntegerTransfer.getInstance();
-			}
-			else if ( Boolean.class == clazz ) {
-				transfer = BooleanTransfer.getInstance();
-			}
-			else if ( Date.class == clazz ) {
-				transfer = IntegerTransfer.getInstance();
-			}
-			else {	
-				transfer = DomainObjectTransfer.getInstance(
-					 RuntimeDomain.instance().lookupNoRegister( clazz ) );
-			}
+			assert !clazz.isPrimitive();
+			transfer = DomainObjectTransfer.getInstance(
+				 RuntimeDomain.instance().lookupNoRegister( clazz ) );
 			TRANSFERS.put( clazz, transfer );
 		}
 		return transfer;

@@ -16,7 +16,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * Wraps an action on the actions view
  * @author Mike
  */
-class ActionsViewActionProxy extends RunOperationJob {
+class ActionsViewActionProxy extends RunOperationJob  {
 	
 	// lazily instantiated
 	private String _displayText = null;
@@ -82,6 +82,17 @@ class ActionsViewActionProxy extends RunOperationJob {
 		return _params;
 	}
 	
-	
+	/**
+	 * Whether the operation can be run.
+	 * <br>Currenly simply asks all parameters if they are valid.
+	 * <br>Later will add prerequisite checks.
+	 * @return
+	 */
+	boolean isValid() {
+		for ( ActionsViewParameterProxy proxy : getParams() ) {
+			if ( !proxy.isValid() ) return false;
+		}
+		return true;
+	}
 
 }

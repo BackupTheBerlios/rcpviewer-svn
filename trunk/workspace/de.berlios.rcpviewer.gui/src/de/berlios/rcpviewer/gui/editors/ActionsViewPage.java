@@ -54,6 +54,9 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
 	public void createControl(Composite parent) {
 		
@@ -83,6 +86,7 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 		};	
 		
 		_viewer.setContentProvider( new ActionsViewContentProvider() );
+		// label provider also a colour provider
 		_viewer.setLabelProvider( new ActionsViewLabelProvider() );
 		_viewer.getTree().setLinesVisible( true );
 		
@@ -103,10 +107,17 @@ class ActionsViewPage extends Page implements IActionsViewPage {
 		    	if ( selection.isEmpty() ) return;
 		    	Object obj = ((StructuredSelection)selection).getFirstElement();
 		    	if ( obj instanceof ActionsViewActionProxy ) {
-					((ActionsViewActionProxy)obj).schedule();
+		    		ActionsViewActionProxy proxy = (ActionsViewActionProxy)obj;
+		    		if ( proxy.isValid() ) {
+		    			proxy.schedule();
+		    		}
+		    		// TODO - if not error message?
 				}
 		    }
 		});
+		
+		// tooltip logic delegated
+		new ActionsViewToolTipController( _viewer );
 		
 		// DnD logic delegated
 		new ActionsViewDnDController( _viewer );

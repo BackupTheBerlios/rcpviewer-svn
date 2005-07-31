@@ -43,8 +43,9 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 	 * @see de.berlios.rcpviewer.gui.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
 	public boolean isApplicable(ETypedElement element) {
-		return ( RuntimeDomain.instance().lookupNoRegister( 
-					(Class<?>)element.getEType().getInstanceClass() ) != null ); 
+		Class<?> clazz = element.getEType().getInstanceClass();
+		if ( clazz.isPrimitive() ) return false;
+		return ( RuntimeDomain.instance().lookupNoRegister( clazz ) != null ); 
 	}
 
 	/* (non-Javadoc)
