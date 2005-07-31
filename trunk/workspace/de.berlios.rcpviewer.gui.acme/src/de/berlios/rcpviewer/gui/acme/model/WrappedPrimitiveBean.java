@@ -21,18 +21,9 @@ public class WrappedPrimitiveBean {
 	
 	
 	/**
-	 * Both standard variants for boolean getter.
 	 * @return Returns the booleanField.
 	 */
 	public Boolean isBooleanField() {
-		return booleanField;
-	}
-	
-	/**
-	 * Both standard variants for boolean getter.
-	 * @return Returns the booleanField.
-	 */
-	public Boolean getBooleanField() {
 		return booleanField;
 	}
 	

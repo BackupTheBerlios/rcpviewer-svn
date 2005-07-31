@@ -21,18 +21,9 @@ public class PrimitiveBean {
 	
 	
 	/**
-	 * Both standard variants for boolean getter.
 	 * @return Returns the booleanField.
 	 */
 	public boolean isBooleanField() {
-		return booleanField;
-	}
-	
-	/**
-	 * Both standard variants for boolean getter.
-	 * @return Returns the booleanField.
-	 */
-	public boolean getBooleanField() {
 		return booleanField;
 	}
 	
