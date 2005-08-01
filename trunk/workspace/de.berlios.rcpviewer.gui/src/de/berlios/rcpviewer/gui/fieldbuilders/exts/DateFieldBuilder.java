@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors.exts;
+package de.berlios.rcpviewer.gui.fieldbuilders.exts;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
-import de.berlios.rcpviewer.gui.IFieldBuilder;
 import de.berlios.rcpviewer.gui.dnd.DateTransfer;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 
 /**

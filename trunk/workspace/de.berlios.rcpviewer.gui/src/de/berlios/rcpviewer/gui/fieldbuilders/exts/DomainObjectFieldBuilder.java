@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors.exts;
+package de.berlios.rcpviewer.gui.fieldbuilders.exts;
 
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
@@ -24,8 +24,8 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.IFieldBuilder;
 import de.berlios.rcpviewer.gui.dnd.DomainObjectTransfer;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -44,7 +44,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 	 */
 	public boolean isApplicable(ETypedElement element) {
 		return ( RuntimeDomain.instance().lookupNoRegister( 
-					element.getEType().getInstanceClass() ) != null ); // JAVA_5_FIXME
+					(Class<?>)element.getEType().getInstanceClass() ) != null ); 
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 			
 			 final IDomainClass domainClass
 			 	= RuntimeDomain.instance().lookupNoRegister( 
-			 			element.getEType().getInstanceClass() ); // JAVA_5_FIXME
+			 			(Class<?>)element.getEType().getInstanceClass() ); 
 			if ( domainClass == null ) throw new IllegalArgumentException();
 			
 			GridLayout layout = new GridLayout();

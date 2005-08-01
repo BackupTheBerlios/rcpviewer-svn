@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors.exts;
+package de.berlios.rcpviewer.gui.fieldbuilders.exts;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
