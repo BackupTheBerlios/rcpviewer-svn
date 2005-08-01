@@ -60,7 +60,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> {
 		
 		Method attributePre = erdc.getAttributePre(eAttribute);
 		if (attributePre == null) {
-			return Prerequisites.noop();
+			return Prerequisites.none();
 		}
 		
 		try {
@@ -72,7 +72,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> {
 		} catch (InvocationTargetException ex) {
 			// TODO Auto-generated catch block
 		}
-		return Prerequisites.noop();
+		return Prerequisites.none();
 
 	}
 

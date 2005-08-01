@@ -29,7 +29,7 @@ public class TestPrerequisites extends TestCase {
 	}
 
 	public void testNoop() {
-		IRequirement noop = Requirement.noop();
+		IRequirement noop = Requirement.none();
 		assertFalse(noop.isMet());
 		assertNull(noop.getDescription());
 		assertTrue(noop.isNoop());
@@ -99,7 +99,7 @@ public class TestPrerequisites extends TestCase {
 	public void testOrBetweenMetAndNoop() {
 		IRequirement cannotFoo =
 			cannotFoo = Requirement.create(true, "Cannot foo");
-		IRequirement noop = Requirement.noop();
+		IRequirement noop = Requirement.none();
 		
 		// instance method
 		IRequirement result = cannotFoo.or(noop);
@@ -113,8 +113,8 @@ public class TestPrerequisites extends TestCase {
 	}
 
 	public void testOrBetweenNoopAndNoop() {
-		IRequirement noop = Requirement.noop();
-		IRequirement noop2 = Requirement.noop();
+		IRequirement noop = Requirement.none();
+		IRequirement noop2 = Requirement.none();
 		
 		// instance method
 		IRequirement result = noop.or(noop2);
@@ -192,7 +192,7 @@ public class TestPrerequisites extends TestCase {
 
 	public void testAndBetweenMetAndNoop() {
 		IRequirement cannotFoo = Requirement.create(true, "Cannot foo");
-		IRequirement noop = Requirement.noop();
+		IRequirement noop = Requirement.none();
 		
 		// instance method
 		IRequirement result = cannotFoo.and(noop);
@@ -209,7 +209,7 @@ public class TestPrerequisites extends TestCase {
 	public void testRealWorldCombination() {
 		IRequirement cannotFoo =
 			cannotFoo = Requirement.create(false, "Cannot foo");
-		IRequirement noopRequirement = Requirement.noop();
+		IRequirement noopRequirement = Requirement.none();
 		IRequirement cannotBar = Requirement.create(true, "Cannot bar");
 		IRequirement cannotBaz = Requirement.create(false, "Cannot baz");
 		IRequirement cannotBoz = Requirement.create(false, "Cannot boz");

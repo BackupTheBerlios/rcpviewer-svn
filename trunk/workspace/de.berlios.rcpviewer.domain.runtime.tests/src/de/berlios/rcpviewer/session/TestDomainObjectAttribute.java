@@ -180,7 +180,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 			domainClass.attributeIdFor(domainClass.getEAttributeNamed("quantity"));
 		authorizationManager.preconditionsFor(feature);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
-		control.setReturnValue(Prerequisites.noop());
+		control.setReturnValue(Prerequisites.none());
 		control.replay();
 		
 		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);

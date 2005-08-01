@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.eclipse.swt.internal.ole.win32.ISpecifyPropertyPages;
+
+import de.berlios.rcpviewer.progmodel.extended.DeleteOperation;
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
 import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
@@ -27,23 +30,29 @@ import de.berlios.rcpviewer.progmodel.standard.TypeOf;
 
 
 /**
- * A grouping of {@link Item}s. 
+ * A grouping of {@link StockItem}s. 
  * 
  * <p>
- * See Item for further discussion on the difference between Items, 
- * Products and {@link Category}s.
+ * See {@link StockItem} for further discussion on the difference between 
+ * {@link StockItem}s, {@link Product}s and {@link Category}s.
  * 
- * <p>
- * Adapted from original xpetstore implementation by Herve Tchepannou.
- * 
- *
  * <p>
  * <i>
  * Programming Model notes:
  * <ul>
- * <li> ...
+ * <li> Although there is no <code>save()</code> method for this object, it is 
+ *      provided implicitly by the platform.
  * </ul>
  * </i>
+ * 
+ * <p>
+ * TODOs
+ * <ul>
+ * <li>TODO: Hibernate mapping to T_PRODUCT
+ * </ul>
+ * 
+ * <p>
+ * Adapted from original xpetstore implementation by Herve Tchepannou.
  * 
  * @author Dan Haywood
  */
@@ -51,14 +60,22 @@ import de.berlios.rcpviewer.progmodel.standard.TypeOf;
 public class Product {
 	
 	/**
-	 * Required by persistence layer.
+	 * Constructor.
 	 *
 	 *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> No-arg constructor required by platform.
+     * <li> The <code>Product</code>'s state is (mostly) empty, but the 
+     *      various constraints on the attributes of <code>Product</code>,
+     *      as well as the {@link #save()} operation itself, will mean that
+     *      the object cannot be saved until sufficient state has been 
+     *      entered by the user.
+     * <li> Since <code>StockItem</code>s are created by {@link Product}s, the only
+     *      initial state to set up is the product to which the item belongs.
+     *      This is done through the 
      * </ul>
      * </i>
 	 */
@@ -70,19 +87,25 @@ public class Product {
 	 * Unique identifier across all products.
 	 * 
 	 * <p>
-	 * Allocated by the user.
+	 * Allocated by the <i>user</i> (rather than the platform).
 	 * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> The {@link BusinessKey} annotation indicates that the attribute 
+     *      can be used (possibly in conjunction with other attributes) as a 
+     *      unique identifier of the object instance with respect to other 
+     *      object instances.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
 	 * @return
 	 */
 	@Order(1)
+    @BusinessKey("id")
 	@MinLengthOf(8)
 	@MaxLengthOf(10)
 	@DescribedAs("Unique identifier for this product")
@@ -95,11 +118,27 @@ public class Product {
     private String _productId;
 
 
+    /**
+     * The name of this product, eg Koi fish.
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> The {@link BusinessKey} annotation indicates that the attribute 
+     *      can be used (possibly in conjunction with other attributes) as a 
+     *      unique identifier of the object instance with respect to other 
+     *      object instances.
+     * </ul>
+     * </i>
+     * 
+     * @return
+     */
     @Order(2)
-    @DescribedAs("The name of this product, eg Koi fish")
     @BusinessKey("name")
-    @MaxLengthOf(50)
     @FieldLengthOf(30)
+    @MaxLengthOf(50)
+    @DescribedAs("The name of this product, eg Koi fish.")
     public String getName() {
         return _name;
     }
@@ -110,23 +149,24 @@ public class Product {
 
 
     /**
-     * 
+     * The description of this type of product.
 	 *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
      * @return
      */
     @Order(3)
-    @DescribedAs("The description of this product")
     @Optional
-    @MaxLengthOf(255)
     @FieldLengthOf(50)
+    @MaxLengthOf(255)
+    @DescribedAs("The description of this type of product.")
     public String getDescription() {
         return _description;
     }
@@ -141,14 +181,16 @@ public class Product {
      * The {@link Category} in which this product resides.
      * 
      * <p>
-     * This is a bidirectional m:1 relationship, <i>without</i> containment 
-     * semantics.
+     * The category is mutable - it can be changed over time. 
 	 *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> This is a bidirectional m:1 relationship, <i>without</i> 
+     *      containment semantics.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
@@ -157,7 +199,7 @@ public class Product {
     @Order(4)
     @ContainerOf
     @OppositeOf("products")
-    @TypeOf(Item.class)
+    @TypeOf(StockItem.class)
 	public Category getCategory() {
 		return _category;
 	}
@@ -174,164 +216,146 @@ public class Product {
 	
 	
     /**
-     * Set of {@link Item}s within this product.
+     * Set of {@link StockItem}s within this product.
      * 
-     * <p>
-     * This is a bidirectional 1:m relationship with containment semantics
-     * (same as CustomerOrder:OrderItem).
-     *  
-	 *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> This is a bidirectional 1:m relationship with {@link StockItem}, 
+     *      with containment semantics ({@link ContainerOf} annotation).
+     * <li> The {@link #addToStockItems(StockItem)} method has package level 
+     *      visibility to allow a newly created {@link StockItem} to be added 
+     *      to the collection.  Thereafter the product looks after the 
+     *      relationship.  Since the visibility is not <code>public</code>, it
+     *      is not possible (even if it made sense) to add {@link StockItem}s
+     *      directly through the UI.
+     * <li> In contrast, the {@link #removeFromItems(StockItem)} method has 
+     *      <code>public</code> level visibility so that items can be removed
+     *      via the UI.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
      * @return
      */
     @Order(5)
-    @ContainerOf
+    @ContainerOf(cascadeDelete=true)
     @OppositeOf("product")
-    @TypeOf(Item.class)
-    public Set<Item> getItems() {
-        return _items;
+    @TypeOf(StockItem.class)
+    public Set<StockItem> getStockItems() {
+        return _stockItems;
     }
-    /**
-     * Required by persistence layer.
-     * 
-     * @param items
-     */
-    private void setItems(final Set<Item> items) {
-    	_items = items;
+    private void setStockItems(final Set<StockItem> stockItems) {
+    	_stockItems = stockItems;
     }
-    private void addToItems(final Item item) {
-    	_items.add(item);
+    void addToStockItems(final StockItem item) {
+    	_stockItems.add(item);
     	item.setProduct(this);
     }
-    /**
-     * Remove using the UI.
-     * 
-	 *
-     * <p>
-     * <i>
-     * Programming Model notes:
-     * <ul>
-     * <li> ...
-     * </ul>
-     * </i>
-     * 
-     * @param item
-     */
-    public void removeFromItems(final Item item) {
-    	_items.remove(item);
+    public void removeFromItems(final StockItem item) {
+    	_stockItems.remove(item);
     	item.setProduct(null);
     	getAppContainer().delete(item);
     }
-    private Set<Item> _items = new LinkedHashSet<Item>();
+    private Set<StockItem> _stockItems = new LinkedHashSet<StockItem>();
 
 
     
     /**
+     * Creates a new {@link StockItem} (eg <i>Male Puppy Bulldog</i>) for this 
+     * product (eg <i>Bulldog</i>). 
      * 
-     * <p>
-     * <i>
-     * Programming Model notes: the <code>imagePath</code> parameter is 
-     * defined to be of type <code>FileName</code> - a custom value type.
-     * </i>
-     * 
-	 *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> Although the item is created, it is still transient.  It is 
+     *      therefore not (yet) added to the collection of items for this 
+     *      product.  When the item is finally persisted, then the relationship
+     *      is made.
+     * <li> The operation cannot be invoked unless the product itself has been
+     *      persisted; see {@link #newItemPre()}.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
-     * @param description
-     * @param listPrice
-     * @param unitCost
-     * @param imagePath
      * @return
      */
     @Order(1)
-    public Item newItem(
-    		@Named("Description")
-    		@DescribedAs("Short description of this product")
-    		@MaxLengthOf(255)
-    		@FieldLengthOf(50)
-    		final String description, 
-    		@Named("List price")
-    		@DescribedAs("Price at which this item currently sells")
-    		final BigDecimal listPrice, 
-    		@Named("Unit cost")
-    		@DescribedAs("Price to produce this item")
-    		final BigDecimal unitCost, 
-    		@Named("Image")
-    		@DescribedAs("Fully qualified file name holding picture of the item")
-    		@Optional
-    		final FilePath imagePath) {
+    @DescribedAs("Create a new item.  The item is not added to the product's set until it is persisted.")
+    public StockItem newItem() {
     	
-    	Item item = getAppContainer().createTransient(Item.class);
-    	item.init(description, listPrice, unitCost, imagePath, this);
-    	addToItems(item);
+    	StockItem item = getAppContainer().createTransient(StockItem.class);
+    	item.init(this);
     	
     	return item;
     }
     /**
-     * TODO
+     * The product must have been persisted before being able to create new
+     * items.
      * 
-	 *
+     * @return
+     */
+    public IPrerequisites newItemPre() {
+    	return Prerequisites.require(isPersistent(), "Must be persistent");
+    }
+    
+
+
+
+    /**
+     * Delete this product, subject to referential integrity constraints.
+     *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> The {@link DeleteOperation} annotation indicates that this operation
+     *      should be rendered in a standardized way. 
+     * <li> Since there is no <code>deletePre()</code> method, the user can
+     *      invoke the delete without performing any checks.  It is quite
+     *      possible for this to fail if the persistence layer detects a
+     *      referential integrity error (eg an {@link OrderLine} referencing
+     *      this object).
+     * <li> That said, the {@link Cascade} annotation on the 
+     *      {@link #getStockItems()} relationship indicates that the platform
+     *      should automatically attempt to cascade delete any referencing 
+     *      stock items.  Provided that those stock items have not in turn been
+     *      referenced, the delete should succeed.
      * </ul>
      * </i>
-     * 
-     * @param description
-     * @param listPrice
-     * @param unitCost
-     * @param imagePath
-     * @return
+     *
      */
-    public IPrerequisites newItemPre(
-    		final String description, 
-    		final double listPrice, 
-    		final double unitCost, 
-    		final FilePath imagePath) {
-    	return Prerequisites.require(false);
+    @DeleteOperation
+    public void delete() {
+    	// does nothing; the platform will perform the delete implicitly.
     }
+
+    
+    
     /**
-     * TODO
+     * Helper method to allow this pojo to know where it is in its lifecycle
+     * (not yet persisted or persisted).
      * 
-     * @param description
-     * @param listPrice
-     * @param unitCost
-     * @param imagePath
+     * @see #getAppContainer()
      * @return
      */
-    public IPrerequisites newItemArgs(
-    		final String[] description, 
-    		final double[] listPrice, 
-    		final double[] unitCost, 
-    		final FilePath[] imagePath) {
-    	return Prerequisites.require(false);
-    }
+    private boolean isPersistent() {
+		return getAppContainer().isPersistent(this);
+	}
 
 
     /**
-     * Application container that controls lifecycle of this pojo, injected
-     * by the framework.
+     * Application container that controls lifecycle of this pojo.
      * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> Injected by the platform automatically.
      * </ul>
      * </i>
      */
@@ -345,8 +369,6 @@ public class Product {
 		_appContainer = appContainer;
 	}
 	private IAppContainer _appContainer;
-
-
 
 
 }

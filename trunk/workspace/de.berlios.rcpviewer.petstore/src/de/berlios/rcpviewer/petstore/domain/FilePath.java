@@ -8,7 +8,6 @@ import de.berlios.rcpviewer.progmodel.standard.Value;
 
 /**
  * Custom value object that represents a relative or absolute file or directory.
- * @author Dan Haywood
  *
  * <p>
  * Using a custom value object offers more scope for customized UI.  For
@@ -16,17 +15,25 @@ import de.berlios.rcpviewer.progmodel.standard.Value;
  *
  * <p>
  * <i>
- * Programming Model notes: the annotations are effectively inherited by
- * any attribute of this value type.
+ * Programming Model notes:
+ * <ul>
+ * <li> The {@link Value} annotation indicates that this is a value type rather
+ *      than a domain object. 
+ * <li> The annotations are effectively inherited by any attribute of a 
+ *      domain object that is of this value type.
+ * <li> The {@link IStringParser} interface indicates to the UI that the user
+ *      can type in a string for an attribute declared of this value type, and
+ *      the value type will be able to work out its value from that string. 
+ * </ul>
  * </i>
  * 
  * <p>
- * <i>
- * Programming Model notes:
+ * TODOs
  * <ul>
- * <li> ... IStringParser ...
+ * <li>TODO: Hibernate mapping to ??? a component ???
  * </ul>
- * </i>
+ * 
+ * @author Dan Haywood
  */
 @MaxLengthOf(1024)
 @Value
@@ -38,16 +45,13 @@ public final class FilePath implements IStringParser {
 	 * <p>
 	 * Should be followed by a call to the <code>init()</code> method.
 	 *  
-	 * <p>
-	 * <i>
-	 * Programming Model notes: No-arg constructor is required by the 
-	 * framework.
-	 * </i>
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ... init ...
+     * <li> No-arg constructor is required by the platform.
+     * <li> Domain objects should initialize (as required) using the 
+     *      {@link #init(String[])} method.
      * </ul>
      * </i>
 	 *
@@ -59,19 +63,20 @@ public final class FilePath implements IStringParser {
 	 * Configure this file path.
 	 * 
 	 * <p>
-	 * Typically called within a <code>someOperationArgs()</code> method to
+	 * Typically called within a <code>someOperationDefaults()</code> method to
 	 * specify the behaviour of a parameter, for example:
 	 * <pre>
 	 * public void uploadFile(final FilePath filePath) { 
 	 *     ... 
 	 * }
-	 * public void uploadFileArgs(final FilePath[] filePath) {
+	 * public void uploadFileDefaults(final FilePath[] filePath) {
 	 *     <b>filePath[0].init("jpg", "gif", "png");</b>
 	 * }
 	 * </pre>
 	 *
+	 * @param filterList - array of file suffixes to restrict this file path to.  If empty, then assume represents a directory.
 	 */
-	public void init(String... filterList) {
+	public void init(final String... filterList) {
 		if (filterList == null || filterList.length == 0) {
 			_directoryOnly = true;
 			_filterList = new String[]{};
@@ -109,7 +114,8 @@ public final class FilePath implements IStringParser {
 	 * Path to a valid file or directory, or <code>null</code> otherwise.
 	 * 
 	 * <p>
-	 * There is no mutator directly.
+	 * There is no mutator; instead the value is updated through the 
+	 * {@link IStringParser} implementation - see {@link #parseString(String)}.
 	 * 
 	 * @return
 	 */

@@ -8,7 +8,7 @@ import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Order;
 
 /**
- * Country, as defined by ISO639-1.
+ * Language, as defined by ISO639-1.
  * 
  * <p>
  * From ISO's own definition: ISO 639-1 provides a code consisting of language 
@@ -28,20 +28,23 @@ import de.berlios.rcpviewer.progmodel.extended.Order;
  * 
  * <p>
  * <i>
- * Programming Model notes: annotated with <code>@Lookup</code> meaning that
- * it is implicitly immutable, and should be rendered appropriately whenever
- * referenced (eg drop-down box).  Since the object is immutable, there are 
- * no mutators for any of the attributes.  
- * </i>
- *
- * <p>
- * <i>
  * Programming Model notes:
  * <ul>
- * <li> ...
+ * <li> the {@link Lookup} annotation indicates that this object is
+ *      implicitly immutable and moreover should be rendered appropriately 
+ *      whenever referenced (eg as a drop-down box).  It also means that the
+ *      save operation is implicitly disabled.
+ * <li> Any mutators should have <code>private</code> visibility, used by the 
+ *      platform when recreating instances from the persistence layer.
  * </ul>
  * </i>
  *
+ * <p>
+ * TODOs
+ * <ul>
+ * <li>TODO: Hibernate mapping to ???
+ * </ul>
+ * 
  * @link http://www.w3.org/WAI/ER/IG/ert/iso639.htm
  * @author Dan Haywood
  *

@@ -7,26 +7,30 @@ import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
 import de.berlios.rcpviewer.progmodel.extended.Order;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
+import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
 
 
 
 /**
- * Represents a Customer's Address.
+ * Wholly owned component of {@link Customer} that represents  the customer's 
+ * Address.
+ * 
+ * <p>
+ * A mutable Address is always associated with a Customer.  When the Customer
+ * places a {@link CustomerOrder} then a copy of the Address is taken and 
+ * associated with the order.  This copy is configure to be immutable - it is
+ * a snapshot of the Customer's Address at the time that the Order was placed.  
+ * 
+ * <p>
+ * TODOs
+ * <ul>
+ * <li>TODO: Hibernate mapping to as a component in either T_CUSTOMER or T_ORDER
+ * </ul>
  * 
  * <p>
  * Adapted from original xpetstore implementation by Herve Tchepannou.
- * 
- * <p>
- * <i>
- * Programming Model notes:
- * <ul>
- * <li> ...
- * </ul>
- * </i>
  * 
  * @author Dan Haywood
  */
@@ -35,17 +39,26 @@ import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
 public class Address {
 	
 	/**
-	 * No-arg constructor, required for persistence layer.
+	 * Constructor.
+	 * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> No-arg constructor required by platform.
+     * <li> Normally the state for Address is built up by the user (through the
+     *      UI) as part of building up the state for the {@link Customer}.  In 
+     *      this case there is no additional initialization to be performed. 
+     * <li> When a {@link CustomerOrder} is created though, then a copy of the
+     *      Customer's current Address must be taken.  The 
+     *      {@link #init(Address)} method allows the Customer object to do 
+     *      this - in effect it acts like a copy constructor.
      * </ul>
      * </i>
 	 */
     public Address() {
     }
+    
 
     /**
      * Initialize Address using another Address.
@@ -57,15 +70,7 @@ public class Address {
      * Used when copying down an Address from its {@link Customer} to place
      * an {@link Order}.
      * 
-     * <p>
-     * <i>
-     * Programming Model notes:
-     * <ul>
-     * <li> ...
-     * </ul>
-     * </i>
-     *
-     * @param address
+     * @param address to be copied
      */
     public void init(final Address address) {
     	setCity(address.getCity());
@@ -79,28 +84,23 @@ public class Address {
     }
     
     /**
-     * The first line of the address (typically the street name).
-     * 
-     * <p>
-     * <i>
-     * Programming Notes: mandatory since there is no <code>@Optional</code> 
-     * attribute.
-     * </i>
+     * First line of the address (typically the street name).
      * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
      * @return
      */
     @Order(1)
-    @DescribedAs("First line of the address (typically street name")
     @FieldLengthOf(30)
     @MaxLengthOf(50)
+    @DescribedAs("First line of the address (typically street name)")
     public String getStreet1() {
         return _street1;
     }
@@ -112,14 +112,24 @@ public class Address {
 
 
     /**
+     * Second line of the street address. if any.
+     * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> See overview for discussion on programming model conventions
+     *      and annotations.
+     * </ul>
+     * </i>
      * 
      * @return
      */
     @Order(2)
-    @DescribedAs("Secondary street name")
     @Optional
     @FieldLengthOf(30)
     @MaxLengthOf(50)
+    @DescribedAs("Second line of the address, if any")
     public String getStreet2() {
         return _street2;
     }
@@ -131,18 +141,14 @@ public class Address {
 
 
     /**
-     * 
-     * <p>
-     * <i>
-     * Programming Notes: absence of <code>@FieldLength</code> means that
-     * it is defaulted to that of <code>@MaxLength</code>.
-     * </i>
+     * The city (or closest major town) for this address.
      * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
@@ -162,17 +168,20 @@ public class Address {
     
 
     /**
+     * State (if US) or region (non US).
+     * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      */
     @Order(4)
-    @DescribedAs("State (if US) or region (non US)")
     @MaxLengthOf(20)
+    @DescribedAs("State (if US) or region (non US).")
     public String getState(  ) {
         return _state;
     }
@@ -183,17 +192,20 @@ public class Address {
     
 
     /**
+     * Zip code (if US) or postal code (non US).
+     * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      */
     @Order(5)
-    @DescribedAs("Zip code (if US) or postal code (non US)")
     @MaxLengthOf(11)
+    @DescribedAs("Zip code (if US) or postal code (non US).")
     public String getZipcode() {
         return _zipcode;
     }
@@ -224,7 +236,8 @@ public class Address {
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      */
@@ -246,10 +259,11 @@ public class Address {
      * <i>
      * Programming Model notes:
      * <ul> 
-     * <li> The <code>Invisible</code> annotation indicates that the attribute
-     *      should not be displayed in the UI.  (A more verbose way would to
-     *      have returned a <code>Prerequisites.invisible()</code> from a 
-     *      <code>...Pre()</code> method).
+     * <li> The {@link Invisible} annotation indicates that the attribute
+     *      should not be displayed in the UI.  It will still be persisted, 
+     *      however.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </i>
      */
     @Invisible
@@ -261,4 +275,29 @@ public class Address {
 	}
     private boolean _mutable;
     
+
+    
+    /**
+     * Save the object in the persistent object store (either creating if was 
+     * not already persistent, or updating if was.)
+     *
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> The {@link SaveOperation} annotation indicates that it is
+     *      this method that is the save method.  By convention the method is
+     *      called <code>save</code>, but it must be <code>public</code>, take 
+     *      no arguments and return <code>void</code>.
+     * <li> The <code>unusableReason</code> effectively disables the save
+     *      operation (this is a component object).
+     * <li> No {@link Order} annotation is required for the save operation.
+     * </ul>
+     * </i>
+     */
+    @SaveOperation(unusableReason="Save owning Customer.")
+    public void save() {
+    	// nothing to do since unusable, see Pre() method  
+    }
+
 }

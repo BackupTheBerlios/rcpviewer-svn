@@ -9,5 +9,4 @@ Bundle-Localization: plugin
 Require-Bundle: de.berlios.rcpviewer.gui;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
-Export-Package: de.berlios.rcpviewer.petstore,
- xpetstore.domain
+Export-Package: de.berlios.rcpviewer.petstore

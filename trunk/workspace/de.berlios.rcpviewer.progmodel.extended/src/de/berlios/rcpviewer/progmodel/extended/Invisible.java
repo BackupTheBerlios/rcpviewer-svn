@@ -40,6 +40,13 @@ import java.lang.annotation.*;
  * </pre>
  * 
  * <p>
+ * One case where this annotation has no effect is if it is combined with the
+ * <code>@SaveOperation</code>.  Since users are used to seeing File>Save, 
+ * we don't want it to suddenly disappear.  The annotation will just be 
+ * ignored if <code>@SaveOperation</code> is also present.  To disable access,
+ * use <code>savePre()</code> method.
+ * 
+ * <p>
  * Consumed reflectively for building meta-model.
  * 
  * @author Dan Haywood

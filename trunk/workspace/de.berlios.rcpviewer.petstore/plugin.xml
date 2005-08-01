@@ -12,7 +12,7 @@
    		<impl class="xpetstore.domain.Address"/>
    		<impl class="xpetstore.domain.CreditCard"/>
    		<impl class="xpetstore.domain.Item"/>
-   		<impl class="xpetstore.domain.OrderItem"/>
+   		<impl class="xpetstore.domain.OrderLine"/>
    		-->
    </extension>
 

@@ -13,7 +13,10 @@ import java.lang.annotation.*;
  * 
  * <p>
  * Specifying this annotation on things other than an attribute or 
- * operation has no effect.
+ * operation has no effect.  Also specifying this annotation with the
+ * {@link SaveOperation} also has no effect (the save operation is common to
+ * all domain objects and the UI will always represent in the same way as
+ * <i>File>Save</i>. 
  * 
  * <p>
  * Consumed reflectively for building meta-model.

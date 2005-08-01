@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Invisible;
+import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.extended.Order;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
@@ -15,24 +16,38 @@ import de.berlios.rcpviewer.progmodel.standard.Derived;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.Immutable;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
-
+import de.berlios.rcpviewer.petstore.domain.StockItem;
 
 /**
- * Adapted from original xpetstore implementation by Herve Tchepannou.
+ * Represents the purchase of a quantity of some {@link StockItem} in the 
+ * context of a larger {@link CustomerOrder}.
  * 
- *
+ * <p>
+ * There can only be one order line per {@link StockItem}.  If more or less
+ * of such an item is required, then the quantity can be adjusted.
+ * 
  * <p>
  * <i>
  * Programming Model notes:
  * <ul>
- * <li> ...
+ * <li> Although there is no <code>save()</code> method for this object, it is 
+ *      provided implicitly by the platform.
  * </ul>
  * </i>
+ * 
+ * <p>
+ * TODOs
+ * <ul>
+ * <li>TODO: Hibernate mapping to T_ORDER_ITEM
+ * </ul>
+ * 
+ * <p>
+ * Adapted from original xpetstore implementation by Herve Tchepannou.
  * 
  * @author Dan Haywood
  */
 @InDomain
-public class OrderItem  {
+public class OrderLine  {
 
 	/**
 	 * Required by framework.
@@ -42,26 +57,30 @@ public class OrderItem  {
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ... init ...
+     * <li> No arg constructor is required by the platform.
+     * <li> Since <code>OrderLine</code>s are created programmatically (by the 
+     *      owning {@link CustomerOrder} - see  
+     *      {@link CustomerOrder#addOrderLine(StockItem, int)}), the initial state is instead
+     *      set up using the {@link #init() method.
      * </ul>
      * </i>
 	 */
-    public OrderItem() {}
+    public OrderLine() {}
 
     /**
      * Initialize the object; by convention call after creating.
      *
      * <p>
-     * Copies down the list price from the supplied {@link Item} as this 
-     * OrderItem's unit price.  This is because the list price may vary over 
-     * time whereas the unit price cannot.
+     * Copies down the list price from the supplied {@link StockItem} as this 
+     * <code>OrderLine</code>'s unit price.  This is because the list price may 
+     * vary over time whereas the unit price cannot.
      * 
      * @param item
      * @param quantity
      */
     public void init(
     		final CustomerOrder customerOrder, 
-    		final Item item, final int quantity) {
+    		final StockItem item, final int quantity) {
     	_customerOrder = customerOrder;
         _item      = item;
         _quantity  = quantity;
@@ -85,14 +104,12 @@ public class OrderItem  {
      * Programming Model notes:
      * <ul> 
      * <li> The <code>Invisible</code> annotation indicates that the attribute
-     *      should not be displayed in the UI.  (A more verbose way would to
-     *      have returned a <code>Prerequisites.invisible()</code> from a 
-     *      <code>...Pre()</code> method).
+     *      should not be displayed in the UI.
      * </i>
      */
     @Invisible
-    public long getOrderItemId() {
-        return _orderItemId;
+    public long getOrderLineId() {
+        return _orderLineId;
     }
     /**
      * <p>
@@ -108,12 +125,12 @@ public class OrderItem  {
      * </ul>
      * </i>
      * 
-     * @param orderItemUId
+     * @param orderLineUId
      */
-    private void setOrderItemId(final long orderItemUId) {
-        _orderItemId = orderItemUId;
+    private void setOrderLineId(final long orderLineUId) {
+        _orderLineId = orderLineUId;
     }
-    private long   _orderItemId;
+    private long _orderLineId;
 
     
     
@@ -124,65 +141,58 @@ public class OrderItem  {
      * <i>
      * Programming Model notes:
      * <ul> 
-     * <li> The <code>Invisible</code> annotation indicates that the attribute
-     *      should not be displayed in the UI.  (A more verbose way would to
-     *      have returned a <code>Prerequisites.invisible()</code> from a 
-     *      <code>...Pre()</code> method).
+     * <li> The {@link Invisible} annotation indicates that the attribute
+     *      should not be displayed in the UI.
      * <li> This is the opposite end of a 1:m bidirectional
      *      relationship with CustomerOrder.  No <code>OppositeOf</code> 
      *      annotation is required because we chose to put the annotation on 
      *      the other end of the relationship.  Note the package level 
-     *      visibility for the {@link #setOrder(CustomerOrder)} method.
+     *      visibility for the {@link #setCustomerOrder(CustomerOrder)} method.
      * </i>
      */
     @Invisible
     public CustomerOrder getCustomerOrder() {
     	return _customerOrder;
     }
-    /**
-     * Allows the other end of the bidirectional association to maintain this
-     * end.
-     * 
-     * 
-     * @param order
-     */
-	void setOrder(CustomerOrder order) {
-		_customerOrder = order;
+	void setCustomerOrder(CustomerOrder customerOrder) {
+		_customerOrder = customerOrder;
 	}
     private CustomerOrder _customerOrder;
 
     
     
     /**
-     * The {@link Item} to which this order line relates.
+     * The {@link StockItem} to which this <code>OrderLine</code> relates.
      * 
      * <p>
-     * There can only be one order line per Item.  Another way of thinking 
-     * about this is that the Item is like a key to each OrderItem.  Note that
-     * OrderItem is wholly contained within a {@link CustomerOrder}, whereas
-     * Item is potentially shared.
+     * There can only be one <code>OrderLine</code> per <code>StockItem</code>.  
+     * Another way of thinking about this is that the <code>StockItem</code> is like 
+     * a key to each <code>OrderLine</code>.  Note that <code>OrderLine</code>
+     * is wholly contained within a {@link CustomerOrder}, whereas 
+     * <code>StockItem</code> is potentially shared.
      * 
      * <p>
-     * This reference is immutable.
-     * 
+     * This reference is immutable, being set up in the 
+     * {@link #init(CustomerOrder, StockItem, int)} method.
 	 *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      */
     @Order(1)
     @DescribedAs("The item to which this order line relates (eg a male koi)")
-    public Item getItem() {
+    public StockItem getItem() {
         return _item;
     }
-    private void setItem(final Item item) {
+    private void setItem(final StockItem item) {
         _item = item;
     }
-    private Item   _item;
+    private StockItem   _item;
 
 
 
@@ -207,7 +217,7 @@ public class OrderItem  {
      */
     public IPrerequisites setQuantityPre(final int quantity) {
     	return require(quantity > 0, "Quantity must be positive")
-    		  .andRequire(getCustomerOrder().canBeModified(), 
+    		  .andRequire(getCustomerOrder().stillPending(), 
     				  "Can only alter quantity if order has not been shipped.");
     }
     private int _quantity;
@@ -215,21 +225,19 @@ public class OrderItem  {
 
 
     /**
-     * The list price of an {@link Item} <i>at the time that the order was 
+     * The list price of an {@link StockItem} <i>at the time that the order was 
      * placed</i>.
      * 
      * <p>
-     * Since the list price of an Item may change over time; it is captured
+     * Since the list price of an StockItem may change over time; it is captured
      * when the order line item is created.  It cannot be modified.
      * 
      * <p>
      * <i>
      * Programming Model notes: 
      * <ul>
-     * <li> the <code>private</code> visibility indicates that the attribute 
-     *      cannot be changed through the UI.
-     * <li> the mutator is required for the persistence layer.
-     * <li> uses custom {@link Money} value type.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
@@ -248,19 +256,23 @@ public class OrderItem  {
     
 
     /**
+     * The cost of this line item (quantity x unit price).
+     * 
      * <p>
      * <i>
      * Programming Model notes: 
      * <ul>
      * <li> The <code>Derived</code> annotation of course implies that the
      *      attribute is immutable.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * @return
      */
     @Order(4)
     @Derived
-    @DescribedAs("The cost of this line item (quantity x unit price)")
+    @DescribedAs("The cost of this line item (quantity x unit price).")
     public BigDecimal getSubTotal() {
         return _unitPrice.multiply(getUnitPrice());
     }
@@ -268,6 +280,9 @@ public class OrderItem  {
 
 
     /**
+     * Helper method, eg used by {@link CustomerOrder} to adjust the quantity
+     * of an existing <code>OrderLine</code>.
+     * 
      * @param quantity - can be negative, but shouldn't cause a zero or negative quantity overall.
      */
 	void addQuantity(final int quantity) {

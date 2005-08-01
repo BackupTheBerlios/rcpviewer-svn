@@ -1,0 +1,147 @@
+<html>
+	<head>
+		<title>Petstore</title>
+	</head>
+	<body>
+		<p>
+			An implementation of Petstore using RcpViewer.
+		</p>
+		<p>
+			<i><b>Note that the features described in these pages are not
+		    necessarily completely implemented.</b></i>
+		</p>
+		<p>
+			Petstore was originally developed by Sun as an blueprint of using
+			various J2EE applications.  Although their initial implementation 
+			has (in some quarters) been somewhat maligned, Petstore nevertheless
+			has become something of a benchmark by which to judge application 
+			frameworks.  Indeed, Microsoft have provided an implementation of 
+			Petstore on .NET, as well as many other open source frameworks.
+		</p>
+		<p>
+			This implementation of Petstore is therefore to allow you to see
+			how to develop an application using RcpViewer.  It was initially
+			based on one of two implementation done by Herve Tchepannou using 
+			servlets along with Hibernate.  We took the POJOs that made up 
+			Herve's domain model and have added functionality and semantics as
+			required.  (The rest, of course, we threw away).
+		</p>
+		<p>
+			The Java classes in this example application are well commented.  
+			For many methods you will see an italicised section <i>Programming
+			Model notes</i>.  This points out some of the salient aspects of the
+			code with respect to coding conventions and annotations pertinent
+			to writing applications under RcpViewer.  Since many of these 
+			conventions occur time-and-again (eg whether an attribute is 
+			optional or mandatory), some of the more common conventions are
+			documented below.  When the comments say "See overview for 
+			discussion on other programming model conventions and annotations",
+			it is referring to this page.
+		</p>
+		<h2> Constructors </h2>
+		<p> Constructors are always no-arg, to allow the platform (specifically,
+			the persistence layer) to re-create instances. </p>
+		<h2> Attributes</h2>
+		<p> Common annotations for attributes: </p>
+		<ul>
+			<li> The <code>@Order</code> annotation determines ordering relative to 
+				other attributes, references and collections. </li>
+			<li> The <code>@DescribedAs</code> annotation provides tooltip text in 
+				the UI.</li>
+			<li> Attributes are either mutable or immutable. They will be 
+				mutable only if there is a mutator with <code>public</code> 
+				visibility. Immutable attributes also need a mutator so that
+				the platform can initialize the attribute when the object is
+				re-created from the persistent object store; however the 
+				visibility will be <code>private</code>. </li>
+			<li> Attributes are mandatory unless there is a <code>@Optional</code>
+				annotation </li>
+			<li> For string attribute the <code>@MaxLengthOf</code>
+				annotation determines the maximum length of the string.</li>
+		    <li> Similarly, for string attributes the <code>@MinLengthOf</code> 
+				annotation can be used to indicates a minimum length.  However,
+				note that unless an attribute has been marked as 
+				<code>@Optional</code>, even without this annotation the user 
+				will nevertheless have to enter at least 1 character. </li>
+			<li> Some string attributes will have a <code>@FieldLengthOf</code>
+				annotation indicating the field's length in the UI.  This will
+				be used if the <code>@MaxLengthOf</code> is too long.  If omitted,
+				then the field length will be defaulted from the 
+				<code>@MaxLengthOf</code> annotation.</li>
+		</ul>
+		<h2> Collections </h2>
+		<p> Common conventions and annotations for references representing 
+			collections:</p>
+		<ul>
+			<li> The <code>@Order</code> annotation determines ordering relative to 
+				other attributes, references and collections. </li>
+			<li> The <code>@DescribedAs</code> annotation provides tooltip text in 
+				the UI.</li>
+			<li>
+				The <code>@TypeOf</code> annotation indicates the type of object 
+				that is held in this collection.  It should be the same as the
+				parameter of the generic collection type of the instance 
+				variable that represents the collection.
+			</li>
+			<li> Generally speaking, if there is a  <code>addTo...</code> method
+				 with <code>public</code> visibility then the UI will allow 
+				 objects of the same type to be added to the collection using drag/drop.  However, if the collection
+				 is also annotated as a <code>@ContainerOf</code> then this
+				 functionality is disabled.  The reasoning is that objects in
+				 the collection are wholly contained by the containing object,
+				 and so it should have complete control over the adding of
+				 objects to the collection.
+				 </li>
+		    <li> Objects can be removed from the collection because of the
+				<code>removeFrom...</code> method.  This is allowed even if
+				the collection is annotated with <code>@ContainerOf</code>.
+				</li>
+		    <li> As well as being part of the coding conventions, the 
+				<code>addTo...</code> and <code>removeFrom...</code> methods
+				make it easy for the domain programmer to implement 
+				bidirectional relationships.  The suggested style is that
+				one object takes responsibility for maintaining the references
+				for both objects involved in the relationship; the other simply
+				delegates.
+			</li>
+			<li> In addition to the <code>addTo...</code> and 
+				<code>removeFrom...</code> methods, the object must also provide
+				a mutator (<code>set...</code>).  This need only have 
+				<code>private</code> visibility and should not be called by the
+				domain object itself, however it is required by the platform 
+				to manage persistence of referenced objects transparently.
+				</li>
+		</ul>
+		<h2> Operations</h2>
+		<p> Common annotations for operations: </p>
+		<ul>
+			<li> The <code>@Order</code> annotation determines the ordering of the
+				 operation in the UI relative to other operations.
+				 <ul>
+				<li> However, any operation annotated as the <code>@SaveOperation</code>
+					 are always rendered using <i>File>Save</i>, and so the 
+					 <code>@Order</code> annotation, if present, is ignored.</li>
+				 </ul>
+			</li>
+			<li> The <code>@DescribedAs</code> annotation for an operation provides 
+				tooltip text in the UI.</li>
+				<li> 1-arg operations that accept a domain should be rendered in
+					 the UI as a drag-n-drop operation.</li>
+			<li> Operation parameters are mandatory unless they are annotated as
+				 <code>@Optional</code>.</li>
+			<li> If there is no <code>@Named</code> annotation then the name of 
+				  each operation parameter is defaulted from the name of its 
+				  (compile-time) type. </li>
+			<li> The <code>@DescribedAs</code> annotation for an operation 
+				parameter provides tooltip text for that parameter in the UI.</li>
+		</ul>
+		<h2> Dependency Injection </h2>
+		<p> Some domain objects will have an <code>IAppContainer</code> injected
+			into them (with a <code>setAppContainer(IAppContainer)</code> 
+			method.  One common use is so that an object can determine its 
+			state in the persistence lifecycle.  Another case where application 
+			containers are used is for objects that create or delete other 
+			objects.</p>
+	</body>
+</html>
+	

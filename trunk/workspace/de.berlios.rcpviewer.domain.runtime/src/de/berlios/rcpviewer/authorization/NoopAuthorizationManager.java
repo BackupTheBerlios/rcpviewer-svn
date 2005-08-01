@@ -19,7 +19,7 @@ final class NoopAuthorizationManager implements IAuthorizationManager {
 	 * Returns a no-op implementation.
 	 */
 	public final IPrerequisites preconditionsFor(IFeatureId feature) {
-		return Prerequisites.noop();
+		return Prerequisites.none();
 	}
 
 

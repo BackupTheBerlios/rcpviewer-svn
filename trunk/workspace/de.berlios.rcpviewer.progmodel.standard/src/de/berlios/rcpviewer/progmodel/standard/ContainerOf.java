@@ -12,6 +12,11 @@ import java.lang.annotation.*;
  * get confused with the composite pattern and with components.
  * 
  * <p>
+ * Typically if a containing object is deleted then all of its contained
+ * objects should be deleted too.  If contained objects should not be deleted
+ * by default, then set the {@link #cascade()} property to <code>false</code>. 
+ * 
+ * <p>
  * This annotation is read reflectively when the metamodel is built, therefore
  * runtime retention. 
  * 
@@ -21,4 +26,6 @@ import java.lang.annotation.*;
 @Inherited
 @Target(ElementType.METHOD)
 public @interface ContainerOf {
+	boolean cascade() default true;
 }
+

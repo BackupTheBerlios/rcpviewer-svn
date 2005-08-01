@@ -1,40 +1,32 @@
 package de.berlios.rcpviewer.petstore.domain;
 
-import static de.berlios.rcpviewer.progmodel.extended.IPrerequisites.Constraint.INVISIBLE;
 import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.require;
-
-import java.io.Serializable;
-
+import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
+import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
 import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.Optional;
+import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.LowerBoundOf;
 import de.berlios.rcpviewer.progmodel.standard.Programmatic;
 
 
 /**
  * Wholly owned component of {@link Customer} that represents the login details
- * for a Customer who shops with us.
+ * for a Customer who shops with the Petstore.
  *  
  * <p>
+ * TODOs
+ * <ul>
+ * <li>TODO: Hibernate mapping to T_ACCOUNT
+ * <li>TODO: possibly replace with Ted's OSGi-based authentication.
+ * </ul>
+ * 
+ * <p>
  * Adapted from original xpetstore implementation by Herve Tchepannou.
- * 
- * <p>
- * <ul>
- * <li>TODO: Hibernate mapping: T_ACCOUNT
- * <li>TODO: probably replace with Ted's OSGi-based authentication.
- * </ul>
- * 
- * <p>
- * <i>
- * Programming Model notes:
- * <ul>
- * <li> ...
- * </ul>
- * </i>
  * 
  * @author Dan Haywood
  */
@@ -43,14 +35,12 @@ import de.berlios.rcpviewer.progmodel.standard.Programmatic;
 public class Account {
 	
 	/**
-	 * no-arg constructor required for persistence layer.
+	 * Constructor.
 	 * 
      * <p>
      * <i>
-     * Programming Model notes:
-     * <ul>
-     * <li> ...
-     * </ul>
+     * See overview for discussion on programming model conventions and 
+     * annotations.
      * </i>
 	 */
     public Account() {
@@ -58,43 +48,35 @@ public class Account {
 
     
     /**
-     * Unique identifier for this account.
+     * User ID that the customer uses to access their account.
      * 
      * <p>
      * Automatically assigned by the persistence layer.
      * 
      * <p>
      * <i>
-     * Programming Model notes: since there is no <code>FieldLength</code> 
-     * annotation the field length will be taken from <code>MaxLength</code>.
-     * </i>
-     *  
-     * <p>
-     * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> The {@link #getUserIdPre()} method demonstrates a programmatic way 
+     *      of indicating that the attribute cannot be edited once the object
+     *      has initially been persisted.
+     * <li> An alternative and much simpler approach would be to simply use the 
+     *      {@link ImmutableOncePersisted} annotation.
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      * 
      * @return
      */
     @Order(1)
-    @DescribedAs("The user ID that the customer uses to access their account")
-	@MaxLengthOf(10) 
+	@MaxLengthOf(10)
+    @DescribedAs("User ID that the customer uses to access their account.")
     public String getUserId() {
         return _userId;
     }
 	/**
 	 * Cannot change user id (once persisted).
-	 * 
-	 * <p>
-	 * <i>
-	 * Programming Notes: 
-	 * <ul>
-	 * <li> an alternative way of specifying this would be to use the 
-	 *      <code>@ImmutableOncePersisted</code> annotation.
-	 * </i>
 	 * 
 	 * @return
 	 */
@@ -109,22 +91,26 @@ public class Account {
 
 
     /**
+     * Password that the customer must supply to access their account.
+     * 
      * <p>
      * <i>
      * Programming Model notes:
      * <ul> 
-     * <li> field length is defaulted from <code>MaxLength</code> annotation.
-     * <li> mandatory since no <code>MaxLength</code> annotation.
+     * <li> The {@link #setPasswordPre(String)} provides a way for the domain
+     *      object to veto a proposed value. 
+     * <li> See overview for discussion on other programming model conventions
+     *      and annotations.
      * </ul>
      * </i>
      */
     @Order(2)
-    @DescribedAs("The password that the customer must supply to access their account")
-	@MaxLengthOf(10) // = @FieldLengthOf since latter not specified explicitly
+	@MaxLengthOf(10)
+    @DescribedAs("Password that the customer must supply to access their account.")
     public String getPassword() {
         return _password;
     }
-    public void setPassword( String password ) {
+    public void setPassword(final String password) {
         _password = password;
     }
 	/**
@@ -132,18 +118,6 @@ public class Account {
 	 * a mix of alphabetic characters, numeric characters, punctuation and
 	 * long enough).
 	 * 
-	 * <p>
-	 * Note that the minimum length requirements are specified declaratively on
-	 * the setter.
-	 * 
-     * <p>
-     * <i>
-     * Programming Model notes:
-     * <ul>
-     * <li> ...
-     * </ul>
-     * </i>
-     * 
 	 * @param password - the proposed password.
 	 * @return
 	 */
@@ -153,24 +127,20 @@ public class Account {
 	private String _password;
 	/**
 	 * Helper method that encapsulates the algorithm as to whether a password 
-	 * is strong enough.
+	 * is strong enough (contains a sufficient mix of alphabetic, numeric and
+	 * other characters).
 	 * 
 	 * <p>
-	 * TODO - provide some sort of crude implementation,
+	 * This implementation simply requires that the password is at least
+	 * 6 characters in length and contains at least one digit.
 	 * 
-     * <p>
-     * <i>
-     * Programming Model notes:
-     * <ul>
-     * <li> ...
-     * </ul>
-     * </i>
-
 	 * @param password
 	 * @return true if strong enough and, erm, false if not.
 	 */
     private boolean isStrongEnough(String password) {
-		return true;
+		return password != null &&
+		       password.length() > 6 &&
+		       password.matches("[0-9]+");
 	}
 
 
@@ -181,7 +151,13 @@ public class Account {
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> Normally <code>public</code> methods that are not associated with
+     *      the definition of an attribute (getters, setters, getXxxPre and so
+     *      forth) are considered to be operations, thus invokable through the
+     *      UI.  However, the {@link Programmatic} annotation indicates
+     *      that this method should not be considered as such - it is simply
+     *      a method to be called programmatically by other domain objects that
+     *      (for whatever reason) requires <code>public</code> visibility.
      * </ul>
      * </i>
      *
@@ -195,14 +171,9 @@ public class Account {
                : password.equals( _password );
     }
 
-    
     /**
      * Helper method to allow this pojo to know where it is in its lifecycle
      * (not yet persisted or persisted).
-     * 
-     * <p>
-     * Implementation delegates to equivalent method on the injected
-     * application container.
      * 
      * @see #getAppContainer()
      * @return
@@ -211,30 +182,44 @@ public class Account {
 		return getAppContainer().isPersistent(this);
 	}
 
-
+    
+    
     /**
-     * Application container that controls lifecycle of this pojo, injected
-     * by the framework.
-     * 
+     * Save the object in the persistent object store (either creating if was 
+     * not already persistent, or updating if was.)
+     *
      * <p>
      * <i>
      * Programming Model notes:
      * <ul>
-     * <li> ...
+     * <li> The {@link SaveOperation} annotation indicates that it is
+     *      this method that is the save method.  By convention the method is
+     *      called <code>save</code>, but it must be <code>public</code>, take 
+     *      no arguments and return <code>void</code>.
+     * <li> The <code>unusableReason</code> effectively disables the save
+     *      operation (this is a component object).
+     * <li> No {@link Order} annotation is required for the save operation.
      * </ul>
      * </i>
+     */
+    @SaveOperation(unusableReason="Save owning Customer.")
+    public void save() {
+    	// nothing to do since unusable, see Pre() method  
+    }
+
+    
+
+    /**
+     * Application container that controls lifecycle of this pojo, injected
+     * by the platform.
+     * 
      */
 	public IAppContainer getAppContainer() {
 		return _appContainer;
 	}
-	/**
-	 * Allows framework to inject application container.
-	 */
 	public void setAppContainer(final IAppContainer appContainer) {
 		_appContainer = appContainer;
 	}
 	private IAppContainer _appContainer;
-
-
 
 }

@@ -63,7 +63,7 @@ public final class Requirement implements IRequirement {
 	 * An alternative design is to use a static constant, however had problems
 	 * in correctly initializing. 
 	 */
-	public static IRequirement noop() {
+	public static IRequirement none() {
 		return new Requirement(false, null, true);
 	}
 

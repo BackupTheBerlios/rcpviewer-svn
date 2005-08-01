@@ -16,8 +16,8 @@ public final class Prerequisites implements IPrerequisites {
 	 * 
 	 * @return
 	 */
-	public static Prerequisites noop() {
-		return new Prerequisites(Requirement.noop(), Requirement.noop());
+	public static Prerequisites none() {
+		return new Prerequisites(Requirement.none(), Requirement.none());
 	}
 
 
@@ -99,11 +99,11 @@ public final class Prerequisites implements IPrerequisites {
 		if (constraintIfNotMet == Constraint.INVISIBLE) {
 			return new Prerequisites(
 					requirement,
-					Requirement.noop());
+					Requirement.none());
 		}
 		if (constraintIfNotMet == Constraint.UNUSABLE) {
 			return new Prerequisites(
-					Requirement.noop(),
+					Requirement.none(),
 					requirement);
 		}
 		throw new IllegalArgumentException(
