@@ -67,16 +67,8 @@
    
    <extension
          point="de.berlios.rcpviewer.gui.fieldbuilder">
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.BooleanFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.ByteFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.CharacterFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.ShortFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.IntegerFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.LongFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.FloatFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.DoubleFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.DateFieldBuilder"/>
-         <impl class="de.berlios.rcpviewer.gui.editors.exts.DomainObjectFieldBuilder"/>
+         <impl class="de.berlios.rcpviewer.gui.fieldbuilders.exts.DateFieldBuilder"/>
+         <impl class="de.berlios.rcpviewer.gui.fieldbuilders.exts.DomainObjectFieldBuilder"/>
    </extension>
 
 
