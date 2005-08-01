@@ -13,9 +13,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.IFieldBuilder;
-import de.berlios.rcpviewer.gui.IFieldBuilder.IField;
-import de.berlios.rcpviewer.gui.IFieldBuilder.IFieldListener;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IField;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IFieldListener;
 import de.berlios.rcpviewer.gui.widgets.AbstractFormDisplay;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 import de.berlios.rcpviewer.session.IDomainObject;

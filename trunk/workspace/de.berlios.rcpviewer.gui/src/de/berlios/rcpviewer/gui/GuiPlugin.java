@@ -13,6 +13,8 @@ import org.osgi.framework.BundleContext;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
+import de.berlios.rcpviewer.gui.fieldbuilders.FieldBuilderFactory;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
 import de.berlios.rcpviewer.session.IDomainObject;

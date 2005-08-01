@@ -25,18 +25,39 @@ public class CellEditorFactory {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		CellEditor editor = null;
 		if ( clazz.isPrimitive() ) {
-			if ( int.class == clazz ) {
-				editor = new IntegerCellEditor();
+			if ( boolean.class == clazz ) {
+				editor = new CheckboxCellEditor();
 			}
-		}
-		else if ( String.class == clazz ) {
-			editor = new TextCellEditor();
+			else {
+				return new PrimitiveCellEditor( clazz );
+			}
 		}
 		else if ( Boolean.class == clazz ) {
 			editor = new CheckboxCellEditor();
 		}
+		else if ( Byte.class == clazz ) {
+			editor = new PrimitiveCellEditor( clazz );
+		}
+		else if ( Character.class == clazz ) {
+			editor = new PrimitiveCellEditor( clazz );
+		}
+		else if ( Short.class == clazz ) {
+			editor = new PrimitiveCellEditor( clazz );
+		}	
 		else if ( Integer.class == clazz ) {
-			editor = new IntegerCellEditor();
+			editor = new PrimitiveCellEditor( clazz );
+		}
+		else if ( Long.class == clazz ) {
+			editor = new PrimitiveCellEditor( clazz );
+		}	
+		else if ( Float.class == clazz ) {
+			editor = new PrimitiveCellEditor( clazz );
+		}
+		else if ( Double.class == clazz ) {
+			editor = new PrimitiveCellEditor( clazz );
+		}
+		else if ( String.class == clazz ) {
+			editor = new TextCellEditor();
 		}
 		else {
 			IDomainClass domainClass = RuntimeDomain.instance().lookupNoRegister( clazz );

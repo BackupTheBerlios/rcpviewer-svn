@@ -20,7 +20,7 @@ import org.eclipse.ui.part.EditorPart;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.IFieldBuilder;
+import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
@@ -31,8 +31,8 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * <br>Gui built up of <code>IField</code>s provided by 
  * <code>IFieldBuilder</code>'s.
  * @author Mike
- * @see de.berlios.rcpviewer.gui.IFieldBuilder
- * @see de.berlios.rcpviewer.gui.IFieldBuilder.IField
+ * @see de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder
+ * @see de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IField
  */
 public final class DefaultEditor extends EditorPart {
 	
