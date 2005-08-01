@@ -1,6 +1,8 @@
 package de.berlios.rcpviewer.gui.acme.model;
 
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
+import de.berlios.rcpviewer.progmodel.extended.Named;
+import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
@@ -19,6 +21,7 @@ public class PrimitiveBean {
 	private float floatField;
 	private double doubleField;
 	
+	/* getters / setters */
 	
 	/**
 	 * @return Returns the booleanField.
@@ -133,8 +136,87 @@ public class PrimitiveBean {
 	}
 		
 
+	/* ops (actually renamed setters) */
 	
+	/**
+	 * @param booleanField The booleanField to set.
+	 */
+	public void booleanArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("boolean argument") //$NON-NLS-1$
+			boolean booleanField) {
+		this.booleanField = booleanField;
+	}
 	
+	/**
+	 * @param byteField The byteField to set.
+	 */
+	public void byteArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("byte argument") //$NON-NLS-1$
+			byte byteField) {
+		this.byteField = byteField;
+	}
+	
+	/**
+	 * @param charField The charField to set.
+	 */
+	public void charArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("char argument") //$NON-NLS-1$
+			char charField) {
+		this.charField = charField;
+	}
+
+	/**
+	 * @param doubleField The doubleField to set.
+	 */
+	public void doubleArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("double argument") //$NON-NLS-1$
+			double doubleField) {
+		this.doubleField = doubleField;
+	}
+
+	/**
+	 * @param floatField The floatField to set.
+	 */
+	public void floatArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("float argument") //$NON-NLS-1$
+			float floatField) {
+		this.floatField = floatField;
+	}
+	
+	/**
+	 * @param intField The intField to set.
+	 */
+	public void intArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("int argument") //$NON-NLS-1$
+			int intField) {
+		this.intField = intField;
+	}
+	
+	/**
+	 * @param longField The longField to set.
+	 */
+	public void longArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("long argument") //$NON-NLS-1$
+			long longField) {
+		this.longField = longField;
+	}
+	
+	/**
+	 * @param shortField The shortField to set.
+	 */
+	public void shortArgOp(
+			@Named("arg") //$NON-NLS-1$
+			@DescribedAs("short argument") //$NON-NLS-1$
+			short shortField) {
+		this.shortField = shortField;
+	}
 
 	
 
