@@ -3,16 +3,16 @@
 <plugin>
 
    <extension point="de.berlios.rcpviewer.gui.domainclass">
-   		<impl class="xpetstore.domain.Customer"/>
-   		<impl class="xpetstore.domain.Account"/>
-   		<impl class="xpetstore.domain.Order"/>
-   		<impl class="xpetstore.domain.Category"/>
-   		<impl class="xpetstore.domain.Product"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.Customer"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.CustomerOrder"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.Product"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.StockItem"/>
    		<!--
-   		<impl class="xpetstore.domain.Address"/>
-   		<impl class="xpetstore.domain.CreditCard"/>
-   		<impl class="xpetstore.domain.Item"/>
-   		<impl class="xpetstore.domain.OrderLine"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.Category"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.Account"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.Address"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.CreditCard"/>
+   		<impl class="de.berlios.rcpviewer.petstore.domain.OrderLine"/>
    		-->
    </extension>
 

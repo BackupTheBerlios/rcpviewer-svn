@@ -241,7 +241,7 @@ public class Product {
      * @return
      */
     @Order(5)
-    @ContainerOf(cascadeDelete=true)
+    @ContainerOf()
     @OppositeOf("product")
     @TypeOf(StockItem.class)
     public Set<StockItem> getStockItems() {

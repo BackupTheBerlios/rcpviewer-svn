@@ -251,7 +251,7 @@ public class OrderLine  {
     private void setUnitPrice(final BigDecimal unitPrice) {
     	_unitPrice = unitPrice;
     }
-    private BigDecimal _unitPrice;
+    private BigDecimal _unitPrice = new BigDecimal(0L);
 
     
 
@@ -274,7 +274,10 @@ public class OrderLine  {
     @Derived
     @DescribedAs("The cost of this line item (quantity x unit price).")
     public BigDecimal getSubTotal() {
-        return _unitPrice.multiply(getUnitPrice());
+    	if (getUnitPrice() == null) {
+    		return new BigDecimal(0);
+    	}
+        return getUnitPrice().multiply(new BigDecimal(getQuantity()));
     }
 
 
