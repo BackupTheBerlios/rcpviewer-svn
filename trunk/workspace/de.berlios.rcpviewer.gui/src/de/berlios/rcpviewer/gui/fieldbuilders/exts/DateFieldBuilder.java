@@ -152,9 +152,15 @@ public class DateFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#setGuiValue(java.lang.Object)
 		 */
 		public void setGuiValue(Object obj) {
-			if ( !(obj instanceof Date) ) throw new IllegalArgumentException();
-			_text.setText( FORMATTER.format( (Date)obj ) );
-			
+			if( obj == null ) {
+				_text.setText( "" ); //$NON-NLS-1$
+			}
+			else {
+				if ( !(obj instanceof Date) ) {
+					throw new IllegalArgumentException();
+				}
+				_text.setText( FORMATTER.format( (Date)obj ) );
+			}
 		}
 		
 		// add DnD functionality
