@@ -1,17 +1,25 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EModelElement;
+import org.eclipse.emf.ecore.EParameter;
+import org.eclipse.emf.ecore.EcoreFactory;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.MethodNameHelper;
+import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 /**
@@ -34,13 +42,6 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
 	private final EmfFacade emfFacade = new EmfFacade();
 	
-	// TODO: used in DomainClass itself; move to some common library.
-	EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
-		Map<String, String> details = new HashMap<String, String>();
-		details.put(key, value);
-		return emfFacade.putAnnotationDetails(eAnnotation, details);
-	}
-
 	private <V> void build(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
 		
@@ -68,51 +69,99 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			
 			// XxxPre method to support constraintFor()
 			processAttributePre(eAttribute, domainClass, javaClass);
+			
+			// Optional (attributes)
+			processAttributeOptional(eAttribute, accessorOrMutator);
+				
+			// Invisible (attributes)
+			processAttributeInvisible(eAttribute, accessorOrMutator);
 				
 		}
+
+		for(EOperation eOperation: domainClass.operations()) {
+			Method invoker = domainClass.getInvokerFor(eOperation);
+			processOperationParametersOptional(eOperation, invoker);
+		}
+
 	}
 	
 	private void processClassInstantiable(Lifecycle lifecycle, EModelElement modelElement) {
-		putAnnotationDetails(modelElement, 
+		emfFacade.putAnnotationDetails(modelElement, 
+				ExtendedProgModelConstants.ANNOTATION_CLASS, 
 				ExtendedProgModelConstants.ANNOTATION_CLASS_INSTANTIABLE_KEY, 
 				lifecycle != null && lifecycle.instantiable());	
 	}
 
 	private void processClassSearchable(Lifecycle lifecycle, EModelElement modelElement) {
-		putAnnotationDetails(modelElement, 
+		emfFacade.putAnnotationDetails(modelElement, 
+				ExtendedProgModelConstants.ANNOTATION_CLASS, 
 				ExtendedProgModelConstants.ANNOTATION_CLASS_SEARCHABLE_KEY, 
 				lifecycle != null && lifecycle.searchable());	
 	}
 	
 	private void processClassSaveable(Lifecycle lifecycle, EModelElement modelElement) {
-		putAnnotationDetails(modelElement, 
+		emfFacade.putAnnotationDetails(modelElement, 
+				ExtendedProgModelConstants.ANNOTATION_CLASS, 
 				ExtendedProgModelConstants.ANNOTATION_CLASS_SAVEABLE_KEY, 
 				lifecycle != null && lifecycle.saveable());	
 	}
 
-	private void putAnnotationDetails(EModelElement modelElement, String key, boolean value) {
-		putAnnotationDetails(modelElement, key, value?"true":"false");
-	}
-	
-	private void putAnnotationDetails(EModelElement modelElement, String key, String value) {
-		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
-		if (ea == null) {
-			ea = emfFacade.annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
-		}
-		putAnnotationDetails(ea, key, value);
-	}
-	
 	private void processAttributeOrder(EAttribute eAttribute, Method accessorOrMutator) {
-		Order positionedAt = 
+		Order order = 
 			accessorOrMutator.getAnnotation(Order.class);
-		if (positionedAt != null) {
+		if (order != null) {
 			EAnnotation attributeAnnotation = 
 				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 			Map<String,String> details = new HashMap<String,String>();
-			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY, "" + positionedAt.value());
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY, "" + order.value());
 			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
 		}
 	}
+
+	private void processAttributeOptional(EAttribute eAttribute, Method accessorOrMutator) {
+		Optional optional = 
+			accessorOrMutator.getAnnotation(Optional.class);
+		if (optional != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_OPTIONAL_KEY, "true");
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeInvisible(EAttribute eAttribute, Method accessorOrMutator) {
+		Invisible invisible = 
+			accessorOrMutator.getAnnotation(Invisible.class);
+		if (invisible != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_INVISIBLE_KEY, "true");
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processOperationParametersOptional(EOperation operation, final Method invoker) {
+		
+		Class<?>[] parameterTypes = invoker.getParameterTypes();
+		Annotation[][] parameterAnnotationSets = invoker.getParameterAnnotations();
+
+		for(int i=0; i<parameterTypes.length; i++) {
+			EParameter parameter = (EParameter)operation.getEParameters().get(i);
+			Annotation[] parameterAnnotationSet = parameterAnnotationSets[i];
+
+			for(Annotation parameterAnnotation: parameterAnnotationSet) {
+				if (parameterAnnotation instanceof Optional) {
+					emfFacade.putAnnotationDetails(parameter,
+							ExtendedProgModelConstants.ANNOTATION_OPERATION_PARAMETER, 
+							ExtendedProgModelConstants.ANNOTATION_OPERATION_PARAMETER_OPTIONAL_KEY, 
+							"true");
+				}
+			}
+		}
+	}
+
 
 	private <V> void processAttributePre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
 		Method accessor = domainClass.getAccessorFor(eAttribute);
@@ -143,6 +192,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		
 
 	}
+
 
 
 	private boolean methodReturns(Method method, Class javaClass) {

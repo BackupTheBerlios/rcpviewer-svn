@@ -13,6 +13,7 @@ import de.berlios.rcpviewer.progmodel.extended.DeleteOperation;
 import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Order;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
@@ -61,6 +62,7 @@ import de.berlios.rcpviewer.progmodel.standard.OppositeOf;
  * 
  * @author Dan Haywood
  */
+@Lifecycle(searchable=true,instantiable=true,saveable=true)
 @InDomain
 public class StockItem {
 
@@ -94,9 +96,18 @@ public class StockItem {
 	 * <p>
 	 * All other state of the item is entered by the user through the UI.
 	 * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> Package level visibility (<code>public</code> visibility would 
+     *      expose this as an operation).
+     * </ul>
+     * </i>
+     * 
 	 * @param product
 	 */
-	public void init(final Product product) {
+	void init(final Product product) {
 		_product = product;
 	}
 

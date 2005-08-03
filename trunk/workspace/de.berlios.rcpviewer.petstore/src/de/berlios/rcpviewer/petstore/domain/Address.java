@@ -70,9 +70,18 @@ public class Address {
      * Used when copying down an Address from its {@link Customer} to place
      * an {@link Order}.
      * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> Package level visibility (<code>public</code> visibility would 
+     *      expose this as an operation).
+     * </ul>
+     * </i>
+     * 
      * @param address to be copied
      */
-    public void init(final Address address) {
+    void init(final Address address) {
     	setCity(address.getCity());
     	setCountry(address.getCountry());
     	setState(address.getState());

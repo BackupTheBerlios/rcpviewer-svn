@@ -95,6 +95,30 @@ public final class ExtendedProgModelConstants {
 		"order";
 
 	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates whether this attribute is
+	 * optional.
+	 * 
+	 * <p>
+	 * The string <i>"true"</i> is held as the value.
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_OPTIONAL_KEY = 
+		"optional";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates whether this attribute is
+	 * invisible.
+	 * 
+	 * <p>
+	 * The string <i>"true"</i> is held as the value.
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_INVISIBLE_KEY = 
+		"invisible";
+
+
+	
+	/**
 	 * Presence of an EAnnotation with this source on an EOperation indicates
 	 * additional information accessible from the details.
 	 */
@@ -112,6 +136,30 @@ public final class ExtendedProgModelConstants {
 	public static final String ANNOTATION_OPERATION_ORDER_KEY = 
 		"order";
 
+	/**
+	 * Presence of an EAnnotation with this source on an EParameter indicates
+	 * additional information accessible from the details.
+	 */
+	public static final String ANNOTATION_OPERATION_PARAMETER = 
+		"http://rcpviewer.berlios.de/progmodel/extended/operation/parameter";
+
+
+	/**
+	 * If present in the details of an EParameter with source of
+	 * {@link #ANNOTATION_OPERATION_PARAMETER} then indicates that the
+	 * parameter is optional.
+	 * 
+	 * <p>
+	 * The value held is always the string <i>"true"</i>.
+	 */
+	public static final String ANNOTATION_OPERATION_PARAMETER_OPTIONAL_KEY = null;
+
+	/**
+	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
+	 * whose value is the description of the annotated model element.
+	 */
+	public static final String ANNOTATION_ELEMENT_DESCRIPTION_KEY = 
+		"description";
 
 
 

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Invisible;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.extended.Order;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
@@ -46,6 +47,7 @@ import de.berlios.rcpviewer.petstore.domain.StockItem;
  * 
  * @author Dan Haywood
  */
+@Lifecycle(searchable=false,instantiable=false,saveable=true)
 @InDomain
 public class OrderLine  {
 
@@ -75,10 +77,19 @@ public class OrderLine  {
      * <code>OrderLine</code>'s unit price.  This is because the list price may 
      * vary over time whereas the unit price cannot.
      * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> Package level visibility (<code>public</code> visibility would 
+     *      expose this as an operation).
+     * </ul>
+     * </i>
+     * 
      * @param item
      * @param quantity
      */
-    public void init(
+    void init(
     		final CustomerOrder customerOrder, 
     		final StockItem item, final int quantity) {
     	_customerOrder = customerOrder;

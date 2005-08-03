@@ -1,0 +1,25 @@
+petstore functionality:
+========================
+
+(not in the domain model)
+
+void Cart#addItem(String itemId)
+Collection<Item> Cart#getItems()
+void Cart#checkout
+void Cart#removeItem(String itemId)
+void Cart#update(String itemId, int quantity)
+
+
+static void Customer#create()
+Account Customer#getAccount()
+void Customer#register()
+void Customer#update(...)
+
+void Item#update()
+
+Order Customer#createOrder(Cart)
+
+void Product#update()
+static void Product#search()
+
+

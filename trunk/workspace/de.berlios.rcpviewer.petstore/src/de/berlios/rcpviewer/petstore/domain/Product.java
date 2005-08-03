@@ -16,6 +16,7 @@ import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
 import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
@@ -56,6 +57,7 @@ import de.berlios.rcpviewer.progmodel.standard.TypeOf;
  * 
  * @author Dan Haywood
  */
+@Lifecycle(searchable=true,instantiable=true,saveable=true)
 @InDomain
 public class Product {
 	

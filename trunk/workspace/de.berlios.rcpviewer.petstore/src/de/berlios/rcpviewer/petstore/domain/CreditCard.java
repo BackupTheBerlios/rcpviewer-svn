@@ -77,9 +77,18 @@ public class CreditCard {
      * Used when copying down a CreditCard from its {@link Customer} to place
      * an {@link CustomerOrder}.
      * 
+     * <p>
+     * <i>
+     * Programming Model notes:
+     * <ul>
+     * <li> Package level visibility (<code>public</code> visibility would 
+     *      expose this as an operation).
+     * </ul>
+     * </i>
+     * 
      * @param creditCard
      */
-    public void init(final CreditCard creditCard) {
+    void init(final CreditCard creditCard) {
     	setExpiryDate(creditCard.getExpiryDate());
     	setNumber(creditCard.getNumber());
     	setType(creditCard.getType());

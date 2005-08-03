@@ -1,6 +1,12 @@
 package de.berlios.rcpviewer.progmodel.extended;
 import java.lang.annotation.*;
+
+import de.berlios.rcpviewer.progmodel.standard.Immutable;
+
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
+import de.berlios.rcpviewer.progmodel.extended.Lookup;
+import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;;
 
 /**
  * Indicates that the annotated operation should be called when the domain 
@@ -49,7 +55,9 @@ import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
  *  
  * <p>
  * The annotation is ignored for any type annotated as {@link Lookup}, 
- * {@link Immutable} or {@link TransientOnly}. 
+ * {@link Immutable}, {@link ImmutableOncePersisted} or for a domain class that 
+ * is not persistable ({@link Lifecycle}'s <code>saveable</code> attribute).
+ *  
  * 
  * <p>
  * Consumed reflectively for building meta-model.

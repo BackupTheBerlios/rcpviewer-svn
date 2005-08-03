@@ -9,8 +9,16 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for de.berlios.rcpviewer.progmodel.extended");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestPositionedAtRuntime.class);
+		suite.addTestSuite(TestOptionalAtRuntime.class);
 		suite.addTestSuite(TestExtendedClassAdapter.class);
+		suite.addTestSuite(TestInvisibleAtRuntime.class);
+		suite.addTestSuite(TestOrderForAttributesAtRuntime.class);
+		suite.addTestSuite(TestBusinessKeyAtRuntime.class);
+		suite.addTestSuite(TestMinLengthOfAtRuntime.class);
+		suite.addTestSuite(TestMaxLengthOfAtRuntime.class);
+		suite.addTestSuite(TestFieldLengthOfAtRuntime.class);
+		suite.addTestSuite(TestMaskAtRuntime.class);
+		suite.addTestSuite(TestImmutableOncePersistedAtRuntime.class);
 		//$JUnit-END$
 		return suite;
 	}

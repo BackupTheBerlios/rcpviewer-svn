@@ -4,6 +4,7 @@ import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.require;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
 import de.berlios.rcpviewer.progmodel.extended.Order;
@@ -31,6 +32,7 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
  * @author Dan Haywood
  */
 @InDomain
+@Lifecycle(searchable=true,instantiable=true,saveable=true)
 public class Customer {
 
 	/**

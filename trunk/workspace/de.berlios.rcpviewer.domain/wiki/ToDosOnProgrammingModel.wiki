@@ -1,5 +1,26 @@
 1 Extensions to Programming Model
 
+Extended prog model, to test/implement:
+* Lookup        - type
+* MinLengthOf   - attribute, string parameter of operation, value type
+* MaxLengthOf   - attribute, string parameter of operation, value type
+* FieldLengthOf - attribute, string parameter of operation, value type
+* Mask          - attribute, string parameter of operation, value type
+* ImmutableOncePersisted - attribute, type
+* BusinessKey            - attribute
+* SaveOperation    - operation
+* DeleteOperation  - operation
+
+Also:
+* sort out the interplay between @SaveOperation and @Lifecycle(saveable=...)
+* Customer#setLanguage() is being picked up as an operation.
+
+followed by Facade, then IOperation.
+
+
+----
+STUFF BELOW IS OUT OF DATE...
+
 ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
 
 1.1 @Searchable

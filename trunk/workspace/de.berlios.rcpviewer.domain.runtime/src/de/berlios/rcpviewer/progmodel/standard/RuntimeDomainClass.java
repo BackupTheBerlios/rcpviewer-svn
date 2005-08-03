@@ -483,7 +483,7 @@ public class RuntimeDomainClass<T>
 	}
 
 	/**
-	 * TODO
+	 * Identifies operations of the domain class.
 	 * 
 	 * <p>
 	 * <h3>Implementation Note</h3>

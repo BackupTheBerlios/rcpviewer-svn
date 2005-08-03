@@ -16,6 +16,7 @@ import de.berlios.rcpviewer.progmodel.standard.TypeOf;
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
 import de.berlios.rcpviewer.progmodel.extended.Order;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
@@ -52,6 +53,7 @@ import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
  * @author Dan Haywood
  */
 @InDomain
+@Lifecycle(searchable=true,instantiable=false,saveable=true)
 @Named("Order")
 @DescribedAs("An order placed by a customer to purchase a number of stock items.")
 public class CustomerOrder {

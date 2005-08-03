@@ -1,6 +1,11 @@
 package de.berlios.rcpviewer.progmodel.extended;
 import java.lang.annotation.*;
 
+import de.berlios.rcpviewer.progmodel.standard.Immutable;
+
+import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
+import de.berlios.rcpviewer.progmodel.extended.Lookup;
+
 /**
  * Indicates that the annotated operation should be called when the domain 
  * object is either initially saved or subsequently updated.
@@ -70,8 +75,9 @@ import java.lang.annotation.*;
  * 
  * <p>
  * The annotation is ignored for any type annotated as {@link Lookup}, 
- * {@link Immutable} or {@link TransientOnly}.  For these types the 
- * <i>File>Save</i> will be disabled in the UI. 
+ * {@link Immutable} or for a domain class that is not persistable 
+ * ({@link Lifecycle}'s <code>saveable</code> attribute).  For these types 
+ * the <i>File>Save</i> will be disabled in the UI. 
  * 
  * <p>
  * Consumed reflectively for building meta-model.

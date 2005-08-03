@@ -13,8 +13,8 @@ import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
  */
 public abstract class TestDomainClassInstantiable extends AbstractTestCase {
 
-	public TestDomainClassInstantiable(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
+	public TestDomainClassInstantiable(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
+		super(domainSpecifics, domainBuilder);
 	}
 
 	private IDomainClass<?> domainClass;

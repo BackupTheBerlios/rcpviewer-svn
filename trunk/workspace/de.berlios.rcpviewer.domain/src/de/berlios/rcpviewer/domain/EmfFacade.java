@@ -314,21 +314,46 @@ public class EmfFacade {
 	}
 	
 	public EAnnotation putAnnotationDetails(IDomainClass domainClass, EAnnotation eAnnotation, String key, String value) {
+		return putAnnotationDetails(eAnnotation, key, value);
+	}
+
+	public EAnnotation putAnnotationDetails(EAnnotation eAnnotation, String key, String value) {
 		Map<String, String> details = new HashMap<String, String>();
 		details.put(key, value);
 		return putAnnotationDetails(eAnnotation, details);
 	}
 
 	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, boolean value) {
-		putAnnotationDetails(domainClass, modelElement, key, value?"true":"false");
+		putAnnotationDetails(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT, key, value?"true":"false");
 	}
 
+	public void putAnnotationDetails(EModelElement modelElement, String annotationSource, String key, boolean value) {
+		putAnnotationDetails(modelElement, annotationSource, key, value?"true":"false");
+	}
+
+	public void putAnnotationDetails(EModelElement modelElement, String annotationSource, String key, String value) {
+		putAnnotationDetails(annotationOf(modelElement, annotationSource), key, value);
+	}
+
+	/**
+	 * Puts annotation details for the model element using the source
+	 * {@link StandardProgModelConstants#ANNOTATION_ELEMENT}.
+	 * 
+	 * @param domainClass
+	 * @param modelElement
+	 * @param key
+	 * @param value
+	 */
 	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, String value) {
-		EAnnotation ea = modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+		putAnnotationDetails(domainClass, modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT, key, value);
+	}
+
+	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String annotationSource, String key, String value) {
+		EAnnotation ea = modelElement.getEAnnotation(annotationSource);
 		if (ea == null) {
-			ea = annotationOf(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
+			ea = annotationOf(modelElement, annotationSource);
 		}
-		putAnnotationDetails(domainClass, ea, key, value);
+		putAnnotationDetails(ea, key, value);
 	}
 
 	public EAnnotation methodNamesAnnotationFor(EModelElement eModelElement) {

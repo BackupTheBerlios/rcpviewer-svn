@@ -8,6 +8,7 @@ Bundle-ClassPath: extended.jar,
 Bundle-Activator: de.berlios.rcpviewer.progmodel.extended.ExtendedPlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.standard
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.progmodel.extended
