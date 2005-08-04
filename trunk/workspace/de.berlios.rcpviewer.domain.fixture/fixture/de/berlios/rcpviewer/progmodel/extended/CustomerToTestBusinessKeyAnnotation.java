@@ -11,7 +11,7 @@ public class CustomerToTestBusinessKeyAnnotation {
 	 * First (most significant) part of a business key.
 	 * @return
 	 */
-	@BusinessKey("name.1")
+	@BusinessKey(name="name",pos=1)
 	public String getLastName() {
 		return lastName;
 	}
@@ -22,7 +22,7 @@ public class CustomerToTestBusinessKeyAnnotation {
 	 * 
 	 * @return
 	 */
-	@BusinessKey("name.2")
+	@BusinessKey(name="name",pos=2)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -33,7 +33,7 @@ public class CustomerToTestBusinessKeyAnnotation {
 	 * 
 	 * @return
 	 */
-	@BusinessKey("email")
+	@BusinessKey(name="email")
 	public String getEmail() {
 		return email;
 	}

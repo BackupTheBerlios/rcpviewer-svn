@@ -30,12 +30,13 @@ import java.lang.annotation.*;
  * determines the field length of that parameter.  This typically will be
  * the same as an attribute on some class upon that the operation affects.  
  * Again the annotation will be ignored if applied to a non-string parameter 
- * or to a string parameter of a method that does not represent a domain operation.  
+ * or to a string parameter of a method that does not represent a domain 
+ * operation.  
  * <p>
- * If the annotation is applied to a value type (with a <code>@Value</code>
- * annotation) that implements IStringParser, then any attribute of that value
- * type will inherit the maximum length.  The annotation will be ignored if it 
- * is applied to any other type. 
+ * If the annotation is applied to a value type (with a {@link Value}
+ * annotation) that implements {@link IStringParser}, then any attribute or
+ * operation parameter of that value type will inherit the field length.  The 
+ * annotation will be ignored if it is applied to any other type. 
  * 
  * <p>
  * If the <code>Mask</code> annotation is present then this annotation if

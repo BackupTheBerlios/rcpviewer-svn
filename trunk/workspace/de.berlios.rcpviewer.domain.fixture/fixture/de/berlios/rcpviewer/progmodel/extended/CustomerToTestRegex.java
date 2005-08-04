@@ -4,15 +4,16 @@ import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 @InDomain
-public class CustomerToTestMask {
+public class CustomerToTestRegex {
 
 
 	/**
-	 * Has a mask.
+	 * Has a regex; must begin with a capital then be following by 1 or more
+	 * characters.
 	 * 
 	 * @return
 	 */
-	@Mask("AAAA")
+	@Mask("[A-Z].+")
 	public String getLastName() {
 		return lastName;
 	}
@@ -20,7 +21,7 @@ public class CustomerToTestMask {
 
 	
 	/**
-	 * Doesn't have a mask.
+	 * Doesn't have a regex.
 	 * 
 	 * @return
 	 */

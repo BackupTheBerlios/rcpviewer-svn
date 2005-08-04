@@ -19,6 +19,7 @@ public class AllTests {
 		suite.addTestSuite(TestFieldLengthOfAtRuntime.class);
 		suite.addTestSuite(TestMaskAtRuntime.class);
 		suite.addTestSuite(TestImmutableOncePersistedAtRuntime.class);
+		suite.addTestSuite(TestRegexAtRuntime.class);
 		//$JUnit-END$
 		return suite;
 	}

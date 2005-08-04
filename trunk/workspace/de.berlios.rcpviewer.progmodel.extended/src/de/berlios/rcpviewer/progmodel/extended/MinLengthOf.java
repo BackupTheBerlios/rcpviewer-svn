@@ -21,19 +21,19 @@ import java.lang.annotation.*;
  * ignored if applied to a non-string parameter or to a string parameter of a 
  * method that does not represent a domain operation.  
  * <p>
- * If the annotation is applied to a value type (with a <code>@Value</code>
- * annotation) that implements IStringParser, then any attribute of that value
- * type will inherit the minimum length.  The annotation will be ignored if it 
- * is applied to any other type. 
+ * If the annotation is applied to a value type (with a {@link Value}
+ * annotation) that implements {@link IStringParser}, then any attribute or
+ * operation parameter of that value type will inherit the minimum length.  
+ * The annotation will be ignored if it is applied to any other type. 
  * 
  * <p>
- * If the <code>Mask</code> annotation is present then this annotation if
+ * If the {@link Mask} annotation is present then this annotation if
  * present is ignored and instead the length of the mask's string is used.
  * 
  * <p>
  * Although this annotation can be used to make a string attribute mandatory
  * (by specifying a minimum length of 1, say), it is sufficient simply to
- * omit the <code>@Optional</code> tag - this has the same effect and moreover
+ * omit the {@link Optional} tag - this has the same effect and moreover
  * applies to non-string attributes.   Nevertheless, a value of 0 is valid
  * and can be used to indicate that the attribute is optional.  A negative
  * value will simply be ignored.

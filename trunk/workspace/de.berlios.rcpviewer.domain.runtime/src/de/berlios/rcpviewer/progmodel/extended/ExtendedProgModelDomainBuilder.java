@@ -23,13 +23,7 @@ import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 /**
- * Adds annotations specific to the RCPViewer.
- * 
- * <p>
- * Specifically, these are:
- * <ul>
- * <li>PositionedAt.
- * </ul>
+ * Analyzes annotations specific to the extended programming model.
  * 
  * @author Dan Haywood
  *
@@ -63,19 +57,22 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
 		for(EAttribute eAttribute: domainClass.attributes()) {
 			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(eAttribute);
-
-			// Order (attributes)
-			processAttributeOrder(eAttribute, accessorOrMutator);
 			
 			// XxxPre method to support constraintFor()
 			processAttributePre(eAttribute, domainClass, javaClass);
-			
-			// Optional (attributes)
+
+			// annotations
+			processAttributeOrder(eAttribute, accessorOrMutator);
 			processAttributeOptional(eAttribute, accessorOrMutator);
-				
-			// Invisible (attributes)
 			processAttributeInvisible(eAttribute, accessorOrMutator);
-				
+			processAttributeBusinessKey(eAttribute, accessorOrMutator);
+			processAttributeMinLengthOf(eAttribute, accessorOrMutator);
+			processAttributeMaxLengthOf(eAttribute, accessorOrMutator);
+			processAttributeFieldLengthOf(eAttribute, accessorOrMutator);
+			processAttributeMask(eAttribute, accessorOrMutator);
+			processAttributeRegex(eAttribute, accessorOrMutator);
+			processAttributeImmutableOncePersisted(eAttribute, accessorOrMutator);
+		
 		}
 
 		for(EOperation eOperation: domainClass.operations()) {
@@ -142,6 +139,105 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 	}
 
+	private void processAttributeBusinessKey(EAttribute eAttribute, Method accessorOrMutator) {
+		BusinessKey businessKey = 
+			accessorOrMutator.getAnnotation(BusinessKey.class);
+		if (businessKey != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_NAME_KEY, businessKey.name());
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_POS_KEY, "" + businessKey.pos());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeMinLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
+		EDataType dataType = eAttribute.getEAttributeType();
+		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+			return;
+		}
+		MinLengthOf minLengthOf = 
+			accessorOrMutator.getAnnotation(MinLengthOf.class);
+		if (minLengthOf != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MIN_LENGTH_OF_KEY, "" + minLengthOf.value());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeMaxLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
+		EDataType dataType = eAttribute.getEAttributeType();
+		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+			return;
+		}
+		MaxLengthOf maxLengthOf = 
+			accessorOrMutator.getAnnotation(MaxLengthOf.class);
+		if (maxLengthOf != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY, "" + maxLengthOf.value());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeFieldLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
+		EDataType dataType = eAttribute.getEAttributeType();
+		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+			return;
+		}
+		FieldLengthOf fieldLengthOf = 
+			accessorOrMutator.getAnnotation(FieldLengthOf.class);
+		if (fieldLengthOf != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY, "" + fieldLengthOf.value());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeMask(EAttribute eAttribute, Method accessorOrMutator) {
+		Mask mask = 
+			accessorOrMutator.getAnnotation(Mask.class);
+		if (mask != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MASK_KEY, mask.value());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeRegex(EAttribute eAttribute, Method accessorOrMutator) {
+		Regex regex = 
+			accessorOrMutator.getAnnotation(Regex.class);
+		if (regex != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_REGEX_KEY, regex.value());
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+	private void processAttributeImmutableOncePersisted(EAttribute eAttribute, Method accessorOrMutator) {
+		ImmutableOncePersisted immutableOncePersisted = 
+			accessorOrMutator.getAnnotation(ImmutableOncePersisted.class);
+		if (immutableOncePersisted != null) {
+			EAnnotation attributeAnnotation = 
+				emfFacade.annotationOf(eAttribute, de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			Map<String,String> details = new HashMap<String,String>();
+			details.put(de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_KEY, "true");
+			emfFacade.putAnnotationDetails(attributeAnnotation, details);	
+		}
+	}
+
+
+	
 	private void processOperationParametersOptional(EOperation operation, final Method invoker) {
 		
 		Class<?>[] parameterTypes = invoker.getParameterTypes();

@@ -8,12 +8,17 @@ package de.berlios.rcpviewer.progmodel.extended;
  */
 public final class ExtendedProgModelConstants {
 
+	
 	/**
 	 * Cannot instantiate.
 	 */
 	private ExtendedProgModelConstants() {
 	}
 
+	public final static int FIELD_LENGTH_OF_DEFAULT = 32;
+	public final static int MAX_LENGTH_OF_DEFAULT = 64;
+	public final static int MIN_LENGTH_OF_DEFAULT = 0;
+	
 	/**
 	 * Presence of an EAnnotation with this source on any EModelElement 
 	 * indicates additional information accessible from the details.
@@ -116,8 +121,117 @@ public final class ExtendedProgModelConstants {
 	public static final String ANNOTATION_ATTRIBUTE_INVISIBLE_KEY = 
 		"invisible";
 
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates that this attribute is
+	 * part of a business key.
+	 * 
+	 * <p>
+	 * The value is the name of the business key.
+	 * 
+	 * <p>
+	 * There will also be a key 
+	 * ({@link #ANNOTATION_ATTRIBUTE_BUSINESS_KEY_POS_KEY}) in the details that 
+	 * represents the position of this attribute in the business key. 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_BUSINESS_KEY_NAME_KEY = 
+		"businessKey#name";
 
-	
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates that this attribute is
+	 * part of a business key.
+	 * 
+	 * <p>
+	 * The value is the numeric position of the attribute in the business key, 
+	 * as a string (use {@link Integer#parseInt(java.lang.String)} to obtain).
+	 * 
+	 * <p>
+	 * There will also be a key 
+	 * ({@link #ANNOTATION_ATTRIBUTE_BUSINESS_KEY_NAME_KEY}) in the details that 
+	 * represents the actual name of the business key in which this attribute 
+	 * is a part.
+	 * 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_BUSINESS_KEY_POS_KEY = 
+		"businessKey#pos";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the minimum length
+	 * of this (string) attribute.
+	 * 
+	 * <p>
+	 * The value held is the length, as a string (use 
+	 * {@link Integer#parseInt(java.lang.String)} to obtain).
+	 * 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_MIN_LENGTH_OF_KEY = 
+		"minLengthOf";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the maximum length
+	 * of this (string) attribute.
+	 * 
+	 * <p>
+	 * The value held is the length, as a string (use 
+	 * {@link Integer#parseInt(java.lang.String)} to obtain).
+	 * 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY = 
+		"maxLengthOf";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the field length
+	 * of this (string) attribute.
+	 * 
+	 * <p>
+	 * The value held is the length, as a string (use 
+	 * {@link Integer#parseInt(java.lang.String)} to obtain).
+	 * 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY = 
+		"fieldLengthOf";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates a mask to validate the
+	 * contents of this (string) attribute against.
+	 * 
+	 * <p>
+	 * The value held is the mask literal. 
+	 * 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_MASK_KEY = 
+		"mask";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates a regex to validate the
+	 * contents of this (string) attribute against.
+	 * 
+	 * <p>
+	 * The value held is the regex literal. 
+	 * 
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_REGEX_KEY = 
+		"regex";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates whether this attribute 
+	 * should be considered as immutable once its owning object has been
+	 * persisted.
+	 * 
+	 * <p>
+	 * The string <i>"true"</i> is held as the value.
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_KEY = 
+		"immutableOncePersistsed";
+
+
 	/**
 	 * Presence of an EAnnotation with this source on an EOperation indicates
 	 * additional information accessible from the details.

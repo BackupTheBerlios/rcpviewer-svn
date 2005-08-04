@@ -140,7 +140,7 @@ public abstract class TestFieldLengthOf extends AbstractTestCase {
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNoAnnotations");
-		assertEquals(64, extendedDomainClass.getFieldLengthOf(attrib));
+		assertEquals(32, extendedDomainClass.getFieldLengthOf(attrib));
 	}
 
 	/**

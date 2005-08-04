@@ -1,11 +1,14 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 
@@ -31,6 +34,7 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  */
 public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 
+	
 	private final EmfFacade emfFacade = new EmfFacade();
 
 	
@@ -225,8 +229,63 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public Map<String, List<EAttribute>> businessKeys() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Map<Integer,EAttribute>> businessKeyAttributesByPosByName = 
+			new HashMap<String, Map<Integer,EAttribute>>();
+		for(EAttribute attribute: adapts().attributes()) {
+			Map<String,String> attributeDetails = 
+				emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			String businessKeyName = attributeDetails.get(
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_NAME_KEY);
+			if (businessKeyName == null) {
+				continue;
+			}
+			Map<Integer, EAttribute> businessKeyAttributesByPos = 
+				businessKeyAttributesByPosByName.get(businessKeyName);
+			if (businessKeyAttributesByPos == null) {
+				businessKeyAttributesByPos = new HashMap<Integer, EAttribute>();
+				businessKeyAttributesByPosByName.put(businessKeyName, businessKeyAttributesByPos);
+			}
+			String businessKeyPosStr = attributeDetails.get(
+						ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_POS_KEY);
+			if (businessKeyPosStr == null) {
+				continue;
+			}
+			int businessKeyPos = Integer.parseInt(businessKeyPosStr);
+			EAttribute businessKeyAttribute = 
+				businessKeyAttributesByPos.get(businessKeyPos);
+			if (businessKeyAttribute != null) {
+				// we already have an attribute in this position, so give up
+				businessKeyAttributesByPos.put(-1, null); // magic value indicating an error
+				continue;
+			}
+			businessKeyAttributesByPos.put(businessKeyPos, attribute);
+		}
+		// process the Map of Maps and convert all good maps into lists
+		Map<String, List<EAttribute>> businessKeyAttributeListByName = 
+			new HashMap<String, List<EAttribute>>();
+		nextBusinessKey:
+		for(String businessKeyName: businessKeyAttributesByPosByName.keySet()) {
+			Map<Integer, EAttribute> businessKeyAttributesByPos =
+				businessKeyAttributesByPosByName.get(businessKeyName);
+			// check for our magic value meaning this is a bad map
+			if (businessKeyAttributesByPos.get(-1)!=null) {
+				continue;
+			}
+			// ensure that all values are contiguous
+			int size = businessKeyAttributesByPos.size();
+			List<EAttribute> businessKeyAttributes = new ArrayList<EAttribute>();
+			nextBusinessKeyAttributes:
+			for(int i=0; i<size; i++) {
+				EAttribute businessKeyAttribute = businessKeyAttributesByPos.get(i);
+				if (businessKeyAttributes == null) {
+					// no attribute in this position, so
+					// give up on processing this business key
+					continue nextBusinessKey;
+				}
+				businessKeyAttributes.add(businessKeyAttribute);
+			}
+		}
+		return businessKeyAttributeListByName;
 	}
 
 
@@ -242,7 +301,37 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public int getFieldLengthOf(EAttribute attribute) {
-		return 64;
+		EDataType dataType = attribute.getEAttributeType();
+		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+			return 0;
+		}
+
+		Map<String,String> attributeDetails = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		
+		String fieldLengthOfStr = attributeDetails.get(
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY);
+		int fieldLengthOf = -1;
+		if (fieldLengthOfStr != null) {
+			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
+		}
+		String maxLengthOfStr = attributeDetails.get(
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY);
+		int maxLengthOf = -1;
+		if (maxLengthOfStr != null) {
+			maxLengthOf = Integer.parseInt(maxLengthOfStr);
+		}
+
+		if (fieldLengthOf > 0 && maxLengthOf > 0) {
+			return Math.min(fieldLengthOf, maxLengthOf);
+		} else if (fieldLengthOf > 0 && maxLengthOf <= 0) {
+			return fieldLengthOf;
+		} else if (fieldLengthOf <= 0 && maxLengthOf > 0) {
+			return maxLengthOf;
+		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0) {
+			return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
+		}
+		return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
 	}
 
 
@@ -258,7 +347,37 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public int getMaxLengthOf(EAttribute attribute) {
-		return 64;
+		EDataType dataType = attribute.getEAttributeType();
+		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+			return 0;
+		}
+
+		Map<String,String> attributeDetails = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		
+		String fieldLengthOfStr = attributeDetails.get(
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY);
+		int fieldLengthOf = -1;
+		if (fieldLengthOfStr != null) {
+			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
+		}
+		String maxLengthOfStr = attributeDetails.get(
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY);
+		int maxLengthOf = -1;
+		if (maxLengthOfStr != null) {
+			maxLengthOf = Integer.parseInt(maxLengthOfStr);
+		}
+
+		if (fieldLengthOf > 0 && maxLengthOf > 0) {
+			return maxLengthOf;
+		} else if (fieldLengthOf > 0 && maxLengthOf <= 0) {
+			return fieldLengthOf;
+		} else if (fieldLengthOf <= 0 && maxLengthOf > 0) {
+			return maxLengthOf;
+		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0) {
+			return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
+		}
+		return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
 	}
 
 	/**
@@ -273,7 +392,35 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public int getMinLengthOf(EAttribute attribute) {
-		return 0;
+		EDataType dataType = attribute.getEAttributeType();
+		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+			return 0;
+		}
+
+		Map<String,String> attributeDetails = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+
+		String minLengthOfStr = attributeDetails.get(
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MIN_LENGTH_OF_KEY);
+		int minLengthOf = -1;
+		if (minLengthOfStr != null) {
+			minLengthOf = Integer.parseInt(minLengthOfStr);
+		}
+		String maxLengthOfStr = attributeDetails.get(
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY);
+		int maxLengthOf = -1;
+		if (maxLengthOfStr != null) {
+			maxLengthOf = Integer.parseInt(maxLengthOfStr);
+		}
+	
+		if (minLengthOf > 0 && maxLengthOf > 0) {
+			return Math.min(minLengthOf, maxLengthOf);
+		} else if (minLengthOf > 0 && maxLengthOf <= 0) {
+			return minLengthOf;
+		} else if (minLengthOf <= 0) {
+			return ExtendedProgModelConstants.MIN_LENGTH_OF_DEFAULT;
+		}
+		return ExtendedProgModelConstants.MIN_LENGTH_OF_DEFAULT;
 	}
 
 
@@ -289,7 +436,12 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public boolean isImmutableOncePersisted(EAttribute attribute) {
-		return false;
+		Map<String,String> attributeDetails = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		
+		String immutableOncePersisted = attributeDetails.get(
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_KEY);
+		return immutableOncePersisted != null;
 	}
 
 
@@ -298,13 +450,61 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * according to a mask.
 	 * 
 	 * <p>
-	 * The {@link Mask} annotation is used to indicate the mask string.
+	 * The {@link Mask} annotation is used to indicate the mask string;
+	 * returns null if none.
 	 * 
 	 * @param attribute
 	 * @return
 	 */
 	public String getMask(EAttribute attribute) {
-		return null;
+		Map<String,String> attributeDetails = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		
+		String mask = attributeDetails.get(
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MASK_KEY);
+		return mask;
+	}
+
+
+	/**
+	 * Whether the content of this (string) attribute must be formatted
+	 * according to a regex.
+	 * 
+	 * <p>
+	 * The {@link Mask} annotation is used to indicate the regex string;
+	 * returns null if none.
+	 * 
+	 * @param attribute
+	 * @return
+	 */
+	public String getRegex(EAttribute attribute) {
+		Map<String,String> attributeDetails = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		
+		String regex = attributeDetails.get(
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_REGEX_KEY);
+		return regex;
+	}
+
+
+	/**
+	 * Convenience method for determining whether the candidate value
+	 * is accepted by the regex associated with this attribute.
+	 * 
+	 * <p>
+	 * If no regex has been specified (using {@link Regex}) then
+	 * always returns true.
+	 * 
+	 * @param attribute
+	 * @param candidateValue
+	 * @return
+	 */
+	public boolean regexMatches(EAttribute attribute, String candidateValue) {
+		String regex = getRegex(attribute);
+		if (regex == null) {
+			return true;
+		}
+		return candidateValue.matches(regex);
 	}
 
 }

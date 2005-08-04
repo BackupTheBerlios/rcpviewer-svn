@@ -59,9 +59,9 @@ import java.lang.annotation.*;
  * that does not represent a domain operation.  
  * <p>
  * If the annotation is applied to a value type (with a <code>@Value</code>
- * annotation) that implements IStringParser, then any attribute of that value
- * type will inherit the mask.  The annotation will be ignored if it is 
- * applied to any other type. 
+ * annotation) that implements {@link IStringParser}, then any attribute or 
+ * operation parameter of that value type will inherit the mask.  The 
+ * annotation will be ignored if it is applied to any other type. 
  * 
  * <p>
  * Consumed reflectively for building meta-model.

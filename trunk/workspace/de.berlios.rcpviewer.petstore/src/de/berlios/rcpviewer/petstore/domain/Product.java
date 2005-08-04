@@ -107,7 +107,7 @@ public class Product {
 	 * @return
 	 */
 	@Order(1)
-    @BusinessKey("id")
+    @BusinessKey(name="id")
 	@MinLengthOf(8)
 	@MaxLengthOf(10)
 	@DescribedAs("Unique identifier for this product")
@@ -137,7 +137,7 @@ public class Product {
      * @return
      */
     @Order(2)
-    @BusinessKey("name")
+    @BusinessKey(name="name")
     @FieldLengthOf(30)
     @MaxLengthOf(50)
     @DescribedAs("The name of this product, eg Koi fish.")

@@ -38,11 +38,18 @@ import java.lang.annotation.*;
  * <p>
  * Consumed reflectively for building meta-model.
  *
+ * <p>
+ * TODO: there is currently no support for an attribute to be in multiple
+ * business keys (would need to have an annotation that holds an array of such
+ * because Java does not allow multiple annotations of the same type of a code
+ * feature).
+ * 
  * @author Dan Haywood
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target({ElementType.METHOD})
 public @interface BusinessKey {
-	String value();
+	String name();
+	int pos() default 1;
 }

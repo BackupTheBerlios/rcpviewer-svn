@@ -193,7 +193,7 @@ public class Customer {
      * @return
      */
     @Order(5)
-    @BusinessKey("email")
+    @BusinessKey(name="email")
     @MaxLengthOf(60)
     public String getEmail() { 
         return _email;

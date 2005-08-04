@@ -162,7 +162,7 @@ public class StockItem {
      * </i>
      */
     @Order(2)
-    @BusinessKey("product-description.1")
+    @BusinessKey(name="product-description",pos=1)
     @DescribedAs("The type of product that this item represents.")
     public Product getProduct() {
         return _product;
@@ -191,7 +191,7 @@ public class StockItem {
      * </i>
      */
     @Order(3)
-    @BusinessKey("product-description.2")
+    @BusinessKey(name="product-description", pos=2)
 	@FieldLengthOf(50)
     @MaxLengthOf(255)
     @DescribedAs("Short description of this stock item.")
