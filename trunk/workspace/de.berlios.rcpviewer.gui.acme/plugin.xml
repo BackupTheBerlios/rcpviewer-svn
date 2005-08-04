@@ -8,6 +8,7 @@
    		<impl class="de.berlios.rcpviewer.gui.acme.model.Counter"/>
         <impl class="de.berlios.rcpviewer.gui.acme.model.PrimitiveBean"/>
         <impl class="de.berlios.rcpviewer.gui.acme.model.WrappedPrimitiveBean"/>
+        <impl class="de.berlios.rcpviewer.gui.acme.model.Beans"/>
    </extension>
 
 
