@@ -22,7 +22,7 @@ import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
 import de.berlios.rcpviewer.gui.util.GCUtil;
-import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
+import de.berlios.rcpviewer.gui.views.ops.IOpsViewPage;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -39,7 +39,7 @@ public final class DefaultEditor extends EditorPart {
 	
 	private IManagedForm _form = null;
 	private FormToolkit _toolkit = null;
-	private ActionsViewPage _actionsView = null;
+	private OpsViewPage _opsView = null;
 	
 	
 	/* (non-Javadoc)
@@ -138,8 +138,8 @@ public final class DefaultEditor extends EditorPart {
 		if (_toolkit != null) {
 			_toolkit.dispose();
 		}
-		if ( _actionsView != null ) {
-			_actionsView.dispose();
+		if ( _opsView != null ) {
+			_opsView.dispose();
 		}
 		super.dispose();
 	}
@@ -189,8 +189,8 @@ public final class DefaultEditor extends EditorPart {
 	/**
 	 * Returns:
 	 * <ol>
-	 * <li>if Class is IPropertySheetPage, the individual instance of 
-	 * actions page for this editor / object
+	 * <li>if Class is IOpsViewPage, the individual instance of 
+	 * ops page for this editor / object
 	 * <li>super()
 	 * </ol>
 	 * @see org.eclipse.ui.part.WorkbenchPart#getAdapter(java.lang.Class)
@@ -198,11 +198,11 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public Object getAdapter(Class adapter) {
-		if ( adapter.equals( IActionsViewPage.class ) ) {
-			if ( _actionsView == null ) {
-				_actionsView = new ActionsViewPage( getDomainObject() );
+		if ( adapter.equals( IOpsViewPage.class ) ) {
+			if ( _opsView == null ) {
+				_opsView = new OpsViewPage( getDomainObject() );
 			}
-			return _actionsView;
+			return _opsView;
 		}
 		return super.getAdapter(adapter);
 	}
