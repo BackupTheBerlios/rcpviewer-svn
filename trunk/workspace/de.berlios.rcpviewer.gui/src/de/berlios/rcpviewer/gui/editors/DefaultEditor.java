@@ -3,11 +3,9 @@ package de.berlios.rcpviewer.gui.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -23,6 +21,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
+import de.berlios.rcpviewer.gui.util.GCUtil;
 import de.berlios.rcpviewer.gui.views.actions.IActionsViewPage;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -80,19 +79,23 @@ public final class DefaultEditor extends EditorPart {
 		
 		// create form gui
 		Composite body = _form.getForm().getBody();
-		body.setLayout( new GridLayout( 2, false ) );
+		body.setLayout( new GridLayout() );
 		
-		// loop through all attributes - add a label and an IField for each
-		IDomainObject object = getDomainObject();
-		IDomainClass clazz = object.getDomainClass(); // JAVA_5_FIXME
-		for ( Object a : clazz.attributes() ) {       // JAVA_5_FIXME
+		// want column width hints for IField's
+		// for this calculate longest required label length for attributes
+		int[] columnWidths = new int[]{ 0, 0 };
+		IDomainObject<?> object = getDomainObject();
+		IDomainClass<?> clazz = object.getDomainClass(); 
+		int maxLength = 0;
+		for ( Object a : clazz.attributes() ) {       
+			int length = ((EAttribute)a).getName().length();
+			if ( length > maxLength ) maxLength = length;
+		}
+		columnWidths[0] = maxLength * GCUtil.getSafeCharWidth( parent ) ;
+		
+		// loop through all attributes - add an IField for each
+		for ( Object a : clazz.attributes() ) {       
 			EAttribute attribute = (EAttribute)a;
-			
-			// label
-			Label label = new Label( body, SWT.NONE );
-			label.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
-			label.setText( attribute.getName() + ":" ); //$NON-NLS-1$
-			label.setBackground( body.getBackground() );
 			
 			// create parent composite for IField
 			Composite fieldComposite = _toolkit.createComposite( body );
@@ -107,7 +110,8 @@ public final class DefaultEditor extends EditorPart {
 					fieldComposite,
 					fieldBuilder,
 					object,
-					attribute );
+					attribute,
+					columnWidths );
 			_form.addPart( fieldPart );
 			fieldPart.initialize( _form );
 		}

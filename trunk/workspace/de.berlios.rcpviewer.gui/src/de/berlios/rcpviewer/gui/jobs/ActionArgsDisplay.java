@@ -116,7 +116,7 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 							_args[finalIndex] = guiValue;
 							setOKEnablement( ok );
 						}
-					} );
+					}, null );
 			field.setGuiValue( _args[finalIndex] );
 		}
 		

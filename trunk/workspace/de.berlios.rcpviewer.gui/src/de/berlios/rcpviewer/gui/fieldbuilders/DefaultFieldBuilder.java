@@ -16,6 +16,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.berlios.rcpviewer.gui.util.EmfUtil;
@@ -41,11 +42,16 @@ class DefaultFieldBuilder implements IFieldBuilder {
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, ETypedElement element, IFieldListener listener) {
+	public IField createField(
+			Composite parent, 
+			ETypedElement element, 
+			IFieldListener listener, 
+			int[] columnWidths) {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
-		if( listener == null ) throw new IllegalArgumentException();
-		return new DefaultField( parent, element, listener );
+		// listener can be null
+		// column widths can be null
+		return new DefaultField( parent, element, listener, columnWidths );
 	}
 	
 	private class DefaultField implements IField {
@@ -56,16 +62,39 @@ class DefaultFieldBuilder implements IFieldBuilder {
 		
 		DefaultField( Composite parent, 
 				      ETypedElement element,
-				      final IFieldListener listener ) {
-			parent.setLayout( new GridLayout() );
+				      final IFieldListener listener,
+				      int[] columnWidths ) {
+			parent.setLayout( new GridLayout( 2, false ) );
+			
+			// label
+			GridData labelData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[0] != 0 ) {
+				labelData.widthHint = columnWidths[0];
+			}
+			Label label = new Label( parent, SWT.RIGHT );
+			label.setLayoutData( labelData );
+			label.setBackground( parent.getBackground() );
+			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			
+			// text box
+			GridData textData = new GridData( GridData.FILL_BOTH );
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[1] != 0 ) {
+				textData.widthHint = columnWidths[1];
+			}
 			_text = new Text( parent, SWT.WRAP );
-			_text.setLayoutData( new GridData( GridData.FILL_BOTH ) );
+			_text.setLayoutData( textData );
 			if ( EmfUtil.isModifiable( element ) ) {
-				_text.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent e) {
-						listener.fieldModified( DefaultField.this );
-					};
-				});
+				if ( listener != null ) {
+					_text.addModifyListener(new ModifyListener() {
+						public void modifyText(ModifyEvent e) {
+							listener.fieldModified( DefaultField.this );
+						};
+					});
+				}
 				addDnD( _text, true );
 			}
 			else {

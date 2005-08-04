@@ -107,7 +107,7 @@ public class SessionTreePartListener implements IPartListener {
 	 */
 	void dispose() {
 		IWorkbenchPage page = PlatformUtil.getActivePage();
-		page.removePartListener( this );
+		if ( page != null ) page.removePartListener( this );
 	}
 	
 	// just to tidy code

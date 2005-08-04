@@ -21,10 +21,12 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
+import de.berlios.rcpviewer.gui.util.GCUtil;
 
 
 /**
@@ -70,11 +72,12 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, ETypedElement element, IFieldListener listener) {
+	public IField createField(Composite parent, ETypedElement element, IFieldListener listener, int[] columnWidths) {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
-		if( listener == null ) throw new IllegalArgumentException();
-		return new PrimitiveField( _type, parent, element, listener );
+		// listener can be null
+		// column widths can be null
+		return new PrimitiveField( _type, parent, element, listener, columnWidths );
 	}
 	
 	// whether an applicable type
@@ -94,11 +97,11 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 		PrimitiveField( Class type,
 				        Composite parent, 
 				        ETypedElement element,
-				        final IFieldListener listener ) {
+				        final IFieldListener listener,
+				        int[] columnWidths ) {
 			assert type != null;
 			assert parent != null;
 			assert element != null;
-			assert listener != null;
 			
 			// store reference to valueOf method - char does not have one 
 			if ( _type == char.class ) {
@@ -115,9 +118,63 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 			}
 			
 			// read-only gui
-			parent.setLayout( new GridLayout() );
-			_text = new Text( parent, SWT.WRAP );
-			_text.setLayoutData( new GridData( GridData.FILL_BOTH ) );
+			parent.setLayout( new GridLayout( 2, false ) );
+			
+			// label
+			GridData labelData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[0] != 0 ) {
+				labelData.widthHint = columnWidths[0];
+			}
+			Label label = new Label( parent, SWT.RIGHT );
+			label.setLayoutData( labelData );
+			label.setBackground( parent.getBackground() );
+			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			
+			// decide width & style of text box
+			GridData textData = null;
+			int style = Integer.MIN_VALUE;
+			if ( _type == byte.class ) {
+				textData = new GridData();
+				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 5;
+				style = SWT.CENTER;
+			}
+			else if ( _type == char.class ) {
+				textData = new GridData();
+				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 3;
+				style = SWT.CENTER;
+			}
+			else if ( _type == short.class ) {
+				textData = new GridData();
+				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 4;
+				style = SWT.LEFT;
+			}
+			else if ( _type == int.class ) {
+				textData = new GridData();
+				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 10;
+				style = SWT.LEFT;
+			}
+			else if ( _type == long.class ) {
+				textData = new GridData();
+				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 19;
+				style = SWT.LEFT;
+			}
+			else {
+				textData = new GridData( GridData.FILL_HORIZONTAL );
+				if ( columnWidths != null 
+						&& columnWidths.length == 2 
+							&& columnWidths[1] != 0 ) {
+					textData.widthHint = columnWidths[1];
+				}
+				style = SWT.LEFT;
+			}
+			assert textData != null;
+			assert style != Integer.MIN_VALUE;
+
+			// text
+			_text = new Text( parent, style );
+			_text.setLayoutData( textData );
 			_text.setEditable( false );
 			
 			// read only DnD
@@ -178,11 +235,14 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 						}
 					}
 				} );
-				_text.addModifyListener( new ModifyListener() {
-					public void modifyText(ModifyEvent e) {
-						listener.fieldModified( PrimitiveField.this );
-					};
-				});
+				
+				if ( listener != null ) {
+					_text.addModifyListener( new ModifyListener() {
+						public void modifyText(ModifyEvent e) {
+							listener.fieldModified( PrimitiveField.this );
+						};
+					});
+				}
 				
 				// write DnD
 				DropTarget target = new DropTarget( _text, operations);

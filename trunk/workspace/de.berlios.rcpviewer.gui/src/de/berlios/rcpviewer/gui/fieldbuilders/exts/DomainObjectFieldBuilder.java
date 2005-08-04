@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
@@ -50,8 +51,16 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, ETypedElement element, IFieldListener listener) {
-		return new DomainObjectField( parent, element, listener );
+	public IField createField(
+			Composite parent, 
+			ETypedElement element, 
+			IFieldListener listener, 
+			int[] columnWidths) {
+		if( parent == null ) throw new IllegalArgumentException();
+		if( element == null ) throw new IllegalArgumentException();
+		// listener can be null
+		// column widths can be null
+		return new DomainObjectField( parent, element, listener, columnWidths );
 	}
 
 	private class DomainObjectField implements IField {
@@ -63,21 +72,40 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 		DomainObjectField( 
 				final Composite parent, 
 				ETypedElement element,
-				final IFieldListener listener ) {
+				final IFieldListener listener,
+				int[] columnWidths ) {
 			
 			 final IDomainClass domainClass
 			 	= RuntimeDomain.instance().lookupNoRegister( 
 			 			(Class<?>)element.getEType().getInstanceClass() ); 
 			if ( domainClass == null ) throw new IllegalArgumentException();
 			
-			GridLayout layout = new GridLayout();
+			GridLayout layout = new GridLayout( 2, false );
 			parent.setLayout( layout );
 			
+			// label
+			GridData labelData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[0] != 0 ) {
+				labelData.widthHint = columnWidths[0];
+			}
+			Label label = new Label( parent, SWT.RIGHT );
+			label.setLayoutData( labelData );
+			label.setBackground( parent.getBackground() );
+			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			
 			// text box
+			GridData textData = new GridData( GridData.FILL_HORIZONTAL );
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[1] != 0 ) {
+				textData.widthHint = columnWidths[1];
+			}
 			_text = new Text( parent, SWT.SINGLE );
 			_text.setBackground( parent.getBackground() );
 			_text.setEditable( false );
-			_text.setLayoutData( new GridData( GridData.FILL_HORIZONTAL) );
+			_text.setLayoutData( textData );
 			_text.setEditable( false );
 			
 			// DnD drag source
@@ -101,8 +129,7 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 			
 			
 			if ( EmfUtil.isModifiable( element ) ) {
-				layout.makeColumnsEqualWidth = false;
-				layout.numColumns = 2;
+				layout.numColumns = 3;
 				
 				// can change object via search op ...
 		        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );
@@ -138,12 +165,13 @@ public class DomainObjectFieldBuilder implements IFieldBuilder {
 				});
 				
 				// either way text display changed
-				_text.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent e) {
-						listener.fieldModified( DomainObjectField.this );
-					};
-				});
-				
+				if ( listener != null ) {
+					_text.addModifyListener(new ModifyListener() {
+						public void modifyText(ModifyEvent e) {
+							listener.fieldModified( DomainObjectField.this );
+						};
+					});
+				}
 			}
 
 		}

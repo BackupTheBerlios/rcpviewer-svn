@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendarEvent;
@@ -29,6 +30,7 @@ import org.vafada.swtcalendar.SWTCalendarListener;
 import de.berlios.rcpviewer.gui.dnd.DateTransfer;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
+import de.berlios.rcpviewer.gui.util.GCUtil;
 
 /**
  * Used for dates.
@@ -56,11 +58,16 @@ public class DateFieldBuilder implements IFieldBuilder {
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, boolean, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
 	 */
-	public IField createField(Composite parent, ETypedElement element, IFieldListener listener) {
+	public IField createField(
+			Composite parent, 
+			ETypedElement element, 
+			IFieldListener listener, 
+			int[] columnWidths) {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
-		if( listener == null ) throw new IllegalArgumentException();
-		return new DateField( parent, element, listener );
+		// listener can be null
+		// column widths can be null
+		return new DateField( parent, element, listener, columnWidths );
 	}
 
 	private class DateField implements IField {
@@ -69,30 +76,55 @@ public class DateFieldBuilder implements IFieldBuilder {
 		
 		DateField( final Composite parent, 
 				   ETypedElement element,
-				   final IFieldListener listener ) {
+				   final IFieldListener listener,
+				   int[] columnWidths ) {
 			
-			GridLayout layout = new GridLayout();
+			GridLayout layout = new GridLayout( 2, false );
 			parent.setLayout( layout );
 			
+			// label
+			GridData labelData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[0] != 0 ) {
+				labelData.widthHint = columnWidths[0];
+			}
+			Label label = new Label( parent, SWT.RIGHT );
+			label.setLayoutData( labelData );
+			label.setBackground( parent.getBackground() );
+			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			
 			// text box
-			_text = new Text( parent, SWT.SINGLE );
+			GridData textData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[1] != 0 ) {
+				textData.widthHint = columnWidths[1];
+			}
+			else {
+				int numChars = FORMATTER.format( new Date() ).length();
+				int charWidth = GCUtil.getSafeCharWidth( parent );
+				textData.widthHint = numChars * charWidth;
+			}
+			_text = new Text( parent, SWT.SINGLE | SWT.CENTER );
 			_text.setBackground( parent.getBackground() );
 			_text.setEditable( false );
-			_text.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL ) );
+			_text.setLayoutData( textData );
 			
 			if ( !EmfUtil.isModifiable( element ) ) {
 				_text.setEditable( false );
 				addDnD( _text, false );
 			}
 			else {
-				layout.makeColumnsEqualWidth = false;
-				layout.numColumns = 2;
+				layout.numColumns = 3;
 			
-				_text.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent e) {
-						listener.fieldModified( DateField.this );
-					};
-				});
+				if ( listener != null ) {
+					_text.addModifyListener(new ModifyListener() {
+						public void modifyText(ModifyEvent e) {
+							listener.fieldModified( DateField.this );
+						};
+					});
+				}
 				
 				// change date via calendar widget
 		        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );

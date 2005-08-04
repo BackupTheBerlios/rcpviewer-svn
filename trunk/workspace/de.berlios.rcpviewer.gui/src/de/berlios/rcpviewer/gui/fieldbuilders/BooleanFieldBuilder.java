@@ -10,12 +10,12 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
@@ -39,16 +39,18 @@ class BooleanFieldBuilder implements IFieldBuilder {
 	}
 
 	/**
-	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, ETypeElement, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener)
+	 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder#createField(org.eclipse.swt.widgets.Composite, ETypeElement, de.berlios.rcpviewer.gui.editors.IFieldBuilder.IFieldListener, int[])
 	 */
 	public IField createField(
 			Composite parent, 
 			ETypedElement element, 
-			IFieldListener listener) {
+			IFieldListener listener, 
+			int[] columnWidths) {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
-		if( listener == null ) throw new IllegalArgumentException();
-		return new BooleanField( parent, element, listener );
+		// listener can be null
+		// column widths can be null
+		return new BooleanField( parent, element, listener, columnWidths );
 	}
 	
 	private class BooleanField implements IField {
@@ -57,27 +59,41 @@ class BooleanFieldBuilder implements IFieldBuilder {
 		
 		BooleanField( Composite parent, 
 					  ETypedElement element, 
-				      final IFieldListener listener ) {
-			parent.setLayout( new GridLayout() );
-
-			parent.setLayout( new GridLayout() );
-			_button= new Button( parent, SWT.CHECK );
-			_button.setLayoutData( new GridData() );
-			_button.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent pE) {
-					listener.fieldModified( BooleanField.this );
-				}
-			});
+				      final IFieldListener listener,
+				      int[] columnWidths ) {
+			parent.setLayout( new GridLayout( 2, false ) );
 			
+			// label
+			GridData labelData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[0] != 0 ) {
+				labelData.widthHint = columnWidths[0];
+			}
+			Label label = new Label( parent, SWT.RIGHT );
+			label.setLayoutData( labelData );
+			label.setBackground( parent.getBackground() );
+			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+
+			// check-box
+			GridData buttonData = new GridData();
+			if ( columnWidths != null 
+					&& columnWidths.length == 2 
+						&& columnWidths[1] != 0 ) {
+				buttonData.widthHint = columnWidths[1];
+			}
+			_button= new Button( parent, SWT.CHECK );
+			_button.setLayoutData( buttonData);
 			
 			if ( EmfUtil.isModifiable( element ) ) {
-				_button.addSelectionListener( new DefaultSelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent pE) {
-						listener.fieldModified( BooleanField.this );
-					}
-				});
+				if ( listener != null ) {
+					_button.addSelectionListener( new DefaultSelectionAdapter() {
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							listener.fieldModified( BooleanField.this );
+						}
+					});
+				}
 				addDnD( _button, true );
 			}
 			else {

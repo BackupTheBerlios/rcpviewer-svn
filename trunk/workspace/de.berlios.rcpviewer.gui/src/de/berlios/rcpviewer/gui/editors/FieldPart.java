@@ -32,16 +32,17 @@ class FieldPart implements IFormPart, IFieldListener {
 
 	
 	/**
-	 * No-arg can be <code>null</code>.
-	 * @param parent
-	 * @param builder
-	 * @param object
-	 * @param attribute
+	 * @param parent - cannot be <code>null</code>
+	 * @param builder - cannot be <code>null</code>
+	 * @param object - cannot be <code>null</code>
+	 * @param attribute - cannot be <code>null</code>
+	 * @param columnWidths - can be <code>null</code>
 	 */
 	FieldPart( Composite parent, 
 			   IFieldBuilder builder,
 			   IDomainObject object, 
-			   EAttribute attribute) {
+			   EAttribute attribute,
+			   int[] columnWidths ) {
 		if ( parent == null ) throw new IllegalArgumentException();
 		if ( builder == null ) throw new IllegalArgumentException();
 		if ( object == null ) throw new IllegalArgumentException();
@@ -49,17 +50,19 @@ class FieldPart implements IFormPart, IFieldListener {
 		
 		_object = object;
 		_attribute = attribute;
-		_field = builder.createField( parent, attribute, this );
+		_field = builder.createField( parent, attribute, this, columnWidths );
 		
 		// add listener that updates display whenever domain object updated
 		// outside of this field
 		_listener = new DomainObjectListener(){
 			public void attributeChanged(DomainObjectAttributeEvent event) {
-				if ( event.getEAttribute().equals( _attribute ) // JAVA_5_FIXME
+				DomainObjectAttributeEvent<?> typedEvent 
+					= (DomainObjectAttributeEvent<?>)event;
+				if ( typedEvent.getEAttribute().equals( _attribute ) 
 						&& !NullUtil.nullSafeEquals(
-								event.getNewValue(), // JAVA_5_FIXME
+								typedEvent.getNewValue(), 
 								_field.getGuiValue() ) ) {
-					_field.setGuiValue( event.getNewValue() );
+					_field.setGuiValue( typedEvent.getNewValue() );
 				}
 			}
 		};

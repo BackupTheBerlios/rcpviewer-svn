@@ -22,22 +22,28 @@ public interface IFieldBuilder {
 
 	/**
 	 * Create the <code>IField</code> within the supplied parent composite.
-	 * <br>The third arg is a callback for the field to notify that it has been
-	 * edited. Whetehr or not editing is allowed is acertained from the element.
-	 * @param parent
-	 * @param element 
-	 * @param clazz
-	 * @param attribute
-	 * @return focus
+	 * <br>Whether or not editing is allowed is ascertained from the element.
+	 * @param parent - the composite to be used, not <code>null</code>
+	 * @param element - the element to display, , not <code>null</code>
+	 * @param listener - a callback for the field to notify that it has been
+	 * edited, , can be <code>null</code>
+	 * @param columnWidths TODO
+	 * @param int[] - column widths - the parent composite does not have any
+	 * layout set so any number of columns can be used - this is a <b>hint</b> 
+	 * to indicate column widths that would neatest fit with the overall gui 
+	 * container - can be ignored and can be <code>null</code> 
+	 * @return field
 	 */
 	public IField createField( Composite parent, 
 							   ETypedElement element,
-							   IFieldListener listener );
+							   IFieldListener listener, 
+							   int[] columnWidths );
 	
 	
 	/**
 	 * Gui representation of an individaul attribute field.
 	 * <br>These should be lightweight but will have to hold gui-specific state.
+	 * <br>A lable is also expected.
 	 */
 	public interface IField {
 		
