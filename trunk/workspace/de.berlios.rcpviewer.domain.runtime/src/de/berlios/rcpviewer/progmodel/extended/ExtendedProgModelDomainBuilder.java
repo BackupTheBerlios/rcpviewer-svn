@@ -153,8 +153,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 	private void processAttributeMinLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
-		EDataType dataType = eAttribute.getEAttributeType();
-		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+		if (!returnsString(eAttribute)) {
 			return;
 		}
 		MinLengthOf minLengthOf = 
@@ -169,8 +168,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 	private void processAttributeMaxLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
-		EDataType dataType = eAttribute.getEAttributeType();
-		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+		if (!returnsString(eAttribute)) {
 			return;
 		}
 		MaxLengthOf maxLengthOf = 
@@ -185,8 +183,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 	private void processAttributeFieldLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
-		EDataType dataType = eAttribute.getEAttributeType();
-		if (!dataType.getInstanceClass().equals("java.lang.String")) {
+		if (!returnsString(eAttribute)) {
 			return;
 		}
 		FieldLengthOf fieldLengthOf = 
@@ -289,8 +286,11 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
 	}
 
-
-
+	private boolean returnsString(final EAttribute attribute) {
+		EDataType dataType = attribute.getEAttributeType();
+		String instanceClassName = dataType.getInstanceClassName();
+		return instanceClassName != null && instanceClassName.equals("java.lang.String");
+	}
 	private boolean methodReturns(Method method, Class javaClass) {
 		return javaClass.isAssignableFrom(method.getReturnType());
 	}

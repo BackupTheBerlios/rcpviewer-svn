@@ -301,9 +301,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public int getFieldLengthOf(EAttribute attribute) {
-		EDataType dataType = attribute.getEAttributeType();
-		if (!dataType.getInstanceClass().equals("java.lang.String")) {
-			return 0;
+		if (!returnsString(attribute)) {
+			return -1;
 		}
 
 		Map<String,String> attributeDetails = 
@@ -347,9 +346,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public int getMaxLengthOf(EAttribute attribute) {
-		EDataType dataType = attribute.getEAttributeType();
-		if (!dataType.getInstanceClass().equals("java.lang.String")) {
-			return 0;
+		if (!returnsString(attribute)) {
+			return -1;
 		}
 
 		Map<String,String> attributeDetails = 
@@ -392,11 +390,9 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 * @return
 	 */
 	public int getMinLengthOf(EAttribute attribute) {
-		EDataType dataType = attribute.getEAttributeType();
-		if (!dataType.getInstanceClass().equals("java.lang.String")) {
-			return 0;
+		if (!returnsString(attribute)) {
+			return -1;
 		}
-
 		Map<String,String> attributeDetails = 
 			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 
@@ -507,4 +503,9 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		return candidateValue.matches(regex);
 	}
 
+	private boolean returnsString(final EAttribute attribute) {
+		EDataType dataType = attribute.getEAttributeType();
+		String instanceClassName = dataType.getInstanceClassName();
+		return instanceClassName != null && instanceClassName.equals("java.lang.String");
+	}
 }
