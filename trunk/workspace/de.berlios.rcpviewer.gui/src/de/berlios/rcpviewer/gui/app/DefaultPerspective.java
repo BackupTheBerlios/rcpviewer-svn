@@ -4,8 +4,8 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 
-import de.berlios.rcpviewer.gui.views.actions.ActionsView;
 import de.berlios.rcpviewer.gui.views.classbar.ClassBarView;
+import de.berlios.rcpviewer.gui.views.ops.OpsView;
 import de.berlios.rcpviewer.gui.views.sessiontree.SessionTreeView;
 
 /**
@@ -72,7 +72,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
                 IPageLayout.BOTTOM, 
                 0.7f,
 				TOP_RIGHT );        
-        bottomRight.addPlaceholder( ActionsView.ID );
+        bottomRight.addPlaceholder( OpsView.ID );
 		
 		// bottom placeholder
 		IPlaceholderFolderLayout bottom =  layout.createPlaceholderFolder(

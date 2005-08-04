@@ -59,10 +59,10 @@
             name="%plugin.sessionTreeViewName"/>
       <view
             category="de.berlios.rcpviewer.gui"
-            class="de.berlios.rcpviewer.gui.views.actions.ActionsView"
+            class="de.berlios.rcpviewer.gui.views.ops.OpsView"
             icon="icons/sample.gif"
-            id="de.berlios.rcpviewer.gui.views.actions.ActionsView"
-            name="%plugin.actionsViewName"/>     
+            id="de.berlios.rcpviewer.gui.views.ops.OpsView"
+            name="%plugin.opsViewName"/>     
    </extension>
    
    <extension
