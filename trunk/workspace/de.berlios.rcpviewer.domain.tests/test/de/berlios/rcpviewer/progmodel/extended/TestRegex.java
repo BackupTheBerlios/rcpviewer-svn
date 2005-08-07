@@ -1,9 +1,6 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
-import java.util.List;
-
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;

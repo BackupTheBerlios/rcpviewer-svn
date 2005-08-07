@@ -30,7 +30,7 @@ public abstract class TestOptional extends AbstractTestCase {
 		super.tearDown();
 	}
 	
-	public void testDomainClassWithMandatoryAttributes() {
+	public void testDomainClassWithMandatoryAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestOptionalAnnotation.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -40,13 +40,29 @@ public abstract class TestOptional extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute firstName = domainClass.getEAttributeNamed("firstName");
-		assertTrue(extendedDomainClass.isMandatory(firstName));
-		assertFalse(extendedDomainClass.isOptional(firstName));
+		EAttribute attrib = domainClass.getEAttributeNamed("firstName");
+		assertTrue(extendedDomainClass.isMandatory(attrib));
+		assertFalse(extendedDomainClass.isOptional(attrib));
+	}
+
+	public void testDomainClassWithMandatoryOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestOptionalAnnotation.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("placeOrder");
+		assertTrue(extendedDomainClass.isMandatory(op, 0));
+		assertFalse(extendedDomainClass.isOptional(op, 0));
 	}
 
 	
-	public void testDomainClassWithOptionalAttributes() {
+	
+	public void testDomainClassWithOptionalAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestOptionalAnnotation.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -56,12 +72,12 @@ public abstract class TestOptional extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute lastName = domainClass.getEAttributeNamed("lastName");
-		assertFalse(extendedDomainClass.isMandatory(lastName));
-		assertTrue(extendedDomainClass.isOptional(lastName));
+		EAttribute attrib = domainClass.getEAttributeNamed("lastName");
+		assertFalse(extendedDomainClass.isMandatory(attrib));
+		assertTrue(extendedDomainClass.isOptional(attrib));
 	}
 	
-	public void testDomainClassWithMandatoryParameterToMethod() {
+	public void testDomainClassWithOptionalOperationParameter() {
 		domainClass = 
 			lookupAny(CustomerToTestOptionalAnnotation.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -71,25 +87,9 @@ public abstract class TestOptional extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EOperation placeOrder = domainClass.getEOperationNamed("placeOrder");
-		assertTrue(extendedDomainClass.isMandatory(placeOrder, 0));
-		assertFalse(extendedDomainClass.isOptional(placeOrder, 0));
-	}
-
-	
-	public void testDomainClassWithOptionalParameterToMethod() {
-		domainClass = 
-			lookupAny(CustomerToTestOptionalAnnotation.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
-		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation placeOrder = domainClass.getEOperationNamed("placeOrder");
-		assertFalse(extendedDomainClass.isMandatory(placeOrder, 1));
-		assertTrue(extendedDomainClass.isOptional(placeOrder, 1));
+		EOperation op = domainClass.getEOperationNamed("placeOrder");
+		assertFalse(extendedDomainClass.isMandatory(op, 1));
+		assertTrue(extendedDomainClass.isOptional(op, 1));
 	}
 
 }

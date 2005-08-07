@@ -72,19 +72,42 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 		return objectAdapterClass == ExtendedDomainObject.class;
 	}
 	
-	public Method getAttributePre(EAttribute eAttribute) {
-		String attributePre = 
+	public Method getAccessorPre(EAttribute eAttribute) {
+		String accessorPre = 
 			emf.getAnnotationDetail(
 					emf.methodNamesAnnotationFor(eAttribute), 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_PRECONDITION_METHOD_NAME_KEY);
-		if (attributePre == null) {
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
+		if (accessorPre == null) {
 			return null;
 		}
 		try {
-			Method attributePreMethod = 
+			Method accessorPreMethod = 
 				runtimeAdapts().getJavaClass().getMethod(
-						attributePre, new Class[]{});
-			return attributePreMethod;
+						accessorPre, new Class[]{});
+			return accessorPreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+	
+	public Method getMutatorPre(EAttribute eAttribute) {
+		String mutatorPre = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(eAttribute), 
+					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
+		if (mutatorPre == null) {
+			return null;
+		}
+		Class<?> attributeType = eAttribute.getEAttributeType().getInstanceClass();
+		try {
+			Method mutatorPreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(
+						mutatorPre, new Class[]{attributeType});
+			return mutatorPreMethod;
 		} catch (SecurityException ex) {
 			// TODO: log?
 			return null;

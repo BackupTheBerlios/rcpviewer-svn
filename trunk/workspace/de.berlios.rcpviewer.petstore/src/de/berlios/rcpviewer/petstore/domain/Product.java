@@ -3,13 +3,8 @@
  */
 package de.berlios.rcpviewer.petstore.domain;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.eclipse.swt.internal.ole.win32.ISpecifyPropertyPages;
 
 import de.berlios.rcpviewer.progmodel.extended.DeleteOperation;
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;

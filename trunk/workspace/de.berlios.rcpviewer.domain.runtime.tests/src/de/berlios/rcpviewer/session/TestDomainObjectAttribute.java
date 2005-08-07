@@ -25,8 +25,8 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		domainObject.getPojo().setName("HR");
-		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
-		String value = (String)domainObject.get(nameAttribute);
+		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		String value = (String)nameAttribute.get();
 		assertEquals("HR", value);
 	}
 
@@ -38,8 +38,8 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
-		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
-		domainObject.set(nameAttribute, "HR");
+		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		nameAttribute.set("HR");
 		assertEquals("HR", domainObject.getPojo().getName());
 	}
 
@@ -51,15 +51,14 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
-		MyDomainObjectListener l =
-			domainObject.addDomainObjectListener(new MyDomainObjectListener());
-		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
-		domainObject.set(nameAttribute, "HR");
+		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		MyDomainObjectAttributeListener l = 
+			nameAttribute.addDomainObjectAttributeListener(new MyDomainObjectAttributeListener());
+		nameAttribute.set("HR");
 		assertTrue(l.attributeChangedCallbackCalled);
-		assertFalse(l.persistedCallbackCalled);
 	}
 
-	public void testCannotSetAttributeToInvalidValue() {
+	public void testCannotSetAttributeToObjectOfWrongType() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
@@ -67,16 +66,16 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
-		EAttribute nameAttribute = domainObject.getEAttributeNamed("name");
+		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		try {
-			domainObject.set(nameAttribute, new Integer(1));
+			nameAttribute.set(new Integer(1));
 			fail("Expected IllegalArgumentException to have been thrown");
 		} catch(IllegalArgumentException ex) {
 			// expected.
 		}
 	}
-	
-	public void testCanSetAttributeIfPrerequisitesAllow() {
+
+	public void testCanSetAttributeIfAccessorPrerequisitesAllow() {
 		IRuntimeDomainClass<OrderConstrained> domainClass = 
 			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -89,11 +88,11 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		ExtendedDomainObject<OrderConstrained> edc = 
 			domainObject.getAdapter(ExtendedDomainObject.class);
 
-		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);
+		IPrerequisites prerequisites = edc.accessorPrerequisitesFor(nameAttribute);
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 	}
 
-	public void testCannotSetAttributeIfPrerequisitesMakesUnusable() {
+	public void testCannotSetAttributeIfAccessorPrerequisitesMakesUnusable() {
 		IRuntimeDomainClass<OrderConstrained> domainClass = 
 			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -108,13 +107,13 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		ExtendedDomainObject<OrderConstrained> edc = 
 			domainObject.getAdapter(ExtendedDomainObject.class);
 		
-		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);
-		assertNotNull(edc.getExtendedRuntimeDomainClass().getAttributePre(nameAttribute));
+		IPrerequisites prerequisites = edc.accessorPrerequisitesFor(nameAttribute);
+		assertNotNull(edc.getExtendedRuntimeDomainClass().getAccessorPre(nameAttribute));
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 		assertEquals("Cannot change quantity once shipped", prerequisites.getDescription());
 	}
 
-	public void testCannotSetAttributeIfPrerequisitesMakesInvisible() {
+	public void testCannotSetAttributeIfAccessorPrerequisitesMakesInvisible() {
 		IRuntimeDomainClass<OrderConstrained> domainClass = 
 			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -129,9 +128,31 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		ExtendedDomainObject<OrderConstrained> edc = 
 			domainObject.getAdapter(ExtendedDomainObject.class);
 		
-		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);
-		assertNotNull(edc.getExtendedRuntimeDomainClass().getAttributePre(nameAttribute));
+		IPrerequisites prerequisites = edc.accessorPrerequisitesFor(nameAttribute);
+		assertNotNull(edc.getExtendedRuntimeDomainClass().getAccessorPre(nameAttribute));
 		assertSame(IPrerequisites.Constraint.INVISIBLE, prerequisites.getConstraint());
+	}
+
+	/**
+	 * Test of set...Pre(..) prerequisites.
+	 *
+	 */
+	public void testCannotSetAttributeIfMutatorPrerequisitesPrevent() {
+		IRuntimeDomainClass<OrderConstrained> domainClass = 
+			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		IDomainObject<OrderConstrained> domainObject = 
+			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+		EAttribute nameAttribute = domainObject.getEAttributeNamed("quantity");
+		
+		ExtendedDomainObject<OrderConstrained> edc = 
+			domainObject.getAdapter(ExtendedDomainObject.class);
+		
+		IPrerequisites prerequisites = edc.mutatorPrerequisitesFor(nameAttribute, new Integer(-1));
+		assertNotNull(edc.getExtendedRuntimeDomainClass().getMutatorPre(nameAttribute));
+		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 	}
 
 	public void testCanSetAttributeIfDefaultAuthorizationManagerConfigured() {
@@ -147,7 +168,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		ExtendedDomainObject<OrderConstrained> edc = 
 			domainObject.getAdapter(ExtendedDomainObject.class);
 
-		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);
+		IPrerequisites prerequisites = edc.accessorPrerequisitesFor(nameAttribute);
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 	}
 
@@ -183,7 +204,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		control.setReturnValue(Prerequisites.none());
 		control.replay();
 		
-		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);
+		IPrerequisites prerequisites = edc.authorizationPrerequisitesFor(nameAttribute);
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 		
 		// verify
@@ -217,7 +238,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		control.setReturnValue(returnPrerequisites);
 		control.replay();
 		
-		IPrerequisites prerequisites = edc.prerequisiteFor(nameAttribute);
+		IPrerequisites prerequisites = edc.authorizationPrerequisitesFor(nameAttribute);
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 		
 		// verify

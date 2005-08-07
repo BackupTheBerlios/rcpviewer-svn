@@ -84,7 +84,7 @@ public final class Requirement implements IRequirement {
 	 * See interface definition.
 	 */
 	public boolean isMet() {
-		return _met;
+		return _met || isNoop();
 	}
 	
 	/**

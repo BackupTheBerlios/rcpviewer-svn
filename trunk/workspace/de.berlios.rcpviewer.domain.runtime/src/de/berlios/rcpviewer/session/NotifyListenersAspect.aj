@@ -21,8 +21,9 @@ public aspect NotifyListenersAspect extends PojoAspect {
 		}
 		Signature signature = thisJoinPointStaticPart.getSignature();
 		String name = signature.getName();
-		EAttribute attribute = domainObject.getEAttributeNamed(name);
-		domainObject.notifyAttributeListeners(attribute, newValue);
+		IDomainObject.IAttribute attribute = 
+			domainObject.getAttribute(domainObject.getEAttributeNamed(name));
+		attribute.notifyAttributeListeners(newValue);
 	}
 
 

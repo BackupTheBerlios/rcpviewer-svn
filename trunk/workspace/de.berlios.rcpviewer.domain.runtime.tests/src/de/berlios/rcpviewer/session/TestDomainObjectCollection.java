@@ -30,14 +30,14 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		EReference employeesCollection = departmentDomainObject.getEReferenceNamed("employees");
+		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
-		departmentDomainObject.addToCollection(employeesCollection, employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterAdd = departmentDomainObject.getCollection(employeesCollection);
+		employeesCollection.addToCollection(employeeDomainObject);
+		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 		assertTrue(employeesAfterAdd.contains(employeeDomainObject.getPojo()));
-		departmentDomainObject.removeFromCollection(employeesCollection, employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterRemove = departmentDomainObject.getCollection(employeesCollection);
+		employeesCollection.removeFromCollection(employeeDomainObject);
+		Collection<IDomainObject<Employee>> employeesAfterRemove = employeesCollection.getCollection();
 		assertFalse(employeesAfterRemove.contains(employeeDomainObject.getPojo()));
 	}
 
@@ -53,9 +53,9 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		EReference employeesCollection = departmentDomainObject.getEReferenceNamed("employees");
+		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
 		Collection<IDomainObject<Employee>> employees = 
-			departmentDomainObject.getCollection(employeesCollection);
+			employeesCollection.getCollection();
 		try {
 			IDomainObject<Employee> employeeDomainObject = 
 				session.createTransient(employeeDomainClass);
@@ -84,16 +84,18 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		MyDomainObjectListener l =
-			departmentDomainObject.addDomainObjectListener(new MyDomainObjectListener());
+		IDomainObject<Employee> employeeDomainObject = 
+			session.createTransient(employeeDomainClass);
+		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
+		MyDomainObjectReferenceListener l =
+			employeesCollection.addDomainObjectReferenceListener(new MyDomainObjectReferenceListener());
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);
 		
-		IDomainObject<Employee> employeeDomainObject = 
-			session.createTransient(employeeDomainClass);
-		EReference employeesCollection = departmentDomainObject.getEReferenceNamed("employees");
-		departmentDomainObject.addToCollection(employeesCollection, employeeDomainObject);
+
+		
+		employeesCollection.addToCollection(employeeDomainObject);
 		
 		assertTrue(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);
@@ -107,20 +109,20 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		EReference employeesCollection = departmentDomainObject.getEReferenceNamed("employees");
+		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
-		departmentDomainObject.addToCollection(employeesCollection, employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterAdd = departmentDomainObject.getCollection(employeesCollection);
+		employeesCollection.addToCollection(employeeDomainObject);
+		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 	
-		MyDomainObjectListener l =
-			departmentDomainObject.addDomainObjectListener(new MyDomainObjectListener());
+		MyDomainObjectReferenceListener l =
+			employeesCollection.addDomainObjectReferenceListener(new MyDomainObjectReferenceListener());
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);
 	
-		departmentDomainObject.removeFromCollection(employeesCollection, employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterRemove = departmentDomainObject.getCollection(employeesCollection);
+		employeesCollection.removeFromCollection(employeeDomainObject);
+		Collection<IDomainObject<Employee>> employeesAfterRemove = employeesCollection.getCollection();
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertTrue(l.collectionRemovedFromCallbackCalled);
@@ -134,13 +136,13 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		EReference employeesCollection = departmentDomainObject.getEReferenceNamed("employees");
+		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
-		Collection<IDomainObject<Employee>> employeesBeforeAdd = departmentDomainObject.getCollection(employeesCollection);
+		Collection<IDomainObject<Employee>> employeesBeforeAdd = employeesCollection.getCollection();
 		assertEquals(0, employeesBeforeAdd.size());
-		departmentDomainObject.addToCollection(employeesCollection, employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterAdd = departmentDomainObject.getCollection(employeesCollection);
+		employeesCollection.addToCollection(employeeDomainObject);
+		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 		assertEquals(1, employeesAfterAdd.size());
 		assertTrue(employeesAfterAdd.contains(employeeDomainObject.getPojo()));
 	}

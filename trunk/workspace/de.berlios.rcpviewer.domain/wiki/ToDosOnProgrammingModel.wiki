@@ -2,12 +2,12 @@
 
 Extended prog model, to test/implement:
 * Lookup        - type
-* MinLengthOf   - attribute, string parameter of operation, value type
-* MaxLengthOf   - attribute, string parameter of operation, value type
-* FieldLengthOf - attribute, string parameter of operation, value type
-* Mask          - attribute, string parameter of operation, value type
-* ImmutableOncePersisted - attribute, type
-* BusinessKey            - attribute
+* FieldLengthOf - string parameter of operation, value type
+* MinLengthOf   - string parameter of operation, value type
+* MaxLengthOf   - string parameter of operation, value type
+* Mask          - string parameter of operation, value type
+* Regex         - string parameter of operation, value type
+* ImmutableOncePersisted - type
 * SaveOperation    - operation
 * DeleteOperation  - operation
 

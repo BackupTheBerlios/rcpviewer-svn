@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
@@ -131,10 +132,10 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 */
 	public boolean isOptional(final EAttribute attribute) {
 		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		
 		String optional = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_OPTIONAL_KEY);
+					ExtendedProgModelConstants.ANNOTATION_ELEMENT_OPTIONAL_KEY);
 		return optional != null;
 	}
 
@@ -168,12 +169,12 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
 
 		EAnnotation annotation = 
-			parameter.getEAnnotation(ExtendedProgModelConstants.ANNOTATION_OPERATION_PARAMETER);
+			parameter.getEAnnotation(ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
 			return false;
 		}
 		String optional = (String)annotation.getDetails().get(
-				ExtendedProgModelConstants.ANNOTATION_OPERATION_PARAMETER_OPTIONAL_KEY);
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_OPTIONAL_KEY);
 		return optional != null;
 	}
 
@@ -260,9 +261,12 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			}
 			businessKeyAttributesByPos.put(businessKeyPos, attribute);
 		}
-		// process the Map of Maps and convert all good maps into lists
+		
+		// instantiate the Map that we will return.
 		Map<String, List<EAttribute>> businessKeyAttributeListByName = 
 			new HashMap<String, List<EAttribute>>();
+		
+		// process the Map of Maps and convert all good maps into lists
 		nextBusinessKey:
 		for(String businessKeyName: businessKeyAttributesByPosByName.keySet()) {
 			Map<Integer, EAttribute> businessKeyAttributesByPos =
@@ -276,14 +280,18 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			List<EAttribute> businessKeyAttributes = new ArrayList<EAttribute>();
 			nextBusinessKeyAttributes:
 			for(int i=0; i<size; i++) {
-				EAttribute businessKeyAttribute = businessKeyAttributesByPos.get(i);
+				EAttribute businessKeyAttribute = businessKeyAttributesByPos.get(i+1);
 				if (businessKeyAttributes == null) {
 					// no attribute in this position, so
 					// give up on processing this business key
+					// and don't add anything to the return Map.
 					continue nextBusinessKey;
 				}
 				businessKeyAttributes.add(businessKeyAttribute);
 			}
+			// have managed to find an attribute for each position, so add the
+			// array list to our return Map.
+			businessKeyAttributeListByName.put(businessKeyName, businessKeyAttributes);
 		}
 		return businessKeyAttributeListByName;
 	}
@@ -304,21 +312,54 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		if (!returnsString(attribute)) {
 			return -1;
 		}
+		Map<String,String> details = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
+		return computeFieldLengthOf(details);
+	}
+	/**
+	 * Returns the field length (as displayed in the UI) of the specified
+	 * (string) operation parameter.
+	 * 
+	 * <p>
+	 * The {@link FieldLengthOf} annotation is used to indicate the field 
+	 * length of operation parameters.
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return
+	 */
+	public int getFieldLengthOf(EOperation operation, final int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		if (!isString(parameter)) {
+			return -1;
+		}
 
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		Map<String,String> details = 
+			emfFacade.getAnnotationDetails(parameter, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
+		return computeFieldLengthOf(details);
+	}
+
+	private int computeFieldLengthOf(final Map<String, String> details) {
 		
-		String fieldLengthOfStr = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY);
+		String fieldLengthOfStr = details.get(
+					ExtendedProgModelConstants.ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY);
 		int fieldLengthOf = -1;
 		if (fieldLengthOfStr != null) {
 			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
 		}
-		String maxLengthOfStr = attributeDetails.get(
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY);
+
+		String maxLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY);
 		int maxLengthOf = -1;
 		if (maxLengthOfStr != null) {
 			maxLengthOf = Integer.parseInt(maxLengthOfStr);
+		}
+
+		String minLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY);
+		int minLengthOf = -1;
+		if (minLengthOfStr != null) {
+			minLengthOf = Integer.parseInt(minLengthOfStr);
 		}
 
 		if (fieldLengthOf > 0 && maxLengthOf > 0) {
@@ -327,11 +368,14 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			return fieldLengthOf;
 		} else if (fieldLengthOf <= 0 && maxLengthOf > 0) {
 			return maxLengthOf;
-		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0) {
+		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf > 0) {
+			return minLengthOf;
+		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf <= 0) {
 			return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
 		}
 		return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
 	}
+	
 
 
 	/**
@@ -349,30 +393,63 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		if (!returnsString(attribute)) {
 			return -1;
 		}
-
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
-		
-		String fieldLengthOfStr = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY);
-		int fieldLengthOf = -1;
-		if (fieldLengthOfStr != null) {
-			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
+		Map<String,String> details = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
+		return computeMaxLengthOf(details);
+	}
+	/**
+	 * Returns the max length (as persisted in the persistent data store) of 
+	 * the specified (string) operation parameters.
+	 * 
+	 * <p>
+	 * The {@link MaxLengthOf} annotation is used to indicate the maximum 
+	 * length of operation parameters.
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return
+	 */
+	public int getMaxLengthOf(EOperation operation, final int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		if (!isString(parameter)) {
+			return -1;
 		}
-		String maxLengthOfStr = attributeDetails.get(
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY);
+
+		Map<String,String> details = 
+			emfFacade.getAnnotationDetails(parameter, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
+		return computeMaxLengthOf(details);
+	}
+	private int computeMaxLengthOf(final Map<String, String> details) {
+		String maxLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY);
 		int maxLengthOf = -1;
 		if (maxLengthOfStr != null) {
 			maxLengthOf = Integer.parseInt(maxLengthOfStr);
 		}
 
+		String fieldLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY);
+		int fieldLengthOf = -1;
+		if (fieldLengthOfStr != null) {
+			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
+		}
+
+		String minLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY);
+		int minLengthOf = -1;
+		if (minLengthOfStr != null) {
+			minLengthOf = Integer.parseInt(minLengthOfStr);
+		}
+		
 		if (fieldLengthOf > 0 && maxLengthOf > 0) {
 			return maxLengthOf;
 		} else if (fieldLengthOf > 0 && maxLengthOf <= 0) {
 			return fieldLengthOf;
 		} else if (fieldLengthOf <= 0 && maxLengthOf > 0) {
 			return maxLengthOf;
-		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0) {
+		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf > 0) {
+			return minLengthOf;
+		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf <= 0) {
 			return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
 		}
 		return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
@@ -393,17 +470,42 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		if (!returnsString(attribute)) {
 			return -1;
 		}
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+		Map<String,String> details = 
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
+		return computeMinLengthOf(details);
+	}
+	/**
+	 * Returns the min length (as required to be entered in the UI) of 
+	 * the specified (string) operation parameter.
+	 * 
+	 * <p>
+	 * The {@link MinLengthOf} annotation is used to indicate the minimum 
+	 * length of operation parameters.
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return
+	 */
+	public int getMinLengthOf(EOperation operation, final int parameterPosition) {
+		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		if (!isString(parameter)) {
+			return -1;
+		}
 
-		String minLengthOfStr = attributeDetails.get(
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MIN_LENGTH_OF_KEY);
+		Map<String,String> details = 
+			emfFacade.getAnnotationDetails(parameter, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
+		return computeMinLengthOf(details);
+	}
+	private int computeMinLengthOf(final Map<String,String> details) {
+		String minLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY);
 		int minLengthOf = -1;
 		if (minLengthOfStr != null) {
 			minLengthOf = Integer.parseInt(minLengthOfStr);
 		}
-		String maxLengthOfStr = attributeDetails.get(
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY);
+
+		String maxLengthOfStr = details.get(
+				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY);
 		int maxLengthOf = -1;
 		if (maxLengthOfStr != null) {
 			maxLengthOf = Integer.parseInt(maxLengthOfStr);
@@ -454,10 +556,10 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 */
 	public String getMask(EAttribute attribute) {
 		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		
 		String mask = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MASK_KEY);
+					ExtendedProgModelConstants.ANNOTATION_ELEMENT_MASK_KEY);
 		return mask;
 	}
 
@@ -475,10 +577,10 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	 */
 	public String getRegex(EAttribute attribute) {
 		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		
 		String regex = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_REGEX_KEY);
+					ExtendedProgModelConstants.ANNOTATION_ELEMENT_REGEX_KEY);
 		return regex;
 	}
 
@@ -508,4 +610,11 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		String instanceClassName = dataType.getInstanceClassName();
 		return instanceClassName != null && instanceClassName.equals("java.lang.String");
 	}
+
+	private boolean isString(final EParameter parameter) {
+		EClassifier dataType = parameter.getEType();
+		String instanceClassName = dataType.getInstanceClassName();
+		return instanceClassName != null && instanceClassName.equals("java.lang.String");
+	}
+
 }

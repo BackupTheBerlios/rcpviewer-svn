@@ -25,6 +25,10 @@ public class OrderConstrained {
 			require(!isShipped(), "Cannot change quantity once shipped")
 			.andRequire(!isRestricted(), INVISIBLE);
 	}
+	public IPrerequisites setQuantityPre(int quantity) {
+		return 
+			require(quantity > 0, "Quantity must be positive");
+	}
 	
 	private boolean shipped;
 	public boolean isShipped() {

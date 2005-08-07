@@ -30,7 +30,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		super.tearDown();
 	}
 	
-	public void testDomainClassWithMaxLengthOfSpecified() {
+	public void testDomainClassWithMaxLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -40,8 +40,22 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute lastName = domainClass.getEAttributeNamed("lastName");
-		assertEquals(64, extendedDomainClass.getMaxLengthOf(lastName));
+		EAttribute attrib = domainClass.getEAttributeNamed("lastName");
+		assertEquals(64, extendedDomainClass.getMaxLengthOf(attrib));
+	}
+
+	public void testDomainClassWithMaxLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("updateLastName");
+		assertEquals(64, extendedDomainClass.getMaxLengthOf(op, 0));
 	}
 
 	
@@ -49,7 +63,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 	 * Should use {@link FieldLengthOf} if no {@link MaxLengthOf}.
 	 *
 	 */
-	public void testDomainClassWithMaxLengthOfNotSpecifiedButFieldLengthOfSpecified() {
+	public void testDomainClassWithMaxLengthOfNotSpecifiedButFieldLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -59,16 +73,34 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute middleName = domainClass.getEAttributeNamed("middleName");
-		assertEquals(32, extendedDomainClass.getMaxLengthOf(middleName));
+		EAttribute attrib = domainClass.getEAttributeNamed("middleName");
+		assertEquals(32, extendedDomainClass.getMaxLengthOf(attrib));
 	}
 
+	
+	/**
+	 * Should use {@link FieldLengthOf} if no {@link MaxLengthOf}.
+	 *
+	 */
+	public void testDomainClassWithMaxLengthOfNotSpecifiedButFieldLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("updateMiddleName");
+		assertEquals(32, extendedDomainClass.getMaxLengthOf(op, 0));
+	}
 	
 	/**
 	 * Should use {@link FieldLengthOf} if {@link MaxLengthOf} is invalid (<= 0)
 	 *
 	 */
-	public void testDomainClassWithMaxLengthOfInvalidButFieldLengthOfSpecified() {
+	public void testDomainClassWithMaxLengthOfInvalidButFieldLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -82,6 +114,24 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		assertEquals(10, extendedDomainClass.getMaxLengthOf(attrib));
 	}
 
+	
+	/**
+	 * Should use {@link FieldLengthOf} if {@link MaxLengthOf} is invalid (<= 0)
+	 *
+	 */
+	public void testDomainClassWithMaxLengthOfInvalidButFieldLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeMaxLengthButValidFieldLength");
+		assertEquals(10, extendedDomainClass.getMaxLengthOf(op, 0));
+	}
 
 	
 	/**
@@ -89,7 +139,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 	 * and {@link FieldLengthOf} is not specified
 	 *
 	 */
-	public void testDomainClassWithFieldLengthOfInvalidButMinLengthOfSpecified() {
+	public void testDomainClassWithFieldLengthOfInvalidButMinLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -103,6 +153,25 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		assertEquals(10, extendedDomainClass.getMaxLengthOf(attrib));
 	}
 
+	/**
+	 * Should use {@link MinLengthOf} if {@link MaxLengthOf} is invalid (<= 0) 
+	 * and {@link FieldLengthOf} is not specified
+	 *
+	 */
+	public void testDomainClassWithFieldLengthOfInvalidButMinLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeMaxLengthButValidMinLength");
+		assertEquals(10, extendedDomainClass.getMaxLengthOf(op, 0));
+	}
+
 
 	
 	/**
@@ -110,7 +179,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 	 * return default (64).
 	 *
 	 */
-	public void testDomainClassWithMaxLengthOfInvalidButMinFieldLengthAlsoInvalid() {
+	public void testDomainClassWithMaxLengthOfInvalidButMinFieldLengthAlsoInvalidOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -124,13 +193,32 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		assertEquals(64, extendedDomainClass.getMaxLengthOf(attrib));
 	}
 
+	
+	/**
+	 * If {@link MaxLengthOf} is invalid (<= 0) and others are too then 
+	 * return default (64).
+	 *
+	 */
+	public void testDomainClassWithMaxLengthOfInvalidButMinFieldLengthAlsoInvalidOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths");
+		assertEquals(64, extendedDomainClass.getMaxLengthOf(op, 0));
+	}
 
 	/**
 	 * If {@link MaxLengthOf} not specified and neither are others then  
 	 * return default (64).
 	 *
 	 */
-	public void testDomainClassWithAttributeWithNoMaxLengthAnnotationsOrAnyOther() {
+	public void testDomainClassWithAttributeWithNoMaxLengthAnnotationsOrAnyOtherOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -144,6 +232,25 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		assertEquals(64, extendedDomainClass.getMaxLengthOf(attrib));
 	}
 
+	/**
+	 * If {@link MaxLengthOf} not specified and neither are others then  
+	 * return default (64).
+	 *
+	 */
+	public void testDomainClassWithAttributeWithNoMaxLengthAnnotationsOrAnyOtherOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations");
+		assertEquals(64, extendedDomainClass.getMaxLengthOf(op, 0));
+	}
+
 
 
 	/**
@@ -151,7 +258,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 	 * it should be ignored and return 0.
 	 *
 	 */
-	public void testDomainClassWithNonStringAttributeThatHasMaxLengthAnnotation() {
+	public void testDomainClassWithNonStringAttributeThatHasMaxLengthAnnotationOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -162,8 +269,27 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations");
-		assertEquals(0, extendedDomainClass.getMaxLengthOf(attrib));
+		assertEquals(-1, extendedDomainClass.getMaxLengthOf(attrib));
 	}
 
+
+	/**
+	 * If {@link MaxLengthOf} is specified on a non-string attribute then  
+	 * it should be ignored and return 0.
+	 *
+	 */
+	public void testDomainClassWithNonStringAttributeThatHasMaxLengthAnnotationOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations");
+		assertEquals(-1, extendedDomainClass.getMaxLengthOf(op, 0));
+	}
 
 }

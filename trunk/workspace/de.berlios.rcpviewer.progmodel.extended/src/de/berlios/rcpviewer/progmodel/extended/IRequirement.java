@@ -13,7 +13,10 @@ package de.berlios.rcpviewer.progmodel.extended;
 public interface IRequirement {
 
 	/**
-	 * Whether this requirement has been met. 
+	 * Whether this requirement has been met.
+	 * 
+	 * <p>
+	 * If the requirement is no-op, then always met.
 	 * 
 	 * @return whether the requirement has been met.
 	 */

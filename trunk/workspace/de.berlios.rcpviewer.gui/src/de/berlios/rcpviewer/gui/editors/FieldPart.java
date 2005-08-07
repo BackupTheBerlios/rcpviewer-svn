@@ -14,6 +14,7 @@ import de.berlios.rcpviewer.gui.util.NullUtil;
 import de.berlios.rcpviewer.gui.widgets.DomainObjectListener;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 import de.berlios.rcpviewer.session.IDomainObjectListener;
 
 /**
@@ -23,8 +24,9 @@ import de.berlios.rcpviewer.session.IDomainObjectListener;
 class FieldPart implements IFormPart, IFieldListener {
 	
 	private final IField _field;
-	private final EAttribute _attribute;
-	private final IDomainObjectListener _listener;
+	private final EAttribute _eAttribute;
+	private final IDomainObject.IAttribute _domainObjectAttribute;
+	private final IDomainObjectAttributeListener _listener;
 	
 	private IDomainObject<?> _object;
 	private IManagedForm _managedForm;
@@ -49,16 +51,17 @@ class FieldPart implements IFormPart, IFieldListener {
 		if ( attribute == null ) throw new IllegalArgumentException();
 		
 		_object = object;
-		_attribute = attribute;
+		_eAttribute = attribute;
+		_domainObjectAttribute = object.getAttribute(attribute);
 		_field = builder.createField( parent, attribute, this, columnWidths );
 		
 		// add listener that updates display whenever domain object updated
 		// outside of this field
-		_listener = new DomainObjectListener(){
+		_listener = new IDomainObjectAttributeListener(){
 			public void attributeChanged(DomainObjectAttributeEvent event) {
 				DomainObjectAttributeEvent<?> typedEvent 
 					= (DomainObjectAttributeEvent<?>)event;
-				if ( typedEvent.getEAttribute().equals( _attribute ) 
+				if ( typedEvent.getEAttribute().equals( _eAttribute ) 
 						&& !NullUtil.nullSafeEquals(
 								typedEvent.getNewValue(), 
 								_field.getGuiValue() ) ) {
@@ -66,7 +69,7 @@ class FieldPart implements IFormPart, IFieldListener {
 				}
 			}
 		};
-		_object.addDomainObjectListener( _listener );
+		_domainObjectAttribute.addDomainObjectAttributeListener( _listener );
 		
 	}
 	
@@ -76,10 +79,10 @@ class FieldPart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
 	public void commit(boolean pOnSave) {
-		if ( _attribute.isChangeable() ) {
+		if ( _eAttribute.isChangeable() ) {
 			Job job = new SetAttributeJob( 
 					_object, 
-					_attribute, 
+					_eAttribute, 
 					_field.getGuiValue() );
 			job.schedule();
 		}
@@ -90,7 +93,7 @@ class FieldPart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
 	public void dispose() {
-		_object.removeDomainObjectListener( _listener );	
+		_domainObjectAttribute.removeDomainObjectAttributeListener( _listener );	
 	}
 
 	/* (non-Javadoc)
@@ -111,14 +114,14 @@ class FieldPart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#isStale()
 	 */
 	public boolean isStale() {
-		return !_field.getGuiValue().equals( _object.get( _attribute ) );
+		return !_field.getGuiValue().equals( _domainObjectAttribute.get() );
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		_field.setGuiValue( _object.get( _attribute ) );
+		_field.setGuiValue( _domainObjectAttribute.get(  ) );
 		setDirty(false);
 	}
 

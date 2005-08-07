@@ -16,7 +16,8 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public class RunOperationJob extends AbstractDomainObjectJob {
 
-	private final EOperation _op;
+	private final EOperation _eOperation;
+	private final IDomainObject.IOperation _domainObjectOperation;
 	private final Object[] _args;
 	
 	/**
@@ -26,10 +27,7 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 	 */
 	public RunOperationJob( IDomainObject object,
 							EOperation operation ) {
-		super( RunOperationJob.class.getName(), object );
-		if ( operation == null ) throw new IllegalArgumentException();
-		_op = operation;
-		_args = new Object[ operation.getEParameters().size() ];
+		this(object, operation, new Object[ operation.getEParameters().size() ]);
 	}
 	
 	
@@ -48,8 +46,9 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 		if ( args.length != operation.getEParameters().size() ) {
 			throw new IllegalArgumentException();
 		}
-		_op = operation;
+		_eOperation = operation;
 		_args = args;
+		_domainObjectOperation = object.getOperation(_eOperation);
 	}
 	
 	
@@ -80,12 +79,12 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 					args[i] = _args[i];
 				}
 			}
-			getDomainObject().invokeOperation( _op, args );
+			_domainObjectOperation.invokeOperation( args );
 		}
 		else {
 			ActionArgsDisplay display = new ActionArgsDisplay(
 					getDomainObject(),
-					_op,
+					_eOperation,
 					_args );
 			display.open();
 		}
@@ -107,7 +106,7 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 	 * @return Returns the op.
 	 */
 	protected EOperation getOp() {
-		return _op;
+		return _eOperation;
 	}
 
 	

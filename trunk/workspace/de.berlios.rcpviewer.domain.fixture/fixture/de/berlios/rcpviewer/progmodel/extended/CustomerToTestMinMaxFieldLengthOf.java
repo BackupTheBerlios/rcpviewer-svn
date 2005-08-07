@@ -17,6 +17,18 @@ public class CustomerToTestMinMaxFieldLengthOf {
 	}
 	private String attributeWithNoAnnotations;
 
+	/**
+	 * Operation to check
+	 * No annotations at all.
+	 * 
+	 * @return
+	 */
+	public void operationToUpdateAttributeWithNoAnnotations(
+			@Named("attributeWithNoAnnotations")
+			final String attributeWithNoAnnotations) {
+		this.attributeWithNoAnnotations = attributeWithNoAnnotations;
+	}
+
 
 	/**
 	 * Non-string attribute; annotations should be ignored.
@@ -31,6 +43,19 @@ public class CustomerToTestMinMaxFieldLengthOf {
 	}
 	private int nonStringAttributeWithLengthAnnotations;
 
+	/**
+	 * Non-string attribute; annotations should be ignored.
+	 * 
+	 * @return
+	 */
+	public void operationToUpdateNonStringAttributeWithLengthAnnotations(
+			@Named("nonStringAttributeWithLengthAnnotations")
+			@MinLengthOf(3)
+			@FieldLengthOf(30)
+			@MaxLengthOf(50)
+			final int nonStringAttributeWithLengthAnnotations) {
+		this.nonStringAttributeWithLengthAnnotations = nonStringAttributeWithLengthAnnotations;
+	}
 
 	/**
 	 * Just a max length.
@@ -42,7 +67,20 @@ public class CustomerToTestMinMaxFieldLengthOf {
 		return lastName;
 	}
 	private String lastName;
+	/**
+	 * Operation to update last name.
+	 * 
+	 * @return
+	 */
+	public void updateLastName(
+			@Named("lastName")
+			@MaxLengthOf(64)
+			final String lastName) {
+		this.lastName = lastName;
+	}
 
+
+	
 	/**
 	 * Just a field length.
 	 * 
@@ -55,6 +93,18 @@ public class CustomerToTestMinMaxFieldLengthOf {
 	private String middleName;
 
 	/**
+	 * Operation to update middle name.
+	 * 
+	 * @return
+	 */
+	public void updateMiddleName(
+			@Named("middleName")
+			@FieldLengthOf(32)
+			final String middleName) {
+		this.middleName = middleName;
+	}
+
+	/**
 	 * Just a min length.
 	 * 
 	 * @return
@@ -64,6 +114,19 @@ public class CustomerToTestMinMaxFieldLengthOf {
 		return suffix;
 	}
 	private String suffix;
+
+
+	/**
+	 * Operation with parameter that has just a min length.
+	 * 
+	 * @return
+	 */
+	public void updateSuffix(
+			@Named("suffix")
+			@MinLengthOf(12)
+			final String suffix) {
+		this.suffix = suffix;
+	}
 
 	/**
 	 * Field length and max length, with field length < max length (as would
@@ -121,6 +184,21 @@ public class CustomerToTestMinMaxFieldLengthOf {
 	
 
 	/**
+	 * Operation to check:
+	 * Error conditions: -ve value for field length, can use max length (and
+	 * ignore the min length even though it too is valid)
+	 */
+	public void operationToUpdateAttributeWithNegativeFieldLengthButValidMaxLength(
+			@Named("attributeWithNegativeFieldLengthButValidMaxLength")
+			@FieldLengthOf(-1)
+			@MinLengthOf(10)
+			@MaxLengthOf(20)
+			final String attributeWithNegativeFieldLengthButValidMaxLength) {
+		this.attributeWithNegativeFieldLengthButValidMaxLength = attributeWithNegativeFieldLengthButValidMaxLength;
+	}
+
+	
+	/**
 	 * Error conditions: -ve values for field length, can use min length
 	 * 
 	 * @return
@@ -131,6 +209,18 @@ public class CustomerToTestMinMaxFieldLengthOf {
 		return attributeWithNegativeFieldLengthButValidMinLength;
 	}
 	private String attributeWithNegativeFieldLengthButValidMinLength;
+
+	/**
+	 * Operation to check:
+	 * Error conditions: -ve values for field length, can use min length
+	 */
+	public void operationToUpdateAttributeWithNegativeFieldLengthButValidMinLength(
+			@Named("attributeWithNegativeFieldLengthButValidMinLength")
+			@FieldLengthOf(-1)
+			@MinLengthOf(20)
+			final String attributeWithNegativeFieldLengthButValidMinLength) {
+		this.attributeWithNegativeFieldLengthButValidMinLength = attributeWithNegativeFieldLengthButValidMinLength;
+	}
 
 	
 
@@ -145,6 +235,20 @@ public class CustomerToTestMinMaxFieldLengthOf {
 		return attributeWithNegativeMaxLengthButValidMinLength;
 	}
 	private String attributeWithNegativeMaxLengthButValidMinLength;
+
+	/**
+	 * Operation to check:
+	 * Error conditions: -ve values for max length, can use min length
+	 * 
+	 * @return
+	 */
+	public void operationToUpdateAttributeWithNegativeMaxLengthButValidMinLength(
+			@Named("attributeWithNegativeMaxLengthButValidMinLength")
+			@MinLengthOf(10)
+			@MaxLengthOf(-1)
+			final String attributeWithNegativeMaxLengthButValidMinLength) {
+		this.attributeWithNegativeMaxLengthButValidMinLength = attributeWithNegativeMaxLengthButValidMinLength;
+	}
 
 
 	/**
@@ -185,6 +289,21 @@ public class CustomerToTestMinMaxFieldLengthOf {
 	private String attributeWithNegativeMaxLengthButValidFieldLength;
 
 	/**
+	 * Operation to check:
+	 * Error conditions: -ve values for max length, can use field length
+	 * 
+	 * @return
+	 */
+	public void operationToUpdateAttributeWithNegativeMaxLengthButValidFieldLength(
+			@Named("attributeWithNegativeMaxLengthButValidFieldLength")
+			@MinLengthOf(5)
+			@FieldLengthOf(10)
+			@MaxLengthOf(-1)
+			final String attributeWithNegativeMaxLengthButValidFieldLength) {
+		this.attributeWithNegativeMaxLengthButValidFieldLength = attributeWithNegativeMaxLengthButValidFieldLength;
+	}
+
+	/**
 	 * Error conditions: -ve values
 	 * 
 	 * @return
@@ -196,6 +315,21 @@ public class CustomerToTestMinMaxFieldLengthOf {
 		return attributeWithNegativeLengths;
 	}
 	private String attributeWithNegativeLengths;
+	
+	/**
+	 * Operation to check:
+	 * Error conditions: -ve values
+	 * 
+	 * @return
+	 */
+	public void operationToUpdateAttributeWithNegativeLengths(
+			@MinLengthOf(-1)
+			@FieldLengthOf(-1)
+			@MaxLengthOf(-1)
+			@Named("attributeWithNegativeLengths")
+			final String attributeWithNegativeLengths) {
+		this.attributeWithNegativeLengths = attributeWithNegativeLengths;
+	}
 	
 	/**
 	 * Error conditions: 0

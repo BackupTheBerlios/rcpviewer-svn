@@ -452,6 +452,9 @@ public class RuntimeDomainClass<T>
 	public Method getMutatorFor(EAttribute eAttribute) {
 		String mutatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+		if (mutatorMethodName == null) {
+			return null;
+		}
 		EDataType dataType = (EDataType)eAttribute.getEType();
 		try {
 			Method mutatorMethod = 

@@ -30,7 +30,7 @@ public class TestPrerequisites extends TestCase {
 
 	public void testNoop() {
 		IRequirement noop = Requirement.none();
-		assertFalse(noop.isMet());
+		assertTrue(noop.isMet());
 		assertNull(noop.getDescription());
 		assertTrue(noop.isNoop());
 	}
@@ -118,13 +118,13 @@ public class TestPrerequisites extends TestCase {
 		
 		// instance method
 		IRequirement result = noop.or(noop2);
-		assertFalse(result.isMet());
+		assertTrue(result.isMet());
 		assertNull(result.getDescription());
 		assertTrue(result.isNoop());
 	
 		// static method
 		result = Requirement.or(noop, noop2);
-		assertFalse(result.isMet());
+		assertTrue(result.isMet());
 		assertNull(result.getDescription());
 		assertTrue(result.isNoop());
 	}

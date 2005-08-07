@@ -30,7 +30,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		super.tearDown();
 	}
 	
-	public void testDomainClassWithMinLengthOfSpecified() {
+	public void testDomainClassWithMinLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -40,8 +40,22 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute suffix = domainClass.getEAttributeNamed("suffix");
-		assertEquals(12, extendedDomainClass.getMinLengthOf(suffix));
+		EAttribute attrib = domainClass.getEAttributeNamed("suffix");
+		assertEquals(12, extendedDomainClass.getMinLengthOf(attrib));
+	}
+
+	public void testDomainClassWithMinLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("updateSuffix");
+		assertEquals(12, extendedDomainClass.getMinLengthOf(op, 0));
 	}
 
 	
@@ -50,7 +64,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 	 * is a {@link FieldLengthOf}
 	 *
 	 */
-	public void testDomainClassWithMinLengthOfNotSpecifiedButFieldLengthOfSpecified() {
+	public void testDomainClassWithMinLengthOfNotSpecifiedButFieldLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -60,8 +74,27 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute middleName = domainClass.getEAttributeNamed("middleName");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(middleName));
+		EAttribute attrib = domainClass.getEAttributeNamed("middleName");
+		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+	}
+	
+	/**
+	 * Should return default of 0 if no {@link MinLengthOf}, even if there
+	 * is a {@link FieldLengthOf}
+	 *
+	 */
+	public void testDomainClassWithMinLengthOfNotSpecifiedButFieldLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("updateMiddleName");
+		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
 	}
 
 	
@@ -70,7 +103,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 	 * is a {@link MaxLengthOf}
 	 *
 	 */
-	public void testDomainClassWithMinLengthOfNotSpecifiedButMaxLengthOfSpecified() {
+	public void testDomainClassWithMinLengthOfNotSpecifiedButMaxLengthOfSpecifiedOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -80,8 +113,27 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 			domainClass.getAdapter(ExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
-		EAttribute lastName = domainClass.getEAttributeNamed("lastName");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(lastName));
+		EAttribute attrib = domainClass.getEAttributeNamed("lastName");
+		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+	}
+
+	/**
+	 * Should return default of 0 if no {@link MinLengthOf}, even if there
+	 * is a {@link MaxLengthOf}
+	 *
+	 */
+	public void testDomainClassWithMinLengthOfNotSpecifiedButMaxLengthOfSpecifiedOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("updateLastName");
+		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
 	}
 
 	
@@ -90,7 +142,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 	 * return default (0).
 	 *
 	 */
-	public void testDomainClassWithMinLengthOfInvalidButFieldMaxLengthAlsoInvalid() {
+	public void testDomainClassWithMinLengthOfInvalidButFieldMaxLengthAlsoInvalidOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -104,13 +156,32 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
 	}
 
+	
+	/**
+	 * If {@link MinLengthOf} is invalid (< 0) and others are too then 
+	 * return default (0).
+	 *
+	 */
+	public void testDomainClassWithMinLengthOfInvalidButFieldMaxLengthAlsoInvalidOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths");
+		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
+	}
 
 	/**
 	 * If {@link MinLengthOf} not specified and neither are others then  
 	 * return default (0).
 	 *
 	 */
-	public void testDomainClassWithAttributeWithNoMinLengthAnnotationsOrAnyOther() {
+	public void testDomainClassWithAttributeWithNoMinLengthAnnotationsOrAnyOtherOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -125,13 +196,32 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 	}
 	
 
+	/**
+	 * If {@link MinLengthOf} not specified and neither are others then  
+	 * return default (0).
+	 *
+	 */
+	public void testDomainClassWithAttributeWithNoMinLengthAnnotationsOrAnyOtherOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations");
+		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
+	}
+
 
 	/**
 	 * If {@link MaxLengthOf} is specified on a non-string attribute then  
 	 * it should be ignored and return 0.
 	 *
 	 */
-	public void testDomainClassWithNonStringAttributeThatHasMinLengthAnnotation() {
+	public void testDomainClassWithNonStringAttributeThatHasMinLengthAnnotationOnAttribute() {
 		domainClass = 
 			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
@@ -142,7 +232,27 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+		assertEquals(-1, extendedDomainClass.getMinLengthOf(attrib));
+	}
+
+
+	/**
+	 * If {@link MaxLengthOf} is specified on a non-string attribute then  
+	 * it should be ignored and return -1.
+	 *
+	 */
+	public void testDomainClassWithNonStringAttributeThatHasMinLengthAnnotationOnOperationParameter() {
+		domainClass = 
+			lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+		
+		ExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(ExtendedDomainClass.class);
+		assertNotNull(extendedDomainClass);
+		
+		EOperation op = domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations");
+		assertEquals(-1, extendedDomainClass.getMinLengthOf(op, 0));
 	}
 
 }

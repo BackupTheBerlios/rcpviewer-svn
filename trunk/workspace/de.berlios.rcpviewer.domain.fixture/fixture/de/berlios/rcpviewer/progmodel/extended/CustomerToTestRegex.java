@@ -13,7 +13,7 @@ public class CustomerToTestRegex {
 	 * 
 	 * @return
 	 */
-	@Mask("[A-Z].+")
+	@Regex("[A-Z].+")
 	public String getLastName() {
 		return lastName;
 	}

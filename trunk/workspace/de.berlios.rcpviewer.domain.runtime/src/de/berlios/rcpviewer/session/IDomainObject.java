@@ -37,6 +37,149 @@ import de.berlios.rcpviewer.domain.RuntimeDomain;
  */
 public interface IDomainObject<T> {
 
+	/**
+	 * Provides access or other interactions with the current value and other
+	 * state of an attribute of an instantiated {@link IDomainObject}.
+	 * 
+	 * <p>
+	 * The "other state" includes whether this attribute's prerequisites have 
+	 * been met such that it can be used (ie edited).
+	 */
+	public interface IAttribute {
+
+		/**
+		 * The {@link IDomainObject} for which represents the state of one of 
+		 * its attributes.
+		 * 
+		 * @param <T>
+		 * @return
+		 */
+		public <T> IDomainObject<T> getDomainObject();
+		
+		/**
+		 * The underlying {@link EAttribute} in EMF to which this relates.
+		 * @return
+		 */
+		public EAttribute getEAttribute();
+		
+		/**
+		 * Gets the value of the current 
+		 * @return
+		 */
+		public Object get();
+
+		/**
+		 * Sets a new value for this attribute.
+		 * 
+		 * @param newValue
+		 */
+		public void set(Object newValue);
+		
+		/**
+		 * Used internally and by aspects.
+		 * 
+		 * <p>
+		 * Do not use otherwise.
+		 * 
+		 * @param attribute
+		 * @param newValue
+		 */
+		public void notifyAttributeListeners(Object newValue);
+
+		<T extends IDomainObjectAttributeListener> T  addDomainObjectAttributeListener(T listener);
+		void removeDomainObjectAttributeListener(IDomainObjectAttributeListener listener);
+		
+	}
+	
+	/**
+	 * Provides access or other interactions with the current value and other
+	 * state of a reference (or collection) of an instantiated 
+	 * {@link IDomainObject}.
+	 * 
+	 * <p>
+	 * The "other state" includes whether this reference's prerequisites have 
+	 * been met such that it can be used (ie edited).
+	 */
+	public interface IReference {
+
+		/**
+		 * Returns an immutable collection,
+		 * 
+		 * @param reference
+		 * @return
+		 */
+		public <V> Collection<IDomainObject<V>> getCollection();
+
+		/**
+		 * Adds the domain object to this reference, presumed to be a 
+		 * collection.
+		 * 
+		 * <p>
+		 * Any {@link IDomainObjectListener}s will be notified.
+		 * 
+		 * @param collection
+		 * @param domainObject
+		 */
+		public <Q> void addToCollection(IDomainObject<Q> domainObject);
+
+		/**
+		 * Removes the domain object from this reference, presumed to be a
+		 * collection.
+		 * 
+		 * <p>
+		 * Any {@link IDomainObjectListener}s will be notified.
+		 * 
+		 * @param collection
+		 * @param domainObject
+		 */
+		public <Q> void removeFromCollection(IDomainObject<Q> domainObject);
+
+		<T extends IDomainObjectReferenceListener> T addDomainObjectReferenceListener(T listener);
+		void removeDomainObjectReferenceListener(IDomainObjectReferenceListener listener);
+
+	}
+	
+	/**
+	 * Provides access or other interactions with the current state
+	 * of an invokation of an operation of an instantiated 
+	 * {@link IDomainObject}.
+	 * 
+	 * <p>
+	 * By state, we mean that an operation may be values for its parameters,  
+	 * and whether its prerequisites have been met such that it can be used
+	 * (ie invoked).
+	 * 
+	 */
+	public interface IOperation {
+		/**
+		 * The {@link IDomainObject} for which represents the state of one of 
+		 * its operations.
+		 * 
+		 * @param <T>
+		 * @return
+		 */
+		public <T> IDomainObject<T> getDomainObject();
+		
+		/**
+		 * The underlying {@link EOperation} in EMF to which this relates.
+		 * 
+		 * @return
+		 */
+		public EOperation getEOperation();
+		
+
+		/**
+		 * Invoke the operation, applying any preconditions before hand.
+		 * 
+		 * @param operation
+		 * @return the return value from the operation (if not void).
+		 */
+		public Object invokeOperation(Object[] args);
+		
+		<T extends IDomainObjectOperationListener> T addDomainObjectOperationListener(T listener);
+		void removeDomainObjectOperationListener(IDomainObjectOperationListener listener);
+	}
+	
 	public IRuntimeDomainClass<T> getDomainClass();
 	
 	public T getPojo();
@@ -84,32 +227,6 @@ public interface IDomainObject<T> {
 	public EAttribute getEAttributeNamed(String attributeName);
 
 	/**
-	 * Get the specified attribute's current value.
-	 * 
-	 * @param nameAttribute
-	 */
-	public Object get(EAttribute nameAttribute);
-
-	/**
-	 * Set the specified attribute to the new value.
-	 * 
-	 * @param nameAttribute
-	 * @param newValue
-	 */
-	public void set(EAttribute nameAttribute, Object newValue);
-
-	/**
-	 * Used internally and by aspects.
-	 * 
-	 * <p>
-	 * Do not use otherwise.
-	 * 
-	 * @param attribute
-	 * @param newValue
-	 */
-	public void notifyAttributeListeners(EAttribute attribute, Object newValue);
-
-	/**
 	 * Convenience method that should return the same as the 
 	 * corresponding method in {@link IDomainClass}.
 	 * 
@@ -119,14 +236,6 @@ public interface IDomainObject<T> {
 	public EOperation getEOperationNamed(String operationName);
 
 	/**
-	 * Invoke the operation, applying any preconditions before hand.
-	 * 
-	 * @param operation
-	 * @return the return value from the operation (if not void).
-	 */
-	public Object invokeOperation(EOperation operation, Object[] args);
-
-	/**
 	 * Convenience method that should return the same as the 
 	 * corresponding method in {@link IDomainClass}.
 	 * 
@@ -134,36 +243,6 @@ public interface IDomainObject<T> {
 	 * @return
 	 */
 	public EReference getEReferenceNamed(String referenceName);
-
-	/**
-	 * Returns an immutable collection,
-	 * 
-	 * @param reference
-	 * @return
-	 */
-	public <V> Collection<IDomainObject<V>> getCollection(EReference reference);
-
-	/**
-	 * Adds the domain object to the named collection.
-	 * 
-	 * <p>
-	 * Any {@link IDomainObjectListener}s will be notified.
-	 * 
-	 * @param collection
-	 * @param domainObject
-	 */
-	public <Q> void addToCollection(EReference collection, IDomainObject<Q> domainObject);
-
-	/**
-	 * Removes the domain object from the named collection.
-	 * 
-	 * <p>
-	 * Any {@link IDomainObjectListener}s will be notified.
-	 * 
-	 * @param collection
-	 * @param domainObject
-	 */
-	public <Q> void removeFromCollection(EReference collection, IDomainObject<Q> domainObject);
 
 	/**
 	 * Adds domain object listener.
@@ -255,5 +334,33 @@ public interface IDomainObject<T> {
 	 * @return
 	 */
 	public <V> V getAdapter(Class<V> domainObjectClass);
+
+
+	/**
+	 * Returns an {@link IAttribute} such that the run-time state of this
+	 * attribute of the owning {@link IDomainObject} can be interacted with.
+	 * 
+	 * @param eAttribute
+	 * @return
+	 */
+	public IAttribute getAttribute(EAttribute eAttribute);
+
+	/**
+	 * Returns an {@link IReference} such that the run-time state of this
+	 * reference of the owning {@link IDomainObject} can be interacted with.
+	 * 
+	 * @param eReference
+	 * @return
+	 */
+	public IReference getReference(EReference eReference);
+
+	/**
+	 * Returns an {@link IOperation} such that the run-time state of this
+	 * operation of the owning {@link IDomainObject} can be interacted with.
+	 * 
+	 * @param eOperation
+	 * @return
+	 */
+	public IOperation getOperation(EOperation eOperation);
 
 }

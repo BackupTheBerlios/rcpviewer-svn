@@ -81,12 +81,21 @@ public final class ExtendedProgModelConstants {
 
 	/**
 	 * Key to EAnnotation details representing (names of) method representing
-	 * preconditions of an attribute.
+	 * accessor preconditions of an attribute.
 	 * 
 	 * <p>
-	 * Holds key to the accessor method (applicable only if not write only).
+	 * Holds key to the accessor prerequisites method.
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_PRECONDITION_METHOD_NAME_KEY = "PRE";
+	public static final String ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY = "getPre";
+
+	/**
+	 * Key to EAnnotation details representing (names of) method representing
+	 * mutator preconditions of an attribute.
+	 * 
+	 * <p>
+	 * Holds key to the mutator prerequisites method.
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY = "setPre";
 
 	/**
 	 * If present in the details of an EAnnotation with source of
@@ -107,7 +116,7 @@ public final class ExtendedProgModelConstants {
 	 * <p>
 	 * The string <i>"true"</i> is held as the value.
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_OPTIONAL_KEY = 
+	public static final String ANNOTATION_ELEMENT_OPTIONAL_KEY = 
 		"optional";
 
 	/**
@@ -166,7 +175,7 @@ public final class ExtendedProgModelConstants {
 	 * {@link Integer#parseInt(java.lang.String)} to obtain).
 	 * 
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_MIN_LENGTH_OF_KEY = 
+	public static final String ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY = 
 		"minLengthOf";
 
 	/**
@@ -179,7 +188,7 @@ public final class ExtendedProgModelConstants {
 	 * {@link Integer#parseInt(java.lang.String)} to obtain).
 	 * 
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_MAX_LENGTH_OF_KEY = 
+	public static final String ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY = 
 		"maxLengthOf";
 
 	/**
@@ -192,7 +201,7 @@ public final class ExtendedProgModelConstants {
 	 * {@link Integer#parseInt(java.lang.String)} to obtain).
 	 * 
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_FIELD_LENGTH_OF_KEY = 
+	public static final String ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY = 
 		"fieldLengthOf";
 
 	/**
@@ -204,7 +213,7 @@ public final class ExtendedProgModelConstants {
 	 * The value held is the mask literal. 
 	 * 
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_MASK_KEY = 
+	public static final String ANNOTATION_ELEMENT_MASK_KEY = 
 		"mask";
 
 	/**
@@ -216,7 +225,7 @@ public final class ExtendedProgModelConstants {
 	 * The value held is the regex literal. 
 	 * 
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_REGEX_KEY = 
+	public static final String ANNOTATION_ELEMENT_REGEX_KEY = 
 		"regex";
 
 	/**
@@ -257,16 +266,6 @@ public final class ExtendedProgModelConstants {
 	public static final String ANNOTATION_OPERATION_PARAMETER = 
 		"http://rcpviewer.berlios.de/progmodel/extended/operation/parameter";
 
-
-	/**
-	 * If present in the details of an EParameter with source of
-	 * {@link #ANNOTATION_OPERATION_PARAMETER} then indicates that the
-	 * parameter is optional.
-	 * 
-	 * <p>
-	 * The value held is always the string <i>"true"</i>.
-	 */
-	public static final String ANNOTATION_OPERATION_PARAMETER_OPTIONAL_KEY = null;
 
 	/**
 	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
