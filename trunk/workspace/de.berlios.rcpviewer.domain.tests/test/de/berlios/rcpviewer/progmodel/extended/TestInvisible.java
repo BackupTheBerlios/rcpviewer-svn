@@ -36,8 +36,8 @@ public abstract class TestInvisible extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute id = domainClass.getEAttributeNamed("id");
@@ -51,8 +51,8 @@ public abstract class TestInvisible extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute firstName = domainClass.getEAttributeNamed("firstName");

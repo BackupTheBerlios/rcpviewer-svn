@@ -61,7 +61,7 @@ class FieldPart implements IFormPart, IFieldListener {
 			public void attributeChanged(DomainObjectAttributeEvent event) {
 				DomainObjectAttributeEvent<?> typedEvent 
 					= (DomainObjectAttributeEvent<?>)event;
-				if ( typedEvent.getEAttribute().equals( _eAttribute ) 
+				if ( typedEvent.getAttribute().getEAttribute().equals( _eAttribute ) 
 						&& !NullUtil.nullSafeEquals(
 								typedEvent.getNewValue(), 
 								_field.getGuiValue() ) ) {

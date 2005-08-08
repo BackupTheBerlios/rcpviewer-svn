@@ -35,8 +35,8 @@ public abstract class TestOrderForAttributes extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		List<EAttribute> orderedAttributes = 
 			extendedDomainClass.orderedAttributes();

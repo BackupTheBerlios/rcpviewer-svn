@@ -36,8 +36,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("lastName");
@@ -50,8 +50,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("updateLastName");
@@ -69,8 +69,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("middleName");
@@ -88,8 +88,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("updateMiddleName");
@@ -106,8 +106,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNegativeMaxLengthButValidFieldLength");
@@ -125,8 +125,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeMaxLengthButValidFieldLength");
@@ -145,8 +145,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNegativeMaxLengthButValidMinLength");
@@ -164,8 +164,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeMaxLengthButValidMinLength");
@@ -185,8 +185,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNegativeLengths");
@@ -205,8 +205,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths");
@@ -224,8 +224,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNoAnnotations");
@@ -243,8 +243,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations");
@@ -264,8 +264,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations");
@@ -284,8 +284,8 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations");

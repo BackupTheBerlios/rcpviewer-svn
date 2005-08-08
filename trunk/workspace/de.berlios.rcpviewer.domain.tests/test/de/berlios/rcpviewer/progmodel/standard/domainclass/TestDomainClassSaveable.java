@@ -5,6 +5,7 @@ import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 
 /**
  * Tests for the use of the <tt>Immutable</tt>.
@@ -32,8 +33,8 @@ public abstract class TestDomainClassSaveable extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		ExtendedDomainClass extendedDomainClass = 
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass extendedDomainClass = 
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertTrue(extendedDomainClass.isSaveable());
 		
 	}
@@ -44,8 +45,8 @@ public abstract class TestDomainClassSaveable extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		ExtendedDomainClass extendedDomainClass = 
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass extendedDomainClass = 
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertFalse(extendedDomainClass.isSaveable());
 	}
 	

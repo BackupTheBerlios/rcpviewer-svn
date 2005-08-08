@@ -680,10 +680,26 @@ public interface IDomainClass<T> {
 	/**
 	 * Returns a feature identifier for the supplied attribute.
 	 * 
-	 * @param attributeName
+	 * @param attribute
 	 * @return
 	 */
 	public IFeatureId attributeIdFor(EAttribute attribute);
+
+	/**
+	 * Returns a feature identifier for the supplied reference.
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	public IFeatureId referenceIdFor(EReference reference);
+
+	/**
+	 * Returns a operation identifier for the supplied operation.
+	 * 
+	 * @param operation
+	 * @return
+	 */
+	public IFeatureId operationIdFor(EOperation operation);
 
 
 }

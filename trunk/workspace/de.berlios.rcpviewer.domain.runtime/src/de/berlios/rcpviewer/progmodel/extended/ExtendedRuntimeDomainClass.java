@@ -3,8 +3,13 @@ package de.berlios.rcpviewer.progmodel.extended;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EParameter;
+import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainClass;
@@ -13,23 +18,18 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T> 
-	implements IRuntimeDomainClassAdapter<T> {
+	implements IRuntimeDomainClassAdapter<T>, IExtendedRuntimeDomainClass<T> {
+
+	private static final Class<IExtendedDomainObject> INTERFACE_CLASS = IExtendedDomainObject.class;
+	private static final Class<ExtendedDomainObject> IMPLEMENTATION_CLASS = ExtendedDomainObject.class;
+	private EmfFacade emf = new EmfFacade();
+	
 
 	public ExtendedRuntimeDomainClass(IDomainClass<T> adaptedDomainClass) {
 		super(adaptedDomainClass);
 	}
 
-	private EmfFacade emf = new EmfFacade();
-
-// think this code is not needed - it clearly was never finished -- dan
-//	public IDomainObjectAdapter<T> adapterFor(IDomainObject<T> domainObject) {
-//		IRuntimeDomainClass<T> rdc = domainObject.getDomainClass();
-//		List<IDomainClassAdapter> adapters = rdc.getAdapters();
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
-	// TODO: use covariance on adapts()
+	// JAVA_5_FIXME: use covariance
 	public IRuntimeDomainClass<T> runtimeAdapts() {
 		return (IRuntimeDomainClass<T>)adapts();
 	}
@@ -39,7 +39,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 			return null;
 		}
 		try {
-			Constructor<V> con = objectAdapterClass.getConstructor(IDomainObject.class);
+			Constructor<V> con = (Constructor<V>)IMPLEMENTATION_CLASS.getConstructor(IDomainObject.class);
 			return con.newInstance(domainObject);
 		} catch (SecurityException ex) {
 			// TODO log?
@@ -68,14 +68,20 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 		return null;
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter#isCompatible(java.lang.Class)
+	 */
 	public <V> boolean isCompatible(Class<V> objectAdapterClass) {
-		return objectAdapterClass == ExtendedDomainObject.class;
+		return objectAdapterClass == INTERFACE_CLASS;
 	}
 	
-	public Method getAccessorPre(EAttribute eAttribute) {
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedRuntimeDomainClass#getAccessorPre(org.eclipse.emf.ecore.EAttribute)
+	 */
+	public Method getAccessorPre(EAttribute attribute) {
 		String accessorPre = 
 			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(eAttribute), 
+					emf.methodNamesAnnotationFor(attribute), 
 					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
 		if (accessorPre == null) {
 			return null;
@@ -93,21 +99,142 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 			return null;
 		}
 	}
-	
-	public Method getMutatorPre(EAttribute eAttribute) {
+
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedRuntimeDomainClass#getMutatorPre(org.eclipse.emf.ecore.EAttribute)
+	 */
+	public Method getMutatorPre(EAttribute attribute) {
 		String mutatorPre = 
 			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(eAttribute), 
+					emf.methodNamesAnnotationFor(attribute), 
 					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
 		if (mutatorPre == null) {
 			return null;
 		}
-		Class<?> attributeType = eAttribute.getEAttributeType().getInstanceClass();
+		Class<?> attributeType = attribute.getEAttributeType().getInstanceClass();
 		try {
 			Method mutatorPreMethod = 
 				runtimeAdapts().getJavaClass().getMethod(
 						mutatorPre, new Class[]{attributeType});
 			return mutatorPreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getAccessorPre(EReference reference) {
+		String accessorPre = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(reference), 
+					ExtendedProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
+		if (accessorPre == null) {
+			return null;
+		}
+		try {
+			Method accessorPreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(
+						accessorPre, new Class[]{});
+			return accessorPreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getMutatorPre(EReference reference) {
+		String mutatorPre = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(reference), 
+					ExtendedProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
+		if (mutatorPre == null) {
+			return null;
+		}
+		Class<?> referenceType = reference.getEType().getInstanceClass();
+		try {
+			Method addToPreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(
+						mutatorPre, new Class[]{referenceType});
+			return addToPreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getAddToPre(EReference reference) {
+		String addToPre = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(reference), 
+					ExtendedProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY);
+		if (addToPre == null) {
+			return null;
+		}
+		Class<?> referenceType = reference.getEType().getInstanceClass();
+		try {
+			Method mutatorPreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(
+						addToPre, new Class[]{referenceType});
+			return mutatorPreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getRemoveFromPre(EReference reference) {
+		String removeFromPre = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(reference), 
+					ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY);
+		if (removeFromPre == null) {
+			return null;
+		}
+		Class<?> referenceType = reference.getEType().getInstanceClass();
+		try {
+			Method removeFromPreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(
+						removeFromPre, new Class[]{referenceType});
+			return removeFromPreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getInvokePre(EOperation operation) {
+		String invokePre = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(operation), 
+					ExtendedProgModelConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY);
+		if (invokePre == null) {
+			return null;
+		}
+		EList eParameters = operation.getEParameters();
+		Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+		for(int i=0; i<parameterTypes.length; i++) {
+			EParameter eParameter = (EParameter)eParameters.get(i);
+			parameterTypes[i] = eParameter.getEType().getInstanceClass();
+		}
+		try {
+			Method invokePreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(invokePre, parameterTypes);
+			return invokePreMethod;
 		} catch (SecurityException ex) {
 			// TODO: log?
 			return null;

@@ -1,7 +1,11 @@
 package de.berlios.rcpviewer.session;
 
+import java.util.EventObject;
+
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
+
+import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 
 
 /**
@@ -9,7 +13,7 @@ import org.eclipse.emf.ecore.EReference;
  * 
  * @author Dan Haywood
  */
-public final class DomainObjectOperationEvent extends DomainObjectEvent {
+public final class DomainObjectOperationEvent extends EventObject {
 
 	/**
 	 * 
@@ -22,22 +26,21 @@ public final class DomainObjectOperationEvent extends DomainObjectEvent {
 	 * @param source
 	 */
 	public DomainObjectOperationEvent(
-			final IDomainObject source, 
-			final EOperation eOperation,
+			final IDomainObject.IOperation source, 
 			final Object[] args) {
 		super(source);
-		this.eOperation = eOperation;
 		this.args = args;
 	}
 	
-	private final EOperation eOperation;
 	/**
-	 * The operation that has been invoked.
-	 * @return
+	 * Type-safe accessor to the source of this event.
+	 * 
+	 * @return the extended attribute that raised this event.
 	 */
-	public EOperation getEOperation() {
-		return eOperation;
+	public IDomainObject.IOperation getOperation() {
+		return (IDomainObject.IOperation)getSource();
 	}
+
 
 	private final Object[] args;
 	public Object[] getArgs() {

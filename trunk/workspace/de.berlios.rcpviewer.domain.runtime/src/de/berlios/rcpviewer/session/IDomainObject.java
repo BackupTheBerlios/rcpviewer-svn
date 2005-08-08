@@ -323,10 +323,10 @@ public interface IDomainObject<T> {
 	 * adapter.
 	 * 
 	 * <p>
-	 * For example, to obtain an ExtendedDomainObject for someDomainObject, use:
+	 * For example, to obtain an IExtendedDomainObject for someDomainObject, use:
 	 * <code>
 	 * IDomainObject<T> dobj = ...;
-	 * ExtendedDomainObject<T> edc = dobj.getAdapter(ExtendedDomainObject.class); 
+	 * IExtendedDomainObject<T> edc = dobj.getAdapter(IExtendedDomainObject.class); 
 	 * </code>
 	 *   
 	 * @param <V>

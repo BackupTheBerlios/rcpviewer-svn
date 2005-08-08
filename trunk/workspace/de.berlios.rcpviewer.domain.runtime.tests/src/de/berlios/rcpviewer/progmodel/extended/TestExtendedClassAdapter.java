@@ -25,8 +25,8 @@ public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		assertNotNull(domainClass.getAdapter(ExtendedDomainClass.class));
-		assertNotNull(domainClass.getAdapter(ExtendedRuntimeDomainClass.class));
+		assertNotNull(domainClass.getAdapter(IExtendedDomainClass.class));
+		assertNotNull(domainClass.getAdapter(IExtendedRuntimeDomainClass.class));
 	}
 
 	public void testIsCompatible() {
@@ -35,10 +35,10 @@ public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedRuntimeDomainClass<Department> classAdapter = 
-			domainClass.getAdapter(ExtendedRuntimeDomainClass.class);
+		IExtendedRuntimeDomainClass<Department> classAdapter = 
+			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);
 
-		assertTrue(classAdapter.isCompatible(ExtendedDomainObject.class));
+		assertTrue(classAdapter.isCompatible(IExtendedDomainObject.class));
 	}
 	
 	public void testGetObjectAdapterFor() {
@@ -47,17 +47,17 @@ public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedRuntimeDomainClass<Department> classAdapter = 
-			domainClass.getAdapter(ExtendedRuntimeDomainClass.class);
+		IExtendedRuntimeDomainClass<Department> classAdapter = 
+			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);
 
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		
-		ExtendedDomainObject<Department> objectAdapter = 
-			domainObject.getAdapter(ExtendedDomainObject.class);
+		IExtendedDomainObject<Department> objectAdapter = 
+			domainObject.getAdapter(IExtendedDomainObject.class);
 		assertNotNull(objectAdapter);
 		
-		assertSame(ExtendedRuntimeDomainClass.class, objectAdapter.getExtendedRuntimeDomainClass().getClass());
+		assertTrue(IExtendedRuntimeDomainClass.class.isAssignableFrom(objectAdapter.getExtendedRuntimeDomainClass().getClass()));
 		assertSame(domainObject, objectAdapter.adapts());
 	}
 	

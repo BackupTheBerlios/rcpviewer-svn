@@ -27,13 +27,13 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  * Typical usage:
  * <pre>
  * IDomainClass<T> someDC = ...
- * ExtendedDomainClass someExtendedDC = someDC.getAdapter(ExtendedDomainClass.class);
+ * IExtendedDomainClass someExtendedDC = someDC.getAdapter(IExtendedDomainClass.class);
  * </pre>
  * 
  * @author dkhaywood
  *
  */
-public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
+public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implements IExtendedDomainClass<T>{
 
 	
 	private final EmfFacade emfFacade = new EmfFacade();
@@ -44,12 +44,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#attributes()} in the order defined by the
-	 * {@link Order} annotation.
-	 * 
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#orderedAttributes()
 	 */
 	public List<EAttribute> orderedAttributes() {
 		List<EAttribute> attributes = adapts().attributes();
@@ -57,11 +53,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		return attributes;
 	}
 	
-	/**
-	 * Whether this class may be searched for by the UI in some generic
-	 * search mechanism, eg Search.
-	 * 
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isSearchable()
 	 */
 	public boolean isSearchable() {
 		EAnnotation annotation = 
@@ -75,16 +68,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Whether this class can be instantiated generically, eg File>New.
-	 * 
-	 * <p>
-	 * The majority of domain classes are expected to be instantiable.
-	 * 
-	 * <p>
-	 * In programming model: <code>@InDomain(instantiable=false)</code>.
-	 * 
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isInstantiable()
 	 */
 	public boolean isInstantiable() {
 		EAnnotation annotation = 
@@ -97,17 +82,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		return "true".equals(instantiable);
 	}
 
-	/**
-	 * Whether instances of this class can be persisted, eg File>Save.
-	 * 
-	 * <p>
-	 * The majority of domain classes are expected to not be directly 
-	 * persistable.
-	 * 
-	 * <p>
-	 * In programming model: <code>@InDomain(nonPersistable=false)</code>.
-	 * 
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isSaveable()
 	 */
 	public boolean isSaveable() {
 		EAnnotation annotation = 
@@ -120,15 +96,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		return "true".equals(saveable);
 	}
 
-	/**
-	 * Whether the specified attribute is optional for this domain class.
-	 * 
-	 * <p>
-	 * The {@link Optional} annotation is used to indicate whether an attribute
-	 * is optional or not.
-	 *  
-	 * @param attribute - attribute of the domain class that this is an extension of
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isOptional(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isOptional(final EAttribute attribute) {
 		Map<String,String> attributeDetails = 
@@ -139,31 +108,15 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		return optional != null;
 	}
 
-	/**
-	 * Whether the specified attribute is mandatory for this domain class.
-	 * 
-	 * <p>
-	 * This is a convenience method; its value is defined as the logical NOT of
-	 * invoking {@link #isOptional(EAttribute)}.
-	 * 
-	 * @param attribute - attribute of the domain class that this is an extension of
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isMandatory(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isMandatory(final EAttribute attribute) {
 		return !isOptional(attribute);
 	}
 
-	/**
-	 * Whether the specified parameter of the operation is optional for this 
-	 * domain class.
-	 * 
-	 * <p>
-	 * The {@link Optional} annotation is used to indicate whether an 
-	 * operation's parameter is optional or not.
-	 *  
-	 * @param operation
-	 * @param parameterPosition
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isOptional(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public boolean isOptional(EOperation operation, int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
@@ -179,34 +132,15 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Whether the specified parameter of the operation is mandatory for this 
-	 * domain class.
-	 * 
-	 * <p>
-	 * This is a convenience method; its value is defined as the logical NOT of
-	 * invoking {@link #isOptional(EOperation, int)}.
-	 * 
-	 * @param operation
-	 * @param parameterPosition
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isMandatory(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public boolean isMandatory(EOperation operation, int parameterPosition) {
 		return !isOptional(operation, parameterPosition);
 	}
 
-	/**
-	 * Whether the specified attribute is invisible for this domain class.
-	 * 
-	 * <p>
-	 * The {@link Invisible} annotation is used to indicate whether an attribute
-	 * is optional or not.
-	 * 
-	 * @param attribute - attribute of the domain class that this is an extension of
-	 * @return
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isInvisible(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isInvisible(EAttribute attribute) {
 		Map<String,String> attributeDetails = 
@@ -218,16 +152,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Returns a map keyed by name of each business key, whose value is a list
-	 * of the attribute(s) that make up that business key, in the order that
-	 * they were specified.
-	 * 
-	 * <p>
-	 * The {@link BusinessKey} annotation is used to indicate which attributes
-	 * are in a business key.
-	 * 
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#businessKeys()
 	 */
 	public Map<String, List<EAttribute>> businessKeys() {
 		Map<String, Map<Integer,EAttribute>> businessKeyAttributesByPosByName = 
@@ -297,16 +223,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Returns the field length (as displayed in the UI) of the specified
-	 * (string) attribute.
-	 * 
-	 * <p>
-	 * The {@link FieldLengthOf} annotation is used to indicate the field 
-	 * length of attributes.
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getFieldLengthOf(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public int getFieldLengthOf(EAttribute attribute) {
 		if (!returnsString(attribute)) {
@@ -316,17 +234,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		return computeFieldLengthOf(details);
 	}
-	/**
-	 * Returns the field length (as displayed in the UI) of the specified
-	 * (string) operation parameter.
-	 * 
-	 * <p>
-	 * The {@link FieldLengthOf} annotation is used to indicate the field 
-	 * length of operation parameters.
-	 * 
-	 * @param operation
-	 * @param parameterPosition
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getFieldLengthOf(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public int getFieldLengthOf(EOperation operation, final int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
@@ -378,16 +287,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	
 
 
-	/**
-	 * Returns the max length (as persisted in the persistent data store) of 
-	 * the specified (string) attribute.
-	 * 
-	 * <p>
-	 * The {@link MaxLengthOf} annotation is used to indicate the maximum 
-	 * length of attributes.
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMaxLengthOf(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public int getMaxLengthOf(EAttribute attribute) {
 		if (!returnsString(attribute)) {
@@ -397,17 +298,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		return computeMaxLengthOf(details);
 	}
-	/**
-	 * Returns the max length (as persisted in the persistent data store) of 
-	 * the specified (string) operation parameters.
-	 * 
-	 * <p>
-	 * The {@link MaxLengthOf} annotation is used to indicate the maximum 
-	 * length of operation parameters.
-	 * 
-	 * @param operation
-	 * @param parameterPosition
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMaxLengthOf(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public int getMaxLengthOf(EOperation operation, final int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
@@ -455,16 +347,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 		return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
 	}
 
-	/**
-	 * Returns the min length (as required to be entered in the UI) of 
-	 * the specified (string) attribute.
-	 * 
-	 * <p>
-	 * The {@link MinLengthOf} annotation is used to indicate the minimum 
-	 * length of attributes.
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMinLengthOf(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public int getMinLengthOf(EAttribute attribute) {
 		if (!returnsString(attribute)) {
@@ -474,17 +358,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
 		return computeMinLengthOf(details);
 	}
-	/**
-	 * Returns the min length (as required to be entered in the UI) of 
-	 * the specified (string) operation parameter.
-	 * 
-	 * <p>
-	 * The {@link MinLengthOf} annotation is used to indicate the minimum 
-	 * length of operation parameters.
-	 * 
-	 * @param operation
-	 * @param parameterPosition
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMinLengthOf(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public int getMinLengthOf(EOperation operation, final int parameterPosition) {
 		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
@@ -522,16 +397,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Whether this attribute can be edited for as long as the object has not
-	 * been persisted, but should be non-editable thereafter.
-	 * 
-	 * <p>
-	 * The {@link ImmutableOncePersisted} annotation is used to indicate  
-	 * whether the attribute has this semantic.
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isImmutableOncePersisted(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isImmutableOncePersisted(EAttribute attribute) {
 		Map<String,String> attributeDetails = 
@@ -543,16 +410,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Whether the content of this (string) attribute must be formatted
-	 * according to a mask.
-	 * 
-	 * <p>
-	 * The {@link Mask} annotation is used to indicate the mask string;
-	 * returns null if none.
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMask(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public String getMask(EAttribute attribute) {
 		Map<String,String> attributeDetails = 
@@ -564,16 +423,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Whether the content of this (string) attribute must be formatted
-	 * according to a regex.
-	 * 
-	 * <p>
-	 * The {@link Mask} annotation is used to indicate the regex string;
-	 * returns null if none.
-	 * 
-	 * @param attribute
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getRegex(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public String getRegex(EAttribute attribute) {
 		Map<String,String> attributeDetails = 
@@ -585,17 +436,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T>{
 	}
 
 
-	/**
-	 * Convenience method for determining whether the candidate value
-	 * is accepted by the regex associated with this attribute.
-	 * 
-	 * <p>
-	 * If no regex has been specified (using {@link Regex}) then
-	 * always returns true.
-	 * 
-	 * @param attribute
-	 * @param candidateValue
-	 * @return
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#regexMatches(org.eclipse.emf.ecore.EAttribute, java.lang.String)
 	 */
 	public boolean regexMatches(EAttribute attribute, String candidateValue) {
 		String regex = getRegex(attribute);

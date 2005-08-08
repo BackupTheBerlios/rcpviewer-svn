@@ -158,22 +158,29 @@ public final class StandardProgModelConstants {
 	public static final String ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY = "get";
 
 	/**
-	 * Key to EAnnotation details representing (names of) method to associate
-	 * instances with a reference.
+	 * Key to EAnnotation details representing (names of) methods to mutate 
+	 * a single-valued (simple) reference.
 	 * 
-	 * <p>
-	 * Holds key to the associate method, if it exists.
 	 */
-	public static final String ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY = "associate";
+	public static final String ANNOTATION_REFERENCE_MUTATOR_NAME_KEY = "set";
 
 	/**
-	 * Key to EAnnotation details representing (names of) methods to dissociate
-	 * instances with a reference.
+	 * Key to EAnnotation details representing (names of) method to add objects 
+	 * to a multi-valued (collection) reference.
 	 * 
 	 * <p>
-	 * Holds key to the dissociate method, if it exists.
+	 * Holds key to the addTo method, if it exists.
 	 */
-	public static final String ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY = "dissociate";
+	public static final String ANNOTATION_REFERENCE_ADD_TO_NAME_KEY = "addTo";
+
+	/**
+	 * Key to EAnnotation details representing (names of) method to remove 
+	 * objects from a multi-valued (collection) reference.
+	 * 
+	 * <p>
+	 * Holds key to the removeFrom method, if it exists.
+	 */
+	public static final String ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY = "removeFrom";
 
 
 	/**

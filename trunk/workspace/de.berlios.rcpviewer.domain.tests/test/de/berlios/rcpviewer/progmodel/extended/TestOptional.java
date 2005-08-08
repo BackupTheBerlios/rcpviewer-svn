@@ -36,8 +36,8 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("firstName");
@@ -51,8 +51,8 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("placeOrder");
@@ -68,8 +68,8 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EAttribute attrib = domainClass.getEAttributeNamed("lastName");
@@ -83,8 +83,8 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		ExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(ExtendedDomainClass.class);
+		IExtendedDomainClass<?> extendedDomainClass =
+			domainClass.getAdapter(IExtendedDomainClass.class);
 		assertNotNull(extendedDomainClass);
 		
 		EOperation op = domainClass.getEOperationNamed("placeOrder");

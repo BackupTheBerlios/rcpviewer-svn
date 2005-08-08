@@ -1,6 +1,10 @@
 package de.berlios.rcpviewer.session;
 
+import java.util.EventObject;
+
 import org.eclipse.emf.ecore.EAttribute;
+
+import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 
 
 /**
@@ -11,7 +15,7 @@ import org.eclipse.emf.ecore.EAttribute;
  * 
  * @author Dan Haywood
  */
-public final class DomainObjectAttributeEvent<T> extends DomainObjectEvent {
+public final class DomainObjectAttributeEvent<T> extends EventObject {
 
 	/**
 	 * 
@@ -24,22 +28,21 @@ public final class DomainObjectAttributeEvent<T> extends DomainObjectEvent {
 	 * @param source
 	 */
 	public DomainObjectAttributeEvent(
-			final IDomainObject source, 
-			final EAttribute eAttribute, 
+			final IDomainObject.IAttribute source, 
 			final T newValue) {
 		super(source);
-		this.eAttribute = eAttribute;
 		this.newValue = newValue;
 	}
 	
-	private final EAttribute eAttribute;
 	/**
-	 * The attribute that has changed.
-	 * @return
+	 * Type-safe accessor to the source of this event.
+	 * 
+	 * @return the extended attribute that raised this event.
 	 */
-	public EAttribute getEAttribute() {
-		return eAttribute;
+	public IDomainObject.IAttribute getAttribute() {
+		return (IDomainObject.IAttribute)getSource();
 	}
+
 
 	private final T newValue;
 	public T getNewValue() {

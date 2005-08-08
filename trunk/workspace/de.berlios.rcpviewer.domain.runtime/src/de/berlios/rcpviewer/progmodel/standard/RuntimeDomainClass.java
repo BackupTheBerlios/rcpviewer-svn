@@ -828,12 +828,12 @@ public class RuntimeDomainClass<T>
 			
 			emfFacade.putAnnotationDetails(
 					this, emfFacade.methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY,  
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY,  
 					associatorMethod.getName());
 			
 			emfFacade.putAnnotationDetails(
 					this, emfFacade.methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY, 
+					StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY, 
 					dissociatorMethod.getName());
 		}
 	}
@@ -860,11 +860,32 @@ public class RuntimeDomainClass<T>
 	}
 
 	/*
+	 * 
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getMutatorFor(org.eclipse.emf.ecore.EReference)
+	 */
+	public Method getMutatorFor(EReference reference) {
+		String mutatorMethodName = 
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(reference), StandardProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_NAME_KEY);
+		try {
+			Method accessorMethod = 
+				getJavaClass().getMethod(
+						mutatorMethodName, new Class[]{});
+			return accessorMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	/*
 	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#getAssociatorFor(org.eclipse.emf.ecore.EReference)
 	 */
 	public Method getAssociatorFor(EReference eReference) {
 		String associatorMethodName = 
-			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATOR_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method associatorMethod = 
@@ -885,7 +906,7 @@ public class RuntimeDomainClass<T>
 	 */
 	public Method getDissociatorFor(EReference eReference) {
 		String dissociatorMethodName = 
-			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATOR_NAME_KEY);
+			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY);
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method dissociatorMethod = 
@@ -990,7 +1011,23 @@ public class RuntimeDomainClass<T>
 	public IFeatureId attributeIdFor(EAttribute attribute) {
 		return FeatureId.create(attribute.getName(), this, IFeatureId.Type.ATTRIBUTE); 
 	}
-	
+
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.domain.IDomainClass#referenceIdFor(org.eclipse.emf.ecore.EReference)
+	 */
+	public IFeatureId referenceIdFor(EReference reference) {
+		return FeatureId.create(reference.getName(), this, IFeatureId.Type.REFERENCE);
+	}
+
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.domain.IDomainClass#operationIdFor(org.eclipse.emf.ecore.EOperation)
+	 */
+	public IFeatureId operationIdFor(EOperation operation) {
+		return FeatureId.create(operation.getName(), this, IFeatureId.Type.OPERATION);
+	}
+
 	/*
 	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#authorizationConstraintFor(org.eclipse.emf.ecore.EAttribute)
 	 */
@@ -999,6 +1036,16 @@ public class RuntimeDomainClass<T>
 		return rd.getAuthorizationManager().preconditionsFor(attributeIdFor(attribute));
 	}
 
+
+	public IPrerequisites authorizationConstraintFor(EReference reference) {
+		IRuntimeDomain rd = (IRuntimeDomain)this.getDomain();
+		return rd.getAuthorizationManager().preconditionsFor(referenceIdFor(reference));
+	}
+
+	public IPrerequisites authorizationConstraintFor(EOperation operation) {
+		IRuntimeDomain rd = (IRuntimeDomain)this.getDomain();
+		return rd.getAuthorizationManager().preconditionsFor(operationIdFor(operation));
+	}
 
 	/*
 	 * @see java.lang.Object#toString()

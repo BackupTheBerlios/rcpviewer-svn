@@ -251,7 +251,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			new ArrayList<IDomainObjectAttributeListener>();
 
 		/**
-		 * Do not instantiate directly, instead use {@link DomainObject#getAttributeNamed(String)}
+		 * Do not instantiate directly, instead use {@link DomainObject#getAttribute(EAttribute)}
 		 * 
 		 * @param eAttribute
 		 */
@@ -328,7 +328,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		public void notifyAttributeListeners(Object newValue) {
 			DomainObjectAttributeEvent event = 
-				new DomainObjectAttributeEvent(getDomainObject(), _eAttribute, newValue);
+				new DomainObjectAttributeEvent(this, newValue);
 			for(IDomainObjectAttributeListener listener: _domainObjectAttributeListeners) {
 				listener.attributeChanged(event);
 			}
@@ -388,7 +388,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 				collectionAssociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
 				// notify _domainObjectListeners
 				DomainObjectReferenceEvent event = 
-					new DomainObjectReferenceEvent(getDomainObject(), _eReference, getPojo());
+					new DomainObjectReferenceEvent(this, getPojo());
 				for(IDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
 					listener.collectionAddedTo(event);
 				}
@@ -412,7 +412,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 				collectionDissociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
 				// notify _domainObjectListeners
 				DomainObjectReferenceEvent event = 
-					new DomainObjectReferenceEvent(getDomainObject(), _eReference, getPojo());
+					new DomainObjectReferenceEvent(this, getPojo());
 				for(IDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
 					listener.collectionRemovedFrom(event);
 				}
@@ -454,7 +454,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		public void notifyReferenceListeners(Object newValue) {
 			DomainObjectReferenceEvent event = 
-				new DomainObjectReferenceEvent(getDomainObject(), _eReference, newValue);
+				new DomainObjectReferenceEvent(this, newValue);
 			for(IDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
 				listener.referenceChanged(event);
 			}

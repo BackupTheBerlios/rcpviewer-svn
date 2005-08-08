@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.session;
 
+import java.util.EventObject;
+
 import org.eclipse.emf.ecore.EReference;
 
 
@@ -11,7 +13,7 @@ import org.eclipse.emf.ecore.EReference;
  * 
  * @author Dan Haywood
  */
-public final class DomainObjectReferenceEvent<T> extends DomainObjectEvent {
+public final class DomainObjectReferenceEvent<T> extends EventObject {
 
 	/**
 	 * 
@@ -24,21 +26,20 @@ public final class DomainObjectReferenceEvent<T> extends DomainObjectEvent {
 	 * @param source
 	 */
 	public DomainObjectReferenceEvent(
-			final IDomainObject source, 
-			final EReference eReference, 
+			final IDomainObject.IReference source, 
 			final T referencedObject) {
 		super(source);
-		this.eReference = eReference;
 		this.referencedObject = referencedObject;
 	}
 	
-	private final EReference eReference;
+	
 	/**
-	 * The reference that has changed.
-	 * @return
+	 * Type-safe accessor to the source of this event.
+	 * 
+	 * @return the extended attribute that raised this event.
 	 */
-	public EReference getEReference() {
-		return eReference;
+	public IDomainObject.IReference getReference() {
+		return (IDomainObject.IReference)getSource();
 	}
 
 	private final T referencedObject;

@@ -2,12 +2,14 @@ package de.berlios.rcpviewer.progmodel.extended;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EModelElement;
@@ -43,8 +45,8 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		// obtained in either context.
 		ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass> adapterFactory = 
 					new ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass>();
-		domainClass.setAdapterFactory(ExtendedDomainClass.class, adapterFactory);
-		domainClass.setAdapterFactory(ExtendedRuntimeDomainClass.class, adapterFactory);
+		domainClass.setAdapterFactory(IExtendedDomainClass.class, adapterFactory);
+		domainClass.setAdapterFactory(IExtendedRuntimeDomainClass.class, adapterFactory);
 
 		// Instantiable (File>New)
 		processClassInstantiable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
@@ -58,7 +60,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		for(EAttribute eAttribute: domainClass.attributes()) {
 			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(eAttribute);
 			
-			processAccessorPre(eAttribute, domainClass, javaClass); // getXxxPre method
+			processAccessorPre(eAttribute, domainClass, javaClass); // getXxxPre() method
 			processMutatorPre(eAttribute, domainClass, javaClass); // setXxxPre(..) method
 
 			// annotations
@@ -75,12 +77,24 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		
 		}
 
+		for(EReference eReference: domainClass.references()) {
+			
+			processAccessorPre(eReference, domainClass, javaClass); // getXxxPre() method
+			processMutatorPre(eReference, domainClass, javaClass); // setXxxPre(..) method (simple reference only)
+			processAddToPre(eReference, domainClass, javaClass); // addToXxxPre(..) method (collections only)
+			processRemoveFromPre(eReference, domainClass, javaClass); // removeFromXxxPre(..) method (collections only)
+			
+		}
+		
 		for(EOperation eOperation: domainClass.operations()) {
 			Method invoker = domainClass.getInvokerFor(eOperation);
 			processOperationParametersOptional(eOperation, invoker);
 			processOperationParameterMinLengthOf(eOperation, invoker);
 			processOperationParameterMaxLengthOf(eOperation, invoker);
 			processOperationParameterFieldLengthOf(eOperation, invoker);
+
+			processInvokerPre(eOperation, domainClass, javaClass); // xxxPre(..) method
+
 		}
 
 	}
@@ -311,15 +325,13 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 
-	
-
 	private <V> void processAccessorPre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
 		Method accessor = domainClass.getAccessorFor(eAttribute);
 		if (accessor == null) {
 			return;
 		}
 		String accessorPreMethodName = accessor.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ATTRIBUTE_SUFFIX;
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
 		Method accessorPreCandidate;
 		try {
 			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -332,6 +344,9 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		if (!isPublic(accessorPreCandidate)) {
 			return;
 		}
 		emfFacade.putAnnotationDetails(
@@ -348,7 +363,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 		Class<?> attributeType = eAttribute.getEAttributeType().getInstanceClass();
 		String mutatorPreMethodName = mutator.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ATTRIBUTE_SUFFIX;
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
 		Method mutatorPreCandidate;
 		try {
 			mutatorPreCandidate = javaClass.getMethod(mutatorPreMethodName, new Class[]{attributeType});
@@ -363,11 +378,181 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(mutatorPreCandidate, IPrerequisites.class)) {
 			return;
 		}
+		if (!isPublic(mutatorPreCandidate)) {
+			return;
+		}
 		emfFacade.putAnnotationDetails(
 				domainClass, 
 				emfFacade.methodNamesAnnotationFor(eAttribute),  
 				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
 				mutatorPreCandidate.getName());
+	}
+
+	private <V> void processAccessorPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		Method accessor = domainClass.getAccessorFor(eReference);
+		if (accessor == null) {
+			return;
+		}
+		String accessorPreMethodName = accessor.getName() + 
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+		Method accessorPreCandidate;
+		try {
+			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (accessorPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(accessorPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eReference),  
+				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
+				accessorPreCandidate.getName());
+	}
+
+	private <V> void processMutatorPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		if (eReference.isMany()) {
+			return;
+		}
+		Method accessor = domainClass.getMutatorFor(eReference);
+		if (accessor == null) {
+			return;
+		}
+		String accessorPreMethodName = accessor.getName() + 
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+		Method mutatorPreCandidate;
+		try {
+			mutatorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (mutatorPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(mutatorPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(mutatorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eReference),  
+				ExtendedProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
+				mutatorPreCandidate.getName());
+	}
+
+
+	private <V> void processAddToPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		if (!eReference.isMany()) {
+			return;
+		}
+		Method addTo = domainClass.getAssociatorFor(eReference);
+		if (addTo == null) {
+			return;
+		}
+		String addToPreMethodName = addTo.getName() + 
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+		Method addToPreCandidate;
+		try {
+			addToPreCandidate = javaClass.getMethod(addToPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (addToPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(addToPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(addToPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eReference),  
+				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY, 
+				addToPreCandidate.getName());
+	}
+
+
+	private <V> void processRemoveFromPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		if (!eReference.isMany()) {
+			return;
+		}
+		Method removeFrom = domainClass.getDissociatorFor(eReference);
+		if (removeFrom == null) {
+			return;
+		}
+		String removeFromPreMethodName = removeFrom.getName() + 
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+		Method removeFromPreCandidate;
+		try {
+			removeFromPreCandidate = javaClass.getMethod(removeFromPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (removeFromPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(removeFromPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(removeFromPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eReference),  
+				ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
+				removeFromPreCandidate.getName());
+	}
+
+
+	private <V> void processInvokerPre(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		Method invoker = domainClass.getInvokerFor(eOperation);
+		if (invoker == null) {
+			return;
+		}
+		String invokerPreMethodName = invoker.getName() + 
+			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+		Method invokerPreCandidate;
+		try {
+			invokerPreCandidate = javaClass.getMethod(invokerPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (invokerPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(invokerPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(invokerPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eOperation),  
+				ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
+				invokerPreCandidate.getName());
 	}
 
 	private boolean returnsString(final EAttribute attribute) {
@@ -378,5 +563,11 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	private boolean methodReturns(Method method, Class javaClass) {
 		return javaClass.isAssignableFrom(method.getReturnType());
 	}
+	
+	private boolean isPublic(Method method) {
+		return Modifier.isPublic(method.getModifiers());
+	}
+	
+
 }
 

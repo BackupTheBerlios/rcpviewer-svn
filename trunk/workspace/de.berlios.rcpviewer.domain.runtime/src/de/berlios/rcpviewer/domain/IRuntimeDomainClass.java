@@ -61,7 +61,7 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 * Usage:
 	 * <code>
 	 * SuperDuperDomainObject sddo = 
-	 *     (SuperDuperDomainObject).someDomainClass.getObjectAdapterFor(someDomainObject, SuperDuperDomainObject.class);
+	 *     (SuperDuperDomainObject)someDomainClass.getObjectAdapterFor(someDomainObject, SuperDuperDomainObject.class);
 	 * </code>
 	 * 
 	 * <p>
@@ -191,5 +191,29 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 * @return
 	 */
 	public IPrerequisites authorizationConstraintFor(EAttribute attribute);
+
+	/**
+	 * The {@link IPrerequisites} that the 
+	 * {@link de.berlios.rcpviewer.authorization.IAuthorizationManager} of the 
+	 * domain class' {@link de.berlios.rcpviewer.domain.runtime.IRuntimeDomain}
+	 * applies to this reference.
+	 * 
+	 * @param reference
+	 * @return
+	 */
+	public IPrerequisites authorizationConstraintFor(EReference reference);
+
+	/**
+	 * The {@link IPrerequisites} that the 
+	 * {@link de.berlios.rcpviewer.authorization.IAuthorizationManager} of the 
+	 * domain class' {@link de.berlios.rcpviewer.domain.runtime.IRuntimeDomain}
+	 * applies to this operation.
+	 * 
+	 * @param operation
+	 * @return
+	 */
+	public IPrerequisites authorizationConstraintFor(EOperation operation);
+
+	public Method getMutatorFor(EReference reference);
 
 }
