@@ -38,6 +38,17 @@ public interface IRequirement {
 	String getDescription();
 
 	/**
+	 * The description if the requirement has not been met.
+	 * 
+	 * <p>
+	 * Is a view of what the requirement represents at a point in time.  If the
+	 * requirement is met, just returns an empty string. 
+	 * 
+	 * @return the requirement's description
+	 */
+	String getDescriptionIfNotMet();
+
+	/**
 	 * ANDs the current requirement with another.
 	 * 
 	 * <p>

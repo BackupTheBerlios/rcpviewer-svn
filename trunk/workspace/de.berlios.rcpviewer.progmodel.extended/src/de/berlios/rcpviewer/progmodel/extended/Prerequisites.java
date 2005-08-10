@@ -256,5 +256,14 @@ public final class Prerequisites implements IPrerequisites {
 	}
 
 
-	
+	public String toString() {
+		if (!this.getVisibleRequirement().isMet()) {
+			return "not visible, " + getVisibleRequirement().getDescription();
+		}
+		if (!this.getUsableRequirement().isMet()) {
+			return "not usable, " + getUsableRequirement().getDescription();
+		}
+		return "visible " + (getVisibleRequirement().isNoop()?"(noop) ":"")
+			  +", usable" + (getUsableRequirement().isNoop()?"(noop) ":"");
+	}
 }

@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -234,6 +235,39 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 		try {
 			Method invokePreMethod = 
 				runtimeAdapts().getJavaClass().getMethod(invokePre, parameterTypes);
+			return invokePreMethod;
+		} catch (SecurityException ex) {
+			// TODO: log?
+			return null;
+		} catch (NoSuchMethodException ex) {
+			// TODO: log?
+			return null;
+		}
+	}
+
+	public Method getInvokeDefaults(EOperation eOperation) {
+		String invokeDefaults = 
+			emf.getAnnotationDetail(
+					emf.methodNamesAnnotationFor(eOperation), 
+					ExtendedProgModelConstants.ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY);
+		if (invokeDefaults == null) {
+			return null;
+		}
+		EList eParameters = eOperation.getEParameters();
+		Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+		for(int i=0; i<parameterTypes.length; i++) {
+			// find the type of this parameter
+			EParameter eParameter = (EParameter)eParameters.get(i);
+			Class<?> parameterType = eParameter.getEType().getInstanceClass();
+			// create a prototype array of this type
+			Object argDefaultArray = Array.newInstance(parameterType, 1);
+			// now obtain the class of this array of the required type
+			Class<?> arrayOfParameterType = argDefaultArray.getClass();
+			parameterTypes[i] = arrayOfParameterType;
+		}
+		try {
+			Method invokePreMethod = 
+				runtimeAdapts().getJavaClass().getMethod(invokeDefaults, parameterTypes);
 			return invokePreMethod;
 		} catch (SecurityException ex) {
 			// TODO: log?

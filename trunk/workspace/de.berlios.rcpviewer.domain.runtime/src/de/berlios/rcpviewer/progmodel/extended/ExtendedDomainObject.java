@@ -1,7 +1,11 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +44,41 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 	private WeakHashMap<EAttribute, IExtendedAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IExtendedAttribute>();
 	private WeakHashMap<EReference, IExtendedReference> _referencesByEReference = new WeakHashMap<EReference, IExtendedReference>();
 	private WeakHashMap<EOperation, IExtendedOperation> _operationsByEOperation = new WeakHashMap<EOperation, IExtendedOperation>();
+
+	private static Map<Class<?>, Object> __defaultValueByPrimitiveType = new HashMap<Class<?>, Object>();
+	private static Map<Class<?>, Class<?>> __wrapperTypeByPrimitiveType = new HashMap<Class<?>, Class<?>>();
+	
+	static {
+		__defaultValueByPrimitiveType.put(byte.class, 0);
+		__defaultValueByPrimitiveType.put(short.class, 0);
+		__defaultValueByPrimitiveType.put(int.class, 0);
+		__defaultValueByPrimitiveType.put(long.class, 0);
+		__defaultValueByPrimitiveType.put(char.class, 0);
+		__defaultValueByPrimitiveType.put(float.class, 0);
+		__defaultValueByPrimitiveType.put(double.class, 0);
+		__defaultValueByPrimitiveType.put(boolean.class, false);
+		__defaultValueByPrimitiveType.put(String.class, null); // rather than ""
+		__defaultValueByPrimitiveType.put(Byte.class, 0);
+		__defaultValueByPrimitiveType.put(Short.class, 0);
+		__defaultValueByPrimitiveType.put(Integer.class, 0);
+		__defaultValueByPrimitiveType.put(Long.class, 0);
+		__defaultValueByPrimitiveType.put(Character.class, 0);
+		__defaultValueByPrimitiveType.put(Float.class, 0);
+		__defaultValueByPrimitiveType.put(Double.class, 0);
+		__defaultValueByPrimitiveType.put(Boolean.class, false);
+		__defaultValueByPrimitiveType.put(BigInteger.class, new BigInteger("0"));
+		__defaultValueByPrimitiveType.put(BigDecimal.class, new BigDecimal("0.0"));
+		
+		__wrapperTypeByPrimitiveType.put(byte.class, Byte.class);
+		__wrapperTypeByPrimitiveType.put(short.class, Short.class);
+		__wrapperTypeByPrimitiveType.put(int.class, Integer.class);
+		__wrapperTypeByPrimitiveType.put(long.class, Long.class);
+		__wrapperTypeByPrimitiveType.put(char.class, Character.class);
+		__wrapperTypeByPrimitiveType.put(float.class, Float.class);
+		__wrapperTypeByPrimitiveType.put(double.class, Double.class);
+		__wrapperTypeByPrimitiveType.put(boolean.class, Boolean.class);
+
+	}
 
 	public ExtendedDomainObject(IDomainObject<T> domainObject) {
 		super(domainObject);
@@ -364,17 +403,29 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 	public class ExtendedOperation implements IExtendedDomainObject.IExtendedOperation {
 
 		private final EOperation _eOperation;
+		private final Class<?>[] _parameterTypes;
 		private final Map<Integer, Object> argsByPosition = new HashMap<Integer, Object>();
 		private final List<IExtendedDomainObjectOperationListener> _domainObjectOperationListeners = 
 			new ArrayList<IExtendedDomainObjectOperationListener>();
 
 		/**
-		 * Do not instantiate directly, instead use {@link IExtendedDomainObject#getOperation(EOperation)}
+		 * Will reset the arguments, according to {@link #reset()}.
 		 * 
-		 * @param eAttribute
+		 * <p>
+		 * Cannot instantiate directly, instead use 
+		 * {@link IExtendedDomainObject#getOperation(EOperation)}.
+		 * 
+		 * @param eOperation
 		 */
 		private ExtendedOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
+			EList eParameters = eOperation.getEParameters();
+			this._parameterTypes = new Class<?>[eParameters.size()];
+			for(int i=0; i<_parameterTypes.length; i++) {
+				EParameter eParameter = (EParameter)eParameters.get(i);
+				_parameterTypes[i] = eParameter.getEType().getInstanceClass();
+			}
+			reset();
 		}
 		
 		public IPrerequisites authorizationPrerequisitesFor() {
@@ -421,54 +472,160 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		public Object[] getArgs() {
 			Object[] args = new Object[_eOperation.getEParameters().size()];
 			for(int i=0; i<args.length; i++) {
-				args[i] = argsByPosition.get(i); // if not present, a null is ok
+				args[i] = getArg(i);
 			}
 			return args;
 		}
+		private Object getArg(final int position) {
+			Object arg = argsByPosition.get(position);
+			if (arg != null) {
+				return arg;
+			}
+			arg = __defaultValueByPrimitiveType.get(_parameterTypes[position]);
+			if (arg != null) {
+				return arg;
+			}
+			try {
+				Constructor<?> publicConstructor = _parameterTypes[position].getConstructor();
+				arg = publicConstructor.newInstance();
+				return arg;
+			} catch (Exception ex) {
+				throw new IllegalArgumentException(
+					"No public constructor for '" + _parameterTypes[position].getCanonicalName() + "'" 
+					+ " (arg position=" + position + ")", ex);
+			} 
+		}
  
-		public void setArg(int position, Object arg) {
-			int numberOfParameters = _eOperation.getEParameters().size();
-			if (position < 0 || position >= numberOfParameters) {
-				throw new IllegalArgumentException("Invalid position: 0 <= position < " + numberOfParameters);
+		public void setArg(final int position, final Object arg) {
+			if (position < 0 || position >= _parameterTypes.length) {
+				throw new IllegalArgumentException("Invalid position: 0 <= position < " + _parameterTypes.length);
 			}
 			if (arg != null) {
-				EList eParameters = _eOperation.getEParameters();
-				EParameter eParameter = (EParameter)eParameters.get(position);
-				Class<?> parameterType = eParameter.getEType().getInstanceClass();
-				if (!parameterType.isAssignableFrom(arg.getClass())) {
-					throw new IllegalArgumentException("Incompatible argument for position '" + position + "'; formal='" + parameterType.getName() + ", actual='" + arg.getClass().getName() + "'"); 
+				if (!isAssignableFromIncludingAutoboxing(_parameterTypes[position], arg.getClass())) {
+					throw new IllegalArgumentException("Incompatible argument for position '" + position + "'; formal='" + _parameterTypes[position].getName() + ", actual='" + arg.getClass().getName() + "'"); 
 				}
 			}
 			argsByPosition.put(position, arg);
 		}
 
-		/*
-		 * 
-		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#clearArgs()
-		 */
-		public void clearArgs() {
-			argsByPosition.clear();
+		private boolean isAssignableFromIncludingAutoboxing(Class<?> requiredType, Class<? extends Object> candidateType) {
+			if (requiredType == byte.class && candidateType == Byte.class) { return true; }
+			if (requiredType == short.class && candidateType == Short.class) { return true; }
+			if (requiredType == int.class && candidateType == Integer.class) { return true; }
+			if (requiredType == long.class && candidateType == Long.class) { return true; }
+			if (requiredType == char.class && candidateType == Character.class) { return true; }
+			if (requiredType == float.class && candidateType == Float.class) { return true; }
+			if (requiredType == double.class && candidateType == Double.class) { return true; }
+			if (requiredType == boolean.class && candidateType == Boolean.class) { return true; }
+			return requiredType.isAssignableFrom(candidateType);
 		}
 
 		public IPrerequisites prerequisitesFor() {
 			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
-			Method mutatorPre = erdc.getInvokePre(_eOperation);
-			if (mutatorPre == null) {
+			Method invokePre = erdc.getInvokePre(_eOperation);
+			if (invokePre == null) {
 				return Prerequisites.none();
 			}
 			
 			try {
-				return (IPrerequisites)mutatorPre.invoke(adapts().getPojo(), getArgs());
+				Object[] args = getArgs();
+				return (IPrerequisites)invokePre.invoke(adapts().getPojo(), args);
 			} catch (IllegalArgumentException ex) {
-				// TODO log?
+				return Prerequisites.unusable(ex.getLocalizedMessage());
 			} catch (IllegalAccessException ex) {
-				// TODO Auto-generated catch block
+				return Prerequisites.unusable(ex.getLocalizedMessage());
 			} catch (InvocationTargetException ex) {
-				// TODO Auto-generated catch block
+				return Prerequisites.unusable(ex.getLocalizedMessage());
 			}
-			return Prerequisites.none();
 		}
 
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#reset()
+		 */
+		public Object[] reset() {
+			argsByPosition.clear();
+			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			Method invokeDefaults = erdc.getInvokeDefaults(_eOperation);
+			if (invokeDefaults == null) {
+				return getArgs();
+			}
+			try {
+				// create an array of 1-element arrays; the defaulter method
+				// will expect this structure and will populate the element
+				// (simulates passing by reference)
+				Object[] argDefaultArrays = new Object[_parameterTypes.length];
+				for(int i=0; i<argDefaultArrays.length; i++) {
+					setDefaultArray( argDefaultArrays, i, Array.newInstance(_parameterTypes[i], 1), _parameterTypes[i]);
+				}
+				
+				// invoke the defaults method itself
+				invokeDefaults.invoke(adapts().getPojo(), argDefaultArrays);
+				// now copy out the elements into the actual arguments array
+				// held by this extendedOp object.
+				for(int i=0; i<argDefaultArrays.length; i++) {
+					Object argDefaultArray = argDefaultArrays[i];
+					Object argDefault = Array.get(argDefaultArray, 0);
+					argsByPosition.put(i, argDefault);
+				}
+				
+				return getArgs();
+			} catch (IllegalArgumentException ex) {
+				return getArgs();
+			} catch (IllegalAccessException ex) {
+				return getArgs();
+			} catch (InvocationTargetException ex) {
+				return getArgs();
+			}
+		}
+
+		private void setDefaultArray(Object[] argDefaultArrays, int i, Object arrayOfType, Class<?> componentType) {
+			argDefaultArrays[i] = arrayOfType;
+//			if (componentType == byte.class) {
+//				argDefaultArrays[i] = (byte[])arrayOfType;
+//			}
+//			else if (componentType == short.class) {
+//				argDefaultArrays[i] = (short[])arrayOfType;
+//			}
+//			else if (componentType == int.class) {
+//				argDefaultArrays[i] = (int[])arrayOfType;
+//			}
+//			else if (componentType == long.class) {
+//				argDefaultArrays[i] = (long[])arrayOfType;
+//			}
+//			else if (componentType == char.class) {
+//				argDefaultArrays[i] = (char[])arrayOfType;
+//			}
+//			else if (componentType == float.class) {
+//				argDefaultArrays[i] = (float[])arrayOfType;
+//			}
+//			else if (componentType == double.class) {
+//				argDefaultArrays[i] = (double[])arrayOfType;
+//			}
+//			else if (componentType == boolean.class) {
+//				argDefaultArrays[i] = (boolean[])arrayOfType;
+//			}
+//			else {
+//				argDefaultArrays[i] = (Object[])arrayOfType;
+//			}
+		}
+	}
+	
+	/**
+	 * Converts primitive types into corresponding wrapped types, or leaves
+	 * alone if not a primitive type.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	private Class<?> wrapperTypeIfRequired(Class<?> type) {
+		Class<?> wrappedType = __wrapperTypeByPrimitiveType.get(type);
+		if (wrappedType != null) { 
+			return wrappedType; 
+		} else {
+			return type;
+		}
+		
 	}
 
 }

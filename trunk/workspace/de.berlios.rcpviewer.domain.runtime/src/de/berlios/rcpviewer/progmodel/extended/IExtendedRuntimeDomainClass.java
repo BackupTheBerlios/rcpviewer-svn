@@ -99,5 +99,19 @@ public interface IExtendedRuntimeDomainClass<T> {
 	 */
 	public Method getInvokePre(EOperation operation);
 
+	/**
+	 * Returns the <code>XxxPre()</code> for an operation 
+	 * <code>xxx(...)</code>, or none if there is none.
+	 * 
+	 * <p>
+	 * The method must be <code>public</code>, have a set of arguments that
+	 * are an array of the correspond types in the operation, and must return  
+	 * void. 
+	 * 
+	 * @param operation
+	 * @return
+	 */
+	public Method getInvokeDefaults(EOperation operation);
+
 
 }

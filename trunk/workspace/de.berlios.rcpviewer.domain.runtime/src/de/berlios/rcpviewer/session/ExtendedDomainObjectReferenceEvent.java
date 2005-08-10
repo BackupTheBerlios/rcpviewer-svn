@@ -5,8 +5,8 @@ import java.util.EventObject;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference;
 
 
 /**
@@ -27,7 +27,7 @@ public final class ExtendedDomainObjectReferenceEvent extends EventObject {
 	 * @param source
 	 */
 	public ExtendedDomainObjectReferenceEvent(
-			final IExtendedDomainObject.IExtendedReference source, 
+			final ExtendedDomainObject.ExtendedReference source, //  
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;

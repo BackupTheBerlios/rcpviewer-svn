@@ -322,12 +322,6 @@ public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 		public void setArg(int position, Object arg);
 		
 		/**
-		 * Resets all arguments (sets all positions to <code>null</code>).
-		 *
-		 */
-		public void clearArgs();
-		
-		/**
 		 * Prerequisites applicable to invoke this operation.
 		 * 
 		 * <p>
@@ -347,6 +341,18 @@ public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 		 * 
 		 */
 		public IPrerequisites prerequisitesFor();
+
+		/**
+		 * Resets the argument list back to defaults.
+		 * 
+		 * <p>
+		 * If a defaults method has been provided (<code>XxxDefaults(..)</code>),
+		 * then it will be invoked.  Otherwise the built-in defaults for each
+		 * type will be used (null for objects, 0 for int etc).
+		 * 
+		 * @return the reset arguments, same as {@link #getArgs()}.
+		 */
+		public Object[] reset();
 	}
 
 	public IExtendedAttribute getAttribute(EAttribute eAttribute);

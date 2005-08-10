@@ -5,6 +5,7 @@ import java.util.EventObject;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject; 
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute;
 
@@ -27,7 +28,7 @@ public final class ExtendedDomainObjectAttributeEvent extends EventObject  {
 	 * @param source
 	 */
 	public ExtendedDomainObjectAttributeEvent(
-			final IExtendedDomainObject.IExtendedAttribute source, 
+			final ExtendedDomainObject.ExtendedAttribute source, // TODO: workaround ? 
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;

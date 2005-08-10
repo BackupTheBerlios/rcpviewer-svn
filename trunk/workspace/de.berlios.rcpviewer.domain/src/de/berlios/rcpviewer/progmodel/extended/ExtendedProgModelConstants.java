@@ -15,6 +15,30 @@ public final class ExtendedProgModelConstants {
 	private ExtendedProgModelConstants() {
 	}
 
+	/**
+	 * The suffix for a method name that represents the preconditions of
+	 * a read or read/write attribute, reference or operation.
+	 * 
+	 * <p>
+	 * For example, an attribute <i>firstName</i> would correspond to
+	 * <i>getFirstName<b>Pre</b></i> (where <i>Pre</i> is the value of
+	 * this constant).
+	 * 
+	 */
+	public static final String SUFFIX_ELEMENT_PRECONDITIONS = "Pre";
+
+	/**
+	 * The suffix for a method name that represents the defaults of
+	 * an operation.
+	 * 
+	 * <p>
+	 * For example, an operation <i>placeOrder</i> would correspond to
+	 * <i>placeOrder<b>Defaults</b></i> (where <i>Defaults</i> is the value of
+	 * this constant).
+	 * 
+	 */
+	public static final String SUFFIX_OPERATION_DEFAULTS = "Defaults";
+
 	public final static int FIELD_LENGTH_OF_DEFAULT = 32;
 	public final static int MAX_LENGTH_OF_DEFAULT = 64;
 	public final static int MIN_LENGTH_OF_DEFAULT = 0;
@@ -69,18 +93,6 @@ public final class ExtendedProgModelConstants {
 	public static final String ANNOTATION_ELEMENT_DESCRIPTION_KEY = 
 		"description";
 	
-	/**
-	 * The suffix for a method name that represents the preconditions of
-	 * a read or read/write attribute, reference or operation.
-	 * 
-	 * <p>
-	 * For example, an attribute <i>firstName</i> would correspond to
-	 * <i>getFirstName<b>Pre</b></i> (where <i>Pre</i> is the value of
-	 * this constant).
-	 * 
-	 */
-	public static final String PRECONDITIONS_ELEMENT_SUFFIX = "Pre";
-
 	/**
 	 * If present in the details of an EAnnotation with source of
 	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates whether this attribute is
@@ -313,7 +325,28 @@ public final class ExtendedProgModelConstants {
 	public static final String ANNOTATION_OPERATION_ORDER_KEY = 
 		"order";
 
+	/**
+	 * If present in the details of an EOperation with source of
+	 * {@link #ANNOTATION_OPERATION}, then represents the name of the method
+	 * to invoke (with appropriate arguments) to obtain prerequisites to 
+	 * determine if the operation itself can be invoked with some well-known
+	 * set of arguments.
+	 * 
+	 * <p>
+	 * (It is the responsibility of  
+	 * {@link IExtendedDomainClass.IExtendedOperation} to hold onto these 
+	 * arguments).
+	 */
 	public static final String ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY 
 		= "pre";
+
+	/**
+	 * If present in the details of an EOperation with source of
+	 * {@link #ANNOTATION_OPERATION}, then represents the name of the method
+	 * to invoke to obtain the default set of arguments for the operation. 
+	 * 
+	 */
+	public static final String ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY 
+		= "defaults";
 
 }

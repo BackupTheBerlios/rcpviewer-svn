@@ -1,12 +1,15 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
@@ -93,7 +96,8 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			processOperationParameterMaxLengthOf(eOperation, invoker);
 			processOperationParameterFieldLengthOf(eOperation, invoker);
 
-			processInvokerPre(eOperation, domainClass, javaClass); // xxxPre(..) method
+			processInvokerPre(eOperation, domainClass, javaClass, invoker); // xxxPre(..) method
+			processInvokerDefaults(eOperation, domainClass, javaClass, invoker); // xxxPre(..) method
 
 		}
 
@@ -331,7 +335,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String accessorPreMethodName = accessor.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method accessorPreCandidate;
 		try {
 			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -363,7 +367,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 		Class<?> attributeType = eAttribute.getEAttributeType().getInstanceClass();
 		String mutatorPreMethodName = mutator.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method mutatorPreCandidate;
 		try {
 			mutatorPreCandidate = javaClass.getMethod(mutatorPreMethodName, new Class[]{attributeType});
@@ -394,7 +398,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String accessorPreMethodName = accessor.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method accessorPreCandidate;
 		try {
 			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -428,7 +432,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String accessorPreMethodName = accessor.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method mutatorPreCandidate;
 		try {
 			mutatorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -463,7 +467,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String addToPreMethodName = addTo.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method addToPreCandidate;
 		try {
 			addToPreCandidate = javaClass.getMethod(addToPreMethodName, new Class[]{});
@@ -498,7 +502,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String removeFromPreMethodName = removeFrom.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method removeFromPreCandidate;
 		try {
 			removeFromPreCandidate = javaClass.getMethod(removeFromPreMethodName, new Class[]{});
@@ -524,16 +528,19 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 
-	private <V> void processInvokerPre(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
-		Method invoker = domainClass.getInvokerFor(eOperation);
-		if (invoker == null) {
-			return;
-		}
-		String invokerPreMethodName = invoker.getName() + 
-			ExtendedProgModelConstants.PRECONDITIONS_ELEMENT_SUFFIX;
+	private <V> void processInvokerPre(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass, Method invoker) {
+		String invokerName = invoker.getName();
+		String invokerPreMethodName = invokerName + 
+			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method invokerPreCandidate;
 		try {
-			invokerPreCandidate = javaClass.getMethod(invokerPreMethodName, new Class[]{});
+			EList eParameters = eOperation.getEParameters();
+			Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+			for(int i=0; i<parameterTypes.length; i++) {
+				EParameter eParameter = (EParameter)eParameters.get(i);
+				parameterTypes[i] = eParameter.getEType().getInstanceClass();
+			}
+			invokerPreCandidate = javaClass.getMethod(invokerPreMethodName, parameterTypes);
 		} catch (SecurityException ex) {
 			return;
 		} catch (NoSuchMethodException ex) {
@@ -551,8 +558,51 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		emfFacade.putAnnotationDetails(
 				domainClass, 
 				emfFacade.methodNamesAnnotationFor(eOperation),  
-				ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
+				ExtendedProgModelConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY, 
 				invokerPreCandidate.getName());
+	}
+
+	
+
+
+	private <V> void processInvokerDefaults(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass, Method invoker) {
+		String invokerName = invoker.getName();
+		String invokerDefaultsMethodName = invokerName + 
+			ExtendedProgModelConstants.SUFFIX_OPERATION_DEFAULTS;
+		Method invokerDefaultsCandidate;
+		try {
+			EList eParameters = eOperation.getEParameters();
+			Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+			for(int i=0; i<parameterTypes.length; i++) {
+				// find the type of this parameter
+				EParameter eParameter = (EParameter)eParameters.get(i);
+				Class<?> parameterType = eParameter.getEType().getInstanceClass();
+				// create a prototype array of this type
+				Object argDefaultArray = Array.newInstance(parameterType, 1);
+				// now obtain the class of this array of the required type
+				Class<?> arrayOfParameterType = argDefaultArray.getClass();
+				parameterTypes[i] = arrayOfParameterType;
+			}
+			invokerDefaultsCandidate = javaClass.getMethod(invokerDefaultsMethodName, parameterTypes);
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (invokerDefaultsCandidate == null) {
+			return;
+		}
+		if (!isPublic(invokerDefaultsCandidate)) {
+			return;
+		}
+		if (!methodReturns(invokerDefaultsCandidate, Void.class)) {
+			return;
+		}
+		emfFacade.putAnnotationDetails(
+				domainClass, 
+				emfFacade.methodNamesAnnotationFor(eOperation),  
+				ExtendedProgModelConstants.ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY, 
+				invokerDefaultsCandidate.getName());
 	}
 
 	private boolean returnsString(final EAttribute attribute) {
@@ -560,7 +610,21 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		String instanceClassName = dataType.getInstanceClassName();
 		return instanceClassName != null && instanceClassName.equals("java.lang.String");
 	}
+	/**
+	 * Although methods that are <code>void</code> do not actually reflectively
+	 * return <code>Void.class</code>, this method will - as a convenience - 
+	 * make that interpretation.
+	 * 
+	 * @param method
+	 * @param javaClass
+	 * @return
+	 */
 	private boolean methodReturns(Method method, Class javaClass) {
+		// hack, good enough for us.
+		if (javaClass == Void.class) {
+			return method.getReturnType() == null ||
+			       "void".equals(method.getReturnType().getName());
+		}
 		return javaClass.isAssignableFrom(method.getReturnType());
 	}
 	

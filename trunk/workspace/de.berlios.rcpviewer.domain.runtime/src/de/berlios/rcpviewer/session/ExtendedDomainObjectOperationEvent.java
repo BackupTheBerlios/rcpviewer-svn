@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation;
 
@@ -28,7 +29,7 @@ public final class ExtendedDomainObjectOperationEvent extends EventObject {
 	 * @param source
 	 */
 	public ExtendedDomainObjectOperationEvent(
-			final IExtendedDomainObject.IExtendedOperation source, 
+			final ExtendedDomainObject.ExtendedOperation source, // workaround 
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;

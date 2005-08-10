@@ -86,16 +86,26 @@ public final class Requirement implements IRequirement {
 	public boolean isMet() {
 		return _met || isNoop();
 	}
-	
-	/**
-	 * See interface definition.
+
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IRequirement#getDescription()
 	 */
 	public String getDescription() {
 		return _description;
 	}
 
-	/**
-	 * See interface definition.
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IRequirement#getDescriptionIfNotMet()
+	 */
+	public String getDescriptionIfNotMet() {
+		return !isMet()?getDescription():isNoop()?"(noop)":"(met)";
+	}
+
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IRequirement#isNoop()
 	 */
 	public final boolean isNoop() {
 		return _noop;
@@ -158,5 +168,7 @@ public final class Requirement implements IRequirement {
 	}
 
 
-
+	public String toString() {
+		return getDescriptionIfNotMet();
+	}
 }
