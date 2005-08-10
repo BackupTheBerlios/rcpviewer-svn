@@ -10,7 +10,8 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
  de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.standard;visibility:=reexport
+ de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel.extended,

@@ -63,7 +63,8 @@ public interface IDomainObject<T> {
 		public EAttribute getEAttribute();
 		
 		/**
-		 * Gets the value of the current 
+		 * Gets the current value of this attribute.
+		 * 
 		 * @return
 		 */
 		public Object get();
@@ -314,6 +315,13 @@ public interface IDomainObject<T> {
 	 */
 	public boolean isAttached();
 
+	/**
+	 * The {@link ISession} to which this domain object is currently attached.
+	 * 
+	 * @return
+	 */
+	public ISession getSession();
+	
 	/**
 	 * Returns an adapter for this object with respect to the adapter of some
 	 * programming model.

@@ -6,12 +6,17 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.IDomainObjectAdapter;
+import de.berlios.rcpviewer.session.IExtendedDomainObjectAttributeListener;
+import de.berlios.rcpviewer.session.IExtendedDomainObjectOperationListener;
+import de.berlios.rcpviewer.session.IExtendedDomainObjectReferenceListener;
+import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.IObservedFeature;
 
 public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 
 	public IExtendedRuntimeDomainClass<T> getExtendedRuntimeDomainClass();
 
-	public interface IExtendedFeature {
+	public interface IExtendedFeature extends IObservedFeature {
 		
 		/**
 		 * Prerequisites applicable to view/edit this attribute according to the
@@ -113,6 +118,23 @@ public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object candidateValue);
 
+		/**
+		 * Register interest in whether the (accessor) prerequisites or other 
+		 * relevant state of this attribute changes.
+		 * 
+		 * 
+		 * @param <T>
+		 * @param listener
+		 * @return
+		 */
+		public <T extends IExtendedDomainObjectAttributeListener> T addExtendedDomainObjectAttributeListener(T listener);
+
+		/**
+		 * Deregister interest in the state of this attribute.
+		 * 
+		 * @param listener
+		 */
+		public void removeExtendedDomainObjectAttributeListener(IExtendedDomainObjectAttributeListener listener);
 	}
 
 	/**
@@ -293,6 +315,24 @@ public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 		 */
 		public IPrerequisites prerequisitesFor(final Object candidateValue, boolean beingAdded);
 
+		/**
+		 * Register interest in whether the (accessor) prerequisites or other 
+		 * relevant state of this reference changes.
+		 * 
+		 * 
+		 * @param <T>
+		 * @param listener
+		 * @return
+		 */
+		public <T extends IExtendedDomainObjectReferenceListener> T addExtendedDomainObjectReferenceListener(T listener);
+
+		/**
+		 * Deregister interest in the state of this reference.
+		 * 
+		 * @param listener
+		 */
+		public void removeExtendedDomainObjectReferenceListener(IExtendedDomainObjectReferenceListener listener);
+
 	}
 
 	public interface IExtendedOperation extends IExtendedFeature {
@@ -353,12 +393,54 @@ public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 		 * @return the reset arguments, same as {@link #getArgs()}.
 		 */
 		public Object[] reset();
+
+		/**
+		 * Register interest in whether the prerequisites (for the currently
+		 * held arguments) or other relevant state of this operation changes.
+		 * 
+		 * 
+		 * @param <T>
+		 * @param listener
+		 * @return
+		 */
+		public <T extends IExtendedDomainObjectOperationListener> T addExtendedDomainObjectOperationListener(T listener);
+
+		/**
+		 * Deregister interest in the state of this operation.
+		 * 
+		 * @param listener
+		 */
+		public void removeExtendedDomainObjectOperationListener(IExtendedDomainObjectOperationListener listener);
 	}
 
+	/**
+	 * Returns the extended attribute represented by this EMF attribute, 
+	 * ensuring that the {@link ISession} containing the domain object is 
+	 * notified of this attribute (as an {@link IObservedFeature}).
+	 *  
+	 * @param eAttribute
+	 * @return
+	 */
 	public IExtendedAttribute getAttribute(EAttribute eAttribute);
 
+	/**
+	 * Returns the extended reference represented by this EMF reference, 
+	 * ensuring that the {@link ISession} containing the domain object is 
+	 * notified of this reference (as an {@link IObservedFeature}).
+	 *  
+	 * @param eAttribute
+	 * @return
+	 */
 	public IExtendedReference getReference(EReference eReference);
 	
+	/**
+	 * Returns the extended operation represented by this EMF operation, 
+	 * ensuring that the {@link ISession} containing the domain object is 
+	 * notified of this operation (as an {@link IObservedFeature}).
+	 *  
+	 * @param eAttribute
+	 * @return
+	 */
 	public IExtendedOperation getOperation(EOperation eOperation);
 	
 	

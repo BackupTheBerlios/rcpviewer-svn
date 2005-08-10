@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.progmodel.extended;
 
 
 /**
- * Final implementation of {@link IPrerequisites}
+ * Final implementation of {@link IPrerequisites}.
  * 
  * @author Dan Haywood
  */
@@ -122,6 +122,12 @@ public final class Prerequisites implements IPrerequisites {
 	 * @param usabilityRequirement
 	 */
 	private Prerequisites(IRequirement visibilityRequirement, IRequirement usabilityRequirement) {
+		if (visibilityRequirement == null) {
+			throw new IllegalArgumentException("Visibility requirement cannot be null.");
+		}
+		if (usabilityRequirement == null) {
+			throw new IllegalArgumentException("Usability requirement cannot be null.");
+		}
 		_visibilityRequirement = visibilityRequirement;
 		_usabilityRequirement = usabilityRequirement; 
 	}
@@ -255,7 +261,43 @@ public final class Prerequisites implements IPrerequisites {
 		return orRequire(Prerequisites.require(isRequirementMet, requirementDescription, constraintIfNotMet));
 	}
 
+	/*
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other.getClass() == Prerequisites.class)) { return false; }
+		return equals((Prerequisites)other);
+	}
 
+	/**
+	 * Implementation relies upon value semantics of {@link Requirement}.
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public boolean equals(final Prerequisites other) {
+		return this.getUsableRequirement().equals(other.getUsableRequirement()) &&
+		       this.getVisibleRequirement().equals(other.getVisibleRequirement());
+	}
+
+	/**
+	 * Uses the hashCode of {@link #toString()} - a bit cheeky, but should be
+	 * good enough.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	
+	/*
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
 		if (!this.getVisibleRequirement().isMet()) {
 			return "not visible, " + getVisibleRequirement().getDescription();
@@ -263,7 +305,7 @@ public final class Prerequisites implements IPrerequisites {
 		if (!this.getUsableRequirement().isMet()) {
 			return "not usable, " + getUsableRequirement().getDescription();
 		}
-		return "visible " + (getVisibleRequirement().isNoop()?"(noop) ":"")
-			  +", usable" + (getUsableRequirement().isNoop()?"(noop) ":"");
+		return "visible" + (getVisibleRequirement().isNoop()?" (noop) ":"")
+			  +", usable" + (getUsableRequirement().isNoop()?" (noop) ":"");
 	}
 }

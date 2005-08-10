@@ -162,11 +162,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	
 
 	
-	/**
-	 * The {@link ISession} to which this domain object is currently attached.
-	 * 
-	 * @return
-	 */
 	public ISession getSession() {
 		return _session;
 	}
@@ -193,6 +188,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public void detached() {
 		this._session = null;
 	}
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.session.IDomainObject#isAttached()
+	 */
 	public boolean isAttached() {
 		return _session != null;
 	}

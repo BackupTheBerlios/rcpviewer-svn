@@ -1,5 +1,8 @@
 package de.berlios.rcpviewer.session;
 
+import java.util.List;
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
@@ -155,5 +158,28 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		assertSame(pojo._productDefaulted, args[0]);
 		assertEquals(new Integer(pojo._quantityDefaulted), args[1]);
 	}
+
+	/**
+	 * not yet finished...
+	 *
+	 */
+	public void incompletetestOperationListener() {
+		IRuntimeDomainClass<CustomerOperationWithPreAndArgs> domainClass = 
+			(IRuntimeDomainClass<CustomerOperationWithPreAndArgs>) lookupAny(CustomerOperationWithPreAndArgs.class);
+		getDomainInstance().addBuilder(getDomainBuilder());
+		getDomainInstance().done();
+
+		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = 
+			(IDomainObject<CustomerOperationWithPreAndArgs>) session.createTransient(domainClass);
+		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
+
+		Set<IObservedFeature> features = session.getObservedFeatures();
+		
+		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
+		IDomainObject.IOperation op = domainObject.getOperation(eOperation);
+		IExtendedDomainObject<CustomerOperationWithPre> edc = domainObject.getAdapter(IExtendedDomainObject.class);
+		IExtendedDomainObject.IExtendedOperation extendedOp = edc.getOperation(eOperation);
+	}
+
 
 }

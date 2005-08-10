@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.session;
 
 import java.util.List;
+import java.util.Set;
 
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomain;
@@ -235,4 +236,25 @@ public interface ISession {
 	 */
 	public boolean hasDomainObjectFor(Object pojo);
 
+	/**
+	 * Returns all {@link IObservedFeature}s that are currently referenced.
+	 * 
+	 * <p>
+	 * The session itself holds only weak references to these features so that
+	 * once all observers of a feature are GC'ed, then the session will not
+	 * in itself keep a reference to the object.  Conversely, the caller of 
+	 * this method should not hold a strong reference to the returned
+	 * objects (unless it is acting as an actual observer). 
+	 * 
+	 * @return
+	 */
+	public Set<IObservedFeature> getObservedFeatures();
+
+	/**
+	 * Make the session aware of a new {@link IObservedFeature} such that it
+	 * can return it in {@link #getObservedFeatures()}.
+	 * 
+	 * @param observedFeature
+	 */
+	public void addObservedFeature(IObservedFeature observedFeature);
 }

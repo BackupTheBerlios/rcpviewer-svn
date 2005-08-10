@@ -24,6 +24,12 @@ public aspect NotifyListenersAspect extends PojoAspect {
 		IDomainObject.IAttribute attribute = 
 			domainObject.getAttribute(domainObject.getEAttributeNamed(name));
 		attribute.notifyAttributeListeners(newValue);
+		
+		// this is rather crude, should only do at the end of the xactn.
+		ISession session = domainObject.getSession();
+		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
+			observedFeature.externalStateChanged();
+		}
 	}
 
 

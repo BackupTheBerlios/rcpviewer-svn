@@ -4,6 +4,10 @@ package de.berlios.rcpviewer.progmodel.extended;
  * The combination of two {@link IRequirement}s indicating whether a feature is
  * visible, and if so, whether it is usable.
  * 
+ * <p>
+ * Implementations should have value semantics (that is, override 
+ * <code>equals(Object)</code> and <code>hashCode()</code>). 
+ * 
  * @author Dan Haywood
  *
  */

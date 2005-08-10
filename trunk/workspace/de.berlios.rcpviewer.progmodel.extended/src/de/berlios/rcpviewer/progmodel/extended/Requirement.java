@@ -1,8 +1,12 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
+import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 
 /**
  * Immutable implementation of {@link IRequirement}.
+ * 
+ * <p>
+ * Provides value semantics; this is relied upon by {@link Prerequisites}.
  * 
  * @author Dan Haywood
  */
@@ -167,7 +171,47 @@ public final class Requirement implements IRequirement {
 		return description1 + " UNLESS " + description2;
 	}
 
+	/*
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object other) {
+		if (!(other.getClass() == Requirement.class)) { return false; }
+		return equals((Requirement)other);
+	}
 
+	/**
+	 * Value comparison on {@link #isMet()}, {@link #isNoop()} and also the
+	 * description from {@link #getDescription()}.
+	 *  
+	 * @param other
+	 * @return
+	 */
+	public boolean equals(final Requirement other) {
+		return this.isNoop() && other.isNoop() ||
+	           !this.isNoop() && !other.isNoop() &&
+			   this.isMet() == other.isMet() &&
+		       this.getDescription().equals(other.getDescription());
+	}
+
+	/**
+	 * Uses the hashCode of {@link #toString()} - a bit cheeky, but should be
+	 * good enough.
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	
+
+	/*
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
 		return getDescriptionIfNotMet();
 	}

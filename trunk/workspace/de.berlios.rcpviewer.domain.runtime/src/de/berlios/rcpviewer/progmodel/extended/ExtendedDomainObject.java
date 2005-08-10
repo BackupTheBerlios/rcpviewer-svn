@@ -92,15 +92,24 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		return (IExtendedRuntimeDomainClass<T>)domainClass.getAdapter(IExtendedRuntimeDomainClass.class); 
 	}
 
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject#getAttribute(org.eclipse.emf.ecore.EAttribute)
+	 */
 	public synchronized IExtendedAttribute getAttribute(EAttribute eAttribute) {
 		IExtendedAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
 			attribute = new ExtendedAttribute(eAttribute);
 			_attributesByEAttribute.put(eAttribute, attribute);
 		}
+		adapts().getSession().addObservedFeature(attribute);
 		return attribute;
 	}
 
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject#getReference(org.eclipse.emf.ecore.EReference)
+	 */
 	public synchronized IExtendedReference getReference(EReference eReference) {
 		IExtendedReference reference = _referencesByEReference.get(eReference);
 		if (reference == null) {
@@ -110,6 +119,10 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		return reference;
 	}
 
+	/*
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject#getOperation(org.eclipse.emf.ecore.EOperation)
+	 */
 	public synchronized IExtendedOperation getOperation(EOperation eOperation) {
 		IExtendedOperation operation = _operationsByEOperation.get(eOperation);
 		if (operation == null) {
@@ -122,7 +135,17 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 	public class ExtendedAttribute implements IExtendedDomainObject.IExtendedAttribute {
 		
 		private final EAttribute _eAttribute;
-		private final List<IExtendedDomainObjectAttributeListener> _domainObjectAttributeListeners = 
+		/**
+		 * Holds onto the current accessor prerequisites, if known.
+		 * 
+		 * <p>
+		 * Used to determine whether listeners should be notified (see
+		 * {@link #notifyAttributeListeners(IPrerequisites)}) whenever there is
+		 * some external state change ({@link #externalStateChanged()}). 
+		 */
+		private IPrerequisites _currentPrerequisites;
+		
+		private final List<IExtendedDomainObjectAttributeListener> _listeners = 
 			new ArrayList<IExtendedDomainObjectAttributeListener>();
 
 		/**
@@ -138,6 +161,10 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			return (IExtendedDomainObject)ExtendedDomainObject.this; // JAVA_5_FIXME
 		}
 
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute#getEAttribute()
+		 */
 		public EAttribute getEAttribute() {
 			return _eAttribute;
 		}
@@ -210,20 +237,26 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			return rdc.authorizationConstraintFor(_eAttribute);
 		}
 
-		/**
-		 * Returns listener only because it simplifies test implementation to do so.
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute#addExtendedDomainObjectAttributeListener(null)
 		 */
 		public <T extends IExtendedDomainObjectAttributeListener> T addExtendedDomainObjectAttributeListener(T listener) {
-			synchronized(_domainObjectAttributeListeners) {
-				if (!_domainObjectAttributeListeners.contains(listener)) {
-					_domainObjectAttributeListeners.add(listener);
+			synchronized(_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
 				}
 			}
 			return listener;
 		}
+		
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute#removeExtendedDomainObjectAttributeListener(de.berlios.rcpviewer.session.IExtendedDomainObjectAttributeListener)
+		 */
 		public void removeExtendedDomainObjectAttributeListener(IExtendedDomainObjectAttributeListener listener) {
-			synchronized(_domainObjectAttributeListeners) {
-				_domainObjectAttributeListeners.remove(listener);
+			synchronized(_listeners) {
+				_listeners.remove(listener);
 			}
 		}
 		
@@ -236,9 +269,34 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		public void notifyAttributeListeners(IPrerequisites newPrerequisites) {
 			ExtendedDomainObjectAttributeEvent event = 
 				new ExtendedDomainObjectAttributeEvent(this, newPrerequisites);
-			for(IExtendedDomainObjectAttributeListener listener: _domainObjectAttributeListeners) {
+			for(IExtendedDomainObjectAttributeListener listener: _listeners) {
 				listener.attributePrerequisitesChanged(event);
 			}
+		}
+
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.session.IObservedFeature#externalStateChanged()
+		 */
+		public void externalStateChanged() {
+			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
+			IPrerequisites prerequisitesNow = accessorPrerequisitesFor();
+			
+			boolean notifyListeners = 
+				 prerequisitesPreviously == null || 
+			     !prerequisitesPreviously.equals(prerequisitesNow);
+			
+			_currentPrerequisites = prerequisitesNow;
+			if (notifyListeners) {
+				notifyAttributeListeners(_currentPrerequisites);
+			}
+			
+		}
+		
+		public String toString() {
+			return "Extended " + getEAttribute().toString() 
+				+ ", " + _listeners.size() + " listeners"
+				+ ", prereqs=" + _currentPrerequisites;
 		}
 
 	}
@@ -246,7 +304,16 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 	public class ExtendedReference implements IExtendedDomainObject.IExtendedReference {
 
 		private final EReference _eReference;
-		private final List<IExtendedDomainObjectReferenceListener> _domainObjectReferenceListeners = 
+		/**
+		 * Holds onto the current accessor prerequisites, if known.
+		 * 
+		 * <p>
+		 * Used to determine whether listeners should be notified (see
+		 * {@link #notifyReferenceListeners(IPrerequisites)}) whenever there is
+		 * some external state change ({@link #externalStateChanged()}). 
+		 */
+		private IPrerequisites _currentPrerequisites;
+		private final List<IExtendedDomainObjectReferenceListener> _listeners = 
 			new ArrayList<IExtendedDomainObjectReferenceListener>();
 
 		
@@ -269,10 +336,18 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		}
 
 		
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference#getEReference()
+		 */
 		public EReference getEReference() {
 			return _eReference;
 		}
 
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference#accessorPrerequisitesFor()
+		 */
 		public IPrerequisites accessorPrerequisitesFor() {
 			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
 			
@@ -346,37 +421,29 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 
 		}
 
-		/**
-		 * Returns listener only because it simplifies test implementation to do so.
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference#addExtendedDomainObjectReferenceListener(null)
 		 */
 		public <T extends IExtendedDomainObjectReferenceListener> T addExtendedDomainObjectReferenceListener(T listener) {
-			synchronized(_domainObjectReferenceListeners) {
-				if (!_domainObjectReferenceListeners.contains(listener)) {
-					_domainObjectReferenceListeners.add(listener);
+			synchronized(_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
 				}
 			}
 			return listener;
 		}
+		
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference#removeExtendedDomainObjectReferenceListener(de.berlios.rcpviewer.session.IExtendedDomainObjectReferenceListener)
+		 */
 		public void removeExtendedDomainObjectReferenceListener(IExtendedDomainObjectReferenceListener listener) {
-			synchronized(_domainObjectReferenceListeners) {
-				_domainObjectReferenceListeners.remove(listener);
+			synchronized(_listeners) {
+				_listeners.remove(listener);
 			}
 		}
 		
-		/**
-		 * public so that it can be invoked by NotifyListenersAspect.
-		 * 
-		 * @param attribute
-		 * @param newPrerequisites
-		 */
-		public void notifyReferenceListeners(IPrerequisites newPrerequisites) {
-			ExtendedDomainObjectReferenceEvent event = 
-				new ExtendedDomainObjectReferenceEvent(this, newPrerequisites);
-			for(IExtendedDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
-				listener.referencePrerequisitesChanged(event);
-			}
-		}
-
 		/*
 		 * 
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference#prerequisitesFor(java.lang.Object)
@@ -397,7 +464,43 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			.andRequire(mutatorPrerequisitesFor(candidateValue, beingAdded));
 		}
 
+		/**
+		 * public so that it can be invoked by NotifyListenersAspect.
+		 * 
+		 * @param attribute
+		 * @param newPrerequisites
+		 */
+		public void notifyReferenceListeners(IPrerequisites newPrerequisites) {
+			ExtendedDomainObjectReferenceEvent event = 
+				new ExtendedDomainObjectReferenceEvent(this, newPrerequisites);
+			for(IExtendedDomainObjectReferenceListener listener: _listeners) {
+				listener.referencePrerequisitesChanged(event);
+			}
+		}
 
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.session.IObservedFeature#externalStateChanged()
+		 */
+		public void externalStateChanged() {
+			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
+			IPrerequisites prerequisitesNow = accessorPrerequisitesFor();
+			
+			boolean notifyListeners = 
+				 prerequisitesPreviously == null || 
+			     !prerequisitesPreviously.equals(prerequisitesNow);
+			
+			_currentPrerequisites = prerequisitesNow;
+			if (notifyListeners) {
+				notifyReferenceListeners(_currentPrerequisites);
+			}
+		}
+
+		public String toString() {
+			return "Extended " + getEReference().toString() 
+				+ ", " + _listeners.size() + " listeners"
+				+ ", prereqs=" + _currentPrerequisites;
+		}
 	}
 
 	public class ExtendedOperation implements IExtendedDomainObject.IExtendedOperation {
@@ -405,8 +508,17 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		private final EOperation _eOperation;
 		private final Class<?>[] _parameterTypes;
 		private final Map<Integer, Object> argsByPosition = new HashMap<Integer, Object>();
-		private final List<IExtendedDomainObjectOperationListener> _domainObjectOperationListeners = 
+		private final List<IExtendedDomainObjectOperationListener> _listeners = 
 			new ArrayList<IExtendedDomainObjectOperationListener>();
+		/**
+		 * Holds onto the current (invoker) prerequisites, if known.
+		 * 
+		 * <p>
+		 * Used to determine whether listeners should be notified (see
+		 * {@link #notifyOperationListeners(IPrerequisites)}) whenever there is
+		 * some external state change ({@link #externalStateChanged()}). 
+		 */
+		private IPrerequisites _currentPrerequisites;
 
 		/**
 		 * Will reset the arguments, according to {@link #reset()}.
@@ -433,21 +545,27 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			return rdc.authorizationConstraintFor(_eOperation);
 		}
 		
-		
-		/**
-		 * Returns listener only because it simplifies test implementation to do so.
+
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#addExtendedDomainObjectOperationListener(null)
 		 */
 		public <T extends IExtendedDomainObjectOperationListener> T addExtendedDomainObjectOperationListener(T listener) {
-			synchronized(_domainObjectOperationListeners) {
-				if (!_domainObjectOperationListeners.contains(listener)) {
-					_domainObjectOperationListeners.add(listener);
+			synchronized(_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
 				}
 			}
 			return listener;
 		}
+		
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#removeExtendedDomainObjectOperationListener(de.berlios.rcpviewer.session.IExtendedDomainObjectOperationListener)
+		 */
 		public void removeExtendedDomainObjectOperationListener(IExtendedDomainObjectOperationListener listener) {
-			synchronized(_domainObjectOperationListeners) {
-				_domainObjectOperationListeners.remove(listener);
+			synchronized(_listeners) {
+				_listeners.remove(listener);
 			}
 		}
 		
@@ -460,42 +578,23 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		public void notifyOperationListeners(IPrerequisites newPrerequisites) {
 			ExtendedDomainObjectOperationEvent event = 
 				new ExtendedDomainObjectOperationEvent(this, newPrerequisites);
-			for(IExtendedDomainObjectOperationListener listener: _domainObjectOperationListeners) {
+			for(IExtendedDomainObjectOperationListener listener: _listeners) {
 				listener.operationPrerequisitesChanged(event);
 			}
 		}
 
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#getEOperation()
+		 */
 		public EOperation getEOperation() {
 			return _eOperation;
 		}
 
-		public Object[] getArgs() {
-			Object[] args = new Object[_eOperation.getEParameters().size()];
-			for(int i=0; i<args.length; i++) {
-				args[i] = getArg(i);
-			}
-			return args;
-		}
-		private Object getArg(final int position) {
-			Object arg = argsByPosition.get(position);
-			if (arg != null) {
-				return arg;
-			}
-			arg = __defaultValueByPrimitiveType.get(_parameterTypes[position]);
-			if (arg != null) {
-				return arg;
-			}
-			try {
-				Constructor<?> publicConstructor = _parameterTypes[position].getConstructor();
-				arg = publicConstructor.newInstance();
-				return arg;
-			} catch (Exception ex) {
-				throw new IllegalArgumentException(
-					"No public constructor for '" + _parameterTypes[position].getCanonicalName() + "'" 
-					+ " (arg position=" + position + ")", ex);
-			} 
-		}
- 
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#setArg(int, java.lang.Object)
+		 */
 		public void setArg(final int position, final Object arg) {
 			if (position < 0 || position >= _parameterTypes.length) {
 				throw new IllegalArgumentException("Invalid position: 0 <= position < " + _parameterTypes.length);
@@ -508,18 +607,22 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			argsByPosition.put(position, arg);
 		}
 
-		private boolean isAssignableFromIncludingAutoboxing(Class<?> requiredType, Class<? extends Object> candidateType) {
-			if (requiredType == byte.class && candidateType == Byte.class) { return true; }
-			if (requiredType == short.class && candidateType == Short.class) { return true; }
-			if (requiredType == int.class && candidateType == Integer.class) { return true; }
-			if (requiredType == long.class && candidateType == Long.class) { return true; }
-			if (requiredType == char.class && candidateType == Character.class) { return true; }
-			if (requiredType == float.class && candidateType == Float.class) { return true; }
-			if (requiredType == double.class && candidateType == Double.class) { return true; }
-			if (requiredType == boolean.class && candidateType == Boolean.class) { return true; }
-			return requiredType.isAssignableFrom(candidateType);
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#getArgs()
+		 */
+		public Object[] getArgs() {
+			Object[] args = new Object[_eOperation.getEParameters().size()];
+			for(int i=0; i<args.length; i++) {
+				args[i] = getArg(i);
+			}
+			return args;
 		}
-
+		
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#prerequisitesFor()
+		 */
 		public IPrerequisites prerequisitesFor() {
 			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
 			Method invokePre = erdc.getInvokePre(_eOperation);
@@ -556,7 +659,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 				// (simulates passing by reference)
 				Object[] argDefaultArrays = new Object[_parameterTypes.length];
 				for(int i=0; i<argDefaultArrays.length; i++) {
-					setDefaultArray( argDefaultArrays, i, Array.newInstance(_parameterTypes[i], 1), _parameterTypes[i]);
+					argDefaultArrays[i] = Array.newInstance(_parameterTypes[i], 1);
 				}
 				
 				// invoke the defaults method itself
@@ -579,35 +682,61 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			}
 		}
 
-		private void setDefaultArray(Object[] argDefaultArrays, int i, Object arrayOfType, Class<?> componentType) {
-			argDefaultArrays[i] = arrayOfType;
-//			if (componentType == byte.class) {
-//				argDefaultArrays[i] = (byte[])arrayOfType;
-//			}
-//			else if (componentType == short.class) {
-//				argDefaultArrays[i] = (short[])arrayOfType;
-//			}
-//			else if (componentType == int.class) {
-//				argDefaultArrays[i] = (int[])arrayOfType;
-//			}
-//			else if (componentType == long.class) {
-//				argDefaultArrays[i] = (long[])arrayOfType;
-//			}
-//			else if (componentType == char.class) {
-//				argDefaultArrays[i] = (char[])arrayOfType;
-//			}
-//			else if (componentType == float.class) {
-//				argDefaultArrays[i] = (float[])arrayOfType;
-//			}
-//			else if (componentType == double.class) {
-//				argDefaultArrays[i] = (double[])arrayOfType;
-//			}
-//			else if (componentType == boolean.class) {
-//				argDefaultArrays[i] = (boolean[])arrayOfType;
-//			}
-//			else {
-//				argDefaultArrays[i] = (Object[])arrayOfType;
-//			}
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.session.IObservedFeature#externalStateChanged()
+		 */
+		public void externalStateChanged() {
+			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
+			IPrerequisites prerequisitesNow = prerequisitesFor();
+			
+			boolean notifyListeners = 
+				 prerequisitesPreviously == null || 
+			     !prerequisitesPreviously.equals(prerequisitesNow);
+			
+			_currentPrerequisites = prerequisitesNow;
+			if (notifyListeners) {
+				notifyOperationListeners(_currentPrerequisites);
+			}
+		}
+
+		private Object getArg(final int position) {
+			Object arg = argsByPosition.get(position);
+			if (arg != null) {
+				return arg;
+			}
+			arg = __defaultValueByPrimitiveType.get(_parameterTypes[position]);
+			if (arg != null) {
+				return arg;
+			}
+			try {
+				Constructor<?> publicConstructor = _parameterTypes[position].getConstructor();
+				arg = publicConstructor.newInstance();
+				return arg;
+			} catch (Exception ex) {
+				throw new IllegalArgumentException(
+					"No public constructor for '" + _parameterTypes[position].getCanonicalName() + "'" 
+					+ " (arg position=" + position + ")", ex);
+			} 
+		}
+ 
+		private boolean isAssignableFromIncludingAutoboxing(Class<?> requiredType, Class<? extends Object> candidateType) {
+			if (requiredType == byte.class && candidateType == Byte.class) { return true; }
+			if (requiredType == short.class && candidateType == Short.class) { return true; }
+			if (requiredType == int.class && candidateType == Integer.class) { return true; }
+			if (requiredType == long.class && candidateType == Long.class) { return true; }
+			if (requiredType == char.class && candidateType == Character.class) { return true; }
+			if (requiredType == float.class && candidateType == Float.class) { return true; }
+			if (requiredType == double.class && candidateType == Double.class) { return true; }
+			if (requiredType == boolean.class && candidateType == Boolean.class) { return true; }
+			return requiredType.isAssignableFrom(candidateType);
+		}
+
+		public String toString() {
+			return "Extended " + getEOperation().toString() 
+				+ ", " + _listeners.size() + " listeners"
+				+ ", args=" + getArgs()
+				+ ", prereqs=" + _currentPrerequisites;
 		}
 	}
 	

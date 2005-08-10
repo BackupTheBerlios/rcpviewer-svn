@@ -19,6 +19,8 @@ public class AllTests {
 		suite.addTestSuite(TestSession.class);
 		suite.addTestSuite(TestExtendedDomainObjectAttribute.class);
 		suite.addTestSuite(TestExtendedDomainObjectOperation.class);
+		suite
+				.addTestSuite(TestExtendedDomainObjectAttributeAuthorization.class);
 		//$JUnit-END$
 		return suite;
 	}

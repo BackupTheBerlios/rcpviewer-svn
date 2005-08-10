@@ -845,6 +845,9 @@ public class RuntimeDomainClass<T>
 	public Method getAccessorFor(EReference eReference) {
 		String accessorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
+		if (accessorMethodName == null) {
+			return null;
+		}
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -866,6 +869,9 @@ public class RuntimeDomainClass<T>
 	public Method getMutatorFor(EReference reference) {
 		String mutatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(reference), StandardProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_NAME_KEY);
+		if (mutatorMethodName == null) {
+			return null;
+		}
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -886,6 +892,9 @@ public class RuntimeDomainClass<T>
 	public Method getAssociatorFor(EReference eReference) {
 		String associatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY);
+		if (associatorMethodName == null) {
+			return null;
+		}
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method associatorMethod = 
@@ -907,6 +916,9 @@ public class RuntimeDomainClass<T>
 	public Method getDissociatorFor(EReference eReference) {
 		String dissociatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY);
+		if (dissociatorMethodName == null) {
+			return null;
+		}
 		EClass eClass = (EClass)eReference.getEReferenceType();
 		try {
 			Method dissociatorMethod = 

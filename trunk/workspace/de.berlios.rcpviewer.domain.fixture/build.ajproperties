@@ -1,0 +1,2 @@
+src.includes = fixture/,\
+               src/
