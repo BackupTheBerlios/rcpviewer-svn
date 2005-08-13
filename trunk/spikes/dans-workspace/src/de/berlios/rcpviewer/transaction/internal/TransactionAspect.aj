@@ -7,7 +7,6 @@ import de.berlios.rcpviewer.session.IPojo;
 
 /**
  * 
- * <p>
  * The original design called for this aspect to be scoped using
  * <code>percflow(invokeOperationOnPojo(IPojo))</code>.  However, as of
  * ajdt_1.2.1.20050708145019 this is failing (causing a reflection exception).
