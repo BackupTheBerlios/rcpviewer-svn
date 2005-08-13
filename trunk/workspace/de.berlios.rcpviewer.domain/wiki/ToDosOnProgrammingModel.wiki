@@ -2,20 +2,29 @@
 
 Extended prog model, to test/implement:
 * Lookup        - type
-* FieldLengthOf - string parameter of operation, value type
-* MinLengthOf   - string parameter of operation, value type
-* MaxLengthOf   - string parameter of operation, value type
-* Mask          - string parameter of operation, value type
-* Regex         - string parameter of operation, value type
+* FieldLengthOf - value type
+* MinLengthOf   - value type
+* MaxLengthOf   - value type
+* Mask          - value type
+* Regex         - value type
 * ImmutableOncePersisted - type
 * SaveOperation    - operation
 * DeleteOperation  - operation
+
+Go through the javadoc of Petstore and make sure semantics described there are all honoured.
 
 Also:
 * sort out the interplay between @SaveOperation and @Lifecycle(saveable=...)
 * Customer#setLanguage() is being picked up as an operation.
 
-followed by Facade, then IOperation.
+followed by Facade
+
+TODOs:
+tests for ExtendedReference 
+- addTo/removeFrom/accessor
+
+tests for ExtendedOperation
+- prereqs
 
 
 ----
