@@ -12,13 +12,13 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public abstract class AbstractDomainObjectJob extends AbstractUserJob {
 
-	private final IDomainObject _object;
+	private final IDomainObject<?> _object;
 	
 	/**
 	 * @param name
 	 * @param object
 	 */
-	public AbstractDomainObjectJob( String name, IDomainObject object ) {
+	public AbstractDomainObjectJob( String name, IDomainObject<?> object ) {
 		super(name);
 		if ( object == null ) throw new IllegalArgumentException();
 		_object = object;
@@ -38,7 +38,7 @@ public abstract class AbstractDomainObjectJob extends AbstractUserJob {
 	 * Accessor for subclasses.
 	 * @return
 	 */
-	protected IDomainObject getDomainObject() {
+	protected IDomainObject<?> getDomainObject() {
 		return _object;
 	}
 	

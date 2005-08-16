@@ -54,7 +54,7 @@ public class DndTransferFactory {
 	
 	
 	/**
-	 * Returns the DnD transfer type appropriate for the passed class.
+	 * Returns the DnD transfer type appropriate for the passed pojo class.
 	 * <br>Currently could be null.
 	 * @param clazz
 	 * @return

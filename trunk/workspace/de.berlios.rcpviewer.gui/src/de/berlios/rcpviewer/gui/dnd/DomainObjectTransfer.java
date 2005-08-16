@@ -99,11 +99,12 @@ public class DomainObjectTransfer extends ByteArrayTransfer {
 		
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Note this is made public as used elsewhere.
 	 * @see org.eclipse.swt.dnd.ByteArrayTransfer#nativeToJava(org.eclipse.swt.dnd.TransferData)
 	 */
 	@Override
-	protected Object nativeToJava(TransferData transferData) {
+	public Object nativeToJava(TransferData transferData) {
 //		ByteArrayInputStream in = new ByteArrayInputStream( 
 //			(byte[])super.nativeToJava(transferData) );
 //		try {

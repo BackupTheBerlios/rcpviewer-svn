@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.gui.editors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -11,12 +12,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.ManagedForm;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.EditorPart;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
@@ -27,8 +28,12 @@ import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Core editor for GUI layer.
- * <br>Gui built up of <code>IField</code>s provided by 
+ * <br>Gui built up of:
+ * <ul>
+ * <li>for attributes : <code>IField</code>s provided by 
  * <code>IFieldBuilder</code>'s.
+ * <li>for references : ...
+ * </ul>
  * @author Mike
  * @see de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder
  * @see de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IField
@@ -37,8 +42,7 @@ public final class DefaultEditor extends EditorPart {
 	
 	public static final String ID = "de.berlios.rcpviewer.rcp.objectEditor"; //$NON-NLS-1$
 	
-	private IManagedForm _form = null;
-	private FormToolkit _toolkit = null;
+	private ManagedForm _form = null;
 	private OpsViewPage _opsView = null;
 	
 	
@@ -54,7 +58,6 @@ public final class DefaultEditor extends EditorPart {
 		setSite( site );
 		setInput( input );
 		setPartName( input.getName() );
-		_toolkit = new FormToolkit( site.getShell().getDisplay() );
 		
 		// refresh action
 		site.getActionBars().setGlobalActionHandler(
@@ -69,7 +72,7 @@ public final class DefaultEditor extends EditorPart {
 	public void createPartControl(Composite parent) {
 		
 		// main form
-		_form = new ManagedForm( _toolkit, _toolkit.createScrolledForm(parent)) {
+		_form = new ManagedForm( parent ) {
 			public void dirtyStateChanged() {
 				super.dirtyStateChanged();
 				firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -93,28 +96,72 @@ public final class DefaultEditor extends EditorPart {
 		}
 		columnWidths[0] = maxLength * GCUtil.getSafeCharWidth( parent ) ;
 		
-		// loop through all attributes - add an IField for each
+		// loop through all attributes - add an IFormPart for each
 		for ( Object a : clazz.attributes() ) {       
 			EAttribute attribute = (EAttribute)a;
 			
 			// create parent composite for IField
-			Composite fieldComposite = _toolkit.createComposite( body );
-			fieldComposite.setLayoutData( 
+			Composite partComposite = _form.getToolkit().createComposite( body );
+			partComposite.setLayoutData( 
 					new GridData( GridData.FILL_HORIZONTAL ) );
-			_toolkit.paintBordersFor( fieldComposite );
+			_form.getToolkit().paintBordersFor( partComposite );
 			
 			// create IField
 			IFieldBuilder fieldBuilder
 				= GuiPlugin.getDefault().getFieldBuilder( attribute );
-			FieldPart fieldPart = new FieldPart(
-					fieldComposite,
+			AttributePart attPart = new AttributePart(
+					partComposite,
 					fieldBuilder,
 					object,
 					attribute,
 					columnWidths );
-			_form.addPart( fieldPart );
-			fieldPart.initialize( _form );
+			_form.addPart( attPart );
 		}
+		
+		// loop through all references - add an IFormPart for each
+		for ( Object r : clazz.references() ) {       
+			EReference ref = (EReference)r;
+			
+			// create parent composite
+			Composite partComposite = _form.getToolkit().createComposite( body );
+			partComposite.setLayoutData( 
+					new GridData( GridData.FILL_HORIZONTAL ) );
+			_form.getToolkit().paintBordersFor( partComposite );
+			
+			// create form part - currently one of three types...
+			IFormPart refPart;
+			
+			// check we can currently deal with this - i.e. only if a
+			// reference to one or more instances of a domain class
+			final Class<?> refPojoType = ref.getEType().getInstanceClass();
+			if( RuntimeDomain.instance().lookupNoRegister( refPojoType ) == null ) {
+				refPart = new InvalidReferencePart( 
+						ref,
+						GuiPlugin.getResourceString( "DefaultEditor.InvalidRefMsg" ), //$NON-NLS-1$
+						partComposite, 
+						columnWidths );
+			}
+			else {
+				if ( ref.isMany() ) {
+					refPart = new CollectionPart( 
+							object,
+							ref,
+							partComposite,
+							_form.getToolkit(),
+							columnWidths );
+				}
+				else {
+					refPart = new ReferencePart( 
+							object,
+							ref,
+							partComposite,
+							_form.getToolkit(),
+							columnWidths );
+				}
+			}
+			_form.addPart( refPart );
+		}
+			
 		
 		_form.setInput( object );
 	}
@@ -135,8 +182,8 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void dispose() {
-		if (_toolkit != null) {
-			_toolkit.dispose();
+		if ( _form != null) {
+			_form.dispose();
 		}
 		if ( _opsView != null ) {
 			_opsView.dispose();

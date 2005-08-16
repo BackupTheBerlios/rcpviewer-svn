@@ -68,7 +68,7 @@ public interface IFieldBuilder {
 	}
 	
 	/**
-	 * Implementatiosn want to know whenever the field is modified via the gui.
+	 * Implementations want to know whenever the field is modified via the gui.
 	 * @author Mike
 	 */
 	public interface IFieldListener {

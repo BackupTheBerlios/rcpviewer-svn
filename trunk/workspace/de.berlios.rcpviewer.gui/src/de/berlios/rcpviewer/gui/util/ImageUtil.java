@@ -5,6 +5,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
@@ -18,6 +19,32 @@ public class ImageUtil {
 	public static final Point STATUS_BAR_IMAGE_SIZE = new Point ( 16, 16 );
 	
 	/**
+	 * Fteches / creates image from passed plugin-relative path from passed
+	 * plugin.  Caches and disposes of the image using the plugin's image
+	 * registry.
+	 * @param plugin
+	 * @param imagePath
+	 * @return
+	 */
+	public static final Image getImage( 
+			AbstractUIPlugin plugin, String imagePath ) {
+		String key = plugin.getBundle().getSymbolicName() + "." + imagePath; //$NON-NLS-1$
+		Image image = plugin.getImageRegistry().get( key );
+		if ( image == null ) {
+			ImageDescriptor desc = AbstractUIPlugin.imageDescriptorFromPlugin(
+					plugin.getBundle().getSymbolicName(),
+					imagePath );
+			if ( desc == null ) {
+				desc = ImageDescriptor.getMissingImageDescriptor();
+			}
+			image = desc.createImage();
+			plugin.getImageRegistry().put( key, image );
+		}
+		assert image != null;
+		return image;
+	}
+	
+	/**
 	 * Creates an image for the passed <code>IDomainClass</code>.
 	 * <br>This image is added to the <code>GUIPlugin</code>'s repository
 	 * for caching and resource handling.
@@ -25,7 +52,7 @@ public class ImageUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static final Image getImage( IDomainClass clazz ) {
+	public static final Image getImage( IDomainClass<?> clazz ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		
 		Image image = GuiPlugin.getDefault().getImageRegistry().get( clazz.getName() );

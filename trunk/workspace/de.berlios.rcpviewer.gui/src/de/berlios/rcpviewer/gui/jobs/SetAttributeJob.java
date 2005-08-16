@@ -14,7 +14,6 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public class SetAttributeJob extends AbstractDomainObjectJob {
 
-	private final EAttribute _attribute;
 	private final IDomainObject.IAttribute _domainObjectAttribute;
 	private final Object _value;
 	
@@ -24,9 +23,8 @@ public class SetAttributeJob extends AbstractDomainObjectJob {
 							Object value ) {
 		super( SetAttributeJob.class.getName(), object );
 		if ( attribute == null ) throw new IllegalArgumentException();
-		_attribute = attribute;
 		_value = value; // value can be null
-		_domainObjectAttribute = object.getAttribute(_attribute);
+		_domainObjectAttribute = object.getAttribute( attribute);
 	}
 
 	/* (non-Javadoc)

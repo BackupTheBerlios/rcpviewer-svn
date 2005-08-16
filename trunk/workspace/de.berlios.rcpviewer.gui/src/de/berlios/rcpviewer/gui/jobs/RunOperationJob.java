@@ -17,7 +17,6 @@ import de.berlios.rcpviewer.session.IDomainObject;
 public class RunOperationJob extends AbstractDomainObjectJob {
 
 	private final EOperation _eOperation;
-	private final IDomainObject.IOperation _domainObjectOperation;
 	private final Object[] _args;
 	
 	/**
@@ -48,7 +47,6 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 		}
 		_eOperation = operation;
 		_args = args;
-		_domainObjectOperation = object.getOperation(_eOperation);
 	}
 	
 	
@@ -79,7 +77,7 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 					args[i] = _args[i];
 				}
 			}
-			_domainObjectOperation.invokeOperation( args );
+			getDomainObject().getOperation( _eOperation ).invokeOperation( args );
 		}
 		else {
 			ActionArgsDisplay display = new ActionArgsDisplay(
