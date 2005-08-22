@@ -253,11 +253,15 @@ public final class Transaction implements ITransaction {
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#getEnlistedPojos()
 	 */
 	public Set<ITransactable> getEnlistedPojos() {
+		return Collections.unmodifiableSet(getEnlistedPojosInternal());
+	}
+
+	private Set<ITransactable> getEnlistedPojosInternal() {
 		Set<ITransactable> enlistedPojos = new LinkedHashSet<ITransactable>();
 		for(ChangeSet changeSet: _changes) {
 			enlistedPojos.addAll(changeSet.getModifiedPojos());
 		}
-		return Collections.unmodifiableSet(enlistedPojos);
+		return enlistedPojos;
 	}
 
 	/*
@@ -324,7 +328,11 @@ public final class Transaction implements ITransaction {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-    	return super.toString() + ": " + _state.name() + ", " + _changes.size() + " atoms: " + _changes;
+    	Set<ITransactable> enlistedPojos = getEnlistedPojosInternal();
+    	return "xactn@" + System.identityHashCode(this) + ": " 
+	    	+ _state.name() + ", " + enlistedPojos.size() + " pojos "
+	    	+ (enlistedPojos.size() > 0?enlistedPojos:"") 
+	    	+ ", " + _changes.size() + " atoms: " + _changes;
     }
 
 

@@ -119,6 +119,4 @@ public class AnotherEasyBean {
 		this.field9 = field9;
 	}
 	
-	
-
 }
