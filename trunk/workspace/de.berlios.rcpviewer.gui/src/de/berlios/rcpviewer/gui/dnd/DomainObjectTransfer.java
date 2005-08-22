@@ -50,7 +50,8 @@ public class DomainObjectTransfer extends ByteArrayTransfer {
 	 * @return
 	 */
 	static Collection<DomainObjectTransfer> getInstances() {
-		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses();
+		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses( 
+				DomainRegistryUtil.Filter.ALL );
 		while( it.hasNext() ) {
 			getInstance( it.next() );
 		}

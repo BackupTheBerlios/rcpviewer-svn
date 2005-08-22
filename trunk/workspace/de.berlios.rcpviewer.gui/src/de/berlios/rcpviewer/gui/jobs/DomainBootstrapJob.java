@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.
@@ -26,12 +27,15 @@ public class DomainBootstrapJob extends Job {
 
 
 	/**
-	 * Runs the wrapped <code>IDomainBootstrap</code>.
+	 * Runs the wrapped <code>IDomainBootstrap</code> and adds other necessary 
+	 * builders.
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {  
 		try {
 			_bootstrap.registerClasses();
+			RuntimeDomain.instance().addBuilder( 
+					new ExtendedProgModelDomainBuilder() );
 		}
 		catch ( CoreException ce ) {
 			return ce.getStatus();	

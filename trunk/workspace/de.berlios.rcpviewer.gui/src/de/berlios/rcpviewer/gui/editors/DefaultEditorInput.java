@@ -2,10 +2,12 @@ package de.berlios.rcpviewer.gui.editors;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -15,7 +17,12 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public class DefaultEditorInput implements IEditorInput {
 
+	private static final Point IMAGE_SIZE = new Point( 16, 16 );
+	
 	private final IDomainObject _domainObject;
+	
+	// lazily instantiated
+	private Image _image = null;
 
 	/**
 	 * @param obj
@@ -40,16 +47,21 @@ public class DefaultEditorInput implements IEditorInput {
 	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
 	 */
 	public ImageDescriptor getImageDescriptor() {
-		Image image = GuiPlugin.getDefault()
-						       .getLabelProvider( _domainObject )
-						       .getImage( _domainObject );
-		if ( image != null ) {
-			return ImageDescriptor.createFromImage( image );
-		}
-		return ImageDescriptor.getMissingImageDescriptor();
+		return ImageDescriptor.createFromImage( getImage() );
 	}
 
-	
+	/**
+	 * Takes image from label provider for domain object.
+	 */
+	public Image getImage() {
+		if ( _image == null ) {
+			_image = GuiPlugin.getDefault()
+						.getLabelProvider( _domainObject )
+						.getImage( _domainObject );
+			_image = ImageUtil.resize( _image, IMAGE_SIZE );
+		}
+		return _image;
+	}
 
 	/**
 	 * Takes name from label provider for domain object.

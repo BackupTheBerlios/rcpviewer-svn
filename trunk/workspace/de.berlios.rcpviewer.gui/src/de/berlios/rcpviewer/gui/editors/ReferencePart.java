@@ -202,17 +202,17 @@ class ReferencePart implements IFormPart {
 		// add listener that updates field whenever domain object updated
 		_listener = new IDomainObjectReferenceListener(){
 			public void collectionAddedTo(DomainObjectReferenceEvent event) {
-				refresh();
+				// does nowt
 			}
 			public void collectionRemovedFrom(DomainObjectReferenceEvent event) {
-				refresh();
+				// does nowt
 			}
 			public void referenceChanged(DomainObjectReferenceEvent event) {
 				refresh();
 			}
 		};
 		object.getReference( ref ).addDomainObjectReferenceListener( _listener );
-		
+
 		// finally set fields
 	    _parent = object;
 		_ref = ref;
@@ -233,7 +233,7 @@ class ReferencePart implements IFormPart {
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
 	public void dispose() {
-		_parent.getReference( _ref ).removeDomainObjectReferenceListener( _listener );
+//		_parent.getReference( _ref ).removeDomainObjectReferenceListener( _listener );
 	}
 
 	/* (non-Javadoc)

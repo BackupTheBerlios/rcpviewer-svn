@@ -58,6 +58,7 @@ public final class DefaultEditor extends EditorPart {
 		setSite( site );
 		setInput( input );
 		setPartName( input.getName() );
+		setTitleImage( ((DefaultEditorInput)input).getImage() );
 		
 		// refresh action
 		site.getActionBars().setGlobalActionHandler(

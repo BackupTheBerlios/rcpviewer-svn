@@ -104,7 +104,8 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 			_sessionId = session.getId();
 			List<IDomainClass> populatedClasses = new ArrayList<IDomainClass>();
 
-			Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses();
+			Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses(
+					DomainRegistryUtil.Filter.INSTANTIABLE );
 			while ( it.hasNext() ) {
 				IDomainClass<?> clazz = it.next();
 				if ( !session.footprintFor( clazz ).isEmpty() ) { 

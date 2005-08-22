@@ -67,6 +67,7 @@
    
    <extension
          point="de.berlios.rcpviewer.gui.fieldbuilder">
+         <impl class="de.berlios.rcpviewer.gui.fieldbuilders.exts.StringFieldBuilder"/>
          <impl class="de.berlios.rcpviewer.gui.fieldbuilders.exts.DateFieldBuilder"/>
    </extension>
 

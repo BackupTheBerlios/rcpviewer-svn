@@ -11,10 +11,9 @@ import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IField;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IFieldListener;
 import de.berlios.rcpviewer.gui.jobs.SetAttributeJob;
 import de.berlios.rcpviewer.gui.util.NullUtil;
-import de.berlios.rcpviewer.gui.widgets.DomainObjectListener;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.IDomainObjectListener;
+import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 
 /**
  * Generic form part for attributes
@@ -24,7 +23,7 @@ class AttributePart implements IFormPart, IFieldListener {
 	
 	private final IField _field;
 	private final EAttribute _attribute;
-	private final IDomainObjectListener _listener;
+	private final IDomainObjectAttributeListener _listener;
 	
 	private IDomainObject<?> _object = null;
 	private IManagedForm _managedForm;
@@ -56,19 +55,19 @@ class AttributePart implements IFormPart, IFieldListener {
 		
 		// add listener that updates display whenever domain object updated
 		// outside of this field
-		_listener = new DomainObjectListener(){
+		_listener = new IDomainObjectAttributeListener(){
 			public void attributeChanged(DomainObjectAttributeEvent event) {
 				DomainObjectAttributeEvent<?> typedEvent 
 					= (DomainObjectAttributeEvent<?>)event;
-				if ( typedEvent.getEAttribute().equals( _attribute ) 
-						&& !NullUtil.nullSafeEquals(
+				if ( !NullUtil.nullSafeEquals(
 								typedEvent.getNewValue(), 
 								_field.getGuiValue() ) ) {
 					_field.setGuiValue( typedEvent.getNewValue() );
 				}
 			}
 		};
-		_object.addDomainObjectListener( _listener );
+		_object.getAttribute( _attribute )
+			   .addDomainObjectAttributeListener( _listener );
 		
 	}
 	
@@ -92,7 +91,8 @@ class AttributePart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
 	public void dispose() {
-		_object.removeDomainObjectListener( _listener );	
+		_object.getAttribute( _attribute )
+		       .removeDomainObjectAttributeListener( _listener );	
 	}
 
 	/* (non-Javadoc)

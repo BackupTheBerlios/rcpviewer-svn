@@ -10,6 +10,8 @@ import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.packageadmin.PackageAdmin;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
@@ -32,6 +34,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 	// fields
 	private FieldBuilderFactory _fieldBuilderFactory = null;
 	private LabelProviderFactory _labelProviderFactory = null;
+	private PackageAdmin _packageAdmin = null;
 	
 	/* static methods */
 	
@@ -91,9 +94,12 @@ public class GuiPlugin extends AbstractUIPlugin {
 		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
 		sessionJob.schedule();
 		
-		// instantiate gui factoried
+		// instantiate fields
 		_fieldBuilderFactory = new FieldBuilderFactory();
 		_labelProviderFactory = new LabelProviderFactory();
+		ServiceReference ref = context.getServiceReference(
+				PackageAdmin.class.getName());
+		_packageAdmin = (PackageAdmin)context.getService( ref );
 		
 		// effectively running jobs synchronously
 		waitForJob( domainJob );
@@ -138,6 +144,11 @@ public class GuiPlugin extends AbstractUIPlugin {
 	public ILabelProvider getLabelProvider(  IDomainClass<?> clazz  ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		return _labelProviderFactory.getLabelProvider( clazz ); 
+	}
+	
+	public PackageAdmin getPackageAdmin() {
+		assert _packageAdmin != null;
+		return _packageAdmin;
 	}
 	
 	/* private methods */

@@ -1,8 +1,10 @@
 package de.berlios.rcpviewer.gui;
 
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 
@@ -33,9 +35,18 @@ class DefaultLabelProvider extends LabelProvider
 		}
 		return ((IDomainObject<?>)element).title();
 	}
-	
-	
 
-	
-	
+	/**
+	 * Creates an image based on the passed object's <code>IDomainClass</code>
+	 * using <code>ImageUtil</code>.
+	 * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
+	 */
+	@Override
+	public Image getImage(Object element) {
+		if ( element == null ) throw new IllegalArgumentException();
+		if ( !( element instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
+		return ImageUtil.getImage( ((IDomainObject<?>)element).getDomainClass() );
+	}
 }

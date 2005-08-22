@@ -9,6 +9,7 @@ import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
 
 /**
  * Static helper methods domain registry functions.
@@ -16,15 +17,35 @@ import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
  */
 public class DomainRegistryUtil {
 	
+	public enum Filter { ALL, INSTANTIABLE }
+	
+	
 	/**
-	 * Return an iterator for all classes in all domains.
+	 * Return an iterator for all classes in all domains, passed through
+	 * one of the following filters:
+	 * <ul>
+	 * <li><code>ALL</code> : all classes
+	 * <li><code>INSTANTIABLE</code> : only those that are instantiable 
+	 * </ul>
 	 * @return
 	 */
-	public static Iterator<IDomainClass> iterateAllClasses() {
+	public static Iterator<IDomainClass> iterateAllClasses( Filter filter ) {
+		if ( filter == null ) throw new IllegalArgumentException();
     	RuntimePlugin runtimePlugin= RuntimePlugin.getDefault();
     	IDomainRegistry domainRegistry= runtimePlugin.getDomainRegistry();
     	Map<String, IDomain> domains= domainRegistry.getDomains();
-		ClassIterator it = new ClassIterator();
+    	IClassFilter classFilter;
+    	switch( filter ) {
+    		case ALL:
+    			classFilter = null;
+    			break;
+    		case INSTANTIABLE:
+    			classFilter = new InstantiableFilter();
+    			break;
+    		default:
+    			throw new IllegalArgumentException();
+    	}
+		ClassIterator it = new ClassIterator( classFilter );
 		for (IDomain domain: domains.values()) {
 			it.addDomain( domain );
     	}
@@ -40,17 +61,29 @@ public class DomainRegistryUtil {
 	// iterator - add domains before first public call.
 	private static class ClassIterator implements Iterator<IDomainClass> {
 		
+		private final IClassFilter _filter;
 		private final List <IDomainClass> _classes;
 		private Iterator<IDomainClass> _iterator = null ;
 		
-		ClassIterator() {
+		ClassIterator( IClassFilter filter ) {
+			// filter can be null
+			_filter = filter;
 			_classes = new ArrayList<IDomainClass>();
 		}
 		
 		void addDomain( IDomain domain ) {
 			if ( domain == null ) throw new IllegalArgumentException();
 			if ( _iterator != null ) throw new IllegalStateException();
-			_classes.addAll( domain.classes() );
+			if ( _filter == null ) {
+				_classes.addAll( domain.classes() );
+			}
+			else {
+				for ( IDomainClass<?> clazz : domain.classes() ) {
+					if ( _filter.isApplicable( clazz ) ) {
+						_classes.add( clazz );
+					}
+				}
+			}
 		}
 
 		/* (non-Javadoc)
@@ -75,9 +108,21 @@ public class DomainRegistryUtil {
 		 */
 		public void remove() {
 			throw new UnsupportedOperationException();
+		}	
+	}
+	
+	private static interface IClassFilter {
+		boolean isApplicable( IDomainClass<?> clazz );
+	}
+	
+	private static class InstantiableFilter implements IClassFilter {
+		public boolean isApplicable( IDomainClass<?> clazz ){
+			assert clazz != null;
+			ExtendedDomainClass<?> extClazz = (ExtendedDomainClass)
+				clazz.getAdapter(ExtendedDomainClass.class);
+			if ( extClazz == null ) return false;
+			return extClazz.isInstantiable();
 		}
-		
-		
 	}
 
 }

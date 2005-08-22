@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
@@ -19,7 +20,7 @@ public class ImageUtil {
 	public static final Point STATUS_BAR_IMAGE_SIZE = new Point ( 16, 16 );
 	
 	/**
-	 * Fteches / creates image from passed plugin-relative path from passed
+	 * Fetches / creates image from passed plugin-relative path from passed
 	 * plugin.  Caches and disposes of the image using the plugin's image
 	 * registry.
 	 * @param plugin
@@ -46,9 +47,15 @@ public class ImageUtil {
 	
 	/**
 	 * Creates an image for the passed <code>IDomainClass</code>.
+	 * <br>The image is discovered using the following logic:
+	 * <ol>
+	 * <li>looks for default image file in default location - that is a 
+	 * .png file in an 'icons' subdirectory of the class's parent plugin
+	 * <li>if none found, looks for annotation 'XXX' TODO
+	 * <li>if none found, uses the Eclipse standard 'missing image'
+	 * </ol>
 	 * <br>This image is added to the <code>GUIPlugin</code>'s repository
 	 * for caching and resource handling.
-	 * TODO - need image attribute on IDomainClass
 	 * @param clazz
 	 * @return
 	 */
@@ -57,10 +64,28 @@ public class ImageUtil {
 		
 		Image image = GuiPlugin.getDefault().getImageRegistry().get( clazz.getName() );
 		if ( image == null ) {
-			ImageDescriptor desc = null; // TODO - how get image out
+			ImageDescriptor desc = null;
+			
+			// look for default image - require parent bundle and relative path
+			Bundle parentBundle = GuiPlugin.getDefault().getPackageAdmin().getBundle( 
+					clazz.getEClass().getInstanceClass() );
+			StringBuffer relativePath = new StringBuffer();
+			relativePath.append( "/icons/" ); //$NON-NLS-1$
+			relativePath.append( clazz.getName() );
+			relativePath.append( ".png" ); //$NON-NLS-1$
+			
+			desc = AbstractUIPlugin.imageDescriptorFromPlugin(
+						parentBundle.getSymbolicName(),
+						relativePath.toString() );
+			
+			// use annotation value...
+			// TODO
+			
+			// last resort - missing image
 			if ( desc == null ) {
 				desc = ImageDescriptor.getMissingImageDescriptor();
 			}
+			
 			image = desc.createImage();
 			GuiPlugin.getDefault().getImageRegistry().put( clazz.getName(), image );
 		}
@@ -99,9 +124,8 @@ public class ImageUtil {
 		}
 		return resized;
 	}
-	
-	
 
+	
 	// prevent instantiation
 	private ImageUtil() {
 		super();

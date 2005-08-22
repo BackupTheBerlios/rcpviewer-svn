@@ -47,7 +47,8 @@ public class ClassBarView extends ViewPart {
 		parent.setLayout( layout );
 		
 		// get all classes from domain(s)
-		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses();
+		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses(
+				DomainRegistryUtil.Filter.INSTANTIABLE );
 		boolean empty = true;
 		while ( it.hasNext() ) {
 			doAddClass( (IRuntimeDomainClass)it.next(), parent  );
