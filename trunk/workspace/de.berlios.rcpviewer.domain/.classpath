@@ -4,5 +4,6 @@
 	<classpathentry exported="true" sourcepath="bin" kind="lib" path="bin"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ASPECTJRT_LIB"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

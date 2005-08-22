@@ -7,7 +7,8 @@ public class CustomerOperationReturningDomainObject {
 
 	private int orderNum;
 	public Order placeOrder() {
-		return new Order(++orderNum);
+		++orderNum;
+		return new Order(orderNum);
 	}
 	
 	public int numberOfOrdersPlaced() {

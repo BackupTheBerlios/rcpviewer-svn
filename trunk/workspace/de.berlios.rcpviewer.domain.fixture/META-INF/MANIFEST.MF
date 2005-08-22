@@ -24,5 +24,6 @@ Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel.standard.namingconventions,
  de.berlios.rcpviewer.progmodel.standard.operation,
  de.berlios.rcpviewer.progmodel.standard.reference,
- de.berlios.rcpviewer.session
+ de.berlios.rcpviewer.session,
+ de.berlios.rcpviewer.transaction
 Bundle-Vendor: RcpViewer Development Team

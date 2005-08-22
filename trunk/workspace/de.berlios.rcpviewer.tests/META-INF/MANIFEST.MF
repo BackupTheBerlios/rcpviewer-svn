@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests Plug-in
+Bundle-SymbolicName: de.berlios.rcpviewer.tests
+Bundle-Version: 0.0.1
+Bundle-ClassPath: tests.jar
+Bundle-Activator: de.berlios.rcpviewer.tests.TestsPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ org.junit;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime.tests;visibility:=reexport,
+ de.berlios.rcpviewer.domain.tests;visibility:=reexport,
+ de.berlios.rcpviewer.domain;visibility:=reexport,
+ de.berlios.rcpviewer.domain.fixture;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
+ de.berlios.rcpviewer.progmodel.extended.tests
+Eclipse-AutoStart: true
+Bundle-Vendor: RcpViewer Development Team

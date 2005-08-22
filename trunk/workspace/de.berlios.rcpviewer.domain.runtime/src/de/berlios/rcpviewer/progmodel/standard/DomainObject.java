@@ -494,11 +494,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			try {
 				return operationMethod.invoke(getDomainObject().getPojo(), args);
 			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Mutator method '" + operationMethodName + "' not accessible");
+				throw new UnsupportedOperationException("Operation invoker method '" + operationMethodName + "' not accessible");
 			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + operationMethodName + "'", e);
+				throw new UnsupportedOperationException("Operation invoker method '" + operationMethodName + "' not accessible");
 			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + operationMethodName + "'", e);
+				throw new RuntimeException("Operation method threw an exception '" + operationMethodName + "'", e.getCause());
 			}
 			
 		}

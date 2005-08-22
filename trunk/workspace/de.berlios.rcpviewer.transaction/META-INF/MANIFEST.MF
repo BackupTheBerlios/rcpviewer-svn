@@ -5,5 +5,10 @@ Bundle-SymbolicName: de.berlios.rcpviewer.transaction
 Bundle-Version: 1.0.0
 Bundle-Activator: de.berlios.rcpviewer.transaction.TransactionPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ de.berlios.rcpviewer.domain,
+ de.berlios.rcpviewer.domain.runtime
 Eclipse-AutoStart: true
+Export-Package: de.berlios.rcpviewer.transaction,
+ de.berlios.rcpviewer.transaction.internal,
+ de.berlios.rcpviewer.transaction.internal.atoms

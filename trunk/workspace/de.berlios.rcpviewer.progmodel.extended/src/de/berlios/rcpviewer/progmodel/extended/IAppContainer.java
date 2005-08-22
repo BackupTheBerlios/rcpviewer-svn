@@ -36,7 +36,7 @@ public interface IAppContainer {
 	 * @param javaClass
 	 * @return
 	 */
-	<V> V createTransient(Class<V> javaClass);
+	public <V> V createTransient(Class<V> javaClass);
 
 	/**
 	 * Whether the supplied pojo is persistent or not.
@@ -49,7 +49,7 @@ public interface IAppContainer {
 	 * @param pojo
 	 * @return
 	 */
-	boolean isPersistent(Object pojo);
+	public boolean isPersistent(Object pojo);
 
 	/**
 	 * Delete the specified object.
@@ -60,6 +60,17 @@ public interface IAppContainer {
 	 * 
 	 * @param pojo
 	 */
-	void delete(Object pojo);
+	public void delete(Object pojo);
 
+	
+	/**
+	 * Returns the current time.
+	 * 
+	 * <p>
+	 * This is provided as a service of the container so that the application
+	 * can run with different times.
+	 * 
+	 * @return
+	 */
+	public java.util.Date now();
 }

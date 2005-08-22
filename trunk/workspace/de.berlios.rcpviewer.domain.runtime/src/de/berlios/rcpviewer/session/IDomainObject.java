@@ -27,7 +27,7 @@ import de.berlios.rcpviewer.domain.RuntimeDomain;
  * <p>
  * Moreover, the IDomainObject also plays the role of <i>model</i> within the 
  * MVC pattern.  Again, the UI layer is the archetypal <i>view</i>, being
- * notified of changes through the {@link IDomainObjectListener} interface. 
+ * notified of changes through the {@link ITransactionListener} interface. 
  * 
  * <p>
  * TODO: should validate the EOperations and EAttributes, just as we do
@@ -116,7 +116,7 @@ public interface IDomainObject<T> {
 		 * collection.
 		 * 
 		 * <p>
-		 * Any {@link IDomainObjectListener}s will be notified.
+		 * Any {@link ITransactionListener}s will be notified.
 		 * 
 		 * @param collection
 		 * @param domainObject
@@ -128,7 +128,7 @@ public interface IDomainObject<T> {
 		 * collection.
 		 * 
 		 * <p>
-		 * Any {@link IDomainObjectListener}s will be notified.
+		 * Any {@link ITransactionListener}s will be notified.
 		 * 
 		 * @param collection
 		 * @param domainObject
@@ -195,7 +195,7 @@ public interface IDomainObject<T> {
 	 * Persist this object (for the first time).
 	 * 
 	 * <p>
-	 * Any {@link IDomainObjectListener}s of the object will be notified.
+	 * Any {@link ITransactionListener}s of the object will be notified.
 	 *  
 	 * @throws IllegalStateException if already persisted.
 	 */

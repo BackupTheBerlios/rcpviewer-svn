@@ -21,4 +21,7 @@ Export-Package: de.berlios.rcpviewer.authorization,
  de.berlios.rcpviewer.progmodel.standard,
  de.berlios.rcpviewer.progmodel.standard.aspects,
  de.berlios.rcpviewer.session,
- de.berlios.rcpviewer.session.local
+ de.berlios.rcpviewer.session.local,
+ de.berlios.rcpviewer.transaction,
+ de.berlios.rcpviewer.transaction.internal,
+ de.berlios.rcpviewer.transaction.internal.atoms

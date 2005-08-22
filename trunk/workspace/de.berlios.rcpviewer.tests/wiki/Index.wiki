@@ -1,0 +1,14 @@
+1 Prerequisites
+
+To run these tests, you need the following:
+* Eclipse 3.1
+* JRE 1.5.0_02
+* Compiler compliance level: 5.0
+
+Previously aspect-1.2 was required; this has now been removed.
+
+1 Running the tests
+* open up Eclipse:/de.berlios.rcpviewer.tests/src/de/berlios/rcpviewer/tests/AllRcpViewerTests.java
+* Run > Run As > JUnit Test
+* Run > Run As > JUnit Plugin Test
+

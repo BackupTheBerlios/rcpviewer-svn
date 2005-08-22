@@ -115,7 +115,7 @@ public interface ISession {
 	 * Detach all instances.
 	 * 
 	 * <p>
-	 * Note that <i>no</i> {@link IDomainObjectListener}s will be notified. 
+	 * Note that <i>no</i> {@link ITransactionListener}s will be notified. 
 	 * 
 	 * <p>
 	 * Primarily of use for testing.
@@ -127,7 +127,7 @@ public interface ISession {
 	 * Persist this (currently transient) object to the configured object store.
 	 * 
 	 * <p>
-	 * {@link IDomainObjectListener}s of the {@link IDomainObject} (<i>not</i>
+	 * {@link ITransactionListener}s of the {@link IDomainObject} (<i>not</i>
 	 * the session) will be notified.
 	 *  
 	 * @param domainObject
@@ -140,7 +140,7 @@ public interface ISession {
 	 * 
 	 * <p>
 	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
-	 * persist; {@link IDomainObjectListener}s of the {@link IDomainObject} 
+	 * persist; {@link ITransactionListener}s of the {@link IDomainObject} 
 	 * (<i>not</i> the session) will be notified.
 	 *  
 	 * @param domainObject
@@ -153,7 +153,7 @@ public interface ISession {
 	 * configured object store.
 	 * 
 	 * <p>
-	 * {@link IDomainObjectListener}s of the {@link IDomainObject} (<i>not</i>
+	 * {@link ITransactionListener}s of the {@link IDomainObject} (<i>not</i>
 	 * the session) will be notified.
 	 *  
 	 * @param domainObject
@@ -167,7 +167,7 @@ public interface ISession {
 	 * 
 	 * <p>
 	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
-	 * persist; {@link IDomainObjectListener}s of the {@link IDomainObject} 
+	 * persist; {@link ITransactionListener}s of the {@link IDomainObject} 
 	 * (<i>not</i> the session) will be notified.
 	 *  
 	 * @param domainObject
