@@ -64,10 +64,13 @@ public abstract aspect PojoAspect {
 		!within(PojoAspect);
 	
 	/**
-	 * protected for sub-aspects
+	 * protected for sub-aspects; any public method except those inherited 
+	 * from Object class itself.
 	 */
 	protected pointcut invokePublicMethodOnPojo(IPojo pojo): 
-		execution(public * IPojo+.*(..)) && this(pojo);
+		execution(public * IPojo+.*(..)) && 
+		!execution(public String Object+.*()) && 
+		this(pojo);
 	
 	/**
 	 * protected for sub-aspects
@@ -80,6 +83,18 @@ public abstract aspect PojoAspect {
 	 */
 	protected pointcut invokeMutatorOnPojo(IPojo pojo, Object postValue): 
 		execution(public void IPojo+.set*(*)) && this(pojo) && args(postValue);
+	
+	/**
+	 * protected for sub-aspects
+	 */
+	protected pointcut invokeAddToOnPojo(IPojo pojo): 
+		execution(public !void IPojo+.addTo*(*)) && this(pojo);
+	
+	/**
+	 * protected for sub-aspects
+	 */
+	protected pointcut invokeRemoveFromOnPojo(IPojo pojo): 
+		execution(public !void IPojo+.removeFrom*(*)) && this(pojo);
 	
 	/**
 	 * Capture an attribute being changed on some pojo.

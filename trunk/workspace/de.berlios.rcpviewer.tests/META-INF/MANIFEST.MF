@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
 Bundle-SymbolicName: de.berlios.rcpviewer.tests
 Bundle-Version: 0.0.1
-Bundle-ClassPath: tests.jar
+Bundle-ClassPath: tests.jar,
+ etc/
 Bundle-Activator: de.berlios.rcpviewer.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,

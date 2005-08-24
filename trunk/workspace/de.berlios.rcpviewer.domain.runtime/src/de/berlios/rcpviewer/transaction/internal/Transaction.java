@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import org.apache.log4j.Logger;
+
 import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.transaction.*;
 
@@ -19,6 +21,8 @@ import de.berlios.rcpviewer.transaction.*;
  * Implementation of {@link Transaction} as used by {@link de.berlios.rcpviewer.transaction.TransactionManager}
  */
 public final class Transaction implements ITransaction {
+
+	private final static Logger LOG = Logger.getLogger(Transaction.class);
 
 	/**
 	 * All {@link IChange}s in the current change.
@@ -101,7 +105,11 @@ public final class Transaction implements ITransaction {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.BUILDING_CHANGE);
 		if (!change.equals(IChange.NULL)) {
+			LOG.debug("adding change; change=" + change);
 			_changesInCurrentChange.add(change);
+			_transactionManager.enlist(this, change.getModifiedPojos());
+		} else {
+			LOG.debug("adding change - ignoring since NULL change");
 		}
 	}
 	
@@ -109,6 +117,7 @@ public final class Transaction implements ITransaction {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.BUILDING_CHANGE);
 		ChangeSet changesToDiscard = new ChangeSet(_changesInCurrentChange);
+		LOG.debug("discarding " + _changesInCurrentChange.size() + " changes in undo stack");
 		changesToDiscard.undo();
 		_changesInCurrentChange.clear();
 		this._state = ITransaction.State.IN_PROGRESS;
@@ -125,6 +134,7 @@ public final class Transaction implements ITransaction {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.BUILDING_CHANGE);
 		_changes.push(new ChangeSet(_changesInCurrentChange));
+		LOG.debug("pushing new ChangeSet of " + _changesInCurrentChange.size() + " changes onto undo stack");
 		_changesInCurrentChange.clear();
 		this._state = ITransaction.State.IN_PROGRESS;
 	}
@@ -136,6 +146,7 @@ public final class Transaction implements ITransaction {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS);
 		_committedChanges = new ChangeSet(_changes.toArray(new ChangeSet[]{}));
+		LOG.debug("committing xactn of " + _changes.size() + " separate ChangeSets");
 		_changes.clear();
 		_state = ITransaction.State.COMMITTED;
 		TransactionEvent event = new TransactionEvent(this);
@@ -180,7 +191,7 @@ public final class Transaction implements ITransaction {
 		checkInState(ITransaction.State.COMMITTED);
 		return _committedChanges;
 	}
-
+ 
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#undoPendingChange()
 	 */
@@ -188,6 +199,7 @@ public final class Transaction implements ITransaction {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS);
 		if(_changes.isEmpty()) {
+			LOG.error("No pending changes to undo (_changes undo stack is empty)");
 			throw new IllegalStateException("No pending changes to undo.");
 		}
 		ChangeSet change = _changes.pop();
@@ -202,6 +214,7 @@ public final class Transaction implements ITransaction {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS);
 		if(_undoneChanges.isEmpty()) {
+			LOG.error("No pending changes to redo (_undoChanges redo stack is empty)");
 			throw new IllegalStateException("No undone changes to redo.");
 		}
 		ChangeSet change = _undoneChanges.pop();

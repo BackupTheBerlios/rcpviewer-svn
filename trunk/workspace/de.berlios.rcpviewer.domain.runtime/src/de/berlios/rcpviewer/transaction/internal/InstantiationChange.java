@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import de.berlios.rcpviewer.transaction.ITransactable;
-
+import java.util.Set;
 
 /**
  * Represents the instantiation of a {@link IDomainObject}.
@@ -50,8 +50,15 @@ public final class InstantiationChange extends AbstractChange {
 		return false;
 	}
 
+
 	/*
-	 * 
+	 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
+	 */
+	public Set<ITransactable> getModifiedPojos() {
+		throw new RuntimeException("Operation not yet implemented.");	
+	}
+
+	/*
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(final Object other) {
@@ -77,11 +84,6 @@ public final class InstantiationChange extends AbstractChange {
 	 */
 	public int hashCode() {
 		return _transactable.hashCode();
-	}
-
-	public List<ITransactable> getModifiedPojos() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

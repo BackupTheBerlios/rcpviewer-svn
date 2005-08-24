@@ -1,8 +1,9 @@
 package de.berlios.rcpviewer.transaction;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
 import java.util.List;
 import de.berlios.rcpviewer.transaction.IChange;
 import de.berlios.rcpviewer.transaction.internal.AbstractChange;
@@ -112,12 +113,12 @@ public final class ChangeSet extends AbstractChange {
 	 * 
 	 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
 	 */
-	public List<ITransactable> getModifiedPojos() {
-		List<ITransactable> pojos = new ArrayList<ITransactable>();
+	public Set<ITransactable> getModifiedPojos() {
+		Set<ITransactable> pojos = new HashSet<ITransactable>();
 		for (int i = 0; i < _changes.length; i++) {
 			pojos.addAll(_changes[i].getModifiedPojos());
 		}
-		return Collections.unmodifiableList(pojos);
+		return Collections.unmodifiableSet(pojos);
 	}
 
 

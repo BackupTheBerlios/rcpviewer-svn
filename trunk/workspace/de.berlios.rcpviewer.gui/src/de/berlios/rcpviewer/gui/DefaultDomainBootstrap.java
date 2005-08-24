@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.gui;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -15,6 +16,8 @@ import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
  */
 class DefaultDomainBootstrap implements IDomainBootstrap {
 	
+	private final static Logger LOG = Logger.getLogger(DefaultDomainBootstrap.class);
+
 	public static final String DOMAIN_CLASS_EXTENSION_POINT
 		= "de.berlios.rcpviewer.gui.domainclass";  //$NON-NLS-1$
 	public static final String CLASS_PROPERTY = "class"; //$NON-NLS-1$
@@ -37,7 +40,7 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 			Object obj = elems[i].createExecutableExtension(
 					CLASS_PROPERTY );
 
-			System.out.println("Registering " + obj.getClass().getName()); //$NON-NLS-1$
+			LOG.info("Registering " + obj.getClass().getName()); //$NON-NLS-1$
 
 			classes[i] = obj.getClass();
 		}		

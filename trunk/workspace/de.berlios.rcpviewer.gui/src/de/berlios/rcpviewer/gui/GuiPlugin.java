@@ -1,8 +1,15 @@
 package de.berlios.rcpviewer.gui;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.net.SocketAppender;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -84,6 +91,10 @@ public class GuiPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		
+		SocketAppender ganymede = new SocketAppender("localhost", 4445);
+		ganymede.setLocationInfo(true);
+		Logger.getRootLogger().addAppender(ganymede);
 		
 		// start domain initialisation
 		IDomainBootstrap bootstrap = DomainBootstrapFactory.createBootstrap();

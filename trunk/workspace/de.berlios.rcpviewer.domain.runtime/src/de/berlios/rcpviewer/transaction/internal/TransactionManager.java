@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import de.berlios.rcpviewer.progmodel.extended.AppContainer;
@@ -84,11 +85,9 @@ public final class TransactionManager implements ITransactionManager {
 	public synchronized ITransaction getCurrentTransactionFor(final ITransactable transactable, final boolean autoEnlist) {
 		ITransaction transaction = _currentTransactionByEnlistedPojo.get(transactable);
 		if (transaction == null && autoEnlist) {
-			if (autoEnlist) {
-				transaction = createTransaction();
-				_currentTransactions.add(transaction);
-				_currentTransactionByEnlistedPojo.put(transactable, transaction);
-			}
+			transaction = createTransaction();
+			_currentTransactions.add(transaction);
+			_currentTransactionByEnlistedPojo.put(transactable, transaction);
 		} 
 		// fail early if (for any reason) we get out of whack. 
 		if (transaction != null && !_currentTransactions.contains(transaction)) {
@@ -279,6 +278,40 @@ public final class TransactionManager implements ITransactionManager {
 		ITransaction transaction = new Transaction(this, getAppContainer());
 		_currentTransactions.add(transaction);
 		return transaction;
+	}
+
+	/**
+	 * Ensure that the pojo(s) are enlisted in the transaction.
+	 * 
+	 * <p>
+	 * It is possible that some will already have been enlisted.  If any have
+	 * already been enlisted in some other transaction, then an exception
+	 * is thrown.
+	 * 
+	 * @param transaction
+	 * @param enlistedPojos
+	 */
+	public void enlist(Transaction transaction, Set<ITransactable> enlistedPojos) {
+		
+		// first pass; look for any issues before we do anything
+		for(ITransactable transactable: enlistedPojos) {
+			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
+			if (pojoTransaction != null && pojoTransaction != transaction) {
+				throw new IllegalStateException(
+						"Pojo already enlisted in another transaction " 
+						+ "(pojo='" + transactable + "'" 
+						+ ", other xactn = '" + pojoTransaction + "'" 
+						+ ", this xact='" + transaction + "'");
+			}
+		}
+		
+		// second pass; do the work
+		for(ITransactable transactable: enlistedPojos) {
+			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
+			if (pojoTransaction == null) {
+				_currentTransactionByEnlistedPojo.put(transactable, transaction);
+			}
+		}
 	}
 
 

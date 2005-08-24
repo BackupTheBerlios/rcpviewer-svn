@@ -4,7 +4,8 @@ Bundle-Name: Tests Plug-in
 Bundle-SymbolicName: de.berlios.rcpviewer.domain.runtime.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
- bin/
+ bin/,
+ etc/log4j.properties
 Bundle-Activator: de.berlios.rcpviewer.domain.runtime.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,

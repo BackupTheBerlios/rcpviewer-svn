@@ -1,8 +1,9 @@
 package de.berlios.rcpviewer.transaction.internal;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Collections;
+import java.util.Set;
 import java.util.List;
 
 import de.berlios.rcpviewer.transaction.ITransactable;
@@ -64,7 +65,7 @@ public final class AttributeChange extends AbstractChange {
 	private final Object _postValue;
 
 	private final ITransactable _transactable;
-	private final List<ITransactable> _transactableAsList;
+	private final Set<ITransactable> _transactableAsSet;
 	
 	/**
 	 * CAptures the current value of the attribute as the 
@@ -88,9 +89,9 @@ public final class AttributeChange extends AbstractChange {
 			throw new RuntimeException(e);
 		}
 		_transactable = transactable;
-		List<ITransactable> transactableAsList = new ArrayList<ITransactable>();
-		transactableAsList.add(transactable);
-		_transactableAsList = Collections.unmodifiableList(transactableAsList);
+		Set<ITransactable> transactableAsSet = new HashSet<ITransactable>();
+		transactableAsSet.add(transactable);
+		_transactableAsSet = Collections.unmodifiableSet(transactableAsSet);
 		_postValue = postValue;
 	}
 
@@ -99,8 +100,8 @@ public final class AttributeChange extends AbstractChange {
 	 *  
 	 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
 	 */
-	public List<ITransactable> getModifiedPojos() {
-		return _transactableAsList;
+	public Set<ITransactable> getModifiedPojos() {
+		return _transactableAsSet;
 	}
 
 	/**

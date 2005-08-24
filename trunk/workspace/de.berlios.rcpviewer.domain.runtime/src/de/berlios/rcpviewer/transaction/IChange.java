@@ -71,7 +71,7 @@ public interface IChange {
 	 * 
 	 * @return
 	 */
-	public List<ITransactable> getModifiedPojos();
+	public Set<ITransactable> getModifiedPojos();
 
 	/**
 	 * A human-readable description of this atom of work.
@@ -174,8 +174,8 @@ public interface IChange {
 		/*
 		 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
 		 */
-		public List<ITransactable> getModifiedPojos() {
-			return Collections.EMPTY_LIST;
+		public Set<ITransactable> getModifiedPojos() {
+			return Collections.EMPTY_SET;
 		}
 
 		/**
@@ -251,8 +251,8 @@ public interface IChange {
 		/*
 		 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
 		 */
-		public List<ITransactable> getModifiedPojos() {
-			return Collections.EMPTY_LIST;
+		public Set<ITransactable> getModifiedPojos() {
+			return Collections.EMPTY_SET;
 		}
 
 		/*
