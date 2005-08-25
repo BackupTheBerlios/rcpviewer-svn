@@ -7,6 +7,7 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
@@ -28,6 +29,7 @@ import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.NewDomainObjectJob;
+import de.berlios.rcpviewer.gui.jobs.ReportJob;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
@@ -96,6 +98,18 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	    ToolBarContributionItem tbItem
 	    	= new ToolBarContributionItem( toolBarManager, CONTRIBUTION_ITEM_ID );
 	    coolBar.add(tbItem);
+	}
+	
+	
+
+	/**
+	 * Does nothing but record status line manager reference
+	 * @see org.eclipse.ui.application.ActionBarAdvisor#fillStatusLine(org.eclipse.jface.action.IStatusLineManager)
+	 */
+	@Override
+	protected void fillStatusLine(IStatusLineManager statusLine) {
+		super.fillStatusLine(statusLine);
+		ReportJob.setStatusLineManager( statusLine );
 	}
 
 	/**

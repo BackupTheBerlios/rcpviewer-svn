@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EOperation;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -78,6 +79,11 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 				}
 			}
 			getDomainObject().getOperation( _eOperation ).invokeOperation( args );
+			ReportJob report = new ReportJob(
+					GuiPlugin.getResourceString( "RunOperationJob.Ok"), //$NON-NLS-1$
+					ReportJob.INFO,
+					_eOperation.getName() );
+			report.schedule();
 		}
 		else {
 			ActionArgsDisplay display = new ActionArgsDisplay(

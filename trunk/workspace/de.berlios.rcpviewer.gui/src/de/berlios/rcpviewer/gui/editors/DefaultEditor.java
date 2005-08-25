@@ -22,6 +22,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
+import de.berlios.rcpviewer.gui.jobs.ReportJob;
 import de.berlios.rcpviewer.gui.util.GCUtil;
 import de.berlios.rcpviewer.gui.views.ops.IOpsViewPage;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -212,6 +213,11 @@ public final class DefaultEditor extends EditorPart {
 	public void doSave(IProgressMonitor monitor) {
 		_form.commit(true);
 		getDomainObject().persist();
+		ReportJob report = new ReportJob(
+				GuiPlugin.getResourceString( "DefaultEditor.Save"), //$NON-NLS-1$
+				ReportJob.INFO,
+				getPartName() );
+		report.schedule();
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 	

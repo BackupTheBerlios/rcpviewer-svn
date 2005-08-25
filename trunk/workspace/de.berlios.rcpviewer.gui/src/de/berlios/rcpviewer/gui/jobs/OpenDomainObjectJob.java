@@ -35,6 +35,7 @@ public class OpenDomainObjectJob extends AbstractDomainObjectJob  {
 	 */
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
+		IStatus status;
 		try {
 			// ensure instance-related views are open
 			PlatformUtil.getActivePage().showView( SessionTreeView.ID );
@@ -44,7 +45,7 @@ public class OpenDomainObjectJob extends AbstractDomainObjectJob  {
 			DefaultEditorInput input
 				= new DefaultEditorInput( getDomainObject() );
 			PlatformUtil.getActivePage().openEditor(  input, DefaultEditor.ID );
-			return Status.OK_STATUS;
+			status = Status.OK_STATUS;
 		}
 		catch ( CoreException ce ) {
 			GuiPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -52,8 +53,22 @@ public class OpenDomainObjectJob extends AbstractDomainObjectJob  {
 					null, 
 					GuiPlugin.getResourceString( "OpenDomainObjectJob.Error"), //$NON-NLS-1$
 					ce.getMessage() );
-			return ce.getStatus();
+			status = ce.getStatus();
 		}
+		ReportJob report;
+		if ( Status.OK_STATUS == status ) {
+			report = new ReportJob( 
+					GuiPlugin.getResourceString( "OpenDomainObjectJob.Ok"),  //$NON-NLS-1$
+					ReportJob.INFO,
+					GuiPlugin.getDefault()
+							 .getLabelProvider( getDomainObject() )
+							 .getText( getDomainObject() ) );
+		}
+		else {
+			report = new ReportJob( status.getMessage(), ReportJob.ERROR );
+		}
+		report.schedule();
+		return status;
 	}
 
 }

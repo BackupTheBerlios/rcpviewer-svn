@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EAttribute;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -33,6 +34,11 @@ public class SetAttributeJob extends AbstractDomainObjectJob {
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		_domainObjectAttribute.set( _value );
+		ReportJob report = new ReportJob(
+				GuiPlugin.getResourceString( "SetAttributeJob.Ok"), //$NON-NLS-1$
+				ReportJob.INFO,
+				_domainObjectAttribute.getEAttribute().getName() );
+		report.schedule();
 		return Status.OK_STATUS;
 	}
 

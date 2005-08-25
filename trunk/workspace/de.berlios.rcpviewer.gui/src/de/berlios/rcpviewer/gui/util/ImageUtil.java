@@ -17,8 +17,6 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
  */
 public class ImageUtil {
 	
-	public static final Point STATUS_BAR_IMAGE_SIZE = new Point ( 16, 16 );
-	
 	/**
 	 * Fetches / creates image from passed plugin-relative path from passed
 	 * plugin.  Caches and disposes of the image using the plugin's image

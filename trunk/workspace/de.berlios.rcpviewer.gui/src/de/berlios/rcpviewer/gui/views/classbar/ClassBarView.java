@@ -11,16 +11,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.NewDomainObjectJob;
+import de.berlios.rcpviewer.gui.jobs.ReportJob;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.util.DomainRegistryUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
@@ -57,12 +58,10 @@ public class ClassBarView extends ViewPart {
 		
 		// error message on status line if necessary
 		if ( empty ) {
-			// error message if no classes
-			getViewSite().getActionBars().getStatusLineManager().setErrorMessage(
-					ImageUtil.resize(
-							Display.getCurrent().getSystemImage( SWT.ICON_ERROR ),
-							ImageUtil.STATUS_BAR_IMAGE_SIZE ),
-					GuiPlugin.getResourceString( EMPTY_DOMAIN_MSG_KEY ) );
+			UIJob job = new ReportJob(
+					GuiPlugin.getResourceString( EMPTY_DOMAIN_MSG_KEY ),
+					ReportJob.ERROR );
+			job.schedule();
 		}
 	}
 	

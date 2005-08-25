@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * Super class for all GUI jobs fired by the user.
+ * Super class for all GUI jobs caused (noe necessarily directly fired) by the user.
  * @author Mike
  */
 public abstract class AbstractUserJob extends UIJob {

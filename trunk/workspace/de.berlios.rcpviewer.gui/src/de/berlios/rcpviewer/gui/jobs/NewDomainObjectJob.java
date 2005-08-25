@@ -37,12 +37,16 @@ public class NewDomainObjectJob extends AbstractUserJob {
 	 */
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
+		IStatus status;
+		String name = null;
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
 			IDomainObject domainObject = session.createTransient( _clazz ); 
 			new OpenDomainObjectJob( domainObject ).schedule();
-			return Status.OK_STATUS;
+			name = GuiPlugin.getDefault().getLabelProvider( domainObject )
+										 .getText( domainObject );
+			status = Status.OK_STATUS;
 		}
 		catch ( CoreException ce ) {
 			GuiPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -50,8 +54,21 @@ public class NewDomainObjectJob extends AbstractUserJob {
 					null, 
 					GuiPlugin.getResourceString( "NewDomainObjectJob.Error"), //$NON-NLS-1$
 					ce.getMessage() );
-			return ce.getStatus();
+			status = ce.getStatus();
 		}
+		ReportJob report;
+		if ( Status.OK_STATUS == status ) {
+			assert name != null;
+			report = new ReportJob( 
+					GuiPlugin.getResourceString( "NewDomainObjectJob.Ok"),  //$NON-NLS-1$
+					ReportJob.INFO,
+					name );
+		}
+		else {
+			report = new ReportJob( status.getMessage(), ReportJob.ERROR );
+		}
+		report.schedule();
+		return status;
 	}
 
 }

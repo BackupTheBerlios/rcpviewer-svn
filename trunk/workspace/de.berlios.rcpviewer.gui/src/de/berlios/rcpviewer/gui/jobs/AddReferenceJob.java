@@ -42,9 +42,10 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 	 */
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
+		IStatus status;
 		if ( _ref.isMany() ) {
 			getDomainObject().getReference( _ref ).addToCollection( _value );
-			return Status.OK_STATUS;
+			status =  Status.OK_STATUS;
 		}
 		else {
 			Method associator
@@ -54,16 +55,27 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 				associator.invoke( 
 						getDomainObject().getPojo(),
 						new Object[]{ _value.getPojo() } );
-				return Status.OK_STATUS;		
+				status = Status.OK_STATUS;		
 			}
 			catch (Exception ex ) {
-				IStatus status = StatusUtil.createError(
+				status = StatusUtil.createError(
 						GuiPlugin.getDefault(),
 						"AddReferenceJob.Error", //$NON-NLS-1$
 						ex );
-				return status;
 			}
 		}
+		ReportJob report;
+		if ( Status.OK_STATUS == status ) {
+			report = new ReportJob( 
+					GuiPlugin.getResourceString( "AddReferenceJob.Ok"),  //$NON-NLS-1$
+					ReportJob.INFO,
+					_ref.getName() );
+		}
+		else {
+			report = new ReportJob( status.getMessage(), ReportJob.ERROR );
+		}
+		report.schedule();
+		return status;
 	}
 
 }
