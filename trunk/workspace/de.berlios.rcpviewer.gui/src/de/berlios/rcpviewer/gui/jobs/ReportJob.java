@@ -5,6 +5,9 @@ package de.berlios.rcpviewer.gui.jobs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -14,8 +17,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleConstants;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
+import de.berlios.rcpviewer.gui.util.PlatformUtil;
 
 /**
  * Reports a message - currently this simply places it on the status line.
@@ -29,6 +40,8 @@ public class ReportJob extends AbstractUserJob {
 	public static final boolean ERROR = true;
 	
 	private static final Point STATUS_BAR_IMAGE_SIZE = new Point ( 16, 16 );
+	private static final DateFormat TIME_FORMATTER
+		= new SimpleDateFormat( "HH:mm:ss" ); //$NON-NLS-1$
 	
 	
 	/* static fields & methods */
@@ -36,6 +49,8 @@ public class ReportJob extends AbstractUserJob {
 	private static Image __defaultImage = null;
 	private static Image __defaultErrorImage = null;
 	private static IStatusLineManager __mgr = null;
+	private static MessageConsoleStream __infoConsole = null;
+	private static MessageConsoleStream __errorConsole = null;
 	
 	/**
 	 * Clunky // FIXME
@@ -63,11 +78,6 @@ public class ReportJob extends AbstractUserJob {
 			}
 			return __defaultImage;
 		}	
-	}
-	
-	private static IStatusLineManager getStatusLine() {
-		assert __mgr != null;
-		return __mgr;
 	}
 	
 	/* instance fields & methods */
@@ -149,14 +159,70 @@ public class ReportJob extends AbstractUserJob {
 		else {
 			image = ImageUtil.resize( _image, STATUS_BAR_IMAGE_SIZE );
 		}
-		// display
+		
+		// display on status line
 		if ( _isError ) {
 			getStatusLine().setErrorMessage( image, _msg );
 		}
 		else {
 			getStatusLine().setMessage( image, _msg );
 		}
+		
+		// output to console if visible
+		if ( PlatformUtil.getView(  IConsoleConstants.ID_CONSOLE_VIEW ) != null ) {
+			StringBuffer sb = new StringBuffer();
+			sb.append( TIME_FORMATTER.format( new Date() ) );
+			sb.append( " : " ); //$NON-NLS-1$
+			sb.append( _msg );
+			if ( _isError ) {
+				getErrorConsole().println( sb.toString() );
+			}
+			else {
+				getInfoConsole().println( sb.toString() );
+			}
+		}
+		
 		return Status.OK_STATUS;
+	}
+	
+	/* private utility methods */
+	
+	private IStatusLineManager getStatusLine() {
+		assert __mgr != null;
+		return __mgr;
+	}
+	
+	private MessageConsoleStream getInfoConsole() {
+		if ( __infoConsole == null ) {
+			initiateConsoles();
+		}
+		assert __infoConsole != null;
+		return __infoConsole;
+	}
+	
+	private MessageConsoleStream getErrorConsole() {
+		if ( __errorConsole == null ) {
+			initiateConsoles();
+		}
+		assert __errorConsole != null;
+		return __errorConsole;
+	}
+	
+	private void initiateConsoles() {
+		assert __infoConsole == null;
+		assert __errorConsole == null;
+		IConsoleManager mgr = ConsolePlugin.getDefault().getConsoleManager();
+		MessageConsole historyConsole = new MessageConsole( 
+				GuiPlugin.getResourceString("ReportJob.ConsoleHistory" ), //$NON-NLS-1$
+				null ) ;
+		mgr.addConsoles( new IConsole[]{ historyConsole } );
+		mgr.showConsoleView( historyConsole );
+		__infoConsole = historyConsole.newMessageStream();
+		__infoConsole.setColor( 
+				Display.getCurrent().getSystemColor( SWT.COLOR_BLUE ) );
+		__errorConsole = historyConsole.newMessageStream();
+		__errorConsole.setColor( 
+				Display.getCurrent().getSystemColor( SWT.COLOR_RED ) );
 	}
 
 }

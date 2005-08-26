@@ -18,6 +18,8 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -28,6 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
@@ -36,6 +39,7 @@ import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.dnd.DomainObjectTransfer;
 import de.berlios.rcpviewer.gui.jobs.AddReferenceJob;
+import de.berlios.rcpviewer.gui.jobs.OpenDomainObjectJob;
 import de.berlios.rcpviewer.gui.jobs.RemoveReferenceJob;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
@@ -113,8 +117,7 @@ class ReferencePart implements IFormPart {
 		// main field text
 		_text = toolkit.createText( parent, "" ); //$NON-NLS-1$
 		_text.setEditable( false );
-		_text.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-		
+		_text.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );		
 		
 		// DnD - always as a drag source
 		final DragSource dragSource = new DragSource( 
@@ -212,6 +215,18 @@ class ReferencePart implements IFormPart {
 			}
 		};
 		object.getReference( ref ).addDomainObjectReferenceListener( _listener );
+		
+		// open listener - dbl-click opens editor for selected item
+		// no open listener on a Text so fudge with mouse listener
+		_text.addMouseListener( new MouseAdapter(){
+			public void mouseDoubleClick(MouseEvent e) {
+				if ( _refValue != null ) {
+		    		UIJob job = new OpenDomainObjectJob( (IDomainObject)_refValue );
+		    		job.schedule();
+				}
+			}
+		} );
+
 
 		// finally set fields
 	    _parent = object;

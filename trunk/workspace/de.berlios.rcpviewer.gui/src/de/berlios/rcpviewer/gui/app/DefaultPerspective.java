@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.gui.app;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
+import org.eclipse.ui.console.IConsoleConstants;
 
 import de.berlios.rcpviewer.gui.views.classbar.ClassBarView;
 import de.berlios.rcpviewer.gui.views.ops.OpsView;
@@ -39,6 +40,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	 * <li>placeholder on bottom for views:
 	 *   <ul>
 	 *   <li>platform search views
+	 *   <li>console view
 	 *   </ul>
 	 * </ul>
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
@@ -82,6 +84,12 @@ public class DefaultPerspective implements IPerspectiveFactory {
 				layout.getEditorArea() );
 		bottom.addPlaceholder( "org.eclipse.search.ui.views.SearchView" ); //$NON-NLS-1$
 		bottom.addPlaceholder( "org.eclipse.search.SearchResultView" ); //$NON-NLS-1$
+		bottom.addPlaceholder( IConsoleConstants.ID_CONSOLE_VIEW );
+		
+		// view shortcuts
+        layout.addShowViewShortcut( SessionTreeView.ID );
+        layout.addShowViewShortcut( OpsView.ID );
+        layout.addShowViewShortcut( IConsoleConstants.ID_CONSOLE_VIEW );
 
 	}
 }

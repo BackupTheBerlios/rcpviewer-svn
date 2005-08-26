@@ -55,7 +55,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
      * @see org.eclipse.ui.application.ActionBarAdvisor#fillMenuBar(org.eclipse.jface.action.IMenuManager)
      */
     protected void fillMenuBar(IMenuManager menuBar) {
-		 menuBar.add( createFileMenu() );
+    	IWorkbenchWindow window
+    		= getActionBarConfigurer().getWindowConfigurer().getWindow();
+		 menuBar.add( createFileMenu( window ) );
+		 menuBar.add( createWindowMenu( window ) );
     }
 	
 	
@@ -115,9 +118,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	/**
 	 * As it says.
 	 */
-    private MenuManager createFileMenu() {
-    	IWorkbenchWindow window
-    		= getActionBarConfigurer().getWindowConfigurer().getWindow();
+    private MenuManager createFileMenu( IWorkbenchWindow window ) {
+    	assert window != null;
         MenuManager menu = new MenuManager(
 				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.File" ),  //$NON-NLS-1$
 				IWorkbenchActionConstants.M_FILE);
@@ -145,6 +147,22 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
         return menu;
     }
+    
+	/**
+	 * As it says.
+	 */
+    private MenuManager createWindowMenu(IWorkbenchWindow window ) {
+    	assert window != null;
+        MenuManager menu = new MenuManager(
+				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.Window" ),  //$NON-NLS-1$
+				IWorkbenchActionConstants.M_WINDOW );
+        MenuManager viewMenu = new MenuManager(
+				GuiPlugin.getResourceString( "ApplicationActionBarAdvisor.ShowView" ),  //$NON-NLS-1$
+				"ApplicationActionBarAdvisor.ShowView" ); //$NON-NLS-1$
+        menu.add( viewMenu );
+        viewMenu.add( ContributionItemFactory.VIEWS_SHORTLIST.create( window ) );
+        return menu;
+    }
 
     /**
      * Adds a 'new' menu item for every class in every domain
@@ -161,14 +179,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	Map<String, IDomain> domains= domainRegistry.getDomains();
     	int count = 0;
 		for (IDomain domain: domains.values()) {
-    		for (IDomainClass domainClass: domain.classes()) {
+    		for (IDomainClass<?> domainClass: domain.classes()) {
 				assert domainClass instanceof IRuntimeDomainClass;
 				NewDomainObjectJob job = new NewDomainObjectJob( 
-						(IRuntimeDomainClass)domainClass );
+						(IRuntimeDomainClass<?>)domainClass );
 				JobAction action = new JobAction( job );
 				// overwrite default name for action with class name
-				action.setText( domainClass.getName() ); // JAVA_5_FIXME
-				action.setToolTipText( domainClass.getDescription() ); // JAVA_5_FIXME
+				action.setText( domainClass.getName() ); 
+				action.setToolTipText( domainClass.getDescription() ); 
 				newMenu.add( action );
     		}
 			newMenu.add( new Separator() );

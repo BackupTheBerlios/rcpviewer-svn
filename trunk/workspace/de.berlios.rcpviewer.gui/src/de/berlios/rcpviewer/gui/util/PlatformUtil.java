@@ -7,6 +7,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
@@ -72,5 +74,20 @@ public class PlatformUtil {
     	return null;
     }
 
-  
+    /**
+     * Returns the view in the current page with the given id or 
+     * <code>null</code> if it does not exist.
+     * @param id
+     * @return
+     */
+    public static final IViewPart getView( String id ) {
+    	 if (id == null) throw new IllegalArgumentException();
+    	 IViewReference[] refs  = getActivePage().getViewReferences();
+    	 for ( int i=0, num = refs.length; i < num ; i++ ) {
+    	 	if ( refs[i].getId().equals( id ) ) {
+    	 		return refs[i].getView( false );
+    	 	}
+    	 }
+    	 return null;
+    }
 }
