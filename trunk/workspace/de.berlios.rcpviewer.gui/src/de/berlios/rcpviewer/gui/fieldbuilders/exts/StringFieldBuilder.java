@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
+import de.berlios.rcpviewer.gui.util.FontUtil;
 
 
 /**
@@ -78,6 +79,7 @@ public class StringFieldBuilder implements IFieldBuilder {
 			label.setLayoutData( labelData );
 			label.setBackground( parent.getBackground() );
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			label.setFont( FontUtil.getLabelFont() );
 			
 			// text box
 			GridData textData = new GridData( GridData.FILL_BOTH );

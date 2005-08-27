@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Label;
 
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
+import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 /**
@@ -74,6 +75,7 @@ class BooleanFieldBuilder implements IFieldBuilder {
 			label.setLayoutData( labelData );
 			label.setBackground( parent.getBackground() );
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			label.setFont( FontUtil.getLabelFont() );
 
 			// check-box
 			GridData buttonData = new GridData();

@@ -30,7 +30,7 @@ import org.vafada.swtcalendar.SWTCalendarListener;
 import de.berlios.rcpviewer.gui.dnd.DateTransfer;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
-import de.berlios.rcpviewer.gui.util.GCUtil;
+import de.berlios.rcpviewer.gui.util.FontUtil;
 
 /**
  * Used for dates.
@@ -93,6 +93,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 			label.setLayoutData( labelData );
 			label.setBackground( parent.getBackground() );
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			label.setFont( FontUtil.getLabelFont() );
 			
 			// text box
 			GridData textData = new GridData();
@@ -103,7 +104,8 @@ public class DateFieldBuilder implements IFieldBuilder {
 			}
 			else {
 				int numChars = FORMATTER.format( new Date() ).length();
-				int charWidth = GCUtil.getSafeCharWidth( parent );
+				int charWidth = FontUtil.getCharWidth( 
+						parent, FontUtil.CharWidthType.SAFE );
 				textData.widthHint = numChars * charWidth;
 			}
 			_text = new Text( parent, SWT.SINGLE | SWT.CENTER );

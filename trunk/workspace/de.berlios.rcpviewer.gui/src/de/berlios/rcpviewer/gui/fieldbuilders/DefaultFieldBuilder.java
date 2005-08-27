@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.util.FontUtil;
 
 
 /**
@@ -63,6 +64,7 @@ class DefaultFieldBuilder implements IFieldBuilder {
 			label.setLayoutData( labelData );
 			label.setBackground( parent.getBackground() );
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			label.setFont( FontUtil.getLabelFont() );
 			
 			// error message
 			GridData msgData = new GridData( GridData.FILL_HORIZONTAL );

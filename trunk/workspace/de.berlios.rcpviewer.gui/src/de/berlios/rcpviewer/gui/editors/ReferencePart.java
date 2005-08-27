@@ -21,15 +21,15 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -44,6 +44,7 @@ import de.berlios.rcpviewer.gui.jobs.RemoveReferenceJob;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.gui.util.StatusUtil;
+import de.berlios.rcpviewer.gui.util.StringUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -54,7 +55,7 @@ import de.berlios.rcpviewer.session.ISession;
  * Generic form part for single references to <code>IDomainObject</code>'s.
  * @author Mike
  */
-class ReferencePart implements IFormPart {
+class ReferencePart implements IReferencePart {
 	
 	private final IDomainObject<?> _parent;
 	private final EReference _ref;
@@ -78,15 +79,28 @@ class ReferencePart implements IFormPart {
 	 */
 	ReferencePart( IDomainObject<?> object,
 				   EReference ref,
-				   Composite parent, 
+				   Composite sectionParent, 
 				   FormToolkit toolkit,
-				   int[] columnWidths ) {
+				   int[] columnWidths,
+				   int maxLabelLength ) {
 		assert object != null;
 		assert ref != null;
 		assert !ref.isMany();
-		assert parent != null;
+		assert sectionParent != null;
 		assert toolkit != null;
 		// column widths can be null
+		assert maxLabelLength != 0;
+		
+		// section
+		sectionParent.setLayout( new FillLayout() );
+		Section section = toolkit.createSection( sectionParent, EXPANDABLE_STYLE );
+		section.setText( 
+				StringUtil.padLeft( ref.getName(), maxLabelLength ) + ":"  ); //$NON-NLS-1$
+		
+		// section area
+		Composite parent = toolkit.createComposite( section ) ;
+		section.setClient( parent );
+		toolkit.paintBordersFor( parent );
 		
 		// metadata and fields for gui creation
 		boolean allowAdd = ( 
@@ -98,21 +112,11 @@ class ReferencePart implements IFormPart {
 			  RuntimeDomain.instance().lookupNoRegister( refPojoType );		
 		
 		// layout
-		int numCols = 2;
+		int numCols = 1;
 		if ( allowAdd ) numCols++;
 		if ( allowRemove ) numCols++;
 		GridLayout parentLayout = new GridLayout( numCols, false );
 		parent.setLayout( parentLayout );
-		
-		// label:
-		GridData labelData = new GridData( GridData.HORIZONTAL_ALIGN_END );
-		if ( columnWidths != null 
-				&& columnWidths.length == 2 
-					&& columnWidths[0] != 0 ) {
-			labelData.widthHint = columnWidths[0];
-		}
-		Label label = toolkit.createLabel( parent, ref.getName() + ":" ); //$NON-NLS-1$
-		label.setLayoutData( labelData );
 		
 		// main field text
 		_text = toolkit.createText( parent, "" ); //$NON-NLS-1$

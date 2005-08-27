@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.gui.fieldbuilders;
 
+import static de.berlios.rcpviewer.gui.util.FontUtil.CharWidthType.*;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
-import de.berlios.rcpviewer.gui.util.GCUtil;
+import de.berlios.rcpviewer.gui.util.FontUtil;
 
 
 /**
@@ -131,33 +133,34 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 			label.setLayoutData( labelData );
 			label.setBackground( parent.getBackground() );
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
+			label.setFont( FontUtil.getLabelFont() );
 			
 			// decide width & style of text box
 			GridData textData = null;
 			int style = Integer.MIN_VALUE;
 			if ( _type == byte.class ) {
 				textData = new GridData();
-				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 5;
+				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 5;
 				style = SWT.CENTER;
 			}
 			else if ( _type == char.class ) {
 				textData = new GridData();
-				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 3;
+				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 3;
 				style = SWT.CENTER;
 			}
 			else if ( _type == short.class ) {
 				textData = new GridData();
-				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 4;
+				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 4;
 				style = SWT.LEFT;
 			}
 			else if ( _type == int.class ) {
 				textData = new GridData();
-				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 10;
+				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 10;
 				style = SWT.LEFT;
 			}
 			else if ( _type == long.class ) {
 				textData = new GridData();
-				textData.widthHint = GCUtil.getSafeCharWidth( parent ) * 19;
+				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 19;
 				style = SWT.LEFT;
 			}
 			else {

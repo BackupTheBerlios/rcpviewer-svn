@@ -29,15 +29,15 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.progress.UIJob;
 
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -51,6 +51,7 @@ import de.berlios.rcpviewer.gui.jobs.OpenDomainObjectJob;
 import de.berlios.rcpviewer.gui.jobs.RemoveReferenceJob;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
+import de.berlios.rcpviewer.gui.util.StringUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 import de.berlios.rcpviewer.gui.widgets.ErrorInput;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
@@ -63,7 +64,7 @@ import de.berlios.rcpviewer.session.ISession;
  *  of <code>IDomainObject</code>'s.
  * @author Mike
  */
-class CollectionPart implements IFormPart {
+class CollectionPart implements IReferencePart {
 	
 	private final ListViewer _viewer;
 	
@@ -81,15 +82,28 @@ class CollectionPart implements IFormPart {
 	 */
 	CollectionPart( IDomainObject<?> object,
 				   final EReference ref,
-				   Composite parent, 
+				   Composite sectionParent, 
 				   FormToolkit toolkit,
-				   int[] columnWidths ) {
+				   int[] columnWidths,
+				   int maxLabelLength ) {
 		assert object != null;
 		assert ref != null;
 		assert ref.isMany();
-		assert parent != null;
+		assert sectionParent != null;
 		assert toolkit != null;
 		// column widths can be null
+		assert maxLabelLength != 0;
+		
+		// section		
+		sectionParent.setLayout( new FillLayout() );
+		Section section = toolkit.createSection( sectionParent, EXPANDABLE_STYLE );
+		section.setText( 
+				StringUtil.padLeft( ref.getName(), maxLabelLength ) + ":"  ); //$NON-NLS-1$
+		
+		// section area
+		Composite parent = toolkit.createComposite( section ) ;
+		section.setClient( parent );
+		toolkit.paintBordersFor( parent );
 		
 		// fetch all required metadata
 		boolean allowAdd = ( 
@@ -105,13 +119,9 @@ class CollectionPart implements IFormPart {
 		
 		// layout
 		toolkit.adapt( parent );
-		GridLayout layout = new GridLayout( 2, false );
-		if ( allowAdd || allowRemove ) layout.numColumns = 3;
+		GridLayout layout = new GridLayout( 1, false );
+		if ( allowAdd || allowRemove ) layout.numColumns = 2;
 		parent.setLayout( layout );
-		
-		// label
-		Label label = toolkit.createLabel( parent, ref.getName() + ":" ); //$NON-NLS-1$
-		label.setLayoutData( new GridData() );
 		
 		// list viewer - offloaded to private method for tidiness
 		_viewer = createViewer( allowAdd, 
@@ -277,8 +287,6 @@ class CollectionPart implements IFormPart {
 					job.schedule();
 				}
 			});
-			// also need spacer
-			toolkit.createSeparator( parent, SWT.NONE ).setVisible( false );
 		}
 		if ( allowRemove ) {
 			final Button remove = toolkit.createButton( parent, "", SWT.PUSH ); //$NON-NLS-1$
