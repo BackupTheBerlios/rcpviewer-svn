@@ -35,7 +35,7 @@ import de.berlios.rcpviewer.domain.RuntimeDomain;
  * 
  * @author Dan Haywood
  */
-public interface IDomainObject<T> {
+public interface IDomainObject<T> extends IResolvable {
 
 	/**
 	 * Provides access or other interactions with the current value and other
@@ -48,8 +48,8 @@ public interface IDomainObject<T> {
 	public interface IAttribute {
 
 		/**
-		 * The {@link IDomainObject} for which represents the state of one of 
-		 * its attributes.
+		 * The owning {@link IDomainObject} for this representation of an
+		 * attribute.
 		 * 
 		 * @param <T>
 		 * @return
@@ -77,21 +77,33 @@ public interface IDomainObject<T> {
 		public void set(Object newValue);
 		
 		/**
-		 * Used internally and by aspects.
+		 * Notify listeners that this attribute has a new value.
 		 * 
 		 * <p>
-		 * Do not use otherwise.
+		 * For use by aspects, not general use.
 		 * 
 		 * @param attribute
 		 * @param newValue
 		 */
-		public void notifyAttributeListeners(Object newValue);
+		public void notifyListeners(Object newValue);
 
-		<T extends IDomainObjectAttributeListener> T  addDomainObjectAttributeListener(T listener);
-		void removeDomainObjectAttributeListener(IDomainObjectAttributeListener listener);
+		/**
+		 * Register interest in changes to the values of this attribute.
+		 * 
+		 * @param <T>
+		 * @param listener
+		 * @return
+		 */
+		<T extends IDomainObjectAttributeListener> T  addListener(T listener);
 		
+		/**
+		 * Deregister interest in changes to the values of this attribute.
+		 * 
+		 * @param listener
+		 */
+		void removeListener(IDomainObjectAttributeListener listener);
 	}
-	
+
 	/**
 	 * Provides access or other interactions with the current value and other
 	 * state of a reference (or collection) of an instantiated 
@@ -100,11 +112,105 @@ public interface IDomainObject<T> {
 	 * <p>
 	 * The "other state" includes whether this reference's prerequisites have 
 	 * been met such that it can be used (ie edited).
+	 * 
+	 * <p>
+	 * This interface is never instantiated directly; instead any instance 
+	 * will be of the sub-interfaces {@link IOneToOneReference} or 
+	 * {@link ICollectionReference}).
 	 */
-	public interface IReference {
+	public interface IReference extends IResolvable {
 
 		/**
-		 * Returns an immutable collection,
+		 * The owning {@link IDomainObject} for this representation of an
+		 * reference.
+		 * 
+		 * @param <T>
+		 * @return
+		 */
+		public <T> IDomainObject<T> getDomainObject();
+		
+		/**
+		 * The underlying {@link EReference} in EMF to which this relates.
+		 * 
+		 * @return
+		 */
+		public EReference getEReference();
+		
+		/**
+		 * Register interest in changes to this reference.
+		 * 
+		 * @param <T>
+		 * @param listener
+		 * @return
+		 */
+		<T extends IDomainObjectReferenceListener> T addListener(T listener);
+
+		/**
+		 * Deregister interest in changes to this reference.
+		 * 
+		 * @param listener
+		 */
+		void removeListener(IDomainObjectReferenceListener listener);
+		
+	}
+
+
+	/**
+	 * Provides access or other interactions with the current value and other
+	 * state of a 1:1 reference of an instantiated {@link IDomainObject}.
+	 */
+	public interface IOneToOneReference extends IReference {
+
+		/**
+		 * Returns the domain object for this representation of a 1:1 reference
+		 * of the domain object. 
+		 */
+		public <Q> Q get();
+
+		
+		/**
+		 * Makes the reference be set to a new referenced object (possibly null).
+		 * 
+		 * <p>
+		 * Will check if the value is <code>null</code> or not; if it isn't 
+		 * <code>null</code>, then will invoke the associator, if it is 
+		 * <code>null</code> then it will invoke the dissociator. 
+		 * 
+		 * <p>
+		 * Any {@link IReferenceListener}s will be notified.
+		 * 
+		 * @param collection
+		 * @param domainObject
+		 */
+		public <Q> void set(IDomainObject<Q> domainObject);
+
+		
+		/**
+		 * Notify listeners of a 1:1 reference that it the reference is now 
+		 * to a new referenced object (or possibly <code>null</code>).
+		 * 
+		 * <p>
+		 * For use by aspects, not general use.
+		 * 
+		 * @param newReferencedObjectOrNull
+		 */
+		public void notifyListeners(Object newReferencedObjectOrNull);
+		
+	}
+	
+
+	/**
+	 * Provides access or other interactions with the current value and other
+	 * state of a collection reference of an instantiated {@link IDomainObject}.
+	 */
+	public interface ICollectionReference extends IReference {
+
+		/**
+		 * Returns the contents of this representation of a collection of the
+		 * domain object.
+		 * 
+		 * <p>
+		 * The returned collection is immutable.
 		 * 
 		 * @param reference
 		 * @return
@@ -128,18 +234,28 @@ public interface IDomainObject<T> {
 		 * collection.
 		 * 
 		 * <p>
-		 * Any {@link ITransactionListener}s will be notified.
+		 * Any {@link IReferenceListener}s will be notified.
 		 * 
 		 * @param collection
 		 * @param domainObject
 		 */
 		public <Q> void removeFromCollection(IDomainObject<Q> domainObject);
 
-		<T extends IDomainObjectReferenceListener> T addDomainObjectReferenceListener(T listener);
-		void removeDomainObjectReferenceListener(IDomainObjectReferenceListener listener);
-
+		/**
+		 * Notify listeners of a collection that it the reference has had 
+		 * added to it a new object.
+		 * 
+		 * <p>
+		 * Do not use otherwise.
+		 * 
+		 * @param referencedObject
+		 * @param beingAdded - <code>true</code> if being added to, <code>false</code> if being removed.
+		 */
+		public void notifyListeners(Object referencedObject, boolean beingAdded);
+		
 	}
 	
+
 	/**
 	 * Provides access or other interactions with the current state
 	 * of an invokation of an operation of an instantiated 
@@ -153,8 +269,8 @@ public interface IDomainObject<T> {
 	 */
 	public interface IOperation {
 		/**
-		 * The {@link IDomainObject} for which represents the state of one of 
-		 * its operations.
+		 * The owning {@link IDomainObject} for this representation of an
+		 * operation.
 		 * 
 		 * @param <T>
 		 * @return
@@ -176,9 +292,25 @@ public interface IDomainObject<T> {
 		 * @return the return value from the operation (if not void).
 		 */
 		public Object invokeOperation(Object[] args);
+
+		/**
+		 * Register interest in this operation.
+		 * 
+		 * <p>
+		 * If the listener is already known, does nothing.
+		 * 
+		 * @param <T>
+		 * @param listener
+		 * @return
+		 */
+		<T extends IDomainObjectOperationListener> T addListener(T listener);
 		
-		<T extends IDomainObjectOperationListener> T addDomainObjectOperationListener(T listener);
-		void removeDomainObjectOperationListener(IDomainObjectOperationListener listener);
+		/**
+		 * Deregister interest in this operation.
+		 * 
+		 * @param listener
+		 */
+		void removeListener(IDomainObjectOperationListener listener);
 	}
 	
 	public IRuntimeDomainClass<T> getDomainClass();
@@ -257,7 +389,7 @@ public interface IDomainObject<T> {
 	 * 
 	 * @param listener
 	 */
-	public <T extends IDomainObjectListener> T addDomainObjectListener(T listener);
+	public <T extends IDomainObjectListener> T addListener(T listener);
 
 	
 	/**
@@ -268,7 +400,7 @@ public interface IDomainObject<T> {
 	 * 
 	 * @param listener
 	 */
-	public void removeDomainObjectListener(IDomainObjectListener listener);
+	public void removeListener(IDomainObjectListener listener);
 
 	
 	/**
@@ -354,13 +486,25 @@ public interface IDomainObject<T> {
 	public IAttribute getAttribute(EAttribute eAttribute);
 
 	/**
+	 * Returns an {@link IOneToOneReference} such that the run-time state of this
+	 * reference of the owning {@link IDomainObject} can be interacted with.
+	 * 
+	 * @param eReference
+	 * @return the reference.
+	 * @throws IllegalArgumentException if the EReference represents a collection.
+	 */
+	public IOneToOneReference getOneToOneReference(EReference eReference) throws IllegalArgumentException;
+
+
+	/**
 	 * Returns an {@link IReference} such that the run-time state of this
 	 * reference of the owning {@link IDomainObject} can be interacted with.
 	 * 
 	 * @param eReference
 	 * @return
+	 * @throws IllegalArgumentException if the EReference represents a 1:1 reference.
 	 */
-	public IReference getReference(EReference eReference);
+	public ICollectionReference getCollectionReference(EReference eReference);
 
 	/**
 	 * Returns an {@link IOperation} such that the run-time state of this
@@ -371,4 +515,5 @@ public interface IDomainObject<T> {
 	 */
 	public IOperation getOperation(EOperation eOperation);
 
+	
 }

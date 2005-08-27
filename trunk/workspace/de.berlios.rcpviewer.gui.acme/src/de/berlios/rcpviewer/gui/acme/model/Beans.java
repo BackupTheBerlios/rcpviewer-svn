@@ -15,45 +15,49 @@ import de.berlios.rcpviewer.progmodel.standard.TypeOf;
 @InDomain
 public class Beans {
 
-	private final Set<EasyBean> easybeans = new HashSet<EasyBean>();
+	public int getNumBeans() {
+		return numBeans;
+	}
 	private int numBeans = 0;
-	
-	private EasyBean easybean = null;
+
 	
 	@TypeOf( EasyBean.class )
 	public Set<EasyBean> getEasyBeans() {
 		return easybeans;
 	}
-	
 	public void addToEasyBeans( EasyBean bean ) {
 		if ( bean == null ) throw new IllegalArgumentException();
 		easybeans.add( bean );
 		numBeans = easybeans.size();
 	}
-	
 	public void removeFromEasyBeans( EasyBean bean ) {
 		if ( bean == null ) throw new IllegalArgumentException();
 		easybeans.remove( bean );
 		numBeans = easybeans.size();
 	}
+	private final Set<EasyBean> easybeans = new HashSet<EasyBean>();
 	
-	public int getNumBeans() {
-		return numBeans;
-	}
 
 	/**
 	 * @return Returns the easybean.
 	 */
-	public EasyBean getEasybean() {
+	public EasyBean getEasyBean() {
 		return easybean;
 	}
-
 	/**
 	 * @param easybean The easybean to set.
 	 */
-	public void setEasybean(EasyBean easybean) {
+	public void setEasyBean(EasyBean easybean) {
 		this.easybean = easybean;
 	}
-	
+	// can add
+	public void associateEasyBean(EasyBean easyBean) {
+		setEasyBean(easyBean);
+	}
+	// can remove
+	public void dissociateEasyBean(EasyBean easyBean) {
+		setEasyBean(null);
+	}
+	private EasyBean easybean = null;
 	
 }

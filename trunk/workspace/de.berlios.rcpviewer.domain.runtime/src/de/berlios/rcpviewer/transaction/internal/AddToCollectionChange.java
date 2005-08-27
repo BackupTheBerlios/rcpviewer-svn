@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.transaction.internal;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Collections;
 import java.util.Set;
@@ -13,29 +14,41 @@ import de.berlios.rcpviewer.transaction.ITransaction;
 
 
 /**
- * Represents a change to an attribute of a pojo enlisted within a
- * {@link ITransaction}
+ * Represents an object has been added to a collection of a pojo enlisted 
+ * within a {@link ITransaction}
  * 
  * <p>
  * This implementation (like all implementations of {@link de.berlios.rcpviewer.transaction.IChange})
  * has value semantics.
  * 
  */
-public final class AttributeChange extends AbstractFieldChange {
+public final class AddToCollectionChange<V> extends AbstractCollectionChange {
 
-	/**
-	 * CAptures the current value of the attribute as the 
-	 * {@link #getPreValue()}.
-	 * 
-	 * @param attribute
-	 * @param postValue
-	 */
-	public AttributeChange(
+	public AddToCollectionChange(
 			final ITransactable transactable,
 			final Field field,
-			final Object postValue) {
-		super(transactable, field, postValue);
+			final V addedValue) {
+		super(transactable, field, addedValue);
 	}
+
+	/*
+	 * Adds the referenced object to the collection.
+	 * 
+	 * @see de.berlios.rcpviewer.transaction.IChange#execute()
+	 */
+	public void execute() {
+		getCollection().add(getReferencedObject());
+	}
+
+	/*
+	 * Removes the referenced object from the collection.
+	 * 
+	 * @see de.berlios.rcpviewer.transaction.IChange#undo()
+	 */
+	public void undo() {
+		getCollection().remove(getReferencedObject());
+	}
+
 
 	/*
 	 * Value semantics.
@@ -45,15 +58,14 @@ public final class AttributeChange extends AbstractFieldChange {
 	public final boolean equals(final Object other) {
 		return
 			sameClass(other) &&
-			equals((AttributeChange)other);
+			equals((AddToCollectionChange<V>)other);
 	}
 
-	public final boolean equals(final AttributeChange other) {
+	public final boolean equals(final AddToCollectionChange<V> other) {
 		return
 		    _transactable.equals(other._transactable) &&
 			getField().equals(other.getField()) &&
-			getPreValue().equals(other.getPreValue()) &&
-			getPostValue().equals(other.getPostValue());
+			getReferencedObject().equals(other.getReferencedObject());
 	}
 
 	/**
@@ -63,5 +75,10 @@ public final class AttributeChange extends AbstractFieldChange {
 	public int hashCode() {
 		return _transactable.hashCode();
 	}
+
+	public String toString() {
+		return getField().getName() + ": added " + getReferencedObject(); 
+	}
+
 
 }

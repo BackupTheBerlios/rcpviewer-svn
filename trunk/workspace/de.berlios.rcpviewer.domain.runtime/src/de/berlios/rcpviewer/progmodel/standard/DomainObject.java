@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.progmodel.standard;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,8 +25,10 @@ import de.berlios.rcpviewer.session.IDomainObjectListener;
 import de.berlios.rcpviewer.session.IDomainObjectOperationListener;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
 import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.IResolvable.ResolveState;
 import de.berlios.rcpviewer.session.IDomainObject.IAttribute;
 import de.berlios.rcpviewer.session.IDomainObject.IOperation;
+import de.berlios.rcpviewer.session.IResolvable;
 
 /**
  * Wrapper for a POJO that also knows its {@link IDomainClass} and the
@@ -48,6 +51,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private WeakHashMap<EAttribute, IAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IAttribute>();
 	private WeakHashMap<EReference, IReference> _referencesByEReference = new WeakHashMap<EReference, IReference>();
 	private WeakHashMap<EOperation, IOperation> _operationsByEOperation = new WeakHashMap<EOperation, IOperation>();
+	private ResolveState _resolveState;
 	
 	/**
 	 * Creates a domain object unattached to any _session.
@@ -57,6 +61,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public DomainObject(final IRuntimeDomainClass<T> domainClass, final T pojo) {
 		this(domainClass, pojo, null);
+		_resolveState = ResolveState.NEW;
 	}
 	
 	/**
@@ -118,13 +123,13 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			throw new IllegalStateException("Not yet persisted.");
 		}
 		if (getSession() == null) {
-			throw new IllegalStateException("Not attached to a _session");
+			throw new IllegalStateException("Not attached to a session");
 		}
 		getSession().save(this);
 	}
 
 	/**
-	 * For the title we just return the POJO's <tt>toString()</tt>.
+	 * For the title we just return the POJO's <code>toString()</code>.
 	 */
 	public String title() {
 		return _pojo.toString();
@@ -146,7 +151,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/**
 	 * Returns listener only because it simplifies test implementation to do so.
 	 */
-	public <T extends IDomainObjectListener> T addDomainObjectListener(T listener) {
+	public <T extends IDomainObjectListener> T addListener(T listener) {
 		synchronized(_domainObjectListeners) {
 			if (!_domainObjectListeners.contains(listener)) {
 				_domainObjectListeners.add(listener);
@@ -154,7 +159,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 		return listener;
 	}
-	public void removeDomainObjectListener(IDomainObjectListener listener) {
+	public void removeListener(IDomainObjectListener listener) {
 		synchronized(_domainObjectListeners) {
 			_domainObjectListeners.remove(listener);
 		}
@@ -224,16 +229,72 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return attribute;
 	}
 
-	public synchronized IReference getReference(final EReference eReference) {
+	/**
+	 * Returns an {@link IReference} for any EReference, whether it represents
+	 * a 1:1 reference or a collection.
+	 *  
+	 * @param eReference
+	 * @return
+	 */
+	synchronized IReference getReference(final EReference eReference) {
+		if (eReference == null) {
+			return null;
+		}
 		IReference reference = _referencesByEReference.get(eReference);
 		if (reference == null) {
-			reference = new Reference(eReference);
+			if (eReference.isMany()) {
+				reference = new CollectionReference(eReference);
+			} else {
+				reference = new OneToOneReference(eReference);
+			}
 			_referencesByEReference.put(eReference, reference);
 		}
 		return reference;
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getOneToOneReference(org.eclipse.emf.ecore.EReference)
+	 */
+	public synchronized IOneToOneReference getOneToOneReference(final EReference eReference) {
+		if (eReference == null) {
+			return null;
+		}
+		if (eReference.isMany()) {
+			throw new IllegalArgumentException("EMF reference represents a collection (ref='" + eReference + "'");
+		}
+		IOneToOneReference reference = (IOneToOneReference)_referencesByEReference.get(eReference);
+		if (reference == null) {
+				reference = new OneToOneReference(eReference);
+			_referencesByEReference.put(eReference, reference);
+		}
+		return reference;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getCollectionReference(org.eclipse.emf.ecore.EReference)
+	 */
+	public synchronized ICollectionReference getCollectionReference(final EReference eReference) {
+		if (eReference == null) {
+			return null;
+		}
+		if (!eReference.isMany()) {
+			throw new IllegalArgumentException("EMF reference represents a 1:1 reference (ref='" + eReference + "'");
+		}
+		ICollectionReference reference = (ICollectionReference)_referencesByEReference.get(eReference);
+		if (reference == null) {
+				reference = new CollectionReference(eReference);
+			_referencesByEReference.put(eReference, reference);
+		}
+		return reference;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getOperation(org.eclipse.emf.ecore.EOperation)
+	 */
 	public synchronized IOperation getOperation(EOperation eOperation) {
+		if (eOperation == null) {
+			return null;
+		}
 		IOperation operation = _operationsByEOperation.get(eOperation);
 		if (operation == null) {
 			operation = new Operation(eOperation);
@@ -258,14 +319,23 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			this._eAttribute = eAttribute;
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#getDomainObject()
+		 */
 		public <T> IDomainObject<T> getDomainObject() {
 			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#getEAttribute()
+		 */
 		public EAttribute getEAttribute() {
 			return _eAttribute;
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#get()
+		 */
 		public Object get() {
 			Method accessorMethod = getDomainClass().getAccessorFor(_eAttribute);
 			if (accessorMethod == null) {
@@ -283,6 +353,9 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			}
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#set(java.lang.Object)
+		 */
 		public void set(Object newValue) {
 			Method mutatorMethod = getDomainClass().getMutatorFor(_eAttribute);
 			if (mutatorMethod == null) {
@@ -292,7 +365,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			try {
 				mutatorMethod.invoke(getDomainObject().getPojo(), newValue);
 				
-				notifyAttributeListeners(newValue);
+				// think this is superfluous because the aspect will do our bidding for us...
+//				notifyAttributeListeners(newValue);
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
 			} catch (IllegalAccessException e) {
@@ -305,7 +379,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		/**
 		 * Returns listener only because it simplifies test implementation to do so.
 		 */
-		public <T extends IDomainObjectAttributeListener> T addDomainObjectAttributeListener(T listener) {
+		public <T extends IDomainObjectAttributeListener> T addListener(T listener) {
 			synchronized(_domainObjectAttributeListeners) {
 				if (!_domainObjectAttributeListeners.contains(listener)) {
 					_domainObjectAttributeListeners.add(listener);
@@ -313,7 +387,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			}
 			return listener;
 		}
-		public void removeDomainObjectAttributeListener(IDomainObjectAttributeListener listener) {
+		public void removeListener(IDomainObjectAttributeListener listener) {
 			synchronized(_domainObjectAttributeListeners) {
 				_domainObjectAttributeListeners.remove(listener);
 			}
@@ -325,7 +399,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @param attribute
 		 * @param newValue
 		 */
-		public void notifyAttributeListeners(Object newValue) {
+		public void notifyListeners(Object newValue) {
 			DomainObjectAttributeEvent event = 
 				new DomainObjectAttributeEvent(this, newValue);
 			for(IDomainObjectAttributeListener listener: _domainObjectAttributeListeners) {
@@ -336,9 +410,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	private class Reference implements IDomainObject.IReference {
+		EReference _eReference;
+		ResolveState _resolveState = ResolveState.UNRESOLVED;
 
-		private EReference _eReference;
-		private List<IDomainObjectReferenceListener> _domainObjectReferenceListeners = 
+		List<IDomainObjectReferenceListener> _listeners = 
 			new ArrayList<IDomainObjectReferenceListener>();
 
 		/**
@@ -350,16 +425,140 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			this._eReference = eReference;
 		}
 
-		public <T> IDomainObject<T> getDomainObject() {
-			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
-		}
-
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IReference#getEReference()
+		 */
 		public EReference getEReference() {
 			return _eReference;
 		}
 
-		public <V> Collection<IDomainObject<V>> getCollection() {
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IReference#getResolveState()
+		 */
+		public ResolveState getResolveState() {
+			return _resolveState;
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IReference#getDomainObject()
+		 */
+		public <T> IDomainObject<T> getDomainObject() {
+			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
+		}
+
+
+		/**
+		 * Returns listener only because it simplifies test implementation to do so.
+		 */
+		public <T extends IDomainObjectReferenceListener> T addListener(T listener) {
+			synchronized(_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
+				}
+			}
+			return listener;
+		}
+		public void removeListener(IDomainObjectReferenceListener listener) {
+			synchronized(_listeners) {
+				_listeners.remove(listener);
+			}
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IResolvable#nowTransient()
+		 */
+		public void nowTransient() {
+			checkInState(ResolveState.NEW);
+			_resolveState = ResolveState.TRANSIENT;
+		}
+		
+		/*
+		 * @see de.berlios.rcpviewer.session.IResolvable#nowResolved()
+		 */
+		public void nowResolved() {
+			checkInState(ResolveState.TRANSIENT, ResolveState.UNRESOLVED);
+			_resolveState = ResolveState.TRANSIENT;
+		}
+
+	}
+	
+	private class OneToOneReference extends Reference
+	                                  implements IDomainObject.IOneToOneReference {
+
+		private OneToOneReference(final EReference eReference) {
+			super(eReference);
+			assert !getDomainClass().isMultiple(_eReference);
+		}
+
+		public <Q> Q get() {
+			Method accessorMethod = getDomainClass().getAccessorFor(_eReference);
+			if (accessorMethod == null) {
+				throw new UnsupportedOperationException("Accesor method '" + accessorMethod + "' not accessible / could not be found");
+			}
+			String accessorMethodName = accessorMethod.getName();
+
+			try {
+				return (Q)accessorMethod.invoke(getDomainObject().getPojo());
+			} catch (SecurityException e) {
+				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
+			} catch (IllegalAccessException e) {
+				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
+			} catch (InvocationTargetException e) {
+				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
+			}
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IOneToOneReference#set(de.berlios.rcpviewer.session.IDomainObject, java.lang.Object)
+		 */
+		public <Q> void set(IDomainObject<Q> domainObject) {
+			Method associatorOrDissociatorMethod = null;
+		
+			if (domainObject != null) {
+				associatorOrDissociatorMethod = getDomainClass().getAssociatorFor(_eReference);
+			} else {
+				associatorOrDissociatorMethod = getDomainClass().getDissociatorFor(_eReference); 
+			}
+			if (associatorOrDissociatorMethod == null) {
+				throw new UnsupportedOperationException("Associator/dissociator method '" + associatorOrDissociatorMethod + "' not accessible / could not be found");
+			}
+			String associatorOrDissociatorMethodName = associatorOrDissociatorMethod.getName();
+			try {
+				Object referencedObjectOrNull = (domainObject != null? domainObject.getPojo(): null);
+				associatorOrDissociatorMethod.invoke(getDomainObject().getPojo(), referencedObjectOrNull );
+				
+				// TODO: the notifyListeners aspect should be doing this for us.
+				notifyListeners(referencedObjectOrNull);
+			} catch (SecurityException e) {
+				throw new UnsupportedOperationException("Associator/dissociator method '" + associatorOrDissociatorMethodName + "' not accessible");
+			} catch (IllegalAccessException e) {
+				throw new UnsupportedOperationException("Could not invoke associator/dissociator method '" + associatorOrDissociatorMethodName + "'", e);
+			} catch (InvocationTargetException e) {
+				throw new UnsupportedOperationException("Could not invoke associator/dissociator method '" + associatorOrDissociatorMethodName + "'", e);
+			}
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IOneToOneReference#notifyListeners(java.lang.Object)
+		 */
+		public void notifyListeners(Object referencedObject) {
+			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(this, referencedObject); 
+			for(IDomainObjectReferenceListener listener: _listeners) {
+				listener.referenceChanged(event);
+			}
+		}
+		
+	}
+	
+	private class CollectionReference extends Reference
+	                                  implements IDomainObject.ICollectionReference {
+
+		private CollectionReference(final EReference eReference) {
+			super(eReference);
 			assert getDomainClass().isMultiple(_eReference);
+		}
+		
+		public <V> Collection<IDomainObject<V>> getCollection() {
 			Method collectionAccessorMethod = getDomainClass().getAccessorFor(_eReference);
 			Collection<IDomainObject<V>> collection;
 			try {
@@ -376,7 +575,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 				return null;
 			}
 		}
-		
 
 		public <Q> void addToCollection(IDomainObject<Q> domainObject) {
 			assert getDomainClass().isMultiple(_eReference);
@@ -385,10 +583,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			Method collectionAssociatorMethod = getDomainClass().getAssociatorFor(_eReference);
 			try {
 				collectionAssociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
+
+				// TODO: ideally the notifyListeners aspect should do this for us? 
 				// notify _domainObjectListeners
 				DomainObjectReferenceEvent event = 
 					new DomainObjectReferenceEvent(this, getPojo());
-				for(IDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
+				for(IDomainObjectReferenceListener listener: _listeners) {
 					listener.collectionAddedTo(event);
 				}
 			} catch (IllegalArgumentException ex) {
@@ -409,10 +609,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			Method collectionDissociatorMethod = getDomainClass().getDissociatorFor(_eReference);
 			try {
 				collectionDissociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
+
+				// TODO: ideally the notifyListeners aspect should do this for us? 
 				// notify _domainObjectListeners
 				DomainObjectReferenceEvent event = 
 					new DomainObjectReferenceEvent(this, getPojo());
-				for(IDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
+				for(IDomainObjectReferenceListener listener: _listeners) {
 					listener.collectionRemovedFrom(event);
 				}
 			} catch (IllegalArgumentException ex) {
@@ -428,44 +630,24 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		
-		/**
-		 * Returns listener only because it simplifies test implementation to do so.
-		 */
-		public <T extends IDomainObjectReferenceListener> T addDomainObjectReferenceListener(T listener) {
-			synchronized(_domainObjectReferenceListeners) {
-				if (!_domainObjectReferenceListeners.contains(listener)) {
-					_domainObjectReferenceListeners.add(listener);
+		public void notifyListeners(Object referencedObject, boolean beingAdded) {
+			DomainObjectReferenceEvent event = 
+				new DomainObjectReferenceEvent(this, referencedObject);
+			for(IDomainObjectReferenceListener listener: _listeners) {
+				if (beingAdded) {
+					listener.collectionAddedTo(event);
+				} else {
+					listener.collectionRemovedFrom(event);
 				}
 			}
-			return listener;
 		}
-		public void removeDomainObjectReferenceListener(IDomainObjectReferenceListener listener) {
-			synchronized(_domainObjectReferenceListeners) {
-				_domainObjectReferenceListeners.remove(listener);
-			}
-		}
-
-		/**
-		 * public so that it can be invoked by NotifyListenersAspect.
-		 * 
-		 * @param attribute
-		 * @param newValue
-		 */
-		public void notifyReferenceListeners(Object newValue) {
-			DomainObjectReferenceEvent event = 
-				new DomainObjectReferenceEvent(this, newValue);
-			for(IDomainObjectReferenceListener listener: _domainObjectReferenceListeners) {
-				listener.referenceChanged(event);
-			}
-		}
-
 	}
 
 	
 	private class Operation implements IDomainObject.IOperation {
 		
 		private EOperation _eOperation;
-		private List<IDomainObjectOperationListener> _domainObjectOperationListeners = 
+		private List<IDomainObjectOperationListener> _listeners = 
 			new ArrayList<IDomainObjectOperationListener>();
 
 		/**
@@ -506,20 +688,66 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		/**
 		 * Returns listener only because it simplifies test implementation to do so.
 		 */
-		public <T extends IDomainObjectOperationListener> T addDomainObjectOperationListener(T listener) {
-			synchronized(_domainObjectOperationListeners) {
-				if (!_domainObjectOperationListeners.contains(listener)) {
-					_domainObjectOperationListeners.add(listener);
+		public <T extends IDomainObjectOperationListener> T addListener(T listener) {
+			synchronized(_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
 				}
 			}
 			return listener;
 		}
-		public void removeDomainObjectOperationListener(IDomainObjectOperationListener listener) {
-			synchronized(_domainObjectOperationListeners) {
-				_domainObjectOperationListeners.remove(listener);
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IOperation#removeListener(de.berlios.rcpviewer.session.IDomainObjectOperationListener)
+		 */
+		public void removeListener(IDomainObjectOperationListener listener) {
+			synchronized(_listeners) {
+				_listeners.remove(listener);
 			}
 		}
 
+	}
+
+	public ResolveState getResolveState() {
+		return _resolveState;
+	}
+
+	/**
+	 * In addition to changing the state of this object (as per the 
+	 * {@link IResolvable} interface definition), also marks all 
+	 * {@link IReference}s (which also implement {@link IResolvable}) as 
+	 * transient.
+	 * 
+	 * <p>
+	 * The rationale is that for transient objects we know that the references
+	 * must be fully known precisely because we have just created the object.
+	 * 
+	 * @see de.berlios.rcpviewer.session.IResolvable#nowTransient()
+	 */
+	public void nowTransient() {
+		checkInState(ResolveState.NEW);
+		for(IReference reference: _referencesByEReference.values()) {
+			reference.nowTransient();
+		}
+		_resolveState = ResolveState.TRANSIENT;
+	}
+	
+	/*
+	 * @see de.berlios.rcpviewer.session.IResolvable#nowResolved()
+	 */
+	public void nowResolved() {
+		checkInState(ResolveState.TRANSIENT, ResolveState.UNRESOLVED);
+		_resolveState = ResolveState.TRANSIENT;
+	}
+
+	private void checkInState(ResolveState... resolveStates) {
+		for(int i=0; i<resolveStates.length; i++) {
+			if (getResolveState() == resolveStates[i]) {
+				return;
+			}
+		}
+		throw new IllegalStateException(
+				"Current state is '" + getResolveState() + "', "
+				+ "should be in state of '" + Arrays.asList(resolveStates) + "'");
 	}
 
 }

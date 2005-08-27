@@ -30,7 +30,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
+		IDomainObject.ICollectionReference employeesCollection = 
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
 		employeesCollection.addToCollection(employeeDomainObject);
@@ -53,7 +54,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
+		IDomainObject.ICollectionReference employeesCollection = 
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		Collection<IDomainObject<Employee>> employees = 
 			employeesCollection.getCollection();
 		try {
@@ -86,14 +88,13 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			session.createTransient(departmentDomainClass);
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
-		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
+		IDomainObject.ICollectionReference employeesCollection = 
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		MyDomainObjectReferenceListener l =
-			employeesCollection.addDomainObjectReferenceListener(new MyDomainObjectReferenceListener());
+			employeesCollection.addListener(new MyDomainObjectReferenceListener());
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);
-		
-
 		
 		employeesCollection.addToCollection(employeeDomainObject);
 		
@@ -109,20 +110,22 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
+		IDomainObject.ICollectionReference employeesCollection = 
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 	
 		MyDomainObjectReferenceListener l =
-			employeesCollection.addDomainObjectReferenceListener(new MyDomainObjectReferenceListener());
+			employeesCollection.addListener(new MyDomainObjectReferenceListener());
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);
 	
 		employeesCollection.removeFromCollection(employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterRemove = employeesCollection.getCollection();
+		Collection<IDomainObject<Employee>> employeesAfterRemove = 
+			employeesCollection.getCollection();
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertTrue(l.collectionRemovedFromCallbackCalled);
@@ -136,7 +139,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.createTransient(departmentDomainClass);
-		IDomainObject.IReference employeesCollection = departmentDomainObject.getReference(departmentDomainObject.getEReferenceNamed("employees"));
+		IDomainObject.ICollectionReference employeesCollection = 
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.createTransient(employeeDomainClass);
 		Collection<IDomainObject<Employee>> employeesBeforeAdd = employeesCollection.getCollection();

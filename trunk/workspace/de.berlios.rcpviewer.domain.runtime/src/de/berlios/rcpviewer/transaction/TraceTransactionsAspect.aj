@@ -1,9 +1,7 @@
-/**
- * 
- */
-package de.berlios.rcpviewer.tracing;
+package de.berlios.rcpviewer.transaction;
 
 import org.apache.log4j.Logger;
+import de.berlios.rcpviewer.tracing.TracingAspect;
 
 public aspect TraceTransactionsAspect extends TracingAspect {
 
@@ -13,9 +11,6 @@ public aspect TraceTransactionsAspect extends TracingAspect {
 	
 	protected pointcut traceMethods() : 
 		execution(* de.berlios.rcpviewer.transaction..*.*(..)) &&
-//		!execution(* Object+.toString()) &&
-//		!execution(* Object+.equals(Object)) &&
-//		!execution(int Object+.hashCode()) &&
 		!execution(* Object.*(..))
 		;
 

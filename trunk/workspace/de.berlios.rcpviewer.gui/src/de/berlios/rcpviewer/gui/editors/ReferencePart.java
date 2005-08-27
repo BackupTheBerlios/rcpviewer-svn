@@ -218,7 +218,7 @@ class ReferencePart implements IReferencePart {
 				refresh();
 			}
 		};
-		object.getReference( ref ).addDomainObjectReferenceListener( _listener );
+		object.getOneToOneReference( ref ).addListener( _listener );
 		
 		// open listener - dbl-click opens editor for selected item
 		// no open listener on a Text so fudge with mouse listener

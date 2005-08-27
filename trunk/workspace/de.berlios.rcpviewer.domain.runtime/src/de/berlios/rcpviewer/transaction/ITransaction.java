@@ -147,15 +147,15 @@ public interface ITransaction {
 	 * attribute in the UI or of invoking an operation.
 	 *
 	 * <p>
-	 * While a change is underway (until {@link #completeChange()} is called)
+	 * While a change is underway (until {@link #completingInteraction()} is called)
 	 * the transaction temporarily changes its state.
 	 *
 	 * <p>
 	 * Preconditions
 	 * <ul>
-	 * <li> in a state of {@link ITransaction.State#IN_PROGRESS}, else throws
-	 *      an {@link IllegalStateException}.  Use {@link #getState()} to check
-	 *      that this precondition is met.
+	 * <li> either in a state of {@link ITransaction.State#IN_PROGRESS}, or
+	 *      can already be in state of {@link ITransaction.State#BUILDING_CHANGE}.
+	 *      Use {@link #getState()} to check that this precondition is met.
 	 * <li> must be the current transaction (as returned by
 	 *      {@link ITransactionManager#getCurrentTransaction()}.
 	 * </ul>
@@ -168,10 +168,16 @@ public interface ITransaction {
 	 *      to hold a collection of atoms) is added to the current stack.
 	 * <li> any changes that had been undone and were ready to be redone
 	 *      (using {@link #redoPendingChange()}) will be cleared from the
-	 *      redo stack. 
+	 *      redo stack.
+	 * <li> Returns <code>true</code> if was state was previously
+	 *      {@link ITransaction.State#IN_PROGRESS}, indicating that an
+	 *      interaction was indeed started, otherwise returns <code>false</code>.
 	 * </ul>
+	 * 
+	 * @return <code>true</code> if moved into {@link ITransaction.State#BUILDING_CHANGE}, 
+	 *         <code>false</code> if was already there.
 	 */
-	public void startChange() throws IllegalStateException;
+	public boolean startingInteraction() throws IllegalStateException;
 
 	/**
 	 * Add a {@link IChange} in the current change.
@@ -197,40 +203,42 @@ public interface ITransaction {
 	 * <li> state of {@link ITransaction.State#BUILDING_CHANGE}.
 	 * <li> internally, the {@link IChange} is added in the current change
 	 *      ({@link ChangeSet})
-	 *     
+	 * <li> any pojos affected by the change are enlisted into the transaction.
 	 * </ul>
 	 * 
 	 * @param workAtom
-	 * @throws IllegalStateException
+	 * @return <code>true</code> if the change can be added to the transaction,
+	 *         <code>false</code> otherwise (ie if would enlist a pojo already
+	 *         enlisted in some other current transaction).
 	 */
-	public void addToChange(IChange workAtom) throws IllegalStateException;
+	public boolean addingToInteractionChangeSet(IChange change) throws IllegalStateException;
 
-	/**
-	 * Indicate that the set of changes currently being built up should be
-	 * discarded.
-	 * 
-	 * <p>
-	 * Preconditions
-	 * <ul>
-	 * <li> in a state of {@link ITransaction.State#BUILDING_CHANGE}, else throws
-	 *      an {@link IllegalStateException}.  Use {@link #getState()} to check
-	 *      that this precondition is met.
-	 * <li> must be the current transaction (as returned by
-	 *      {@link ITransactionManager#getCurrentTransaction()}.
-	 * </ul>
-	 * 
-	 * <p>
-	 * Postconditions
-	 * <ul>
-	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-	 * <li> current changes (added through {@link #addToChange(IChange)} 
-	 *      undone and discarded.
-	 * <li> current change set reset.
-	 * </ul>
-	 * 
-	 * @throws IllegalStateException
-	 */
-	public void discardChange() throws IllegalStateException;
+//	/**
+//	 * Indicate that the set of changes currently being built up should be
+//	 * discarded.
+//	 * 
+//	 * <p>
+//	 * Preconditions
+//	 * <ul>
+//	 * <li> in a state of {@link ITransaction.State#BUILDING_CHANGE}, else throws
+//	 *      an {@link IllegalStateException}.  Use {@link #getState()} to check
+//	 *      that this precondition is met.
+//	 * <li> must be the current transaction (as returned by
+//	 *      {@link ITransactionManager#getCurrentTransaction()}.
+//	 * </ul>
+//	 * 
+//	 * <p>
+//	 * Postconditions
+//	 * <ul>
+//	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
+//	 * <li> current changes (added through {@link #addingToInteractionChangeSet(IChange)} 
+//	 *      undone and discarded.
+//	 * <li> current change set reset.
+//	 * </ul>
+//	 * 
+//	 * @throws IllegalStateException
+//	 */
+//	public void discardInteractionChangeSet() throws IllegalStateException;
 
 
 	/**
@@ -251,14 +259,15 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-	 * <li> current changes (added through {@link #addToChange(IChange)} 
+	 * <li> current changes (added through {@link #addingToInteractionChangeSet(IChange)} 
 	 *      popped to stack as a new change set.
+	 * <li> listeners notified through {@link ITransactionListener#addedChange(TransactionEvent)}
 	 * <li> current change set reset.
 	 * </ul>
 	 * 
 	 * @throws IllegalStateException
 	 */
-	public void completeChange() throws IllegalStateException;
+	public void completingInteraction() throws IllegalStateException;
 
 	
 	/**
@@ -285,6 +294,7 @@ public interface ITransaction {
 	 * <li> the change undone (a {@link ChangeSet} is removed from the undo
 	 *      stack and added to the redo stack such that it may be redone using
 	 *      {@link #redoPendingChange()} 
+	 * <li> any pojos are un-enlisted
 	 * </ul>
 	 * 
 	 * @throws IllegalStateException - if this transaction is not currently in progress,
@@ -318,6 +328,7 @@ public interface ITransaction {
 	 * <li> the change redone (a {@link ChangeSet} is removed from the redo
 	 *      stack and added to a undo stack such that it may be undone using
 	 *      {@link #undoPendingChange()} 
+	 * <li> any pojos are re-enlisted
 	 * </ul>
 	 * 
 	 * @throws IllegalStateException - if there are no changes to redo, or if 
@@ -328,7 +339,8 @@ public interface ITransaction {
 
 	/**
 	 * Undoes all changes (or groups of changes) in this in-progress 
-	 * {@link ITransaction}.
+	 * {@link ITransaction} and then notifies the {@link ITransactionManager}
+	 * to discard this transaction (effectively deleting it).
 	 * 
 	 * <p>
 	 * A user may make several discrete interactions as part of an overall
@@ -341,7 +353,8 @@ public interface ITransaction {
 	 * Whereas {@link #undoPendingChange()} will undone only the most recent change 
 	 * (unedit a field, or un-invoke an operation), this method will undo
 	 * all changes, effectively taking the state of the objects back as they
-	 * where at the last commit.
+	 * where at the last commit.  It then informs the {@link ITransactionManager}
+	 * to discards it completely.
 	 * 
 	 * <p>
 	 * Preconditions
@@ -362,14 +375,15 @@ public interface ITransaction {
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
 	 * <li> all changes are undone (a {@link ChangeSet} and removed from the undo
-	 *      stack and added to the redo stack such that they may be redone using
-	 *      {@link #redoPendingChange()} 
+	 *      stack
+	 * <li> any pojos are un-enlisted
+	 * <li> the {@link ITransactionManager} discards the transaction. 
 	 * </ul>
 	 * 
 	 * @throws IllegalStateException - if this transaction is not currently in 
 	 *                                 progress, or if there are no pending changes.
 	 */
-	public void undoPendingChanges() throws IllegalStateException;
+	public void discard() throws IllegalStateException;
 	
 
 	/**
@@ -377,7 +391,7 @@ public interface ITransaction {
 	 *
 	 * <p>
 	 * If there have been any changes that have been undone, either by 
-	 * {@link #undoPendingChanges()} <b>or</b> by multiple calls to 
+	 * {@link #discard()} <b>or</b> by multiple calls to 
 	 * {@link #undoPendingChange()}, then this method will allow them all to be
 	 * redone.
 	 * 
@@ -579,8 +593,8 @@ public interface ITransaction {
 
 		/**
 		 * not yet committed, moreover in the middle of making a change
-		 * ({@link ITransaction#startChange()} has been invoked but
-		 * {@link ITransaction#completeChange()} has not.
+		 * ({@link ITransaction#startingInteraction()} has been invoked but
+		 * {@link ITransaction#completingInteraction()} has not.
 		 * 
 		 * <p>
 		 * This is a temporary state that should be short-lived; cannot 

@@ -63,14 +63,6 @@ public interface ITransactionManager {
 	
 	
 	/**
-	 * Creates a new in-progress {@link ITransaction}.
-	 *  
-	 * @return
-	 */
-	public ITransaction createTransaction();
-	
-	
-	/**
 	 * Returns the current {@link ITransaction} for the specified pojo, creating
 	 * one if necessary and enlisting the pojo into it.
 	 * 

@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.transaction.ITransaction;
 
 
 /**
- * Represents a change to an attribute of a pojo enlisted within a
+ * Represents a change to an 1:1 reference of a pojo enlisted within a
  * {@link ITransaction}
  * 
  * <p>
@@ -21,20 +21,13 @@ import de.berlios.rcpviewer.transaction.ITransaction;
  * has value semantics.
  * 
  */
-public final class AttributeChange extends AbstractFieldChange {
+public final class OneToOneReferenceChange extends AbstractFieldChange {
 
-	/**
-	 * CAptures the current value of the attribute as the 
-	 * {@link #getPreValue()}.
-	 * 
-	 * @param attribute
-	 * @param postValue
-	 */
-	public AttributeChange(
+	public OneToOneReferenceChange(
 			final ITransactable transactable,
 			final Field field,
-			final Object postValue) {
-		super(transactable, field, postValue);
+			final Object referencedObjOrNull) {
+		super(transactable, field, referencedObjOrNull);
 	}
 
 	/*
@@ -45,10 +38,10 @@ public final class AttributeChange extends AbstractFieldChange {
 	public final boolean equals(final Object other) {
 		return
 			sameClass(other) &&
-			equals((AttributeChange)other);
+			equals((OneToOneReferenceChange)other);
 	}
 
-	public final boolean equals(final AttributeChange other) {
+	public final boolean equals(final OneToOneReferenceChange other) {
 		return
 		    _transactable.equals(other._transactable) &&
 			getField().equals(other.getField()) &&

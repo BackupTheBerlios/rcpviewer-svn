@@ -716,7 +716,7 @@ public class RuntimeDomainClass<T>
 			if (couldBeCollection) {
 				associates = method.getAnnotation(TypeOf.class);
 				if (associates == null) {
-					// they've forgotten the @Associates annotation.
+					// they've forgotten the @TypeOf annotation.
 					couldBeCollection = false;
 				}
 			}
@@ -802,9 +802,9 @@ public class RuntimeDomainClass<T>
 	
 	private void identifyAssociatorsAndDissociators() {
 		Method[] methods = _javaClass.getMethods();
-		Method associatorMethod = null;
-		Method dissociatorMethod = null;
 		for(EReference eReference: references()) {
+			Method associatorMethod = null;
+			Method dissociatorMethod = null;
 			for(int i=0; i<methods.length; i++) {
 				if (getRuntimeNamingConventions().isAssociatorFor(methods[i], eReference)) {
 					associatorMethod = methods[i];
@@ -827,13 +827,17 @@ public class RuntimeDomainClass<T>
 			eReference.setChangeable(true);
 			
 			emfFacade.putAnnotationDetails(
-					this, emfFacade.methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY,  
+					this, emfFacade.methodNamesAnnotationFor(eReference),
+					eReference.isMany()?
+							StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY:
+							StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY,  
 					associatorMethod.getName());
 			
 			emfFacade.putAnnotationDetails(
 					this, emfFacade.methodNamesAnnotationFor(eReference), 
-					StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY, 
+					eReference.isMany()?
+							StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY:
+							StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY, 
 					dissociatorMethod.getName());
 		}
 	}
@@ -891,7 +895,11 @@ public class RuntimeDomainClass<T>
 	 */
 	public Method getAssociatorFor(EReference eReference) {
 		String associatorMethodName = 
-			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY);
+			emfFacade.getAnnotationDetail(
+				emfFacade.methodNamesAnnotationFor(eReference),
+				eReference.isMany()?
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY:
+					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY);
 		if (associatorMethodName == null) {
 			return null;
 		}
@@ -915,7 +923,11 @@ public class RuntimeDomainClass<T>
 	 */
 	public Method getDissociatorFor(EReference eReference) {
 		String dissociatorMethodName = 
-			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eReference), StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY);
+			emfFacade.getAnnotationDetail(
+				emfFacade.methodNamesAnnotationFor(eReference), 
+					eReference.isMany()?
+						StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY:
+							StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY);
 		if (dissociatorMethodName == null) {
 			return null;
 		}
@@ -941,7 +953,7 @@ public class RuntimeDomainClass<T>
 		try {
 			Object pojo = getJavaClass().newInstance();
 			IDomainObject<T> domainObject = new DomainObject(this, pojo);
-			
+			domainObject.nowTransient();
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);

@@ -24,6 +24,9 @@ public abstract aspect TransactionAspect extends PojoAspect {
 	public ITransactionManager getTransactionManager() {
 		return _transactionManager;
 	}
+	TransactionManager getTransactionManagerImpl() {
+		return (TransactionManager)_transactionManager;
+	}
 	/**
 	 * TODO: In readiness for dependency injection.
 	 */

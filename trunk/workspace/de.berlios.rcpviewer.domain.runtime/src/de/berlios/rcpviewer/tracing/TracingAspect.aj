@@ -37,16 +37,16 @@ public abstract aspect TracingAspect {
 	int depth = 0;
 
 	protected void logEnter(JoinPoint.StaticPart jp) {
-		writeSig('>', depth, jp);
+		trace('>', depth, jp);
 		depth++;
 	}
 
 	protected void logExit(JoinPoint.StaticPart jp) {
 		depth--;
-		writeSig('<', depth, jp);
+		trace('<', depth, jp);
 	}
 
-	void writeSig(char decorator, int depth, JoinPoint.StaticPart jp) {
+	void trace(char decorator, int depth, JoinPoint.StaticPart jp) {
 		SourceLocation loc = jp.getSourceLocation();
 
 		buf.setLength(0);

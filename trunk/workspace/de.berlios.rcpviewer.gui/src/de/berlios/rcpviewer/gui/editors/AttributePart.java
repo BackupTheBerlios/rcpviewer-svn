@@ -66,8 +66,7 @@ class AttributePart implements IFormPart, IFieldListener {
 				}
 			}
 		};
-		_object.getAttribute( _attribute )
-			   .addDomainObjectAttributeListener( _listener );
+		_object.getAttribute( _attribute ).addListener( _listener );
 		
 	}
 	
@@ -91,8 +90,7 @@ class AttributePart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
 	public void dispose() {
-		_object.getAttribute( _attribute )
-		       .removeDomainObjectAttributeListener( _listener );	
+		_object.getAttribute( _attribute ).removeListener( _listener );	
 	}
 
 	/* (non-Javadoc)

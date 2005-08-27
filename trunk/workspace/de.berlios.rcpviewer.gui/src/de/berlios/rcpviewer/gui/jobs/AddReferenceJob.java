@@ -44,17 +44,18 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		IStatus status;
 		if ( _ref.isMany() ) {
-			getDomainObject().getReference( _ref ).addToCollection( _value );
+			getDomainObject().getCollectionReference( _ref ).addToCollection( _value );
 			status =  Status.OK_STATUS;
 		}
 		else {
-			Method associator
-				= getDomainObject().getDomainClass().getAssociatorFor( _ref );
-			assert associator != null;
+//			Method associator
+//				= getDomainObject().getDomainClass().getAssociatorFor( _ref );
+//			assert associator != null;
 			try {
-				associator.invoke( 
-						getDomainObject().getPojo(),
-						new Object[]{ _value.getPojo() } );
+//				associator.invoke( 
+//						getDomainObject().getPojo(),
+//						new Object[]{ _value.getPojo() } );
+				getDomainObject().getOneToOneReference(_ref).set( _value );
 				status = Status.OK_STATUS;		
 			}
 			catch (Exception ex ) {

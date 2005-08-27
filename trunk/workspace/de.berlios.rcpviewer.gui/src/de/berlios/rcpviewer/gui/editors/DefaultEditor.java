@@ -198,8 +198,7 @@ public final class DefaultEditor extends EditorPart {
 			}
 		};
 		for ( EAttribute a : clazz.attributes() ) {
-			object.getAttribute( a )
-			      .addDomainObjectAttributeListener( _nameListener );
+			object.getAttribute( a ).addListener( _nameListener );
 		}
 		
 		
@@ -230,8 +229,7 @@ public final class DefaultEditor extends EditorPart {
 		if ( _nameListener != null ) {
 			IDomainObject<?> object = getDomainObject();
 			for ( EAttribute a : object.getDomainClass().attributes() ) {
-				object.getAttribute( a )
-				      .removeDomainObjectAttributeListener( _nameListener );
+				object.getAttribute( a ).removeListener( _nameListener );
 			}
 		}
 		super.dispose();

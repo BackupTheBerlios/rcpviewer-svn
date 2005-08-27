@@ -165,6 +165,24 @@ public final class StandardProgModelConstants {
 	public static final String ANNOTATION_REFERENCE_MUTATOR_NAME_KEY = "set";
 
 	/**
+	 * Key to EAnnotation details representing (names of) method to associate object 
+	 * to a single-valued (1:1) reference.
+	 * 
+	 * <p>
+	 * Holds key to the associate method, if it exists.
+	 */
+	public static final String ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY = "associate";
+
+	/**
+	 * Key to EAnnotation details representing (names of) method to dissociate object 
+	 * to a single-valued (1:1) reference.
+	 * 
+	 * <p>
+	 * Holds key to the associate method, if it exists.
+	 */
+	public static final String ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY = "dissociate";
+
+	/**
 	 * Key to EAnnotation details representing (names of) method to add objects 
 	 * to a multi-valued (collection) reference.
 	 * 

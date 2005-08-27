@@ -53,7 +53,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 			(IDomainObject<Department>)session.createTransient(domainClass);
 		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		MyDomainObjectAttributeListener l = 
-			nameAttribute.addDomainObjectAttributeListener(new MyDomainObjectAttributeListener());
+			nameAttribute.addListener(new MyDomainObjectAttributeListener());
 		nameAttribute.set("HR");
 		assertTrue(l.attributeChangedCallbackCalled);
 	}

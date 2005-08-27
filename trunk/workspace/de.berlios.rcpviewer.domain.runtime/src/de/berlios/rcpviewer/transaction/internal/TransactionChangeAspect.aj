@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.transaction.internal;
 
 import java.lang.reflect.Field;
+import java.util.EnumSet;
 
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.transaction.ITransactable;
@@ -11,9 +12,37 @@ import de.berlios.rcpviewer.session.PojoAspect;
 import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.IObservedFeature;
+import de.berlios.rcpviewer.session.IResolvable.ResolveState;
 
+import org.apache.log4j.Logger;
 
 public abstract aspect TransactionChangeAspect extends TransactionAspect {
+
+	/**
+	 * Sub-aspects implement to control where logging goes.
+	 */
+	protected abstract Logger getLogger();
+	
+	/**
+	 * Subaspects specify what constitutes "changing" the pojo
+	 */
+	abstract pointcut changingPojo(IPojo pojo); 
+
+	protected pointcut transactionalChange(IPojo pojo): 
+		changingPojo(pojo) &&
+		if(resolveStateAppropriate(pojo)) &&
+		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
+
+	/**
+	 * The states that a domain object must be in in order to be enrolled into
+	 * a transaction.
+	 * 
+	 * TODO: should have a ResolvingAspect that dominates this aspect and 
+	 * ensures that pojos are resolved before being interacted with.
+	 */
+	private final static EnumSet<ResolveState> TRANSACTIONAL_STATES = 
+		EnumSet.of(ResolveState.TRANSIENT, ResolveState.RESOLVED);
+	
 
 	/**
 	 * Keeps track of the current transaction for this thread (if any)
@@ -27,21 +56,6 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 		};
 	}
 	
-	Object around(IPojo pojo, Object postValue): changeAttributeOnPojo(pojo, postValue) {
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		
-		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject != null) {
-			Field field = getFieldFor(thisJoinPointStaticPart);
-			if (field != null) {
-				AttributeChange change = new AttributeChange(transactable, field, postValue);
-				transaction.addToChange(change);
-			}
-		}
-		return proceed(pojo, postValue); // equivalent to executing the fmwa	
-	}
-
 	/**
 	 * Intent is for this to be called when a change (work group) has been completed.
 	 * 
@@ -59,8 +73,6 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 			}
 		}
 	}
-
-
 	
 	/**
 	 * Returns either the current transaction for this thread or the transaction
@@ -81,7 +93,7 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 		if (transaction != null && 
 		    pojoTransaction != null) {
 			if (transaction != pojoTransaction) {
-				transaction.discardChange();
+				// this shouldn't happen
 				throw new RuntimeException("Object already enlisted in another transaction - discarding change.");
 			}
 			return transaction;
@@ -93,7 +105,7 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 			transaction = pojoTransaction;
 		} else {
 			// ... if transaction == null && pojoTransaction == null
-			transaction = getTransactionManager().createTransaction();
+			transaction = getTransactionManagerImpl().createTransaction();
 		}
 		transaction.checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
 		return transaction;
@@ -118,4 +130,28 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 		__transactionByThread.set(transaction);
 	}
 
+	/**
+	 * Whether the state of this the {@link IDomainObject} corresponding to
+	 * this pojo indicates that it has been resolved such that the pojo may
+	 * be enrolled within a transaction.
+	 * 
+	 * <p>
+	 * Note that although the resolve state of {@link IDomainObject} is set up
+	 * in its constructor, we do have to check for a null reference.  That's
+	 * because the aspect will fire even as the object is being constructed.
+	 * If the resolve state is <code>null</code>, we therefore interpret as 
+	 * not being in a state ready to be involved in transactions.
+	 * 
+	 * <p>
+	 * In fact, since the _domainObject instance variable is introduced into
+	 * the pojo Object, we have to check whether it exists. 
+	 */
+	protected static boolean resolveStateAppropriate(final IPojo pojo) {
+		IDomainObject domainObject = pojo.getDomainObject();
+		if (domainObject == null) {
+			return false;
+		}
+		ResolveState resolveState = domainObject.getResolveState();
+		return resolveState != null && TRANSACTIONAL_STATES.contains(resolveState);
+	}
 }

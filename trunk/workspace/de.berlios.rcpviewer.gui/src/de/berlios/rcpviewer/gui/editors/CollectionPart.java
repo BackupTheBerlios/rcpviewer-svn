@@ -363,7 +363,7 @@ class CollectionPart implements IReferencePart {
 					= new ArrayList<IDomainObject>();
 				
 				Class<?> collectionPojoType = _ref.getEType().getInstanceClass();
-				for( Object pojo : dObj.getReference( _ref ).getCollection() ) {
+				for( Object pojo : dObj.getCollectionReference( _ref ).getCollection() ) {
 					IDomainObject dElem = session.getDomainObjectFor( 
 							pojo, collectionPojoType );
 					assert dElem != null;
@@ -384,13 +384,13 @@ class CollectionPart implements IReferencePart {
 			// input is set to null
 			if ( oldInput != null && oldInput instanceof IDomainObject ) {
 				((IDomainObject<?>)oldInput)
-					.getReference( _ref )
-					.removeDomainObjectReferenceListener( _refListener );
+					.getCollectionReference( _ref )
+					.removeListener( _refListener );
 			}
 			if ( newInput != null && newInput instanceof IDomainObject ) {
 				((IDomainObject<?>)newInput)
-					.getReference( _ref )
-					.addDomainObjectReferenceListener( _refListener );
+					.getCollectionReference( _ref )
+					.addListener( _refListener );
 			}
 			
 		}
@@ -500,7 +500,7 @@ class CollectionPart implements IReferencePart {
 		
 		private Collection<?> getCollection(){
 			IDomainObject<?> parent= (IDomainObject<?>)_viewer.getInput();
-			return parent.getReference( _ref ).getCollection();
+			return parent.getCollectionReference( _ref ).getCollection();
 		}
 	}
 }

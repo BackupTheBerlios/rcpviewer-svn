@@ -12,6 +12,7 @@ import org.aspectj.lang.reflect.FieldSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.reflect.ConstructorSignature;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -19,6 +20,7 @@ import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 
 public abstract aspect PojoAspect {
 	
@@ -51,83 +53,263 @@ public abstract aspect PojoAspect {
 	}
 
 	/**
-	 * used for percflow: an aspect is instantiated each time an operation
-	 * is invoked on a pojo
+	 * Captures the invocation of any operation on a pojo.
+	 * 
+	 * <p>
+	 * Public methods which represent getters, setters, associators, 
+	 * dissociators, addTo and removeFrom are excluded. 
 	 * 
 	 * <p>
 	 * protected for sub-aspects
 	 */
 	protected pointcut invokeOperationOnPojo(IPojo pojo): 
 		invokePublicMethodOnPojo(pojo) &&
-		!invokeAccessorOnPojo(Object) &&
-		!invokeMutatorOnPojo(Object, Object) &&
+		!invokeGetterForAttributeOnPojo(IPojo) &&
+		!invokeSetterForAttributeOnPojo(IPojo, Object) &&
+		!invokeGetterForOneToOneReferenceOnPojo(IPojo) &&
+		!invokeSetterForOneToOneReferenceOnPojo(IPojo, IPojo) &&
+		!invokeAssociatorForOneToOneReferenceOnPojo(IPojo, IPojo) &&
+		!invokeDissociatorForOneToOneReferenceOnPojo(IPojo, IPojo) &&
+		!invokeAddToCollectionOnPojo(IPojo, IPojo) &&
+		!invokeRemoveFromCollectionOnPojo(IPojo, IPojo) &&
 		!within(PojoAspect);
 	
-	/**
-	 * protected for sub-aspects; any public method except those inherited 
-	 * from Object class itself.
-	 */
-	protected pointcut invokePublicMethodOnPojo(IPojo pojo): 
-		execution(public * IPojo+.*(..)) && 
-		!execution(public String Object+.*()) && 
-		this(pojo);
+	/////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * protected for sub-aspects
+	 * Captures the invocation of any accessor (getter) of an attribute on a 
+	 * pojo.
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
 	 */
-	protected pointcut invokeAccessorOnPojo(IPojo pojo): 
+	protected pointcut invokeGetterForAttributeOnPojo(IPojo pojo): 
 		execution(public !void IPojo+.get*()) && this(pojo);
 	
 	/**
-	 * protected for sub-aspects
+	 * Captures the invocation of any mutator (setter) of an attribute on a 
+	 * pojo.
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
 	 */
-	protected pointcut invokeMutatorOnPojo(IPojo pojo, Object postValue): 
+	protected pointcut invokeSetterForAttributeOnPojo(IPojo pojo, Object postValue): 
 		execution(public void IPojo+.set*(*)) && this(pojo) && args(postValue);
 	
 	/**
-	 * protected for sub-aspects
+	 * Captures the invocation of any accessor (getter) of an 1:1 reference on a 
+	 * pojo.
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
 	 */
-	protected pointcut invokeAddToOnPojo(IPojo pojo): 
-		execution(public !void IPojo+.addTo*(*)) && this(pojo);
+	protected pointcut invokeGetterForOneToOneReferenceOnPojo(IPojo pojo): 
+		execution(public IPojo+ IPojo+.get*()) && this(pojo);
+	
 	
 	/**
-	 * protected for sub-aspects
+	 * Captures the invocation of any mutator (setter) of an 1:1 reference on a 
+	 * pojo.
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * This is an alternative programming model to using associators and
+	 * dissociators. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
 	 */
-	protected pointcut invokeRemoveFromOnPojo(IPojo pojo): 
-		execution(public !void IPojo+.removeFrom*(*)) && this(pojo);
+	protected pointcut invokeSetterForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObjectOrNull): 
+		execution(public void IPojo+.set*(IPojo+)) && this(pojo) && args(newReferencedObjectOrNull);
+
+	/**
+	 * Captures the invocation of any associator (associate method) of a 
+	 * 1:1 reference on a pojo.
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut invokeAssociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObject): 
+		execution(public void IPojo+.associate*(IPojo+)) && this(pojo) && args(newReferencedObject);
 	
+	/**
+	 * Captures the invocation of any dissociator (dissociate method) of a 
+	 * 1:1 reference on a pojo.
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut invokeDissociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo existingReferencedObject): 
+		execution(public void IPojo+.dissociate*(IPojo+)) && this(pojo) && args(existingReferencedObject);
+	
+	/**
+	 * Captures the invocation of any addTo method for adding objects to an
+	 * collection on a pojo. 
+	 * 
+	 * <p>
+	 * Since this is a potential start of an interaction initiated from the UI, 
+	 * it is useful in defining either the start of a transaction or the
+	 * start of a new ChangeSet to add to an existing transaction. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut invokeAddToCollectionOnPojo(IPojo pojo, IPojo addedObj): 
+		execution(public void IPojo+.addTo*(IPojo+)) && this(pojo) && args(addedObj);
+	
+	/**
+	 * Captures the invocation of any removeFrom method for removing objects 
+	 * from a collection on a pojo. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut invokeRemoveFromCollectionOnPojo(IPojo pojo, IPojo removedObj): 
+		execution(public void IPojo+.removeFrom*(IPojo+)) && this(pojo) && args(removedObj);
+	
+	/**
+	 * Captures the invokation of any public method on a pojo, excluding 
+	 * prerequisites methods and also excluding those methods inherited from 
+	 * the Object class itself.
+	 * 
+	 * <p>
+	 * Private because it doesn't repreesnt a semantic that sub-aspects should
+	 * particularly be interested in.
+	 */
+	private pointcut invokePublicMethodOnPojo(IPojo pojo): 
+		execution(public * IPojo+.*(..)) && 
+		!execution(public IDomainObject IPojo+.getDomainObject()) && 
+		!execution(public IPrerequisites IPojo+.*Pre(..)) && 
+		!execution(public * Object.*()) && 
+		this(pojo);
+	
+
 	/**
 	 * Capture an attribute being changed on some pojo.
 	 * 
 	 * <p>
-	 * The pojo being changed could either be the one on which the operation
-	 * has been invoked, or could be some other pojo entirely.
+	 * This is different from the invokeSetterForAttributeOnPojo pointcut 
+	 * because it fires however the attribute is modified (directly or not).
+	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
+	 * of a transaction already under way.
 	 * 
 	 * <p>
-	 * protected for sub-aspects
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
 	 * 
 	 */
-	protected pointcut changeAttributeOnPojo(IPojo pojo, Object postValue) :
-		args(postValue) && this(pojo) && set(* IPojo+.*);
+	protected pointcut changingAttributeOnPojo(IPojo pojo, Object postValue) :
+		args(postValue) && this(pojo) && set(!IPojo IPojo+.*);
 
 
 	/**
-	 * Notice that an attribute has changed.
+	 * Capture a 1:1 reference being changed on some pojo.
 	 * 
 	 * <p>
-	 * Overload of the other version but not exposing the argument.
+	 * This is different from the invoke{Setter/Associator/Dissociator}ForOneToOneReferenceOnPojo pointcuts 
+	 * because it fires however the reference is modified (directly or not).
+	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
+	 * of a transaction already under way.
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 * 
 	 */
-	protected pointcut modifyAttributeOnPojoNoArg(IPojo pojo) :
-		this(pojo) && set(* IPojo+.*);
+	protected pointcut changingOneToOneReferenceOnPojo(IPojo pojo, IPojo referencedObjectOrNull) :
+		set(IPojo+ IPojo+.*) && this(pojo) && args(referencedObjectOrNull);
 
-	
 
+	/**
+	 * Capture a collection in a pojo has been added to.
+	 * 
+	 * <p>
+	 * This is different from the invokeAddToCollectionOnPojo pointcut 
+	 * because it fires however the collection is modified (directly or not).
+	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
+	 * of a transaction already under way.
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut addingToCollectionOnPojo(IPojo pojo, IPojo addedObj): 
+		call(public boolean java.util.Collection+.add(IPojo+)) && 
+		args(addedObj) && 
+		this(pojo)  && 
+		!within(java.util..*) ;
+				
+	/**
+	 * Capture a collection in a pojo has been removed from.
+	 * 
+	 * <p>
+	 * This is different from the invokeRemoveFromCollectionOnPojo pointcut 
+	 * because it fires however the collection is modified (directly or not).
+	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
+	 * of a transaction already under way.
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut removingFromCollectionOnPojo(IPojo pojo, IPojo removedObj): 
+		call(public boolean java.util.Collection+.remove(IPojo+)) && 
+		args(removedObj) && 
+		this(pojo) && 
+		!within(java.util..*) ;
+				
 	/**
 	 * Capture a pojo being instantiated.
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
 	 */
-	public pointcut instantiatePojo(IPojo pojo): 
+	protected pointcut instantiatingPojo(IPojo pojo): 
 		execution(IPojo+.new(..)) && this(pojo);
 
+
+	////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Looks up the {@link Field} that corresponds to the
@@ -191,6 +373,21 @@ public abstract aspect PojoAspect {
 
 
 	/**
+	 * Looks up the {@link EReference} that corresponds to the
+	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
+	 * 
+	 * <p>
+	 * This is a helper method provided for the convenience of subaspects.
+	 */
+	protected EReference getEReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+		Signature signature = joinPointStaticPart.getSignature();
+		String name = signature.getName();
+		EReference reference = domainObject.getEReferenceNamed(name);
+		return reference;
+	}
+
+
+	/**
 	 * Looks up the {@link EOperation} that corresponds to the
 	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
 	 * 
@@ -212,7 +409,7 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * This is a helper method provided for the convenience of subaspects.
 	 * 
-	 * @return attribute - guaranteed to be non-null (else an assertion error will be thrown).
+	 * @return attribute or null
 	 */
 	protected IDomainObject.IAttribute getAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		EAttribute eAttribute = getEAttributeFor(domainObject, joinPointStaticPart);
@@ -221,6 +418,38 @@ public abstract aspect PojoAspect {
 	}
 
 
+	/**
+	 * Looks up the {@link IDomainObject.IOneToOneReference} that corresponds to the
+	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
+	 * 
+	 * <p>
+	 * This is a helper method provided for the convenience of subaspects.
+	 * 
+	 * @return reference or null
+	 */
+	protected IDomainObject.IOneToOneReference getOneToOneReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+		EReference eReference = getEReferenceFor(domainObject, joinPointStaticPart);
+		IDomainObject.IOneToOneReference reference = domainObject.getOneToOneReference(eReference);
+		return reference;
+	}
+
+
+	/**
+	 * Looks up the {@link IDomainObject.ICollectionReference} that corresponds to the
+	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
+	 * 
+	 * <p>
+	 * This is a helper method provided for the convenience of subaspects.
+	 * 
+	 * @return reference or null
+	 */
+	protected IDomainObject.ICollectionReference getCollectionReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+		EReference eReference = getEReferenceFor(domainObject, joinPointStaticPart);
+		IDomainObject.ICollectionReference reference = domainObject.getCollectionReference(eReference);
+		return reference;
+	}
+
+	
 	/**
 	 * Looks up the {@link IDomainObject.IAttribute} that corresponds to the
 	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
@@ -243,7 +472,7 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * This is a helper method provided for the convenience of subaspects.
 	 * 
-	 * @return attribute - guaranteed to be non-null (else an assertion error will be thrown).
+	 * @return attribute or null
 	 */
 	protected IExtendedDomainObject.IExtendedAttribute getExtendedAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		// TODO: the cast could be avoided if IDomainObject were declared instead as IDomainObject<?>.
@@ -254,6 +483,28 @@ public abstract aspect PojoAspect {
 		IExtendedDomainObject.IExtendedAttribute extendedAttribute = 
 			extendedDomainObject.getAttribute(eAttribute);
 		return extendedAttribute;
+	}
+
+
+	/**
+	 * Looks up the {@link IExtendedDomainObject.IExtendedReference} that 
+	 * corresponds to the signature represented by the supplied 
+	 * {@link JoinPoint.StaticPart}.
+	 * 
+	 * <p>
+	 * This is a helper method provided for the convenience of subaspects.
+	 * 
+	 * @return reference or null
+	 */
+	protected IExtendedDomainObject.IExtendedReference getExtendedReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+		// TODO: the cast could be avoided if IDomainObject were declared instead as IDomainObject<?>.
+		// however, in AspectJ as of 20050816 this blows up the compiler
+		IExtendedDomainObject extendedDomainObject = 
+			(IExtendedDomainObject)domainObject.getAdapter(IExtendedDomainObject.class);
+		EReference eReference = getEReferenceFor(domainObject, joinPointStaticPart);
+		IExtendedDomainObject.IExtendedReference extendedReference = 
+			extendedDomainObject.getReference(eReference);
+		return extendedReference;
 	}
 
 

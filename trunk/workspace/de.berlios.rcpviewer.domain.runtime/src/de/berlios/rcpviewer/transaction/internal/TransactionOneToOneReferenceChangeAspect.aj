@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.transaction.internal;
 
+import java.lang.reflect.Field;
+
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.PojoAspect;
 import de.berlios.rcpviewer.session.ISession;
@@ -10,21 +12,20 @@ import de.berlios.rcpviewer.transaction.ITransactable;
 import de.berlios.rcpviewer.transaction.ITransaction;
 import de.berlios.rcpviewer.transaction.ITransactionManager;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import java.lang.reflect.Field;
 
 import org.apache.log4j.Logger;
 
 /**
- * One change per modified attribute performed directly (ie not programmatically
+ * One change per modified 1:1 reference performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect 
+public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChangeAspect 
 	percflow(transactionalChange(IPojo)) {
-
-	private final static Logger LOG = Logger.getLogger(TransactionAttributeChangeAspect.class);
+	
+	private final static Logger LOG = Logger.getLogger(TransactionOneToOneReferenceChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	protected pointcut changingPojo(IPojo pojo): changingAttributeOnPojo(pojo, Object); 
+	protected pointcut changingPojo(IPojo pojo): changingOneToOneReferenceOnPojo(pojo, Object); 
 
 	/**
 	 * Obtains transaction from either the thread or from the pojo (checking
@@ -60,7 +61,7 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 	}
 
 	/**
-	 * Creates an AttributeChange to wrap a change to the attribute, adding it
+	 * Creates an OneToOneReferenceChange to wrap a change to the attribute, adding it
 	 * to the current transaction.
 	 *  
 	 * <p>
@@ -68,16 +69,16 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around(IPojo pojo, Object postValue): changingAttributeOnPojo(pojo, postValue) {
+	Object around(IPojo pojo, IPojo referencedObjOrNull): changingOneToOneReferenceOnPojo(pojo, referencedObjOrNull) {
 		Field field = getFieldFor(thisJoinPointStaticPart);
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AttributeChange(transactable, field, postValue);
+		IChange change = new OneToOneReferenceChange(transactable, field, referencedObjOrNull);
 		if (!transaction.addingToInteractionChangeSet(change)) {
 			return null; // pojo already enlisted			
 		}
-		return proceed(pojo, postValue); // equivalent to executing the change
+		return proceed(pojo, referencedObjOrNull); // equivalent to executing the change
 	}
-	
+
 
 }

@@ -4,6 +4,7 @@ package de.berlios.rcpviewer.transaction.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,38 @@ public final class TransactionManager implements ITransactionManager {
 	 * injected using dependency injection.
 	 */
 	public TransactionManager() { }
-	
+
+	/**
+	 * Creates a new in-progress {@link ITransaction}.
+	 *  
+	 * <p>
+	 * Note that this method is not part of the {@link ITransactionManager}
+	 * interface.  Transactions are only ever created implicitly as the result
+	 * of the user doing some (inter)action through the GUI.  An aspect
+	 * notices the change on the pojo, asks for a transaction and - in finding
+	 * none - a transaction is created automatically.
+	 * 
+	 * <p>
+	 * This design is akin to the ANSI <i>chained mode</i> for databases 
+	 * (whereby a <code>begin transaction</code> is never needed and 
+	 * <code>commit</code>s simply indicates the end of the transaction.  If
+	 * this sounds familiar then that might be because it is reflected in the
+	 * design of the JDBC API).
+	 *  
+	 * @return
+	 */
+	ITransaction createTransaction() {
+		ITransaction transaction = new Transaction(this, getAppContainer());
+		_currentTransactions.add(transaction);
+		
+		TransactionManagerEvent event = new TransactionManagerEvent(this, transaction); 
+		for(ITransactionManagerListener listener: _listeners) {
+			listener.createdTransaction(event);
+		}
+		return transaction;
+	}
+
+
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransactionManager#getCurrentTransaction()
 	 */
@@ -161,15 +193,9 @@ public final class TransactionManager implements ITransactionManager {
 	 */
 	synchronized void committed(Transaction transaction) {
 		
-		// remove from the _currentTransactionByEnlistedPojo hash
-		for(ITransactable enlistedTransactable: transaction.getEnlistedPojos()) {
-			_currentTransactionByEnlistedPojo.remove(enlistedTransactable);	
-		}
-		
-		// remove from the _currentTransactions list
-		_currentTransactions.remove(transaction);
+		unenlistPojosInTransactionAndRemoveTransaction(transaction);
 
-		// add to the _committedTransactions hash
+		// add xactn to the _committedTransactions hash
 		_committedTransactionById.put(transaction.id(), transaction);
 
 		// notify listeners
@@ -179,6 +205,58 @@ public final class TransactionManager implements ITransactionManager {
 		}
 	}
 	
+
+	/**
+	 * Called by an in-progress {@link ITransaction} when a pending change is 
+	 * undone.
+	 * 
+	 * <p>
+	 * If a change has undone then potentially a pojo or pojos may need to 
+	 * be unenlisted.
+	 *  
+	 * @param transaction
+	 * @param change
+	 */
+	void undonePendingChange(Transaction transaction, ChangeSet change) {
+		// need to unenlist pojos, though potentially not all of them (since some
+		// pojos may have been changed as the result of a change still in a "done" state.
+		Set<ITransactable> pojosToUnenlist = new HashSet<ITransactable>(change.getModifiedPojos());
+
+		// get the pojos still unlisted, and eject from our list (an asymmetric set difference)
+		Set<ITransactable> stillEnlistedPojos = transaction.getEnlistedPojos();
+		pojosToUnenlist.removeAll(stillEnlistedPojos);
+		
+		for(ITransactable transactable: pojosToUnenlist) {
+			_currentTransactionByEnlistedPojo.remove(transactable);
+		}
+	}
+
+	/**
+	 * All pending changes have been undone from this transaction; it is
+	 * discarded and any pojos unenlisted.
+	 *  
+	 * @param transaction
+	 */
+	void discarded(Transaction transaction) {
+		
+		unenlistPojosInTransactionAndRemoveTransaction(transaction);
+		
+		// notify listeners
+		TransactionManagerEvent event = new TransactionManagerEvent(this, transaction); 
+		for(ITransactionManagerListener listener: _listeners) {
+			listener.discardedTransaction(event);
+		}
+	}
+	
+	private void unenlistPojosInTransactionAndRemoveTransaction(Transaction transaction) {
+		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
+		for(ITransactable transactable: enlistedPojos) {
+			_currentTransactionByEnlistedPojo.remove(transactable);
+		}
+		_currentTransactions.remove(transaction);
+	}
+	
+
 	/**
 	 * Used by {@link Transaction} to inform the manager that it has been
 	 * reversed.
@@ -249,6 +327,43 @@ public final class TransactionManager implements ITransactionManager {
 	boolean isCurrent(Transaction transaction) {
 		return _currentTransactions.contains(transaction);
 	}
+	
+
+	/**
+	 * Ensure that the pojo(s) are enlisted in the transaction.
+	 * 
+	 * <p>
+	 * It is possible that some will already have been enlisted.  If any have
+	 * already been enlisted in some other transaction, then indicates through
+	 * return value.
+	 * 
+	 * @param transaction
+	 * @param enlistedPojos - that have been modified in a recent change and so must be enlisted.
+	 * @return <code>true</code> if all ok, or <code>false</code> if any of the 
+	 *         pojos are enlisted in some other transaction.  The calling 
+	 *         transaction will undone this change.
+	 */
+	synchronized boolean enlist(Transaction transaction, Set<ITransactable> enlistedPojos) {
+		
+		// first pass; look for any issues before we do anything
+		for(ITransactable transactable: enlistedPojos) {
+			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
+			if (pojoTransaction != null && pojoTransaction != transaction) {
+				// already enlisted elsewhere.
+				return false;
+			}
+		}
+		
+		// second pass; do the work
+		for(ITransactable transactable: enlistedPojos) {
+			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
+			if (pojoTransaction == null) {
+				_currentTransactionByEnlistedPojo.put(transactable, transaction);
+			}
+		}
+		return true;
+	}
+
 
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransactionManager#addTransactionManagerListener(de.berlios.rcpviewer.transaction.ITransactionManagerListener)
@@ -263,7 +378,6 @@ public final class TransactionManager implements ITransactionManager {
 	public void removeTransactionManagerListener(ITransactionManagerListener listener) {
 		_listeners.remove(listener);
 	}
-	
 
 	// TODO: pending dependency injection.
 	public IAppContainer getAppContainer() {
@@ -272,46 +386,6 @@ public final class TransactionManager implements ITransactionManager {
 	// TODO: pending dependency injection.
 	public void setAppContainer(IAppContainer appContainer) {
 		_appContainer = appContainer;
-	}
-
-	public ITransaction createTransaction() {
-		ITransaction transaction = new Transaction(this, getAppContainer());
-		_currentTransactions.add(transaction);
-		return transaction;
-	}
-
-	/**
-	 * Ensure that the pojo(s) are enlisted in the transaction.
-	 * 
-	 * <p>
-	 * It is possible that some will already have been enlisted.  If any have
-	 * already been enlisted in some other transaction, then an exception
-	 * is thrown.
-	 * 
-	 * @param transaction
-	 * @param enlistedPojos
-	 */
-	public void enlist(Transaction transaction, Set<ITransactable> enlistedPojos) {
-		
-		// first pass; look for any issues before we do anything
-		for(ITransactable transactable: enlistedPojos) {
-			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
-			if (pojoTransaction != null && pojoTransaction != transaction) {
-				throw new IllegalStateException(
-						"Pojo already enlisted in another transaction " 
-						+ "(pojo='" + transactable + "'" 
-						+ ", other xactn = '" + pojoTransaction + "'" 
-						+ ", this xact='" + transaction + "'");
-			}
-		}
-		
-		// second pass; do the work
-		for(ITransactable transactable: enlistedPojos) {
-			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
-			if (pojoTransaction == null) {
-				_currentTransactionByEnlistedPojo.put(transactable, transaction);
-			}
-		}
 	}
 
 

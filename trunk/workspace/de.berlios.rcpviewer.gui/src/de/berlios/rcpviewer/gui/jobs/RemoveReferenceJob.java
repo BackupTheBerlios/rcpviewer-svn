@@ -45,7 +45,7 @@ public class RemoveReferenceJob extends AbstractDomainObjectJob {
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		IStatus status;
 		if ( _ref.isMany() ) {
-			getDomainObject().getReference( _ref ).removeFromCollection( _value );
+			getDomainObject().getCollectionReference( _ref ).removeFromCollection( _value );
 			status = Status.OK_STATUS;
 		}
 		else {
