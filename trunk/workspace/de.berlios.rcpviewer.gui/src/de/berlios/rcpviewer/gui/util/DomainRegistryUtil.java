@@ -9,7 +9,6 @@ import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 
 /**

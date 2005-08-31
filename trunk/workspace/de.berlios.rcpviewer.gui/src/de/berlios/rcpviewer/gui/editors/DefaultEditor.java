@@ -21,6 +21,11 @@ import org.eclipse.ui.part.EditorPart;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.editors.opsview.OpsViewPage;
+import de.berlios.rcpviewer.gui.editors.parts.AttributePart;
+import de.berlios.rcpviewer.gui.editors.parts.CollectionPart;
+import de.berlios.rcpviewer.gui.editors.parts.InvalidReferencePart;
+import de.berlios.rcpviewer.gui.editors.parts.ReferencePart;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
@@ -134,7 +139,6 @@ public final class DefaultEditor extends EditorPart {
 			AttributePart attPart = new AttributePart(
 					partComposite,
 					fieldBuilder,
-					object,
 					attribute,
 					columnWidths );
 			_form.addPart( attPart );
@@ -165,7 +169,6 @@ public final class DefaultEditor extends EditorPart {
 			else {
 				if ( ref.isMany() ) {
 					refPart = new CollectionPart( 
-							object,
 							ref,
 							partComposite,
 							_form.getToolkit(),
@@ -174,7 +177,6 @@ public final class DefaultEditor extends EditorPart {
 				}
 				else {
 					refPart = new ReferencePart( 
-							object,
 							ref,
 							partComposite,
 							_form.getToolkit(),

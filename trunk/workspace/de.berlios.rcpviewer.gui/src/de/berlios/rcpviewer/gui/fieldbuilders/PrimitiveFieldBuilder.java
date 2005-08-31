@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
@@ -310,7 +311,9 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 				if ( !isApplicableType( obj.getClass() ) ) {
 					throw new IllegalArgumentException();
 				}
-				_text.setText( String.valueOf( obj ) );
+				_text.setText( GuiPlugin.getDefault()
+										.getLabelProvider()
+										.getText( obj ) );
 			}
 			
 		}

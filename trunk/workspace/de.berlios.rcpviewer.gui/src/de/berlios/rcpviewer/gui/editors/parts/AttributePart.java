@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.parts;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.ecore.EAttribute;
@@ -19,7 +19,7 @@ import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
  * Generic form part for attributes
  * @author Mike
  */
-class AttributePart implements IFormPart, IFieldListener {
+public class AttributePart implements IFormPart, IFieldListener {
 	
 	private final IField _field;
 	private final EAttribute _attribute;
@@ -33,21 +33,17 @@ class AttributePart implements IFormPart, IFieldListener {
 	/**
 	 * @param parent - cannot be <code>null</code>
 	 * @param builder - cannot be <code>null</code>
-	 * @param object - cannot be <code>null</code>
 	 * @param attribute - cannot be <code>null</code>
 	 * @param columnWidths - can be <code>null</code>
 	 */
-	AttributePart( Composite parent, 
+	public AttributePart( Composite parent, 
 			   IFieldBuilder builder,
-			   IDomainObject object, 
 			   EAttribute attribute,
 			   int[] columnWidths ) {
 		assert parent != null;
 		assert builder != null;
-		assert object != null;
 		assert attribute != null;
 		
-		_object = object;
 		_attribute = attribute;
 		// gui creation done here rather than in initialize() method
 		// as this results in less state having to held onto
@@ -66,8 +62,6 @@ class AttributePart implements IFormPart, IFieldListener {
 				}
 			}
 		};
-		_object.getAttribute( _attribute ).addListener( _listener );
-		
 	}
 	
 	/* IFormPart contract */
@@ -90,7 +84,9 @@ class AttributePart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
 	public void dispose() {
-		_object.getAttribute( _attribute ).removeListener( _listener );	
+		if ( _object != null ) {
+			_object.getAttribute( _attribute ).removeListener( _listener );	
+		}
 	}
 
 	/* (non-Javadoc)
@@ -111,14 +107,25 @@ class AttributePart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#isStale()
 	 */
 	public boolean isStale() {
-		return !_field.getGuiValue().equals( _object.getAttribute( _attribute ).get() );
+		if ( _object == null ) {
+			return _field.getGuiValue() == null;
+		}
+		else {
+			return !_field.getGuiValue().equals( 
+					_object.getAttribute( _attribute ).get() );
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		_field.setGuiValue( _object.getAttribute( _attribute ).get() );
+		if ( _object == null ) {
+			_field.setGuiValue( null );
+		}
+		else {
+			_field.setGuiValue( _object.getAttribute( _attribute ).get() );
+		}
 		setDirty(false);
 	}
 
@@ -132,11 +139,19 @@ class AttributePart implements IFormPart, IFieldListener {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
-	public boolean setFormInput(Object pInput) {
-		if ( !(pInput instanceof IDomainObject ) ) {
+	public boolean setFormInput(Object input) {
+		if ( input != null && !(input instanceof IDomainObject ) ) {
 			throw new IllegalArgumentException();
 		}
-		_object = (IDomainObject)pInput;
+		// remove listening from old object if any
+		if ( _object != null ) {
+			_object.getAttribute( _attribute ).removeListener( _listener );	
+		}
+		_object = (IDomainObject)input;
+		// add listening to new object
+		if ( _object != null ) {
+			_object.getAttribute( _attribute ).addListener( _listener );
+		}
 		refresh();
 		return true;		
 	}

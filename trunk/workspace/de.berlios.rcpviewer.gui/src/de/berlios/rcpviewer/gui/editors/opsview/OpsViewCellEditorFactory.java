@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.opsview;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Tree;

@@ -19,7 +19,7 @@ public class DefaultEditorInput implements IEditorInput {
 
 	private static final Point IMAGE_SIZE = new Point( 16, 16 );
 	
-	private final IDomainObject _domainObject;
+	private final IDomainObject<?> _domainObject;
 	
 	// lazily instantiated
 	private Image _image = null;
@@ -56,7 +56,7 @@ public class DefaultEditorInput implements IEditorInput {
 	public Image getImage() {
 		if ( _image == null ) {
 			_image = GuiPlugin.getDefault()
-						.getLabelProvider( _domainObject )
+						.getLabelProvider()
 						.getImage( _domainObject );
 			_image = ImageUtil.resize( _image, IMAGE_SIZE );
 		}
@@ -68,9 +68,7 @@ public class DefaultEditorInput implements IEditorInput {
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	public String getName() {
-		return GuiPlugin.getDefault()
-			            .getLabelProvider( _domainObject )
-			            .getText( _domainObject );
+		return GuiPlugin.getDefault().getLabelProvider().getText( _domainObject );
 
 	}
 

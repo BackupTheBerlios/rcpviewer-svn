@@ -25,7 +25,7 @@ public class OpenDomainObjectJob extends AbstractDomainObjectJob  {
 	 * Constructor requires the class to open.
 	 * @param clazz
 	 */
-	public OpenDomainObjectJob( IDomainObject object ) {
+	public OpenDomainObjectJob( IDomainObject<?> object ) {
 		super( GuiPlugin.getResourceString( "OpenDomainObjectJob.Name" ), //$NON-NLS-1$
 			   object );
 	}
@@ -60,9 +60,7 @@ public class OpenDomainObjectJob extends AbstractDomainObjectJob  {
 			report = new ReportJob( 
 					GuiPlugin.getResourceString( "OpenDomainObjectJob.Ok"),  //$NON-NLS-1$
 					ReportJob.INFO,
-					GuiPlugin.getDefault()
-							 .getLabelProvider( getDomainObject() )
-							 .getText( getDomainObject() ) );
+					GuiPlugin.getDefault().getLabelProvider().getText( getDomainObject() ) );
 		}
 		else {
 			report = new ReportJob( status.getMessage(), ReportJob.ERROR );

@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.gui.fieldbuilders.exts;
 
-import java.text.DateFormat;
+import static de.berlios.rcpviewer.gui.GuiPlugin.*;
+
 import java.text.ParseException;
 import java.util.Date;
 
@@ -41,10 +42,6 @@ import de.berlios.rcpviewer.gui.util.FontUtil;
  *
  */
 public class DateFieldBuilder implements IFieldBuilder {
-	
-	private static final DateFormat FORMATTER
-		= DateFormat.getDateInstance(DateFormat.SHORT);
-
 
 	/**
 	 * Only if the class is a <code>Date</code> or subclass.
@@ -103,7 +100,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 				textData.widthHint = columnWidths[1];
 			}
 			else {
-				int numChars = FORMATTER.format( new Date() ).length();
+				int numChars = DATE_FORMATTER.format( new Date() ).length();
 				int charWidth = FontUtil.getCharWidth( 
 						parent, FontUtil.CharWidthType.SAFE );
 				textData.widthHint = numChars * charWidth;
@@ -141,14 +138,14 @@ public class DateFieldBuilder implements IFieldBuilder {
 		                cal.addDateChangedListener(new SWTCalendarListener() {
 		                    public void dateChanged(SWTCalendarEvent calendarEvent) {
 		                        _text.setText(
-										FORMATTER.format(
+										DATE_FORMATTER.format(
 											calendarEvent.getCalendar().getTime()));
 		                    }
 		                });
 						String s = _text.getText();
 		                if ( s!= null && s.length() > 0) {
 		                    try {
-		                        Date d = FORMATTER.parse( s );
+		                        Date d = DATE_FORMATTER.parse( s );
 		                        cal.setDate(d);
 		                    } 
 							catch (ParseException pe) {
@@ -167,7 +164,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 		 */
 		public Object getGuiValue() {
 			try {
-				Date date = FORMATTER.parse(_text.getText());
+				Date date = DATE_FORMATTER.parse(_text.getText());
 				return date;
 			}
 			catch ( ParseException pe ) {
@@ -193,7 +190,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 				if ( !(obj instanceof Date) ) {
 					throw new IllegalArgumentException();
 				}
-				_text.setText( FORMATTER.format( (Date)obj ) );
+				_text.setText( DATE_FORMATTER.format( (Date)obj ) );
 			}
 		}
 		
@@ -210,7 +207,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 			source.addDragListener (new DragSourceListener () {
 				public void dragStart(DragSourceEvent event) {
 					try {
-						FORMATTER.parse( text.getText () );
+						DATE_FORMATTER.parse( text.getText () );
 						event.doit = true;
 					}
 					catch (ParseException pe ) {
@@ -219,7 +216,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 				}
 				public void dragSetData (DragSourceEvent event) {
 					try {
-						event.data = FORMATTER.parse( text.getText () );
+						event.data = DATE_FORMATTER.parse( text.getText () );
 					}
 					catch (ParseException pe ) {
 						event.doit = false;
@@ -247,7 +244,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 						}
 						// note that all DnD ops converted to copy's 
 						event.detail = DND.DROP_COPY;
-						text.setText( FORMATTER.format( (Date)event.data  ) );
+						text.setText( DATE_FORMATTER.format( (Date)event.data  ) );
 					}
 				});
 			}

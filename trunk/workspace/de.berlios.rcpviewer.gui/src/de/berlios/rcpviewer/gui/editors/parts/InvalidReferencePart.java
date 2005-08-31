@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.parts;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.SWT;
@@ -16,7 +16,7 @@ import org.eclipse.ui.forms.IManagedForm;
  * Generic form part for single references to <code>IDomainObject</code>'s.
  * @author Mike
  */
-class InvalidReferencePart implements IFormPart {
+public class InvalidReferencePart implements IFormPart {
 	
 
 	/**
@@ -25,7 +25,7 @@ class InvalidReferencePart implements IFormPart {
 	 * @param parent - cannot be <code>null</code>
 	 * @param columnwidths - can be <code>null</code>
 	 */
-	InvalidReferencePart( EReference ref,
+	public InvalidReferencePart( EReference ref,
 				   		  String reason,
 				   		  Composite parent, 
 				   		  int[] columnWidths ) {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.opsview;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

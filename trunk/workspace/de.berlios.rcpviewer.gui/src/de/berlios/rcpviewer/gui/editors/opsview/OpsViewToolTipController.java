@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.opsview;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.events.MouseEvent;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.opsview;
 
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.jface.viewers.CellEditor;
@@ -10,7 +10,6 @@ import org.eclipse.swt.dnd.Transfer;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.celleditors.CellEditorFactory;
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
-import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * Wraps a parameter for an op
@@ -63,14 +62,7 @@ class OpsViewParameterProxy {
 	 * @return
 	 */
 	String getDisplayValue() {
-		if ( _value == null ) return ""; //$NON-NLS-1$
-		if ( _value instanceof IDomainObject ) {
-			return GuiPlugin.getDefault().getLabelProvider( 
-					(IDomainObject)_value ).getText( _value );
-		}
-		else {
-			return String.valueOf( _value );
-		}
+		return GuiPlugin.getDefault().getLabelProvider().getText( _value );
 	}
 	
 	/**

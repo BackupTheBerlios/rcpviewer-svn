@@ -1,14 +1,10 @@
 package de.berlios.rcpviewer.gui;
 
-import java.io.InputStream;
-import java.net.URL;
+import java.text.DateFormat;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.net.SocketAppender;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -20,13 +16,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 import de.berlios.rcpviewer.gui.fieldbuilders.FieldBuilderFactory;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
-import de.berlios.rcpviewer.session.IDomainObject;
 
 
 /**
@@ -34,13 +28,18 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public class GuiPlugin extends AbstractUIPlugin {
 	
+	/**
+	 * Common formatting for all dates.
+	 */
+	public static final DateFormat DATE_FORMATTER
+		= DateFormat.getDateInstance(DateFormat.SHORT);
 	
 	// the shared instance.
 	private static GuiPlugin __plugin = null;
 	
 	// fields
 	private FieldBuilderFactory _fieldBuilderFactory = null;
-	private LabelProviderFactory _labelProviderFactory = null;
+	private UniversalLabelProvider _universalLabelProvider = null;
 	private PackageAdmin _packageAdmin = null;
 	
 	/* static methods */
@@ -92,9 +91,10 @@ public class GuiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		
-		SocketAppender ganymede = new SocketAppender("localhost", 4445);
+		SocketAppender ganymede = new SocketAppender("localhost", 4445); //$NON-NLS-1$
 		ganymede.setLocationInfo(true);
 		Logger.getRootLogger().addAppender(ganymede);
+//		Logger.getLogger(GuiPlugin.class).info( "Logging started" ); //$NON-NLS-1$
 		
 		// start domain initialisation
 		IDomainBootstrap bootstrap = DomainBootstrapFactory.createBootstrap();
@@ -107,7 +107,7 @@ public class GuiPlugin extends AbstractUIPlugin {
 		
 		// instantiate fields
 		_fieldBuilderFactory = new FieldBuilderFactory();
-		_labelProviderFactory = new LabelProviderFactory();
+		_universalLabelProvider = new UniversalLabelProvider();
 		ServiceReference ref = context.getServiceReference(
 				PackageAdmin.class.getName());
 		_packageAdmin = (PackageAdmin)context.getService( ref );
@@ -136,27 +136,19 @@ public class GuiPlugin extends AbstractUIPlugin {
 	public IFieldBuilder getFieldBuilder(  ETypedElement element ) {
 		return _fieldBuilderFactory.getFieldBuilder( element );
 	}
-	
+		
 	/**
-	 * Accessor to label providers  for domain objects
-	 * @param object
-	 * @return Returns the fieldBuilderFactory.
+	 * Accessor to universal label providers
+	 * @return Returns the label provider
 	 */
-	public ILabelProvider getLabelProvider(  IDomainObject<?> object  ) {
-		if ( object == null ) throw new IllegalArgumentException();
-		return getLabelProvider( object.getDomainClass() );
+	public ILabelProvider getLabelProvider() {
+		return _universalLabelProvider;
 	}
 	
 	/**
-	 * Accessor to label providers for domain classes
-	 * @param object
-	 * @return Returns the fieldBuilderFactory.
+	 * Accessor to platform utility class.
+	 * @return
 	 */
-	public ILabelProvider getLabelProvider(  IDomainClass<?> clazz  ) {
-		if ( clazz == null ) throw new IllegalArgumentException();
-		return _labelProviderFactory.getLabelProvider( clazz ); 
-	}
-	
 	public PackageAdmin getPackageAdmin() {
 		assert _packageAdmin != null;
 		return _packageAdmin;

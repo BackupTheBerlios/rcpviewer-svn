@@ -26,7 +26,7 @@ public class NewDomainObjectJob extends AbstractUserJob {
 	 * Constructor requires the class to open.
 	 * @param clazz
 	 */
-	public NewDomainObjectJob( IRuntimeDomainClass clazz ) {
+	public NewDomainObjectJob( IRuntimeDomainClass<?> clazz ) {
 		super( GuiPlugin.getResourceString( "NewDomainObjectJob.Name" ) ); //$NON-NLS-1$
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this._clazz = clazz;
@@ -42,10 +42,9 @@ public class NewDomainObjectJob extends AbstractUserJob {
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
-			IDomainObject domainObject = session.createTransient( _clazz ); 
+			IDomainObject<?> domainObject = session.createTransient( _clazz ); 
 			new OpenDomainObjectJob( domainObject ).schedule();
-			name = GuiPlugin.getDefault().getLabelProvider( domainObject )
-										 .getText( domainObject );
+			name = GuiPlugin.getDefault().getLabelProvider().getText( domainObject );
 			status = Status.OK_STATUS;
 		}
 		catch ( CoreException ce ) {

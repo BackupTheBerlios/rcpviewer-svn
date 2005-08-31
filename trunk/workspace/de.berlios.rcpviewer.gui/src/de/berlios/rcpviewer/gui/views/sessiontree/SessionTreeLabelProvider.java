@@ -57,14 +57,11 @@ class SessionTreeLabelProvider extends LabelProvider
 	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
 	 */
 	public String getColumnText(Object element, int columnIndex) {
-		if ( element instanceof IDomainClass ) {
-			return ((IDomainClass)element).getName();
+		if ( element instanceof IDomainClass<?> ) {
+			return ((IDomainClass<?>)element).getName();
 		}
-		else if ( element instanceof IDomainObject ) {
-			IDomainObject obj = (IDomainObject)element;
-			return GuiPlugin.getDefault()
-							.getLabelProvider( obj )
-							.getText( obj );
+		else if ( element instanceof IDomainObject<?> ) {
+			return GuiPlugin.getDefault().getLabelProvider().getText( element );
 		}
 		else if ( element instanceof ErrorInput ) {
 			return ((ErrorInput)element).getMessage();

@@ -11,6 +11,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
+
 /**
  * 'Typesafe' cell editor for primitives so that getters and setter
  * return appropriate types.
@@ -147,7 +149,7 @@ class PrimitiveCellEditor extends TextCellEditor {
 			if ( !isApplicableType( value.getClass() ) ) {
 				throw new IllegalArgumentException();
 			}
-			s = String.valueOf( value);
+			s = GuiPlugin.getDefault().getLabelProvider().getText( value );
 		}
 		super.doSetValue( s );
 	}

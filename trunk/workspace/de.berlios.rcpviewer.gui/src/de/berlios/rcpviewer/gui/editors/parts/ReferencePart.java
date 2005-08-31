@@ -1,13 +1,14 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.parts;
 
 import java.lang.reflect.Method;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -55,14 +56,14 @@ import de.berlios.rcpviewer.session.ISession;
  * Generic form part for single references to <code>IDomainObject</code>'s.
  * @author Mike
  */
-class ReferencePart implements IReferencePart {
+public class ReferencePart implements IReferencePart {
 	
-	private final IDomainObject<?> _parent;
 	private final EReference _ref;
 	private final Text _text;
 	private final IDomainObjectReferenceListener _listener;
 	private final Button _removeButton;
 	
+	private IDomainObject<?> _container = null;
 	private IDomainObject<?> _refValue = null;
 	
 	private boolean _isDirty = false;
@@ -77,13 +78,12 @@ class ReferencePart implements IReferencePart {
 	 * @param toolkit - cannot be <code>null</code>
 	 * @param columnwidths - can be <code>null</code>
 	 */
-	ReferencePart( IDomainObject<?> object,
+	public ReferencePart( 
 				   EReference ref,
 				   Composite sectionParent, 
 				   FormToolkit toolkit,
 				   int[] columnWidths,
 				   int maxLabelLength ) {
-		assert object != null;
 		assert ref != null;
 		assert !ref.isMany();
 		assert sectionParent != null;
@@ -102,14 +102,16 @@ class ReferencePart implements IReferencePart {
 		section.setClient( parent );
 		toolkit.paintBordersFor( parent );
 		
-		// metadata and fields for gui creation
-		boolean allowAdd = ( 
-				object.getDomainClass().getAssociatorFor( ref ) != null );
-		boolean allowRemove = ( 
-				object.getDomainClass().getDissociatorFor( ref ) != null );
+		// fetch all required types - yuk!
+		Class<?> containerPojoType = ((EClassifier)ref.eContainer()).getInstanceClass();
+		IRuntimeDomainClass<?> containerDomainType 
+			= (IRuntimeDomainClass<?>)RuntimeDomain.instance().lookupNoRegister( 
+					containerPojoType );
 		Class<?> refPojoType = ref.getEType().getInstanceClass();
 		final IRuntimeDomainClass<?> refDomainType = (IRuntimeDomainClass<?>)
 			  RuntimeDomain.instance().lookupNoRegister( refPojoType );		
+		boolean allowAdd = ( containerDomainType.getAssociatorFor( ref ) != null );
+		boolean allowRemove = ( containerDomainType.getDissociatorFor( ref ) != null );
 		
 		// layout
 		int numCols = 1;
@@ -162,7 +164,7 @@ class ReferencePart implements IReferencePart {
 					if ( event.data != null 
 							&& event.data instanceof IDomainObject ) {
 						Job job = new AddReferenceJob( 
-								_parent, 
+								_container, 
 								_ref, 
 								(IDomainObject<?>)event.data ) ;
 						job.schedule();
@@ -196,7 +198,7 @@ class ReferencePart implements IReferencePart {
 			_removeButton.addSelectionListener( new DefaultSelectionAdapter(){
 				public final void widgetSelected(SelectionEvent event) {
 					assert _refValue != null;
-					Job job = new RemoveReferenceJob( _parent, _ref, _refValue ) ;
+					Job job = new RemoveReferenceJob( _container, _ref, _refValue ) ;
 					job.schedule();
 					// listener will cause refresh
 				}	
@@ -218,7 +220,6 @@ class ReferencePart implements IReferencePart {
 				refresh();
 			}
 		};
-		object.getOneToOneReference( ref ).addListener( _listener );
 		
 		// open listener - dbl-click opens editor for selected item
 		// no open listener on a Text so fudge with mouse listener
@@ -233,7 +234,6 @@ class ReferencePart implements IReferencePart {
 
 
 		// finally set fields
-	    _parent = object;
 		_ref = ref;
 	}
 	
@@ -274,7 +274,17 @@ class ReferencePart implements IReferencePart {
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object input) {
-		assert input == _parent;
+		if ( input != null && !(input instanceof IDomainObject ) ) {
+			throw new IllegalArgumentException();
+		}
+		// remove old listenening if any
+		if ( _container != null ) {
+			_container.getOneToOneReference( _ref ).removeListener( _listener );
+		}
+		_container = (IDomainObject)input;
+		if ( _container != null ) {
+			_container.getOneToOneReference( _ref ).addListener( _listener );
+		}
 		refresh();
 		return true;
 	}
@@ -297,10 +307,10 @@ class ReferencePart implements IReferencePart {
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		Method accessor = _parent.getDomainClass().getAccessorFor( _ref );
+		Method accessor = _container.getDomainClass().getAccessorFor( _ref );
 		try {
 			assert accessor.getParameterTypes().length == 0;
-			Object pojo = accessor.invoke( _parent.getPojo(), (Object[])null );
+			Object pojo = accessor.invoke( _container.getPojo(), (Object[])null );
 			if ( pojo == null ) {
 				_refValue = null;
 				_text.setText( "" ); //$NON-NLS-1$
@@ -313,13 +323,13 @@ class ReferencePart implements IReferencePart {
 				assert ( pojo.getClass().equals( _ref.getEType().getInstanceClass() ) );
 				final ISession session
 					= RuntimePlugin.getDefault().getSessionManager().get(
-						_parent.getSessionId() );
+						_container.getSessionId() );
 				_refValue = session.getDomainObjectFor( 
 						pojo, 
 						(Class<?>)_ref.getEType().getInstanceClass() );
 				_text.setText(
 						GuiPlugin.getDefault()
-								 .getLabelProvider( _refValue )
+								 .getLabelProvider()
 								 .getText( _refValue ) );
 				if ( _removeButton != null ) {
 					_removeButton.setEnabled( true );

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.gui.editors;
+package de.berlios.rcpviewer.gui.editors.opsview;
 
 import net.sf.plugins.utils.SWTUtils;
 
@@ -34,7 +34,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * <br>Each editor instance holds its own instance of this class.
  * @author Mike
  */
-class OpsViewPage extends Page implements IOpsViewPage {
+public class OpsViewPage extends Page implements IOpsViewPage {
 	
 	private final IDomainObject _domainObject; 
 	
@@ -45,7 +45,7 @@ class OpsViewPage extends Page implements IOpsViewPage {
 	 * Constructor passed parent domain object.
 	 * @param object
 	 */
-	OpsViewPage( IDomainObject object ) {
+	public OpsViewPage( IDomainObject object ) {
 		super();
 		assert object != null;
 		_domainObject = object;

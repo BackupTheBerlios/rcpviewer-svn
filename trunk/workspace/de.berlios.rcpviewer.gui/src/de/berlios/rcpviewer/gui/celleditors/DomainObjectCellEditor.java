@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Control;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
  * @author Mike
@@ -71,10 +70,7 @@ class DomainObjectCellEditor extends DialogCellEditor {
 			display = ""; //$NON-NLS-1$
 		}
 		else {
-			assert value instanceof IDomainObject;
-			assert ((IDomainObject<?>)value).getDomainClass() == _class;
-			display = GuiPlugin.getDefault()
-							   .getLabelProvider( _class ).getText( value );
+			display = GuiPlugin.getDefault().getLabelProvider().getText( value );
 			
 		}
 		getDefaultLabel().setText( display );
