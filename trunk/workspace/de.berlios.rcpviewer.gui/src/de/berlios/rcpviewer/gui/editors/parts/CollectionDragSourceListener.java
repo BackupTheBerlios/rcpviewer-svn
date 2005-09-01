@@ -17,11 +17,11 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 class CollectionDragSourceListener implements DragSourceListener {
 	
-	private final Viewer _dsViewer;
+	private final Viewer _viewer;
 	
 	CollectionDragSourceListener( Viewer viewer ) {
 		assert viewer != null;
-		_dsViewer = viewer;
+		_viewer = viewer;
 	}
 	
 	
@@ -30,7 +30,7 @@ class CollectionDragSourceListener implements DragSourceListener {
 	 */
 	public void dragStart(DragSourceEvent event) {
 		event.doit = false;
-		ISelection selection = _dsViewer.getSelection();
+		ISelection selection = _viewer.getSelection();
 		if ( !selection.isEmpty() ) {
 			Object obj = ((StructuredSelection)selection).getFirstElement();
 			if ( obj instanceof IDomainObject ) {
@@ -43,7 +43,7 @@ class CollectionDragSourceListener implements DragSourceListener {
 	 * @see org.eclipse.swt.dnd.DragSourceListener#dragSetData(org.eclipse.swt.dnd.DragSourceEvent)
 	 */
 	public void dragSetData (DragSourceEvent event) {
-		Object obj = ((StructuredSelection)_dsViewer.getSelection())
+		Object obj = ((StructuredSelection)_viewer.getSelection())
 												  .getFirstElement();
 		assert obj instanceof IDomainObject;
 		event.data = obj;

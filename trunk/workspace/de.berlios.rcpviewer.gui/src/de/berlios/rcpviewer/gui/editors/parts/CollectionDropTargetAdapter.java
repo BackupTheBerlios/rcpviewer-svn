@@ -24,7 +24,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 class CollectionDropTargetAdapter extends DropTargetAdapter {
 	
-	private final Viewer _dtViewer;
+	private final Viewer _viewer;
 	private final EReference _ref;
 	private final DomainObjectTransfer _transfer;
 	private boolean _checkUnique = false;
@@ -38,7 +38,7 @@ class CollectionDropTargetAdapter extends DropTargetAdapter {
 		assert viewer != null;
 		assert ref != null;
 		assert transfer != null;
-		_dtViewer = viewer;
+		_viewer = viewer;
 		_ref = ref;
 		_transfer = transfer;
 		_checkUnique = _ref.isUnique();
@@ -102,9 +102,10 @@ class CollectionDropTargetAdapter extends DropTargetAdapter {
 			}
 			// ok - add
 			Job job = new AddReferenceJob(
-					(IDomainObject<?>)_dtViewer.getInput(),
+					(IDomainObject<?>)_viewer.getInput(),
 					_ref,
-					dObj );
+					dObj,
+					_viewer );
 			job.schedule();
 		}
 		else {
@@ -113,7 +114,7 @@ class CollectionDropTargetAdapter extends DropTargetAdapter {
 	}
 	
 	private Collection<?> getCollection(){
-		IDomainObject<?> parent= (IDomainObject<?>)_dtViewer.getInput();
+		IDomainObject<?> parent= (IDomainObject<?>)_viewer.getInput();
 		return parent.getCollectionReference( _ref ).getCollection();
 	}
 }

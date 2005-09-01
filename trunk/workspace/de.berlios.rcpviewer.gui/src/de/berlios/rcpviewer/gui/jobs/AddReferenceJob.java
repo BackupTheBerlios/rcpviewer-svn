@@ -4,6 +4,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.util.StatusUtil;
@@ -18,9 +20,10 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 
 	private final EReference _ref;
 	private final IDomainObject<?> _value;
+	private final Viewer _viewer;
 	
 	/**
-	 * No arg can be <code>null.</code>
+	 * No arg can be <code>null</code>
 	 * @param object
 	 * @param ref
 	 * @param value
@@ -28,13 +31,28 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 	public AddReferenceJob( IDomainObject<?> object,
 							EReference ref,
 							IDomainObject<?> value ) {
+		this( object, ref, value, null );
+	}
+	
+	/**
+	 * The viewer arg is the only one that can be <code>null</code>
+	 * @param object
+	 * @param ref
+	 * @param value
+	 */
+	public AddReferenceJob( IDomainObject<?> object,
+							EReference ref,
+							IDomainObject<?> value,
+							Viewer viewer) {
 		super( AddReferenceJob.class.getName(), object );
 		if ( value == null ) throw new IllegalArgumentException();
 		if ( ref == null ) throw new IllegalArgumentException();
+		// viewer can be null;
 		_value = value;
 		_ref = ref;
+		_viewer = viewer;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -46,13 +64,7 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 			status =  Status.OK_STATUS;
 		}
 		else {
-//			Method associator
-//				= getDomainObject().getDomainClass().getAssociatorFor( _ref );
-//			assert associator != null;
 			try {
-//				associator.invoke( 
-//						getDomainObject().getPojo(),
-//						new Object[]{ _value.getPojo() } );
 				getDomainObject().getOneToOneReference(_ref).set( _value );
 				status = Status.OK_STATUS;		
 			}
@@ -65,6 +77,9 @@ public class AddReferenceJob extends AbstractDomainObjectJob {
 		}
 		ReportJob report;
 		if ( Status.OK_STATUS == status ) {
+			if ( _viewer != null ) {
+				_viewer.setSelection( new StructuredSelection( _value ) );
+			}
 			report = new ReportJob( 
 					GuiPlugin.getResourceString( "AddReferenceJob.Ok"),  //$NON-NLS-1$
 					ReportJob.INFO,

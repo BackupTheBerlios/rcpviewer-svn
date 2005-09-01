@@ -45,23 +45,19 @@ class CollectionMasterDetailsBlock extends MasterDetailsBlock {
 	private final boolean _allowAdd;
 	private final IFormPart _parent;
 	private final EReference _ref;
-	private final FormToolkit _toolkit;
 	private final CollectionChildDetailsPage _details;
 	
 	CollectionMasterDetailsBlock( 
 			CollectionGuiPage page,
 			boolean allowAdd,
 			IFormPart parent,
-			EReference ref, 
-			FormToolkit toolkit ) {
+			EReference ref ) {
 		assert page != null;
 		assert parent != null;
 		assert ref != null;
-		assert toolkit != null;
 		_page = page;
 		_allowAdd = allowAdd;
 		_parent = parent;
-		_toolkit = toolkit;
 		_ref = ref;
 		_details = new CollectionChildDetailsPage();
 	}
@@ -82,12 +78,15 @@ class CollectionMasterDetailsBlock extends MasterDetailsBlock {
 	 * @see org.eclipse.ui.forms.MasterDetailsBlock#createMasterPart(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected void createMasterPart(
-			final IManagedForm managedForm, Composite parent) {
+	protected void createMasterPart( final IManagedForm form, Composite parent) {
+		assert form != null;
+		assert parent != null;
+		
+		parent.setBackground( parent.getDisplay().getSystemColor( SWT.COLOR_RED ) );
 		
 		// configure parent
-		_toolkit.adapt( parent );
-		_toolkit.paintBordersFor( parent );
+		form.getToolkit().adapt( parent );
+		form.getToolkit().paintBordersFor( parent );
 		parent.setLayout( new GridLayout() );
 		
 		// actual instantiation and placement in parent
@@ -95,9 +94,10 @@ class CollectionMasterDetailsBlock extends MasterDetailsBlock {
 				parent, 
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL );
 		List list = viewer.getList();
+		list.setBackground( parent.getDisplay().getSystemColor( SWT.COLOR_BLUE ) );
 		list.setData( FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER );
 		list.setLayoutData( new GridData( GridData.FILL_BOTH ) );
-		_toolkit.adapt( list,  true, true );
+		form.getToolkit().adapt( list,  true, true );
 		
 		// label provider - assumes a domain class for now
 		final IRuntimeDomainClass<?> collectionDomainType
@@ -124,7 +124,7 @@ class CollectionMasterDetailsBlock extends MasterDetailsBlock {
 		// for sync'ing details page
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				managedForm.fireSelectionChanged( _details, event.getSelection());
+				form.fireSelectionChanged( _details, event.getSelection());
 			}
 		});
 		
