@@ -16,6 +16,7 @@ class CollectionGuiPage {
 	private final String _description;
 	
 	private Viewer _viewer = null;
+	private Runnable _guiConfigure = null;
 	
 	CollectionGuiPage( Composite parent, String description ) {
 		assert parent != null;
@@ -40,6 +41,16 @@ class CollectionGuiPage {
 	
 	Viewer getViewer() {
 		return _viewer;
+	}
+	
+	void setGuiConfigration( Runnable runnable ) {
+		assert runnable != null;
+		_guiConfigure = runnable;
+	}
+	
+	void configureGui() {
+		assert _guiConfigure != null;
+		_guiConfigure.run();
 	}
 
 	

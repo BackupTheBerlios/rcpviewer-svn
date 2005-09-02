@@ -3,7 +3,9 @@
  */
 package de.berlios.rcpviewer.gui.editors.parts;
 
-import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.*;
+import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.ALPHABETICAL;
+
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.ecore.EAttribute;
@@ -49,6 +51,7 @@ import de.berlios.rcpviewer.gui.jobs.SearchJob;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
+import de.berlios.rcpviewer.gui.util.RandomUtil;
 import de.berlios.rcpviewer.gui.util.StringUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -142,7 +145,7 @@ public class CollectionPart implements IReferencePart {
 		// section control - 'toolbar' for section
 		Composite toolbar = toolkit.createComposite( section );
 		section.setDescriptionControl( toolbar );		
-		configureToolbar( allowAdd, 
+		createToolbar( allowAdd, 
 					   allowRemove, 
 					   ref, 
 					   collectionDomainType, 
@@ -255,7 +258,7 @@ public class CollectionPart implements IReferencePart {
 
 		// create viewer
 		TableViewer viewer = createTableViewer(
-				page.getComposite(),
+				page,
 				allowAdd,
 				ref,
 				collectionDomainType );
@@ -267,31 +270,61 @@ public class CollectionPart implements IReferencePart {
 	
 	// just to tidy constructor code
 	private TableViewer createTableViewer( 
-			Composite parent,
+			CollectionGuiPage page,
 			boolean allowAdd,
 			final EReference ref,
 			final IRuntimeDomainClass<?> collectionDomainType ){
+		assert page != null;
+		assert ref != null;
+		assert collectionDomainType != null;
 
 		// actual instantiation and placement in parent
 		TableViewer viewer = new TableViewer( 
-				parent, 
+				page.getComposite(), 
 				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL );
-		Table control = viewer.getTable();
-		control.setLinesVisible( true );
-		control.setHeaderVisible( true );
-		control.setData( FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER );
-		control.setLayoutData( new GridData( GridData.FILL_BOTH ) );
-		
-		// columns for table..
+		final Table table = viewer.getTable();
+		table.setLinesVisible( true );
+		table.setHeaderVisible( true );
+		table.setData( FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER );
+		table.setLayoutData( new GridData( GridData.FILL_BOTH ) );
+
+		// columns for table
 		TableColumn column;
-		column = new TableColumn( control, SWT.LEFT );
+		column = new TableColumn( table, SWT.LEFT );
+		
 		column.setText( GuiPlugin.getResourceString( 
 				"CollectionPart.FirstColumnHeader") ); //$NON-NLS-1$
 		for ( EAttribute attribute  : 
 				EmfUtil.sort(collectionDomainType.attributes(), ALPHABETICAL ) ) {
-			column = new TableColumn( control, SWT.LEFT );
+			column = new TableColumn( table, SWT.LEFT );
 			column.setText( attribute.getName() );
 		}
+		
+		// gui configurator
+		page.setGuiConfigration( new Runnable(){
+			public void run() {
+				try {
+					table.setRedraw( false );
+					boolean first = true;
+					for( TableColumn column : table.getColumns() ) {
+						if ( first ) {
+							first = false;
+							continue;
+						}
+						boolean visible = RandomUtil.twoThirdsLikely();
+						if ( visible ) {
+							column.pack();
+						}
+						else {
+							column.setWidth( 0 );
+						}
+					}
+				}
+				finally {
+					table.setRedraw( true );
+				}
+			}
+		});
 
 		// label provider 
 		viewer.setLabelProvider( 
@@ -305,7 +338,7 @@ public class CollectionPart implements IReferencePart {
 		
 		// always a drag source
 		final DragSource dragSource = new DragSource( 
-				control, 
+				table, 
 				DND.DROP_MOVE | DND.DROP_COPY );
 		final DomainObjectTransfer transfer = (DomainObjectTransfer)
 			DndTransferFactory.getTransfer(  ref.getEType().getInstanceClass() );
@@ -316,7 +349,7 @@ public class CollectionPart implements IReferencePart {
 		// drag target if can add:
 		if ( allowAdd ) {
 			final DropTarget target = new DropTarget( 
-					control, 
+					table, 
 					DND.DROP_MOVE | DND.DROP_COPY );
 			target.setTransfer( new Transfer[]{ transfer } );
 			target.addDropListener ( 
@@ -367,7 +400,7 @@ public class CollectionPart implements IReferencePart {
 		
 		// create 'child' attribute list gui
 		final IManagedForm childForm = createChildForm(
-				childComposite, collectionDomainType );
+				page, childComposite, collectionDomainType );
 		childForm.getForm().setVisible( false );
 		
 		// for sync'ing child 
@@ -444,16 +477,27 @@ public class CollectionPart implements IReferencePart {
 	}
 	
 	private IManagedForm createChildForm(
+			CollectionGuiPage page,
 			Composite parent, 
 			IRuntimeDomainClass<?> childDomainType ) {
+		assert page != null;
 		assert parent != null;
 		assert childDomainType != null;
 		
 		// create form
 		parent.setLayout( new FillLayout() );
-		ManagedForm form = new ManagedForm( parent );
+		final ManagedForm form = new ManagedForm( parent );
 		Composite body = form.getForm().getBody();
-		body.setLayout( new FillLayout( SWT.VERTICAL ) );
+		GridLayout layout = new GridLayout( 1, true );
+		layout.marginBottom = 0;
+		layout.marginHeight = 0;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.marginTop = 0;
+		layout.marginWidth = 0;
+		layout.verticalSpacing = 0;
+		body.setLayout( layout );
+		
 		
 		// want column width hints for IField's
 		// for this calculate longest required label length for attributes
@@ -467,24 +511,51 @@ public class CollectionPart implements IReferencePart {
 		columnWidths[0] = maxLabelLength * FontUtil.getCharWidth( 
 				parent, FontUtil.CharWidthType.SAFE );
 		
+		final ArrayList<Composite> fieldComposites = new ArrayList<Composite>();
+		
 		// loop through all attributes - add an IFormPart for each
 		for ( EAttribute attribute  : 
 			EmfUtil.sort( childDomainType.attributes(), ALPHABETICAL ) ) {       
 
 			// create parent composite for IField
-			Composite partComposite = form.getToolkit().createComposite( body );
-			form.getToolkit().paintBordersFor( partComposite );
+			Composite fieldComposite = form.getToolkit().createComposite( body );
+			fieldComposite.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+			form.getToolkit().paintBordersFor( fieldComposite );
 			
 			// create IField
 			IFieldBuilder fieldBuilder
 				= GuiPlugin.getDefault().getFieldBuilder( attribute );
 			AttributePart attPart = new AttributePart(
-					partComposite,
+					fieldComposite,
 					fieldBuilder,
 					attribute,
 					columnWidths );
 			form.addPart( attPart );
+			
+			fieldComposites.add( fieldComposite );
 		}
+		
+		// gui configurator
+		page.setGuiConfigration( new Runnable() {
+			private final String KEY = this.getClass().getName();
+			public void run() {
+				for ( Composite composite : fieldComposites ) {
+					boolean hide = RandomUtil.oneThirdLikely();
+					if ( hide && composite.isVisible() ) {
+						composite.setData( KEY, composite.getSize().y );
+						((GridData)composite.getLayoutData()).heightHint = 0;
+						composite.setVisible( false );
+					}
+					else if ( !hide && !composite.isVisible() ) {
+						((GridData)composite.getLayoutData()).heightHint
+							= (Integer)composite.getData( KEY );
+						composite.setVisible( true );
+					}
+				}
+				_form.reflow( true );
+			}
+			
+		});
 		
 		return form;
 	}
@@ -492,7 +563,7 @@ public class CollectionPart implements IReferencePart {
 	
 	// just to tidy constructor code - the 'toolbar' here is a conceipt -
 	// actually we are setting the description Control of the section
-	private void configureToolbar(
+	private void createToolbar(
 			boolean allowAdd,
 			boolean allowRemove,
 			final EReference ref,
@@ -509,7 +580,7 @@ public class CollectionPart implements IReferencePart {
 		assert pages != null;
 		
 		// layout
-		int numColumns = pages.length + 1;
+		int numColumns = pages.length + 2;
 		if( allowAdd ) numColumns++;
 		if( allowRemove ) numColumns++;
 		toolbar.setLayout( new GridLayout( numColumns, false ) );
@@ -583,7 +654,7 @@ public class CollectionPart implements IReferencePart {
 		toolkit.createLabel( toolbar, "" ).setLayoutData( //$NON-NLS-1$
 				new GridData( GridData.FILL_HORIZONTAL ) );
 		
-		// radio options for ecah possible page
+		// radio options for each possible page
 		boolean first = true;
 		for ( final CollectionGuiPage page : pages ) {
 			final Button radio = toolkit.createButton( 
@@ -602,5 +673,24 @@ public class CollectionPart implements IReferencePart {
 				first = false;
 			}
 		}
+		
+		// configure gui button
+		Button configGui = toolkit.createButton( toolbar, "", SWT.PUSH );  //$NON-NLS-1$
+		GridData configData = new GridData();
+		configData.widthHint = TOOLBAR_ICON_SIZE.x;
+		configData.heightHint = TOOLBAR_ICON_SIZE.y;
+		configGui.setLayoutData( configData );
+		configGui.addSelectionListener( new DefaultSelectionAdapter(){
+			public final void widgetSelected(SelectionEvent event) {
+				_currentPage.configureGui();
+			}
+		} );
+		configGui.setImage(
+				ImageUtil.resize(
+						ImageUtil.getImage( 
+								GuiPlugin.getDefault(), 
+								"icons/configure_gui.png" ), //$NON-NLS-1$
+						TOOLBAR_ICON_SIZE ) );
+		configGui.setToolTipText( GuiPlugin.getResourceString( "ConfigureGui" ) ); //$NON-NLS-1$
 	}
 }
