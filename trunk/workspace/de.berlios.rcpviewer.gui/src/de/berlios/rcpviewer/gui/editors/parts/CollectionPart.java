@@ -3,6 +3,7 @@
  */
 package de.berlios.rcpviewer.gui.editors.parts;
 
+import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.*;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.ecore.EAttribute;
@@ -45,6 +46,7 @@ import de.berlios.rcpviewer.gui.dnd.DomainObjectTransfer;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.RemoveReferenceJob;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
+import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.gui.util.StringUtil;
@@ -285,7 +287,8 @@ public class CollectionPart implements IReferencePart {
 		column = new TableColumn( control, SWT.LEFT );
 		column.setText( GuiPlugin.getResourceString( 
 				"CollectionPart.FirstColumnHeader") ); //$NON-NLS-1$
-		for ( EAttribute attribute  : collectionDomainType.attributes() ) {
+		for ( EAttribute attribute  : 
+				EmfUtil.sort(collectionDomainType.attributes(), ALPHABETICAL ) ) {
 			column = new TableColumn( control, SWT.LEFT );
 			column.setText( attribute.getName() );
 		}
@@ -465,12 +468,11 @@ public class CollectionPart implements IReferencePart {
 				parent, FontUtil.CharWidthType.SAFE );
 		
 		// loop through all attributes - add an IFormPart for each
-		for ( EAttribute attribute  : childDomainType.attributes() ) {       
+		for ( EAttribute attribute  : 
+			EmfUtil.sort( childDomainType.attributes(), ALPHABETICAL ) ) {       
 
 			// create parent composite for IField
 			Composite partComposite = form.getToolkit().createComposite( body );
-//			partComposite.setLayoutData( 
-//					new GridData( GridData.FILL_HORIZONTAL ) );
 			form.getToolkit().paintBordersFor( partComposite );
 			
 			// create IField
@@ -489,7 +491,7 @@ public class CollectionPart implements IReferencePart {
 	
 	
 	// just to tidy constructor code - the 'toolbar' here is a conceipt -
-	// setting the description Control of the section
+	// actually we are setting the description Control of the section
 	private void configureToolbar(
 			boolean allowAdd,
 			boolean allowRemove,
@@ -592,6 +594,7 @@ public class CollectionPart implements IReferencePart {
 				public final void widgetSelected(SelectionEvent event) {
 					pageBook.showPage( page.getComposite() );
 					_currentPage = page;
+					_form.reflow( true );
 				}
 			} );
 			if ( first ) {

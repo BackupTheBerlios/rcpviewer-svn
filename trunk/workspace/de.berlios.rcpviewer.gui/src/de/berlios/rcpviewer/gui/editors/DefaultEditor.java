@@ -1,6 +1,9 @@
 package de.berlios.rcpviewer.gui.editors;
 
 
+import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.*;
+import static de.berlios.rcpviewer.gui.util.FontUtil.CharWidthType.*;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
@@ -30,6 +33,7 @@ import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.JobAction;
 import de.berlios.rcpviewer.gui.jobs.RefreshDomainObjectJob;
 import de.berlios.rcpviewer.gui.jobs.ReportJob;
+import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
 import de.berlios.rcpviewer.gui.views.ops.IOpsViewPage;
@@ -90,7 +94,7 @@ public final class DefaultEditor extends EditorPart {
 		// set title on both window and form, and add icon to form
 		resetTitle();
 		int width = FORM_TITLE_PREFIX.length() * FontUtil.getCharWidth( 
-				_form.getForm(), FontUtil.CharWidthType.AVERAGE );
+				_form.getForm(), AVERAGE );
 		Image image = ImageUtil.resize(
 				((DefaultEditorInput)getEditorInput() ).getImage(),
 				new Point( width, width ) );
@@ -125,7 +129,7 @@ public final class DefaultEditor extends EditorPart {
 		}
 		
 		// loop through all attributes - add an IFormPart for each
-		for ( EAttribute attribute  : clazz.attributes() ) {       
+		for ( EAttribute attribute : EmfUtil.sort( clazz.attributes(), ALPHABETICAL ) ) {       
 
 			// create parent composite for IField
 			Composite partComposite = _form.getToolkit().createComposite( body );
@@ -145,7 +149,7 @@ public final class DefaultEditor extends EditorPart {
 		}
 		
 		// loop through all references - add an IFormPart for each
-		for ( EReference ref : clazz.references() ) {       
+		for ( EReference ref : EmfUtil.sort( clazz.references(), ALPHABETICAL ) ) {       
 	
 			// create parent composite
 			Composite partComposite = _form.getToolkit().createComposite( body );
