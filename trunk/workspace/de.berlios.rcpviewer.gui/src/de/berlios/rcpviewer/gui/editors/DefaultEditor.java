@@ -129,7 +129,7 @@ public final class DefaultEditor extends EditorPart {
 		}
 		
 		// loop through all attributes - add an IFormPart for each
-		for ( EAttribute attribute : EmfUtil.sort( clazz.attributes(), ALPHABETICAL ) ) {       
+		for ( EAttribute attribute : EmfUtil.sort( clazz.attributes(), ANNOTATION ) ) {       
 
 			// create parent composite for IField
 			Composite partComposite = _form.getToolkit().createComposite( body );

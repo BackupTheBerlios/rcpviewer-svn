@@ -3,7 +3,7 @@
  */
 package de.berlios.rcpviewer.gui.editors.parts;
 
-import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.ALPHABETICAL;
+import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.ANNOTATION;
 
 import java.util.ArrayList;
 
@@ -31,6 +31,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -93,16 +94,6 @@ public class CollectionPart implements IReferencePart {
 		assert columnWidths != null;
 		assert maxLabelLength != 0;
 		
-		// section		
-		sectionParent.setLayout( new FillLayout() );
-		Section section = toolkit.createSection( sectionParent, EXPANDABLE_STYLE );
-		section.setText( StringUtil.padLeft( ref.getName(), maxLabelLength ) + ":"  ); //$NON-NLS-1$
-
-		// section area
-		Composite parent = toolkit.createComposite( section ) ;
-		parent.setBackground( section.getBackground() );
-		section.setClient( parent );
-		
 		// fetch all required types - yuk!
 		Class<?> containerPojoType = ((EClassifier)ref.eContainer()).getInstanceClass();
 		IRuntimeDomainClass<?> containerDomainType 
@@ -117,6 +108,25 @@ public class CollectionPart implements IReferencePart {
 
 		assert collectionPojoType != null;
 		assert collectionDomainType != null;
+		
+		// section		
+		sectionParent.setLayout( new FillLayout() );
+		Section section = toolkit.createSection( sectionParent, EXPANDABLE_STYLE );
+		section.setText( StringUtil.padLeft( ref.getName(), maxLabelLength ) + ":"  ); //$NON-NLS-1$
+		Label label = new Label( section, SWT.NONE );
+		label.setImage( 
+				ImageUtil.resize(
+					ImageUtil.getImage( collectionDomainType ),
+				TOOLBAR_ICON_SIZE ) );		
+		section.setTextClient( label );
+		
+		
+		// section area
+		Composite parent = toolkit.createComposite( section ) ;
+		parent.setBackground( section.getBackground() );
+		section.setClient( parent );
+		
+		
 		
 		// pages
 		parent.setLayout( new FillLayout() ) ; 
@@ -142,8 +152,8 @@ public class CollectionPart implements IReferencePart {
 				toolkit, 
 				pages );
 		
-		// section control - 'toolbar' for section
-		Composite toolbar = toolkit.createComposite( section );
+		// create 'toolbar' for section
+		Composite toolbar = toolkit.createComposite( section );	
 		section.setDescriptionControl( toolbar );		
 		createToolbar( allowAdd, 
 					   allowRemove, 
@@ -295,7 +305,7 @@ public class CollectionPart implements IReferencePart {
 		column.setText( GuiPlugin.getResourceString( 
 				"CollectionPart.FirstColumnHeader") ); //$NON-NLS-1$
 		for ( EAttribute attribute  : 
-				EmfUtil.sort(collectionDomainType.attributes(), ALPHABETICAL ) ) {
+				EmfUtil.sort(collectionDomainType.attributes(), ANNOTATION ) ) {
 			column = new TableColumn( table, SWT.LEFT );
 			column.setText( attribute.getName() );
 		}
@@ -515,7 +525,7 @@ public class CollectionPart implements IReferencePart {
 		
 		// loop through all attributes - add an IFormPart for each
 		for ( EAttribute attribute  : 
-			EmfUtil.sort( childDomainType.attributes(), ALPHABETICAL ) ) {       
+			EmfUtil.sort( childDomainType.attributes(), ANNOTATION ) ) {       
 
 			// create parent composite for IField
 			Composite fieldComposite = form.getToolkit().createComposite( body );
