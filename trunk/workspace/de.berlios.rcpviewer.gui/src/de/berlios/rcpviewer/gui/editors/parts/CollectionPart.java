@@ -25,7 +25,6 @@ import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -64,8 +63,6 @@ import de.berlios.rcpviewer.session.IDomainObject;
  */
 public class CollectionPart implements IReferencePart {
 	
-	private static final Point TOOLBAR_ICON_SIZE = new Point( 12, 12);
-	
 	private final CollectionGuiPage[] _pages;
 	
 	private IManagedForm _form = null;
@@ -91,7 +88,7 @@ public class CollectionPart implements IReferencePart {
 		assert ref.isMany();
 		assert sectionParent != null;
 		assert toolkit != null;
-		assert columnWidths != null;
+		// column widths not used
 		assert maxLabelLength != 0;
 		
 		// fetch all required types - yuk!
@@ -117,7 +114,7 @@ public class CollectionPart implements IReferencePart {
 		label.setImage( 
 				ImageUtil.resize(
 					ImageUtil.getImage( collectionDomainType ),
-				TOOLBAR_ICON_SIZE ) );		
+				PART_ICON_SIZE ) );		
 		section.setTextClient( label );
 		
 		
@@ -125,8 +122,6 @@ public class CollectionPart implements IReferencePart {
 		Composite parent = toolkit.createComposite( section ) ;
 		parent.setBackground( section.getBackground() );
 		section.setClient( parent );
-		
-		
 		
 		// pages
 		parent.setLayout( new FillLayout() ) ; 
@@ -603,10 +598,10 @@ public class CollectionPart implements IReferencePart {
 					ImageUtil.getImage(
 							GuiPlugin.getDefault(), 
 							"/icons/add.png" ), //$NON-NLS-1$
-					TOOLBAR_ICON_SIZE ) );		
+					PART_ICON_SIZE ) );		
 			GridData addData = new GridData();
-			addData.widthHint = TOOLBAR_ICON_SIZE.x;
-			addData.heightHint = TOOLBAR_ICON_SIZE.y;
+			addData.widthHint = PART_ICON_SIZE.x;
+			addData.heightHint = PART_ICON_SIZE.y;
 			add.setLayoutData( addData );
 			add.addSelectionListener( new DefaultSelectionAdapter(){
 				public final void widgetSelected(SelectionEvent event) {
@@ -624,10 +619,10 @@ public class CollectionPart implements IReferencePart {
 					ImageUtil.getImage(
 							GuiPlugin.getDefault(), 
 							"/icons/remove.png" ), //$NON-NLS-1$
-					TOOLBAR_ICON_SIZE ) );	
+					PART_ICON_SIZE ) );	
 			GridData removeData = new GridData();
-			removeData.widthHint = TOOLBAR_ICON_SIZE.x;
-			removeData.heightHint = TOOLBAR_ICON_SIZE.y;
+			removeData.widthHint = PART_ICON_SIZE.x;
+			removeData.heightHint = PART_ICON_SIZE.y;
 			remove.setLayoutData( removeData );
 			remove.setEnabled( false );
 			remove.setVisible( false );
@@ -687,8 +682,8 @@ public class CollectionPart implements IReferencePart {
 		// configure gui button
 		Button configGui = toolkit.createButton( toolbar, "", SWT.PUSH );  //$NON-NLS-1$
 		GridData configData = new GridData();
-		configData.widthHint = TOOLBAR_ICON_SIZE.x;
-		configData.heightHint = TOOLBAR_ICON_SIZE.y;
+		configData.widthHint = PART_ICON_SIZE.x;
+		configData.heightHint = PART_ICON_SIZE.y;
 		configGui.setLayoutData( configData );
 		configGui.addSelectionListener( new DefaultSelectionAdapter(){
 			public final void widgetSelected(SelectionEvent event) {
@@ -700,7 +695,7 @@ public class CollectionPart implements IReferencePart {
 						ImageUtil.getImage( 
 								GuiPlugin.getDefault(), 
 								"icons/configure_gui.png" ), //$NON-NLS-1$
-						TOOLBAR_ICON_SIZE ) );
+						PART_ICON_SIZE ) );
 		configGui.setToolTipText( GuiPlugin.getResourceString( "ConfigureGui" ) ); //$NON-NLS-1$
 	}
 }

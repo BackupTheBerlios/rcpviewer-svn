@@ -106,7 +106,7 @@ public final class DefaultEditor extends EditorPart {
 		
 		// want column width hints for IField's
 		// for this calculate longest required label length for attributes
-		int[] columnWidths = new int[]{ 0, 0 };
+		int[] columnWidths = new int[]{ 0, 0, 0 };
 		IDomainObject<?> object = getDomainObject();
 		IDomainClass<?> clazz = object.getDomainClass(); 
 		int maxLabelLength = 0;

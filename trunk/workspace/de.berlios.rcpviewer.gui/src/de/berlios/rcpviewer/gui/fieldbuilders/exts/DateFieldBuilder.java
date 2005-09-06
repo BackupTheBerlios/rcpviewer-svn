@@ -28,10 +28,13 @@ import org.eclipse.swt.widgets.Text;
 import org.vafada.swtcalendar.SWTCalendarEvent;
 import org.vafada.swtcalendar.SWTCalendarListener;
 
+import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.dnd.DateTransfer;
+import de.berlios.rcpviewer.gui.editors.parts.IGuiPart;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
+import de.berlios.rcpviewer.gui.util.ImageUtil;
 
 /**
  * Used for dates.
@@ -63,7 +66,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
 		// listener can be null
-		// column widths can be null
+		if( columnWidths == null ) throw new IllegalArgumentException();
 		return new DateField( parent, element, listener, columnWidths );
 	}
 
@@ -76,13 +79,12 @@ public class DateFieldBuilder implements IFieldBuilder {
 				   final IFieldListener listener,
 				   int[] columnWidths ) {
 			
-			GridLayout layout = new GridLayout( 2, false );
+			GridLayout layout = new GridLayout( 3, false );
 			parent.setLayout( layout );
 			
 			// label
 			GridData labelData = new GridData();
-			if ( columnWidths != null 
-					&& columnWidths.length == 2 
+			if ( columnWidths.length == 3 
 						&& columnWidths[0] != 0 ) {
 				labelData.widthHint = columnWidths[0];
 			}
@@ -92,12 +94,31 @@ public class DateFieldBuilder implements IFieldBuilder {
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
 			label.setFont( FontUtil.getLabelFont() );
 			
+			// icon
+			GridData iconData = new GridData();
+			if ( columnWidths.length == 3 
+						&& columnWidths[1] != 0 ) {
+				iconData.widthHint = columnWidths[1];
+			}
+			else {
+				iconData.widthHint = IGuiPart.PART_ICON_SIZE.x;
+			}
+			Label icon = new Label( parent, SWT.NONE );
+			icon.setImage( 
+				ImageUtil.resize(
+					ImageUtil.getImage(
+					GuiPlugin.getDefault(), "icons/date.png" ), //$NON-NLS-1$
+					IGuiPart.PART_ICON_SIZE ) );
+			icon.setLayoutData( iconData );
+			icon.setToolTipText( 
+					GuiPlugin.getResourceString( 
+							"DateFieldBuilder.IconToolTip" ) ); //$NON-NLS-1$
+			
 			// text box
 			GridData textData = new GridData();
-			if ( columnWidths != null 
-					&& columnWidths.length == 2 
-						&& columnWidths[1] != 0 ) {
-				textData.widthHint = columnWidths[1];
+			if ( columnWidths.length == 3 
+						&& columnWidths[2] != 0 ) {
+				textData.widthHint = columnWidths[2];
 			}
 			else {
 				int numChars = DATE_FORMATTER.format( new Date() ).length();
@@ -115,7 +136,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 				addDnD( _text, false );
 			}
 			else {
-				layout.numColumns = 3;
+				layout.numColumns = 4;
 			
 				if ( listener != null ) {
 					_text.addModifyListener(new ModifyListener() {

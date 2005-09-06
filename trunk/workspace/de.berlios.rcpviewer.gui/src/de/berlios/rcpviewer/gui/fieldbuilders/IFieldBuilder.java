@@ -27,11 +27,10 @@ public interface IFieldBuilder {
 	 * @param element - the element to display, , not <code>null</code>
 	 * @param listener - a callback for the field to notify that it has been
 	 * edited, , can be <code>null</code>
-	 * @param columnWidths TODO
 	 * @param int[] - column widths - the parent composite does not have any
 	 * layout set so any number of columns can be used - this is a <b>hint</b> 
 	 * to indicate column widths that would neatest fit with the overall gui 
-	 * container - can be ignored and can be <code>null</code> 
+	 * container - can be ignored 
 	 * @return field
 	 */
 	public IField createField( Composite parent, 

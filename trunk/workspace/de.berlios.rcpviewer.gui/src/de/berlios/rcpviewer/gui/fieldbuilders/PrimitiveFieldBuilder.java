@@ -28,8 +28,10 @@ import org.eclipse.swt.widgets.Text;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.gui.dnd.DndTransferFactory;
+import de.berlios.rcpviewer.gui.editors.parts.IGuiPart;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
+import de.berlios.rcpviewer.gui.util.ImageUtil;
 
 
 /**
@@ -79,7 +81,7 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
 		// listener can be null
-		// column widths can be null
+		if( columnWidths == null ) throw new IllegalArgumentException();
 		return new PrimitiveField( _type, parent, element, listener, columnWidths );
 	}
 	
@@ -121,12 +123,11 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 			}
 			
 			// read-only gui
-			parent.setLayout( new GridLayout( 2, false ) );
+			parent.setLayout( new GridLayout( 3, false ) );
 			
 			// label
 			GridData labelData = new GridData();
-			if ( columnWidths != null 
-					&& columnWidths.length == 2 
+			if ( columnWidths.length == 3 
 						&& columnWidths[0] != 0 ) {
 				labelData.widthHint = columnWidths[0];
 			}
@@ -136,46 +137,89 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
 			label.setFont( FontUtil.getLabelFont() );
 			
-			// decide width & style of text box
-			GridData textData = null;
+			// decide width & style of text box, and icon values
+			GridData textData;
+			String iconPath;
+			String iconToolTip;
 			int style = Integer.MIN_VALUE;
 			if ( _type == byte.class ) {
 				textData = new GridData();
 				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 5;
+				iconPath = "icons/byte.png"; //$NON-NLS-1$
+				iconToolTip = GuiPlugin.getResourceString(
+						"PrimitiveFieldBuilder.ByteToolTip" ) ; //$NON-NLS-1$
 				style = SWT.CENTER;
 			}
 			else if ( _type == char.class ) {
 				textData = new GridData();
 				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 3;
+				iconPath="icons/char.png"; //$NON-NLS-1$
+				iconToolTip = GuiPlugin.getResourceString(
+					"PrimitiveFieldBuilder.CharToolTip" ) ; //$NON-NLS-1$
 				style = SWT.CENTER;
 			}
 			else if ( _type == short.class ) {
 				textData = new GridData();
 				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 4;
+				iconPath="icons/short.png"; //$NON-NLS-1$
+				iconToolTip = GuiPlugin.getResourceString(
+					"PrimitiveFieldBuilder.ShortToolTip" ) ; //$NON-NLS-1$
 				style = SWT.LEFT;
 			}
 			else if ( _type == int.class ) {
 				textData = new GridData();
 				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 10;
+				iconPath="icons/int.png"; //$NON-NLS-1$
+				iconToolTip = GuiPlugin.getResourceString(
+					"PrimitiveFieldBuilder.IntToolTip" ) ; //$NON-NLS-1$
 				style = SWT.LEFT;
 			}
 			else if ( _type == long.class ) {
 				textData = new GridData();
 				textData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * 19;
+				iconPath="icons/long.png"; //$NON-NLS-1$
+				iconToolTip = GuiPlugin.getResourceString(
+					"PrimitiveFieldBuilder.LongToolTip" ) ; //$NON-NLS-1$
 				style = SWT.LEFT;
 			}
 			else {
 				textData = new GridData( GridData.FILL_HORIZONTAL );
-				if ( columnWidths != null 
-						&& columnWidths.length == 2 
-							&& columnWidths[1] != 0 ) {
-					textData.widthHint = columnWidths[1];
+				if ( columnWidths.length == 3 
+							&& columnWidths[2] != 0 ) {
+					textData.widthHint = columnWidths[2];
+				}
+				if( _type == float.class ) {
+					iconPath="icons/float.png"; //$NON-NLS-1$
+					iconToolTip = GuiPlugin.getResourceString(
+						"PrimitiveFieldBuilder.FloatToolTip" ) ; //$NON-NLS-1$
+				}
+				else {
+					iconPath="icons/double.png"; //$NON-NLS-1$
+					iconToolTip = GuiPlugin.getResourceString(
+						"PrimitiveFieldBuilder.DoubleToolTip" ) ; //$NON-NLS-1$
 				}
 				style = SWT.LEFT;
 			}
-			assert textData != null;
 			assert style != Integer.MIN_VALUE;
 
+			// icon
+			GridData iconData = new GridData();
+			if ( columnWidths.length == 3 
+						&& columnWidths[1] != 0 ) {
+				iconData.widthHint = columnWidths[1];
+			}
+			else {
+				iconData.widthHint = IGuiPart.PART_ICON_SIZE.x;
+			}
+			Label icon = new Label( parent, SWT.NONE );
+			icon.setImage( 
+				ImageUtil.resize(
+					ImageUtil.getImage(
+					GuiPlugin.getDefault(), iconPath ), //$NON-NLS-1$
+					IGuiPart.PART_ICON_SIZE ) );
+			icon.setLayoutData( iconData );
+			icon.setToolTipText( iconToolTip );
+			
 			// text
 			_text = new Text( parent, style );
 			_text.setLayoutData( textData );

@@ -8,7 +8,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
+import de.berlios.rcpviewer.gui.editors.parts.IGuiPart;
 import de.berlios.rcpviewer.gui.util.FontUtil;
+import de.berlios.rcpviewer.gui.util.ImageUtil;
 
 
 /**
@@ -39,7 +41,7 @@ class DefaultFieldBuilder implements IFieldBuilder {
 		if( parent == null ) throw new IllegalArgumentException();
 		if( element == null ) throw new IllegalArgumentException();
 		// listener can be null
-		// column widths can be null
+		if( columnWidths == null ) throw new IllegalArgumentException();
 		return new DefaultField( parent, element, listener, columnWidths );
 	}
 	
@@ -51,12 +53,11 @@ class DefaultFieldBuilder implements IFieldBuilder {
 				      ETypedElement element,
 				      final IFieldListener listener,
 				      int[] columnWidths ) {
-			parent.setLayout( new GridLayout( 2, false ) );
+			parent.setLayout( new GridLayout( 3, false ) );
 			
 			// label
 			GridData labelData = new GridData();
-			if ( columnWidths != null 
-					&& columnWidths.length == 2 
+			if ( columnWidths.length == 3 
 						&& columnWidths[0] != 0 ) {
 				labelData.widthHint = columnWidths[0];
 			}
@@ -66,12 +67,31 @@ class DefaultFieldBuilder implements IFieldBuilder {
 			label.setText( element.getName() + ":" ); //$NON-NLS-1$
 			label.setFont( FontUtil.getLabelFont() );
 			
+			// icon
+			GridData iconData = new GridData();
+			if ( columnWidths.length == 3 
+						&& columnWidths[1] != 0 ) {
+				iconData.widthHint = columnWidths[1];
+			}
+			else {
+				iconData.widthHint = IGuiPart.PART_ICON_SIZE.x;
+			}
+			Label icon = new Label( parent, SWT.NONE );
+			icon.setImage( 
+				ImageUtil.resize(
+					ImageUtil.getImage(
+					GuiPlugin.getDefault(), "icons/unknown.png" ), //$NON-NLS-1$
+					IGuiPart.PART_ICON_SIZE ) );
+			icon.setLayoutData( iconData );
+			icon.setToolTipText( 
+					GuiPlugin.getResourceString( 
+							"DefaultFieldBuilder.IconToolTip" ) ); //$NON-NLS-1$
+			
 			// error message
 			GridData msgData = new GridData( GridData.FILL_HORIZONTAL );
-			if ( columnWidths != null 
-					&& columnWidths.length == 2 
-						&& columnWidths[1] != 0 ) {
-				msgData.widthHint = columnWidths[1];
+			if ( columnWidths.length == 3 
+						&& columnWidths[2] != 0 ) {
+				msgData.widthHint = columnWidths[2];
 			}
 			Label msg = new Label( parent, SWT.LEFT );
 			msg.setLayoutData( msgData );
