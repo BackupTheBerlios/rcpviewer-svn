@@ -10,6 +10,12 @@ import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.IPersistable;
+import de.berlios.rcpviewer.session.IPersistable.PersistState;
+import de.berlios.rcpviewer.session.IResolvable;
+import de.berlios.rcpviewer.session.IResolvable.ResolveState;
+import de.berlios.rcpviewer.transaction.internal.InstantiationChange;
+import de.berlios.rcpviewer.transaction.ITransaction;
 
 /**
  * Represents a class in the meta model, akin to {@link java.lang.Class} and
@@ -28,19 +34,52 @@ import de.berlios.rcpviewer.session.ISession;
 public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 
 	/**
-	 * Creates a still-to-be-persisted instance of a {@link IDomainObject}
-	 * wrapping a pojo of the type represented by this domain class.
+	 * Creates a instance of a {@link IDomainObject}
+	 * wrapping a pojo of the type represented by this domain class, and
+	 * attaches to the specified {@link ISession}.
 	 * 
 	 * <p>
-	 * The object will not be attached to any {@link ISession}.  Since created
-	 * objects normally should be attached, typically 
-	 * {@link ISession#createTransient(IDomainClass)} (which does attach the
-	 * resultant object to the session) should be used instead. 
+	 * The {@link IDomainObject} will have a persistence state dependent upon
+	 * whether the class supports being persisted.  If it does, it will be
+	 * set to {@link IPersistable.PersistState#PERSISTENT} and an 
+	 * {@link InstantiationChange} added to the appropriate 
+	 * {@link ITransaction}.
+	 * 
+	 * <p>
+	 * The resolve state of the {@link IDomainObject} will be set to
+	 * {@link IResolvable.ResolveState#RESOLVED}. 
+	 * 
+	 * @param session - the session to attach this domain object to.
+	 * 
+	 * @return a {@link IDomainObject}, attached to the supplied session.
+	 */
+	public IDomainObject<T> create(ISession session);
+
+	/**
+	 * Recreates an instance of a {@link IDomainObject} that has previously
+	 * been persisted.
+	 * 
+	 * <p>
+	 * The {@link IDomainObject} will have a persistence state of
+	 * {@link IPersistable.PersistState#PERSISTED} and a resolve state of
+	 * {@link IResolvable.ResolveState#UNRESOLVED}. 
+	 * 
+	 * @param session - the session to attach this domain object to.
+	 * 
+	 * @return a persisted (though still-to-be-resolved) {@link IDomainObject},
+	 *         attached to the supplied session.
+	 */
+	public IDomainObject<T> recreatePersistent(ISession session);
+
+	/**
+	 * The (Java) class to which this is a peer.
+	 * 
+	 * <p>
+	 * The domain class uses the Java class to actually instantiate instances
+	 * of pojos; these are ultimately wrapped in {@link IDomainObject}s.
 	 * 
 	 * @return
 	 */
-	public <T> IDomainObject<T> createTransient();
-
 	public Class<T> getJavaClass();
 
 	/**

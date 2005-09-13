@@ -59,11 +59,54 @@ public interface ISession {
 	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
 	 * attaches to the session.
 	 * 
+	 * <p>
+	 * The object will only be persisted (and therefore added to the current
+	 * transaction) if it supports it (is not annotated as 
+	 * {@link TransientOnly}, or equiv.)
+	 * 
 	 * @param domainClass
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
 	 */
-	<T> IDomainObject<T> createTransient(IRuntimeDomainClass<T> domainClass);
+	<T> IDomainObject<T> create(IRuntimeDomainClass<T> domainClass);
 
+	
+	/**
+	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
+	 * attaches to the session.
+	 * 
+	 * @param domainClass
+	 * @return an {@link IDomainObject} wrapping a newly created pojo.
+	 */
+	<T> IDomainObject<T> recreate(IRuntimeDomainClass<T> domainClass);
+
+	/**
+	 * Deletes the pojo wrapped by the supplied {@link IDomainObject}.
+	 * 
+	 * <p>
+	 * The pojo will be enrolled into a {@link ITransaction}, and won't
+	 * actually be deleted from the persistent object store until the 
+	 * transaction commits.
+	 * 
+	 * @param <T>
+	 * @param pojo
+	 */
+	<T> void delete(IDomainObject<T> pojo);
+	
+
+	/**
+	 * Deletes the pojo.
+	 * 
+	 * <p>
+	 * The pojo will be enrolled into a {@link ITransaction}, and won't
+	 * actually be deleted from the persistent object store until the 
+	 * transaction commits.
+	 * 
+	 * @param <T>
+	 * @param pojo
+	 */
+	public void delete(Object pojo);
+
+	
 	/**
 	 * Attach the pojo wrapped in the supplied {@link IDomainObject} to the 
 	 * session.
@@ -123,58 +166,6 @@ public interface ISession {
 	void reset();
 
 	
-	/**
-	 * Persist this (currently transient) object to the configured object store.
-	 * 
-	 * <p>
-	 * {@link ITransactionListener}s of the {@link IDomainObject} (<i>not</i>
-	 * the session) will be notified.
-	 *  
-	 * @param domainObject
-	 */
-	<T> void persist(IDomainObject<T> domainObject);
-	
-
-	/**
-	 * Persist this (currently transient) object to the configured object store.
-	 * 
-	 * <p>
-	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
-	 * persist; {@link ITransactionListener}s of the {@link IDomainObject} 
-	 * (<i>not</i> the session) will be notified.
-	 *  
-	 * @param domainObject
-	 */
-	void persist(Object pojo);
-
-	
-	/**
-	 * Save changes to this (already persistent) object to the
-	 * configured object store.
-	 * 
-	 * <p>
-	 * {@link ITransactionListener}s of the {@link IDomainObject} (<i>not</i>
-	 * the session) will be notified.
-	 *  
-	 * @param domainObject
-	 */
-	<T> void save(IDomainObject<T> domainObject);
-
-	
-	/**
-	 * Save changes to this (already persistent) object to the
-	 * configured object store.
-	 * 
-	 * <p>
-	 * Should delegate to the {@link IDomainObject} for the pojo to do the 
-	 * persist; {@link ITransactionListener}s of the {@link IDomainObject} 
-	 * (<i>not</i> the session) will be notified.
-	 *  
-	 * @param domainObject
-	 */
-	void save(Object pojo);
-
-
 	/**
 	 * Returns all attached objects of the supplied class.
 	 * 

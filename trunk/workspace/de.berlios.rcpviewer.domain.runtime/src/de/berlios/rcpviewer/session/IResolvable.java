@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.session;
 
+import de.berlios.rcpviewer.session.IPersistable;
+
 /**
  * Feature (class, 1:! reference or collection) that are obtained from the 
  * resolved from the persistent object store.
@@ -8,30 +10,38 @@ package de.berlios.rcpviewer.session;
  * The state of attributes of an object is not tracked separately; it is
  * effectively the same as that of the class.
  * 
- *  <p>
- *  TODO: currently implemented directly by IDomainObject etc, but there
- *  should really be a ResolvingAspect that would declare parents etc etc.
+ * <p>
+ * There is a close relationship between this interface and 
+ * {@link IPersistable}; only for objects that are persisted does the
+ * resolved state make sense.  (Put another way; transient objects can be
+ * considered as being resolved).
+ * 
+ * <p>
+ * TODO: currently implemented directly by IDomainObject etc, but there
+ * should really be a ResolvingAspect that would declare parents etc etc.
  */
 public interface IResolvable {
 
 	/**
-	 * Whether this feature (class, 1:! reference or collection) has been 
+	 * Whether this feature (class, 1:1 reference or collection) has been 
 	 * resolved from the persistent object store.
 	 * 
 	 * <p>
 	 * The state of attributes of an object is not tracked separately; it is
-	 * effectively the same as that of the class. 
+	 * effectively the same as that of the class.
+	 * 
+	 * <p>
+	 * TODO: this seems to have metamorphosised into tracking the lifecycle of
+	 * the pojo itself; NEW, TRANSIENT and DELETED should be moved out, methinks.
 	 */
 	public enum ResolveState {
 		
 		/**
-		 * In the process of being initialized. 
+		 * State of a feature is unknown; this state only applies while an
+		 * object is initially being created; it is used by transaction
+		 * aspects to ensure that objects being created are ignored. 
 		 */
-		NEW("New"),
-		/**
-		 * Fully created but not yet persisted.
-		 */
-		TRANSIENT("Transient"),
+		UNKNOWN("Unknown"),
 		/**
 		 * State of a feature that has previously been persisted but not yet 
 		 * been retrieved; this feature cannot be accessed. 
@@ -41,11 +51,11 @@ public interface IResolvable {
 		 * State of a feature that has previously been persisted and has now 
 		 * been retrieved; this feature can be accessed. 
 		 */
-		RESOLVED("Resolved");
-
+		RESOLVED("Resolved"),
+		;
 		private final String _name;
 		
-		private ResolveState(String name) {
+		private ResolveState(final String name) {
 			_name = name;
 		}
 		
@@ -53,6 +63,37 @@ public interface IResolvable {
 			return _name;
 		}
 		
+		/**
+		 * Whether this state represents an {@link IResolvable} whose
+		 * resolve state is unknown or at least not yet specified.
+		 * 
+		 * @return
+		 */
+		public boolean isUnknown() {
+			return this == UNKNOWN;
+		}
+		
+		/**
+		 * Whether this state represents an {@link IResolvable} that has not
+		 * been resolved.
+		 * 
+		 * @return
+		 */
+		public boolean isUnresolved() {
+			return this == UNRESOLVED;
+		}
+		
+		/**
+		 * Whether this state represents an {@link IResolvable} that has 
+		 * been resolved.
+		 * 
+		 * @return
+		 */
+		public boolean isResolved() {
+			return this == RESOLVED;
+		}
+		
+
 		@Override
 		public String toString() {
 			return getName();
@@ -78,7 +119,7 @@ public interface IResolvable {
 	 * <p>
 	 * Preconditions:
 	 * <ul>
-	 * <li> state of TRANSIENT, UNRESOLVED
+	 * <li> state of UNRESOLVED
 	 * </ul>
 	 * 
 	 * <p>
@@ -88,24 +129,5 @@ public interface IResolvable {
 	 * </ul>
 	 */
 	public void nowResolved();
-
-	
-	/**
-	 * Informs this object that it has been fully created (but has not yet
-	 * been persisted).
-	 * 
-	 * <p>
-	 * Preconditions:
-	 * <ul>
-	 * <li> state of NEW
-	 * </ul>
-	 * 
-	 * <p>
-	 * Postconditions:
-	 * <ul>
-	 * <li> state of TRANSIENT
-	 * </ul>
-	 */
-	public void nowTransient();
 
 }

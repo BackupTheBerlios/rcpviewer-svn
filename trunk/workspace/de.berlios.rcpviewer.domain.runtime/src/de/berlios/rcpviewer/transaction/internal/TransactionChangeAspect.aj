@@ -1,18 +1,13 @@
 package de.berlios.rcpviewer.transaction.internal;
 
-import java.lang.reflect.Field;
-import java.util.EnumSet;
-
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.transaction.ITransactable;
-import de.berlios.rcpviewer.transaction.ITransaction;
-import de.berlios.rcpviewer.transaction.ITransactionManager;
+import de.berlios.rcpviewer.progmodel.standard.DomainObject;
 import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.PojoAspect;
 import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.IObservedFeature;
-import de.berlios.rcpviewer.session.IResolvable.ResolveState;
+import de.berlios.rcpviewer.transaction.ITransactable;
+import de.berlios.rcpviewer.transaction.ITransaction;
+import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
 
 import org.apache.log4j.Logger;
 
@@ -24,25 +19,9 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 	protected abstract Logger getLogger();
 	
 	/**
-	 * Subaspects specify what constitutes "changing" the pojo
+	 * Subaspects specify what constitutes initiates a transactional change.
 	 */
-	abstract pointcut changingPojo(IPojo pojo); 
-
-	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo) &&
-		if(resolveStateAppropriate(pojo)) &&
-		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
-
-	/**
-	 * The states that a domain object must be in in order to be enrolled into
-	 * a transaction.
-	 * 
-	 * TODO: should have a ResolvingAspect that dominates this aspect and 
-	 * ensures that pojos are resolved before being interacted with.
-	 */
-	private final static EnumSet<ResolveState> TRANSACTIONAL_STATES = 
-		EnumSet.of(ResolveState.TRANSIENT, ResolveState.RESOLVED);
-	
+	abstract protected pointcut transactionalChange(IPojo pojo); 
 
 	/**
 	 * Keeps track of the current transaction for this thread (if any)
@@ -93,8 +72,8 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 		if (transaction != null && 
 		    pojoTransaction != null) {
 			if (transaction != pojoTransaction) {
-				// this shouldn't happen
-				throw new RuntimeException("Object already enlisted in another transaction - discarding change.");
+				// this mustn't happen
+				throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
 			}
 			return transaction;
 		} else if (transaction     != null &&
@@ -131,27 +110,23 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 	}
 
 	/**
-	 * Whether the state of this the {@link IDomainObject} corresponding to
-	 * this pojo indicates that it has been resolved such that the pojo may
-	 * be enrolled within a transaction.
+	 * Whether the pojo can be enlisted in a transaction.
 	 * 
 	 * <p>
-	 * Note that although the resolve state of {@link IDomainObject} is set up
-	 * in its constructor, we do have to check for a null reference.  That's
-	 * because the aspect will fire even as the object is being constructed.
-	 * If the resolve state is <code>null</code>, we therefore interpret as 
-	 * not being in a state ready to be involved in transactions.
-	 * 
-	 * <p>
-	 * In fact, since the _domainObject instance variable is introduced into
-	 * the pojo Object, we have to check whether it exists. 
+	 * We mustn't attempt to enlist a pojo that is being constructed.  The
+	 * implementation of {@link DomainObject} is such we only set up its 
+	 * persistence state and its resolve state at the end of its constructor.
+	 * We will ignore objects whose state is not yet fully specified.
 	 */
-	protected static boolean resolveStateAppropriate(final IPojo pojo) {
+	protected static boolean canBeEnlisted(final IPojo pojo) {
 		IDomainObject domainObject = pojo.getDomainObject();
 		if (domainObject == null) {
 			return false;
 		}
-		ResolveState resolveState = domainObject.getResolveState();
-		return resolveState != null && TRANSACTIONAL_STATES.contains(resolveState);
+		return domainObject.getResolveState() != null &&
+		       !domainObject.getResolveState().isUnknown() &&
+		       domainObject.getPersistState() != null &&
+		       !domainObject.getPersistState().isUnknown();
 	}
+
 }

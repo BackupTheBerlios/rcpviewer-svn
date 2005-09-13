@@ -3,6 +3,7 @@ package de.berlios.rcpviewer.session;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 
 import org.eclipse.emf.ecore.EAttribute;
 
@@ -11,16 +12,19 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.FieldSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.reflect.ConstructorSignature;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.progmodel.standard.DomainObject;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+
 
 public abstract aspect PojoAspect {
 	
@@ -29,27 +33,32 @@ public abstract aspect PojoAspect {
 	 * annotation should implement {@link de.berlios.rcpviewer.session.IPojo}. 
 	 */
 	declare parents: (@InDomain *) implements IPojo;
+	private IDomainObject IPojo._domainObject = new DomainObject(this);
 
 	/**
-	 * Introduce implementation of {@link IPojo} to @InDomain pojos.
+	 * Introduces the implementation of obtaining the {@link IDomainObject}
+	 * that wraps this {@link IPojo} in some {@link ISession}.
 	 * 
-	 * JAVA_5_FIXME
+	 * <p>
+	 * TODO: is this right, that we only have an IDomainObject wrapper when the
+	 * pojo is attached to a session?
 	 */
 	public IDomainObject IPojo.getDomainObject() {
-		InDomain inDomain = this.getClass().getAnnotation(InDomain.class);
-		String domainName = inDomain.value();
-		RuntimeDomain domain = RuntimeDomain.instance(domainName);
-		SessionManager sessionManager = SessionManager.instance(); 
-		for(ISession session: sessionManager.getAllSessions()) {
-			if (domain != session.getDomain()) {
-				continue;
-			}
-			if (!session.hasDomainObjectFor(this)) {
-				continue;
-			}
-			return session.getDomainObjectFor(this, this.getClass());
-		}
-		return null;
+		return _domainObject;
+//		InDomain inDomain = this.getClass().getAnnotation(InDomain.class);
+//		String domainName = inDomain.value();
+//		RuntimeDomain domain = RuntimeDomain.instance(domainName);
+//		SessionManager sessionManager = SessionManager.instance(); 
+//		for(ISession session: sessionManager.getAllSessions()) {
+//			if (domain != session.getDomain()) {
+//				continue;
+//			}
+//			if (!session.hasDomainObjectFor(this)) {
+//				continue;
+//			}
+//			return session.getDomainObjectFor(this, this.getClass());
+//		}
+//		return null;
 	}
 
 	/**
@@ -231,7 +240,7 @@ public abstract aspect PojoAspect {
 	 * 
 	 */
 	protected pointcut changingAttributeOnPojo(IPojo pojo, Object postValue) :
-		args(postValue) && this(pojo) && set(!IPojo IPojo+.*);
+		args(postValue) && this(pojo) && set((!IPojo+ && !Collection+) IPojo+.*);
 
 
 	/**
@@ -261,8 +270,6 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * This is different from the invokeAddToCollectionOnPojo pointcut 
 	 * because it fires however the collection is modified (directly or not).
-	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
-	 * of a transaction already under way.
 	 * 
 	 * <p>
 	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
@@ -271,20 +278,19 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * Protected so that sub-aspects can use.
 	 */
-	protected pointcut addingToCollectionOnPojo(IPojo pojo, IPojo addedObj): 
-		call(public boolean java.util.Collection+.add(IPojo+)) && 
+	protected pointcut addingToCollectionOnPojo(IPojo pojo, Collection collection, Object addedObj): 
+		call(public boolean java.util.Collection+.add(Object+)) && 
 		args(addedObj) && 
 		this(pojo)  && 
+		target(collection)  && 
 		!within(java.util..*) ;
-				
+
 	/**
 	 * Capture a collection in a pojo has been removed from.
 	 * 
 	 * <p>
 	 * This is different from the invokeRemoveFromCollectionOnPojo pointcut 
 	 * because it fires however the collection is modified (directly or not).
-	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
-	 * of a transaction already under way.
 	 * 
 	 * <p>
 	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
@@ -293,10 +299,11 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * Protected so that sub-aspects can use.
 	 */
-	protected pointcut removingFromCollectionOnPojo(IPojo pojo, IPojo removedObj): 
-		call(public boolean java.util.Collection+.remove(IPojo+)) && 
+	protected pointcut removingFromCollectionOnPojo(IPojo pojo, Collection collection, Object removedObj): 
+		call(public boolean java.util.Collection+.remove(Object+)) && 
 		args(removedObj) && 
 		this(pojo) && 
+		target(collection) && 
 		!within(java.util..*) ;
 				
 	/**
@@ -306,8 +313,17 @@ public abstract aspect PojoAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut instantiatingPojo(IPojo pojo): 
-		execution(IPojo+.new(..)) && this(pojo);
+		execution(public IPojo+.new(..)) && this(pojo);
 
+	
+	/**
+	 * Capture a pojo being deleted.
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut deletingPojoUsingDeleteMethod(IPojo pojo): 
+		execution(public void IPojo+.delete()) && this(pojo);
 
 	////////////////////////////////////////////////////////////////////
 	

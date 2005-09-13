@@ -21,14 +21,17 @@ import de.berlios.rcpviewer.transaction.ITransaction.State;
  */
 public final class TransactionManager implements ITransactionManager {
 
+	private final static ITransactionManager __instance = new TransactionManager();
+
 	/**
 	 * Pending the use of dependency injection, we expose a singleton.
 	 * 
 	 * <p>
 	 * This is used by the TransactionAspect.
 	 */
-	public final static ITransactionManager INSTANCE = new TransactionManager();
-
+	public final static ITransactionManager instance() { return __instance; }
+	
+	
 	/**
 	 * {@link ITransaction}s that are in-progress.
 	 * 
@@ -63,7 +66,7 @@ public final class TransactionManager implements ITransactionManager {
 	private final Map<String, Transaction> _reappliableTransactionById = new LinkedHashMap<String, Transaction>();
 
 	// TODO: pending dependency injection.
-	private IAppContainer _appContainer = AppContainer.INSTANCE;
+	public IAppContainer _appContainer = AppContainer.instance();
 
 	private List<ITransactionManagerListener> _listeners = new ArrayList<ITransactionManagerListener>();
 
@@ -71,7 +74,8 @@ public final class TransactionManager implements ITransactionManager {
 	 * Public constructor so that this component can be instantiated and
 	 * injected using dependency injection.
 	 */
-	public TransactionManager() { }
+	public TransactionManager() {
+	}
 
 	/**
 	 * Creates a new in-progress {@link ITransaction}.
@@ -229,6 +233,10 @@ public final class TransactionManager implements ITransactionManager {
 		for(ITransactable transactable: pojosToUnenlist) {
 			_currentTransactionByEnlistedPojo.remove(transactable);
 		}
+		
+		if (transaction.getUndoableChanges().size() == 0) {
+			transaction.discard();
+		}
 	}
 
 	/**
@@ -350,7 +358,7 @@ public final class TransactionManager implements ITransactionManager {
 			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
 			if (pojoTransaction != null && pojoTransaction != transaction) {
 				// already enlisted elsewhere.
-				return false;
+				throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
 			}
 		}
 		
@@ -365,6 +373,17 @@ public final class TransactionManager implements ITransactionManager {
 	}
 
 
+	/*
+	 * @see de.berlios.rcpviewer.transaction.ITransactionManager#reset()
+	 */
+	public void reset() {
+		_currentTransactions.clear();
+		_currentTransactionByEnlistedPojo.clear();
+		_committedTransactionById.clear();
+		_reappliableTransactionById.clear();
+		_listeners.clear();
+	}
+	
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransactionManager#addTransactionManagerListener(de.berlios.rcpviewer.transaction.ITransactionManagerListener)
 	 */

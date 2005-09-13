@@ -23,7 +23,7 @@ public final class SessionManager implements ISessionManager {
 		// do nothing
 	}
 	
-	private static SessionManager _instance = new SessionManager();
+	private static SessionManager __instance = new SessionManager();
 	private String _currentSessionId = null;
 	private Map<String, ISession> _sessionsById = new HashMap<String, ISession>();
 	private ArrayList<ISessionManagerListener> _listeners = new ArrayList<ISessionManagerListener>();
@@ -69,7 +69,7 @@ public final class SessionManager implements ISessionManager {
 	 * @return
 	 */
 	public static SessionManager instance() {
-		return _instance;
+		return __instance;
 	}
 	
 	/**

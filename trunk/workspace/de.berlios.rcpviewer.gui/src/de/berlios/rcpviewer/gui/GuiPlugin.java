@@ -93,9 +93,9 @@ public class GuiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		
-		SocketAppender ganymede = new SocketAppender("localhost", 4445); //$NON-NLS-1$
-		ganymede.setLocationInfo(true);
-		Logger.getRootLogger().addAppender(ganymede);
+		SocketAppender socketAppender = new SocketAppender("localhost", 4445); //$NON-NLS-1$
+		socketAppender.setLocationInfo(true);
+		Logger.getRootLogger().addAppender(socketAppender);
 //		Logger.getLogger(GuiPlugin.class).info( "Logging started" ); //$NON-NLS-1$
 		
 		// domain initialisation

@@ -24,7 +24,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		session.detach(domainObject);
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
@@ -35,7 +35,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertTrue(session.isAttached(domainObject));
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
@@ -46,7 +46,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertTrue(session.isAttached(domainObject));
 		try {
 			session.attach(domainObject);
@@ -61,7 +61,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		session.detach(domainObject);
 		assertFalse(l.attachedCallbackCalled);
@@ -73,7 +73,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
 		session.attach(domainObject);
@@ -85,7 +85,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		String sessionIdBeforeDetach = domainObject.getSessionId();
 		session.detach(domainObject);
 		assertEquals(sessionIdBeforeDetach, domainObject.getSessionId());
@@ -96,7 +96,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
 		try {
@@ -112,7 +112,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		session.detach(domainObject);
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
@@ -133,7 +133,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		try {
 			domainObject.clearSessionId();
@@ -149,7 +149,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		session.detach(domainObject);
 		domainObject.clearSessionId();
@@ -166,7 +166,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		session.detach(domainObject);
 		domainObject.clearSessionId();
@@ -194,7 +194,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		IRuntimeDomainClass<Department> departmentDomainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IDomainObject<Department> departmentDomainObject = 
-			(IDomainObject<Department>)sessionForDefaultDomain.createTransient(departmentDomainClass);
+			(IDomainObject<Department>)sessionForDefaultDomain.create(departmentDomainClass);
 
 		// detach and clear its session Id
 		sessionForDefaultDomain.detach(departmentDomainObject);

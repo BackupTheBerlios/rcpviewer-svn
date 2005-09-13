@@ -14,9 +14,12 @@ public class Calculator {
 	public int getResult() {
 		return _result;
 	}
+	public void setInitialResult(int result) {
+		_result = result;
+	}
 	
 	public void reset() {
-		_result = 0;
+		setInitialResult(0);
 	}
 	
 	public void add(final int amount) {
@@ -31,4 +34,15 @@ public class Calculator {
 		if (n==1) { return 1; }
 		return n * factorial(n-1);
 	}
+	
+	/**
+	 * Indicates to platform that this object can be deleted.
+	 * 
+	 * <p>
+	 * There is no need for any actual implementation.
+	 *
+	 */
+	public void delete() {
+	}
+
 }

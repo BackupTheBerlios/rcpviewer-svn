@@ -1,8 +1,12 @@
 package de.berlios.rcpviewer.transaction;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 
+import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
@@ -12,87 +16,59 @@ import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
+import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 import junit.framework.TestCase;
 
-public class TestTransactionManager extends TestCase {
+public class TestTransactionManager extends AbstractTransactionManagerTestCase {
 
-	protected RuntimeDomain domain;
-	protected SessionManager sessionManager;
-	protected ISession session;
-	protected IObjectStore objectStore;
-	
 	public TestTransactionManager() {
-		super(null);
+		super(); // setup objects, please.
 	}
 
-	protected void setUp() throws Exception {
-		super.setUp();
-		sessionManager = SessionManager.instance();
-		domain = RuntimeDomain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
-		objectStore = new InMemoryObjectStore();
-		session = sessionManager.createSession(domain, objectStore);
-	}
 
-	protected void tearDown() throws Exception {
-		domain = null;
-		sessionManager = null;
-		session.reset();
-		session = null;
-		objectStore.reset();
-		objectStore = null;
-		RuntimeDomain.resetAll();
-		SessionManager.instance().reset();
-		super.tearDown();
-	}
-
-	public void testInvokeOperationDirectly() {
-		IRuntimeDomainClass<Calculator> domainClass = 
-			(IRuntimeDomainClass<Calculator>)RuntimeDomain.lookupAny(Calculator.class);
-		domain.addBuilder(new ExtendedProgModelDomainBuilder());
-		domain.done();
-		
-		IDomainObject<Calculator> domainObject = 
-			(IDomainObject<Calculator>)session.createTransient(domainClass);
-		Calculator calculator = domainObject.getPojo();
-		
-		assertEquals(0, calculator.getResult());
-
+	// Commit
+	public void testCommitTransactionChangesStateToCommitted() {
+		assertNull(transactionManager.getCurrentTransactionFor(customer, false));
 		calculator.add(5);
+		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator);
+		
+		assertNotNull(transaction);
+		assertSame(ITransaction.State.IN_PROGRESS, transaction.getState());
+		transaction.commit();
+		assertSame(ITransaction.State.COMMITTED, transaction.getState());
+	}
 
+
+	// Reverse
+
+	
+	// Re-apply
+
+	
+	// auto-persist 
+	public void incompletetestCannotAssociateNonPersistedObjectWithPersistedIfNotAutoPersist() {
+		
+	}
+
+	public void incompletetestAssociatingNonPersistedObjectWithPersistedWillPersistIfAutoPersist() {
+		
+	}
+
+
+
+	// Detached pojos
+	
+	public void incompletetestCannotEnrolPojoThatIsDetachedFromSession() {
+		
 	}
 	
-	public void testInvokeOperationViaDomainObject() {
-
-		IRuntimeDomainClass<Calculator> domainClass = 
-			(IRuntimeDomainClass<Calculator>)RuntimeDomain.lookupAny(Calculator.class);
-		domain.addBuilder(new ExtendedProgModelDomainBuilder());
-		domain.done();
+	public void incompletetestCannotEnrolPojoThatIsAttachedToDifferentSessionToThatOfTransaction() {
 		
-		IDomainObject<Calculator> domainObject = 
-			(IDomainObject<Calculator>)session.createTransient(domainClass);
-		Calculator calculator = domainObject.getPojo();
-		
-		assertEquals(0, calculator.getResult());
-
-		EOperation addEOperation = domainObject.getEOperationNamed("add");
-		domainObject.getOperation(addEOperation).invokeOperation(new Object[]{new Integer(5)});
-
 	}
-
-	public void testTransationScope() {
-		IRuntimeDomainClass<Calculator> domainClass = 
-			(IRuntimeDomainClass<Calculator>)RuntimeDomain.lookupAny(Calculator.class);
-		domain.addBuilder(new ExtendedProgModelDomainBuilder());
-		domain.done();
+	
+	public void incompletetestCannotDetachPojoThatIsEnrolledInATransaction() {
 		
-		IDomainObject<Calculator> domainObject = 
-			(IDomainObject<Calculator>)session.createTransient(domainClass);
-		Calculator calculator = domainObject.getPojo();
-		
-		assertEquals(0, calculator.getResult());
-
-		calculator.computeFactorial(5);
-
 	}
+	
 
 }

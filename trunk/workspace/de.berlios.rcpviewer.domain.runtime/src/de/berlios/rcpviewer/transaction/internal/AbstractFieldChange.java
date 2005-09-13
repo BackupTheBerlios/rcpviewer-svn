@@ -8,6 +8,7 @@ import java.util.List;
 
 import de.berlios.rcpviewer.transaction.ITransactable;
 import de.berlios.rcpviewer.transaction.IChange;
+import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.transaction.ITransaction;
 
@@ -66,23 +67,20 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	private final Object _postValue;
 
 	/**
-	 * Protected for implementation of equals etc in subclasses.
-	 */
-	protected final ITransactable _transactable;
-	private final Set<ITransactable> _transactableAsSet;
-	
-	/**
-	 * CAptures the current value of the attribute as the 
+	 * Captures the current value of the attribute as the 
 	 * {@link #getPreValue()}.
 	 * 
-	 * @param attribute
+	 * @param transaction - the transaction to which this change is added
+	 * @param transactable
+	 * @param field
 	 * @param postValue
 	 */
 	public AbstractFieldChange(
+			final ITransaction transaction,
 			final ITransactable transactable,
 			final Field field,
 			final Object postValue) {
-		super(description(field), extendedInfo(transactable, field, postValue), false);
+		super(transaction, transactable, description(field), extendedInfo(transactable, field, postValue), false);
 		this._field = field;
 		try {
 			field.setAccessible(true);
@@ -92,20 +90,10 @@ public abstract class AbstractFieldChange extends AbstractChange {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
-		_transactable = transactable;
-		Set<ITransactable> transactableAsSet = new HashSet<ITransactable>();
-		transactableAsSet.add(transactable);
-		_transactableAsSet = Collections.unmodifiableSet(transactableAsSet);
 		_postValue = postValue;
-	}
-
-	/*
-	 * Consists of just the object whose field is being modified.
-	 *  
-	 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
-	 */
-	public Set<ITransactable> getModifiedPojos() {
-		return _transactableAsSet;
+		if (postValue instanceof ITransactable) {
+			modifies((ITransactable)postValue);	
+		}
 	}
 
 	/**
@@ -138,9 +126,10 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	/*
 	 * Sets the value of the field to its post value.
 	 * 
-	 * @see de.berlios.rcpviewer.transaction.IChange#execute()
+	 * @see de.berlios.rcpviewer.transaction.IChange#doExecute()
 	 */
-	public void execute() {
+	@Override
+	public final Object doExecute()  {
 		try {
 			_field.set(_transactable, _postValue);
 		} catch (IllegalArgumentException e) {
@@ -148,6 +137,7 @@ public abstract class AbstractFieldChange extends AbstractChange {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		};
+		return null;
 	}
 
 	/*
@@ -168,6 +158,5 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	public String toString() {
 		return getField().getName() + ": " + getPreValue() + "->" + getPostValue(); 
 	}
-
 
 }

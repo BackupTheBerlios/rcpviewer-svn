@@ -1,106 +1,93 @@
 package de.berlios.rcpviewer.transaction.internal;
 
-import java.lang.reflect.Field;
+import org.aspectj.lang.JoinPoint;
 
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.PojoAspect;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.IObservedFeature;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Collection;
+
 import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.transaction.IChange;
 import de.berlios.rcpviewer.transaction.ITransactable;
 import de.berlios.rcpviewer.transaction.ITransaction;
-import de.berlios.rcpviewer.transaction.ITransactionManager;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 import org.apache.log4j.Logger;
 
-/**
- * One change per modified 1:1 reference performed directly (ie not programmatically
- * from an invoked operation).
- */
-public aspect TransactionCollectionChangeAspect extends TransactionChangeAspect 
-	percflow(transactionalChange(IPojo)) {
+public abstract aspect TransactionCollectionChangeAspect extends TransactionChangeAspect {
 	
-	private final static Logger LOG = Logger.getLogger(TransactionCollectionChangeAspect.class);
-	protected Logger getLogger() { return LOG; }
-
-	protected pointcut changingPojo(IPojo pojo): 
-		addingToCollectionOnPojo(pojo, IPojo) || 
-		removingFromCollectionOnPojo(pojo, IPojo);
-
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
+	 * Locates the field called _xxx or xxx for a method called addToXxx.
 	 * 
 	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * No longer used since using addingTo... as pointcut; leaving in for now
+	 * unless revert to using invokeAddTo...
 	 */
-	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
-		ITransactable transactable = (ITransactable)pojo;
-		boolean transactionOnThread = hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
-		if (!transactionOnThread) {
-			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-			setTransactionForThread(transaction);
-		} else {
-			getLogger().debug("(xactn for thread already present)");
-		}
-		boolean startedInteraction = transaction.startingInteraction();
+	protected final Field getFieldForAddTo(final Method addToMethod) {
+		Field field = getFieldCorrespondingToMethodWithPrefix(addToMethod, "addTo", "_");
+		if (field != null) { return field; }
+		field = getFieldCorrespondingToMethodWithPrefix(addToMethod, "addTo", null);
+		return field;
+	}
+
+	/**
+	 * Locates the field called _xxx or xxx for a method called removeFromXxx.
+	 * 
+	 * <p>
+	 * No longer used since using removingFrom... as pointcut; leaving in for now
+	 * unless revert to using invokeRemoveFrom...
+	 */
+	protected final Field getFieldForRemoveFrom(final Method removeFromMethod) {
+		Field field = getFieldCorrespondingToMethodWithPrefix(removeFromMethod, "removeFrom", "_");
+		if (field != null) { return field; }
+		field = getFieldCorrespondingToMethodWithPrefix(removeFromMethod, "removeFrom", null);
+		return field;
+	}
+
+	protected final Field getFieldCorrespondingToMethodWithPrefix(final Method method, final String methodPrefix, final String fieldPrefix) {
+		if (method == null) { return null; }
+		final String methodName = method.getName();
+		if (!methodName.startsWith(methodPrefix)) { return null; }
+		String methodNameNoPrefix = camelCase(methodName.substring(methodPrefix.length()));
+		String fieldName = (fieldPrefix != null?fieldPrefix:"") + methodNameNoPrefix;
+		Class<?> javaClass = method.getDeclaringClass();
+		Field field;
 		try {
-			return proceed(pojo);
-		} finally {
-			if (startedInteraction) {
-				transaction.completingInteraction();
-			}
-			if (!transactionOnThread) {
-				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-				clearTransactionForThread();
-			}
+			field = javaClass.getDeclaredField(fieldName);
+		} catch (SecurityException ex) {
+			getLogger().warn("could not locate field from " + methodPrefix + " method '" + method + "' (SecurityException)", ex);
+			return null;
+		} catch (NoSuchFieldException ex) {
+			getLogger().warn("could not locate field from " + methodPrefix + " method '" + method + "' (NoSuchFieldException)", ex);
+			return null;
 		}
+		return isCollectionType(field);
+	}
+	
+	protected final String camelCase(String str) {
+		if (str == null) { return str; }
+		switch (str.length()) {
+		case 0:
+			return str;
+		case 1:
+			str = Character.toLowerCase(str.charAt(0)) + "";
+			break;
+		default:
+			str = Character.toLowerCase(str.charAt(0)) + str.substring(1);
+			break;
+		}
+		return str;
 	}
 
 	/**
-	 * Creates an AddToCollectionChange to wrap a change to the attribute, adding it
-	 * to the current transaction.
-	 *  
-	 * <p>
-	 * This code must appear after the transactionChange() advice above 
-	 * because lexical ordering is used to determine the order in which
-	 * advices are applied. 
+	 * If the field is has a declared type of Collection (or any subclass) then
+	 * return it, otherwise return null.
 	 */
-	Object around(IPojo pojo, IPojo addedObj): addingToCollectionOnPojo(pojo, addedObj) {
-		Field field = getFieldFor(thisJoinPointStaticPart);
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AddToCollectionChange(transactable, field, addedObj);
-		if (!transaction.addingToInteractionChangeSet(change)) {
-			return null; // pojo already enlisted			
+	private final Field isCollectionType(final Field field) {
+		Class<?> fieldReturnType = field.getType();
+		if (java.util.Collection.class.isAssignableFrom(fieldReturnType)) {
+			return field;
 		}
-		return proceed(pojo, addedObj); // equivalent to executing the change
+		return null;
 	}
-
-	/**
-	 * Creates a RemoveFromCollectionChange to wrap a change to the attribute, adding it
-	 * to the current transaction.
-	 *  
-	 * <p>
-	 * This code must appear after the transactionChange() advice above 
-	 * because lexical ordering is used to determine the order in which
-	 * advices are applied. 
-	 */
-	Object around(IPojo pojo, IPojo removedObj): removingFromCollectionOnPojo(pojo, removedObj) {
-		Field field = getFieldFor(thisJoinPointStaticPart);
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new RemoveFromCollectionChange(transactable, field, removedObj);
-		if (!transaction.addingToInteractionChangeSet(change)) {
-			return null; // pojo already enlisted			
-		}
-		return proceed(pojo, removedObj); // equivalent to executing the change
-	}
-
 
 }

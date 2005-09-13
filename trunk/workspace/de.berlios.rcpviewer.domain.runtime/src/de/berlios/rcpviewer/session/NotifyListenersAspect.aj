@@ -4,6 +4,10 @@ import org.aspectj.lang.Signature;
 import org.eclipse.emf.ecore.EAttribute;
 import org.aspectj.lang.JoinPoint;
 
+import de.berlios.rcpviewer.session.IPersistable.PersistState;
+
+import java.util.Collection;
+
 public aspect NotifyListenersAspect extends PojoAspect {
 
 
@@ -25,7 +29,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 	 */
 	after(IPojo pojo, Object newValue): changingAttributeOnPojo(pojo, newValue) { 
 		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject == null) {
+		if (domainObject == null || domainObject.getPersistState() == PersistState.UNKNOWN) {
 			return;
 		}
 		
@@ -61,7 +65,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 	 */
 	after(IPojo pojo, Object newReference): changingOneToOneReferenceOnPojo(pojo, newReference) { 
 		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject == null) {
+		if (domainObject == null || domainObject.getPersistState() == PersistState.UNKNOWN) {
 			return;
 		}
 		
@@ -86,9 +90,9 @@ public aspect NotifyListenersAspect extends PojoAspect {
 	 * <p>
 	 * In addition, notify all {@link IObservedFeature}s of the session.
 	 */
-	after(IPojo pojo, Object addedObject): addingToCollectionOnPojo(pojo, addedObject) { 
+	after(IPojo pojo, Collection collection, Object addedObject): addingToCollectionOnPojo(pojo, collection, addedObject) { 
 		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject == null) {
+		if (domainObject == null || domainObject.getPersistState() == PersistState.UNKNOWN) {
 			return;
 		}
 		
@@ -113,9 +117,9 @@ public aspect NotifyListenersAspect extends PojoAspect {
 	 * <p>
 	 * In addition, notify all {@link IObservedFeature}s of the session.    
 	 */
-	after(IPojo pojo, Object removedObject): removingFromCollectionOnPojo(pojo, removedObject) { 
+	after(IPojo pojo, Collection collection, Object removedObject): removingFromCollectionOnPojo(pojo, collection, removedObject) { 
 		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject == null) {
+		if (domainObject == null || domainObject.getPersistState() == PersistState.UNKNOWN) {
 			return;
 		}
 		

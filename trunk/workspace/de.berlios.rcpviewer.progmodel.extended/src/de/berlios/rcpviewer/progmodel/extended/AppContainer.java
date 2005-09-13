@@ -6,9 +6,16 @@ import java.util.Date;
 
 public class AppContainer implements IAppContainer {
 
-	// TODO: pending use of dependency injection.
 	
-	public final static IAppContainer INSTANCE = new AppContainer();
+	private final static IAppContainer __instance = new AppContainer();
+
+	/**
+	 * 	TODO: pending use of dependency injection, we expose a singleton.
+	 * 
+	 * @return
+	 */
+	public final static IAppContainer instance() { return __instance; }
+
 	private final Class[] _NO_ARGS_TYPES = new Class[]{};
 	private final Object[] _NO_ARGS = new Object[]{};
 	

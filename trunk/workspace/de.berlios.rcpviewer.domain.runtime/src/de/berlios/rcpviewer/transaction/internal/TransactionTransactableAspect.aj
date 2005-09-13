@@ -11,6 +11,11 @@ public aspect TransactionTransactableAspect extends TransactionAspect {
 
 	declare parents: IPojo implements ITransactable;
 
+	declare precedence: TransactionTransactableAspect, TransactionInvokeOperationAspect;
+	declare precedence: TransactionTransactableAspect, TransactionAttributeChangeAspect;
+	declare precedence: TransactionTransactableAspect, TransactionOneToOneReferenceChangeAspect;
+	declare precedence: TransactionTransactableAspect, TransactionAddToCollectionChangeAspect;
+	declare precedence: TransactionTransactableAspect, TransactionRemoveFromCollectionChangeAspect;
 
 	/**
 	 * Introduce implementation of {@link ITransactable#getTransaction()}.

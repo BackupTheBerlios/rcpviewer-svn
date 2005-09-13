@@ -4,12 +4,13 @@ import java.io.PrintWriter;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 
 	public TestRuntimeDomainClass() {
-		super(null);
+		super(new ExtendedProgModelDomainBuilder());
 	}
 
 	protected void setUp() throws Exception {
@@ -23,9 +24,11 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	public void testCreateTransientCreatesUnderlyingPojo() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
 		
 		IDomainObject<Department> domainObject = 
-			session.createTransient(domainClass);
+			session.create(domainClass);
 		assertNotNull(domainObject.getPojo());
 		assertSame(Department.class, domainObject.getPojo().getClass());
 	}
@@ -40,8 +43,10 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	public void testCanInstantiateDomainObjectFromDomainClass() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
 		
-		IDomainObject<Department> domainObject = domainClass.createTransient();
+		IDomainObject<Department> domainObject = domainClass.create(session);
 		assertNotNull(domainObject);
 		assertSame(domainObject.getDomainClass(), domainClass);
 		Department pojo = domainObject.getPojo();
@@ -57,10 +62,12 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
 		IRuntimeDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
 			(IRuntimeDomainClass<DepartmentWithoutNoArgConstructor>)lookupAny(DepartmentWithoutNoArgConstructor.class);
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
 
 		try {
 			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 
-				domainClass.createTransient();
+				domainClass.create(session);
 			fail("Expected exception to have been thrown.");
 		} catch(ProgrammingModelException ex) {
 			// expected
@@ -70,6 +77,9 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	public void incompletetestSerializeEmfResourceSet() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
+
 		domainClass.getDomain().serializeTo(new PrintWriter(System.out));
 	}
 

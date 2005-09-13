@@ -213,33 +213,6 @@ public interface ITransaction {
 	 */
 	public boolean addingToInteractionChangeSet(IChange change) throws IllegalStateException;
 
-//	/**
-//	 * Indicate that the set of changes currently being built up should be
-//	 * discarded.
-//	 * 
-//	 * <p>
-//	 * Preconditions
-//	 * <ul>
-//	 * <li> in a state of {@link ITransaction.State#BUILDING_CHANGE}, else throws
-//	 *      an {@link IllegalStateException}.  Use {@link #getState()} to check
-//	 *      that this precondition is met.
-//	 * <li> must be the current transaction (as returned by
-//	 *      {@link ITransactionManager#getCurrentTransaction()}.
-//	 * </ul>
-//	 * 
-//	 * <p>
-//	 * Postconditions
-//	 * <ul>
-//	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-//	 * <li> current changes (added through {@link #addingToInteractionChangeSet(IChange)} 
-//	 *      undone and discarded.
-//	 * <li> current change set reset.
-//	 * </ul>
-//	 * 
-//	 * @throws IllegalStateException
-//	 */
-//	public void discardInteractionChangeSet() throws IllegalStateException;
-
 
 	/**
 	 * Indicate that the set of modifications to pojo(s) that make up a single 
@@ -266,8 +239,9 @@ public interface ITransaction {
 	 * </ul>
 	 * 
 	 * @throws IllegalStateException
+	 * @return this transaction
 	 */
-	public void completingInteraction() throws IllegalStateException;
+	public ITransaction completingInteraction() throws IllegalStateException;
 
 	
 	/**
@@ -299,8 +273,9 @@ public interface ITransaction {
 	 * 
 	 * @throws IllegalStateException - if this transaction is not currently in progress,
 	 *                                 or if there are no pending changes.
+	 * @return this transaction
 	 */
-	public void undoPendingChange() throws IllegalStateException;
+	public ITransaction undoPendingChange() throws IllegalStateException;
 	
 
 	/**
@@ -333,8 +308,9 @@ public interface ITransaction {
 	 * 
 	 * @throws IllegalStateException - if there are no changes to redo, or if 
 	 *         the transaction is not currently in progress.
+	 * @return this transaction
 	 */
-	public void redoPendingChange() throws IllegalStateException;
+	public ITransaction redoPendingChange() throws IllegalStateException;
 
 
 	/**
@@ -373,7 +349,7 @@ public interface ITransaction {
 	 * <p>
 	 * Postconditions
 	 * <ul>
-	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
+	 * <li> state of {@link ITransaction.State#DISCARDED}.
 	 * <li> all changes are undone (a {@link ChangeSet} and removed from the undo
 	 *      stack
 	 * <li> any pojos are un-enlisted
@@ -382,8 +358,9 @@ public interface ITransaction {
 	 * 
 	 * @throws IllegalStateException - if this transaction is not currently in 
 	 *                                 progress, or if there are no pending changes.
+	 * @return this transaction
 	 */
-	public void discard() throws IllegalStateException;
+	public ITransaction discard() throws IllegalStateException;
 	
 
 	/**
@@ -419,10 +396,11 @@ public interface ITransaction {
 	 *      {@link #undoPendingChange()} 
 	 * </ul>
 	 * 
+	 * @return this transaction
 	 * @throws IllegalStateException - if cannot redo, or if there the 
 	 *         transaction currently in progress.
 	 */
-	public void redoPendingChanges() throws IllegalStateException;
+	public ITransaction redoPendingChanges() throws IllegalStateException;
 	
 
 	/**
@@ -446,8 +424,10 @@ public interface ITransaction {
 	 *      to the persistent object store.
 	 * <li> changes made to the persistent object store if successful. 
 	 * </ul>
+	 * 
+	 * @return this transaction
 	 */
-	public void commit() throws IllegalStateException;
+	public ITransaction commit() throws IllegalStateException;
 
 	
 	/**
@@ -469,8 +449,10 @@ public interface ITransaction {
 	 *      to the persistent object store. 
 	 * <li> changes made to the persistent object store if successful. 
 	 * </ul>
+	 * 
+	 * @return this transaction
 	 */
-	public void reverse() throws IllegalStateException;
+	public ITransaction reverse() throws IllegalStateException;
 
 	
 	/**
@@ -492,8 +474,10 @@ public interface ITransaction {
 	 *      to the persistent object store. 
 	 * <li> changes made to the persistent object store if successful. 
 	 * </ul>
+	 * 
+	 * @return this transaction
 	 */
-	public void reapply()  throws IllegalStateException;
+	public ITransaction reapply()  throws IllegalStateException;
 
 
 	/**
@@ -562,8 +546,10 @@ public interface ITransaction {
 	 * 
 	 * @param requiredStates
 	 * @throws IllegalStateException
+	 * 
+	 * @return this transaction
 	 */
-	public void checkInState(ITransaction.State... requiredStates) throws IllegalStateException;
+	public ITransaction checkInState(ITransaction.State... requiredStates) throws IllegalStateException;
 	
 	/**
 	 * Returns whether the transaction is in one of the supplied states.
@@ -577,7 +563,7 @@ public interface ITransaction {
 	 * 
 	 * @param listener
 	 */
-	public void addTransactionListener(ITransactionListener listener);
+	public <T extends ITransactionListener> T addTransactionListener(T listener);
 
 	/**
 	 * Remove a listener.
@@ -611,6 +597,11 @@ public interface ITransaction {
 		 */
 		IN_PROGRESS("IN_PROGRESS"),
 		/**
+		 * prior to commit, all pending changes were undone and the transaction 
+		 * discarded; any further attempt to use will fail.
+		 */
+		DISCARDED("DISCARDED"),
+		/**
 		 * committed (perhaps as the result of a re-apply.
 		 */
 		COMMITTED("COMMITTED"),
@@ -622,10 +613,10 @@ public interface ITransaction {
 		 * an attempt to commit, reverse or reapply a transaction has failed; 
 		 * the transaction can no longer be used.
 		 */
-		ABORTED("REVERSED"),
+		ABORTED("ABORTED"),
 		;
 		private final static State[] states = { 
-			BUILDING_CHANGE, IN_PROGRESS, COMMITTED, REVERSED, ABORTED  
+			BUILDING_CHANGE, IN_PROGRESS, DISCARDED, COMMITTED, REVERSED, ABORTED  
 		};
 		public static State lookup(final String name) {
 			for (int i = 0; i < states.length; i++) {

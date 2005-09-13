@@ -25,7 +25,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 
 		IExtendedDomainObject<OrderConstrained> edo = 
@@ -54,7 +54,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 
 		IExtendedDomainObject<OrderConstrained> edo = 
@@ -88,7 +88,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 
 		IExtendedDomainObject<OrderConstrained> edo = 

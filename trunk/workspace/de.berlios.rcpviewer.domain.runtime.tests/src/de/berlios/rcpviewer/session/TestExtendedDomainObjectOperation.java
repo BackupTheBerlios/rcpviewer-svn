@@ -39,7 +39,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().done();
 
 		IDomainObject<CustomerOperationWithPre> domainObject = 
-			(IDomainObject<CustomerOperationWithPre>) session.createTransient(domainClass);
+			(IDomainObject<CustomerOperationWithPre>) session.create(domainClass);
 		CustomerOperationWithPre pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
@@ -65,7 +65,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().done();
 
 		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = 
-			(IDomainObject<CustomerOperationWithPreAndArgs>) session.createTransient(domainClass);
+			(IDomainObject<CustomerOperationWithPreAndArgs>) session.create(domainClass);
 		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
@@ -116,7 +116,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().done();
 
 		IDomainObject<CustomerOperationWithDefaults> domainObject = 
-			(IDomainObject<CustomerOperationWithDefaults>) session.createTransient(domainClass);
+			(IDomainObject<CustomerOperationWithDefaults>) session.create(domainClass);
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
@@ -138,7 +138,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().done();
 
 		IDomainObject<CustomerOperationWithDefaults> domainObject = 
-			(IDomainObject<CustomerOperationWithDefaults>) session.createTransient(domainClass);
+			(IDomainObject<CustomerOperationWithDefaults>) session.create(domainClass);
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
@@ -170,7 +170,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().done();
 
 		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = 
-			(IDomainObject<CustomerOperationWithPreAndArgs>) session.createTransient(domainClass);
+			(IDomainObject<CustomerOperationWithPreAndArgs>) session.create(domainClass);
 		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
 
 		Set<IObservedFeature> features = session.getObservedFeatures();

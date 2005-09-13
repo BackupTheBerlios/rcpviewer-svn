@@ -30,8 +30,12 @@ public final class Transaction implements ITransaction {
 	 * <p>
 	 * If there is no change currently being built up (if state is not
 	 * {@link ITransaction.State#BUILDING_CHANGE}, then will be empty.
+	 * 
+	 * <p>
+	 * Implementation note: using ArrayList rather than LinkedList since 
+	 * easier to inspect in variables view :-)
 	 */
-	private List<IChange> _changesInCurrentChange = new LinkedList<IChange>();
+	private List<IChange> _changesInCurrentChange = new ArrayList<IChange>();
 	/**
 	 * List of all changes ({@link ChangeSet}s) that have been 
 	 * performed in the context of this transaction.
@@ -95,9 +99,14 @@ public final class Transaction implements ITransaction {
 	public boolean startingInteraction() {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
-		boolean notYetStarted = (getState() == ITransaction.State.IN_PROGRESS);
-		this._state = ITransaction.State.BUILDING_CHANGE;
-		return !notYetStarted; // ie true if hadn't been started
+		clearRedoStack();
+		boolean alreadyStarted = (getState() == ITransaction.State.BUILDING_CHANGE);
+		if (alreadyStarted) {
+			return false;
+		} else {
+			this._state = ITransaction.State.BUILDING_CHANGE;
+			return true;
+		}
 	}
 
 	/*
@@ -105,7 +114,10 @@ public final class Transaction implements ITransaction {
 	 */
 	public boolean addingToInteractionChangeSet(final IChange change) {
 		checkCurrentTransactionOfTransactionManager();
-		checkInState(ITransaction.State.BUILDING_CHANGE);
+		// will be BUILDING_CHANGE if originally executing, but
+		// will be IN_PROGRESS if redoing.  
+		// TODO: This whole BUILDING_CHANGE thing is probably more effort than it is worth.
+		checkInState(ITransaction.State.BUILDING_CHANGE, Transaction.State.IN_PROGRESS);
 		if (change.equals(IChange.NULL)) {
 			LOG.debug("addingToInteractionChangeSet: ignoring since NULL change");
 			return true;
@@ -120,20 +132,6 @@ public final class Transaction implements ITransaction {
 		return true;
 	}
 
-// IS THIS NEEDED NOW THAT addingToInteractoinChangeSet RETURNS true/false??
-//	/*
-//	 * @see de.berlios.rcpviewer.transaction.ITransaction#discardInteractionChangeSet()
-//	 */
-//	public void discardInteractionChangeSet() {
-//		checkCurrentTransactionOfTransactionManager();
-//		checkInState(ITransaction.State.BUILDING_CHANGE);
-//		ChangeSet changesToDiscard = new ChangeSet(_changesInCurrentChange);
-//		LOG.debug("discarding " + _changesInCurrentChange.size() + " changes in undo stack");
-//		changesToDiscard.undo();
-//		_changesInCurrentChange.clear();
-//		this._state = ITransaction.State.IN_PROGRESS;
-//	}
-
 	/*
 	 * Creates a change set out of the individual changes in the current change, pops onto
 	 * the stack of changes, and then clears down the work atoms list in
@@ -141,7 +139,7 @@ public final class Transaction implements ITransaction {
 	 * 
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#completingInteraction()
 	 */
-	public void completingInteraction() {
+	public ITransaction completingInteraction() {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.BUILDING_CHANGE);
 		ChangeSet changeSet = new ChangeSet(_changesInCurrentChange);
@@ -153,54 +151,69 @@ public final class Transaction implements ITransaction {
 			listener.addedChange(event);
 		}
 		this._state = ITransaction.State.IN_PROGRESS;
+		
+		return this;
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#discard()
 	 */
-	public void discard() throws IllegalStateException {
+	public ITransaction discard() throws IllegalStateException {
 		TransactionEvent event = new TransactionEvent(this);
 		for(ITransactionListener listener: _listeners) {
 			listener.discarded(event);
 		}
+		_state = ITransaction.State.DISCARDED;
 		_transactionManager.discarded(this);
+		
+		return this;
 	}
 
     /*
      * @see de.berlios.rcpviewer.transaction.ITransaction#commit()
      */
-	public void commit() {
+	public ITransaction commit() {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS);
 		_committedChanges = new ChangeSet(_changes.toArray(new ChangeSet[]{}));
 		LOG.debug("committing xactn of " + _changes.size() + " separate ChangeSets");
+		
+		// we notify the transaction manager before we clear _changes because
+		// the transaction manager is going to ask this transaction which pojos
+		// it had enlisted in order that it can mark them as clean.
+		_transactionManager.committed(this);
+		
+		// okay, now we can tidy up.
 		_changes.clear();
 		_state = ITransaction.State.COMMITTED;
 		TransactionEvent event = new TransactionEvent(this);
 		for(ITransactionListener listener: _listeners) {
 			listener.committed(event);
 		}
-		_transactionManager.committed(this);
+		
+		return this;
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#reverse()
 	 */
-	public void reverse() {
+	public ITransaction reverse() {
 		checkInState(ITransaction.State.COMMITTED);
-		_committedChanges.undo();
+		_committedChanges.undo(); // will throw exception if irreversible.
 		_state = ITransaction.State.REVERSED;
 		TransactionEvent event = new TransactionEvent(this);
 		for(ITransactionListener listener: _listeners) {
 			listener.reversed(event);
 		}
 		_transactionManager.reversed(this);
+		
+		return this;
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#reapply()
 	 */
-	public void reapply() {
+	public ITransaction reapply() {
 		checkInState(ITransaction.State.REVERSED);
 		_committedChanges.execute();
 		_state = ITransaction.State.COMMITTED;
@@ -209,6 +222,8 @@ public final class Transaction implements ITransaction {
 			listener.reapplied(event);
 		}
 		_transactionManager.reapplied(this);
+		
+		return this;
 	}
 
 	/*
@@ -222,7 +237,7 @@ public final class Transaction implements ITransaction {
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#undoPendingChange()
 	 */
-	public void undoPendingChange() throws IllegalStateException {
+	public ITransaction undoPendingChange() throws IllegalStateException {
 
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS);
@@ -240,12 +255,14 @@ public final class Transaction implements ITransaction {
 		}
 		// allow the TM to recompute the pojos that should be enlisted.
 		_transactionManager.undonePendingChange(this, change);
+		
+		return this;
 	}
 	
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#redoPendingChange()
 	 */
-	public void redoPendingChange() throws IllegalStateException {
+	public ITransaction redoPendingChange() throws IllegalStateException {
 		IChange redoneChange = redoPendingChangeNoNotifyListeners();
 		TransactionEvent event = new TransactionEvent(this, redoneChange);
 		for(ITransactionListener listener: _listeners) {
@@ -253,13 +270,15 @@ public final class Transaction implements ITransaction {
 		}
 		// no need to ask TM to check which pojos are enlisted; they will have 
 		// automatically enlisted themselves as necessary
+		
+		return this;
 	}
 	
 
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#redoPendingChanges()
 	 */
-	public void redoPendingChanges() throws IllegalStateException {
+	public ITransaction redoPendingChanges() throws IllegalStateException {
 		while(!_undoneChanges.isEmpty()) {
 			redoPendingChange();
 		}
@@ -269,6 +288,8 @@ public final class Transaction implements ITransaction {
 		}
 		// no need to ask TM to check which pojos are enlisted; they will have 
 		// automatically enlisted themselves as necessary
+		
+		return this;
 	}
 
 	/**
@@ -330,10 +351,12 @@ public final class Transaction implements ITransaction {
 	/*
 	 * @see de.berlios.rcpviewer.transaction.ITransaction#checkInState(de.berlios.rcpviewer.transaction.ITransaction.State[])
 	 */
-	public void checkInState(ITransaction.State... requiredStates) throws IllegalStateException {
+	public ITransaction checkInState(ITransaction.State... requiredStates) throws IllegalStateException {
 		if (!isInState(requiredStates)) {
 			throw new IllegalStateException("Transaction must be in state of " + Arrays.asList(requiredStates) + ", instead is " + _state);
 		}
+		
+		return this;
 	}
 
 	/*
@@ -367,6 +390,10 @@ public final class Transaction implements ITransaction {
 		return true;
 	}
 
+	private void clearRedoStack() {
+		this._undoneChanges.clear();
+	}
+
 	private void checkCurrentTransactionOfTransactionManager() {
 		if (!_transactionManager.isCurrent(this)) {
 			throw new IllegalStateException("Not current transaction.");
@@ -376,8 +403,9 @@ public final class Transaction implements ITransaction {
     /*
      * @see de.berlios.rcpviewer.transaction.ITransaction#addTransactionListener(de.berlios.rcpviewer.transaction.ITransactionListener)
      */
-	public void addTransactionListener(ITransactionListener listener) {
+	public <T extends ITransactionListener> T addTransactionListener(T listener) {
 		_listeners.add(listener);
+		return listener;
 	}
 
 	/*
@@ -390,6 +418,7 @@ public final class Transaction implements ITransaction {
 	/*
      * @see java.lang.Object#toString()
      */
+	@Override
     public String toString() {
     	Set<ITransactable> enlistedPojos = getEnlistedPojosInternal();
     	return "xactn@" + System.identityHashCode(this) + ": " 

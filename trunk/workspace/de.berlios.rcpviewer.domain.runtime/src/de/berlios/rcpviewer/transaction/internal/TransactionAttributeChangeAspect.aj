@@ -1,30 +1,33 @@
 package de.berlios.rcpviewer.transaction.internal;
 
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.PojoAspect;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.IObservedFeature;
+import java.lang.reflect.Field;
+
+import org.apache.log4j.Logger;
+
 import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.transaction.IChange;
 import de.berlios.rcpviewer.transaction.ITransactable;
 import de.berlios.rcpviewer.transaction.ITransaction;
-import de.berlios.rcpviewer.transaction.ITransactionManager;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import java.lang.reflect.Field;
+import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
 
-import org.apache.log4j.Logger;
 
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
 public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect 
-	percflow(transactionalChange(IPojo)) {
+	/* percflow(transactionalChange(IPojo)) */ {
 
 	private final static Logger LOG = Logger.getLogger(TransactionAttributeChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
 	protected pointcut changingPojo(IPojo pojo): changingAttributeOnPojo(pojo, Object); 
+
+	protected pointcut transactionalChange(IPojo pojo): 
+		changingPojo(pojo) &&
+		if(canBeEnlisted(pojo)) &&
+		!cflowbelow(invokeOperationOnPojo(IPojo)) ;  // this is probably unnecessary since the invokeOperation aspect has precedence over this one...
 
 	/**
 	 * Obtains transaction from either the thread or from the pojo (checking
@@ -72,11 +75,18 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 		Field field = getFieldFor(thisJoinPointStaticPart);
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AttributeChange(transactable, field, postValue);
-		if (!transaction.addingToInteractionChangeSet(change)) {
-			return null; // pojo already enlisted			
-		}
-		return proceed(pojo, postValue); // equivalent to executing the change
+		IChange change = new AttributeChange(transaction, transactable, field, postValue);
+
+//		IDomainObject<?> domainObject = pojo.getDomainObject();
+//		// only if we have a domain object (ie fully instantiated) and
+//		// are attached to a session do we check.
+//		if (domainObject != null && domainObject.isAttached()) {
+//			if (!transaction.addingToInteractionChangeSet(change)) {
+//				throw new PojoAlreadyEnlistedException();			
+//			}
+//		}
+//
+		return change.execute();
 	}
 	
 

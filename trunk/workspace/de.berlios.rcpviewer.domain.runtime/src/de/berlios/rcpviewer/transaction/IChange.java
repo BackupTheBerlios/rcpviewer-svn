@@ -27,18 +27,21 @@ public interface IChange {
 	 * <p>
 	 * That is, the null object pattern.
 	 */
-	public final static IChange NULL = NullWorkAtom.__instance;
+	public final static IChange NULL = NullChange.__instance;
 
 	/**
 	 * A default implementation of this interface that does nothing but that
 	 * cannot be uncommitted.
 	 */
-	public final static IChange IRREVERSIBLE = IrreversibleWorkAtom.__instance;
+	public final static IChange IRREVERSIBLE = IrreversibleChange.__instance;
 
 	/**
 	 * Execute this atom of work.
+	 * 
+	 * <p>
+	 * The object returned is that required as per proceed(...); often null.
 	 */
-	public void execute();
+	public Object execute();
 
 	/**
 	 * Undo this atom of work.
@@ -110,24 +113,24 @@ public interface IChange {
 	public Object[] getExtendedInfo();
 
 	/**
-	 * Null object pattern applied to {@link WorkAtom}s.
+	 * Null object pattern applied to {@link IChange}s.
 	 * 
 	 * <p>
 	 * This is <code>public</code> only because members of interfaces must be
 	 * so.
 	 */
-	public static final class NullWorkAtom implements IChange {
+	public static final class NullChange implements IChange {
 
 		/**
-		 * package level visibility for {@link WorkAtom} to access
+		 * package level visibility for {@link IChange} to access
 		 */
-		final static NullWorkAtom __instance = new NullWorkAtom();
+		final static NullChange __instance = new NullChange();
 
 		private final static String __description = "Null";
 
 		private final static Object[] __extendedInfo = new Object[] {};
 
-		private NullWorkAtom() {
+		private NullChange() {
 		}
 
 		/*
@@ -135,8 +138,9 @@ public interface IChange {
 		 * 
 		 * @see de.berlios.rcpviewer.transaction.IChange#execute()
 		 */
-		public final void execute() {
+		public final Object execute() {
 			// does nothing
+			return null;
 		}
 
 		/*
@@ -189,7 +193,7 @@ public interface IChange {
 		}
 
 		/**
-		 * equal if it is a {@link NullWorkAtom}
+		 * equal if it is a {@link NullChange}
 		 */
 		public boolean equals(Object other) {
 			if (!getClass().equals(other.getClass())) {
@@ -207,18 +211,18 @@ public interface IChange {
 	 * This is <code>public</code> only because members of interfaces must be
 	 * so.
 	 */
-	public static final class IrreversibleWorkAtom implements IChange {
+	public static final class IrreversibleChange implements IChange {
 
 		/**
-		 * package level visibility for {@link WorkAtom} to access
+		 * package level visibility for access by ....
 		 */
-		final static IrreversibleWorkAtom __instance = new IrreversibleWorkAtom();
+		private final static IrreversibleChange __instance = new IrreversibleChange();
 
 		private final static String __description = "Irreversible";
 
 		private final static Object[] __extendedInfo = new Object[] {};
 
-		private IrreversibleWorkAtom() {
+		private IrreversibleChange() {
 		}
 
 		/*
@@ -226,8 +230,9 @@ public interface IChange {
 		 * 
 		 * @see de.berlios.rcpviewer.transaction.IChange#execute()
 		 */
-		public final void execute() {
+		public final Object execute() {
 			// does nothing
+			return null;
 		}
 
 		/*
@@ -236,7 +241,7 @@ public interface IChange {
 		 * @see de.berlios.rcpviewer.transaction.IChange#undo()
 		 */
 		public final void undo() {
-			// does nothing
+			throw new IrreversibleTransactionException();
 		}
 
 		/*

@@ -13,9 +13,11 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
+import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.DomainObject;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IObservedFeature;
+import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.ISessionListener;
 import de.berlios.rcpviewer.session.SessionObjectEvent;
@@ -75,7 +77,6 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	/*
-	 * 
 	 * @see de.berlios.rcpviewer.session.ISession#getId()
 	 */
 	public String getId() {
@@ -89,18 +90,89 @@ public class Session implements ISession, IObjectStoreAware {
 	public IDomain getDomain() {
 		return _domain;
 	}
-	
+
+	// POJO LIFECYCLE (CREATE/DELETE) //
+
 	/*
-	 * @see de.berlios.rcpviewer.session.ISession#createTransient(de.berlios.rcpviewer.domain.IRuntimeDomainClass)
+	 * The TransactionInstantionChangeAspect picks up on this method, and adds
+	 * to the transaction as necessary.
+	 *
+	 * @see de.berlios.rcpviewer.session.ISession#create(de.berlios.rcpviewer.domain.IRuntimeDomainClass)
 	 */
-	public <T> IDomainObject<T> createTransient(IRuntimeDomainClass<T> domainClass) {
-		IDomainObject<T> domainObject = domainClass.createTransient();
+	public <T> IDomainObject<T> create(IRuntimeDomainClass<T> domainClass) {
+		IDomainObject<T> domainObject = domainClass.create(this);
+		attach(domainObject);
+		IExtendedDomainClass edc = domainClass.getAdapter(IExtendedDomainClass.class);
+		if (edc.isTransientOnly()) {
+			createdTransient((IPojo)domainObject.getPojo());
+		} else {
+			createdPersistent((IPojo)domainObject.getPojo());
+		}
+		return domainObject;
+	}
+	
+	/**
+	 * Does nothing, but exists as a hook for aspects.
+	 * 
+	 * @param pojo
+	 */
+	private void createdTransient(final IPojo pojo) {
+	}
+
+	/**
+	 * Does nothing, but exists as a hook for aspects.
+	 * 
+	 * <p>
+	 * The TransactionalInstantiationChangeAspect picks up on this.
+	 * 
+	 * @param pojo
+	 */
+	private <T> void createdPersistent(final IPojo pojo) {
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.ISession#recreate(de.berlios.rcpviewer.domain.IRuntimeDomainClass)
+	 */
+	public <T> IDomainObject<T> recreate(IRuntimeDomainClass<T> domainClass) {
+		IDomainObject<T> domainObject = domainClass.recreatePersistent(this);
 		attach(domainObject);
 		return domainObject;
 	}
 
 	/*
+	 * Deletes the object.
 	 * 
+	 * <p>
+	 * There isn't really anything for the session to do other than to ensure
+	 * that the domain object is attached, and thus to detach.
+	 * 
+	 * @see de.berlios.rcpviewer.session.ISession#delete(de.berlios.rcpviewer.session.IDomainObject)
+	 */
+	public <T> void delete(IDomainObject<T> domainObject) {
+		if(domainObject.getSession() != this) {
+			throw new IllegalStateException("Domain object is not attached to this session.");
+		}
+		
+		detach(domainObject);
+	}
+
+
+	/*
+	 * Deletes the object.
+	 * 
+	 * <p>
+	 * There isn't really anything for the session to do other than to ensure
+	 * that the domain object is attached, and thus to detach.
+	 * 
+	 * @see de.berlios.rcpviewer.session.ISession#delete(java.lang.Object)
+	 */
+	public void delete(Object pojo) {
+		delete(getDomainObjectFor(pojo, pojo.getClass()));
+	}
+
+	// ATTACH/DETACH //
+
+	/*
 	 * @see de.berlios.rcpviewer.session.ISession#attach(de.berlios.rcpviewer.session.IDomainObject)
 	 */
 	public <T> void attach(IDomainObject<T> iDomainObject) {
@@ -204,8 +276,9 @@ public class Session implements ISession, IObjectStoreAware {
 		return _domainObjectByPojo.get(pojo) != null;
 	}
 
+	// DOMAIN OBJECT HASHES //
+
 	/*
-	 * 
 	 * @see de.berlios.rcpviewer.session.ISession#footprintFor(de.berlios.rcpviewer.domain.IDomainClass)
 	 */
 	public <T> List<IDomainObject<T>> footprintFor(IDomainClass<T> domainClass) {
@@ -213,74 +286,12 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	/*
-	 * 
-	 * @see de.berlios.rcpviewer.session.ISession#persist(de.berlios.rcpviewer.session.IDomainObject)
-	 */
-	public <T> void persist(IDomainObject<T> domainObject) {
-		if (!isAttached(domainObject)) {
-			throw new IllegalArgumentException("pojo not attached to session");
-		}
-		getObjectStore().persist(domainObject);
-	}
-
-	/*
-	 * 
-	 * @see de.berlios.rcpviewer.session.ISession#persist(java.lang.Object)
-	 */
-	public void persist(Object pojo) {
-		IDomainObject<?> domainObject = getDomainObjectFor(pojo, pojo.getClass());
-		persist(domainObject);
-	}
-	
-	/*
-	 * 
-	 * @see de.berlios.rcpviewer.session.ISession#save(de.berlios.rcpviewer.session.IDomainObject)
-	 */
-	public <T> void save(IDomainObject<T> domainObject) {
-		if (!isAttached(domainObject)) {
-			throw new IllegalArgumentException("pojo not attached to session");
-		}
-		getObjectStore().save(domainObject);
-	}
-	/*
-	 * 
-	 * @see de.berlios.rcpviewer.session.ISession#save(java.lang.Object)
-	 */
-	public void save(Object pojo) {
-		IDomainObject<?> domainObject = getDomainObjectFor(pojo, pojo.getClass());
-		save(domainObject);
-	}
-
-	/*
-	 * 
 	 * @see de.berlios.rcpviewer.session.ISession#reset()
 	 */
 	public void reset() {
 		domainObjectsByDomainClass.clear();
 	}
 
-
-	/*
-	 * 
-	 * @see de.berlios.rcpviewer.session.ISession#addSessionListener(null)
-	 */
-	public <T extends ISessionListener> T addSessionListener(T listener) {
-		synchronized(_listeners) {
-			if (!_listeners.contains(listener)) {
-				_listeners.add(listener);
-			}
-		}
-		return listener;
-	}
-	/*
-	 * 
-	 * @see de.berlios.rcpviewer.session.ISession#removeSessionListener(de.berlios.rcpviewer.session.ISessionListener)
-	 */
-	public void removeSessionListener(ISessionListener listener) {
-		synchronized(_listeners) {
-			_listeners.remove(listener);
-		}
-	}
 
 	/*
 	 * 
@@ -291,7 +302,6 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	/*
-	 * 
 	 * @see de.berlios.rcpviewer.session.ISession#getDomainObjectFor(java.lang.Object, java.lang.Class)
 	 */
 	public <T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass) {
@@ -302,6 +312,22 @@ public class Session implements ISession, IObjectStoreAware {
 		return domainObject;
 	}
 
+
+	private synchronized List<IDomainObject<?>> getDomainObjectsFor(IDomainClass<?> domainClass) {
+		List<IDomainObject<?>> domainObjects = 
+			domainObjectsByDomainClass.get(domainClass);
+		if (domainObjects == null) {
+			domainObjects = new ArrayList<IDomainObject<?>>();
+			domainObjectsByDomainClass.put(domainClass, domainObjects);
+		}
+		return domainObjects;
+	}
+	private List<IDomainObject<?>> getDomainObjectsFor(IDomainObject<?> domainObject) {
+		return getDomainObjectsFor(domainObject.getDomainClass());
+	}
+
+	
+	// OBSERVED FEATURES //
 
 	/*
 	 * @see de.berlios.rcpviewer.session.ISession#getObservedFeatures()
@@ -319,18 +345,28 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 
-	private synchronized List<IDomainObject<?>> getDomainObjectsFor(IDomainClass<?> domainClass) {
-		List<IDomainObject<?>> domainObjects = 
-			domainObjectsByDomainClass.get(domainClass);
-		if (domainObjects == null) {
-			domainObjects = new ArrayList<IDomainObject<?>>();
-			domainObjectsByDomainClass.put(domainClass, domainObjects);
+	// SESSION LISTENERS //
+
+	/*
+	 * @see de.berlios.rcpviewer.session.ISession#addSessionListener(null)
+	 */
+	public <T extends ISessionListener> T addSessionListener(T listener) {
+		synchronized(_listeners) {
+			if (!_listeners.contains(listener)) {
+				_listeners.add(listener);
+			}
 		}
-		return domainObjects;
+		return listener;
 	}
-	private List<IDomainObject<?>> getDomainObjectsFor(IDomainObject<?> domainObject) {
-		return getDomainObjectsFor(domainObject.getDomainClass());
+	/*
+	 * @see de.berlios.rcpviewer.session.ISession#removeSessionListener(de.berlios.rcpviewer.session.ISessionListener)
+	 */
+	public void removeSessionListener(ISessionListener listener) {
+		synchronized(_listeners) {
+			_listeners.remove(listener);
+		}
 	}
+
 
 	// DEPENDENCY INJECTION START //
 

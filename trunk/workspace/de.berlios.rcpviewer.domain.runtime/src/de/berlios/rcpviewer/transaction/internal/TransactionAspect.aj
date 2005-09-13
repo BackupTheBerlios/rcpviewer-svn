@@ -9,7 +9,7 @@ public abstract aspect TransactionAspect extends PojoAspect {
 	/**
 	 * (Will be) Injected.
 	 */
-	private ITransactionManager _transactionManager = TransactionManager.INSTANCE;
+	private ITransactionManager _transactionManager = TransactionManager.instance();
 
 	
 	/**
@@ -18,7 +18,7 @@ public abstract aspect TransactionAspect extends PojoAspect {
 	 * 
 	 * <p>
 	 * TODO: until we are using dependency injection, falls back and uses
-	 * the (temporary) {@link de.berlios.rcpviewer.transaction.internal.TransactionManager#INSTANCE}
+	 * the (temporary) {@link de.berlios.rcpviewer.transaction.internal.TransactionManager#__instance}
 	 * 
 	 */
 	public ITransactionManager getTransactionManager() {

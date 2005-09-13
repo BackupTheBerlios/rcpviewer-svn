@@ -17,15 +17,18 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 		super.tearDown();
 	}
 
+	public void testDummy() {
+	}
 
 	
-	public void testCanPersistThroughDomainObject() {
+	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
+	public void incompletetestCanPersistThroughDomainObject() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		domainObject.persist();
+			(IDomainObject<Department>)session.create(domainClass);
+		// domainObject.persist();
 		assertTrue(domainObject.isPersistent());
 	}
 
@@ -47,22 +50,25 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		session.persist(domainObject.getPojo());
+			(IDomainObject<Department>)session.create(domainClass);
+		// this test is marked incomplete and needs reworking anyway: persistence is now via xactn mgr.
+		// session.persist(domainObject.getPojo());
 		assertTrue(domainObject.isPersistent());
 	}
 
 	/**
 	 * Create directly from DomainClass rather than from Session. 
 	 */
-	public void testCannotPersistIfNotAttachedToSession() {
+	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
+	public void incompletetestCannotPersistIfNotAttachedToSession() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = domainClass.createTransient();
+		IDomainObject<Department> domainObject = domainClass.create(session);
+		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
 		try {
-			domainObject.persist();
+			// domainObject.persist();
 			fail("IllegalStateException should have been thrown.");
 		} catch(IllegalStateException ex) {
 			// expected
@@ -73,16 +79,17 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	/**
 	 * 
 	 * TODO: is incomplete because Ted needs to distinguish persisted (created) vs saved (updated) -- dan
+	 * ALSO marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	 */
 	public void incompletetestCannotPersistMoreThanOnce() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		domainObject.persist();
+			(IDomainObject<Department>)session.create(domainClass);
+		// domainObject.persist();
 		try {
-			domainObject.persist();
+			// domainObject.persist();
 			fail("IllegalStateException should have been thrown.");
 		} catch(IllegalStateException ex) {
 			// expected

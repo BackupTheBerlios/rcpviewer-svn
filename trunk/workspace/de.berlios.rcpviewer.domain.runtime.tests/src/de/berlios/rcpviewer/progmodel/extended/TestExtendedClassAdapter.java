@@ -51,7 +51,7 @@ public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);
 
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		
 		IExtendedDomainObject<Department> objectAdapter = 
 			domainObject.getAdapter(IExtendedDomainObject.class);

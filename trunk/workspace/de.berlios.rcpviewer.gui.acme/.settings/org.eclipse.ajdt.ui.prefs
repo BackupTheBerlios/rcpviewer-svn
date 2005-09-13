@@ -1,8 +1,5 @@
-#Sat Aug 27 13:13:11 BST 2005
+#Tue Sep 13 23:04:03 BST 2005
 eclipse.preferences.version=1
 org.eclipse.ajdt.ui.aspectPath.contentKind1=BINARY
-org.eclipse.ajdt.ui.aspectPath.contentKind2=BINARY
 org.eclipse.ajdt.ui.aspectPath.entryKind1=LIBRARY
-org.eclipse.ajdt.ui.aspectPath.entryKind2=LIBRARY
 org.eclipse.ajdt.ui.aspectPath1=/de.berlios.rcpviewer.domain.runtime/bin
-org.eclipse.ajdt.ui.aspectPath2=/de.berlios.rcpviewer.transaction/bin

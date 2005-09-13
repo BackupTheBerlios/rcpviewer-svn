@@ -8,10 +8,13 @@ public aspect TraceTransactionsAspect extends TracingAspect {
 	private final static Logger LOG = Logger.getLogger(TraceTransactionsAspect.class);
 
 	protected Logger getLogger() { return LOG; }
-	
-	protected pointcut traceMethods() : 
-		execution(* de.berlios.rcpviewer.transaction..*.*(..)) &&
-		!execution(* Object.*(..))
-		;
+
+	// disable while unit testing... messes up variables view :-(
+	protected pointcut traceMethods(); 
+
+//	protected pointcut traceMethods() : 
+//		execution(* de.berlios.rcpviewer.transaction..*.*(..)) &&
+//		!execution(* Object.*(..))
+//		;
 
 }

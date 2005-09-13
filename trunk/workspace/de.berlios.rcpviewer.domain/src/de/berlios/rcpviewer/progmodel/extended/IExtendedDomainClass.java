@@ -10,6 +10,14 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 
 public interface IExtendedDomainClass<T> {
 
+	
+	/**
+	 * Whether this domain class cannot be persisted.
+	 * 
+	 * @return
+	 */
+	public boolean isTransientOnly();
+
 	/**
 	 * Returns the attributes of the extended domain class 
 	 * {@link IDomainClass#attributes()} in the order defined by the

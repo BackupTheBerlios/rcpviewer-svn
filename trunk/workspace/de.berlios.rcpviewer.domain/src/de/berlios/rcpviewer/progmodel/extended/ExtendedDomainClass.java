@@ -45,6 +45,16 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 
 
 	/*
+	 * TODO: to implement, picking up @TransientOnly or equiv.
+	 * 
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isTransientOnly()
+	 */
+	public boolean isTransientOnly() {
+		return false;
+	}
+
+	
+	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#orderedAttributes()
 	 */
 	public List<EAttribute> orderedAttributes() {

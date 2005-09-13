@@ -27,15 +27,15 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 		IRuntimeDomainClass<Department> deptDomainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
 		
 		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		itDeptDomainObject.getPojo().setName("IT");
 	
 		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 	
 		List<IDomainObject<Department>> departmentDomainObjects = 
@@ -56,15 +56,15 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 		IRuntimeDomainClass<Department> deptDomainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
 		
 		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		itDeptDomainObject.getPojo().setName("IT");
 	
 		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 	
 		session.detach(itDeptDomainObject);
@@ -87,28 +87,28 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
 		
 		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		itDeptDomainObject.getPojo().setName("IT");
 	
 		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.createTransient(deptDomainClass);
+			(IDomainObject<Department>)session.create(deptDomainClass);
 		cateringDeptDomainObject.getPojo().setName("Catering");
 	
 	
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
-			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
+			(IDomainObject<Employee>)session.create(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
 		clarkKent.setFirstName("Clark");
 		clarkKent.setSurname("Kent");
 		
 		IDomainObject<Employee> loisLaneEmployeeDomainObject = 
-			(IDomainObject<Employee>)session.createTransient(employeeDomainClass);
+			(IDomainObject<Employee>)session.create(employeeDomainClass);
 		Employee loisLane = loisLaneEmployeeDomainObject.getPojo();
 		loisLane.setFirstName("Lois");
 		loisLane.setSurname("Lane");

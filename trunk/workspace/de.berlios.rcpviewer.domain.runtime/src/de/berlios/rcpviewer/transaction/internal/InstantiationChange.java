@@ -2,35 +2,58 @@ package de.berlios.rcpviewer.transaction.internal;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Collections;
 
+import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.transaction.ITransactable;
+import de.berlios.rcpviewer.transaction.ITransaction;
+import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
+
 import java.util.Set;
 
 /**
  * Represents the instantiation of a {@link IDomainObject}.
+ * 
+ * <p>
+ * The change doesn't in fact <i>do</i> anything, however its existence in the
+ * change set of a transaction is important because of how it is interpreted
+ * by the persistent object store.
  */
 public final class InstantiationChange extends AbstractChange {
 
 	private static String description(final ITransactable transactable) {
-		throw new RuntimeException("Operation not yet implemented.");
+		return transactable.toString();
 	}
 	
 	private static Object[] extendedInfo(final ITransactable transactable) {
-		throw new RuntimeException("Operation not yet implemented.");
+		return new Object[]{};
 	}
 
-	private final ITransactable _transactable;
-	public InstantiationChange(final ITransactable transactable) {
-		super(description(transactable), extendedInfo(transactable), false);
-		_transactable = transactable;
+	public InstantiationChange(final ITransaction transaction, final ITransactable transactable) {
+		super(transaction ,transactable, description(transactable), extendedInfo(transactable), false);
 	}
 	
 	/*
-	 * 
-	 * @see de.berlios.rcpviewer.transaction.IChange#execute()
+	 * Instructs the pojo's wrapping {@link IDomainObject} that it is now
+	 * persisted.
+	 *  
+	 * @see de.berlios.rcpviewer.transaction.IChange#doExecute()
 	 */
-	public void execute() {
-		throw new RuntimeException("Operation not yet implemented.");
+	@Override
+	public final Object doExecute() {
+		IPojo pojo = (IPojo)_transactable;
+		// unlike the DeletionChange, the following isn't necessary since the
+		// DomainObject is created initially with a state of PERSISTED, and moreover
+		// there will be no DomainObject when this is called since not yet
+		// attached to any session.
+//		IDomainObject<?> domainObject = pojo.getDomainObject();
+//		if (domainObject != null) {
+//			domainObject.nowPersisted();
+//		}
+		return pojo;
 	}
 
 	/*
@@ -38,7 +61,11 @@ public final class InstantiationChange extends AbstractChange {
 	 * @see de.berlios.rcpviewer.transaction.IChange#undo()
 	 */
 	public void undo() {
-		throw new RuntimeException("Operation not yet implemented.");
+		IPojo pojo = (IPojo)_transactable;
+		IDomainObject<?> domainObject = pojo.getDomainObject();
+		if (domainObject != null) {
+			domainObject.nowTransient();
+		}
 	}
 
 	/*
@@ -50,13 +77,6 @@ public final class InstantiationChange extends AbstractChange {
 		return false;
 	}
 
-
-	/*
-	 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
-	 */
-	public Set<ITransactable> getModifiedPojos() {
-		throw new RuntimeException("Operation not yet implemented.");	
-	}
 
 	/*
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -78,12 +98,27 @@ public final class InstantiationChange extends AbstractChange {
 	}
 
 	/*
-	 * TODO: should hash on more than this...
+	 * Since we want value semantics we must provide a hashCode(), however 
+	 * as there is nothing we can use to construct a meaningful hashCode()
+	 * we simply return 1.
+	 * 
+	 * <p>
+	 * This will have some performance implications, but in general the 
+	 * number of changes in a set is very small.
 	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
-		return _transactable.hashCode();
+		return 1;
 	}
 
+	/*
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "instantiated " + getDescription();
+	}
+	
 }

@@ -40,6 +40,9 @@ import de.berlios.rcpviewer.gui.views.ops.IOpsViewPage;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
+import de.berlios.rcpviewer.transaction.ITransactable;
+import de.berlios.rcpviewer.transaction.ITransaction;
+import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 
 /**
  * Core editor for GUI layer.
@@ -260,7 +263,16 @@ public final class DefaultEditor extends EditorPart {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		_form.commit(true);
-		getDomainObject().persist();
+		
+		// this is the old way...
+		// getDomainObject().persist();
+		
+		// ... and this is the new.
+		ITransactable transactable = (ITransactable)getDomainObject().getPojo();
+		ITransaction transaction = TransactionManager.instance().getCurrentTransactionFor(transactable);
+		if (transaction != null) {
+			transaction.commit();
+		}
 		ReportJob report = new ReportJob(
 				GuiPlugin.getResourceString( "DefaultEditor.Save"), //$NON-NLS-1$
 				ReportJob.INFO,

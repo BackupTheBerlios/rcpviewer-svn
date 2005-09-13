@@ -24,11 +24,14 @@ import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 import de.berlios.rcpviewer.session.IDomainObjectListener;
 import de.berlios.rcpviewer.session.IDomainObjectOperationListener;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
+import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.session.ISession;
+import de.berlios.rcpviewer.session.IPersistable;
+import de.berlios.rcpviewer.session.IPersistable.PersistState;
+import de.berlios.rcpviewer.session.IResolvable;
 import de.berlios.rcpviewer.session.IResolvable.ResolveState;
 import de.berlios.rcpviewer.session.IDomainObject.IAttribute;
 import de.berlios.rcpviewer.session.IDomainObject.IOperation;
-import de.berlios.rcpviewer.session.IResolvable;
 
 /**
  * Wrapper for a POJO that also knows its {@link IDomainClass} and the
@@ -45,44 +48,104 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private IRuntimeDomainClass<T> _domainClass;
 	private final T _pojo;
 	private Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
-	private boolean _persistent;
 	private List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
 	private ISession _session;
 	private WeakHashMap<EAttribute, IAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IAttribute>();
 	private WeakHashMap<EReference, IReference> _referencesByEReference = new WeakHashMap<EReference, IReference>();
 	private WeakHashMap<EOperation, IOperation> _operationsByEOperation = new WeakHashMap<EOperation, IOperation>();
-	private ResolveState _resolveState;
+	
+	private PersistState _persistState = PersistState.UNKNOWN;
+	private ResolveState _resolveState = ResolveState.UNKNOWN;
 	
 	/**
-	 * Creates a domain object unattached to any _session.
+	 * Creates a domain object to represent a pojo that cannot be persisted, and 
+	 * attaches to the specified session.
 	 * 
-	 * @param _domainClass
-	 * @param _pojo
+	 * @param domainClass
+	 * @param pojo    - the pojo that this domain object wraps and represents the state of
+	 * @param session - to attach to
 	 */
-	public DomainObject(final IRuntimeDomainClass<T> domainClass, final T pojo) {
-		this(domainClass, pojo, null);
-		_resolveState = ResolveState.NEW;
+	public static <V> DomainObject createTransient(final IRuntimeDomainClass<V> domainClass, final V pojo, final ISession session) {
+		//DomainObject domainObject = new DomainObject(pojo);
+		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
+		domainObject.init(domainClass, session, PersistState.TRANSIENT, ResolveState.RESOLVED);
+		return domainObject;
 	}
 	
 	/**
-	 * Creates a domain object attached to the _session.
+	 * Creates a domain object to represent a pojo that will be persisted when
+	 * the transaction commits, and attaches to the specified session.
 	 * 
-	 * @param _domainClass
-	 * @param _pojo
+	 * @param domainClass
+	 * @param pojo    - the pojo that this domain object wraps and represents the state of
+	 * @param session - to attach to
 	 */
-	public DomainObject(final IRuntimeDomainClass<T> domainClass, final T pojo, final ISession session) {
-		this._domainClass = domainClass;
+	public static <V> DomainObject createPersistent(final IRuntimeDomainClass<V> domainClass, final V pojo, final ISession session) {
+		//DomainObject domainObject = new DomainObject(pojo);
+		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
+		domainObject.init(domainClass, session, PersistState.PERSISTED, ResolveState.RESOLVED);
+		return domainObject;
+	}
+	
+	/**
+	 * Creates a domain object to represent a pojo that has been persisted, 
+	 * but not yet resolved, and attaches to the specified session.
+	 * 
+	 * @param domainClass
+	 * @param pojo    - the pojo that this domain object wraps and represents the state of
+	 * @param session - to attach to
+	 */
+	public static <V> DomainObject recreatePersistent(final IRuntimeDomainClass<V> domainClass, final V pojo, final ISession session) {
+		//DomainObject domainObject = new DomainObject(pojo);
+		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
+		domainObject.init(domainClass, session, PersistState.PERSISTED, ResolveState.UNRESOLVED);
+		return domainObject;
+	}
+	
+	/**
+	 * Creates a domain object attached to the session.
+	 * 
+	 * <p>
+	 * The domain object will not be attached to any session.
+	 * 
+	 * <p>
+	 * TODO: public only so that PojoAspect can instantiate; need to address.
+	 */
+	public DomainObject(final T pojo) {
 		this._pojo = pojo;
-		this._session = session;
 	}
+
 	
+	/**
+	 * Initializes the domain object.
+	 * 
+	 * @param _domainClass
+	 * @param _pojo
+	 */
+	private void init(final IRuntimeDomainClass<T> domainClass, final ISession session, PersistState persistState, ResolveState resolveState) {
+		this._domainClass = domainClass;
+		this._session = session;
+		this._persistState = persistState;
+		this._resolveState = resolveState;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getDomainClass()
+	 */
 	public IRuntimeDomainClass<T> getDomainClass() {
 		return _domainClass;
 	}
-	public RuntimeDomainClass<T> getDomainClassImpl() {
+	/**
+	 * Returns the concrete implementation of {@link #getDomainClass()}.
+	 * @return
+	 */
+	RuntimeDomainClass<T> getDomainClassImpl() {
 		return (RuntimeDomainClass<T>)_domainClass;
 	}
 	
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getPojo()
+	 */
 	public T getPojo() {
 		return _pojo;
 	}
@@ -100,73 +163,74 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return (V)adapter;
 	}
 
-	
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#isPersistent()
+	 */
 	public boolean isPersistent() {
-		return _persistent;
+		return _persistState.isPersistent();
 	}
 
+
+	// in process of removing; performed instead through transactions.
+//	public void persist() {
+//		if (isPersistent()) {
+//			throw new IllegalStateException("Already persisted.");
+//		}
+//		if (getSession() == null) {
+//			throw new IllegalStateException("Not attached to a _session");
+//		}
+//		getSession().persist(this);
+//		_persistent = true;
+//	}
 	
-	public void persist() {
-		if (isPersistent()) {
-			throw new IllegalStateException("Already persisted.");
-		}
-		if (getSession() == null) {
-			throw new IllegalStateException("Not attached to a _session");
-		}
-		getSession().persist(this);
-		_persistent = true;
-	}
-	
 
-	public void save() {
-		if (!isPersistent()) {
-			throw new IllegalStateException("Not yet persisted.");
-		}
-		if (getSession() == null) {
-			throw new IllegalStateException("Not attached to a session");
-		}
-		getSession().save(this);
-	}
+	// in process of removing; performed instead through transactions.
+//	public void save() {
+//		if (!isPersistent()) {
+//			throw new IllegalStateException("Not yet persisted.");
+//		}
+//		if (getSession() == null) {
+//			throw new IllegalStateException("Not attached to a session");
+//		}
+//		getSession().save(this);
+//	}
 
-	/**
+	/*
 	 * For the title we just return the POJO's <code>toString()</code>.
+	 * 
+	 * @see de.berlios.rcpviewer.session.IDomainObject#title()
 	 */
 	public String title() {
 		return _pojo.toString();
 	}
 
-	
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getEAttributeNamed(java.lang.String)
+	 */
 	public EAttribute getEAttributeNamed(String attributeName) {
 		return getDomainClass().getEAttributeNamed(attributeName);
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getEReferenceNamed(java.lang.String)
+	 */
 	public EReference getEReferenceNamed(final String referenceName) {
 		return getDomainClass().getEReferenceNamed(referenceName);
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getEOperationNamed(java.lang.String)
+	 */
 	public EOperation getEOperationNamed(final String operationName) {
 		return getDomainClass().getEOperationNamed(operationName);
 	}
-	
-	/**
-	 * Returns listener only because it simplifies test implementation to do so.
-	 */
-	public <T extends IDomainObjectListener> T addListener(T listener) {
-		synchronized(_domainObjectListeners) {
-			if (!_domainObjectListeners.contains(listener)) {
-				_domainObjectListeners.add(listener);
-			}
-		}
-		return listener;
-	}
-	public void removeListener(IDomainObjectListener listener) {
-		synchronized(_domainObjectListeners) {
-			_domainObjectListeners.remove(listener);
-		}
-	}
-	
 
 	
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getSession()
+	 */
 	public ISession getSession() {
 		return _session;
 	}
@@ -190,6 +254,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 		this._session = session;
 	}
+	
 	public void detached() {
 		this._session = null;
 	}
@@ -207,7 +272,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * domain object.
 	 * 
 	 * <p>
-	 * If set to <code>null</code>, then indicates  
+	 * If set to <code>null</code>, then indicates that the object is not
+	 * currently attached.
 	 */
 	public String getSessionId() {
 		return sessionId;
@@ -465,19 +531,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IResolvable#nowTransient()
-		 */
-		public void nowTransient() {
-			checkInState(ResolveState.NEW);
-			_resolveState = ResolveState.TRANSIENT;
-		}
-		
-		/*
 		 * @see de.berlios.rcpviewer.session.IResolvable#nowResolved()
 		 */
 		public void nowResolved() {
-			checkInState(ResolveState.TRANSIENT, ResolveState.UNRESOLVED);
-			_resolveState = ResolveState.TRANSIENT;
+			checkInState(ResolveState.UNRESOLVED);
+			_resolveState = ResolveState.RESOLVED;
 		}
 
 	}
@@ -707,36 +765,43 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 	}
 
+	/*
+	 * @see de.berlios.rcpviewer.session.IPersistable#getPersistState()
+	 */
+	public PersistState getPersistState() {
+		return _persistState;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IResolvable#nowTransient()
+	 */
+	public void nowTransient() {
+		checkInState(PersistState.PERSISTED);
+		_persistState = PersistState.TRANSIENT;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IPersistable#nowPersisted()
+	 */
+	public void nowPersisted() {
+		checkInState(PersistState.TRANSIENT);
+		_persistState = PersistState.PERSISTED;
+	}
+
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IResolvable#getResolveState()
+	 */
 	public ResolveState getResolveState() {
 		return _resolveState;
 	}
 
-	/**
-	 * In addition to changing the state of this object (as per the 
-	 * {@link IResolvable} interface definition), also marks all 
-	 * {@link IReference}s (which also implement {@link IResolvable}) as 
-	 * transient.
-	 * 
-	 * <p>
-	 * The rationale is that for transient objects we know that the references
-	 * must be fully known precisely because we have just created the object.
-	 * 
-	 * @see de.berlios.rcpviewer.session.IResolvable#nowTransient()
-	 */
-	public void nowTransient() {
-		checkInState(ResolveState.NEW);
-		for(IReference reference: _referencesByEReference.values()) {
-			reference.nowTransient();
-		}
-		_resolveState = ResolveState.TRANSIENT;
-	}
-	
 	/*
 	 * @see de.berlios.rcpviewer.session.IResolvable#nowResolved()
 	 */
 	public void nowResolved() {
-		checkInState(ResolveState.TRANSIENT, ResolveState.UNRESOLVED);
-		_resolveState = ResolveState.TRANSIENT;
+		checkInState(ResolveState.UNRESOLVED);
+		_resolveState = ResolveState.RESOLVED;
 	}
 
 	private void checkInState(ResolveState... resolveStates) {
@@ -746,8 +811,39 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			}
 		}
 		throw new IllegalStateException(
-				"Current state is '" + getResolveState() + "', "
+				"Current resolve state is '" + getResolveState() + "', "
 				+ "should be in state of '" + Arrays.asList(resolveStates) + "'");
 	}
 
+	private void checkInState(PersistState... persistStates) {
+		for(int i=0; i<persistStates.length; i++) {
+			if (getPersistState() == persistStates[i]) {
+				return;
+			}
+		}
+		throw new IllegalStateException(
+				"Current persist state is '" + getPersistState() + "', "
+				+ "should be in state of '" + Arrays.asList(persistStates) + "'");
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#addListener(null)
+	 */
+	public <T extends IDomainObjectListener> T addListener(T listener) {
+		synchronized(_domainObjectListeners) {
+			if (!_domainObjectListeners.contains(listener)) {
+				_domainObjectListeners.add(listener);
+			}
+		}
+		return listener;
+	}
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#removeListener(de.berlios.rcpviewer.session.IDomainObjectListener)
+	 */
+	public void removeListener(IDomainObjectListener listener) {
+		synchronized(_domainObjectListeners) {
+			_domainObjectListeners.remove(listener);
+		}
+	}
+	
 }

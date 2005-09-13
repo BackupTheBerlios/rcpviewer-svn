@@ -31,10 +31,11 @@ public final class AttributeChange extends AbstractFieldChange {
 	 * @param postValue
 	 */
 	public AttributeChange(
+			final ITransaction transaction,
 			final ITransactable transactable,
 			final Field field,
 			final Object postValue) {
-		super(transactable, field, postValue);
+		super(transaction, transactable, field, postValue);
 	}
 
 	/*
@@ -56,12 +57,15 @@ public final class AttributeChange extends AbstractFieldChange {
 			getPostValue().equals(other.getPostValue());
 	}
 
-	/**
-	 * TODO: should hash on all values.
+	/*
+	 * Since we want value semantics we must provide a hashCode(); the best 
+	 * we can do is use a hash code based on the field.
+	 * 
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		return _transactable.hashCode();
+		return getField().hashCode();
 	}
 
 }

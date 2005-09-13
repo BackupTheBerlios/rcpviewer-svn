@@ -9,6 +9,10 @@ import de.berlios.rcpviewer.progmodel.standard.TypeOf;
 @InDomain
 class Customer {
 
+	public Customer() {
+	}
+	
+	
 	private String firstName;
 	public String getFirstName() {
 		return firstName;
@@ -40,7 +44,7 @@ class Customer {
 		this.emailAddresses = emailAddresses;
 	}
 	public void addToEmailAddresses(EmailAddress emailAddress) {
-		getEmailAddresses().add(emailAddress);
+		emailAddresses.add(emailAddress);
 	}
 	public void removeFromEmailAddresses(EmailAddress emailAddress) {
 		getEmailAddresses().remove(emailAddress);

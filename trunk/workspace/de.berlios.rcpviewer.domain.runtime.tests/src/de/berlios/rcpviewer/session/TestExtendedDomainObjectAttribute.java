@@ -26,7 +26,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 
 		IExtendedDomainObject<OrderConstrained> edo = 
@@ -44,7 +44,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 		
 		domainObject.getPojo().ship();
@@ -66,7 +66,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 		
 		domainObject.getPojo().shipAndRestrict();
@@ -91,7 +91,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.createTransient(domainClass);
+			(IDomainObject<OrderConstrained>)session.create(domainClass);
 		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 		
 		IExtendedDomainObject<OrderConstrained> edo = 
@@ -117,9 +117,9 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().done();
 		
 		IDomainObject<Ping> pingDomainObject = 
-			(IDomainObject<Ping>)session.createTransient(pingDomainClass);
+			(IDomainObject<Ping>)session.recreate(pingDomainClass);
 		IDomainObject<Pong> pongDomainObject = 
-			(IDomainObject<Pong>)session.createTransient(pongDomainClass);
+			(IDomainObject<Pong>)session.recreate(pongDomainClass);
 
 		Ping ping = pingDomainObject.getPojo();
 		Pong pong = pongDomainObject.getPojo();

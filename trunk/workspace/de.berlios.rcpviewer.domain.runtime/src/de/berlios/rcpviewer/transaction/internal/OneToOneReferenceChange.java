@@ -1,14 +1,9 @@
 package de.berlios.rcpviewer.transaction.internal;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.Set;
-import java.util.List;
 
 import de.berlios.rcpviewer.transaction.ITransactable;
-import de.berlios.rcpviewer.transaction.IChange;
-import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
 import de.berlios.rcpviewer.transaction.ITransaction;
 
 
@@ -23,11 +18,14 @@ import de.berlios.rcpviewer.transaction.ITransaction;
  */
 public final class OneToOneReferenceChange extends AbstractFieldChange {
 
+	private ITransactable _referencedObjOrNull;
+	
 	public OneToOneReferenceChange(
+			final ITransaction transaction,
 			final ITransactable transactable,
 			final Field field,
 			final Object referencedObjOrNull) {
-		super(transactable, field, referencedObjOrNull);
+		super(transaction, transactable, field, referencedObjOrNull);
 	}
 
 	/*
@@ -49,12 +47,13 @@ public final class OneToOneReferenceChange extends AbstractFieldChange {
 			getPostValue().equals(other.getPostValue());
 	}
 
-	/**
-	 * TODO: should hash on all values.
+	/*
+	 * Since we want value semantics we must provide a hashCode(); the best 
+	 * we can do is use a hash code based on the field.
 	 */
 	@Override
 	public int hashCode() {
-		return _transactable.hashCode();
+		return getField().hashCode();
 	}
 
 }

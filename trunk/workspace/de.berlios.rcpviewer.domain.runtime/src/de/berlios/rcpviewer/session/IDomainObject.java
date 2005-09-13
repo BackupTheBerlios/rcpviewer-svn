@@ -35,7 +35,7 @@ import de.berlios.rcpviewer.domain.RuntimeDomain;
  * 
  * @author Dan Haywood
  */
-public interface IDomainObject<T> extends IResolvable {
+public interface IDomainObject<T> extends IResolvable, IPersistable {
 
 	/**
 	 * Provides access or other interactions with the current value and other
@@ -322,24 +322,25 @@ public interface IDomainObject<T> extends IResolvable {
 	 * @return
 	 */
 	public boolean isPersistent();
-	
-	/**
-	 * Persist this object (for the first time).
-	 * 
-	 * <p>
-	 * Any {@link ITransactionListener}s of the object will be notified.
-	 *  
-	 * @throws IllegalStateException if already persisted.
-	 */
-	public void persist();
-	
-	/**
-	 * Save this already persisted object.
-	 * 
-	 * @throws IllegalStateException if not yet persisted.
-	 */
-	public void save();
-	
+
+	// commented out cos now done through transactions...
+//	/**
+//	 * Persist this object (for the first time).
+//	 * 
+//	 * <p>
+//	 * Any {@link ITransactionListener}s of the object will be notified.
+//	 *  
+//	 * @throws IllegalStateException if already persisted.
+//	 */
+//	public void persist();
+//	
+//	/**
+//	 * Save this already persisted object.
+//	 * 
+//	 * @throws IllegalStateException if not yet persisted.
+//	 */
+//	public void save();
+//	
 	/**
 	 * Distinguishable representation of the domain object in the UI.
 	 * 

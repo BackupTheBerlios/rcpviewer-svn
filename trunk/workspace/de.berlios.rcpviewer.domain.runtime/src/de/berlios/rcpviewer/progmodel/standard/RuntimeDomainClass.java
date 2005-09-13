@@ -32,9 +32,11 @@ import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.session.IDomainObject;
+import de.berlios.rcpviewer.session.ISession;
 
 
 /**
@@ -432,6 +434,10 @@ public class RuntimeDomainClass<T>
 	public Method getAccessorFor(EAttribute eAttribute) {
 		String accessorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
+		// could be null if this is a write-only attribute
+		if (accessorMethodName == null) {
+			return null;
+		}
 		try {
 			Method accessorMethod = 
 				getJavaClass().getMethod(
@@ -452,6 +458,7 @@ public class RuntimeDomainClass<T>
 	public Method getMutatorFor(EAttribute eAttribute) {
 		String mutatorMethodName = 
 			emfFacade.getAnnotationDetail(emfFacade.methodNamesAnnotationFor(eAttribute), StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+		// could be null if this is a read-only attribute
 		if (mutatorMethodName == null) {
 			return null;
 		}
@@ -947,13 +954,25 @@ public class RuntimeDomainClass<T>
 	}
 
 	/*
-	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#createTransient()
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#create()
 	 */
-	public <T> IDomainObject<T> createTransient() {
+	public IDomainObject<T> create(final ISession session) {
+		IExtendedDomainClass edc = this.getAdapter(IExtendedDomainClass.class);
+		if (edc.isTransientOnly()) {
+			return createTransient(session);
+		} else {
+			return createPersistent(session);
+		}
+	}
+
+	/**
+	 * @param session
+	 * @return
+	 */
+	private IDomainObject<T> createTransient(final ISession session) {
 		try {
-			Object pojo = getJavaClass().newInstance();
-			IDomainObject<T> domainObject = new DomainObject(this, pojo);
-			domainObject.nowTransient();
+			T pojo = getJavaClass().newInstance();
+			IDomainObject<T> domainObject = DomainObject.createTransient(this, pojo, session);
 			return domainObject;
 		} catch(IllegalAccessException ex) {
 			throw new ProgrammingModelException("Cannot instantiate", ex);
@@ -961,10 +980,43 @@ public class RuntimeDomainClass<T>
 			throw new ProgrammingModelException("Cannot instantiate", ex);
 		}
 	}
+
+	/**
+	 * @param session
+	 * @return
+	 */
+	private IDomainObject<T> createPersistent(final ISession session) {
+		try {
+			T pojo = getJavaClass().newInstance();
+			IDomainObject<T> domainObject = DomainObject.createPersistent(this, pojo, session);
+			return domainObject;
+		} catch(IllegalAccessException ex) {
+			throw new ProgrammingModelException("Cannot instantiate", ex);
+		} catch(InstantiationException ex) {
+			throw new ProgrammingModelException("Cannot instantiate", ex);
+		}
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.domain.IRuntimeDomainClass#recreatePersistent(de.berlios.rcpviewer.session.ISession)
+	 */
+	public IDomainObject<T> recreatePersistent(ISession session) {
+		try {
+			T pojo = getJavaClass().newInstance();
+			IDomainObject<T> domainObject = DomainObject.recreatePersistent(this, pojo, session);
+			return domainObject;
+		} catch(IllegalAccessException ex) {
+			throw new ProgrammingModelException("Cannot instantiate", ex);
+		} catch(InstantiationException ex) {
+			throw new ProgrammingModelException("Cannot instantiate", ex);
+		}
+	}
+
 	private <T> Class<T> pojoClass(Class<?> pojoClass) {
 		return (Class<T>)pojoClass;
 	}
 
+	
 	// DOMAIN OBJECT SUPPORT: END
 
 	
@@ -1076,6 +1128,7 @@ public class RuntimeDomainClass<T>
 	 */
 	@Override
 	public String toString() { return "DomainClass.javaClass = " + _javaClass ; }
+
 
 
 }

@@ -33,24 +33,13 @@ import de.berlios.rcpviewer.transaction.ITransaction;
  */
 public abstract class AbstractCollectionChange<V> extends AbstractChange {
 
-	protected static String description(final Field field) {
-		return field.getName();
-	}
-	
-	protected static Object[] extendedInfo(final ITransactable transactable, final Field field, final Object referencedObject) {
-		field.setAccessible(true);
-		String referencedObj = "ref: '" + referencedObject; 
+	protected static Object[] extendedInfo(final ITransactable transactable, final Object referencedObject) {
+		String referencedObj = "obj: '" + referencedObject; 
 		return new Object[]{referencedObj};
 	}
-	/**
-	 * The attribute that is being modified, accessed through 
-	 * {@link #getAttribute()}.
-	 */
-	private final Field _field;
 	
 	/**
-	 * This change's reference to the collection object being changed (that is,
-	 * the result of <code>_field.get(_transactable)</code>).
+	 * This change's reference to the collection object being changed.
 	 */
 	private final Collection<V> _collection;
 	
@@ -58,13 +47,8 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 	 * The value of the {@link #getField()} after it was modified, accessed
 	 * through {@link #getReferencedObject()}.
 	 */
-	private final Object _referencedObject;
+	private final V _referencedObject;
 
-	/**
-	 * Protected for implementation of equals etc in subclasses.
-	 */
-	protected final ITransactable _transactable;
-	private final Set<ITransactable> _transactableAsSet;
 	
 	/**
 	 * 
@@ -72,45 +56,20 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 	 * @param referencedObject
 	 */
 	public AbstractCollectionChange(
+			final ITransaction transaction,
 			final ITransactable transactable,
-			final Field field,
+			final Collection<V> collection,
+			final String collectionName,
 			final V referencedObject) {
-		super(description(field), extendedInfo(transactable, field, referencedObject), false);
-		this._field = field;
-		_field.setAccessible(true);
-		_transactable = transactable;
-		try {
-			_collection = (Collection<V>)_field.get(_transactable);
-		} catch (IllegalArgumentException ex) {
-			throw new RuntimeException("Unable to obtain collection object from field", ex);
-		} catch (IllegalAccessException ex) {
-			throw new RuntimeException("Unable to obtain collection object from field", ex);
+		super(transaction, transactable, collectionName, extendedInfo(transactable, referencedObject), false);
+		_collection = collection;
+		if (collection == null) {
+			throw new RuntimeException("No collection!");
 		}
-		if (_collection == null) {
-			throw new RuntimeException("No collection!  field.get(Object) returns null");
+		if (referencedObject instanceof ITransactable) {
+			modifies((ITransactable)referencedObject);
 		}
-		Set<ITransactable> transactableAsSet = new HashSet<ITransactable>();
-		transactableAsSet.add(transactable);
-		_transactableAsSet = Collections.unmodifiableSet(transactableAsSet);
 		_referencedObject = referencedObject;
-	}
-
-	/*
-	 * Consists of just the object whose field is being modified.
-	 *  
-	 * @see de.berlios.rcpviewer.transaction.IChange#getModifiedPojos()
-	 */
-	public Set<ITransactable> getModifiedPojos() {
-		return _transactableAsSet;
-	}
-
-	/**
-	 * The field that is being modified.
-	 * 
-	 * @return
-	 */
-	public Field getField() {
-		return _field;
 	}
 
 	/**
@@ -127,7 +86,7 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 	 * 
 	 * @return
 	 */
-	public Object getReferencedObject() {
+	public V getReferencedObject() {
 		return _referencedObject;
 	}
 

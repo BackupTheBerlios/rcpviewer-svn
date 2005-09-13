@@ -1,12 +1,9 @@
 package de.berlios.rcpviewer.transaction;
 
-import java.util.HashSet;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Set;
+import java.util.HashSet;
 import java.util.List;
-import de.berlios.rcpviewer.transaction.IChange;
-import de.berlios.rcpviewer.transaction.internal.AbstractChange;
+import java.util.Set;
 
 
 /**
@@ -14,14 +11,14 @@ import de.berlios.rcpviewer.transaction.internal.AbstractChange;
  * 
  * <p>
  * Composite pattern, with value type semantics.
- * 
- * <p>
- * TODO: rename to WorkGroup.
  */
-public final class ChangeSet extends AbstractChange {
+public final class ChangeSet implements IChange {
 
 	private final IChange[] _changes;
 	private final String _asString;
+	private final String _description;
+	private final Object[] _extendedInfo;
+	private final boolean _irreversible;
 	
 	/**
 	 * Construct the chain from a list of {@link IChange}s.
@@ -36,7 +33,9 @@ public final class ChangeSet extends AbstractChange {
 		this(list.toArray(new IChange[]{}));
 	}
 	public ChangeSet(final IChange[] changes) {
-		super(changes.length + " changes", null, calculateIfIrreversible(changes));
+		_description = changes.length + " changes";
+		_extendedInfo = new Object[]{};
+		_irreversible = calculateIfIrreversible(changes);
 		
 		// changes
 		_changes = new IChange[changes.length];
@@ -47,7 +46,7 @@ public final class ChangeSet extends AbstractChange {
 	}
 	private static boolean calculateIfIrreversible(final IChange[] changes) {
 		for (int i = 0; i < changes.length; i++) {
-			if (!changes[i].isIrreversible()) {
+			if (changes[i].isIrreversible()) {
 				return true;
 			}
 		}
@@ -63,23 +62,50 @@ public final class ChangeSet extends AbstractChange {
 		}
 		return buf.toString();
 	}
-	
+
+
+	/*
+	 * @see de.berlios.rcpviewer.transaction.IChange#getDescription()
+	 */
+	public final String getDescription() {
+		return _description;
+	}
+	/*
+	 * @see de.berlios.rcpviewer.transaction.IChange#getExtendedInfo()
+	 */
+	public final Object[] getExtendedInfo() {
+		return _extendedInfo;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.transaction.IChange#isIrreversible()
+	 */
+	public final boolean isIrreversible() {
+		return _irreversible;
+	}
+
+
 	/*
 	 * Executes each of the changes in turn.
 	 * 
 	 * @see de.berlios.rcpviewer.transaction.IChange#execute()
 	 */
-	public void execute() {
+	public Object execute() {
 		for (int i = 0; i < _changes.length; i++) {
 			_changes[i].execute();
 		}
+		return null;
 	}
 	
-	/* Undoes each of the changes in turn, in reverse order.
+	/* 
+	 * Undoes each of the changes in turn, in reverse order.
 	 * 
 	 * @see de.berlios.rcpviewer.transaction.IChange#undo()
 	 */
 	public void undo() {
+		if (isIrreversible()) {
+			throw new IrreversibleTransactionException();
+		}
 		for (int i = 0; i < _changes.length; i++) {
 			_changes[_changes.length-i-1].undo();
 		}
@@ -137,6 +163,10 @@ public final class ChangeSet extends AbstractChange {
 		return sameClass(other) && equals((ChangeSet)other);
 	}
 
+	private final boolean sameClass(final Object other) {
+		return getClass().equals(other.getClass());
+	}
+
 	/**
 	 * Equal iff the other object is a {@link ChangeSet} with a collection of
 	 * {@link IChange}s that are respectively equal according to value 
@@ -163,5 +193,5 @@ public final class ChangeSet extends AbstractChange {
 	public int hashCode() {
 		return 0;
 	}
-	
+
 }

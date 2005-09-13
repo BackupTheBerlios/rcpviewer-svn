@@ -9,6 +9,7 @@ import java.util.List;
 
 import de.berlios.rcpviewer.transaction.ITransactable;
 import de.berlios.rcpviewer.transaction.IChange;
+import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.transaction.ITransaction;
 
@@ -22,22 +23,26 @@ import de.berlios.rcpviewer.transaction.ITransaction;
  * has value semantics.
  * 
  */
-public final class AddToCollectionChange<V> extends AbstractCollectionChange {
+public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> {
 
 	public AddToCollectionChange(
+			final ITransaction transaction,
 			final ITransactable transactable,
-			final Field field,
+			final Collection<V> collection,
+			final String collectionName,
 			final V addedValue) {
-		super(transactable, field, addedValue);
+		super(transaction, transactable, collection, collectionName, addedValue);
 	}
 
 	/*
 	 * Adds the referenced object to the collection.
 	 * 
-	 * @see de.berlios.rcpviewer.transaction.IChange#execute()
+	 * @see de.berlios.rcpviewer.transaction.IChange#doExecute()
 	 */
-	public void execute() {
+	@Override
+	public final Object doExecute() {
 		getCollection().add(getReferencedObject());
+		return null;
 	}
 
 	/*
@@ -64,20 +69,32 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange {
 	public final boolean equals(final AddToCollectionChange<V> other) {
 		return
 		    _transactable.equals(other._transactable) &&
-			getField().equals(other.getField()) &&
+			getCollection().equals(other.getCollection()) &&
 			getReferencedObject().equals(other.getReferencedObject());
 	}
 
-	/**
-	 * TODO: should hash on all values.
+	/*
+	 * Since we want value semantics we must provide a hashCode(), however 
+	 * as there is nothing we can use to construct a meaningful hashCode()
+	 * we simply return 1.
+	 * 
+	 * <p>
+	 * This will have some performance implications, but in general the 
+	 * number of changes in a set is very small.
+	 * 
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		return _transactable.hashCode();
+		return 1;
 	}
 
+	/*
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
-		return getField().getName() + ": added " + getReferencedObject(); 
+		return getDescription() + ": added " + getReferencedObject(); 
 	}
 
 

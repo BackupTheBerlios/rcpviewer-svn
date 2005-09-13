@@ -164,5 +164,13 @@ public interface ITransactionManager {
 	 */
 	public void removeTransactionManagerListener(ITransactionManagerListener listener);
 
+	/**
+	 * Discard all state.
+	 * 
+	 * <p>
+	 * For testing purposes.
+	 */
+	public void reset();
+
 
 }

@@ -7,11 +7,12 @@ import org.eclipse.emf.ecore.EReference;
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
 public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 
 	public TestDomainObjectCollection() {
-		super(null);
+		super(new ExtendedProgModelDomainBuilder());
 	}
 
 	protected void setUp() throws Exception {
@@ -27,13 +28,16 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			(IRuntimeDomainClass<Employee>) lookupAny(Employee.class);
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
 		
 		IDomainObject<Department> departmentDomainObject = 
-			session.createTransient(departmentDomainClass);
+			session.recreate(departmentDomainClass);
 		IDomainObject.ICollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
-			session.createTransient(employeeDomainClass);
+			session.recreate(employeeDomainClass);
+		
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 		assertTrue(employeesAfterAdd.contains(employeeDomainObject.getPojo()));
@@ -53,14 +57,14 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
-			session.createTransient(departmentDomainClass);
+			session.create(departmentDomainClass);
 		IDomainObject.ICollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		Collection<IDomainObject<Employee>> employees = 
 			employeesCollection.getCollection();
 		try {
 			IDomainObject<Employee> employeeDomainObject = 
-				session.createTransient(employeeDomainClass);
+				session.create(employeeDomainClass);
 			employees.add(employeeDomainObject);
 			fail("Expected UnsupportedOperationException to have been thrown.");
 		} catch(UnsupportedOperationException ex) {
@@ -83,11 +87,13 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
-		
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
+
 		IDomainObject<Department> departmentDomainObject = 
-			session.createTransient(departmentDomainClass);
+			session.recreate(departmentDomainClass);
 		IDomainObject<Employee> employeeDomainObject = 
-			session.createTransient(employeeDomainClass);
+			session.recreate(employeeDomainClass);
 		IDomainObject.ICollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		MyDomainObjectReferenceListener l =
@@ -107,13 +113,15 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
-		
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
+
 		IDomainObject<Department> departmentDomainObject = 
-			session.createTransient(departmentDomainClass);
+			session.recreate(departmentDomainClass);
 		IDomainObject.ICollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
-			session.createTransient(employeeDomainClass);
+			session.recreate(employeeDomainClass);
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 	
@@ -136,13 +144,16 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		IRuntimeDomainClass<Employee> employeeDomainClass = 
 			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
-		
+		domain.addBuilder(getDomainBuilder());
+		domain.done();
+
 		IDomainObject<Department> departmentDomainObject = 
-			session.createTransient(departmentDomainClass);
+			session.recreate(departmentDomainClass);
 		IDomainObject.ICollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
-			session.createTransient(employeeDomainClass);
+			session.recreate(employeeDomainClass);
+		
 		Collection<IDomainObject<Employee>> employeesBeforeAdd = employeesCollection.getCollection();
 		assertEquals(0, employeesBeforeAdd.size());
 		employeesCollection.addToCollection(employeeDomainObject);

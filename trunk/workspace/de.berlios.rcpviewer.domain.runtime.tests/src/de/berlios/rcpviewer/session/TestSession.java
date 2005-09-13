@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
 public class TestSession extends AbstractRuntimeTestCase  {
 
@@ -29,7 +30,7 @@ public class TestSession extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertNotNull(domainObject);
 		assertSame(domainObject.getDomainClass(), domainClass);
 		Department pojo = domainObject.getPojo();
@@ -43,7 +44,7 @@ public class TestSession extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertEquals(session.getId(), domainObject.getSessionId());
 	}
 
@@ -61,35 +62,53 @@ public class TestSession extends AbstractRuntimeTestCase  {
 		
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		assertTrue(l.attachedCallbackCalled);
 		assertFalse(l.detachedCallbackCalled);
 	}
 
 
 	/**
-	 * Can create a domain object through the session, but it will not be
-	 * persistent. 
+	 * Can create a domain object through the session. 
 	 */
-	public void testDomainObjectInitiallyTransient() {
+	public void testDomainObjectMarkedAsPersistentIfNotTransientOnly() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		
+		domain.addBuilder(new ExtendedProgModelDomainBuilder());
+		domain.done();
+
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
-		assertFalse(domainObject.isPersistent());
+			(IDomainObject<Department>)session.create(domainClass);
+		assertTrue(domainObject.isPersistent());
 	}
 
 
-	public void testCanRetrieveOncePersisted() {
+	/**
+	 * TODO: need the TransientOnly annotation in the ExtendedDomainClass 
+	 */
+	public void incompletetestDomainObjectMarkedAsTransientIfTransientOnly() {
+//		IRuntimeDomainClass<DepartmentTransientOnly> domainClass = 
+//			(IRuntimeDomainClass<DepartmentTransientOnly>)lookupAny(DepartmentTransientOnly.class);
+//		domain.addBuilder(new ExtendedProgModelDomainBuilder());
+//		domain.done();
+//
+//		IDomainObject<DepartmentTransientOnly> domainObject = 
+//			(IDomainObject<DepartmentTransientOnly>)session.create(domainClass);
+//		assertFalse(domainObject.isPersistent());
+	}
+
+
+
+	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
+	public void incompletetestCanRetrieveOncePersisted() {
 		IRuntimeDomainClass<Department> domainClass = 
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		Department dept = domainObject.getPojo();
 		dept.setName("HR"); // name is used in Department's toString() -> title
-		domainObject.persist();
+		// domainObject.persist();
 		Department dept2 = 
 			(Department)objectStore.findByTitle(Department.class, "HR");
 		assertSame(dept2, dept);

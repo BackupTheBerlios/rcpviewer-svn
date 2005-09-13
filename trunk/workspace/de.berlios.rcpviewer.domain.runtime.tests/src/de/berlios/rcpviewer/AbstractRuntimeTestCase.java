@@ -8,6 +8,8 @@ import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
+import de.berlios.rcpviewer.transaction.ITransactionManager;
+import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 
 /**
  * Sets up a default {@link RuntimeDomain}, {@link SessionManager}, 
@@ -31,12 +33,16 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 	protected SessionManager sessionManager;
 	protected ISession session;
 	protected IObjectStore objectStore;
+	protected ITransactionManager transactionManager;
+	
+
 	protected void setUp() throws Exception {
 		super.setUp();
 		sessionManager = SessionManager.instance();
 		domain = RuntimeDomain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
 		session = sessionManager.createSession(domain, objectStore);
+		transactionManager = TransactionManager.instance();
 	}
 
 	protected void tearDown() throws Exception {
@@ -48,6 +54,8 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		objectStore = null;
 		RuntimeDomain.resetAll();
 		SessionManager.instance().reset();
+		transactionManager.reset();
+		transactionManager = null;
 		super.tearDown();
 	}
 	

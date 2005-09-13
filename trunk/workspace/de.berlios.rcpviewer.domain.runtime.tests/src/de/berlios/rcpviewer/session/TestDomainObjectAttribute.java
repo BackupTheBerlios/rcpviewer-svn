@@ -23,7 +23,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		domainObject.getPojo().setName("HR");
 		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		String value = (String)nameAttribute.get();
@@ -37,7 +37,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		getDomainInstance().done();
 
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		nameAttribute.set("HR");
 		assertEquals("HR", domainObject.getPojo().getName());
@@ -50,7 +50,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		getDomainInstance().done();
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		MyDomainObjectAttributeListener l = 
 			nameAttribute.addListener(new MyDomainObjectAttributeListener());
@@ -65,7 +65,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		getDomainInstance().done();
 		
 		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.createTransient(domainClass);
+			(IDomainObject<Department>)session.create(domainClass);
 		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		try {
 			nameAttribute.set(new Integer(1));
