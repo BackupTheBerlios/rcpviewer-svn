@@ -20,7 +20,9 @@ import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 import de.berlios.rcpviewer.gui.fieldbuilders.FieldBuilderFactory;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.DomainBootstrapJob;
+import de.berlios.rcpviewer.gui.jobs.ObjectStoreBootstrapJob;
 import de.berlios.rcpviewer.gui.jobs.SessionBootstrapJob;
+import de.berlios.rcpviewer.persistence.IObjectStore;
 
 
 /**
@@ -96,13 +98,18 @@ public class GuiPlugin extends AbstractUIPlugin {
 		Logger.getRootLogger().addAppender(ganymede);
 //		Logger.getLogger(GuiPlugin.class).info( "Logging started" ); //$NON-NLS-1$
 		
-		// start domain initialisation
+		// domain initialisation
 		IDomainBootstrap bootstrap = DomainBootstrapFactory.createBootstrap();
 		DomainBootstrapJob domainJob = new DomainBootstrapJob( bootstrap );
 		domainJob.schedule();
 		
-		// start session initialisation (default domain & store for now )
-		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
+		// object store initialisation
+		IObjectStore store = ObjectStoreFactory.createObjectStore();
+		ObjectStoreBootstrapJob storeJob = new ObjectStoreBootstrapJob( store );
+		storeJob.schedule();
+		
+		// session initialisation (default domain & store for now )
+		SessionBootstrapJob sessionJob = new SessionBootstrapJob( store );
 		sessionJob.schedule();
 		
 		// instantiate fields

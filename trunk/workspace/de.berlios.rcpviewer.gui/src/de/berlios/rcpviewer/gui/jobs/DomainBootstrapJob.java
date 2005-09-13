@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 
 import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
@@ -14,7 +13,7 @@ import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
  * Wraps the passed <code>IDomainBootstrap</code>.
  * @author Mike
  */
-public class DomainBootstrapJob extends Job {
+public class DomainBootstrapJob extends AbstractBootstrapJob {
 	
 	private final IDomainBootstrap _bootstrap;
 	

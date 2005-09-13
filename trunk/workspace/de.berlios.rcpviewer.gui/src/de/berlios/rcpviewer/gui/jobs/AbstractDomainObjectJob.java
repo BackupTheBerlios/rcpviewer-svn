@@ -6,7 +6,7 @@ package de.berlios.rcpviewer.gui.jobs;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
- * Super class for all GUI jobs asscoiated with a specific 
+ * Super class for all GUI jobs associated with a specific 
  * <code>IDomainObject</code>.
  * @author Mike
  */

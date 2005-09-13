@@ -3,7 +3,6 @@
  */
 package de.berlios.rcpviewer.gui.editors.parts;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -12,7 +11,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.gui.GuiPlugin;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -23,20 +21,13 @@ import de.berlios.rcpviewer.session.IDomainObject;
 class CollectionTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
 	
-	private final EAttribute[] _attributes;
+	private final  List<EAttribute> _attributes;
 	private final ILabelProvider _delegate;
 	
-	CollectionTableLabelProvider( IRuntimeDomainClass<?> domainClass ) {
-		assert domainClass != null;
-		
-		List<EAttribute> attributes = new ArrayList<EAttribute>();
-		attributes.add( null );
-		for ( EAttribute attribute  : domainClass.attributes() ) {
-			attributes.add( attribute );
-		}
-		_attributes = attributes.toArray( new EAttribute[0] );
+	CollectionTableLabelProvider( List<EAttribute> attributes ) {
+		assert attributes != null;
+		_attributes = attributes;
 		_delegate = GuiPlugin.getDefault().getLabelProvider();
-		
 	}
 
 	/**
@@ -59,7 +50,7 @@ class CollectionTableLabelProvider extends LabelProvider implements
 		else {
 			return _delegate.getText(
 					((IDomainObject<?>)element).getAttribute( 
-							_attributes[columnIndex] ).get() );
+							_attributes.get( --columnIndex ) ).get() );
 		}
 	}
 

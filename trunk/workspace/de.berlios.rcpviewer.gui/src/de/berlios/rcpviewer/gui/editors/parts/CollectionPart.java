@@ -3,7 +3,7 @@
  */
 package de.berlios.rcpviewer.gui.editors.parts;
 
-import static de.berlios.rcpviewer.gui.util.EmfUtil.SortType.ANNOTATION;
+import static de.berlios.rcpviewer.gui.editors.parts.ReferencePartConfiguration.*;
 
 import java.util.ArrayList;
 
@@ -48,10 +48,8 @@ import de.berlios.rcpviewer.gui.dnd.DomainObjectTransfer;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.jobs.RemoveReferenceJob;
 import de.berlios.rcpviewer.gui.jobs.SearchJob;
-import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
-import de.berlios.rcpviewer.gui.util.RandomUtil;
 import de.berlios.rcpviewer.gui.util.StringUtil;
 import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -116,8 +114,7 @@ public class CollectionPart implements IReferencePart {
 					ImageUtil.getImage( collectionDomainType ),
 				PART_ICON_SIZE ) );		
 		section.setTextClient( label );
-		
-		
+
 		// section area
 		Composite parent = toolkit.createComposite( section ) ;
 		parent.setBackground( section.getBackground() );
@@ -130,20 +127,24 @@ public class CollectionPart implements IReferencePart {
 		_pages = new CollectionGuiPage[2];
 		
 		// list viewer - offloaded to private method for tidiness
+		ReferencePartConfiguration tableConfig
+			= new ReferencePartConfiguration( collectionDomainType );
 		_pages[0] = createTablePage( 
 				allowAdd, 
 			    ref,
-				collectionDomainType, 
+			    tableConfig, 
 			    toolkit, 
 			    pages );
 		pages.showPage( _pages[0].getComposite() );
 		_currentPage = _pages[0];
 		
 		//  master child gui - offloaded to private method for tidiness
+		ReferencePartConfiguration masterChildConfig
+			= new ReferencePartConfiguration( collectionDomainType );
 		_pages[1] = createMasterChildPage( 
 				allowAdd,
 				ref,
-				collectionDomainType,
+				masterChildConfig,
 				toolkit, 
 				pages );
 		
@@ -246,8 +247,8 @@ public class CollectionPart implements IReferencePart {
 	// just to tidy constructor code
 	private CollectionGuiPage createTablePage(
 			boolean allowAdd,
-			final EReference ref,
-			final IRuntimeDomainClass<?> collectionDomainType,
+			EReference ref,
+			ReferencePartConfiguration config,
 			FormToolkit toolkit,
 			PageBook pageBook ) {
 		
@@ -266,7 +267,7 @@ public class CollectionPart implements IReferencePart {
 				page,
 				allowAdd,
 				ref,
-				collectionDomainType );
+				config );
 		toolkit.adapt( viewer.getControl(), true, true );
 		page.setViewer( viewer );
 		
@@ -278,10 +279,10 @@ public class CollectionPart implements IReferencePart {
 			CollectionGuiPage page,
 			boolean allowAdd,
 			final EReference ref,
-			final IRuntimeDomainClass<?> collectionDomainType ){
+			final ReferencePartConfiguration config ){
 		assert page != null;
 		assert ref != null;
-		assert collectionDomainType != null;
+		assert config != null;
 
 		// actual instantiation and placement in parent
 		TableViewer viewer = new TableViewer( 
@@ -299,41 +300,50 @@ public class CollectionPart implements IReferencePart {
 		
 		column.setText( GuiPlugin.getResourceString( 
 				"CollectionPart.FirstColumnHeader") ); //$NON-NLS-1$
-		for ( EAttribute attribute  : 
-				EmfUtil.sort(collectionDomainType.attributes(), ANNOTATION ) ) {
+		for ( EAttribute attribute  : config.getAttributes()  ) {
 			column = new TableColumn( table, SWT.LEFT );
 			column.setText( attribute.getName() );
+			column.setData( GUI_CONFIG_DATA, attribute );
+			if ( config.isVisible( attribute ) ) {
+				column.pack();
+			}
+			else {
+				column.setWidth( 0 );
+			}
 		}
 		
-		// gui configurator
+		// dynamic configuration
 		page.setGuiConfigration( new Runnable(){
 			public void run() {
-				try {
-					table.setRedraw( false );
-					boolean first = true;
-					for( TableColumn column : table.getColumns() ) {
-						if ( first ) {
-							first = false;
-							continue;
-						}
-						boolean visible = RandomUtil.twoThirdsLikely();
-						if ( visible ) {
-							column.pack();
-						}
-						else {
-							column.setWidth( 0 );
+				if ( config.modify() ) {
+					try {
+						table.setRedraw( false );
+						boolean first = true;
+						for( TableColumn column : table.getColumns() ) {
+							if ( first ) {
+								first = false;
+								continue;
+							}
+							EAttribute attribute = (EAttribute)column.getData(
+									GUI_CONFIG_DATA );
+							if ( config.isVisible( attribute ) ) {
+								column.pack();
+							}
+							else {
+								column.setWidth( 0 );
+							}
 						}
 					}
-				}
-				finally {
-					table.setRedraw( true );
+					finally {
+						table.setRedraw( true );
+					}
 				}
 			}
-		});
+		} );
 
 		// label provider 
 		viewer.setLabelProvider( 
-			new CollectionTableLabelProvider( collectionDomainType ) );
+				new CollectionTableLabelProvider( config.getAttributes() ) );
 
 		// content provider an inner class as quite complicated
 		viewer.setContentProvider( new CollectionContentProvider( this, ref ) );
@@ -369,7 +379,7 @@ public class CollectionPart implements IReferencePart {
 	private CollectionGuiPage createMasterChildPage( 
 			boolean allowAdd,
 			EReference ref,
-			final IRuntimeDomainClass<?> collectionDomainType,
+			ReferencePartConfiguration config,
 			FormToolkit toolkit, 
 			PageBook pageBook ) {
 		
@@ -398,14 +408,13 @@ public class CollectionPart implements IReferencePart {
 		ListViewer viewer = createListViewer(
 				masterComposite,
 				allowAdd,
-				ref,
-				collectionDomainType );
+				ref );
 		toolkit.adapt( viewer.getControl(),  true, true );
 		page.setViewer( viewer );
 		
 		// create 'child' attribute list gui
 		final IManagedForm childForm = createChildForm(
-				page, childComposite, collectionDomainType );
+				page, childComposite, config );
 		childForm.getForm().setVisible( false );
 		
 		// for sync'ing child 
@@ -433,11 +442,9 @@ public class CollectionPart implements IReferencePart {
 	private ListViewer createListViewer( 
 			Composite parent,
 			boolean allowAdd,
-			final EReference ref,
-			final IRuntimeDomainClass<?> collectionDomainType ){
+			final EReference ref ){
 		assert parent != null;
 		assert ref != null;
-		assert collectionDomainType != null;
 		
 		parent.setLayout( new GridLayout() );
 		
@@ -484,10 +491,10 @@ public class CollectionPart implements IReferencePart {
 	private IManagedForm createChildForm(
 			CollectionGuiPage page,
 			Composite parent, 
-			IRuntimeDomainClass<?> childDomainType ) {
+			final ReferencePartConfiguration config ) {
 		assert page != null;
 		assert parent != null;
-		assert childDomainType != null;
+		assert config != null;
 		
 		// create form
 		parent.setLayout( new FillLayout() );
@@ -508,7 +515,7 @@ public class CollectionPart implements IReferencePart {
 		// for this calculate longest required label length for attributes
 		int[] columnWidths = new int[]{ 0, 0 };
 		int maxLabelLength = 0;
-		for ( EAttribute a : childDomainType.attributes() ) {       
+		for ( EAttribute a : config.getAttributes() ) {       
 			int length = a.getName().length();
 			if ( length > maxLabelLength ) maxLabelLength = length;
 		}
@@ -519,13 +526,15 @@ public class CollectionPart implements IReferencePart {
 		final ArrayList<Composite> fieldComposites = new ArrayList<Composite>();
 		
 		// loop through all attributes - add an IFormPart for each
-		for ( EAttribute attribute  : 
-			EmfUtil.sort( childDomainType.attributes(), ANNOTATION ) ) {       
-
+		for ( EAttribute attribute  : config.getAttributes()  ) {       
+			
 			// create parent composite for IField
 			Composite fieldComposite = form.getToolkit().createComposite( body );
 			fieldComposite.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
 			form.getToolkit().paintBordersFor( fieldComposite );
+			
+			// record for dynamic configuration
+			fieldComposite.setData( GUI_CONFIG_DATA, attribute );
 			
 			// create IField
 			IFieldBuilder fieldBuilder
@@ -537,29 +546,36 @@ public class CollectionPart implements IReferencePart {
 					columnWidths );
 			form.addPart( attPart );
 			
+			// visible or not?
+			if ( !config.isVisible( attribute ) ) {
+				((GridData)fieldComposite.getLayoutData()).heightHint = 0;
+				fieldComposite.setVisible( false );
+			}
+
 			fieldComposites.add( fieldComposite );
 		}
 		
 		// gui configurator
 		page.setGuiConfigration( new Runnable() {
-			private final String KEY = this.getClass().getName();
 			public void run() {
-				for ( Composite composite : fieldComposites ) {
-					boolean hide = RandomUtil.oneThirdLikely();
-					if ( hide && composite.isVisible() ) {
-						composite.setData( KEY, composite.getSize().y );
-						((GridData)composite.getLayoutData()).heightHint = 0;
-						composite.setVisible( false );
+				if ( config.modify() ) {
+					for ( Composite composite : fieldComposites ) {
+						EAttribute attribute = (EAttribute)composite.getData(
+								GUI_CONFIG_DATA );
+						boolean show = config.isVisible( attribute );
+						if ( show && !composite.isVisible() ) {
+							((GridData)composite.getLayoutData()).heightHint
+								= SWT.DEFAULT;
+							composite.setVisible( true );
+						}
+						else if ( !show && composite.isVisible() ) {
+							((GridData)composite.getLayoutData()).heightHint = 0;
+							composite.setVisible( false );
+						}
 					}
-					else if ( !hide && !composite.isVisible() ) {
-						((GridData)composite.getLayoutData()).heightHint
-							= (Integer)composite.getData( KEY );
-						composite.setVisible( true );
-					}
+					_form.reflow( true );
 				}
-				_form.reflow( true );
 			}
-			
 		});
 		
 		return form;

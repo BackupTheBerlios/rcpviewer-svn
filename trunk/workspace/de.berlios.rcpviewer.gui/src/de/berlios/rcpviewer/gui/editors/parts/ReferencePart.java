@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -91,17 +92,6 @@ public class ReferencePart implements IReferencePart {
 		// column widths can be null
 		assert maxLabelLength != 0;
 		
-		// section
-		sectionParent.setLayout( new FillLayout() );
-		Section section = toolkit.createSection( sectionParent, EXPANDABLE_STYLE );
-		section.setText( 
-				StringUtil.padLeft( ref.getName(), maxLabelLength ) + ":"  ); //$NON-NLS-1$
-		
-		// section area
-		Composite parent = toolkit.createComposite( section ) ;
-		section.setClient( parent );
-		toolkit.paintBordersFor( parent );
-		
 		// fetch all required types - yuk!
 		Class<?> containerPojoType = ((EClassifier)ref.eContainer()).getInstanceClass();
 		IRuntimeDomainClass<?> containerDomainType 
@@ -113,6 +103,28 @@ public class ReferencePart implements IReferencePart {
 		boolean allowAdd = ( containerDomainType.getAssociatorFor( ref ) != null );
 		boolean allowRemove = ( containerDomainType.getDissociatorFor( ref ) != null );
 		
+		// gui configuration
+		ReferencePartConfiguration config
+			= new ReferencePartConfiguration( refDomainType );
+		
+		
+		// section
+		sectionParent.setLayout( new FillLayout() );
+		Section section = toolkit.createSection( sectionParent, EXPANDABLE_STYLE );
+		section.setText( StringUtil.padLeft( ref.getName(), maxLabelLength ) + ":"  ); //$NON-NLS-1$
+		Label label = new Label( section, SWT.NONE );
+		label.setImage( 
+				ImageUtil.resize(
+					ImageUtil.getImage( refDomainType ),
+				PART_ICON_SIZE ) );		
+		section.setTextClient( label );
+		
+		// section area
+		Composite parent = toolkit.createComposite( section ) ;
+		section.setClient( parent );
+		toolkit.paintBordersFor( parent );
+		
+
 		// layout
 		int numCols = 1;
 		if ( allowAdd ) numCols++;
