@@ -3,5 +3,10 @@
 <plugin>
 
    <extension-point id="domains" name="RCPViewer Runtime Domains" schema="schema/domains.exsd"/>
+   <extension-point id="objectstorebootstrap" name="ObjectStore BootStrap" schema="schema/objectstorebootstrap.exsd"/>
 
+   <extension
+         point="de.berlios.rcpviewer.domain.runtime.objectstorebootstrap">
+         <impl class="de.berlios.rcpviewer.persistence.ExampleObjectStoreBootStrap"/>
+   </extension>
 </plugin>
