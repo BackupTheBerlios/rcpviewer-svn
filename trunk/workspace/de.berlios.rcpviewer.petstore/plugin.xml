@@ -15,6 +15,11 @@
    		<impl class="de.berlios.rcpviewer.petstore.domain.OrderLine"/>
    		-->
    </extension>
+   
+   <extension
+         point="de.berlios.rcpviewer.gui.fieldbuilder">
+         <impl class="de.berlios.rcpviewer.petstore.gui.FilePathFieldBuilder"/>
+   </extension>
 
 
 </plugin>

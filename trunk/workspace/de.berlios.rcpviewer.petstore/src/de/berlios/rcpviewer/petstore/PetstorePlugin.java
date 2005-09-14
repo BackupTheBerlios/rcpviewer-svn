@@ -1,12 +1,16 @@
 package de.berlios.rcpviewer.petstore;
 
-import org.eclipse.core.runtime.Plugin;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class PetstorePlugin extends Plugin {
+public class PetstorePlugin extends AbstractUIPlugin {
 
 	//The shared instance.
 	private static PetstorePlugin plugin;
@@ -38,6 +42,24 @@ public class PetstorePlugin extends Plugin {
 	 */
 	public static PetstorePlugin getDefault() {
 		return plugin;
+	}
+	
+	/**
+	 * Returns the string from the plugin's resource bundle,
+	 * or the key value if not found.
+	 * <br>Note that this implementation is <b>not</b> the default given
+	 * by the plugin creation wizard but instead accesses resources
+	 * via the Plugin's OSGI bundle.
+	 */
+	public static String getResourceString(String key) {
+		ResourceBundle bundle
+			= Platform.getResourceBundle( getDefault().getBundle() );
+		try {
+			return (bundle != null) ? bundle.getString(key) : key;
+		} 
+		catch (MissingResourceException e) {
+			return key;
+		}
 	}
 
 }
