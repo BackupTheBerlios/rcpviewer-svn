@@ -8,8 +8,6 @@ import de.berlios.rcpviewer.session.IPojo;
 import de.berlios.rcpviewer.transaction.IChange;
 import de.berlios.rcpviewer.transaction.ITransactable;
 import de.berlios.rcpviewer.transaction.ITransaction;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.transaction.PojoAlreadyEnlistedException;
 
 
 /**
@@ -38,7 +36,7 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -59,6 +57,7 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
 				clearTransactionForThread();
 			}
+			getLogger().debug("transactionalChange(pojo=" + pojo+"): end");
 		}
 	}
 
@@ -72,21 +71,17 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 	 * advices are applied. 
 	 */
 	Object around(IPojo pojo, Object postValue): changingAttributeOnPojo(pojo, postValue) {
-		Field field = getFieldFor(thisJoinPointStaticPart);
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AttributeChange(transaction, transactable, field, postValue);
+		getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): start");
+		try {
+			Field field = getFieldFor(thisJoinPointStaticPart);
+			ITransactable transactable = (ITransactable)pojo;
+			ITransaction transaction = currentTransaction(transactable);
+			IChange change = new AttributeChange(transaction, transactable, field, postValue);
+			return change.execute();
+		} finally {
+			getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): end");
+		}
 
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null && domainObject.isAttached()) {
-//			if (!transaction.addingToInteractionChangeSet(change)) {
-//				throw new PojoAlreadyEnlistedException();			
-//			}
-//		}
-//
-		return change.execute();
 	}
 	
 

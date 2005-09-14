@@ -438,7 +438,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			} catch (IllegalAccessException e) {
 				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
 			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
+				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e.getTargetException());
 			}
 		}
 		

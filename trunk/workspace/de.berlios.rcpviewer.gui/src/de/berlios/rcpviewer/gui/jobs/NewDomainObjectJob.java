@@ -43,10 +43,7 @@ public class NewDomainObjectJob extends AbstractUserJob {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
 			
-			// TODO: temporary work-around: prevents the instantiation from
-			// being put into a transaction.
-			//IDomainObject<?> domainObject = session.create( _clazz );
-			IDomainObject<?> domainObject = session.recreate( _clazz );
+			IDomainObject<?> domainObject = session.create( _clazz );
 			
 			new OpenDomainObjectJob( domainObject ).schedule();
 			name = GuiPlugin.getDefault().getLabelProvider().getText( domainObject );
