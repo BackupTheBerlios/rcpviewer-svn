@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.plugins.utils.SWTUtils;
+
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -252,31 +254,20 @@ class PrimitiveFieldBuilder implements IFieldBuilder {
 				_text.addVerifyListener( new VerifyListener(){
 					public void verifyText(VerifyEvent event){
 						// build resultant text
-						String resultantText;
-						String orig = _text.getText();
-						if ( orig.length() == 0 ) {
-							resultantText = event.text;
-						}
-						else {
-							StringBuffer sb = new StringBuffer();
-							sb.append( orig.substring( 0, event.start ) );
-							sb.append( event.text );
-							sb.append( orig.substring( event.end, orig.length() ) );
-							resultantText = sb.toString();
-						}
+						String sVal = SWTUtils.buildResultantText( _text, event );
 						
 						// blank string equates to null so OK
-						if ( resultantText.length() == 0 ) return;
+						if ( sVal.length() == 0 ) return;
 						
 						// char a special case
 						if ( _type == char.class ) {
-							event.doit = ( resultantText.length() < 2 );
+							event.doit = ( sVal.length() < 2 );
 							return;
 						}
 						
 						// check this text value could be converted to type
 						try {
-							_valueOfMethod.invoke( null, new Object[]{resultantText} );
+							_valueOfMethod.invoke( null, new Object[]{sVal} );
 						}
 						catch ( Exception ex ) {
 							event.doit = false;

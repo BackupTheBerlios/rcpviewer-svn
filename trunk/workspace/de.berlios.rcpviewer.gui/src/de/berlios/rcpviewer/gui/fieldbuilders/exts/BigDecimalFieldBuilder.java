@@ -1,9 +1,8 @@
 package de.berlios.rcpviewer.gui.fieldbuilders.exts;
 
-import static de.berlios.rcpviewer.gui.GuiPlugin.DATE_FORMATTER;
+import java.math.BigDecimal;
 
-import java.text.ParseException;
-import java.util.Date;
+import net.sf.plugins.utils.SWTUtils;
 
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.swt.SWT;
@@ -17,24 +16,21 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.vafada.swtcalendar.SWTCalendarEvent;
-import org.vafada.swtcalendar.SWTCalendarListener;
 
 import de.berlios.rcpviewer.gui.GuiPlugin;
-import de.berlios.rcpviewer.gui.dnd.exts.DateTransfer;
+import de.berlios.rcpviewer.gui.dnd.exts.BigDecimalTransfer;
 import de.berlios.rcpviewer.gui.editors.parts.IGuiPart;
 import de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder;
 import de.berlios.rcpviewer.gui.util.EmfUtil;
 import de.berlios.rcpviewer.gui.util.FontUtil;
 import de.berlios.rcpviewer.gui.util.ImageUtil;
-import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
 
 /**
  * Used for dates.
@@ -44,14 +40,14 @@ import de.berlios.rcpviewer.gui.widgets.DefaultSelectionAdapter;
  * @author Mike
  *
  */
-public class DateFieldBuilder implements IFieldBuilder {
+public class BigDecimalFieldBuilder implements IFieldBuilder {
 
 	/**
-	 * Only if the class is a <code>Date</code> or subclass.
+	 * Only if the class is a <code>BigDecimal</code> or subclass.
 	 * @see de.berlios.rcpviewer.gui.IFieldBuilder#isApplicable(org.eclipse.emf.ecore.ETypedElement)
 	 */
 	public boolean isApplicable(ETypedElement element) {
-		return Date.class.isAssignableFrom(
+		return BigDecimal.class.isAssignableFrom(
 				element.getEType().getInstanceClass() );
 	}
 
@@ -67,14 +63,14 @@ public class DateFieldBuilder implements IFieldBuilder {
 		if( element == null ) throw new IllegalArgumentException();
 		// listener can be null
 		if( columnWidths == null ) throw new IllegalArgumentException();
-		return new DateField( parent, element, listener, columnWidths );
+		return new BigDecimalField( parent, element, listener, columnWidths );
 	}
 
-	private class DateField implements IField {
+	private class BigDecimalField implements IField {
 		
 		private final Text _text;
 		
-		DateField( final Composite parent, 
+		BigDecimalField( final Composite parent, 
 				   ETypedElement element,
 				   final IFieldListener listener,
 				   int[] columnWidths ) {
@@ -107,12 +103,12 @@ public class DateFieldBuilder implements IFieldBuilder {
 			icon.setImage( 
 				ImageUtil.resize(
 					ImageUtil.getImage(
-					GuiPlugin.getDefault(), "icons/date.png" ), //$NON-NLS-1$
+					GuiPlugin.getDefault(), "icons/bigdecimal.png" ), //$NON-NLS-1$
 					IGuiPart.PART_ICON_SIZE ) );
 			icon.setLayoutData( iconData );
 			icon.setToolTipText( 
 					GuiPlugin.getResourceString( 
-							"DateFieldBuilder.IconToolTip" ) ); //$NON-NLS-1$
+							"BigDecimalFieldBuilder.IconToolTip" ) ); //$NON-NLS-1$
 			
 			// text box
 			GridData textData = new GridData();
@@ -120,62 +116,42 @@ public class DateFieldBuilder implements IFieldBuilder {
 						&& columnWidths[2] != 0 ) {
 				textData.widthHint = columnWidths[2];
 			}
-			else {
-				int numChars = DATE_FORMATTER.format( new Date() ).length();
-				int charWidth = FontUtil.getCharWidth( 
-						parent, FontUtil.CharWidthType.SAFE );
-				textData.widthHint = numChars * charWidth;
-			}
-			_text = new Text( parent, SWT.SINGLE | SWT.CENTER );
+			_text = new Text( parent, SWT.SINGLE | SWT.LEFT );
 			_text.setBackground( parent.getBackground() );
-			_text.setEditable( false );
 			_text.setLayoutData( textData );
 			
 			if ( !EmfUtil.isModifiable( element ) ) {
 				_text.setEditable( false );
 				addDnD( _text, false );
 			}
-			else {
-				layout.numColumns = 4;
-			
+			else {	
+				// verify input
+				_text.addVerifyListener( new VerifyListener(){
+					public void verifyText(VerifyEvent event){
+						// build resultant text
+						String sVal = SWTUtils.buildResultantText( _text, event );
+						
+						// blank string equates to null so OK
+						if ( sVal.length() == 0 ) return;
+						
+						// check this text value could be converted to type
+						try {
+							new BigDecimal( sVal );
+						}
+						catch ( NumberFormatException nfe ) {
+							event.doit = false;
+						}
+					}
+				} );
+				
+				// external listener?
 				if ( listener != null ) {
 					_text.addModifyListener(new ModifyListener() {
 						public void modifyText(ModifyEvent e) {
-							listener.fieldModified( DateField.this );
+							listener.fieldModified( BigDecimalField.this );
 						};
 					});
 				}
-				
-				// change date via calendar widget
-		        Button change = new Button( parent, SWT.PUSH | SWT.FLAT );
-				change.setText( "..."); //$NON-NLS-1$
-				GridData buttonData = new GridData();
-				buttonData.heightHint = _text.getLineHeight() ;
-				change.setLayoutData( buttonData );
-				change.addSelectionListener( new DefaultSelectionAdapter(){
-					public void widgetSelected(SelectionEvent e) {
-		                final SWTCalendarDialog cal
-		                	= new SWTCalendarDialog( parent.getDisplay() );
-		                cal.addDateChangedListener(new SWTCalendarListener() {
-		                    public void dateChanged(SWTCalendarEvent calendarEvent) {
-		                        _text.setText(
-										DATE_FORMATTER.format(
-											calendarEvent.getCalendar().getTime()));
-		                    }
-		                });
-						String s = _text.getText();
-		                if ( s!= null && s.length() > 0) {
-		                    try {
-		                        Date d = DATE_FORMATTER.parse( s );
-		                        cal.setDate(d);
-		                    } 
-							catch (ParseException pe) {
-								// do nowt
-		                    }
-		                }
-		                cal.open();
-		            }
-		        });
 				addDnD( _text, true );
 			}
 		}
@@ -185,10 +161,12 @@ public class DateFieldBuilder implements IFieldBuilder {
 		 */
 		public Object getGuiValue() {
 			try {
-				Date date = DATE_FORMATTER.parse(_text.getText());
-				return date;
+				String s = _text.getText().trim();
+				if ( s.length() == 0 ) return null;
+				BigDecimal bd = new BigDecimal( s );
+				return bd;
 			}
-			catch ( ParseException pe ) {
+			catch ( NumberFormatException nfe ) {
 				return null;
 			}
 		}
@@ -208,10 +186,10 @@ public class DateFieldBuilder implements IFieldBuilder {
 				_text.setText( "" ); //$NON-NLS-1$
 			}
 			else {
-				if ( !(obj instanceof Date) ) {
+				if ( !(obj instanceof BigDecimal ) ) {
 					throw new IllegalArgumentException();
 				}
-				_text.setText( DATE_FORMATTER.format( (Date)obj ) );
+				_text.setText( obj.toString() );
 			}
 		}
 		
@@ -220,28 +198,17 @@ public class DateFieldBuilder implements IFieldBuilder {
 			assert text != null;
 			
 			Transfer[] types = new Transfer[] {
-					DateTransfer.getInstance() };
+					BigDecimalTransfer.getInstance() };
 			int operations = DND.DROP_MOVE | DND.DROP_COPY ;
 			
 			final DragSource source = new DragSource (text, operations);
 			source.setTransfer(types);
 			source.addDragListener (new DragSourceListener () {
 				public void dragStart(DragSourceEvent event) {
-					try {
-						DATE_FORMATTER.parse( text.getText () );
-						event.doit = true;
-					}
-					catch (ParseException pe ) {
-						event.doit = false;
-					}
+					event.doit = ( getGuiValue() != null );
 				}
 				public void dragSetData (DragSourceEvent event) {
-					try {
-						event.data = DATE_FORMATTER.parse( text.getText () );
-					}
-					catch (ParseException pe ) {
-						event.doit = false;
-					}
+					event.data = getGuiValue();
 				}
 				public void dragFinished(DragSourceEvent event) {
 					// does nowt
@@ -253,7 +220,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 				target.setTransfer(types);
 				target.addDropListener (new DropTargetAdapter() {
 					public void dragEnter(DropTargetEvent event){
-						if ( !DateTransfer.getInstance().isSupportedType(
+						if ( !BigDecimalTransfer.getInstance().isSupportedType(
 								event.currentDataType ) ) {
 							event.detail = DND.DROP_NONE;
 						}
@@ -265,7 +232,7 @@ public class DateFieldBuilder implements IFieldBuilder {
 						}
 						// note that all DnD ops converted to copy's 
 						event.detail = DND.DROP_COPY;
-						text.setText( DATE_FORMATTER.format( (Date)event.data  ) );
+						setGuiValue( (BigDecimal)event.data );
 					}
 				});
 			}

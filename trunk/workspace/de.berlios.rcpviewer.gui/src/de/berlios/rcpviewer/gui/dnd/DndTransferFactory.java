@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.gui.dnd;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 
 import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.gui.dnd.exts.BigDecimalTransfer;
+import de.berlios.rcpviewer.gui.dnd.exts.DateTransfer;
 
 /**
  * Static factory methods
@@ -38,7 +41,27 @@ public class DndTransferFactory {
 		TRANSFERS.put( Float.class, new PrimitiveTransfer( float.class ) );
 		TRANSFERS.put( Double.class, new PrimitiveTransfer( double.class ) ); 
 		TRANSFERS.put( Date.class, DateTransfer.getInstance() );
+		TRANSFERS.put( BigDecimal.class, BigDecimalTransfer.getInstance() );
 		TRANSFERS.put( String.class, TextTransfer.getInstance() );
+	}
+	
+	/**
+	 * Register another transfer type for the passed class.
+	 * <br>if the transfer type for this calss has already been registered
+	 * returns <code>false</code> and does nothing.
+	 * <br><b>NOTE</b>: this concept is fundamentally broken until I find a 
+	 * way to ensute this method is called <b>before</b> any <code>get()</code>
+	 * method.
+	 * @param clazz
+	 * @param transfer
+	 * @return
+	 */
+	public static boolean registerTransfer( Class clazz, Transfer transfer ) {
+		if ( clazz == null ) throw new IllegalArgumentException();
+		if ( transfer == null ) throw new IllegalArgumentException();
+		if ( TRANSFERS.get( clazz ) != null ) return false;
+		TRANSFERS.put( clazz, transfer );
+		return true;
 	}
 	
 	/**

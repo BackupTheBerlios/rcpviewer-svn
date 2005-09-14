@@ -1,31 +1,31 @@
-package de.berlios.rcpviewer.gui.dnd;
+package de.berlios.rcpviewer.gui.dnd.exts;
 
-import java.util.Date;
+import java.math.BigDecimal;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 
 /**
- * Used for transferring int's within the application.
+ * Used for transferring <code>BigDecimals</code> within the application.
  * @author Mike
  *
  */
-public class DateTransfer extends ByteArrayTransfer {
+public class BigDecimalTransfer extends ByteArrayTransfer {
 	
-	private static final String DATE_TYPE_NAME
-		= DateTransfer.class.getName();
-	private static final int DATE_TYPE_ID
-		= registerType ( DATE_TYPE_NAME );
+	private static final String BIGDECIMAL_TYPE_NAME
+		= BigDecimalTransfer.class.getName();
+	private static final int BIGDECIMAL_TYPE_ID
+		= registerType ( BIGDECIMAL_TYPE_NAME );
 	
-	private static DateTransfer __instance = new DateTransfer();
+	private static BigDecimalTransfer __instance = new BigDecimalTransfer();
 
 	/**
 	 * Returns the singleton instance of the DateTransfer class.
 	 *
 	 * @return the singleton instance of the DateTransfer class
 	 */
-	public static DateTransfer getInstance () {
+	public static BigDecimalTransfer getInstance () {
 		return __instance;
 	}
 	
@@ -34,13 +34,11 @@ public class DateTransfer extends ByteArrayTransfer {
 	 */
 	@Override
 	protected void javaToNative(Object object, TransferData transferData) {
-		if ( object == null || !( object instanceof Date ) ) {
+		if ( object == null || !( object instanceof BigDecimal ) ) {
 			DND.error(DND.ERROR_INVALID_DATA);
 		}
 		else {
-			super.javaToNative( 
-					String.valueOf( (Long)((Date)object).getTime() ).getBytes(), 
-					transferData );
+			super.javaToNative( object.toString().getBytes(), transferData );
 		}
 	}
 
@@ -52,7 +50,7 @@ public class DateTransfer extends ByteArrayTransfer {
 	@Override
 	protected Object nativeToJava(TransferData transferData) {
 		byte[] bytes = (byte[])super.nativeToJava(transferData);
-		return new Date( new Long( new String( bytes ) ) );
+		return new BigDecimal( new String( bytes ) );
 	}
 
 
@@ -61,18 +59,18 @@ public class DateTransfer extends ByteArrayTransfer {
 	 * @see org.eclipse.swt.dnd.Transfer#getTypeNames()
 	 */
 	protected String [] getTypeNames () {
-		return new String [] { DATE_TYPE_NAME };
+		return new String [] { BIGDECIMAL_TYPE_NAME };
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.swt.dnd.Transfer#getTypeIds()
 	 */
 	protected int [] getTypeIds () {
-		return new int [] { DATE_TYPE_ID };
+		return new int [] { BIGDECIMAL_TYPE_ID };
 	}
 	
 	// private constructor 
-	private DateTransfer() {
+	private BigDecimalTransfer() {
 		super();
 	}
 	

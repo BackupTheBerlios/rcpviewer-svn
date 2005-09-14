@@ -55,10 +55,10 @@ public class GuiPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * or the key value if not found.
 	 * <br>Note that this implementation is <b>not</b> the default given
 	 * by the plugin creation wizard but instead accesses resources
-	 * vai the Plugin's OSGI bundle.
+	 * via the Plugin's OSGI bundle.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle
