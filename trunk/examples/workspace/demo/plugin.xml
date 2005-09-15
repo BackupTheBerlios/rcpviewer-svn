@@ -4,6 +4,7 @@
 
    <extension point="de.berlios.rcpviewer.gui.domainclass">
    		<impl class="demo.Customer"/>
+   		<impl class="demo.Order"/>
    </extension>
 
 
