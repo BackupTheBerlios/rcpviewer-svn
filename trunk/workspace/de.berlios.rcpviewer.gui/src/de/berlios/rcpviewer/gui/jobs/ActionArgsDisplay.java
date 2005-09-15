@@ -116,6 +116,10 @@ class ActionArgsDisplay extends AbstractFormDisplay {
 							_args[finalIndex] = guiValue;
 							setOKEnablement( ok );
 						}
+
+						public void fieldFocusLost(IField field) {
+							// REVIEW_ME: what should happen here?
+						}
 					}, null );
 			field.setGuiValue( _args[finalIndex] );
 		}

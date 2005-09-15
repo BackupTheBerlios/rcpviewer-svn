@@ -190,20 +190,28 @@ public abstract aspect PojoAspect {
 	 * start of a new ChangeSet to add to an existing transaction. 
 	 * 
 	 * <p>
+	 * Note that any visibility will do; the NotifyListenersAspect uses this
+	 * (parsing the method name...).
+	 * 
+	 * <p>
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeAddToCollectionOnPojo(IPojo pojo, IPojo addedObj): 
-		execution(public void IPojo+.addTo*(IPojo+)) && this(pojo) && args(addedObj);
+		execution(void IPojo+.addTo*(IPojo+)) && this(pojo) && args(addedObj);
 	
 	/**
 	 * Captures the invocation of any removeFrom method for removing objects 
 	 * from a collection on a pojo. 
 	 * 
 	 * <p>
+	 * Note that any visibility will do; the NotifyListenersAspect uses this
+	 * (parsing the method name...).
+	 * 
+	 * <p>
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeRemoveFromCollectionOnPojo(IPojo pojo, IPojo removedObj): 
-		execution(public void IPojo+.removeFrom*(IPojo+)) && this(pojo) && args(removedObj);
+		execution(void IPojo+.removeFrom*(IPojo+)) && this(pojo) && args(removedObj);
 	
 	/**
 	 * Captures the invokation of any public method on a pojo, excluding 
@@ -305,7 +313,38 @@ public abstract aspect PojoAspect {
 		this(pojo) && 
 		target(collection) && 
 		!within(java.util..*) ;
-				
+
+
+	declare error: 
+		call(public boolean java.util.Collection+.add(Object+)) &&
+		withincode(* IPojo+.*(..)) &&
+		!withincode(void IPojo+.addTo*(..)):
+			"can only add to collection from within an addto method"; 
+
+	declare error: 
+		call(public boolean java.util.Collection+.remove(Object+)) &&
+		withincode(* IPojo+.*(..)) &&
+		!withincode(void IPojo+.removeFrom*(..)):
+			"can remove from collection from within an addto method"; 
+
+		// the idea here is to ensure we only do add or remove from collections
+	// from within addTo or removeFrom methods.  However
+
+//	private pointcut addingToCollectionOutsideAnAddToMethod(): 
+//		call(public boolean java.util.Collection+.add(Object+)) &&
+//		!cflowbelow(execution(void IPojo+.addTo*(IPojo+))); 
+//		
+//	private pointcut removingFromCollectionOutsideARemoveFromMethod(): 
+//		call(public boolean java.util.Collection+.remove(Object+)) &&
+//		!cflowbelow(execution(void IPojo+.removeFrom*(IPojo+)));
+
+//	before(): addingToCollectionOutsideAnAddToMethod() {
+//		throw new RuntimeException("Programmer error: cannot add to collection outside an addTo method");
+//	}
+//	before(): removingFromCollectionOutsideARemoveFromMethod() { 
+//		throw new RuntimeException("Programmer error: cannot remove from collection outside a removeFrom method");
+//	}
+
 	/**
 	 * Capture a pojo being instantiated.
 	 * 
@@ -394,12 +433,27 @@ public abstract aspect PojoAspect {
 	 * 
 	 * <p>
 	 * This is a helper method provided for the convenience of subaspects.
+	 * 
+	 * @param domainObject
+	 * @param joinPoint representing either an addTo or a removeFrom operation.
 	 */
 	protected EReference getEReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		Signature signature = joinPointStaticPart.getSignature();
 		String name = signature.getName();
+		if (name.startsWith("addTo")) {
+			name = camelCase(name.substring("addTo".length()));
+		} else if (name.startsWith("removeFrom")) {
+			name = camelCase(name.substring("removeFrom".length()));
+		}
 		EReference reference = domainObject.getEReferenceNamed(name);
 		return reference;
+	}
+	
+	private String camelCase(final String str) {
+		if (str == null || str.length() == 0) {
+			return str;
+		}
+		return Character.toLowerCase(str.charAt(0)) + str.substring(1);
 	}
 
 
@@ -457,6 +511,8 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * This is a helper method provided for the convenience of subaspects.
 	 * 
+	 * @param domainObject
+	 * @param joinPoint representing either an addTo or a removeFrom operation.
 	 * @return reference or null
 	 */
 	protected IDomainObject.ICollectionReference getCollectionReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {

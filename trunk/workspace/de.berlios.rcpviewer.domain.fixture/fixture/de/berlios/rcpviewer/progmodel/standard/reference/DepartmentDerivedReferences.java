@@ -1,5 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard.reference;
 import de.berlios.rcpviewer.progmodel.standard.*;
+
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,10 +38,22 @@ public class DepartmentDerivedReferences {
 		Set<Employee> employeesNamed = new HashSet<Employee>();
 		for(Employee e: employees) {
 			if (e.isTerminated()) {
-				employeesNamed.add(e);
+				addTo(employeesNamed, e);
 			}
 		}
 		return employeesNamed;
+	}
+	
+	/**
+	 * workaround for the declare error that prevents adding to collections
+	 * outside addTo methods :-)
+	 * 
+	 * @param <Q>
+	 * @param col
+	 * @param e
+	 */
+	private <Q> void addTo(Collection<Q> col, Q e) {
+		col.add(e);
 	}
 	
 	/**

@@ -70,13 +70,17 @@ public class AttributePart implements IFormPart, IFieldListener {
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
 	public void commit(boolean pOnSave) {
-		if ( _attribute.isChangeable() ) {
-			Job job = new SetAttributeJob( 
-					_object, 
-					_attribute, 
-					_field.getGuiValue() );
-			job.schedule();
-		}
+		// moved down to fieldFocusLost
+//		if ( _attribute.isChangeable() ) {
+//			SetAttributeJob job = new SetAttributeJob( 
+//					_object, 
+//					_attribute, 
+//					_field.getGuiValue() );
+//			// REVIEW_ME: running directly, otherwise the attribute ends up being set after the xactn has committed :-(
+//			// seems to work fine this way, but I know the original idea was to do everything in a job...
+//			// job.schedule();
+//			job.runInUIThread(null);
+//		}
 		setDirty(false);
 	}
 
@@ -163,6 +167,20 @@ public class AttributePart implements IFormPart, IFieldListener {
 	 */
 	public void fieldModified( IField field) {
 		setDirty( true );
+	}
+	/*
+	 * @see de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IFieldListener#fieldFocusLost(de.berlios.rcpviewer.gui.fieldbuilders.IFieldBuilder.IField)
+	 */
+	public void fieldFocusLost( IField field ) {
+		// REVIEW_ME: moved from commit() method; seems okay for strings, haven't looked at other types though.
+		if (!isStale()) {
+			return;
+		}
+		SetAttributeJob job = new SetAttributeJob( 
+				_object, 
+				_attribute, 
+				_field.getGuiValue() );
+		job.schedule();
 	}
 	
 	/* private methods */

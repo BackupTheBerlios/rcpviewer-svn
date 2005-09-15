@@ -44,6 +44,7 @@ public class NewDomainObjectJob extends AbstractUserJob {
 			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
 			
 			IDomainObject<?> domainObject = session.create( _clazz );
+//			IDomainObject<?> domainObject = session.recreate( _clazz );
 			
 			new OpenDomainObjectJob( domainObject ).schedule();
 			name = GuiPlugin.getDefault().getLabelProvider().getText( domainObject );

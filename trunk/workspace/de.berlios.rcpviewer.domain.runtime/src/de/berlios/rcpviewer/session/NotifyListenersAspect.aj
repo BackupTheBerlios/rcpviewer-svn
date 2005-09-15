@@ -90,7 +90,8 @@ public aspect NotifyListenersAspect extends PojoAspect {
 	 * <p>
 	 * In addition, notify all {@link IObservedFeature}s of the session.
 	 */
-	after(IPojo pojo, Collection collection, Object addedObject): addingToCollectionOnPojo(pojo, collection, addedObject) { 
+//	after(IPojo pojo, Collection collection, Object addedObject): addingToCollectionOnPojo(pojo, collection, addedObject) {
+	after(IPojo pojo, IPojo addedObject): invokeAddToCollectionOnPojo(pojo, addedObject) {
 		IDomainObject domainObject = pojo.getDomainObject();
 		if (domainObject == null || domainObject.getPersistState() == PersistState.UNKNOWN) {
 			return;
@@ -98,7 +99,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 		
 		IDomainObject.ICollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
 		if (reference != null) {
-			reference.notifyListeners(addedObject, true);
+			reference.notifyListeners((Object)addedObject, true);
 		}
 		
 		// rather crude, see comments above.

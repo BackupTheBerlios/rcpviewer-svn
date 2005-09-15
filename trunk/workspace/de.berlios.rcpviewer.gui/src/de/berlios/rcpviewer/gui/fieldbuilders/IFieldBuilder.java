@@ -73,6 +73,8 @@ public interface IFieldBuilder {
 	public interface IFieldListener {
 		
 		public void fieldModified( IField field );
+		
+		public void fieldFocusLost ( IField field );
 	}
 
 	

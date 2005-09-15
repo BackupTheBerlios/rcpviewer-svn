@@ -249,11 +249,22 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isDirty() {
-		if ( getDomainObject().isPersistent() == false)
+		if (getCurrentTransaction() != null) {
 			return true;
-		if (_form == null)
-			return false;
-		return _form.isDirty();
+		}
+		return _form != null && _form.isDirty();
+	}
+	
+	/**
+	 * The transaction, if any, into which the pojo that this editor relates 
+	 * has been enlisted.
+	 * 
+	 * @return
+	 */
+	private ITransaction getCurrentTransaction() {
+		ITransactable transactable = (ITransactable)getDomainObject().getPojo();
+		return  
+			TransactionManager.instance().getCurrentTransactionFor(transactable, false);
 	}
 
 

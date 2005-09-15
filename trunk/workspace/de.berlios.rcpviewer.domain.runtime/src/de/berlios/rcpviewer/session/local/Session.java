@@ -179,8 +179,8 @@ public class Session implements ISession, IObjectStoreAware {
 		assert iDomainObject instanceof DomainObject; // make sure own implementation
 		DomainObject domainObject = (DomainObject)iDomainObject;
 		synchronized(domainObject) {
-			// make sure session _id is compatible, or if not set then is in
-			// the same _domain
+			// make sure session id is compatible, or if not set then is in
+			// the same domain
 			{
 				String domainObjectSessionId = domainObject.getSessionId(); 
 				if (domainObjectSessionId != null) {
@@ -198,7 +198,7 @@ public class Session implements ISession, IObjectStoreAware {
 					String sessionDomainName = this.getDomain().getName();
 					if (!domainObjectDomainName.equals(sessionDomainName)) {
 						throw new IllegalArgumentException(
-							"Incorrect _domain " +
+							"Incorrect domain " +
 							"this.domainName = '" + sessionDomainName + "', " +
 							"domainObject.domainName = ' " + 
 								domainObjectDomainName + ")");

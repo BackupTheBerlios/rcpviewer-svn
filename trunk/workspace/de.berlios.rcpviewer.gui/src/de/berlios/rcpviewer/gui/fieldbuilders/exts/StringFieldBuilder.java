@@ -11,6 +11,8 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -118,6 +120,11 @@ public class StringFieldBuilder implements IFieldBuilder {
 							listener.fieldModified( DefaultField.this );
 						};
 					});
+					_text.addFocusListener(new FocusAdapter() {
+			            public void focusLost(FocusEvent fe) {
+			                listener.fieldFocusLost( DefaultField.this );
+			            }
+					});
 				}
 				addDnD( _text, true );
 			}
@@ -132,7 +139,7 @@ public class StringFieldBuilder implements IFieldBuilder {
 		 * @see de.berlios.rcpviewer.gui.editors.IFieldBuilder.IField#getGuiValue()
 		 */
 		public Object getGuiValue() {
-			if ( isNull ) return null;
+			// if ( isNull ) return null;
 			return _text.getText();
 		}
 

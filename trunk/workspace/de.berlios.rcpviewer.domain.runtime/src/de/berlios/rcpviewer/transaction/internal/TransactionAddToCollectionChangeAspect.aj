@@ -79,16 +79,6 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new AddToCollectionChange(transaction, transactable, collection, "???", addedObj);
-		
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null && domainObject.isAttached()) {
-//			if (!transaction.addingToInteractionChangeSet(change)) {
-//				throw new PojoAlreadyEnlistedException();			
-//			}
-//		}
-//
 		return change.execute();
 	}
 
