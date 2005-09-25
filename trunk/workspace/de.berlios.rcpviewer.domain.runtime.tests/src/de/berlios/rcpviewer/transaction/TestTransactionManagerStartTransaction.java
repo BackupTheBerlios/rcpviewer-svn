@@ -18,7 +18,13 @@ import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
 import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 import junit.framework.TestCase;
+import de.berlios.rcpviewer.transaction.TestTransactionManagerStartTransactionInstantiate;
 
+/**
+ * @see TestTransactionManagerStartTransactionInstantiate
+ * @author Dan Haywood
+ *
+ */
 public class TestTransactionManagerStartTransaction extends AbstractTransactionManagerTestCase {
 
 	public TestTransactionManagerStartTransaction() {

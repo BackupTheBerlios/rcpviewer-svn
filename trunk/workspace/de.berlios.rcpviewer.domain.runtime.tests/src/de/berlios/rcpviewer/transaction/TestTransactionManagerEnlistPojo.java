@@ -18,10 +18,12 @@ import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
 import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 import junit.framework.TestCase;
+import de.berlios.rcpviewer.transaction.TestTransactionManagerEnlistPojoInstantiate;
 
 /**
  * Modifying pojos enrols them in the transaction.
  * 
+ * @see TestTransactionManagerEnlistPojoInstantiate
  * @author Dan Haywood
  *
  */

@@ -43,4 +43,12 @@ public class Customer {
 		emailAddress.setCustomer(this);
 	}
 	
+	private String _firstName;
+	public String getFirstName() {
+		return _firstName;
+	}
+	public void setFirstName(final String firstName) {
+		_firstName = firstName;
+	}
+	
 }

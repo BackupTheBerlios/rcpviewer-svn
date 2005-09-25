@@ -20,42 +20,18 @@ import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 import junit.framework.TestCase;
 
 /**
- * Tests for instantiating are separated out because they have a different
- * fixture.
+ * TODO: need additional tests for commits following other alterations (though
+ * other tests do this implicitly).
  * 
  * @author Dan Haywood
- *
  */
-public class TestTransactionManagerInstantiate extends AbstractTransactionManagerTestCase {
+public class TestTransactionCommitInstantiate extends AbstractTransactionManagerTestCase {
 
-	public TestTransactionManagerInstantiate() {
+	public TestTransactionCommitInstantiate() {
 		super(false); // don't bother to setup any objects.
 	}
 
-	/**
-	 * This is also testing getCurrentTransactionsFor, getEnlistedPojos
-	 *
-	 */
-	public void testInstantiatingAnObjectImplicitlyStartsATransaction() {
-		IDomainObject<Customer> domainObject = 
-			(IDomainObject<Customer>)session.create(customerDomainClass);
-		Customer customer = domainObject.getPojo();
-		assertEquals(1, transactionManager.getCurrentTransactions().size());
-		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer);
-
-		assertSame(ITransaction.State.IN_PROGRESS, transaction.getState());
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
-		assertEquals(1, enlistedPojos.size());
-		assertTrue(enlistedPojos.contains(customer));
-	}
-
-	/**
-	 * Make sure we can commit okay.  That's because we do this in the setup
-	 * of all the other test cases, and I want to be debugging tests, not
-	 * fixtures...
-	 *
-	 */
-	public void testCanCommitATransaction() {
+	public void testCanCommitATransactionForNewlyInstantiatedObject() {
 
 		IDomainObject<Customer> domainObject = 
 			(IDomainObject<Customer>)session.create(customerDomainClass);
@@ -69,7 +45,6 @@ public class TestTransactionManagerInstantiate extends AbstractTransactionManage
 		
 		transaction.commit();
 		assertNull(transactionManager.getCurrentTransactionFor(customer, false));
-		
 	}
 
 }

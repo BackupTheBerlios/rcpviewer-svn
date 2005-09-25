@@ -35,6 +35,10 @@ public class Calculator {
 		return n * factorial(n-1);
 	}
 	
+	public void noop() {
+	}
+	
+
 	/**
 	 * Indicates to platform that this object can be deleted.
 	 * 
