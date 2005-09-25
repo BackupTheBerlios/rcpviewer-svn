@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.CoreException;
  * @author Mike
  *
  */
-public class ExampleObjectStoreBootStrap implements IObjectStoreBootStrap {
+public class NoopObjectStoreBootStrap implements IObjectStoreBootStrap {
 
 	/* (non-Javadoc)
 	 * @see de.berlios.rcpviewer.persistence.IObjectStoreBootStrap#populate(de.berlios.rcpviewer.persistence.IObjectStore)
