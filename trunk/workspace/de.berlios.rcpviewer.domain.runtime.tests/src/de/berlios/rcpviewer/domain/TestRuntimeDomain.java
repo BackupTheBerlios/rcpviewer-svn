@@ -16,7 +16,6 @@ public class TestRuntimeDomain extends AbstractRuntimeTestCase {
 		super.tearDown();
 	}
 	
-	
 	public void testDefaultDomainCreatedIfRequested() {
 		IDomain domain = getDomainInstance(); 
 		assertNotNull(domain);
@@ -62,5 +61,6 @@ public class TestRuntimeDomain extends AbstractRuntimeTestCase {
 		}
 		assertSame(domains[0], domains[1]);
 	}
+
 
 }
