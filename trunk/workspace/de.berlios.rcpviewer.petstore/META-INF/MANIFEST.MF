@@ -7,6 +7,6 @@ Bundle-ClassPath: petstore.jar
 Bundle-Activator: de.berlios.rcpviewer.petstore.PetstorePlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
-Require-Bundle: de.berlios.rcpviewer.gui;visibility:=reexport,
- org.aspectj.runtime;visibility:=reexport
+Require-Bundle: org.aspectj.runtime;visibility:=reexport,
+ org.essentialplatform.louis;visibility:=reexport
 Eclipse-AutoStart: true

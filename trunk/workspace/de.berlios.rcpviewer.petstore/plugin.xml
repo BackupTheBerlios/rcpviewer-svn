@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension point="de.berlios.rcpviewer.gui.domainclass">
+   <extension point="org.essentialplatform.louis.domainclass">
    		<impl class="de.berlios.rcpviewer.petstore.domain.Customer"/>
    		<impl class="de.berlios.rcpviewer.petstore.domain.CustomerOrder"/>
    		<impl class="de.berlios.rcpviewer.petstore.domain.Product"/>
@@ -17,8 +17,8 @@
    </extension>
    
    <extension
-         point="de.berlios.rcpviewer.gui.fieldbuilder">
-         <impl class="de.berlios.rcpviewer.petstore.gui.FilePathFieldBuilder"/>
+         point="org.essentialplatform.louis.guifactory">
+         <impl class="de.berlios.rcpviewer.petstore.gui.FilePathGuiFactory"/>
    </extension>
 
 
