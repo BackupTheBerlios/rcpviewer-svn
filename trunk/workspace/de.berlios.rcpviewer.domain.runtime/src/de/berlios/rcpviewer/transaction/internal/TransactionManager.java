@@ -358,7 +358,10 @@ public final class TransactionManager implements ITransactionManager {
 			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
 			if (pojoTransaction != null && pojoTransaction != transaction) {
 				// already enlisted elsewhere.
-				throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
+				
+				// REVIEW_CHANGE MikeE 20051014 
+				// throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
+				return false;
 			}
 		}
 		
