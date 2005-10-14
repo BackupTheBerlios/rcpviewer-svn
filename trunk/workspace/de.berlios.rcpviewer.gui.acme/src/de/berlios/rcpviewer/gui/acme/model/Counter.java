@@ -2,9 +2,7 @@ package de.berlios.rcpviewer.gui.acme.model;
 
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
-@InDomain
 public class Counter {
 	
 	int count = 0;
@@ -41,7 +39,7 @@ public class Counter {
 			@Named("bean2") //$NON-NLS-1$
 			@DescribedAs("Adds the value of field0 of an AnotherEasyBean instance to the counter.") //$NON-NLS-1$
 			AnotherEasyBean bean2 ) {
-		count = count + bean1.getField0() + bean2.getField0();
+		count = 0 ; // count + bean1.getField0() + bean2.getField0();
 	}
 	
 

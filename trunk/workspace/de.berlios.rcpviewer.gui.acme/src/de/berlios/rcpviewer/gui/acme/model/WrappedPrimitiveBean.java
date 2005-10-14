@@ -21,8 +21,7 @@ public class WrappedPrimitiveBean {
 	private Float floatField = null;
 	private Double doubleField = null;
 	
-	/* getters / setters */
-	
+
 	/**
 	 * @return Returns the booleanField.
 	 */

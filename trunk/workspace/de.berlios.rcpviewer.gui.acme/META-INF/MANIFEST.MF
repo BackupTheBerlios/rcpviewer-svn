@@ -7,5 +7,5 @@ Bundle-ClassPath: acme.jar
 Bundle-Vendor: Acme Ltd.
 Bundle-Localization: plugin
 Eclipse-AutoStart: true
-Require-Bundle: de.berlios.rcpviewer.gui;visibility:=reexport,
- org.aspectj.runtime
+Require-Bundle: org.aspectj.runtime,
+ org.essentialplatform.louis

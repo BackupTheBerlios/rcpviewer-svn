@@ -1,13 +1,11 @@
 package de.berlios.rcpviewer.gui.acme.model;
 
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
  * @author Mike
  */
 @Lifecycle(instantiable=true,searchable=true,saveable=true)
-@InDomain
 public class PrimitiveArrayBean {
 	
 	private boolean[] booleanField;
