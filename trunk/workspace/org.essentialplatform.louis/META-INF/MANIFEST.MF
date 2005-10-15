@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Essential Platform GUI Runtime
+Bundle-SymbolicName: org.essentialplatform.louis; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: lib/swtcalendar.jar,
+ louis.jar
+Bundle-Activator: org.essentialplatform.louis.LouisPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui;visibility:=reexport,
+ org.eclipse.core.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
+ de.berlios.rcpviewer.domain;visibility:=reexport,
+ org.eclipse.ui.forms;visibility:=reexport,
+ org.eclipse.ui.views;visibility:=reexport,
+ org.eclipse.ui.console;visibility:=reexport
+Eclipse-AutoStart: true
+Export-Package: org.essentialplatform.louis,
+ org.essentialplatform.louis.dnd,
+ org.essentialplatform.louis.factory,
+ org.essentialplatform.louis.factory.attribute,
+ org.essentialplatform.louis.jobs,
+ org.essentialplatform.louis.util,
+ org.essentialplatform.louis.widgets

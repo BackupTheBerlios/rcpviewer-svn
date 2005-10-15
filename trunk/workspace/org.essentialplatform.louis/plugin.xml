@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+              class="org.essentialplatform.louis.app.Application">
+         </run>
+      </application>
+   </extension>
+   
+   <extension-point id="domainclass" 
+                    name="Domain Class" 
+                    schema="schema/domainclass.exsd"/>
+  <extension-point id="guifactory" 
+                    name="Gui Factory" 
+                    schema="schema/guifactory.exsd"/>
+  <extension-point id="labelprovider" 
+                    name="Label Provider" 
+                    schema="schema/labelprovider.exsd"/>
+                    
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Default Perspective"
+            class="org.essentialplatform.louis.app.DefaultPerspective"
+            id="org.essentialplatform.louis.app.DefaultPerspective">
+      </perspective>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.essentialplatform.louis.editors.DefaultEditor"
+            icon="icons/sample.gif"
+            id="org.essentialplatform.louis.editors.DefaultEditor"
+            name="Object Editor"/>
+   </extension>
+  
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.essentialplatform.louis"
+            name="Rcp Views"/>
+      <view
+            category="org.essentialplatform.louis"
+            class="org.essentialplatform.louis.views.classbar.ClassBarView"
+            icon="icons/sample.gif"
+            id="org.essentialplatform.louis.views.classbar.ClassBarView"
+            name=" "/>
+      <view
+            category="org.essentialplatform.louis"
+            class="org.essentialplatform.louis.views.sessiontree.SessionTreeView"
+            icon="icons/sample.gif"
+            id="org.essentialplatform.louis.views.sessiontree.SessionTreeView"
+            name="%plugin.sessionTreeViewName"/>
+      <view
+            category="org.essentialplatform.louis"
+            class="org.essentialplatform.louis.views.ops.OpsView"
+            icon="icons/sample.gif"
+            id="org.essentialplatform.louis.views.ops.OpsView"
+            name="%plugin.opsViewName"/>     
+   </extension>
+   
+   <extension
+         point="org.essentialplatform.louis.guifactory">
+         <!-- <impl class="org.essentialplatform.louis.factory.DomainClassGuiFactory"/> -->
+   </extension>
+
+</plugin>
