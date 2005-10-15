@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.search,
  de.berlios.rcpviewer.domain.runtime,
  net.sf.plugins.utils,
- de.berlios.rcpviewer.gui,
- org.aspectj.runtime
+ org.aspectj.runtime,
+ org.essentialplatform.louis
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.persistence.inmemory

@@ -20,8 +20,8 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPageSite;
+import org.essentialplatform.louis.jobs.OpenDomainObjectJob;
 
-import de.berlios.rcpviewer.gui.jobs.OpenDomainObjectJob;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class InMemorySearchResultPage
