@@ -5,7 +5,7 @@ import java.util.Date;
 import org.eclipse.swt.graphics.Color;
 
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 /**
@@ -50,7 +50,7 @@ public class EasyBean {
 		this.field2 = field2;
 	}
 	
-	@Order(5)
+	@RelativeOrder(5)
 	public Color getField5() {
 		return field5;
 	}
