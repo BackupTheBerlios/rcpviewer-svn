@@ -1,0 +1,73 @@
+package id28lzkeer3d5zpeer3ism2;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id28lzkeer3d5zpeer3ism2.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id28lzkeer3d5zpeer3ism2.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id28lzkeer3d5zpeer3ism2.node3:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}}/**
+
+@__tags
+@shapeType ComponentDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id28lzkeer3d5zpeer3ism2.node1:oiref>=270,200,123,60,1:oigroup>
+<oigroup:<oiref:design#Class#id28lzkeer3d5zpeer3ism2.node3:oiref>=40,200,143,60,1:oigroup>
+<oigroup:<oiref:design#Class#id28lzkeer3d5zpeer3ism2.node3.link:oiref>=116,200,116,140:oigroup>
+<oigroup:<oiref:design#Class#id28lzkeer3d5zpeer3ism2.node:oiref>=50,80,149,60,1:oigroup>
+<oigroup:<oiref:design#Class#id28lzkeer3d5zpeer3ism2.node3.link5:oiref>=183,230,270,230:oigroup> 
+*/
+class __positions {
+}/**
+@shapeType Component
+@__modelType node
+@name Domain Model
+@stereotype pojo 
+*/
+class node {
+}/**
+@shapeType Component
+@__modelType node
+@name xactn mgr 
+*/
+class node1 {
+}/**
+@shapeType Component
+@__modelType node
+@name xactn aspect
+@stereotype aspectj 
+*/
+class node3 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id28lzkeer3d5zpeer3ism2.node:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id28lzkeer3d5zpeer3ism2.node1:oiref><oihard> 
+*/
+class link5 {
+}}

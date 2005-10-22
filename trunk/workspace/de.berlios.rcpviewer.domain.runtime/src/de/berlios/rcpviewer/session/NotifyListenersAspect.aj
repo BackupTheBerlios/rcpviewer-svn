@@ -33,7 +33,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 			return;
 		}
 		
-		IDomainObject.IAttribute attribute = getAttributeFor(domainObject, thisJoinPointStaticPart);
+		IDomainObject.IObjectAttribute attribute = getAttributeFor(domainObject, thisJoinPointStaticPart);
 		if (attribute != null) {
 			attribute.notifyListeners(newValue);
 		}
@@ -69,7 +69,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 			return;
 		}
 		
-		IDomainObject.IOneToOneReference reference = getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
+		IDomainObject.IObjectOneToOneReference reference = getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
 		if (reference != null) {
 			reference.notifyListeners(newReference);
 		}
@@ -97,7 +97,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 			return;
 		}
 		
-		IDomainObject.ICollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
+		IDomainObject.IObjectCollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
 		if (reference != null) {
 			reference.notifyListeners((Object)addedObject, true);
 		}
@@ -124,7 +124,7 @@ public aspect NotifyListenersAspect extends PojoAspect {
 			return;
 		}
 		
-		IDomainObject.ICollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
+		IDomainObject.IObjectCollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
 		if (reference != null) {
 			reference.notifyListeners(removedObject, false);
 		}

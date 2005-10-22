@@ -19,6 +19,7 @@ public class AllRuntimeTests {
 		suite.addTest(de.berlios.rcpviewer.progmodel.standard.reference.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.transaction.AllTests.suite());
 		suite.addTest(de.berlios.rcpviewer.session.AllTests.suite());
+		suite.addTest(de.berlios.rcpviewer.persistence.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

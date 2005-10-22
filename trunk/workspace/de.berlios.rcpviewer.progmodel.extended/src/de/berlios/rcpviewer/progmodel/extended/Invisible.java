@@ -55,4 +55,12 @@ import java.lang.annotation.*;
 @Inherited
 @Target({ElementType.METHOD})
 public @interface Invisible {
+	class Factory {
+		private Factory() {}
+		public static Invisible create() {
+			return new Invisible() { 
+				public Class<? extends Annotation> annotationType() { return Invisible.class; }
+			};
+		}
+	}
 }

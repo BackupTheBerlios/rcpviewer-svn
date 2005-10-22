@@ -73,4 +73,13 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface Mask {
 	String value();
+	class Factory {
+		public static Mask create(final String value) {
+			return new Mask(){
+				public String value() { return value; }
+				public Class<? extends Annotation> annotationType() { return Mask.class; }
+			};
+		}
+	}
+
 }

@@ -1,15 +1,28 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.domain.MethodNameHelper;
+import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
 
 /**
- * Helper class that encapsulates the various naming conventions of the
- * standard programming model.
+ * Helper class (package local) that encapsulates the various naming 
+ * conventions of the standard programming model.
+ * 
+ * <p>
+ * This class is abstract so that it can be used in both the runtime and
+ * compile-time environments.
  * 
  * @author Dan Haywood
  */
-public class NamingConventions {
+public abstract class StandardProgModelRules {
 
+	public StandardProgModelRules() {}
+	
+	private JavaProgModelRules _javaProgModelRules = new JavaProgModelRules();
+	
+	protected JavaProgModelRules getJavaProgModelRules() {
+		return _javaProgModelRules;
+	}
+	
 	// ATTRIBUTES: START
 	
 	/**
@@ -79,20 +92,11 @@ public class NamingConventions {
 	 * 
 	 */
 	public final boolean isValueType(final Class<?> javaClass) {
-		if (isCoreValueType(javaClass)) {
+		if (_javaProgModelRules.isCoreValueType(javaClass)) {
 			return true;
 		}
 		Value valueAnnotation = javaClass.getAnnotation(Value.class);
 		return valueAnnotation != null;
-	}
-	
-	/**
-	 * If one of the (hard-coded) classes in 
-	 * {@link StandardProgModelConstants#JDK_VALUE_TYPES}.
-	 * 
-	 */
-	public final boolean isCoreValueType(final Class<?> javaClass) {
-		return de.berlios.rcpviewer.domain.TypeConstants.JDK_VALUE_TYPES.contains(javaClass);
 	}
 	
 	/**
@@ -109,7 +113,7 @@ public class NamingConventions {
 		if (!isValueType(javaClass)) {
 			throw new IllegalArgumentException("Class must represent a value type");
 		}
-		if (isCoreValueType(javaClass)) {
+		if (_javaProgModelRules.isCoreValueType(javaClass)) {
 			throw new IllegalArgumentException("Class must not be a core value type");
 		}
 		// should have a Value annotation.
@@ -137,15 +141,5 @@ public class NamingConventions {
 		InDomain domain = javaClass.getAnnotation(InDomain.class);
 		return domain != null;
 	}
-	
-	public final boolean isCollectionType(final Class<?> clazz) {
-		return de.berlios.rcpviewer.domain.TypeConstants.COLLECTION_TYPES.contains(clazz);
-	}
-
-	public boolean isVoid(Class<?> javaDataType) {
-		return Void.TYPE.equals(javaDataType);
-	}
-
-
 }
 

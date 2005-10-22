@@ -34,4 +34,13 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 public @interface ImageUrlAt {
 	String value();
+	class Factory {
+		private Factory() {}
+		public static ImageUrlAt create(final String value) {
+			return new ImageUrlAt(){
+				public String value() { return value; }
+				public Class<? extends Annotation> annotationType() { return ImageUrlAt.class; }
+			};
+		}
+	}
 }

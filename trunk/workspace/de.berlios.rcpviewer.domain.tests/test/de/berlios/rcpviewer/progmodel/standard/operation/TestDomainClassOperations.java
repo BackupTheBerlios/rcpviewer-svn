@@ -11,6 +11,7 @@ import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.OperationKind;
+import de.berlios.rcpviewer.domain.IDomainClass.IOperation;
 
 
 /**
@@ -46,14 +47,16 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(CustomerWithPublicVisibilityOperation.class);
 		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
+		IDomainClass.IOperation operation = domainClass.getOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
-		assertFalse(domainClass.isStatic(eOperation));
+		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("create");
+		operation = domainClass.getOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("create", eOperation.getName());
-		assertTrue(domainClass.isStatic(eOperation));
+		assertTrue(operation.isStatic());
 
 		assertEquals(2, domainClass.operations().size());
 		assertEquals(1, domainClass.operations(OperationKind.INSTANCE, true).size());
@@ -134,72 +137,72 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(CustomerWithNoArgOperation.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
+		IDomainClass.IOperation operation = domainClass.getOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
 		assertEquals(0, eOperation.getEParameters().size());
-		assertFalse(domainClass.isStatic(eOperation));
+		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("create");
+		operation = domainClass.getOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("create", eOperation.getName());
 		assertEquals(0, eOperation.getEParameters().size());
-		assertTrue(domainClass.isStatic(eOperation));
+		assertTrue(operation.isStatic());
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation1Arg() {
 		domainClass = lookupAny(CustomerWithPrimitiveArgOperation.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
+		IOperation operation = domainClass.getOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("rankAs", eOperation.getName());
 		assertEquals(1, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("int", domainClass.getNameFor(eOperation, 0));
-		assertEquals("EInt", eDataType.getName());
-		assertFalse(domainClass.isStatic(eOperation));
+		assertTrue(operation.isParameterAValue(0));
+		assertEquals("int", operation.getNameFor(0));
+		assertEquals("EInt", operation.getEDataTypeFor(0).getName());
+		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("createWithRank");
+		operation = domainClass.getOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("createWithRank", eOperation.getName());
 		assertEquals(1, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("long", domainClass.getNameFor(eOperation, 0));
-		assertEquals("ELong", eDataType.getName());
-		assertTrue(domainClass.isStatic(eOperation));
+		assertTrue(operation.isParameterAValue(0));
+		assertEquals("long", operation.getNameFor(0));
+		assertEquals("ELong", operation.getEDataTypeFor(0).getName());
+		assertTrue(operation.isStatic());
 	}
 
 	public void testMethodWithPrimitiveArgumentsPickedUpAsOperation2Arg() {
 		domainClass = lookupAny(OperationsCustomerPositionedOnMap.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
+		IOperation operation = domainClass.getOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("positionAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("float", domainClass.getNameFor(eOperation, 0));
-		assertEquals("EFloat", eDataType.getName());
-		assertTrue(domainClass.isParameterAValue(eOperation, 1));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
-		assertEquals("float1", domainClass.getNameFor(eOperation, 1));
-		assertEquals("EFloat", eDataType.getName());
-		assertFalse(domainClass.isStatic(eOperation));
+		assertTrue(operation.isParameterAValue(0));
+		assertEquals("float", operation.getNameFor(0));
+		assertEquals("EFloat", operation.getEDataTypeFor(0).getName());
+		assertTrue(operation.isParameterAValue(1));
+		assertEquals("float1", operation.getNameFor(1));
+		assertEquals("EFloat", operation.getEDataTypeFor(1).getName());
+		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("createAtPosition");
+		operation = domainClass.getOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("createAtPosition", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("double", domainClass.getNameFor(eOperation, 0));
-		assertEquals("EDouble", eDataType.getName());
-		assertTrue(domainClass.isParameterAValue(eOperation, 1));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
-		assertEquals("double1", domainClass.getNameFor(eOperation, 1));
-		assertEquals("EDouble", eDataType.getName());
-		assertTrue(domainClass.isStatic(eOperation));
+		assertTrue(operation.isParameterAValue(0));
+		assertEquals("double", operation.getNameFor(0));
+		assertEquals("EDouble", operation.getEDataTypeFor(0).getName());
+		assertTrue(operation.isParameterAValue(1));
+		assertEquals("double1", operation.getNameFor(1));
+		assertEquals("EDouble", operation.getEDataTypeFor(1).getName());
+		assertTrue(operation.isStatic());
 	}
 
 	public void testMethodWithValueObjectArgumentsPickedUpAsOperation() {
@@ -207,32 +210,30 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(Appointment.class);
 		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
+		IOperation operation = domainClass.getOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("moveTo", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		EDataType eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
-		assertEquals("de.berlios.rcpviewer.progmodel.standard.operation.TimePeriod", eDataType.getName());
-		assertTrue(domainClass.isParameterAValue(eOperation, 1));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
-		assertEquals("string", domainClass.getNameFor(eOperation, 1));
-		assertEquals("EString", eDataType.getName());
-		assertFalse(domainClass.isStatic(eOperation));
+		assertTrue(operation.isParameterAValue(0));
+		assertEquals("timePeriod", operation.getNameFor(0));
+		assertEquals("de.berlios.rcpviewer.progmodel.standard.operation.TimePeriod", operation.getEDataTypeFor(0).getName());
+		assertTrue(operation.isParameterAValue(1));
+		assertEquals("string", operation.getNameFor(1));
+		assertEquals("EString", operation.getEDataTypeFor(1).getName());
+		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("createAt");
+		operation = domainClass.getOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("createAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterAValue(eOperation, 0));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 0);
-		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
-		assertEquals("de.berlios.rcpviewer.progmodel.standard.operation.TimePeriod", eDataType.getName());
-		assertTrue(domainClass.isParameterAValue(eOperation, 1));
-		eDataType = domainClass.getEDataTypeFor(eOperation, 1);
-		assertEquals("string", domainClass.getNameFor(eOperation, 1));
-		assertEquals("EString", eDataType.getName());
-		assertTrue(domainClass.isStatic(eOperation));
+		assertTrue(operation.isParameterAValue(0));
+		assertEquals("timePeriod", operation.getNameFor(0));
+		assertEquals("de.berlios.rcpviewer.progmodel.standard.operation.TimePeriod", operation.getEDataTypeFor(0).getName());
+		assertTrue(operation.isParameterAValue(1));
+		assertEquals("string", operation.getNameFor(1));
+		assertEquals("EString", operation.getEDataTypeFor(1).getName());
+		assertTrue(operation.isStatic());
 	}
 
 	/**
@@ -248,12 +249,13 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass.getDomain().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
+		IOperation operation = domainClass.getOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("marry", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertTrue(domainClass.isParameterADomainObject(eOperation, 0));
+		assertTrue(operation.isParameterADomainObject(0));
 		// HACK
-		IRuntimeDomainClass<?> eMarryFirstArgClass = (IRuntimeDomainClass)domainClass.getDomainClassFor(eOperation, 0);
+		IRuntimeDomainClass<?> eMarryFirstArgClass = (IRuntimeDomainClass)operation.getDomainClassFor(0);
 		assertSame(Man.class, eMarryFirstArgClass.getJavaClass());
 		
 	}

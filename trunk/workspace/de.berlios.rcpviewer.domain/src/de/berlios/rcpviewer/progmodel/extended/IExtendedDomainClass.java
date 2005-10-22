@@ -21,11 +21,32 @@ public interface IExtendedDomainClass<T> {
 	/**
 	 * Returns the attributes of the extended domain class 
 	 * {@link IDomainClass#attributes()} in the order defined by the
-	 * {@link Order} annotation.
+	 * {@link RelativeOrder} annotation.
 	 * 
 	 * @return
 	 */
 	public List<EAttribute> orderedAttributes();
+
+	/**
+	 * Returns the attributes of the extended domain class 
+	 * {@link IDomainClass#attributes()} that make up the identifier for this
+	 * domain object, in the order defined by the {@link Id} annotation.
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> idAttributes();
+
+	/**
+	 * Whether the identifier for this class consists of a single attribute.
+	 * @return
+	 */
+	public boolean isSimpleId();
+	
+	/**
+	 * Whether the identifier for this class consists of multiple attributes.
+	 * @return
+	 */
+	public boolean isCompositeId();
 
 	/**
 	 * Whether this class may be searched for by the UI in some generic
@@ -62,6 +83,47 @@ public interface IExtendedDomainClass<T> {
 	 */
 	public boolean isSaveable();
 
+	
+	/**
+	 * Whether all attributes in the class are by default immutable once 
+	 * persisted.
+	 * 
+	 * <p>
+	 * Note that even if this method returns <code>true</code>, it is still
+	 * possible for an individual attribute to be mutable if it opts out.  To
+	 * determine whether any given attribute is immutable once persisted, use
+	 * {@link #isImmutableOncePersisted(EAttribute)}. 
+	 * 
+	 * @return true if all attributes for the class should be taken to be 
+	 *         immutable once persisted unless they explicitly have opted out.
+	 */
+	public boolean isImmutableOncePersisted();
+
+	/**
+	 * Whether the specified attribute is part of the persistence Id.
+	 * 
+	 * <p>
+	 * The {@link Id} annotation is used to indicate whether an attribute
+	 * is an identifier or not.
+	 *  
+	 * @param attribute - attribute of the domain class that this is an extension of
+	 * @return
+	 */
+	public boolean isId(final EAttribute attribute);
+	
+	/**
+	 * The assignment type (application or objectstore etc) in effect for
+	 * this domain class.
+	 * 
+	 * <p>
+	 * Dependent upon whether the id is composite or simple, if integral, and
+	 * finally on the <tt>@Id</tt> annotation's <tt>assignedBy</tt> property. 
+	 * 
+	 * @see Id
+	 * @return
+	 */
+	public AssignmentType getIdAssignmentType();
+	
 	/**
 	 * Whether the specified attribute is optional for this domain class.
 	 * 

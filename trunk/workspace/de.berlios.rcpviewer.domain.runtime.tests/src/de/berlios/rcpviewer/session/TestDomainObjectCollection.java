@@ -33,7 +33,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
-		IDomainObject.ICollectionReference employeesCollection = 
+		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);
@@ -58,7 +58,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.create(departmentDomainClass);
-		IDomainObject.ICollectionReference employeesCollection = 
+		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		Collection<IDomainObject<Employee>> employees = 
 			employeesCollection.getCollection();
@@ -79,7 +79,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
-		assertSame(employeeDomainClass, departmentDomainClass.getReferencedClass(employeesCollection));
+		assertSame(employeeDomainClass, departmentDomainClass.getReference(employeesCollection).getReferencedClass());
 	}
 
 	public void testListenersNotifiedWhenAddToCollection() {
@@ -94,7 +94,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 			session.recreate(departmentDomainClass);
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);
-		IDomainObject.ICollectionReference employeesCollection = 
+		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		MyDomainObjectReferenceListener l =
 			employeesCollection.addListener(new MyDomainObjectReferenceListener());
@@ -118,7 +118,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
-		IDomainObject.ICollectionReference employeesCollection = 
+		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);
@@ -149,7 +149,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
-		IDomainObject.ICollectionReference employeesCollection = 
+		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);

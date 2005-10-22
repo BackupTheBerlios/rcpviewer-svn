@@ -12,7 +12,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
-import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.EmfAnnotations;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
@@ -23,8 +23,8 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 
 	private static final Class<IExtendedDomainObject> INTERFACE_CLASS = IExtendedDomainObject.class;
 	private static final Class<ExtendedDomainObject> IMPLEMENTATION_CLASS = ExtendedDomainObject.class;
-	private EmfFacade emf = new EmfFacade();
 	
+	private final ExtendedProgModelSemanticsEmfSerializer serializer = new ExtendedProgModelSemanticsEmfSerializer();
 
 	public ExtendedRuntimeDomainClass(IDomainClass<T> adaptedDomainClass) {
 		super(adaptedDomainClass);
@@ -80,10 +80,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedRuntimeDomainClass#getAccessorPre(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public Method getAccessorPre(EAttribute attribute) {
-		String accessorPre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(attribute), 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
+		String accessorPre = serializer.getAttributeAccessorPre(attribute);
 		if (accessorPre == null) {
 			return null;
 		}
@@ -105,10 +102,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedRuntimeDomainClass#getMutatorPre(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public Method getMutatorPre(EAttribute attribute) {
-		String mutatorPre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(attribute), 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
+		String mutatorPre = serializer.getAttributeMutatorPre(attribute);
 		if (mutatorPre == null) {
 			return null;
 		}
@@ -128,10 +122,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	}
 
 	public Method getAccessorPre(EReference reference) {
-		String accessorPre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(reference), 
-					ExtendedProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
+		String accessorPre = serializer.getReferenceAccessorPre(reference);
 		if (accessorPre == null) {
 			return null;
 		}
@@ -150,10 +141,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	}
 
 	public Method getMutatorPre(EReference reference) {
-		String mutatorPre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(reference), 
-					ExtendedProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
+		String mutatorPre = serializer.getReferenceMutatorPre(reference);
 		if (mutatorPre == null) {
 			return null;
 		}
@@ -173,10 +161,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	}
 
 	public Method getAddToPre(EReference reference) {
-		String addToPre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(reference), 
-					ExtendedProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY);
+		String addToPre = serializer.getReferenceAddToPre(reference);
 		if (addToPre == null) {
 			return null;
 		}
@@ -196,10 +181,8 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	}
 
 	public Method getRemoveFromPre(EReference reference) {
-		String removeFromPre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(reference), 
-					ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY);
+		String removeFromPre =
+			serializer.getReferenceRemoveFromPre(reference);
 		if (removeFromPre == null) {
 			return null;
 		}
@@ -219,10 +202,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	}
 
 	public Method getInvokePre(EOperation operation) {
-		String invokePre = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(operation), 
-					ExtendedProgModelConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY);
+		String invokePre = serializer.getOperationPre(operation);
 		if (invokePre == null) {
 			return null;
 		}
@@ -246,10 +226,7 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 	}
 
 	public Method getInvokeDefaults(EOperation eOperation) {
-		String invokeDefaults = 
-			emf.getAnnotationDetail(
-					emf.methodNamesAnnotationFor(eOperation), 
-					ExtendedProgModelConstants.ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY);
+		String invokeDefaults = serializer.getOperationDefaults(eOperation);
 		if (invokeDefaults == null) {
 			return null;
 		}
@@ -277,6 +254,4 @@ public final class ExtendedRuntimeDomainClass<T> extends ExtendedDomainClass<T>
 			return null;
 		}
 	}
-	
-
 }

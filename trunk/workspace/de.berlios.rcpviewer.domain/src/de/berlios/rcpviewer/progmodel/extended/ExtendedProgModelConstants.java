@@ -152,7 +152,7 @@ public final class ExtendedProgModelConstants {
 	 * The value held is the mask literal. 
 	 * 
 	 */
-	public static final String ANNOTATION_ELEMENT_MASK_KEY = 
+	public static final String ANNOTATION_ATTRIBUTE_MASK_KEY = 
 		"mask";
 
 	/**
@@ -164,7 +164,7 @@ public final class ExtendedProgModelConstants {
 	 * The value held is the regex literal. 
 	 * 
 	 */
-	public static final String ANNOTATION_ELEMENT_REGEX_KEY = 
+	public static final String ANNOTATION_ATTRIBUTE_REGEX_KEY = 
 		"regex";
 
 	/**
@@ -194,6 +194,20 @@ public final class ExtendedProgModelConstants {
 		"searchable";
 
 	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_CLASS}, then indicates whether all attributes of 
+	 * this class should be considered as immutable once its owning object has 
+	 * been persisted.
+	 * 
+	 * <p>
+	 * The string <i>"true"</i> is held as the value.
+	 */
+	public static final String ANNOTATION_CLASS_IMMUTABLE_ONCE_PERSISTED_KEY = 
+		"immutableOncePersisted";
+
+
+
+	/**
 	 * Key to EAnnotation details representing (names of) method representing
 	 * accessor preconditions of an attribute.
 	 * 
@@ -213,14 +227,47 @@ public final class ExtendedProgModelConstants {
 
 	/**
 	 * If present in the details of an EAnnotation with source of
-	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the relative position of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the relative order of
 	 * this attribute with respect to the other attributes.
 	 * 
 	 * <p>
 	 * The value that is held (as a string) can be parsed into an integer.
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_ORDER_KEY = 
-		"order";
+	public static final String ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY = 
+		"@RelativeOrder.value";
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the relative position of
+	 * this attribute in the persisted Id with respect to the other attributes
+	 * that also make up the persisted Id.
+	 * 
+	 * <p>
+	 * Corresponds to the <tt>value</tt> property of the <tt>@Id</tt> annotation.
+	 * 
+	 * <p>
+	 * The value that is held (as a string) can be parsed into an integer.  
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_ID_VALUE = 
+		"@Id.value";
+
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, then (in conjunction with
+	 * {@link #ANNOTATION_ATTRIBUTE_ID_VALUE}) indicates the means by which the
+	 * Id is assigned.
+	 * 
+	 * <p>
+	 * Corresponds to the <tt>assignedBy</tt> property of the <tt>@Id</tt> annotation.
+	 * 
+	 * <p>
+	 * The value that is held (as a string) can be converted back to an
+	 * {@link AssignmentType} using <tt>AssignmentType.valueOf()</tt>.
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_ID_ASSIGNED_BY = 
+		"@Id.assignedBy";
+
 
 	/**
 	 * If present in the details of an EAnnotation with source of
@@ -314,6 +361,21 @@ public final class ExtendedProgModelConstants {
 		"immutableOncePersisted";
 
 
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ATTRIBUTE}, and where the details also contain 
+	 * {@link #ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_KEY}, then 
+	 * (if its value is <i>"true"</i>) indicates that this attribute should
+	 * be excluded from the semantic if the type as a whole has the annotation
+	 * applied.
+	 * 
+	 * <p>
+	 * The value held is either <i>"true"</i> or <i>"false"</i>.
+	 */
+	public static final String ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_OPTOUT_KEY = 
+		"immutableOncePersisted.optout";
+
+	
 	/**
 	 * If present in the details of an EOperation with source of
 	 * {@link #ANNOTATION_OPERATION}, then indicates the relative position of

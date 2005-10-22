@@ -16,7 +16,11 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
+import de.berlios.rcpviewer.domain.IDomainClass.IAttribute;
+import de.berlios.rcpviewer.persistence.PersistenceId;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
@@ -30,16 +34,23 @@ import de.berlios.rcpviewer.session.IPersistable;
 import de.berlios.rcpviewer.session.IPersistable.PersistState;
 import de.berlios.rcpviewer.session.IResolvable;
 import de.berlios.rcpviewer.session.IResolvable.ResolveState;
-import de.berlios.rcpviewer.session.IDomainObject.IAttribute;
-import de.berlios.rcpviewer.session.IDomainObject.IOperation;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectOperation;
 
 /**
- * Wrapper for a POJO that also knows its {@link IDomainClass} and the
- * {@link ISession} (if any) that owns it.
+ * Wrapper for a POJO that implements the choreography between the rest of the
+ * platform and the pojo itself.
+ * 
+ * <p>
+ * Additionally, knows its {@link IDomainClass} and also {@link ISession} 
+ * (if any) to which it is currently attached.
  * 
  * <p>
  * Implementation note: created by {@link DomainAspect} (perthis aspect for 
  * pojos).
+ * 
+ * <p>
+ * TODO: should implement the choreography of interacting with the underlying POJOs.
  * 
  * @author Dan Haywood
  */
@@ -50,10 +61,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
 	private List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
 	private ISession _session;
-	private WeakHashMap<EAttribute, IAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IAttribute>();
-	private WeakHashMap<EReference, IReference> _referencesByEReference = new WeakHashMap<EReference, IReference>();
-	private WeakHashMap<EOperation, IOperation> _operationsByEOperation = new WeakHashMap<EOperation, IOperation>();
 	
+	private WeakHashMap<EAttribute, IObjectAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IObjectAttribute>();
+	private WeakHashMap<EReference, IObjectReference> _referencesByEReference = new WeakHashMap<EReference, IObjectReference>();
+	private WeakHashMap<EOperation, IObjectOperation> _operationsByEOperation = new WeakHashMap<EOperation, IObjectOperation>();
+
+	private PersistenceId _persistenceId = null;
 	private PersistState _persistState = PersistState.UNKNOWN;
 	private ResolveState _resolveState = ResolveState.UNKNOWN;
 	
@@ -150,18 +163,48 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return _pojo;
 	}
 
-
-	/**
-	 * Returns the adapter of the specified class (if any).
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getPersistenceId()
 	 */
-	public <V> V getAdapter(Class<V> domainObjectClass) {
-		Object adapter = _adaptersByClass.get(domainObjectClass);
-		if (adapter == null) {
-			adapter = getDomainClass().getObjectAdapterFor(this, domainObjectClass);
-			_adaptersByClass.put(adapter.getClass(), adapter);
-		}
-		return (V)adapter;
+	public PersistenceId getPersistenceId() {
+		return _persistenceId;
 	}
+	/**
+	 * Set the persistence Id.
+	 * 
+	 * <p>
+	 * Note that this is not configured using 
+	 * {@link #init(IRuntimeDomainClass, ISession, PersistState, ResolveState)}.
+	 * Instead, it will be derived from the values set directly by the
+	 * application (application-assigned), or it will be set by the object store
+	 * (objectstore-assigned).
+	 * 
+	 * @param persistenceId
+	 */
+	public void setPersistenceId(PersistenceId persistenceId) {
+		_persistenceId = persistenceId;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.session.IDomainObject#getAdapter(java.lang.Class)
+	 */
+	public <V> V getAdapter(Class<V> objectAdapterClass) {
+		Object adapter = _adaptersByClass.get(objectAdapterClass);
+		if (adapter == null) {
+			List<IDomainClassAdapter> classAdapters = getDomainClass().getAdapters();
+			for(IDomainClassAdapter classAdapter: classAdapters) {
+				// JAVA5_FIXME: should be using covariance of getAdapters()
+				IRuntimeDomainClassAdapter<T> runtimeClassAdapter = (IRuntimeDomainClassAdapter<T>)classAdapter;
+				adapter = runtimeClassAdapter.getObjectAdapterFor(this, objectAdapterClass); 
+				if (adapter != null) {
+					_adaptersByClass.put(adapter.getClass(), adapter);
+					break;
+				}
+			}
+		}
+		return (V)adapter; // may still be null.
+	}
+
 
 
 	/*
@@ -286,32 +329,32 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		sessionId = null;
 	}
 
-	public synchronized IAttribute getAttribute(final EAttribute eAttribute) {
-		IAttribute attribute = _attributesByEAttribute.get(eAttribute);
+	public synchronized IObjectAttribute getAttribute(final EAttribute eAttribute) {
+		IObjectAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
-			attribute = new Attribute(eAttribute);
+			attribute = new ObjectAttribute(eAttribute);
 			_attributesByEAttribute.put(eAttribute, attribute);
 		}
 		return attribute;
 	}
 
 	/**
-	 * Returns an {@link IReference} for any EReference, whether it represents
+	 * Returns an {@link IObjectReference} for any EReference, whether it represents
 	 * a 1:1 reference or a collection.
 	 *  
 	 * @param eReference
 	 * @return
 	 */
-	synchronized IReference getReference(final EReference eReference) {
+	synchronized IObjectReference getReference(final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
-		IReference reference = _referencesByEReference.get(eReference);
+		IObjectReference reference = _referencesByEReference.get(eReference);
 		if (reference == null) {
 			if (eReference.isMany()) {
-				reference = new CollectionReference(eReference);
+				reference = new ObjectCollectionReference(eReference);
 			} else {
-				reference = new OneToOneReference(eReference);
+				reference = new ObjectOneToOneReference(eReference);
 			}
 			_referencesByEReference.put(eReference, reference);
 		}
@@ -321,16 +364,16 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getOneToOneReference(org.eclipse.emf.ecore.EReference)
 	 */
-	public synchronized IOneToOneReference getOneToOneReference(final EReference eReference) {
+	public synchronized IObjectOneToOneReference getOneToOneReference(final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
 		if (eReference.isMany()) {
 			throw new IllegalArgumentException("EMF reference represents a collection (ref='" + eReference + "'");
 		}
-		IOneToOneReference reference = (IOneToOneReference)_referencesByEReference.get(eReference);
+		IObjectOneToOneReference reference = (IObjectOneToOneReference)_referencesByEReference.get(eReference);
 		if (reference == null) {
-				reference = new OneToOneReference(eReference);
+				reference = new ObjectOneToOneReference(eReference);
 			_referencesByEReference.put(eReference, reference);
 		}
 		return reference;
@@ -339,16 +382,16 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getCollectionReference(org.eclipse.emf.ecore.EReference)
 	 */
-	public synchronized ICollectionReference getCollectionReference(final EReference eReference) {
+	public synchronized IObjectCollectionReference getCollectionReference(final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
 		if (!eReference.isMany()) {
 			throw new IllegalArgumentException("EMF reference represents a 1:1 reference (ref='" + eReference + "'");
 		}
-		ICollectionReference reference = (ICollectionReference)_referencesByEReference.get(eReference);
+		IObjectCollectionReference reference = (IObjectCollectionReference)_referencesByEReference.get(eReference);
 		if (reference == null) {
-				reference = new CollectionReference(eReference);
+				reference = new ObjectCollectionReference(eReference);
 			_referencesByEReference.put(eReference, reference);
 		}
 		return reference;
@@ -357,22 +400,22 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getOperation(org.eclipse.emf.ecore.EOperation)
 	 */
-	public synchronized IOperation getOperation(EOperation eOperation) {
+	public synchronized IObjectOperation getOperation(EOperation eOperation) {
 		if (eOperation == null) {
 			return null;
 		}
-		IOperation operation = _operationsByEOperation.get(eOperation);
+		IObjectOperation operation = _operationsByEOperation.get(eOperation);
 		if (operation == null) {
-			operation = new Operation(eOperation);
+			operation = new ObjectOperation(eOperation);
 			_operationsByEOperation.put(eOperation, operation);
 		}
 		return operation;
 	}
 
 	
-	private class Attribute implements IDomainObject.IAttribute {
+	private class ObjectAttribute implements IDomainObject.IObjectAttribute {
 
-		private EAttribute _eAttribute;
+		private IAttribute _attribute;
 		private List<IDomainObjectAttributeListener> _domainObjectAttributeListeners = 
 			new ArrayList<IDomainObjectAttributeListener>();
 
@@ -381,29 +424,29 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * 
 		 * @param eAttribute
 		 */
-		private Attribute(final EAttribute eAttribute) {
-			this._eAttribute = eAttribute;
+		private ObjectAttribute(final EAttribute eAttribute) {
+			_attribute = getDomainClass().getAttribute(eAttribute);
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#getDomainObject()
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#getDomainObject()
 		 */
 		public <T> IDomainObject<T> getDomainObject() {
 			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#getEAttribute()
+		 * @see 
 		 */
-		public EAttribute getEAttribute() {
-			return _eAttribute;
+		public IAttribute getAttribute() {
+			return _attribute;
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#get()
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#get()
 		 */
 		public Object get() {
-			Method accessorMethod = getDomainClass().getAccessorFor(_eAttribute);
+			Method accessorMethod = getDomainClass().getAccessorFor(_attribute.getEAttribute());
 			if (accessorMethod == null) {
 				throw new UnsupportedOperationException("Accesor method '" + accessorMethod + "' not accessible / could not be found");
 			}
@@ -420,10 +463,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IAttribute#set(java.lang.Object)
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#set(java.lang.Object)
 		 */
 		public void set(Object newValue) {
-			Method mutatorMethod = getDomainClass().getMutatorFor(_eAttribute);
+			Method mutatorMethod = getDomainClass().getMutatorFor(_attribute.getEAttribute());
 			if (mutatorMethod == null) {
 				throw new UnsupportedOperationException("Mutator method '" + mutatorMethod + "' not accessible / could not be found");
 			}
@@ -475,7 +518,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 	}
 
-	private class Reference implements IDomainObject.IReference {
+	private class ObjectReference implements IDomainObject.IObjectReference {
 		EReference _eReference;
 		ResolveState _resolveState = ResolveState.UNRESOLVED;
 
@@ -487,26 +530,26 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * 
 		 * @param eReference
 		 */
-		private Reference(final EReference eReference) {
+		private ObjectReference(final EReference eReference) {
 			this._eReference = eReference;
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IReference#getEReference()
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#getEReference()
 		 */
 		public EReference getEReference() {
 			return _eReference;
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IReference#getResolveState()
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#getResolveState()
 		 */
 		public ResolveState getResolveState() {
 			return _resolveState;
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IReference#getDomainObject()
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#getDomainObject()
 		 */
 		public <T> IDomainObject<T> getDomainObject() {
 			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
@@ -540,12 +583,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 	}
 	
-	private class OneToOneReference extends Reference
-	                                  implements IDomainObject.IOneToOneReference {
+	private class ObjectOneToOneReference extends ObjectReference
+	                                  implements IDomainObject.IObjectOneToOneReference {
 
-		private OneToOneReference(final EReference eReference) {
+		private ObjectOneToOneReference(final EReference eReference) {
 			super(eReference);
-			assert !getDomainClass().isMultiple(_eReference);
+			assert !getDomainClass().getReference(eReference).isMultiple();
 		}
 
 		public <Q> Q get() {
@@ -567,7 +610,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IOneToOneReference#set(de.berlios.rcpviewer.session.IDomainObject, java.lang.Object)
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference#set(de.berlios.rcpviewer.session.IDomainObject, java.lang.Object)
 		 */
 		public <Q> void set(IDomainObject<Q> domainObject) {
 			Method associatorOrDissociatorMethod = null;
@@ -597,7 +640,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IOneToOneReference#notifyListeners(java.lang.Object)
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference#notifyListeners(java.lang.Object)
 		 */
 		public void notifyListeners(Object referencedObject) {
 			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(this, referencedObject); 
@@ -608,12 +651,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		
 	}
 	
-	private class CollectionReference extends Reference
-	                                  implements IDomainObject.ICollectionReference {
+	private class ObjectCollectionReference extends ObjectReference
+	                                  implements IDomainObject.IObjectCollectionReference {
 
-		private CollectionReference(final EReference eReference) {
+		private ObjectCollectionReference(final EReference eReference) {
 			super(eReference);
-			assert getDomainClass().isMultiple(_eReference);
+			assert getDomainClass().getReference(eReference).isMultiple();
 		}
 		
 		public <V> Collection<IDomainObject<V>> getCollection() {
@@ -635,10 +678,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		public <Q> void addToCollection(IDomainObject<Q> domainObject) {
-			assert getDomainClass().isMultiple(_eReference);
-			assert getDomainClass().getReferencedClass(_eReference) == 
+			assert getDomainClass().getReference(_eReference).isMultiple();
+			assert getDomainClass().getReference(_eReference).getReferencedClass() == 
 				domainObject.getDomainClass();
+			assert _eReference.isChangeable();
 			Method collectionAssociatorMethod = getDomainClass().getAssociatorFor(_eReference);
+			if (collectionAssociatorMethod == null) {
+				throw new RuntimeException("No associator method");
+			}
 			try {
 				collectionAssociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
 
@@ -661,10 +708,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			}
 		}
 		public <Q> void removeFromCollection(IDomainObject<Q> domainObject) {
-			assert getDomainClass().isMultiple(_eReference);
-			assert getDomainClass().getReferencedClass(_eReference) == 
+			assert getDomainClass().getReference(_eReference).isMultiple();
+			assert getDomainClass().getReference(_eReference).getReferencedClass() == 
 				domainObject.getDomainClass();
+			assert _eReference.isChangeable();
 			Method collectionDissociatorMethod = getDomainClass().getDissociatorFor(_eReference);
+			if (collectionDissociatorMethod == null) {
+				throw new RuntimeException("No associator method");
+			}
 			try {
 				collectionDissociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
 
@@ -702,7 +753,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	
-	private class Operation implements IDomainObject.IOperation {
+	private class ObjectOperation implements IDomainObject.IObjectOperation {
 		
 		private EOperation _eOperation;
 		private List<IDomainObjectOperationListener> _listeners = 
@@ -713,7 +764,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * 
 		 * @param eOperation
 		 */
-		Operation(final EOperation eOperation) {
+		ObjectOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
 		}
 		
@@ -755,7 +806,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			return listener;
 		}
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IOperation#removeListener(de.berlios.rcpviewer.session.IDomainObjectOperationListener)
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOperation#removeListener(de.berlios.rcpviewer.session.IDomainObjectOperationListener)
 		 */
 		public void removeListener(IDomainObjectOperationListener listener) {
 			synchronized(_listeners) {

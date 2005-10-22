@@ -4,12 +4,14 @@ import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 
 /**
- * Abstracts out mechanics of persisting pojos.
+ * Abstracts out mechanics of persisting, saving and deleting domain objects.
  * 
  * <p>
- * Note that this interface deals only in terms of pojos (vanilla 
- * java.lang.Objects) rather than IDomainObjects.  Callers that require an
- * IDomainObject should use the services of the {@link ISession}.
+ * To explain some terminology:
+ * <ul>
+ * <li> <i>Saving</i> corresponds to <i>SQL INSERT</i>.
+ * <li> <i>Updating</i> corresponds to <i>SQL UPDATE</i>.
+ * <li> <i>Deleting</i> corresponds to <i>SQL DELETE</i>.
  * 
  * @author Dan Haywood
  *
@@ -17,29 +19,27 @@ import de.berlios.rcpviewer.session.ISession;
 public interface IObjectStore {
 
 	/**
-	 * Persist this (currently transient) object such that it may be retrieved 
-	 * at a later date.
-	 * 
-	 * @param title
-	 * @param pojo 
-	 */
-	public <T> void persist(IDomainObject<T> domainObject);
-
-	/**
-	 * Save changes to this (already persistent) object such that it may be 
-	 * retrieved at a later date.
-	 * 
+	 * Persist this (currently transient) object.
 	 * 
 	 * @param domainObject 
+	 * @throws <tt>DuplicateObjectException</tt> - if the object being persisted has 
+	 *         the same unique identifier as another already persisted object
 	 */
-	public <T> void save(IDomainObject<T> domainObject);
+	public <T> void save(IDomainObject<T> domainObject) 
+			throws DuplicateObjectException;
 
-	<V> V findByTitle(Class<V> javaClass, String title);
-	
 	/**
-	 * For testing purposes.
-	 *
+	 * Update this (already persistent) object.
+	 * 
+	 * <p>
+	 * If the object
+	 * 
+	 * @param domainObject 
+	 * @throws <tt>ConcurrencyException</tt> - if the object has already been updated.
+	 * @throws <tt>DuplicateObjectException</tt> - if the object has been updated with 
+	 *         the unique identifier of some other persisted object
 	 */
-	public void reset(); 
-	
+	public <T> void update(IDomainObject<T> domainObject) 
+			throws ConcurrencyException, DuplicateObjectException;
+
 }

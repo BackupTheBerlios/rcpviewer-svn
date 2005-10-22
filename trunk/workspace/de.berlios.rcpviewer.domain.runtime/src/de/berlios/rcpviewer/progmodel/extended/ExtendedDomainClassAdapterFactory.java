@@ -18,7 +18,7 @@ public class ExtendedDomainClassAdapterFactory<T> extends AbstractAdapterFactory
 	public ExtendedDomainClassAdapterFactory(String url) {
 		super(url);
 	}
-	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass, Map<String, String> details) {
+	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass) {
 		return (T)new ExtendedRuntimeDomainClass<V>(adaptedDomainClass);
 	}
 

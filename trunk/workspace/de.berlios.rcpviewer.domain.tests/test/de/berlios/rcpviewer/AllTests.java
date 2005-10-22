@@ -8,7 +8,7 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for de.berlios.rcpviewer");
 		//$JUnit-BEGIN$
-		suite.addTest(de.berlios.rcpviewer.progmodel.standard.namingconventions.AllTests.suite());
+		suite.addTest(de.berlios.rcpviewer.progmodel.standard.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

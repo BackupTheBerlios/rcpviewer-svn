@@ -24,7 +24,7 @@ import de.berlios.rcpviewer.transaction.ITransaction;
  *  
  * <p>
  * Note that this works on {@link java.lang.reflect.Field}s, rather than
- * (say) {@link IDomainObject.IReference}s.  That's because AspectJ is picking
+ * (say) {@link IDomainObject.IObjectReference}s.  That's because AspectJ is picking
  * up modifications to fields (instance variables) rather than invokations of
  * mutators.  Although it might seem that this code is somewhat ugly, it does
  * mean that there are no restrictions on the domain programmer (in particular, we

@@ -13,6 +13,8 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import de.berlios.rcpviewer.progmodel.standard.OppositeOf;
+import de.berlios.rcpviewer.progmodel.standard.OppositeReferencesIdentifier;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
@@ -165,7 +167,7 @@ public final class RuntimeDomain extends AbstractDomain
 			// the domain class will only actually do the work once, not on
 			// every subsequent lookup.
 			//
-			((RuntimeDomainClass<V>)domainClass).identifyOppositeReferences();
+			new OppositeReferencesIdentifier((RuntimeDomainClass<V>)domainClass).identify();
 			return domainClass;
 		}
 

@@ -33,7 +33,7 @@ import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
 import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.IDomainObject.ICollectionReference;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectCollectionReference;
 
 /**
  * Handles dynamic behaviour for the collection gui.
@@ -147,7 +147,7 @@ class CopyOfCollectionTablePart extends ConfigurableAdapter implements IFormPart
 			assert _displayed != null;
 			
 			// compare displayed list with model
-			ICollectionReference ref = _container.getCollectionReference( _model );
+			IObjectCollectionReference ref = _container.getCollectionReference( _model );
 			List<IDomainObject<?>> model = getCollectionDomainObjects();
 			
 			// in model, not displayed - remove

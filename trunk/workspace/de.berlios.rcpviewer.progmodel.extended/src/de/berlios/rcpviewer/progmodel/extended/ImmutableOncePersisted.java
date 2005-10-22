@@ -15,7 +15,7 @@ import java.lang.annotation.*;
  * <p>
  * Alternatively the annotation may be applied to an entire type in which case
  * it is inherited by all members.  (Members can opt out of this by specifying
- * the <code>optout</code> attribute of true)
+ * the <tt>optout</tt> attribute of true)
  * 
  * <p>
  * Consumed reflectively for building meta-model.
@@ -26,5 +26,26 @@ import java.lang.annotation.*;
 @Inherited
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface ImmutableOncePersisted {
+	/**
+	 * When the annotation has been applied to a type - meaning that all
+	 * attributes are immutable once persisted - then this can be additionally
+	 * applied to an attribute to indicates that the attribute has opted out
+	 * of this semantic (is still mutable once persisted).
+	 * 
+	 * <p>
+	 * If specified for an attribute when the type does not have the annotation
+	 * applied, then has no meaning and is ignored. 
+	 * 
+	 * @return
+	 */
 	boolean optout() default false;
+	class Factory {
+		private Factory() {}
+		public static ImmutableOncePersisted create(final boolean optout) {
+			return new ImmutableOncePersisted() { 
+				public boolean optout() { return optout; }
+				public Class<? extends Annotation> annotationType() { return ImmutableOncePersisted.class; }
+			};
+		}
+	}
 }

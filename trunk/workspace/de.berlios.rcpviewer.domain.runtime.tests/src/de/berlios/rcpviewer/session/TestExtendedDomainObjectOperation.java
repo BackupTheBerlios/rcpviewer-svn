@@ -43,7 +43,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		CustomerOperationWithPre pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
-		IDomainObject.IOperation op = domainObject.getOperation(eOperation);
+		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
 		IExtendedDomainObject<CustomerOperationWithPre> edc = domainObject.getAdapter(IExtendedDomainObject.class);
 		IExtendedDomainObject.IExtendedOperation extendedOp = edc.getOperation(eOperation);
 			
@@ -69,7 +69,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
-		IDomainObject.IOperation op = domainObject.getOperation(eOperation);
+		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
 		IExtendedDomainObject<CustomerOperationWithPre> edc = domainObject.getAdapter(IExtendedDomainObject.class);
 		IExtendedDomainObject.IExtendedOperation extendedOp = edc.getOperation(eOperation);
 			
@@ -120,7 +120,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
-		IDomainObject.IOperation op = domainObject.getOperation(eOperation);
+		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
 		IExtendedDomainObject<CustomerOperationWithPre> edc = domainObject.getAdapter(IExtendedDomainObject.class);
 		IExtendedDomainObject.IExtendedOperation extendedOp = edc.getOperation(eOperation);
 		
@@ -142,7 +142,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
-		IDomainObject.IOperation op = domainObject.getOperation(eOperation);
+		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
 		IExtendedDomainObject<CustomerOperationWithPre> edc = domainObject.getAdapter(IExtendedDomainObject.class);
 		IExtendedDomainObject.IExtendedOperation extendedOp = edc.getOperation(eOperation);
 		
@@ -176,7 +176,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		Set<IObservedFeature> features = session.getObservedFeatures();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
-		IDomainObject.IOperation op = domainObject.getOperation(eOperation);
+		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
 		IExtendedDomainObject<CustomerOperationWithPre> edc = domainObject.getAdapter(IExtendedDomainObject.class);
 		IExtendedDomainObject.IExtendedOperation extendedOp = edc.getOperation(eOperation);
 	}

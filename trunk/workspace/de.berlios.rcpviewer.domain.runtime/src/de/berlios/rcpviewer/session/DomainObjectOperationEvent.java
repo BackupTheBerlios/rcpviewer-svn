@@ -26,7 +26,7 @@ public final class DomainObjectOperationEvent extends EventObject {
 	 * @param source
 	 */
 	public DomainObjectOperationEvent(
-			final IDomainObject.IOperation source, 
+			final IDomainObject.IObjectOperation source, 
 			final Object[] args) {
 		super(source);
 		this.args = args;
@@ -37,8 +37,8 @@ public final class DomainObjectOperationEvent extends EventObject {
 	 * 
 	 * @return the extended attribute that raised this event.
 	 */
-	public IDomainObject.IOperation getOperation() {
-		return (IDomainObject.IOperation)getSource();
+	public IDomainObject.IObjectOperation getOperation() {
+		return (IDomainObject.IObjectOperation)getSource();
 	}
 
 

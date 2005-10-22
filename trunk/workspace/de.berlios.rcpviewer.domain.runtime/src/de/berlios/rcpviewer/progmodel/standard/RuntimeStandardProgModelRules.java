@@ -9,12 +9,12 @@ import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
- * Helper class that encapsulates the various naming conventions of the
- * standard programming model.
+ * Helper class (package local) that encapsulates the various naming 
+ * conventions of the standard programming model.
  * 
  * @author Dan Haywood
  */
-public final class RuntimeNamingConventions extends NamingConventions {
+public final class RuntimeStandardProgModelRules extends StandardProgModelRules {
 
 	// ATTRIBUTES: START
 	
@@ -143,7 +143,7 @@ public final class RuntimeNamingConventions extends NamingConventions {
 			return false;
 		Class<?> returnType = method.getReturnType();
 		if (!isReferenceType(returnType) &&
-			!isCollectionType(returnType))
+			!getJavaProgModelRules().isCollectionType(returnType))
 			return false;
 		String methodName = method.getName(); 
 		return methodName.startsWith("get") &&

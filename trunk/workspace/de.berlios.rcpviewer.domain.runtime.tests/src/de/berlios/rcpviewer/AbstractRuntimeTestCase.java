@@ -50,7 +50,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		sessionManager = null;
 		session.reset();
 		session = null;
-		objectStore.reset();
+		((InMemoryObjectStore)objectStore).reset();
 		objectStore = null;
 		RuntimeDomain.resetAll();
 		SessionManager.instance().reset();

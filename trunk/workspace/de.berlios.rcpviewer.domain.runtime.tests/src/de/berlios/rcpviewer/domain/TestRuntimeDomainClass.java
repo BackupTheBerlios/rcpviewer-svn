@@ -34,26 +34,28 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	}
 
 
-	/**
-	 * Can instantiate domain object/pojo directly from DomainClass.
-	 * 
-	 * <p>
-	 * The returned object will not be attached to any session.
-	 */
-	public void testCanInstantiateDomainObjectFromDomainClass() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
-		
-		IDomainObject<Department> domainObject = domainClass.create(session);
-		assertNotNull(domainObject);
-		assertSame(domainObject.getDomainClass(), domainClass);
-		Department pojo = domainObject.getPojo();
-		assertNotNull(pojo);
-		assertSame(Department.class, pojo.getClass());
-		assertFalse(session.isAttached(domainObject));
-	}
+	// COMMENTED OUT BECAUSE THIS FUNCTIONALITY IS BEING RELOCATED INTO SESSION
+	// (OR AT LEAST, OUT OF DOMAINCLASS).
+//	/**
+//	 * Can instantiate domain object/pojo directly from DomainClass.
+//	 * 
+//	 * <p>
+//	 * The returned object will not be attached to any session.
+//	 */
+//	public void testCanInstantiateDomainObjectFromDomainClass() {
+//		IRuntimeDomainClass<Department> domainClass = 
+//			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+//		domain.addBuilder(getDomainBuilder());
+//		domain.done();
+//		
+//		IDomainObject<Department> domainObject = domainClass.create(session);
+//		assertNotNull(domainObject);
+//		assertSame(domainObject.getDomainClass(), domainClass);
+//		Department pojo = domainObject.getPojo();
+//		assertNotNull(pojo);
+//		assertSame(Department.class, pojo.getClass());
+//		assertFalse(session.isAttached(domainObject));
+//	}
 
 
 	/**
@@ -67,7 +69,7 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 
 		try {
 			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 
-				domainClass.create(session);
+				session.create(domainClass);
 			fail("Expected exception to have been thrown.");
 		} catch(ProgrammingModelException ex) {
 			// expected

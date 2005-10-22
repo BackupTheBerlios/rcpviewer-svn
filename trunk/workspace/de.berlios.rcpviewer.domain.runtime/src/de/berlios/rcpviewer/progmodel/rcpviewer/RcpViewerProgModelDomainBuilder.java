@@ -3,6 +3,8 @@ package de.berlios.rcpviewer.progmodel.rcpviewer;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.emf.ecore.EClass;
+
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -21,6 +23,8 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
  */
 public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 
+	private final RcpViewerProgModelSemanticsEmfSerializer serializer = new RcpViewerProgModelSemanticsEmfSerializer();
+
 	/**
 	 * TODO: use parameters to downcast?
 	 */
@@ -30,18 +34,15 @@ public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 
 	private <V> void build(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
-		final ImageUrlAt imageUrlAt = javaClass.getAnnotation(ImageUrlAt.class);
-		if (imageUrlAt != null) {
-			try {
-				// check URL is ok
-				new URL(imageUrlAt.value());
+		EClass eClass = domainClass.getEClass();
 		
-				domainClass.setAdapterFactory(RcpViewerDomainClass.class, 
-						new RcpViewerProgModelAdapterFactory<RcpViewerDomainClass>(imageUrlAt.value()));
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block - should log.
-				e.printStackTrace();
-			}
-		}
+		// Install adapter object 
+		RcpViewerProgModelAdapterFactory<RcpViewerDomainClass> adapterFactory = 
+			new RcpViewerProgModelAdapterFactory<RcpViewerDomainClass>();
+		domainClass.setAdapterFactory(RcpViewerDomainClass.class, adapterFactory);
+
+
+		// imageUrlAt
+		serializer.setClassImageUrlAt(eClass, javaClass.getAnnotation(ImageUrlAt.class));
 	}
 }

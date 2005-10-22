@@ -34,10 +34,10 @@ public interface IAdapterFactory<T> {
 	public Map<String, String> getDetails();
 	
 	/**
-	 * The adapter created later on from these details.
+	 * The adapter created later on.
 	 * 
 	 * @param details
 	 * @return
 	 */
-	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass, Map<String, String> details);
+	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass);
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
@@ -19,7 +20,7 @@ import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EcoreFactory;
 
-import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.EmfAnnotations;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
@@ -35,14 +36,15 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  */
 public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
+	private final ExtendedProgModelSemanticsEmfSerializer serializer = new ExtendedProgModelSemanticsEmfSerializer();
+	
 	public <V> void build(IDomainClass<V> domainClass) {
 		build((IRuntimeDomainClass<V>)domainClass);
 	}
 
-	private final EmfFacade emfFacade = new EmfFacade();
-	
 	private <V> void build(IRuntimeDomainClass<V> domainClass) {
 		Class<V> javaClass = domainClass.getJavaClass();
+		EClass eClass = domainClass.getEClass();
 		
 		// Install one adapter object under two different bindings so can be
 		// obtained in either context.
@@ -52,283 +54,78 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		domainClass.setAdapterFactory(IExtendedRuntimeDomainClass.class, adapterFactory);
 
 		// Instantiable (File>New)
-		processClassInstantiable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
-
 		// Searchable (Search>???)
-		processClassSearchable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
-
 		// Saveable (File>Save)
-		processClassSaveable(javaClass.getAnnotation(Lifecycle.class), domainClass.getEClass());
+		Lifecycle lifecycle = javaClass.getAnnotation(Lifecycle.class);
+		serializer.setClassLifecycle(eClass, lifecycle);
 
-		for(EAttribute eAttribute: domainClass.attributes()) {
-			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(eAttribute);
+		for(EAttribute attribute: domainClass.attributes()) {
+			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(attribute);
 			
-			processAccessorPre(eAttribute, domainClass, javaClass); // getXxxPre() method
-			processMutatorPre(eAttribute, domainClass, javaClass); // setXxxPre(..) method
+			processAccessorPre(attribute, domainClass, javaClass); // getXxxPre() method
+			processMutatorPre(attribute, domainClass, javaClass); // setXxxPre(..) method
 
-			// annotations
-			processAttributeOrder(eAttribute, accessorOrMutator);
-			processAttributeOptional(eAttribute, accessorOrMutator);
-			processAttributeInvisible(eAttribute, accessorOrMutator);
-			processAttributeBusinessKey(eAttribute, accessorOrMutator);
-			processAttributeMinLengthOf(eAttribute, accessorOrMutator);
-			processAttributeMaxLengthOf(eAttribute, accessorOrMutator);
-			processAttributeFieldLengthOf(eAttribute, accessorOrMutator);
-			processAttributeMask(eAttribute, accessorOrMutator);
-			processAttributeRegex(eAttribute, accessorOrMutator);
-			processAttributeImmutableOncePersisted(eAttribute, accessorOrMutator);
-		
+			// serialize extended semantics as EMF annotations
+			serializer.setAttributeRelativeOrder(attribute, accessorOrMutator.getAnnotation(RelativeOrder.class));
+			serializer.setAttributeId(attribute, accessorOrMutator.getAnnotation(Id.class));
+			serializer.setOptional(attribute, accessorOrMutator.getAnnotation(Optional.class));
+			serializer.setAttributeInvisible(attribute, accessorOrMutator.getAnnotation(Invisible.class));
+			serializer.setAttributeBusinessKey(attribute, accessorOrMutator.getAnnotation(BusinessKey.class));
+			serializer.setAttributeMask(attribute, accessorOrMutator.getAnnotation(Mask.class));
+			serializer.setAttributeRegex(attribute, accessorOrMutator.getAnnotation(Regex.class));
+			serializer.setAttributeImmutableOncePersisted(attribute, accessorOrMutator.getAnnotation(ImmutableOncePersisted.class));
+
+			if (returnsString(attribute)) {
+				serializer.setMinLengthOf(attribute, accessorOrMutator.getAnnotation(MinLengthOf.class));
+				serializer.setMaxLengthOf(attribute, accessorOrMutator.getAnnotation(MaxLengthOf.class));
+				serializer.setFieldLengthOf(attribute, accessorOrMutator.getAnnotation(FieldLengthOf.class));
+			}
 		}
 
 		for(EReference eReference: domainClass.references()) {
-			
 			processAccessorPre(eReference, domainClass, javaClass); // getXxxPre() method
 			processMutatorPre(eReference, domainClass, javaClass); // setXxxPre(..) method (simple reference only)
 			processAddToPre(eReference, domainClass, javaClass); // addToXxxPre(..) method (collections only)
 			processRemoveFromPre(eReference, domainClass, javaClass); // removeFromXxxPre(..) method (collections only)
-			
 		}
 		
-		for(EOperation eOperation: domainClass.operations()) {
-			Method invoker = domainClass.getInvokerFor(eOperation);
-			processOperationParametersOptional(eOperation, invoker);
-			processOperationParameterMinLengthOf(eOperation, invoker);
-			processOperationParameterMaxLengthOf(eOperation, invoker);
-			processOperationParameterFieldLengthOf(eOperation, invoker);
+		for(EOperation operation: domainClass.operations()) {
+			Method invoker = domainClass.getInvokerFor(operation);
 
-			processInvokerPre(eOperation, domainClass, javaClass, invoker); // xxxPre(..) method
-			processInvokerDefaults(eOperation, domainClass, javaClass, invoker); // xxxPre(..) method
-
-		}
-
-	}
-	
-	private void processClassInstantiable(Lifecycle lifecycle, EModelElement modelElement) {
-		emfFacade.putAnnotationDetails(modelElement, 
-				ExtendedProgModelConstants.ANNOTATION_CLASS, 
-				ExtendedProgModelConstants.ANNOTATION_CLASS_INSTANTIABLE_KEY, 
-				lifecycle != null && lifecycle.instantiable());	
-	}
-
-	private void processClassSearchable(Lifecycle lifecycle, EModelElement modelElement) {
-		emfFacade.putAnnotationDetails(modelElement, 
-				ExtendedProgModelConstants.ANNOTATION_CLASS, 
-				ExtendedProgModelConstants.ANNOTATION_CLASS_SEARCHABLE_KEY, 
-				lifecycle != null && lifecycle.searchable());	
-	}
-	
-	private void processClassSaveable(Lifecycle lifecycle, EModelElement modelElement) {
-		emfFacade.putAnnotationDetails(modelElement, 
-				ExtendedProgModelConstants.ANNOTATION_CLASS, 
-				ExtendedProgModelConstants.ANNOTATION_CLASS_SAVEABLE_KEY, 
-				lifecycle != null && lifecycle.saveable());	
-	}
-
-	private void processAttributeOrder(EAttribute eAttribute, Method accessorOrMutator) {
-		Order order = 
-			accessorOrMutator.getAnnotation(Order.class);
-		if (order != null) {
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE, 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY, 
-					"" + order.value());
-		}
-	}
-
-
-	private void processAttributeOptional(EAttribute eAttribute, Method accessorOrMutator) {
-		Optional optional = 
-			accessorOrMutator.getAnnotation(Optional.class);
-		if (optional != null) {
-			setOptional(eAttribute, optional);
-		}
-	}
-	private void processOperationParametersOptional(EOperation operation, final Method invoker) {
-		Class<?>[] parameterTypes = invoker.getParameterTypes();
-		Annotation[][] parameterAnnotationSets = invoker.getParameterAnnotations();
-		for(int i=0; i<parameterTypes.length; i++) {
-			EParameter parameter = (EParameter)operation.getEParameters().get(i);
-			Annotation[] parameterAnnotationSet = parameterAnnotationSets[i];
-			for(Annotation parameterAnnotation: parameterAnnotationSet) {
-				if (parameterAnnotation instanceof Optional) {
-					setOptional(parameter, (Optional)parameterAnnotation);
+			// xxxPre(..) method
+			processInvokerPre(operation, domainClass, javaClass, invoker); 
+			// xxxDefaults(..) method
+			processInvokerDefaults(operation, domainClass, javaClass, invoker); 
+			
+			Class<?>[] parameterTypes = invoker.getParameterTypes();
+			Annotation[][] parameterAnnotationSets = invoker.getParameterAnnotations();
+			for(int i=0; i<parameterTypes.length; i++) {
+				EParameter parameter = (EParameter)operation.getEParameters().get(i);
+				Annotation[] parameterAnnotationSet = parameterAnnotationSets[i];
+				for(Annotation parameterAnnotation: parameterAnnotationSet) {
+					// Optional
+					if (parameterAnnotation instanceof Optional) {
+						serializer.setOptional(parameter, (Optional)parameterAnnotation);
+					}
+					if (parameterTypes[i] == java.lang.String.class) {
+						// MinLengthOf
+						if (parameterAnnotation instanceof MinLengthOf) {
+							serializer.setMinLengthOf(parameter, (MinLengthOf)parameterAnnotation);
+						}
+						// MaxLengthOf
+						if (parameterAnnotation instanceof MaxLengthOf) {
+							serializer.setMaxLengthOf(parameter, (MaxLengthOf)parameterAnnotation);
+						}
+						// FieldLengthOf
+						if (parameterAnnotation instanceof FieldLengthOf) {
+							serializer.setFieldLengthOf(parameter, (FieldLengthOf)parameterAnnotation);
+						}
+					}
 				}
 			}
 		}
 	}
-	private void setOptional(final EModelElement modelElement, final Optional optional) {
-		emfFacade.putAnnotationDetails(modelElement,
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_OPTIONAL_KEY, 
-				"true");
-	}
 	
-	private void processAttributeInvisible(EAttribute eAttribute, Method accessorOrMutator) {
-		Invisible invisible = 
-			accessorOrMutator.getAnnotation(Invisible.class);
-		if (invisible != null) {
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE, 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_INVISIBLE_KEY, 
-					"true");
-		}
-	}
-
-	private void processAttributeBusinessKey(EAttribute eAttribute, Method accessorOrMutator) {
-		BusinessKey businessKey = 
-			accessorOrMutator.getAnnotation(BusinessKey.class);
-		if (businessKey != null) {
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE, 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_NAME_KEY, 
-					businessKey.name());
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE, 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_POS_KEY, 
-					""+businessKey.pos());
-		}
-	}
-
-	private void processAttributeMinLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
-		if (!returnsString(eAttribute)) {
-			return;
-		}
-		MinLengthOf minLengthOf = 
-			accessorOrMutator.getAnnotation(MinLengthOf.class);
-		if (minLengthOf != null) {
-			setMinLengthOf(eAttribute, minLengthOf);
-		}
-	}
-	private void processOperationParameterMinLengthOf(EOperation operation, Method invoker) {
-		Class<?>[] parameterTypes = invoker.getParameterTypes();
-		Annotation[][] parameterAnnotationSets = invoker.getParameterAnnotations();
-		for(int i=0; i<parameterTypes.length; i++) {
-			if (parameterTypes[i] != java.lang.String.class) {
-				continue;
-			}
-			EParameter parameter = (EParameter)operation.getEParameters().get(i);
-			Annotation[] parameterAnnotationSet = parameterAnnotationSets[i];
-
-			for(Annotation parameterAnnotation: parameterAnnotationSet) {
-				if (parameterAnnotation instanceof MinLengthOf) {
-					MinLengthOf minLengthOf = (MinLengthOf)parameterAnnotation;
-					setMinLengthOf(parameter, minLengthOf);
-				}
-			}
-		}
-	}
-	private void setMinLengthOf(final EModelElement modelElement, MinLengthOf minLengthOf) {
-		emfFacade.putAnnotationDetails(modelElement,
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY, 
-				"" + minLengthOf.value());
-	}
-	
-	private void processAttributeMaxLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
-		if (!returnsString(eAttribute)) {
-			return;
-		}
-		MaxLengthOf maxLengthOf = 
-			accessorOrMutator.getAnnotation(MaxLengthOf.class);
-		if (maxLengthOf != null) {
-			setMaxLengthOf(eAttribute, maxLengthOf);
-		}
-	}
-	private void processOperationParameterMaxLengthOf(EOperation operation, Method invoker) {
-		Class<?>[] parameterTypes = invoker.getParameterTypes();
-		Annotation[][] parameterAnnotationSets = invoker.getParameterAnnotations();
-		for(int i=0; i<parameterTypes.length; i++) {
-			if (parameterTypes[i] != java.lang.String.class) {
-				continue;
-			}
-			EParameter parameter = (EParameter)operation.getEParameters().get(i);
-			Annotation[] parameterAnnotationSet = parameterAnnotationSets[i];
-
-			for(Annotation parameterAnnotation: parameterAnnotationSet) {
-				if (parameterAnnotation instanceof MaxLengthOf) {
-					MaxLengthOf maxLengthOf = (MaxLengthOf)parameterAnnotation;
-					setMaxLengthOf(parameter, maxLengthOf);
-				}
-			}
-		}
-	}
-	private void setMaxLengthOf(final EModelElement modelElement, MaxLengthOf maxLengthOf) {
-		emfFacade.putAnnotationDetails(modelElement,
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY, 
-				"" + maxLengthOf.value());
-	}
-
-
-	private void processAttributeFieldLengthOf(EAttribute eAttribute, Method accessorOrMutator) {
-		if (!returnsString(eAttribute)) {
-			return;
-		}
-		FieldLengthOf fieldLengthOf = 
-			accessorOrMutator.getAnnotation(FieldLengthOf.class);
-		if (fieldLengthOf != null) {
-			setFieldLengthOf(eAttribute, fieldLengthOf);
-		}
-	}
-	private void processOperationParameterFieldLengthOf(EOperation operation, Method invoker) {
-		Class<?>[] parameterTypes = invoker.getParameterTypes();
-		Annotation[][] parameterAnnotationSets = invoker.getParameterAnnotations();
-		for(int i=0; i<parameterTypes.length; i++) {
-			if (parameterTypes[i] != java.lang.String.class) {
-				continue;
-			}
-			EParameter parameter = (EParameter)operation.getEParameters().get(i);
-			Annotation[] parameterAnnotationSet = parameterAnnotationSets[i];
-			for(Annotation parameterAnnotation: parameterAnnotationSet) {
-				if (parameterAnnotation instanceof FieldLengthOf) {
-					FieldLengthOf fieldLengthOf = (FieldLengthOf)parameterAnnotation;
-					setFieldLengthOf(parameter, fieldLengthOf);
-				}
-			}
-		}
-	}
-	private void setFieldLengthOf(final EModelElement modelElement, FieldLengthOf fieldLengthOf) {
-		emfFacade.putAnnotationDetails(modelElement,
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT, 
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY, 
-				"" + fieldLengthOf.value());
-	}
-
-
-	private void processAttributeMask(EAttribute eAttribute, Method accessorOrMutator) {
-		Mask mask = 
-			accessorOrMutator.getAnnotation(Mask.class);
-		if (mask != null) {
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT, 
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT_MASK_KEY, 
-					mask.value());
-		}
-	}
-
-	private void processAttributeRegex(EAttribute eAttribute, Method accessorOrMutator) {
-		Regex regex = 
-			accessorOrMutator.getAnnotation(Regex.class);
-		if (regex != null) {
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT, 
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT_REGEX_KEY, 
-					regex.value());
-		}
-	}
-
-	private void processAttributeImmutableOncePersisted(EAttribute eAttribute, Method accessorOrMutator) {
-		ImmutableOncePersisted immutableOncePersisted = 
-			accessorOrMutator.getAnnotation(ImmutableOncePersisted.class);
-		if (immutableOncePersisted != null) {
-			emfFacade.putAnnotationDetails(eAttribute,
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE, 
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_KEY, 
-					"true");
-		}
-	}
-
-
 	private <V> void processAccessorPre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
 		Method accessor = domainClass.getAccessorFor(eAttribute);
 		if (accessor == null) {
@@ -353,11 +150,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!isPublic(accessorPreCandidate)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eAttribute),  
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
-				accessorPreCandidate.getName());
+		serializer.setAttributeAccessorPre(eAttribute, accessorPreCandidate.getName());
 	}
 
 	private <V> void processMutatorPre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
@@ -385,11 +178,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!isPublic(mutatorPreCandidate)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eAttribute),  
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
-				mutatorPreCandidate.getName());
+		serializer.setAttributeMutatorPre(eAttribute, mutatorPreCandidate.getName());
 	}
 
 	private <V> void processAccessorPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
@@ -416,11 +205,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eReference),  
-				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
-				accessorPreCandidate.getName());
+		serializer.setReferenceMutatorPre(eReference, accessorPreCandidate.getName());
 	}
 
 	private <V> void processMutatorPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
@@ -450,19 +235,15 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(mutatorPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eReference),  
-				ExtendedProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
-				mutatorPreCandidate.getName());
+		serializer.setReferenceMutatorPre(eReference, mutatorPreCandidate.getName());
 	}
 
 
-	private <V> void processAddToPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
-		if (!eReference.isMany()) {
+	private <V> void processAddToPre(EReference reference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		if (!reference.isMany()) {
 			return;
 		}
-		Method addTo = domainClass.getAssociatorFor(eReference);
+		Method addTo = domainClass.getAssociatorFor(reference);
 		if (addTo == null) {
 			return;
 		}
@@ -485,19 +266,15 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(addToPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eReference),  
-				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY, 
-				addToPreCandidate.getName());
+		serializer.setReferenceAddToPre(reference, addToPreCandidate.getName());
 	}
 
 
-	private <V> void processRemoveFromPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
-		if (!eReference.isMany()) {
+	private <V> void processRemoveFromPre(EReference reference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+		if (!reference.isMany()) {
 			return;
 		}
-		Method removeFrom = domainClass.getDissociatorFor(eReference);
+		Method removeFrom = domainClass.getDissociatorFor(reference);
 		if (removeFrom == null) {
 			return;
 		}
@@ -520,11 +297,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(removeFromPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eReference),  
-				ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
-				removeFromPreCandidate.getName());
+		serializer.setReferenceAddToPre(reference, removeFromPreCandidate.getName());
 	}
 
 
@@ -555,14 +328,8 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(invokerPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eOperation),  
-				ExtendedProgModelConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY, 
-				invokerPreCandidate.getName());
+		serializer.setOperationPre(eOperation, invokerPreCandidate.getName());
 	}
-
-	
 
 
 	private <V> void processInvokerDefaults(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass, Method invoker) {
@@ -598,11 +365,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(invokerDefaultsCandidate, Void.class)) {
 			return;
 		}
-		emfFacade.putAnnotationDetails(
-				domainClass, 
-				emfFacade.methodNamesAnnotationFor(eOperation),  
-				ExtendedProgModelConstants.ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY, 
-				invokerDefaultsCandidate.getName());
+		serializer.setOperationDefaults(eOperation, invokerDefaultsCandidate.getName());
 	}
 
 	private boolean returnsString(final EAttribute attribute) {

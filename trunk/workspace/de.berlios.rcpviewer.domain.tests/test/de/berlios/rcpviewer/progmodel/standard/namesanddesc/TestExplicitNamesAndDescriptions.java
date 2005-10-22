@@ -79,20 +79,22 @@ public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase 
 		domainClass = lookupAny(Appointment.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
+		IDomainClass.IOperation operation = domainClass.getOperation(eOperation);
 		assertEquals("moveTo", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertEquals("newPeriod", domainClass.getNameFor(eOperation, 0));
-		assertEquals("The time when the appointment should now be scheduled", domainClass.getDescriptionFor(eOperation, 0));
-		assertEquals("rationale", domainClass.getNameFor(eOperation, 1));
-		assertEquals("The reasoning for moving the appointment", domainClass.getDescriptionFor(eOperation, 1));
+		assertEquals("newPeriod", operation.getNameFor(0));
+		assertEquals("The time when the appointment should now be scheduled", operation.getDescriptionFor(0));
+		assertEquals("rationale", operation.getNameFor(1));
+		assertEquals("The reasoning for moving the appointment", operation.getDescriptionFor(1));
 		
 		eOperation = domainClass.getEOperationNamed("createAt");
+		operation = domainClass.getOperation(eOperation);
 		assertEquals("createAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
-		assertEquals("timePeriod", domainClass.getNameFor(eOperation, 0));
-		assertEquals("When the appointment is to run to and from", domainClass.getDescriptionFor(eOperation, 0));
-		assertEquals("agenda", domainClass.getNameFor(eOperation, 1));
-		assertEquals("The agenda for this appointment", domainClass.getDescriptionFor(eOperation, 1));
+		assertEquals("timePeriod", operation.getNameFor(0));
+		assertEquals("When the appointment is to run to and from", operation.getDescriptionFor(0));
+		assertEquals("agenda", operation.getNameFor(1));
+		assertEquals("The agenda for this appointment", operation.getDescriptionFor(1));
 	}
 
 

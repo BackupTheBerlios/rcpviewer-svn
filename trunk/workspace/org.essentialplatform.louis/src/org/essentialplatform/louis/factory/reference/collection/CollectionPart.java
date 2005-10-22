@@ -19,7 +19,7 @@ import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
 import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.IDomainObject.ICollectionReference;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectCollectionReference;
 
 class CollectionPart extends AbstractFormPart implements IConfigurable {
 
@@ -104,7 +104,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 			assert _displayed != null;
 			
 			// compare displayed list with model
-			ICollectionReference ref = _container.getCollectionReference( _model );
+			IObjectCollectionReference ref = _container.getCollectionReference( _model );
 			List<IDomainObject<?>> model = getCollectionDomainObjects();
 			
 			// in model, not displayed - remove

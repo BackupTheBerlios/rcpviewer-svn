@@ -46,7 +46,7 @@ import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;;
  * 
  * <p>
  * Since the delete operation is a standard operation, there is no need to use 
- * an {@link Order} annotation with it; the UI will position the delete 
+ * an {@link RelativeOrder} annotation with it; the UI will position the delete 
  * operation available anyway (eg as <i>File>Delete</i>. 
  *   
  * <p>
@@ -67,4 +67,13 @@ import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target({ElementType.METHOD})
-public @interface DeleteOperation {}
+public @interface DeleteOperation {
+	class Factory {
+		private Factory() {}
+		public static DeleteOperation create() {
+			return new DeleteOperation(){
+				public Class<? extends Annotation> annotationType() { return DeleteOperation.class; }
+			};
+		}
+	}
+}

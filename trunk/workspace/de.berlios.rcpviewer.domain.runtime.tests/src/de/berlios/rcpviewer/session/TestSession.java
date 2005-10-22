@@ -101,19 +101,19 @@ public class TestSession extends AbstractRuntimeTestCase  {
 
 	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	public void incompletetestCanRetrieveOncePersisted() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
-		Department dept = domainObject.getPojo();
-		dept.setName("HR"); // name is used in Department's toString() -> title
-		// domainObject.persist();
-		Department dept2 = 
-			(Department)objectStore.findByTitle(Department.class, "HR");
-		assertSame(dept2, dept);
-		IDomainObject<Department> domainObject2 = session.getDomainObjectFor(dept2, Department.class);
-		assertSame(domainObject2, domainObject);
+//		IRuntimeDomainClass<Department> domainClass = 
+//			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+//
+//		IDomainObject<Department> domainObject = 
+//			(IDomainObject<Department>)session.create(domainClass);
+//		Department dept = domainObject.getPojo();
+//		dept.setName("HR"); // name is used in Department's toString() -> title
+//		// domainObject.persist();
+//		Department dept2 = 
+//			(Department)objectStore.findByTitle(Department.class, "HR");
+//		assertSame(dept2, dept);
+//		IDomainObject<Department> domainObject2 = session.getDomainObjectFor(dept2, Department.class);
+//		assertSame(domainObject2, domainObject);
 	}
 
 }

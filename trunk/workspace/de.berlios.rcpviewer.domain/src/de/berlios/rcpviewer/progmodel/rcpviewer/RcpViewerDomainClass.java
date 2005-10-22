@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.domain.AbstractDomainClassAdapter;
@@ -26,12 +27,10 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  */
 public final class RcpViewerDomainClass<T> extends AbstractDomainClassAdapter<T> {
 
-	
-	private Map<String,String> details;
+	private final RcpViewerProgModelSemanticsEmfSerializer serializer = new RcpViewerProgModelSemanticsEmfSerializer();
 
-	public RcpViewerDomainClass(IDomainClass<T> adaptedDomainClass, final Map<String,String> details) {
+	public RcpViewerDomainClass(IDomainClass<T> adaptedDomainClass) {
 		super(adaptedDomainClass);
-		this.details = details;
 	}
 
 	/**
@@ -41,13 +40,15 @@ public final class RcpViewerDomainClass<T> extends AbstractDomainClassAdapter<T>
 	 */
 	public ImageDescriptor imageDescriptor() {
 
-		String url = details.get("url");
+		EClass eClass = adapts().getEClass();
+		ImageUrlAt imageUrlAt = serializer.getClassImageUrlAt(eClass);
+		if (imageUrlAt == null) return null;
+		String url = imageUrlAt.value();
 		URL imageUrl;
 		try {
 			imageUrl = new URL(url);
 			return ImageDescriptor.createFromURL(imageUrl);
 		} catch (MalformedURLException e) {
-			// TODO should log?
 			return null;
 		}
 	}

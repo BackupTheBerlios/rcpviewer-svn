@@ -1,0 +1,89 @@
+package id3dkkheer3d5zpeerhv50f;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id3dkkheer3d5zpeerhv50f.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3dkkheer3d5zpeerhv50f.node6:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:design#Class#id3dkkheer3d5zpeerhv50f.node9:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}}/**
+
+@__tags
+@shapeType DeploymentDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node.node8.link:oiref>=257,150,257,200:oigroup>
+<oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node6.node.link:oiref>=552,133,552,200:oigroup>
+<oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node6:oiref>=450,40,203,130,0:oigroup>
+<oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node9:oiref>=140,200,510,60,0:oigroup>
+<oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node6.node:oiref>=471,73,100,60,1:oigroup>
+<oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node:oiref>=140,49,230,121,0:oigroup>
+<oigroup:<oiref:design#Class#id3dkkheer3d5zpeerhv50f.node.node8:oiref>=180,90,100,60,1:oigroup> 
+*/
+class __positions {
+}/**
+@shapeType Node
+@__modelType node
+@name 
+@stereotype eclipse rcp 
+*/
+class node {
+/**
+@shapeType Component
+@__modelType node
+@name essential client
+@instanceForm 
+*/
+class node8 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id3dkkheer3d5zpeerhv50f.node9:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Node
+@__modelType node
+@name  
+*/
+class node6 {
+/**
+@shapeType Component
+@__modelType node
+@name essential server
+@instanceForm 
+*/
+class node {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id3dkkheer3d5zpeerhv50f.node9:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Node
+@__modelType node
+@name message bus
+@stereotype jms 
+*/
+class node9 {
+}

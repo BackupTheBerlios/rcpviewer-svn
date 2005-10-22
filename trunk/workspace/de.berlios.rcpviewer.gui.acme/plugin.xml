@@ -12,10 +12,8 @@
         <impl class="de.berlios.rcpviewer.gui.acme.model.Beans"/>
    </extension>
    
-   <!--
    <extension point="org.essentialplatform.louis.guifactory">
         <impl class="de.berlios.rcpviewer.gui.acme.factory.exts.ColourAttributeGuiFactory"/> 
    </extension>
-   -->
 
 </plugin>

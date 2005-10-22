@@ -27,22 +27,34 @@ import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
 
-public class InMemorySearchQuery
+public final class InMemorySearchQuery
 implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentProvider
 {
 	Map<InMemoryObjectStore, ISession> _sessionByObjectStore= new HashMap<InMemoryObjectStore, ISession>(); 
 	Collection<IDomainObject> _allObjects= new ArrayList<IDomainObject>();
 	HashSet<ISearchResultListener> _searchListeners= new HashSet<ISearchResultListener>();
-	
+
+	/*
+	 * @see org.eclipse.search.ui.ISearchQuery#canRerun()
+	 */
 	public boolean canRerun() {
 		return true;
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchQuery#canRunInBackground()
+	 */
 	public boolean canRunInBackground() {
 		return false;
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchQuery#getSearchResult()
+	 */
 	public ISearchResult getSearchResult() {
 		return this;
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchQuery#run(org.eclipse.core.runtime.IProgressMonitor)
+	 */
 	public IStatus run(IProgressMonitor pMonitor) throws OperationCanceledException {
 		try {
 			
@@ -50,7 +62,7 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 				IObjectStore objectStore= session.getObjectStore();
 				if (objectStore instanceof InMemoryObjectStore) {
 					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
-					for (Object pojo: memoryObjectStore.getAllStoredObjects()) {
+					for (Object pojo: memoryObjectStore.allInstances()) {
 						IDomainObject domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
 						_allObjects.add(domainObject);
 					}
@@ -67,40 +79,64 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 		}
 	}			
 	
-	
-	
-	
+	/*
+	 * @see org.eclipse.search.ui.ISearchResult#addListener(org.eclipse.search.ui.ISearchResultListener)
+	 */
 	public void addListener(ISearchResultListener pL) {
 		_searchListeners.add(pL);
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchResult#getImageDescriptor()
+	 */
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchQuery#getLabel()
+	 */
 	public String getLabel() {
 		return "All objects in all in-memory object stores";
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchResult#getQuery()
+	 */
 	public ISearchQuery getQuery() {
 		return this;
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchResult#getTooltip()
+	 */
 	public String getTooltip() {
 		return "All objects in all in-memory object stores";
 	}
+	/*
+	 * @see org.eclipse.search.ui.ISearchResult#removeListener(org.eclipse.search.ui.ISearchResultListener)
+	 */
 	public void removeListener(ISearchResultListener pL) {
 		// do nothing				
 	}
 
-	
-	
+	/*
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 */
 	public void inputChanged(Viewer pViewer, Object pOldInput, Object pNewInput) {
 		// do nothing		
 	}
+	/*
+	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+	 */
 	public Object[] getElements(Object pInputElement) {
 		return _allObjects.toArray(new IDomainObject[_allObjects.size()]);
 	}
+	/*
+	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+	 */
 	public Image getColumnImage(Object pElement, int pColumnIndex) {
 		return null;
 	}
-
+	/*
+	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+	 */
 	public String getColumnText(Object pElement, int pColumnIndex) {
 		switch (pColumnIndex) {
 		case 0:
@@ -110,23 +146,33 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 			return ((IDomainObject)pElement).title();
 		}
 	}
-
+	/*
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
+	 */
 	public void addListener(ILabelProviderListener pListener) {
 	}
-
+	/*
+	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+	 */
 	public void dispose() {
 		// do nothing
-		
 	}
-
+	/*
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
+	 */
 	public boolean isLabelProperty(Object pElement, String property) {
 		return true;
 	}
-
+	/*
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+	 */
 	public void removeListener(ILabelProviderListener pListener) {
 		//do nothing
 		
 	}
+	/**
+	 * @return copy of all objects that match.
+	 */
 	public Collection<IDomainObject> getAllObjects() {
 		return new ArrayList<IDomainObject>(_allObjects);
 	}

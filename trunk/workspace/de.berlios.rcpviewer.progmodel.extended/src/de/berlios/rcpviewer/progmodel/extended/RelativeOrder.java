@@ -26,6 +26,15 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(ElementType.METHOD)
-public @interface Order {
+public @interface RelativeOrder {
 	int value();
+	class Factory {
+		private Factory() {}
+		public static RelativeOrder create(final int value) {
+			return new RelativeOrder(){
+				public int value() { return value; }
+				public Class<? extends Annotation> annotationType() { return RelativeOrder.class; }
+			};
+		}
+	}
 }

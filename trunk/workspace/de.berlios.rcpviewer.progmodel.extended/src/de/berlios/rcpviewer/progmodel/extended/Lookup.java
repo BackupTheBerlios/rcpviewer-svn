@@ -15,4 +15,13 @@ import java.lang.annotation.*;
 @Inherited
 @Target({ElementType.TYPE})
 public @interface Lookup {
+	class Factory {
+		private Factory() {}
+		public static Lookup create() {
+			return new Lookup(){
+				public Class<? extends Annotation> annotationType() { return Lookup.class; }
+			};
+		}
+	}
+
 }

@@ -26,21 +26,21 @@ public abstract class TestDomainClassAttributesOrdering extends AbstractTestCase
 		domainClass = lookupAny(CustomerWithNoOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
-		assertTrue(domainClass.isOrdered(eAttribute));
+		assertTrue(domainClass.getAttribute(eAttribute).isOrdered());
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
 		domainClass = lookupAny(CustomerWithOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isOrdered());
-		assertTrue(domainClass.isOrdered(eAttribute));
+		assertTrue(domainClass.getAttribute(eAttribute).isOrdered());
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
 		domainClass = lookupAny(CustomerWithoutOrderingReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isOrdered());
-		assertFalse(domainClass.isOrdered(eAttribute));
+		assertFalse(domainClass.getAttribute(eAttribute).isOrdered());
 	}
 
 	public void incompletetestOrderingOfEAttributeWhenSpecifiedWithoutUpperBound() {

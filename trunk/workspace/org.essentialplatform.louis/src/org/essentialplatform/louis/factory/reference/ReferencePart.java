@@ -16,6 +16,8 @@ import org.essentialplatform.louis.util.SWTUtil;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
+import de.berlios.rcpviewer.session.IPojo;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference;
 
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 
@@ -86,12 +88,12 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
-		IDomainObject<?> value;
-		if ( _container == null ) {
-			value = null;
-		}
-		else {
-			value = _container.getOneToOneReference( _model ).get();
+		IDomainObject<?> value = null;
+		if ( _container != null ) {
+			IPojo referencedPojo = _container.getOneToOneReference( _model ).get();
+			if (referencedPojo != null) {
+				value = referencedPojo.getDomainObject();
+			}
 		}
 		setValue( value );
 		super.refresh();

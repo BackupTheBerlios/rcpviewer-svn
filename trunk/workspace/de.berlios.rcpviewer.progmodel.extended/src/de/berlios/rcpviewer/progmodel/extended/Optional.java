@@ -42,4 +42,12 @@ import java.lang.annotation.*;
 @Inherited
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Optional {
+	class Factory {
+		private Factory() {}
+		public static Optional create() {
+			return new Optional(){
+				public Class<? extends Annotation> annotationType() { return Optional.class; }
+			};
+		}
+	}
 }

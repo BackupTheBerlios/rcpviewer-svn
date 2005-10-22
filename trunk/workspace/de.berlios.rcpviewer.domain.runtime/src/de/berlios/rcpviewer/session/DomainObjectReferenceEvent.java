@@ -26,7 +26,7 @@ public final class DomainObjectReferenceEvent<T> extends EventObject {
 	 * @param source
 	 */
 	public DomainObjectReferenceEvent(
-			final IDomainObject.IReference source, 
+			final IDomainObject.IObjectReference source, 
 			final T referencedObject) {
 		super(source);
 		this.referencedObject = referencedObject;
@@ -38,8 +38,8 @@ public final class DomainObjectReferenceEvent<T> extends EventObject {
 	 * 
 	 * @return the extended attribute that raised this event.
 	 */
-	public IDomainObject.IReference getReference() {
-		return (IDomainObject.IReference)getSource();
+	public IDomainObject.IObjectReference getReference() {
+		return (IDomainObject.IObjectReference)getSource();
 	}
 
 	private final T referencedObject;

@@ -3,20 +3,20 @@ package de.berlios.rcpviewer.progmodel.extended;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 
+import de.berlios.rcpviewer.domain.Emf;
 import de.berlios.rcpviewer.domain.AbstractDomainClassAdapter;
-import de.berlios.rcpviewer.domain.EmfFacade;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 
 /**
@@ -35,9 +35,11 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  */
 public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implements IExtendedDomainClass<T>{
 
-	
-	private final EmfFacade emfFacade = new EmfFacade();
-
+	private ExtendedProgModelSemanticsEmfSerializer serializer = new ExtendedProgModelSemanticsEmfSerializer();
+	/**
+	 * for {@link Emf#isIntegralNumber(EDataType)}. 
+	 */
+	private Emf emf = new Emf();
 	
 	public ExtendedDomainClass(IDomainClass<T> adaptedDomainClass) {
 		super(adaptedDomainClass);
@@ -64,17 +66,77 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	}
 	
 	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#idAttributes()
+	 */
+	public List<EAttribute> idAttributes() {
+		List<EAttribute> attributes = adapts().attributes();
+		for(Iterator<EAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
+			EAttribute attr = iter.next();
+			if (!isId(attr)) {
+				iter.remove();
+			}
+		}
+		Collections.sort(attributes, new IdComparator());
+		return attributes;
+	}
+	
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isId(org.eclipse.emf.ecore.EAttribute)
+	 */
+	public boolean isId(final EAttribute attribute) {
+		return serializer.getAttributeId(attribute) != null;
+	}
+	
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isSimpleId()
+	 */
+	public boolean isSimpleId() {
+		return idAttributes().size() == 1;
+	}
+
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isCompositeId()
+	 */
+	public boolean isCompositeId() {
+		return idAttributes().size() > 1;
+	}
+	
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getAssignmentType()
+	 */
+	public AssignmentType getIdAssignmentType() {
+		AssignmentType defaultAssignmentType = AssignmentType.APPLICATION;
+		if (isCompositeId()) {
+			return defaultAssignmentType;
+		}
+		List<EAttribute> attributes = adapts().attributes();
+		for(Iterator<EAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
+			EAttribute attr = iter.next();
+			Id id = serializer.getAttributeId(attr);
+			if (id == null) {
+				continue;
+			}
+			EDataType attributeType = attr.getEAttributeType();
+			if (!emf.isIntegralNumber(attributeType)) {
+				return defaultAssignmentType;
+			}
+			AssignmentType assignedBy = id.assignedBy();
+			// is an integral type
+			if (assignedBy == AssignmentType.CONTEXT) {
+				assignedBy = AssignmentType.OBJECT_STORE;
+			}
+			return assignedBy;
+		}
+		return defaultAssignmentType;
+	}
+
+	
+	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isSearchable()
 	 */
 	public boolean isSearchable() {
-		EAnnotation annotation = 
-			adapts().getEClass().getEAnnotation(ExtendedProgModelConstants.ANNOTATION_CLASS);
-		if (annotation == null) {
-			return false;
-		}
-		String searchable = 
-			(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_CLASS_SEARCHABLE_KEY);
-		return "true".equals(searchable);
+		Lifecycle lifecycle = serializer.getClassLifecycle(adapts().getEClass());
+		return lifecycle != null && lifecycle.searchable();
 	}
 
 
@@ -82,40 +144,31 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isInstantiable()
 	 */
 	public boolean isInstantiable() {
-		EAnnotation annotation = 
-			adapts().getEClass().getEAnnotation(ExtendedProgModelConstants.ANNOTATION_CLASS);
-		if (annotation == null) {
-			return false;
-		}
-		String instantiable = 
-			(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_CLASS_INSTANTIABLE_KEY);
-		return "true".equals(instantiable);
+		Lifecycle lifecycle = serializer.getClassLifecycle(adapts().getEClass());
+		return lifecycle != null && lifecycle.instantiable();
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isSaveable()
 	 */
 	public boolean isSaveable() {
-		EAnnotation annotation = 
-			adapts().getEClass().getEAnnotation(ExtendedProgModelConstants.ANNOTATION_CLASS);
-		if (annotation == null) {
-			return false;
-		}
-		String saveable = 
-				(String)annotation.getDetails().get(ExtendedProgModelConstants.ANNOTATION_CLASS_SAVEABLE_KEY);
-		return "true".equals(saveable);
+		Lifecycle lifecycle = serializer.getClassLifecycle(adapts().getEClass());
+		return lifecycle != null && lifecycle.saveable();
 	}
+
+	/*
+	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isImmutableOncePersisted()
+	 */
+	public boolean isImmutableOncePersisted() {
+		return serializer.getClassImmutableOncePersisted(adapts().getEClass()) != null;
+	}
+
 
 	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isOptional(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isOptional(final EAttribute attribute) {
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		
-		String optional = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT_OPTIONAL_KEY);
-		return optional != null;
+		return serializer.getOptional(attribute) != null;
 	}
 
 	/*
@@ -129,16 +182,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isOptional(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public boolean isOptional(EOperation operation, int parameterPosition) {
-		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
-
-		EAnnotation annotation = 
-			parameter.getEAnnotation(ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		if (annotation == null) {
-			return false;
-		}
-		String optional = (String)annotation.getDetails().get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_OPTIONAL_KEY);
-		return optional != null;
+		return serializer.getOptional(getParameter(operation, parameterPosition)) != null;
 	}
 
 
@@ -153,12 +197,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isInvisible(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isInvisible(EAttribute attribute) {
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
-		
-		String invisible = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_INVISIBLE_KEY);
-		return invisible != null;
+		return serializer.getAttributeInvisible(attribute) != null;
 	}
 
 
@@ -169,33 +208,24 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		Map<String, Map<Integer,EAttribute>> businessKeyAttributesByPosByName = 
 			new HashMap<String, Map<Integer,EAttribute>>();
 		for(EAttribute attribute: adapts().attributes()) {
-			Map<String,String> attributeDetails = 
-				emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
-			String businessKeyName = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_NAME_KEY);
-			if (businessKeyName == null) {
+			BusinessKey businessKey = serializer.getAttributeBusinessKey(attribute);
+			if (businessKey == null) {
 				continue;
 			}
 			Map<Integer, EAttribute> businessKeyAttributesByPos = 
-				businessKeyAttributesByPosByName.get(businessKeyName);
+				businessKeyAttributesByPosByName.get(businessKey.name());
 			if (businessKeyAttributesByPos == null) {
 				businessKeyAttributesByPos = new HashMap<Integer, EAttribute>();
-				businessKeyAttributesByPosByName.put(businessKeyName, businessKeyAttributesByPos);
+				businessKeyAttributesByPosByName.put(businessKey.name(), businessKeyAttributesByPos);
 			}
-			String businessKeyPosStr = attributeDetails.get(
-						ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_BUSINESS_KEY_POS_KEY);
-			if (businessKeyPosStr == null) {
-				continue;
-			}
-			int businessKeyPos = Integer.parseInt(businessKeyPosStr);
-			EAttribute businessKeyAttribute = 
-				businessKeyAttributesByPos.get(businessKeyPos);
+			EAttribute businessKeyAttribute =  
+				businessKeyAttributesByPos.get(businessKey.pos());
 			if (businessKeyAttribute != null) {
 				// we already have an attribute in this position, so give up
 				businessKeyAttributesByPos.put(-1, null); // magic value indicating an error
 				continue;
 			}
-			businessKeyAttributesByPos.put(businessKeyPos, attribute);
+			businessKeyAttributesByPos.put(businessKey.pos(), attribute);
 		}
 		
 		// instantiate the Map that we will return.
@@ -240,46 +270,32 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		if (!returnsString(attribute)) {
 			return -1;
 		}
-		Map<String,String> details = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		return computeFieldLengthOf(details);
+		return computeFieldLengthOf(attribute);
 	}
 	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getFieldLengthOf(org.eclipse.emf.ecore.EOperation, int)
 	 */
 	public int getFieldLengthOf(EOperation operation, final int parameterPosition) {
-		EParameter parameter = (EParameter)operation.getEParameters().get(parameterPosition);
+		
+		EParameter parameter = getParameter(operation, parameterPosition);
 		if (!isString(parameter)) {
 			return -1;
 		}
-
-		Map<String,String> details = 
-			emfFacade.getAnnotationDetails(parameter, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		return computeFieldLengthOf(details);
+		return computeFieldLengthOf(parameter);
 	}
+	
+	private int computeFieldLengthOf(EModelElement modelElement) {
 
-	private int computeFieldLengthOf(final Map<String, String> details) {
-		
-		String fieldLengthOfStr = details.get(
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY);
-		int fieldLengthOf = -1;
-		if (fieldLengthOfStr != null) {
-			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
-		}
+		FieldLengthOf fieldLengthOfAnnotation = serializer.getFieldLengthOf(modelElement);
+		MinLengthOf minLengthOfAnnotation = serializer.getMinLengthOf(modelElement);
+		MaxLengthOf maxLengthOfAnnotation = serializer.getMaxLengthOf(modelElement);
 
-		String maxLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY);
-		int maxLengthOf = -1;
-		if (maxLengthOfStr != null) {
-			maxLengthOf = Integer.parseInt(maxLengthOfStr);
-		}
-
-		String minLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY);
-		int minLengthOf = -1;
-		if (minLengthOfStr != null) {
-			minLengthOf = Integer.parseInt(minLengthOfStr);
-		}
+		int fieldLengthOf = 
+			fieldLengthOfAnnotation != null? fieldLengthOfAnnotation.value(): -1;
+		int minLengthOf = 
+			minLengthOfAnnotation != null? minLengthOfAnnotation.value(): -1;
+		int maxLengthOf = 
+			maxLengthOfAnnotation != null? maxLengthOfAnnotation.value(): -1;
 
 		if (fieldLengthOf > 0 && maxLengthOf > 0) {
 			return Math.min(fieldLengthOf, maxLengthOf);
@@ -294,7 +310,6 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		}
 		return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
 	}
-	
 
 
 	/*
@@ -304,9 +319,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		if (!returnsString(attribute)) {
 			return -1;
 		}
-		Map<String,String> details = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		return computeMaxLengthOf(details);
+		return computeMaxLengthOf(attribute);
 	}
 	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMaxLengthOf(org.eclipse.emf.ecore.EOperation, int)
@@ -316,33 +329,21 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		if (!isString(parameter)) {
 			return -1;
 		}
-
-		Map<String,String> details = 
-			emfFacade.getAnnotationDetails(parameter, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		return computeMaxLengthOf(details);
+		return computeMaxLengthOf(parameter);
 	}
-	private int computeMaxLengthOf(final Map<String, String> details) {
-		String maxLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY);
-		int maxLengthOf = -1;
-		if (maxLengthOfStr != null) {
-			maxLengthOf = Integer.parseInt(maxLengthOfStr);
-		}
+	private int computeMaxLengthOf(final EModelElement modelElement) {
 
-		String fieldLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY);
-		int fieldLengthOf = -1;
-		if (fieldLengthOfStr != null) {
-			fieldLengthOf = Integer.parseInt(fieldLengthOfStr);
-		}
+		FieldLengthOf fieldLengthOfAnnotation = serializer.getFieldLengthOf(modelElement);
+		MinLengthOf minLengthOfAnnotation = serializer.getMinLengthOf(modelElement);
+		MaxLengthOf maxLengthOfAnnotation = serializer.getMaxLengthOf(modelElement);
 
-		String minLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY);
-		int minLengthOf = -1;
-		if (minLengthOfStr != null) {
-			minLengthOf = Integer.parseInt(minLengthOfStr);
-		}
-		
+		int fieldLengthOf = 
+			fieldLengthOfAnnotation != null? fieldLengthOfAnnotation.value(): -1;
+		int minLengthOf = 
+			minLengthOfAnnotation != null? minLengthOfAnnotation.value(): -1;
+		int maxLengthOf = 
+			maxLengthOfAnnotation != null? maxLengthOfAnnotation.value(): -1;
+
 		if (fieldLengthOf > 0 && maxLengthOf > 0) {
 			return maxLengthOf;
 		} else if (fieldLengthOf > 0 && maxLengthOf <= 0) {
@@ -364,9 +365,7 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		if (!returnsString(attribute)) {
 			return -1;
 		}
-		Map<String,String> details = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		return computeMinLengthOf(details);
+		return computeMinLengthOf(attribute);
 	}
 	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMinLengthOf(org.eclipse.emf.ecore.EOperation, int)
@@ -376,26 +375,18 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		if (!isString(parameter)) {
 			return -1;
 		}
-
-		Map<String,String> details = 
-			emfFacade.getAnnotationDetails(parameter, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		return computeMinLengthOf(details);
+		return computeMinLengthOf(parameter);
 	}
-	private int computeMinLengthOf(final Map<String,String> details) {
-		String minLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MIN_LENGTH_OF_KEY);
-		int minLengthOf = -1;
-		if (minLengthOfStr != null) {
-			minLengthOf = Integer.parseInt(minLengthOfStr);
-		}
+	private int computeMinLengthOf(final EModelElement modelElement) {
 
-		String maxLengthOfStr = details.get(
-				ExtendedProgModelConstants.ANNOTATION_ELEMENT_MAX_LENGTH_OF_KEY);
-		int maxLengthOf = -1;
-		if (maxLengthOfStr != null) {
-			maxLengthOf = Integer.parseInt(maxLengthOfStr);
-		}
-	
+		MinLengthOf minLengthOfAnnotation = serializer.getMinLengthOf(modelElement);
+		MaxLengthOf maxLengthOfAnnotation = serializer.getMaxLengthOf(modelElement);
+
+		int minLengthOf = 
+			minLengthOfAnnotation != null? minLengthOfAnnotation.value(): -1;
+		int maxLengthOf = 
+			maxLengthOfAnnotation != null? maxLengthOfAnnotation.value(): -1;
+
 		if (minLengthOf > 0 && maxLengthOf > 0) {
 			return Math.min(minLengthOf, maxLengthOf);
 		} else if (minLengthOf > 0 && maxLengthOf <= 0) {
@@ -411,12 +402,8 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#isImmutableOncePersisted(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public boolean isImmutableOncePersisted(EAttribute attribute) {
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
-		
-		String immutableOncePersisted = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_IMMUTABLE_ONCE_PERSISTED_KEY);
-		return immutableOncePersisted != null;
+		ImmutableOncePersisted immutableOncePersisted = serializer.getAttributeImmutableOncePersisted(attribute);
+		return immutableOncePersisted != null && !immutableOncePersisted.optout();
 	}
 
 
@@ -424,12 +411,9 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getMask(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public String getMask(EAttribute attribute) {
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		
-		String mask = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT_MASK_KEY);
-		return mask;
+		Mask mask = serializer.getAttributeMask(attribute);
+		if (mask == null) return null;
+		return mask.value();
 	}
 
 
@@ -437,12 +421,9 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass#getRegex(org.eclipse.emf.ecore.EAttribute)
 	 */
 	public String getRegex(EAttribute attribute) {
-		Map<String,String> attributeDetails = 
-			emfFacade.getAnnotationDetails(attribute, ExtendedProgModelConstants.ANNOTATION_ELEMENT);
-		
-		String regex = attributeDetails.get(
-					ExtendedProgModelConstants.ANNOTATION_ELEMENT_REGEX_KEY);
-		return regex;
+		Regex regex = serializer.getAttributeRegex(attribute);
+		if (regex == null) return null;
+		return regex.value();
 	}
 
 
@@ -468,5 +449,16 @@ public class ExtendedDomainClass<T> extends AbstractDomainClassAdapter<T> implem
 		String instanceClassName = dataType.getInstanceClassName();
 		return instanceClassName != null && instanceClassName.equals("java.lang.String");
 	}
+
+	/**
+	 * 
+	 * @param operation
+	 * @param parameterPosition
+	 * @return parameter, or null if there are not that many parameters.
+	 */
+	private EParameter getParameter(final EOperation operation, final int parameterPosition) {
+		return (EParameter)operation.getEParameters().get(parameterPosition);
+	}
+
 
 }

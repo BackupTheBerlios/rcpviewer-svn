@@ -10,12 +10,15 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 
-import de.berlios.rcpviewer.domain.EmfFacade;
+import de.berlios.rcpviewer.domain.EmfAnnotations;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 
 /**
  * Static methods for helping with EMF constructs
+ * 
+ * TODO: this code has been nicked from extended domain class; need to decide where the responsibility most properly belongs.
+ *  
  * @author Mike
  */
 public class EmfUtil {
@@ -43,7 +46,7 @@ public class EmfUtil {
 	 * algorithms:
 	 * <ul>
 	 * <li><code>ALPHABETICAL</code> - alphabetically by name
-	 * <li><code>ANNOTATION</code> - uses the {@link Order} annotation, then 
+	 * <li><code>ANNOTATION</code> - uses the {@link RelativeOrder} annotation, then 
 	 * falls back on alphabetical sorting.
 	 * </ul>
 	 * TODO - extend this to all EStructuralElements and use annotations -
@@ -87,10 +90,10 @@ public class EmfUtil {
 	private static class AttributeComparator<T extends EStructuralFeature> 
 			implements Comparator<T> {
 		
-		private final EmfFacade emfFacade = new EmfFacade();
+		private final EmfAnnotations _emfAnnotations = new EmfAnnotations();
 		
 		/**
-		 * Compares according to the {@link Order} attribute, if known, or
+		 * Compares according to the {@link RelativeOrder} attribute, if known, or
 		 * the name if not known.
 		 * 
 		 * @param arg0
@@ -100,14 +103,14 @@ public class EmfUtil {
 		public int compare(T feature0, T feature1) {
 			
 			Map<String,String> attributeDetails0 = 
-				emfFacade.getAnnotationDetails(feature0, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+				_emfAnnotations.getAnnotationDetails(feature0, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 			Map<String,String> attributeDetails1 = 
-				emfFacade.getAnnotationDetails(feature1, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+				_emfAnnotations.getAnnotationDetails(feature1, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
 			
 			String positionedAtStr0 = 
-				attributeDetails0.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY);
+				attributeDetails0.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
 			String positionedAtStr1 = 
-				attributeDetails1.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ORDER_KEY);
+				attributeDetails1.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
 			
 			
 			if (positionedAtStr0 != null && positionedAtStr1 == null) {

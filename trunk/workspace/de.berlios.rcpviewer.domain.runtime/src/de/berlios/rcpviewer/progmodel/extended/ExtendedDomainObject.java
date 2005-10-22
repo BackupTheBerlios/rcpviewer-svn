@@ -34,9 +34,9 @@ import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 import de.berlios.rcpviewer.session.IExtendedDomainObjectAttributeListener;
 import de.berlios.rcpviewer.session.IExtendedDomainObjectOperationListener;
 import de.berlios.rcpviewer.session.IExtendedDomainObjectReferenceListener;
-import de.berlios.rcpviewer.session.IDomainObject.IAttribute;
-import de.berlios.rcpviewer.session.IDomainObject.IOperation;
-import de.berlios.rcpviewer.session.IDomainObject.IReference;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectOperation;
+import de.berlios.rcpviewer.session.IDomainObject.IObjectReference;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 
 public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> implements IExtendedDomainObject<T> {

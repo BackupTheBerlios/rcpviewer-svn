@@ -44,4 +44,13 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface Regex {
 	String value();
+	class Factory {
+		private Factory() {}
+		public static Regex create(final String value) {
+			return new Regex(){
+				public String value() { return value; }
+				public Class<? extends Annotation> annotationType() { return Regex.class; }
+			};
+		}
+	}
 }

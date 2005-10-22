@@ -64,7 +64,7 @@ import de.berlios.rcpviewer.progmodel.extended.Lookup;
  * 
  * <p>
  * Since the save operation is standard to all domain objects, there is no
- * need to use an {@link Order} annotation with it; the UI will position the 
+ * need to use an {@link RelativeOrder} annotation with it; the UI will position the 
  * save operation available anyway (eg as <i>File>Save</i>. 
  *    
  * <p>
@@ -99,4 +99,15 @@ public @interface SaveOperation {
 	 * @return
 	 */
 	String unusableReason() default "";
+	
+	class Factory {
+		private Factory() {}
+		public static SaveOperation create(final String unusableReason) {
+			return new SaveOperation(){
+				public String unusableReason() { return unusableReason; }
+				public Class<? extends Annotation> annotationType() { return SaveOperation.class; }
+			};
+		}
+	}
+
 }

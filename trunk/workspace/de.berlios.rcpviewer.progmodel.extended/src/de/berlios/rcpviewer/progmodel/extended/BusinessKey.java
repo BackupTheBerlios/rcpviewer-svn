@@ -52,4 +52,16 @@ import java.lang.annotation.*;
 public @interface BusinessKey {
 	String name();
 	int pos() default 1;
+	class Factory {
+		private Factory() {}
+		public static BusinessKey create(final String name, final int pos) {
+			return new BusinessKey(){
+				public String name() { return name; }
+				public int pos() { return pos; }
+				public Class<? extends Annotation> annotationType() { return BusinessKey.class; }
+			};
+		}
+	}
+
+
 }

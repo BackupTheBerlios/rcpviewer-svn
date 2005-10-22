@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EReference;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
 import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.persistence.PersistenceId;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
@@ -45,7 +46,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * The "other state" includes whether this attribute's prerequisites have 
 	 * been met such that it can be used (ie edited).
 	 */
-	public interface IAttribute {
+	public interface IObjectAttribute {
 
 		/**
 		 * The owning {@link IDomainObject} for this representation of an
@@ -57,10 +58,14 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		public <T> IDomainObject<T> getDomainObject();
 		
 		/**
-		 * The underlying {@link EAttribute} in EMF to which this relates.
+		 * The underlying {@link IDomainClass.IAttribute} to which this relates.
+		 * 
+		 * <p>
+		 * The EMF EAttribute can be obtained in turn from this.
+		 * 
 		 * @return
 		 */
-		public EAttribute getEAttribute();
+		public IDomainClass.IAttribute getAttribute();
 		
 		/**
 		 * Gets the current value of this attribute.
@@ -115,10 +120,10 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * 
 	 * <p>
 	 * This interface is never instantiated directly; instead any instance 
-	 * will be of the sub-interfaces {@link IOneToOneReference} or 
-	 * {@link ICollectionReference}).
+	 * will be of the sub-interfaces {@link IObjectOneToOneReference} or 
+	 * {@link IObjectCollectionReference}).
 	 */
-	public interface IReference extends IResolvable {
+	public interface IObjectReference extends IResolvable {
 
 		/**
 		 * The owning {@link IDomainObject} for this representation of an
@@ -159,7 +164,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * Provides access or other interactions with the current value and other
 	 * state of a 1:1 reference of an instantiated {@link IDomainObject}.
 	 */
-	public interface IOneToOneReference extends IReference {
+	public interface IObjectOneToOneReference extends IObjectReference {
 
 		/**
 		 * Returns the domain object for this representation of a 1:1 reference
@@ -203,7 +208,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * Provides access or other interactions with the current value and other
 	 * state of a collection reference of an instantiated {@link IDomainObject}.
 	 */
-	public interface ICollectionReference extends IReference {
+	public interface IObjectCollectionReference extends IObjectReference {
 
 		/**
 		 * Returns the contents of this representation of a collection of the
@@ -267,7 +272,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * (ie invoked).
 	 * 
 	 */
-	public interface IOperation {
+	public interface IObjectOperation {
 		/**
 		 * The owning {@link IDomainObject} for this representation of an
 		 * operation.
@@ -316,6 +321,14 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	public IRuntimeDomainClass<T> getDomainClass();
 	
 	public T getPojo();
+	
+	/**
+	 * The identifier by which the pojo wrapped by this domain object can be
+	 * retrieved from the configured object store.
+	 * 
+	 * @return
+	 */
+	public PersistenceId getPersistenceId();
 	
 	/**
 	 * Whether this object has been persisted.
@@ -460,61 +473,70 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * programming model.
 	 * 
 	 * <p>
-	 * The XxxDomainObject.class of a programming model is used to identify the
-	 * adapter.
+	 * The supplied domain object should have been instantiated via the domain 
+	 * class upon which the method is invoked. 
+	 * 
+	 * <p>
+	 * The <tt>IXxxDomainObject.class</tt> <i>interface</i> of a programming 
+	 * model is used to identify the adapter.
 	 * 
 	 * <p>
 	 * For example, to obtain an IExtendedDomainObject for someDomainObject, use:
-	 * <code>
+	 * <pre>
 	 * IDomainObject<T> dobj = ...;
-	 * IExtendedDomainObject<T> edc = dobj.getAdapter(IExtendedDomainObject.class); 
-	 * </code>
+	 * IExtendedDomainObject<T> edobj = dobj.getAdapter(IExtendedDomainObject.class); 
+	 * </pre>
 	 *   
+	 * <p>
+	 * This is an instance of the Extension Object pattern, used widely
+	 * throughout the Eclipse Platform under the name of an "adapter" (hence
+	 * our choice of name).
+	 * 
 	 * @param <V>
-	 * @param pojoClass
+	 * @param adapterClass - class of the adapter that is required.  
 	 * @return
 	 */
-	public <V> V getAdapter(Class<V> domainObjectClass);
+	public <V> V getAdapter(Class<V> adapterClass);
 
 
 	/**
-	 * Returns an {@link IAttribute} such that the run-time state of this
+	 * Returns an {@link IObjectAttribute} such that the run-time state of this
 	 * attribute of the owning {@link IDomainObject} can be interacted with.
 	 * 
 	 * @param eAttribute
 	 * @return
 	 */
-	public IAttribute getAttribute(EAttribute eAttribute);
+	public IObjectAttribute getAttribute(EAttribute eAttribute);
 
 	/**
-	 * Returns an {@link IOneToOneReference} such that the run-time state of this
+	 * Returns an {@link IObjectOneToOneReference} such that the run-time state of this
 	 * reference of the owning {@link IDomainObject} can be interacted with.
 	 * 
 	 * @param eReference
 	 * @return the reference.
 	 * @throws IllegalArgumentException if the EReference represents a collection.
 	 */
-	public IOneToOneReference getOneToOneReference(EReference eReference) throws IllegalArgumentException;
+	public IObjectOneToOneReference getOneToOneReference(EReference eReference) throws IllegalArgumentException;
 
 
 	/**
-	 * Returns an {@link IReference} such that the run-time state of this
+	 * Returns an {@link IObjectReference} such that the run-time state of this
 	 * reference of the owning {@link IDomainObject} can be interacted with.
 	 * 
 	 * @param eReference
 	 * @return
 	 * @throws IllegalArgumentException if the EReference represents a 1:1 reference.
 	 */
-	public ICollectionReference getCollectionReference(EReference eReference);
+	public IObjectCollectionReference getCollectionReference(EReference eReference);
 
 	/**
-	 * Returns an {@link IOperation} such that the run-time state of this
+	 * Returns an {@link IObjectOperation} such that the run-time state of this
 	 * operation of the owning {@link IDomainObject} can be interacted with.
 	 * 
 	 * @param eOperation
 	 * @return
 	 */
-	public IOperation getOperation(EOperation eOperation);
+	public IObjectOperation getOperation(EOperation eOperation);
 
 	
 }

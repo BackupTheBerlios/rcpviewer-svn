@@ -14,7 +14,7 @@ import junit.framework.TestSuite;
  * 
  * @author Dan Haywood
  */
-public class AllRcpViewerTests {
+public class AllEssentialPlatformTests {
 
 	// TODO: add Compile-time tests etc.
 	public static Test suite() {

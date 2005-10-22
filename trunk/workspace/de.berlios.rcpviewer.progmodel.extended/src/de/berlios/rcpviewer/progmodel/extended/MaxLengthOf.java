@@ -46,4 +46,13 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface MaxLengthOf {
 	int value();
+	class Factory {
+		private Factory() {}
+		public static MaxLengthOf create(final int value) {
+			return new MaxLengthOf() { 
+				public int value() { return value; }
+				public Class<? extends Annotation> annotationType() { return MaxLengthOf.class; }
+			};
+		}
+	}
 }

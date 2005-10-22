@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;

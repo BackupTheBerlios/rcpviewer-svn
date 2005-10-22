@@ -4,7 +4,7 @@ package de.berlios.rcpviewer.session;
 
 /**
  * Listeners will be notified of any changes to a specific 
- * {@link IDomainObject.IOperation} of a particular {@link IDomainObject}.
+ * {@link IDomainObject.IObjectOperation} of a particular {@link IDomainObject}.
  * 
  * @author Dan Haywood
  */

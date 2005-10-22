@@ -22,6 +22,7 @@ Export-Package: de.berlios.rcpviewer,
  de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.progmodel,
  de.berlios.rcpviewer.progmodel.extended,
+ de.berlios.rcpviewer.progmodel.java,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard,
  de.berlios.rcpviewer.progmodel.standard.impl

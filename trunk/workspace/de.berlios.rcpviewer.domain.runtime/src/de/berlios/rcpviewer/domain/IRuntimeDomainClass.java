@@ -21,55 +21,9 @@ import de.berlios.rcpviewer.transaction.ITransaction;
  * Represents a class in the meta model, akin to {@link java.lang.Class} and
  * wrapping an underlying EMF EClass.
  * 
- * <p>
- * There are a number of responsibilities that (objects implementing) this 
- * interface and the related {@link IDomainObject} interface provide over and
- * above EMF.  Specifically, IDomainClass/IDomainObject are responsible for
- * defining the choreography of interactions between the UI layer and the
- * pojos: a bunch of "know-how-tos".  The EMF meta-model mostly provides the
- * "know-whats" of the structure of classes and their attributes.
- * 
  * @author Dan Haywood
  */
 public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
-
-	/**
-	 * Creates a instance of a {@link IDomainObject}
-	 * wrapping a pojo of the type represented by this domain class, and
-	 * attaches to the specified {@link ISession}.
-	 * 
-	 * <p>
-	 * The {@link IDomainObject} will have a persistence state dependent upon
-	 * whether the class supports being persisted.  If it does, it will be
-	 * set to {@link IPersistable.PersistState#PERSISTENT} and an 
-	 * {@link InstantiationChange} added to the appropriate 
-	 * {@link ITransaction}.
-	 * 
-	 * <p>
-	 * The resolve state of the {@link IDomainObject} will be set to
-	 * {@link IResolvable.ResolveState#RESOLVED}. 
-	 * 
-	 * @param session - the session to attach this domain object to.
-	 * 
-	 * @return a {@link IDomainObject}, attached to the supplied session.
-	 */
-	public IDomainObject<T> create(ISession session);
-
-	/**
-	 * Recreates an instance of a {@link IDomainObject} that has previously
-	 * been persisted.
-	 * 
-	 * <p>
-	 * The {@link IDomainObject} will have a persistence state of
-	 * {@link IPersistable.PersistState#PERSISTED} and a resolve state of
-	 * {@link IResolvable.ResolveState#UNRESOLVED}. 
-	 * 
-	 * @param session - the session to attach this domain object to.
-	 * 
-	 * @return a persisted (though still-to-be-resolved) {@link IDomainObject},
-	 *         attached to the supplied session.
-	 */
-	public IDomainObject<T> recreatePersistent(ISession session);
 
 	/**
 	 * The (Java) class to which this is a peer.
@@ -81,37 +35,6 @@ public interface IRuntimeDomainClass<T> extends IDomainClass<T> {
 	 * @return
 	 */
 	public Class<T> getJavaClass();
-
-	/**
-	 * Obtain an arbitrary extension for this domain class, as providing by
-	 * the {@link IDomainBuilder} of some programming model.
-	 *
-	 * <p>
-	 * This method mirrors the one on {@link IDomainClass#getAdapter(Class)}.
-	 * However, note that the supplied class will be an XxxDomainObject.class,
-	 * rather than an XxxDomainClass.class.
-	 * 
-	 * <p>
-	 * This is an instance of the Extension Object pattern, used widely
-	 * throughout the Eclipse Platform under the name of an "adapter" (hence
-	 * our choice of name).
-	 * 
-	 * <p>
-	 * Usage:
-	 * <code>
-	 * SuperDuperDomainObject sddo = 
-	 *     (SuperDuperDomainObject)someDomainClass.getObjectAdapterFor(someDomainObject, SuperDuperDomainObject.class);
-	 * </code>
-	 * 
-	 * <p>
-	 * The supplied domain object should have been instantiated via the domain 
-	 * class upon which the method is invoked. 
-	 * 
-	 * @param domainObject - object for which the adapter is required
-	 * @param objectAdapterClass - class of the adapter that is required. 
-	 * @return object that implements said class.
-	 */
-	public <V> V getObjectAdapterFor(IDomainObject<T> domainObject, Class<V> objectAdapterClass);
 
 	/**
 	 * Returns the method to access the value in the underlying object. 

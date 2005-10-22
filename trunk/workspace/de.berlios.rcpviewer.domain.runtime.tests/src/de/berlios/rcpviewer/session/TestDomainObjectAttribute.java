@@ -25,7 +25,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
 		domainObject.getPojo().setName("HR");
-		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		String value = (String)nameAttribute.get();
 		assertEquals("HR", value);
 	}
@@ -38,7 +38,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
-		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		nameAttribute.set("HR");
 		assertEquals("HR", domainObject.getPojo().getName());
 	}
@@ -51,7 +51,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
-		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		MyDomainObjectAttributeListener l = 
 			nameAttribute.addListener(new MyDomainObjectAttributeListener());
 		nameAttribute.set("HR");
@@ -66,7 +66,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
-		IDomainObject.IAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
+		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		try {
 			nameAttribute.set(new Integer(1));
 			fail("Expected IllegalArgumentException to have been thrown");

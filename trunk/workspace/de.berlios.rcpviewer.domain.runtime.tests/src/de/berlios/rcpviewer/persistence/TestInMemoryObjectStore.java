@@ -32,7 +32,7 @@ public class TestInMemoryObjectStore extends TestCase {
 	protected RuntimeDomain domain;
 	protected SessionManager sessionManager;
 	protected ISession session;
-	protected IObjectStore objectStore;
+	protected InMemoryObjectStore objectStore;
 	protected ITransactionManager transactionManager;
 
 
@@ -75,21 +75,35 @@ public class TestInMemoryObjectStore extends TestCase {
 	public void testDummy() {
 	}
 	
+	public void incompletetestReset() {
+		objectStore.reset();
+	}
+	
 	public void incompletetestCanPersistObjectThatHasntBeen() {
-		
+		//objectStore.persist(domainObject);
 	}
 	
-	public void incompletetestAttemptingToPersistAnObjectThatIsAlreadyPersistedFails() {
-		
+	/**
+	 * With an entity integrity exception.
+	 *
+	 */
+	public void incompletetestSaveObjectFailsIfAlreadyPersisted() {
+		//objectStore.save(domainObject);
 	}
 	
-	public void incompletetestCanSaveObjectThatHasBeenPersisted() {
-		
+	public void incompletetestCanUpdateObjectThatHasBeenPersisted() {
+		//objectStore.update(domainObject);
 	}
 	
-	public void incompletetestAttemptingToSaveObjectThatIsNotAlreadyPersisted() {
-		
+	public void incompletetestUpdateObjectFailsForObjectThatIsNotAlreadyPersisted() {
+		//objectStore.update(domainObject);
 	}
 	
+	public void incompletetestSaveObjectFailsIfConcurrencyException() {
+		
+	}
 
+	public void incompletetestAllInstancesWhenNone() {
+		//objectStore.allInstances();
+	}
 }

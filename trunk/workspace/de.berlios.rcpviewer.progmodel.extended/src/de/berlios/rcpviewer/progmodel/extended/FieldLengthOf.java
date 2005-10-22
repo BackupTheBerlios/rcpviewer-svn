@@ -51,4 +51,13 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface FieldLengthOf {
 	int value();
+	class Factory {
+		private Factory() {}
+		public static FieldLengthOf create(final int value) {
+			return new FieldLengthOf() { 
+				public int value() { return value; }
+				public Class<? extends Annotation> annotationType() { return FieldLengthOf.class; }
+			};
+		}
+	}
 }

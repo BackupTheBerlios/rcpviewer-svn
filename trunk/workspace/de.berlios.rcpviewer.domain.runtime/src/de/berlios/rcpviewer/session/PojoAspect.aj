@@ -481,9 +481,9 @@ public abstract aspect PojoAspect {
 	 * 
 	 * @return attribute or null
 	 */
-	protected IDomainObject.IAttribute getAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+	protected IDomainObject.IObjectAttribute getAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		EAttribute eAttribute = getEAttributeFor(domainObject, joinPointStaticPart);
-		IDomainObject.IAttribute attribute = domainObject.getAttribute(eAttribute);
+		IDomainObject.IObjectAttribute attribute = domainObject.getAttribute(eAttribute);
 		return attribute;
 	}
 
@@ -497,9 +497,9 @@ public abstract aspect PojoAspect {
 	 * 
 	 * @return reference or null
 	 */
-	protected IDomainObject.IOneToOneReference getOneToOneReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+	protected IDomainObject.IObjectOneToOneReference getOneToOneReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		EReference eReference = getEReferenceFor(domainObject, joinPointStaticPart);
-		IDomainObject.IOneToOneReference reference = domainObject.getOneToOneReference(eReference);
+		IDomainObject.IObjectOneToOneReference reference = domainObject.getOneToOneReference(eReference);
 		return reference;
 	}
 
@@ -515,9 +515,9 @@ public abstract aspect PojoAspect {
 	 * @param joinPoint representing either an addTo or a removeFrom operation.
 	 * @return reference or null
 	 */
-	protected IDomainObject.ICollectionReference getCollectionReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+	protected IDomainObject.IObjectCollectionReference getCollectionReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		EReference eReference = getEReferenceFor(domainObject, joinPointStaticPart);
-		IDomainObject.ICollectionReference reference = domainObject.getCollectionReference(eReference);
+		IDomainObject.IObjectCollectionReference reference = domainObject.getCollectionReference(eReference);
 		return reference;
 	}
 
@@ -529,9 +529,9 @@ public abstract aspect PojoAspect {
 	 * <p>
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
-	protected IDomainObject.IOperation getOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
+	protected IDomainObject.IObjectOperation getOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		EOperation eOperation = getEOperationFor(domainObject, joinPointStaticPart);
-		IDomainObject.IOperation operation = domainObject.getOperation(eOperation);
+		IDomainObject.IObjectOperation operation = domainObject.getOperation(eOperation);
 		return operation;
 	}
 

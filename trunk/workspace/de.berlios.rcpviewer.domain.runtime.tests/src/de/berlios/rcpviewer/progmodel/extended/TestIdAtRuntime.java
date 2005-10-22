@@ -3,15 +3,15 @@ package de.berlios.rcpviewer.progmodel.extended;
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 
 /**
- * Binds the tests defined in {@link TestOrderForAttributes} to the runtime 
+ * Binds the tests defined in {@link TestId} to the runtime 
  * environment.
  * 
  * @author Dan Haywood
  *
  */
-public class TestOrderForAttributesAtRuntime extends TestOrderForAttributes {
+public class TestIdAtRuntime extends TestId {
 
-	public TestOrderForAttributesAtRuntime() {
+	public TestIdAtRuntime() {
 		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
 	}
 

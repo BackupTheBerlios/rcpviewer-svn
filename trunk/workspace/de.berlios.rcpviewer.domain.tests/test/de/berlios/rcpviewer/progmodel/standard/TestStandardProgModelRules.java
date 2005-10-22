@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.standard.namingconventions;
+package de.berlios.rcpviewer.progmodel.standard;
 import de.berlios.rcpviewer.progmodel.standard.*;
 
 import java.lang.reflect.Method;
@@ -9,9 +9,9 @@ import de.berlios.rcpviewer.progmodel.standard.namingconventions.Employee;
 
 import junit.framework.TestCase;
 
-public class TestNamingConventions extends TestCase {
+public class TestStandardProgModelRules extends TestCase {
 
-	private RuntimeNamingConventions namingConventions;
+	private RuntimeStandardProgModelRules namingConventions;
 	private Method departmentGetNameMethod;
 	private Method departmentNotAnAccessorMethod;
 	private Method departmentGetSupervisorMethod;
@@ -25,7 +25,7 @@ public class TestNamingConventions extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		namingConventions = new RuntimeNamingConventions();
+		namingConventions = new RuntimeStandardProgModelRules();
 
 		departmentGetNameMethod = Department.class.getMethod("getName", new Class[]{});
 		departmentNotAnAccessorMethod = Department.class.getMethod("foo", new Class[]{});;

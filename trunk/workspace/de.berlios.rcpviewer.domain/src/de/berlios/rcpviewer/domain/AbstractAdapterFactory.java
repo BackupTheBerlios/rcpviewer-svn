@@ -23,6 +23,6 @@ public abstract class AbstractAdapterFactory<T> implements IAdapterFactory<T> {
 		details.put("url", getUrl());
 		return details;
 	}
-	public abstract <V> T createAdapter(IDomainClass<V> adaptedDomainClass, Map<String, String> details);
+	public abstract <V> T createAdapter(IDomainClass<V> adaptedDomainClass);
 	
 }

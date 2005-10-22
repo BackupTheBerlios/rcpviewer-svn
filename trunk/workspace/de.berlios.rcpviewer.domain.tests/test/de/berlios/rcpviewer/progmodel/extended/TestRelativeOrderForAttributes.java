@@ -10,13 +10,13 @@ import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
- * Tests for the use of the <tt>PositionedAt</tt>.
+ * Tests for the use of the <tt>@RelativeOrder</tt> annotation.
  * 
  * @author Dan Haywood
  */
-public abstract class TestOrderForAttributes extends AbstractTestCase {
+public abstract class TestRelativeOrderForAttributes extends AbstractTestCase {
 
-	public TestOrderForAttributes(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
+	public TestRelativeOrderForAttributes(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
 		super(domainSpecifics, domainBuilder);
 	}
 
@@ -40,9 +40,9 @@ public abstract class TestOrderForAttributes extends AbstractTestCase {
 		assertNotNull(extendedDomainClass);
 		List<EAttribute> orderedAttributes = 
 			extendedDomainClass.orderedAttributes();
-		assertEquals("numberOfOrders", orderedAttributes.get(0).getName());
+		assertEquals("lastName", orderedAttributes.get(0).getName());
 		assertEquals("firstName", orderedAttributes.get(1).getName());
-		assertEquals("lastName", orderedAttributes.get(2).getName());
+		assertEquals("numberOfOrders", orderedAttributes.get(2).getName());
 	}
 
 	

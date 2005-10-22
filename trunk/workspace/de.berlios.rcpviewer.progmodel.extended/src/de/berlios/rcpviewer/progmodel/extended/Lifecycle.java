@@ -49,4 +49,17 @@ public @interface Lifecycle {
 	 * @return
 	 */
 	boolean saveable() default true;
+	
+	class Factory {
+		private Factory() {}
+		public static Lifecycle create(final boolean searchable, final boolean instantiable, final boolean saveable) {
+			return new Lifecycle() {
+				public boolean searchable() { return searchable; }
+				public boolean instantiable() { return instantiable; }
+				public boolean saveable() { return saveable; }
+				public Class<? extends Annotation> annotationType() { return Lifecycle.class; }
+			};
+		}
+	}
+
 }

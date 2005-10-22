@@ -7,6 +7,7 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass.IReference;
 
 public abstract class TestDomainClassReferences extends AbstractTestCase {
 
@@ -34,15 +35,16 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		employeeDomainClass = lookupAny(Employee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
-		EReference refToEmployees = departmentDomainClass.references().get(0);
-		assertEquals("employees", refToEmployees.getName());
-		assertSame(employeeDomainClass, departmentDomainClass.getReferencedClass(refToEmployees));
-		assertTrue(departmentDomainClass.isMultiple(refToEmployees));
-		assertFalse(departmentDomainClass.isOrdered(refToEmployees));
-		assertFalse(departmentDomainClass.isContainer(refToEmployees));
-		assertTrue(departmentDomainClass.isUnique(refToEmployees));
-		assertFalse(departmentDomainClass.isChangeable(refToEmployees));
-		assertFalse(departmentDomainClass.isDerived(refToEmployees));
+		EReference eRefToEmployees = departmentDomainClass.references().get(0);
+		IReference reference = employeeDomainClass.getReference(eRefToEmployees);
+		assertEquals("employees", eRefToEmployees.getName());
+		assertSame(employeeDomainClass, reference.getReferencedClass());
+		assertTrue(reference.isMultiple());
+		assertFalse(reference.isOrdered());
+		assertFalse(reference.isContainer());
+		assertTrue(reference.isUnique());
+		assertFalse(reference.isChangeable());
+		assertFalse(reference.isDerived());
 	} 
 
 	public void testOneToOneIsPickedUp(){
@@ -50,15 +52,16 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		employeeDomainClass = lookupAny(Employee.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
-		EReference refToDepartment = employeeDomainClass.references().get(0);
-		assertEquals("department", refToDepartment.getName());
-		assertSame(departmentDomainClass, employeeDomainClass.getReferencedClass(refToDepartment));
-		assertFalse(employeeDomainClass.isMultiple(refToDepartment));
-		assertFalse(employeeDomainClass.isOrdered(refToDepartment));
-		assertFalse(employeeDomainClass.isContainer(refToDepartment));
-		assertFalse(employeeDomainClass.isUnique(refToDepartment));
-		assertFalse(employeeDomainClass.isChangeable(refToDepartment));
-		assertFalse(employeeDomainClass.isDerived(refToDepartment));
+		EReference eRefToEmployees = employeeDomainClass.references().get(0);
+		IReference reference = employeeDomainClass.getReference(eRefToEmployees);
+		assertEquals("department", eRefToEmployees.getName());
+		assertSame(departmentDomainClass, reference.getReferencedClass());
+		assertFalse(reference.isMultiple());
+		assertFalse(reference.isOrdered());
+		assertFalse(reference.isContainer());
+		assertFalse(reference.isUnique());
+		assertFalse(reference.isChangeable());
+		assertFalse(reference.isDerived());
 	} 
 
 	public void testImmutableOneToManyIsPickedUp(){
@@ -66,9 +69,10 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		employeeDomainClass = lookupAny(Employee.class);
 		
 		assertEquals(1, departmentDomainClass.references().size());
-		EReference refToEmployees = departmentDomainClass.references().get(0);
-		assertEquals("employees", refToEmployees.getName());
-		assertFalse(departmentDomainClass.isChangeable(refToEmployees));
+		EReference eRefToEmployees = departmentDomainClass.references().get(0);
+		IReference reference = employeeDomainClass.getReference(eRefToEmployees);
+		assertEquals("employees", eRefToEmployees.getName());
+		assertFalse(reference.isChangeable());
 	} 
 
 	public void testImmutableOneToOneIsPickedUp(){
@@ -76,28 +80,31 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		nameDomainClass = lookupAny(ReferencesName.class);
 		
 		assertEquals(1, employeeDomainClass.references().size());
-		EReference refToName = employeeDomainClass.references().get(0);
-		assertEquals("name", refToName.getName());
-		assertSame(nameDomainClass, employeeDomainClass.getReferencedClass(refToName));
-		assertFalse(employeeDomainClass.isChangeable(refToName));
+		EReference eRefToName = employeeDomainClass.references().get(0);
+		IReference reference = employeeDomainClass.getReference(eRefToName);
+		assertEquals("name", eRefToName.getName());
+		assertSame(nameDomainClass, reference.getReferencedClass());
+		assertFalse(reference.isChangeable());
 	} 
 
 	public void testDerivedOneToManyIsPickedUp(){
 		departmentDomainClass = lookupAny(DepartmentDerivedReferences.class);
 		
 		EReference derivedRefToEmployees = departmentDomainClass.getEReferenceNamed("terminatedEmployees");
+		IReference reference = departmentDomainClass.getReference(derivedRefToEmployees);
 		assertEquals("terminatedEmployees", derivedRefToEmployees.getName());
-		assertTrue(departmentDomainClass.isMultiple(derivedRefToEmployees));
-		assertTrue(departmentDomainClass.isDerived(derivedRefToEmployees));
+		assertTrue(reference.isMultiple());
+		assertTrue(reference.isDerived());
 	} 
 
 	public void testDerivedOneToOneIsPickedUp(){
 		departmentDomainClass = lookupAny(DepartmentDerivedReferences.class);
 		employeeDomainClass = lookupAny(Employee.class);
 				
-		EReference derivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");
-		assertFalse(departmentDomainClass.isMultiple(derivedRefToEmployee));
-		assertTrue(departmentDomainClass.isDerived(derivedRefToEmployee));
+		EReference eDerivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");
+		IReference reference = employeeDomainClass.getReference(eDerivedRefToEmployee);
+		assertFalse(reference.isMultiple());
+		assertTrue(reference.isDerived());
 	} 
 	
 	/**

@@ -27,4 +27,13 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})
 public @interface Named {
 	String value();
+	class Factory {
+		private Factory() {}
+		public static Named create(final String value) {
+			return new Named(){
+				public String value() { return value; }
+				public Class<? extends Annotation> annotationType() { return Named.class; }
+			};
+		}
+	}
 }

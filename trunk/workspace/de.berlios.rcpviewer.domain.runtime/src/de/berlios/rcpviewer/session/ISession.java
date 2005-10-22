@@ -56,13 +56,15 @@ public interface ISession {
 	IObjectStore getObjectStore();
 	
 	/**
-	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
-	 * attaches to the session.
+	 * Creates a new pojo wrapped in an {@link IDomainObject}, attaches to the 
+	 * session, and persists if appropriate.
 	 * 
 	 * <p>
-	 * The object will only be persisted (and therefore added to the current
-	 * transaction) if it supports it (is not annotated as 
-	 * {@link TransientOnly}, or equiv.)
+	 * The object will be persisted only if it supports it (is not annotated as 
+	 * {@link TransientOnly}, or equiv.)  If it does, it will be
+	 * set to {@link IPersistable.PersistState#PERSISTENT} and an 
+	 * {@link InstantiationChange} added to the appropriate 
+	 * {@link ITransaction}.
 	 * 
 	 * @param domainClass
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
@@ -71,13 +73,20 @@ public interface ISession {
 
 	
 	/**
-	 * Creates a new pojo wrapped in an {@link IDomainObject}, and automatically
-	 * attaches to the session.
+	 * Rereates a pojo that has previously been persisted, wraps in a
+	 * {@link IDomainObject}, and attaches to the session.
+	 * 
+	 * <p>
+	 * The {@link IDomainObject} will have a persistence state of
+	 * {@link IPersistable.PersistState#PERSISTED} and a resolve state of
+	 * {@link IResolvable.ResolveState#UNRESOLVED}. 
 	 * 
 	 * @param domainClass
-	 * @return an {@link IDomainObject} wrapping a newly created pojo.
+	 * @return a persisted (though still-to-be-resolved) {@link IDomainObject},
+	 *         attached to the supplied session.
 	 */
 	<T> IDomainObject<T> recreate(IRuntimeDomainClass<T> domainClass);
+
 
 	/**
 	 * Deletes the pojo wrapped by the supplied {@link IDomainObject}.

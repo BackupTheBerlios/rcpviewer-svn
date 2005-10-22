@@ -28,7 +28,7 @@ public final class DomainObjectAttributeEvent<T> extends EventObject {
 	 * @param source
 	 */
 	public DomainObjectAttributeEvent(
-			final IDomainObject.IAttribute source, 
+			final IDomainObject.IObjectAttribute source, 
 			final T newValue) {
 		super(source);
 		this.newValue = newValue;
@@ -39,8 +39,8 @@ public final class DomainObjectAttributeEvent<T> extends EventObject {
 	 * 
 	 * @return the extended attribute that raised this event.
 	 */
-	public IDomainObject.IAttribute getAttribute() {
-		return (IDomainObject.IAttribute)getSource();
+	public IDomainObject.IObjectAttribute getAttribute() {
+		return (IDomainObject.IObjectAttribute)getSource();
 	}
 
 

@@ -48,4 +48,13 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE})
 public @interface MinLengthOf {
 	int value();
+	class Factory {
+		private Factory() {}
+		public static MinLengthOf create(final int value) {
+			return new MinLengthOf() { 
+				public int value() { return value; }
+				public Class<? extends Annotation> annotationType() { return MinLengthOf.class; }
+			};
+		}
+	}
 }
