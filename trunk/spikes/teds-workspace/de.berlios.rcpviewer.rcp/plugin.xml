@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="fieldbuilders" name="Field Builders" schema="schema/fieldbuilders.exsd"/>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="de.berlios.rcpviewer.rcp.Perspective"
+            fixed="false"
+            id="de.berlios.rcpviewer.rcp.Perspective"
+            name="RCPViewer Perspective"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.berlios.rcpviewer.editors.Editor"
+            icon="icons/sample.gif"
+            id="de.berlios.rcpviewer.rcp.objectEditor"
+            name="RCPViewer Object Editor"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            class="de.berlios.rcpviewer.views.ObjectListView"
+            id="de.berlios.rcpviewer.views.ObjectListView"
+            name="ObjectListView"/>
+      <view
+            allowMultiple="false"
+            class="de.berlios.rcpviewer.views.RcpViewerActionsView"
+            fastViewWidthRatio=".3"
+            id="de.berlios.rcpviewer.views.RcpViewerActionsView"
+            name="Actions"/>
+      <view
+            allowMultiple="false"
+            class="de.berlios.rcpviewer.views.RcpViewerShortcutsView"
+            fastViewWidthRatio=".3"
+            id="de.berlios.rcpviewer.views.RcpViewerShortcutsView"
+            name="Shortcuts"/>
+   </extension>
+   <extension
+         point="de.berlios.rcpviewer.rcp.fieldbuilders">
+         <fieldbuilder class="de.berlios.rcpviewer.gui.exts.BooleanFieldBuilder"/>
+         <fieldbuilder class="de.berlios.rcpviewer.gui.exts.DateFieldBuilder"/>
+   </extension>
+
+</plugin>

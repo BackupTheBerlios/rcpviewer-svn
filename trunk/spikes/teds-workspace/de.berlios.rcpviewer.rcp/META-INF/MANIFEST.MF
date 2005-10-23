@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: de.berlios.rcpviewer.rcp
+Bundle-SymbolicName: de.berlios.rcpviewer.rcp; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
+ org.eclipse.swt;visibility:=reexport,
+ org.eclipse.ui;visibility:=reexport,
+ org.eclipse.ui.forms;visibility:=reexport,
+ org.eclipse.ui.workbench;visibility:=reexport,
+ org.eclipse.jface.text;visibility:=reexport,
+ de.berlios.rcpviewer.domain;visibility:=reexport,
+ de.berlios.rcpviewer.domain.runtime;visibility:=reexport
+Bundle-Vendor: rcpviewer.berlios.de
+Bundle-ClassPath: library.jar,
+ lib/swtcalendar.jar
+Bundle-Activator: de.berlios.rcpviewer.rcp.RcpViewerPlugin
+Export-Package: de.berlios.rcpviewer.actions,
+ de.berlios.rcpviewer.editors,
+ de.berlios.rcpviewer.gui,
+ de.berlios.rcpviewer.gui.exts,
+ de.berlios.rcpviewer.model,
+ de.berlios.rcpviewer.rcp,
+ de.berlios.rcpviewer.util,
+ de.berlios.rcpviewer.views
