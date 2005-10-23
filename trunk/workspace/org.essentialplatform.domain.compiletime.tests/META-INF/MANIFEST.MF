@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.domain.compiletime.tests
+Bundle-SymbolicName: org.essentialplatform.domain.compiletime.tests
 Bundle-Version: 1.0.0
 Bundle-ClassPath: tests.jar
 Bundle-Activator: de.berlios.rcpviewer.domain.compiletime.tests.TestsPlugin

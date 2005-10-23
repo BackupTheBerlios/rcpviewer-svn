@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.domain.tests
+Bundle-SymbolicName: org.essentialplatform.domain.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/
@@ -11,12 +11,12 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
  org.junit;visibility:=reexport,
- de.berlios.rcpviewer.domain;visibility:=reexport,
- de.berlios.rcpviewer.domain.fixture;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
- de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
+ org.essentialplatform.domain;visibility:=reexport,
+ org.essentialplatform.domain.fixture;visibility:=reexport,
+ org.essentialplatform.progmodel.extended;visibility:=reexport,
+ org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
+ org.essentialplatform.progmodel.standard;visibility:=reexport,
+ org.essentialplatform.domain.runtime;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team

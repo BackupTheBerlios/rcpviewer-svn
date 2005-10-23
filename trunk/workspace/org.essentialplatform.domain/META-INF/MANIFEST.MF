@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Domain Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.domain; singleton:=true
+Bundle-SymbolicName: org.essentialplatform.domain; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: core.jar,
  bin/
@@ -13,9 +13,9 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.junit;visibility:=reexport,
  org.eclipse.osgi;visibility:=reexport,
  org.eclipse.core.runtime;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
+ org.essentialplatform.progmodel.extended;visibility:=reexport,
+ org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
+ org.essentialplatform.progmodel.standard;visibility:=reexport,
  org.apache.log4j;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer,
@@ -26,5 +26,5 @@ Export-Package: de.berlios.rcpviewer,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard,
  de.berlios.rcpviewer.progmodel.standard.impl
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Rssential Platform Development Team
 DynamicImport-Package: *

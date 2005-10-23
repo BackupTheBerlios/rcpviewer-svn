@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Rcpviewer Programming Model Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.progmodel.rcpviewer
+Bundle-SymbolicName: org.essentialplatform.progmodel.rcpviewer
 Bundle-Version: 0.0.1
 Bundle-ClassPath: rcpviewer.jar,
  bin/

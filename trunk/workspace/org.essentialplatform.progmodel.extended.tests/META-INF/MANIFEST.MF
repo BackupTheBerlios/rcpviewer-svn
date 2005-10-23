@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.progmodel.extended.tests
+Bundle-SymbolicName: org.essentialplatform.progmodel.extended.tests
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
-Require-Bundle: de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
+Require-Bundle: org.essentialplatform.progmodel.extended;visibility:=reexport,
  org.junit;visibility:=reexport
 Export-Package: de.berlios.rcpviewer.progmodel.extended.tests
 Bundle-ClassPath: bin/

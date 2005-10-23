@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: de.berlios.rcpviewer.domain.runtime
-Bundle-SymbolicName: de.berlios.rcpviewer.domain.runtime; singleton:=true
+Bundle-Name: org.essentialplatform.domain.runtime
+Bundle-SymbolicName: org.essentialplatform.domain.runtime; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: runtime.jar
 Bundle-Activator: de.berlios.rcpviewer.domain.runtime.RuntimePlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
- de.berlios.rcpviewer.domain;visibility:=reexport,
+ org.essentialplatform.domain;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.authorization,

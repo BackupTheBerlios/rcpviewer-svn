@@ -5,7 +5,7 @@ Bundle-SymbolicName: demo;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: demo.DemoPlugin
 Bundle-Localization: plugin
-Require-Bundle: de.berlios.rcpviewer.gui;visibility:=reexport,
- org.aspectj.runtime;visibility:=reexport
+Require-Bundle: org.aspectj.runtime;visibility:=reexport,
+ org.essentialplatform.louis
 Eclipse-AutoStart: true
 Export-Package: demo

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.domain.runtime.tests
+Bundle-SymbolicName: org.essentialplatform.domain.runtime.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/,
@@ -9,10 +9,10 @@ Bundle-ClassPath: tests.jar,
 Bundle-Activator: de.berlios.rcpviewer.domain.runtime.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- de.berlios.rcpviewer.domain.fixture;visibility:=reexport,
- de.berlios.rcpviewer.domain.tests;visibility:=reexport,
- de.berlios.rcpviewer.domain.runtime;visibility:=reexport,
- de.berlios.rcpviewer.domain;visibility:=reexport,
+ org.essentialplatform.domain.fixture;visibility:=reexport,
+ org.essentialplatform.domain.tests;visibility:=reexport,
+ org.essentialplatform.domain.runtime;visibility:=reexport,
+ org.essentialplatform.domain;visibility:=reexport,
  org.junit;visibility:=reexport,
  net.sf.plugins.easymock;visibility:=reexport
 Eclipse-AutoStart: true

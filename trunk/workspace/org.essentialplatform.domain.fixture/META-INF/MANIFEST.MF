@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Domain Tests Fixture Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.domain.fixture
+Bundle-SymbolicName: org.essentialplatform.domain.fixture
 Bundle-Version: 0.0.1
 Bundle-ClassPath: fixture.jar,
  bin/
 Bundle-Activator: de.berlios.rcpviewer.domain.fixture.FixturePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.extended;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.rcpviewer;visibility:=reexport,
- de.berlios.rcpviewer.progmodel.standard;visibility:=reexport,
- de.berlios.rcpviewer.domain.runtime
+ org.essentialplatform.progmodel.extended;visibility:=reexport,
+ org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
+ org.essentialplatform.progmodel.standard;visibility:=reexport,
+ org.essentialplatform.domain.runtime
 Eclipse-AutoStart: true
 Export-Package: de.berlios.rcpviewer.domain,
  de.berlios.rcpviewer.persistence,

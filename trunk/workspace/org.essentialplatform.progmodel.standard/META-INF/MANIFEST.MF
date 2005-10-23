@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Standard Programming Model Plug-in
-Bundle-SymbolicName: de.berlios.rcpviewer.progmodel.standard
+Bundle-SymbolicName: org.essentialplatform.progmodel.standard
 Bundle-Version: 0.0.1
 Bundle-ClassPath: standard.jar,
  bin/
