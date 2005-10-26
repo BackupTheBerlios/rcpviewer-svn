@@ -17,6 +17,7 @@ import de.berlios.rcpviewer.domain.EmfAnnotations;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
 import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
 
@@ -77,8 +78,13 @@ public class EmfUtil {
 	public static final boolean canAddTo( EReference eReference ) {
 		IDomainClass rdc = getContainerDomainType( eReference );
 		IDomainClass.IReference reference = rdc.getReference(eReference);
-		RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
-		return runtimeBinding.canAddTo();
+		if (reference.isMultiple()) {
+			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+			return runtimeBinding.canAddTo();
+		} else  {
+			RuntimeOneToOneReferenceBinding runtimeBinding = (RuntimeOneToOneReferenceBinding)reference.getBinding();
+			return runtimeBinding.canAssociate();
+		}
 	}	
 	
 	/**
@@ -89,8 +95,13 @@ public class EmfUtil {
 	public static final boolean canRemoveFrom( EReference eReference ) {
 		IDomainClass rdc = getContainerDomainType( eReference );
 		IDomainClass.IReference reference = rdc.getReference(eReference);
-		RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
-		return runtimeBinding.canRemoveFrom();
+		if (reference.isMultiple()) {
+			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+			return runtimeBinding.canRemoveFrom();
+		} else {
+			RuntimeOneToOneReferenceBinding runtimeBinding = (RuntimeOneToOneReferenceBinding)reference.getBinding();
+			return runtimeBinding.canDissociate();
+		}
 	}	
 	
 	/**
