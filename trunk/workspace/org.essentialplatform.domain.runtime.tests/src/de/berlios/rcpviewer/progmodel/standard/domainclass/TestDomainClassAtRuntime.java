@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 
 /**
@@ -24,10 +25,11 @@ public class TestDomainClassAtRuntime extends TestDomainClass {
 	}
 	
 	public void testGetJavaClass() {
-		IRuntimeDomainClass<?> domainClass = 
-			(IRuntimeDomainClass<?>)lookupAny(CustomerWithNoAttributes.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(CustomerWithNoAttributes.class);
 		
-		assertSame(CustomerWithNoAttributes.class, domainClass.getJavaClass());
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		assertSame(CustomerWithNoAttributes.class, javaClass);
 	}
 
 	

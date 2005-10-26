@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.session;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.operation.CustomerOperationReturningDomainObject;
 import de.berlios.rcpviewer.progmodel.standard.operation.CustomerOperationReturningVoid;
@@ -24,8 +24,8 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
 	public void testCanInvokeOperationReturningVoid() {
-		IRuntimeDomainClass<CustomerOperationReturningVoid> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationReturningVoid>) lookupAny(CustomerOperationReturningVoid.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationReturningVoid.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
@@ -41,8 +41,8 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
  	public void testCanInvokeOperationReturningDomainObject() {
-		IRuntimeDomainClass<CustomerOperationReturningDomainObject> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationReturningDomainObject>) lookupAny(CustomerOperationReturningDomainObject.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationReturningDomainObject.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
@@ -56,8 +56,8 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
  	public void testCanInvokeOperationReturningPrimitive() {
-		IRuntimeDomainClass<CustomerOperationReturningDomainObject> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationReturningDomainObject>) lookupAny(CustomerOperationReturningDomainObject.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationReturningDomainObject.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 		

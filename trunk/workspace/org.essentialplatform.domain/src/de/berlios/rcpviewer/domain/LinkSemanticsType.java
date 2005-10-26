@@ -8,7 +8,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EReference;
 
 /**
- * Powertype describing the different sorts of {@link de.berlios.rcpviewer.domain.LinkSemantics}.
+ * Powertype describing the different sorts of {@link org.essentialplatform.domain.LinkSemantics}.
  * 
  * TODO: make into an enum
  * 

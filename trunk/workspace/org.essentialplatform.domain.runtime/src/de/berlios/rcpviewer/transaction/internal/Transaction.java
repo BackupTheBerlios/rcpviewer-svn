@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.transaction.*;
 
 
 /**
- * Implementation of {@link Transaction} as used by {@link de.berlios.rcpviewer.transaction.TransactionManager}
+ * Implementation of {@link Transaction} as used by {@link org.essentialplatform.transaction.TransactionManager}
  */
 public final class Transaction implements ITransaction {
 

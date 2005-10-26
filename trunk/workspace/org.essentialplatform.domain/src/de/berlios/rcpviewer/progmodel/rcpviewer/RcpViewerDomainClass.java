@@ -18,18 +18,18 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * <p>
  * Typical usage:
  * <pre>
- * IDomainClass<T> someDC = ...
+ * IDomainClass someDC = ...
  * RcpViewerDomainClass someRcpViewerDC = someDC.getAdapter(RcpViewerDomainClass.class);
  * </pre>
  * 
  * @author Dan Haywood
  *
  */
-public final class RcpViewerDomainClass<T> extends AbstractDomainClassAdapter<T> {
+public final class RcpViewerDomainClass extends AbstractDomainClassAdapter {
 
 	private final RcpViewerProgModelSemanticsEmfSerializer serializer = new RcpViewerProgModelSemanticsEmfSerializer();
 
-	public RcpViewerDomainClass(IDomainClass<T> adaptedDomainClass) {
+	public RcpViewerDomainClass(IDomainClass adaptedDomainClass) {
 		super(adaptedDomainClass);
 	}
 

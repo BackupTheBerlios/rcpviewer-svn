@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.essentialplatform.domain; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: core.jar,
  bin/
-Bundle-Activator: de.berlios.rcpviewer.CorePlugin
+Bundle-Activator: org.essentialplatform.CorePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.eclipse.emf.ecore;visibility:=reexport,
@@ -25,6 +25,7 @@ Export-Package: de.berlios.rcpviewer,
  de.berlios.rcpviewer.progmodel.java,
  de.berlios.rcpviewer.progmodel.rcpviewer,
  de.berlios.rcpviewer.progmodel.standard,
- de.berlios.rcpviewer.progmodel.standard.impl
+ de.berlios.rcpviewer.progmodel.standard.impl,
+ org.essentialplatform
 Bundle-Vendor: Rssential Platform Development Team
 DynamicImport-Package: *

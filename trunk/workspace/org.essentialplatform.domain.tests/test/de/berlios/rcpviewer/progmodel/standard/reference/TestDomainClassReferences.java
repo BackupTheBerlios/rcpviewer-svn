@@ -15,9 +15,9 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
-	private IDomainClass<?> departmentDomainClass;
-	private IDomainClass<?> employeeDomainClass;
-	private IDomainClass<ReferencesName> nameDomainClass;
+	private IDomainClass departmentDomainClass;
+	private IDomainClass employeeDomainClass;
+	private IDomainClass nameDomainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}

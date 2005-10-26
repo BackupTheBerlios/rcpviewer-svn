@@ -24,6 +24,6 @@ public interface IDomainBuilder {
 	 * @param <V>
 	 * @param domainClass
 	 */
-	public <V> void build(IDomainClass<V> domainClass);
+	public void build(IDomainClass domainClass);
 
 }

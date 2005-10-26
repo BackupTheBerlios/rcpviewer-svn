@@ -1,18 +1,19 @@
-package de.berlios.rcpviewer.progmodel.extended;
+package de.berlios.rcpviewer.progmodel.standard;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
-import sun.security.krb5.internal.crypto.b;
-
-import de.berlios.rcpviewer.domain.EmfAnnotations;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
+import de.berlios.rcpviewer.domain.AbstractProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.extended.*;
 
 /**
  * Serializes and deserializes semantics for the extended programming model
@@ -20,10 +21,8 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  *  
  * @author Dan Haywood
  */
-public final class ExtendedProgModelSemanticsEmfSerializer {
+public final class ExtendedProgModelSemanticsEmfSerializer extends AbstractProgModelSemanticsEmfSerializer {
 
-	private final EmfAnnotations _emfAnnotations = new EmfAnnotations();
-	
 	// any model element
 	public Optional getOptional(EModelElement modelElement) {
 		Map<String,String> attributeDetails = 
@@ -141,33 +140,8 @@ public final class ExtendedProgModelSemanticsEmfSerializer {
 				"true");
 	}
 
-	// attributes
-	public String getAttributeAccessorPre(EAttribute attribute) {
-		return _emfAnnotations.getAnnotationDetail(
-				_emfAnnotations.methodNamesAnnotationFor(attribute), 
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
-	}
-	public void setAttributeAccessorPre(EAttribute attribute, String methodName) {
-		_emfAnnotations.putAnnotationDetails(
-				attribute,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
-	}
-
-	public String getAttributeMutatorPre(EAttribute attribute) {
-		return _emfAnnotations.getAnnotationDetail(
-				_emfAnnotations.methodNamesAnnotationFor(attribute), 
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
-	}
-	public void setAttributeMutatorPre(EAttribute attribute, String methodName) {
-		_emfAnnotations.putAnnotationDetails(
-				attribute,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
-	}
 	
+	// attributes
 	/**
 	 * There is no direct getter because it is accessed instead using
 	 * {@link #getAttributeAnnotationInt(EAttribute, String)}.
@@ -325,85 +299,170 @@ public final class ExtendedProgModelSemanticsEmfSerializer {
 
 
 	// references
-	public String getReferenceAccessorPre(EReference reference) {
-		return _emfAnnotations.getAnnotationDetail(
+	// (no additional semantics)
+	
+	// operations
+	// (no additional semantics)
+
+	
+	//////////////////////////////////////////////////////////////////////
+	// Specific to Deployment Binding
+	// (need to move out)
+	//////////////////////////////////////////////////////////////////////
+
+	// attributes
+	public Method getAttributeAccessorPreMethod(EAttribute attribute) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
+				_emfAnnotations.methodNamesAnnotationFor(attribute), 
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
+		return findMethod(javaClassFor(attribute), methodName);
+	}
+	public void setAttributeAccessorPreMethod(EAttribute attribute, Method method) {
+		_emfAnnotations.putAnnotationDetails(
+				attribute,
+				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
+				method.getName());
+	}
+
+	public Method getAttributeMutatorPreMethod(EAttribute attribute) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
+				_emfAnnotations.methodNamesAnnotationFor(attribute), 
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
+		Class<?> attributeType = attribute.getEAttributeType().getInstanceClass();
+		return findMethod(javaClassFor(attribute), methodName, new Class[]{attributeType});
+	}
+	public void setAttributeMutatorPreMethod(EAttribute attribute, Method method) {
+		_emfAnnotations.putAnnotationDetails(
+				attribute,
+				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+				ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
+				method.getName());
+	}
+
+	// references
+	
+	/**
+	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
+	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
+	 */
+	public Method getReferenceAccessorPreMethod(EReference reference) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
+		return findMethod(javaClassFor(reference), methodName);
 	}
-	public void setReferenceAccessorPre(EReference reference, String methodName) {
+	/**
+	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
+	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
+	 */
+	public void setReferenceAccessorPreMethod(EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				reference,
 				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
+				method.getName());
 	}
 
-	public String getReferenceMutatorPre(EReference reference) {
-		return _emfAnnotations.getAnnotationDetail(
+	/**
+	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
+	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
+	 */
+	public Method getReferenceMutatorPreMethod(EReference reference) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY);
-
+		
+		Class<?> referenceType = reference.getEType().getInstanceClass();
+		return findMethod(javaClassFor(reference), methodName, new Class[]{referenceType});
 	}
-	public void setReferenceMutatorPre(EReference reference, String methodName) {
+	/**
+	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
+	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
+	 */
+	public void setReferenceMutatorPreMethod(EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				reference,
 				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
+				method.getName());
 	}
 	
-	public String getReferenceAddToPre(EReference reference) {
-		return _emfAnnotations.getAnnotationDetail(
+	public Method getReferenceAddToPreMethod(EReference reference) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY);
+		Class<?> referenceType = reference.getEType().getInstanceClass();
+		return findMethod(javaClassFor(reference), methodName, new Class[]{referenceType});
 	}
-	public void setReferenceAddToPre(EReference reference, String methodName) {
+	public void setReferenceAddToPreMethod(EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				reference,
 				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
+				method.getName());
 	}
 
-	public String getReferenceRemoveFromPre(EReference reference) {
-		return _emfAnnotations.getAnnotationDetail(
+	public Method getReferenceRemoveFromPreMethod(EReference reference) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY);
-
+		Class<?> referenceType = reference.getEType().getInstanceClass();
+		return findMethod(javaClassFor(reference), methodName, new Class[]{referenceType});
 	}
-	public void setReferenceRemoveFromPre(EReference reference, String methodName) {
+	public void setReferenceRemoveFromPre(EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				reference,
 				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
 				ExtendedProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
+				method.getName());
 	}
 	
 	// operations
-	public String getOperationPre(EOperation operation) {
-		return _emfAnnotations.getAnnotationDetail(
+	public Method getOperationPreMethod(EOperation operation) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(operation), 
 				ExtendedProgModelConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY);
+		EList eParameters = operation.getEParameters();
+		Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+		for(int i=0; i<parameterTypes.length; i++) {
+			EParameter eParameter = (EParameter)eParameters.get(i);
+			parameterTypes[i] = eParameter.getEType().getInstanceClass();
+		}
+		return findMethod(javaClassFor(operation), methodName, parameterTypes);
 	}
-	public void setOperationPre(EOperation operation, String methodName) {
+	public void setOperationPreMethod(EOperation operation, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				operation,
 				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
 				ExtendedProgModelConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY, 
-				methodName);
+				method.getName());
 	}
 	
-	public String getOperationDefaults(EOperation operation) {
-		return _emfAnnotations.getAnnotationDetail(
+	public Method getOperationDefaultsMethod(EOperation operation) {
+		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(operation), 
 				ExtendedProgModelConstants.ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY);
+		EList eParameters = operation.getEParameters();
+		Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+		for(int i=0; i<parameterTypes.length; i++) {
+			// find the type of this parameter
+			EParameter eParameter = (EParameter)eParameters.get(i);
+			Class<?> parameterType = eParameter.getEType().getInstanceClass();
+			// create a prototype array of this type
+			Object argDefaultArray = Array.newInstance(parameterType, 1);
+			// now obtain the class of this array of the required type
+			Class<?> arrayOfParameterType = argDefaultArray.getClass();
+			parameterTypes[i] = arrayOfParameterType;
+		}
+		return findMethod(javaClassFor(operation), methodName, parameterTypes);
 	}
-	public void setOperationDefaults(EOperation operation, String methodName) {
+	public void setOperationDefaults(EOperation operation, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				operation,
 				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
 				ExtendedProgModelConstants.ANNOTATION_OPERATION_DEFAULTS_METHOD_NAME_KEY, 
-				methodName);
+				method.getName());
 	}
 
 }

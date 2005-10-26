@@ -10,13 +10,10 @@ import java.util.WeakHashMap;
 
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.IObjectStoreAware;
-import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 import de.berlios.rcpviewer.progmodel.standard.DomainObject;
-import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IObservedFeature;
 import de.berlios.rcpviewer.session.IPojo;
@@ -57,8 +54,8 @@ public class Session implements ISession, IObjectStoreAware {
 	/**
 	 * Partitioned hash of objects by their class.
 	 */
-	private Map<IDomainClass<?>, List<IDomainObject<?>>> 
-		domainObjectsByDomainClass = new HashMap<IDomainClass<?>, List<IDomainObject<?>>>();
+	private Map<IDomainClass, List<IDomainObject<?>>> 
+		domainObjectsByDomainClass = new HashMap<IDomainClass, List<IDomainObject<?>>>();
 
 	private List<ISessionListener> _listeners = new ArrayList<ISessionListener>();
 	
@@ -99,13 +96,12 @@ public class Session implements ISession, IObjectStoreAware {
 	 * The TransactionInstantionChangeAspect picks up on this method, and adds
 	 * to the transaction as necessary.
 	 *
-	 * @see de.berlios.rcpviewer.session.ISession#create(de.berlios.rcpviewer.domain.IRuntimeDomainClass)
+	 * @see de.berlios.rcpviewer.session.ISession#create(de.berlios.rcpviewer.domain.IDomainClass)
 	 */
-	public <T> IDomainObject<T> create(IRuntimeDomainClass<T> domainClass) {
+	public <T> IDomainObject<T> create(IDomainClass domainClass) {
 		IDomainObject<T> domainObject = create(this, domainClass);
 		attach(domainObject);
-		IExtendedDomainClass edc = domainClass.getAdapter(IExtendedDomainClass.class);
-		if (edc.isTransientOnly()) {
+		if (domainClass.isTransientOnly()) {
 			createdTransient((IPojo)domainObject.getPojo());
 		} else {
 			createdPersistent((IPojo)domainObject.getPojo());
@@ -113,12 +109,11 @@ public class Session implements ISession, IObjectStoreAware {
 		return domainObject;
 	}
 	
-	private <T> IDomainObject<T> create(final Session session, IRuntimeDomainClass<T> runtimeDomainClass) {
-		IExtendedDomainClass edc = runtimeDomainClass.getAdapter(IExtendedDomainClass.class);
-		if (edc.isTransientOnly()) {
-			return session.createTransient(session, runtimeDomainClass);
+	private <T> IDomainObject<T> create(final Session session, IDomainClass domainClass) {
+		if (domainClass.isTransientOnly()) {
+			return session.createTransient(session, domainClass);
 		} else {
-			return session.createPersistent(session, runtimeDomainClass);
+			return session.createPersistent(session, domainClass);
 		}
 	}
 
@@ -126,32 +121,20 @@ public class Session implements ISession, IObjectStoreAware {
 	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createTransient(final Session session, IRuntimeDomainClass<T> runtimeDomainClass) {
-		try {
-			T pojo = runtimeDomainClass.getJavaClass().newInstance();
-			IDomainObject<T> domainObject = DomainObject.createTransient(runtimeDomainClass, pojo, session);
-			return domainObject;
-		} catch(IllegalAccessException ex) {
-			throw new ProgrammingModelException("Cannot instantiate", ex);
-		} catch(InstantiationException ex) {
-			throw new ProgrammingModelException("Cannot instantiate", ex);
-		}
+	private <T> IDomainObject<T> createTransient(final Session session, IDomainClass runtimeDomainClass) {
+		T pojo = ((RuntimeClassBinding<T>)runtimeDomainClass.getBinding()).newInstance();
+		IDomainObject<T> domainObject = DomainObject.createTransient(runtimeDomainClass, pojo, session);
+		return domainObject;
 	}
 
 	/**
 	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createPersistent(final Session session, IRuntimeDomainClass<T> runtimeDomainClass) {
-		try {
-			T pojo = runtimeDomainClass.getJavaClass().newInstance();
-			IDomainObject<T> domainObject = DomainObject.createPersistent(runtimeDomainClass, pojo, session);
-			return domainObject;
-		} catch(IllegalAccessException ex) {
-			throw new ProgrammingModelException("Cannot instantiate", ex);
-		} catch(InstantiationException ex) {
-			throw new ProgrammingModelException("Cannot instantiate", ex);
-		}
+	private <T> IDomainObject<T> createPersistent(final Session session, IDomainClass runtimeDomainClass) {
+		T pojo = ((RuntimeClassBinding<T>)runtimeDomainClass.getBinding()).newInstance();
+		IDomainObject<T> domainObject = DomainObject.createPersistent(runtimeDomainClass, pojo, session);
+		return domainObject;
 	}
 
 
@@ -176,24 +159,18 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	/*
-	 * @see de.berlios.rcpviewer.session.ISession#recreate(de.berlios.rcpviewer.domain.IRuntimeDomainClass)
+	 * @see de.berlios.rcpviewer.session.ISession#recreate(de.berlios.rcpviewer.domain.IDomainClass)
 	 */
-	public <T> IDomainObject<T> recreate(IRuntimeDomainClass<T> domainClass) {
+	public <T> IDomainObject<T> recreate(IDomainClass domainClass) {
 		IDomainObject<T> domainObject = recreatePersistent(this, domainClass);
 		attach(domainObject);
 		return domainObject;
 	}
 
-	private <T> IDomainObject<T> recreatePersistent(ISession session, IRuntimeDomainClass<T> runtimeDomainClass) {
-		try {
-			T pojo = runtimeDomainClass.getJavaClass().newInstance();
-			IDomainObject<T> domainObject = DomainObject.recreatePersistent(runtimeDomainClass, pojo, session);
-			return domainObject;
-		} catch(IllegalAccessException ex) {
-			throw new ProgrammingModelException("Cannot instantiate", ex);
-		} catch(InstantiationException ex) {
-			throw new ProgrammingModelException("Cannot instantiate", ex);
-		}
+	private <T> IDomainObject<T> recreatePersistent(ISession session, IDomainClass runtimeDomainClass) {
+		T pojo = ((RuntimeClassBinding<T>)runtimeDomainClass.getBinding()).newInstance();
+		IDomainObject<T> domainObject = DomainObject.recreatePersistent(runtimeDomainClass, pojo, session);
+		return domainObject;
 	}
 
 
@@ -339,7 +316,7 @@ public class Session implements ISession, IObjectStoreAware {
 	/*
 	 * @see de.berlios.rcpviewer.session.ISession#footprintFor(de.berlios.rcpviewer.domain.IDomainClass)
 	 */
-	public <T> List<IDomainObject<T>> footprintFor(IDomainClass<T> domainClass) {
+	public <T> List<IDomainObject<T>> footprintFor(IDomainClass domainClass) {
 		return (List)Collections.unmodifiableList(getDomainObjectsFor(domainClass));
 	}
 
@@ -371,7 +348,7 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 
-	private synchronized List<IDomainObject<?>> getDomainObjectsFor(IDomainClass<?> domainClass) {
+	private synchronized List<IDomainObject<?>> getDomainObjectsFor(IDomainClass domainClass) {
 		List<IDomainObject<?>> domainObjects = 
 			domainObjectsByDomainClass.get(domainClass);
 		if (domainObjects == null) {

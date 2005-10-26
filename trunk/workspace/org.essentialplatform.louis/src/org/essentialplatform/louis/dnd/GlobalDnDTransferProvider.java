@@ -18,7 +18,8 @@ import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.util.DomainRegistryUtil.Filter;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.
@@ -120,7 +121,9 @@ public class GlobalDnDTransferProvider implements IDndTransferProvider {
 		Iterator<IDomainClass> it =
 			DomainRegistryUtil.iterateAllClasses( Filter.ALL );
 		while ( it.hasNext() ) {
-			getTransfer( ((IRuntimeDomainClass<?>)it.next()).getJavaClass() );
+			IDomainClass domainClass = it.next();
+			Class javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+			getTransfer(javaClass);
 		}
 		
 	}

@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.progmodel.extended;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.session.Department;
 import de.berlios.rcpviewer.session.IDomainObject;
 
@@ -20,34 +20,33 @@ public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 	}
 
 	public void testGetAdapter() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		assertNotNull(domainClass.getAdapter(IExtendedDomainClass.class));
 		assertNotNull(domainClass.getAdapter(IExtendedRuntimeDomainClass.class));
 	}
 
 	public void testIsCompatible() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedRuntimeDomainClass<Department> classAdapter = 
+		IExtendedRuntimeDomainClass classAdapter = 
 			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);
 
 		assertTrue(classAdapter.isCompatible(IExtendedDomainObject.class));
 	}
 	
 	public void testGetObjectAdapterFor() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedRuntimeDomainClass<Department> classAdapter = 
+		IExtendedRuntimeDomainClass classAdapter = 
 			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);
 
 		IDomainObject<Department> domainObject = 

@@ -10,7 +10,6 @@ import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 
 /**
  * Static helper methods domain registry functions.
@@ -100,7 +99,7 @@ public class DomainRegistryUtil {
 				_classes.addAll( domain.classes() );
 			}
 			else {
-				for ( IDomainClass<?> clazz : domain.classes() ) {
+				for ( IDomainClass clazz : domain.classes() ) {
 					if ( _filter.isApplicable( clazz ) ) {
 						_classes.add( clazz );
 					}
@@ -134,16 +133,13 @@ public class DomainRegistryUtil {
 	}
 	
 	private static interface IClassFilter {
-		boolean isApplicable( IDomainClass<?> clazz );
+		boolean isApplicable( IDomainClass clazz );
 	}
 	
 	private static class InstantiableFilter implements IClassFilter {
-		public boolean isApplicable( IDomainClass<?> clazz ){
-			assert clazz != null;
-			IExtendedDomainClass<?> extClazz = (IExtendedDomainClass)
-				clazz.getAdapter(IExtendedDomainClass.class);
-			if ( extClazz == null ) return false;
-			return extClazz.isInstantiable();
+		public boolean isApplicable( IDomainClass domainClass ){
+			assert domainClass != null;
+			return domainClass.isInstantiable();
 		}
 	}
 

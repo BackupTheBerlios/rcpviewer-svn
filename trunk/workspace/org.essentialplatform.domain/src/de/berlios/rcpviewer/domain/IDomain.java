@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import de.berlios.rcpviewer.domain.Deployment.IDomainBinding;
 
 /**
  * A registry of {@link IDomainClass}es within a given domain (or meta-model, 
@@ -51,47 +52,54 @@ public interface IDomain {
 	 * 
 	 * @return
 	 */
-	public Collection<IDomainClass<?>> classes();
+	public Collection<IDomainClass> classes();
 	
 	
 	/**
-	 * Looks up the {@link DomainClass} for the supplied {@link Class} from 
-	 * this domain, creating it if not present, <i>provided</i> that the class 
-	 * in question is annotated with @InDomain with the name of this domain.
+	 * Looks up the {@link DomainClass} for the supplied (deployment-specific)
+	 * representation of the class from this domain, creating it if not present.
 	 * 
 	 * <p>
 	 * If already registered, simply returns, same way as 
 	 * {@link #lookupNoRegister(Class)}.
 	 * 
 	 * <p>
-	 * If there is no @InDomain annotation, then returns null.  Or, if there is
-	 * an @InDomain annotation that indicates (either implicitly or explicitly)
-	 * a domain name that is different from this metamodel's name, then again
-	 * returns null. 
+	 * The class in question must be annotated with {@link InDomain} with the name of 
+	 * this domain.  If there is no {@link InDomain} annotation, then returns <code>null</code>.  
+	 * Or, if there is an InDomain annotation that indicates (either 
+	 * implicitly or explicitly) a domain name that is different from this 
+	 * metamodel's name, then again returns <code>null</code>. 
 	 * 
 	 * <p>
 	 * To perform a lookup / register that will <i>always</i> return a
-	 * {@link IDomainClass}, irrespective of the @InDomain annotation, then use
+	 * {@link IDomainClass}, irrespective of the {@link InDomain} annotation, then use
 	 * {@link #lookupAny(Class)}. 
 	 * 
-	 * @param javaClass
+	 * @param classRepresentation - deployment-specific representation of the class.
 	 * @return corresponding {@link DomainClass}
 	 */
-	public <V> IDomainClass<V> lookup(final Class<V> javaClass);
+	public IDomainClass lookup(final Object classRepresentation);
 	
 	/**
-	 * Looks up the {@link DomainClass} for the supplied {@link Class}.
+	 * Looks up the {@link DomainClass} for the supplied (deployment-specific)
+	 * representation of the class.
 	 * 
 	 * <p>
-	 * If the domain class has not yet been looked up (via either 
-	 * {@link Domain#lookup(Class)} or {@link Domain#lookupAny(Class)}, then
-	 * will return <code>null</code>.
+	 * If the domain class has not yet been looked up, then will return 
+	 * <code>null</code>.
 	 *  
-	 * @param javaClass
+	 * @param javaclassRepresentation - deployment-specific representation of the class.
 	 * @return corresponding {@link DomainClass}, or <tt>null</tt>
 	 */
-	public <V> IDomainClass<V> lookupNoRegister(final Class<V> javaClass);
+	public IDomainClass lookupNoRegister(final Object classRepresentation);
 
+	/**
+	 * Binding for a {@link Deployment}.
+	 * 
+	 * @return
+	 */
+	public IDomainBinding getBinding();
+	
 	/**
 	 * Indicates that all classes have been registered / created, and that
 	 * any additionally installed analyzers should do their stuff.
@@ -114,7 +122,7 @@ public interface IDomain {
 	/**
 	 * Reverse lookup of {@link IDomainClass} from an EMF EClass.
 	 */
-	public <V> IDomainClass<V> domainClassFor(EClass eClass);
+	public IDomainClass domainClassFor(EClass eClass);
 
 
 	/**
@@ -123,5 +131,5 @@ public interface IDomain {
 	 * @param out
 	 */
 	public void serializeTo(Writer writer);
-	
+
 }

@@ -1,8 +1,8 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 
 public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
@@ -20,8 +20,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanAttachToSessionIfIdMatches() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -31,8 +31,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanDetachFromSessionThroughDomainObject() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -42,8 +42,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotAttachToSessionIfAlreadyAttached() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -57,8 +57,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testDetachFromSesionNotifiesListeners() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -69,8 +69,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanReAttachFromSessionThroughDomainObject() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -81,8 +81,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testDomainObjectSessionIdNotRemovedWhenDetached() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -92,8 +92,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -108,8 +108,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotAttachToSessionIfIdDoesNotMatch() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -129,8 +129,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotClearDomainObjectSessionIdIfAttached() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -145,8 +145,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 
 
 	public void testCanClearDomainObjectSessionIdIfDetached() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -162,8 +162,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	 *
 	 */
 	public void testDomainObjectCanBeAttachedToSessionForSameDomainIfHasNoSessionId() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -186,13 +186,13 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		ISession sessionForDefaultDomain = session;
 		assertEquals("default", sessionForDefaultDomain.getDomain().getName());
 		
-		RuntimeDomain marketingDomain = RuntimeDomain.instance("marketing");
+		Domain marketingDomain = Domain.instance("marketing");
 		
 		ISession sessionForMarketingDomain = sessionManager.createSession(marketingDomain, new InMemoryObjectStore());
 		
 		// create domain object from default domain
-		IRuntimeDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		IDomainObject<Department> departmentDomainObject = 
 			(IDomainObject<Department>)sessionForDefaultDomain.create(departmentDomainClass);
 

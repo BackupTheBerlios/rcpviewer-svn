@@ -22,8 +22,8 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCreateTransientCreatesUnderlyingPojo() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 		
@@ -43,8 +43,8 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 //	 * The returned object will not be attached to any session.
 //	 */
 //	public void testCanInstantiateDomainObjectFromDomainClass() {
-//		IRuntimeDomainClass<Department> domainClass = 
-//			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+//		IDomainClass domainClass = 
+//			(IDomainClass)lookupAny(Department.class);
 //		domain.addBuilder(getDomainBuilder());
 //		domain.done();
 //		
@@ -62,8 +62,8 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	 * Cannot instantiate if don't play by the rules.
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
-		IRuntimeDomainClass<DepartmentWithoutNoArgConstructor> domainClass = 
-			(IRuntimeDomainClass<DepartmentWithoutNoArgConstructor>)lookupAny(DepartmentWithoutNoArgConstructor.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(DepartmentWithoutNoArgConstructor.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
@@ -77,8 +77,8 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	}
 
 	public void incompletetestSerializeEmfResourceSet() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 

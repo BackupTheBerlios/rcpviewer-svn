@@ -32,7 +32,7 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -213,7 +213,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 		int numColumns = 0;
 		
 		// model data
-		final IRuntimeDomainClass<?> dClass = EmfUtil.getCollectionDomainType( model );
+		final IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
 		
 		// add button
 		if ( EmfUtil.canAddTo( model ) ) {

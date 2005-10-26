@@ -44,7 +44,7 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 				ISession session = RuntimePlugin.getDefault()
 												.getSessionManager()
 												.get( _sessionId );
-				return session.footprintFor( (IDomainClass<?>)element ).toArray(); 
+				return session.footprintFor( (IDomainClass)element ).toArray(); 
 			}
 			catch ( CoreException ce ) {
 				LouisPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -107,7 +107,7 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 			Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses(
 					DomainRegistryUtil.Filter.INSTANTIABLE );
 			while ( it.hasNext() ) {
-				IDomainClass<?> clazz = it.next();
+				IDomainClass clazz = it.next();
 				if ( !session.footprintFor( clazz ).isEmpty() ) { 
 					populatedClasses.add( clazz );
 				}

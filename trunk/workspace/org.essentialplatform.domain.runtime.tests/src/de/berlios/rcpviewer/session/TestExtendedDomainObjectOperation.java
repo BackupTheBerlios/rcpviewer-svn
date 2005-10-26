@@ -6,7 +6,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
@@ -33,8 +33,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 	
 	public void testOperationNoArgWithPre() {
-		IRuntimeDomainClass<CustomerOperationWithPre> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationWithPre>) lookupAny(CustomerOperationWithPre.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationWithPre.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
@@ -59,8 +59,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
 	public void testOperationArgsAndPre() {
-		IRuntimeDomainClass<CustomerOperationWithPreAndArgs> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationWithPreAndArgs>) lookupAny(CustomerOperationWithPreAndArgs.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationWithPreAndArgs.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
@@ -110,8 +110,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
 	public void testOperationDefaults() {
-		IRuntimeDomainClass<CustomerOperationWithDefaults> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationWithDefaults>) lookupAny(CustomerOperationWithDefaults.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationWithDefaults.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
@@ -132,8 +132,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 
 
 	public void testOperationResetDefaults() {
-		IRuntimeDomainClass<CustomerOperationWithDefaults> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationWithDefaults>) lookupAny(CustomerOperationWithDefaults.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationWithDefaults.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
@@ -164,8 +164,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	 *
 	 */
 	public void incompletetestOperationListener() {
-		IRuntimeDomainClass<CustomerOperationWithPreAndArgs> domainClass = 
-			(IRuntimeDomainClass<CustomerOperationWithPreAndArgs>) lookupAny(CustomerOperationWithPreAndArgs.class);
+		IDomainClass domainClass = 
+			(IDomainClass) lookupAny(CustomerOperationWithPreAndArgs.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 

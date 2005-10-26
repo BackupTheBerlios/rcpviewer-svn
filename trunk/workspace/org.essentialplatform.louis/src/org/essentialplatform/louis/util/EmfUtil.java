@@ -12,11 +12,13 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.EmfAnnotations;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelConstants;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
 import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
+import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
 
 /**
  * Static methods for helping with EMF constructs
@@ -47,10 +49,10 @@ public class EmfUtil {
 	 * @param ref
 	 * @return
 	 */
-	public static final IRuntimeDomainClass<?> getCollectionDomainType( 
+	public static final IDomainClass getCollectionDomainType( 
 			EReference ref ) {
 		if( ref == null ) throw new IllegalArgumentException();
-		return (IRuntimeDomainClass<?>)RuntimeDomain.instance().lookupNoRegister( 
+		return (IDomainClass)Domain.instance().lookupNoRegister( 
 					(Class<?>)ref.getEType().getInstanceClass() );		
 	}
 	
@@ -59,21 +61,24 @@ public class EmfUtil {
 	 * @param ref
 	 * @return
 	 */
-	public static final IRuntimeDomainClass<?> getContainerDomainType( 
+	public static final IDomainClass getContainerDomainType( 
 			EReference ref ) {
 		if( ref == null ) throw new IllegalArgumentException();
 		Class<?> containerPojoType = ((EClassifier)ref.eContainer()).getInstanceClass();
-		return (IRuntimeDomainClass<?>)RuntimeDomain.instance().lookupNoRegister( 
+		return (IDomainClass)Domain.instance().lookupNoRegister( 
 					containerPojoType );
 	}
 	
 	/**
 	 * Whether elements can be added to the passed reference
-	 * @param ref
+	 * @param eReference
 	 * @return
 	 */
-	public static final boolean canAddTo( EReference ref ) {
-		return( getContainerDomainType( ref ).getAssociatorFor( ref ) != null );
+	public static final boolean canAddTo( EReference eReference ) {
+		IDomainClass rdc = getContainerDomainType( eReference );
+		IDomainClass.IReference reference = rdc.getReference(eReference);
+		RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+		return runtimeBinding.canAddTo();
 	}	
 	
 	/**
@@ -81,8 +86,11 @@ public class EmfUtil {
 	 * @param ref
 	 * @return
 	 */
-	public static final boolean canRemoveFrom( EReference ref ) {
-		return( getContainerDomainType( ref ).getDissociatorFor( ref ) != null );
+	public static final boolean canRemoveFrom( EReference eReference ) {
+		IDomainClass rdc = getContainerDomainType( eReference );
+		IDomainClass.IReference reference = rdc.getReference(eReference);
+		RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+		return runtimeBinding.canRemoveFrom();
 	}	
 	
 	/**

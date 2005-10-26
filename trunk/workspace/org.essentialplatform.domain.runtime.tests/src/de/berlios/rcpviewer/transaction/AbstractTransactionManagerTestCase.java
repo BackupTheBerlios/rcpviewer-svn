@@ -7,8 +7,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
@@ -21,10 +21,10 @@ import junit.framework.TestCase;
 
 public abstract class AbstractTransactionManagerTestCase extends AbstractRuntimeTestCase {
 
-	protected IRuntimeDomainClass<Calculator> calculatorDomainClass;
-	protected IRuntimeDomainClass<Customer> customerDomainClass;
-	protected IRuntimeDomainClass<EmailAddress> emailAddressDomainClass;
-	protected IRuntimeDomainClass<Order> orderDomainClass;
+	protected IDomainClass calculatorDomainClass;
+	protected IDomainClass customerDomainClass;
+	protected IDomainClass emailAddressDomainClass;
+	protected IDomainClass orderDomainClass;
 
 	protected IDomainObject<Calculator> calculatorDomainObject;
 	protected IDomainObject<Customer> customerDomainObject;
@@ -60,13 +60,13 @@ public abstract class AbstractTransactionManagerTestCase extends AbstractRuntime
 	protected void setUp() throws Exception {
 		super.setUp();
 		calculatorDomainClass = 
-			(IRuntimeDomainClass<Calculator>)RuntimeDomain.lookupAny(Calculator.class);
+			(IDomainClass)Domain.lookupAny(Calculator.class);
 		customerDomainClass = 
-			(IRuntimeDomainClass<Customer>)RuntimeDomain.lookupAny(Customer.class);
+			(IDomainClass)Domain.lookupAny(Customer.class);
 		emailAddressDomainClass = 
-			(IRuntimeDomainClass<EmailAddress>)RuntimeDomain.lookupAny(EmailAddress.class);
+			(IDomainClass)Domain.lookupAny(EmailAddress.class);
 		orderDomainClass = 
-			(IRuntimeDomainClass<Order>)RuntimeDomain.lookupAny(Order.class);
+			(IDomainClass)Domain.lookupAny(Order.class);
 		domain.addBuilder(new ExtendedProgModelDomainBuilder());
 		domain.done();
 		

@@ -14,7 +14,7 @@ public abstract class TestDomainClassAttributes extends AbstractTestCase {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}

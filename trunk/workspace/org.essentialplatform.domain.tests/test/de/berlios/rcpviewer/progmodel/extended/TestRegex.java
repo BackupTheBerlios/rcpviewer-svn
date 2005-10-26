@@ -18,7 +18,7 @@ public abstract class TestRegex extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -33,15 +33,12 @@ public abstract class TestRegex extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute lastName = domainClass.getEAttributeNamed("lastName");
-		assertEquals("[A-Z].+", extendedDomainClass.getRegex(lastName));
-		assertTrue(extendedDomainClass.regexMatches(lastName, "Abc"));
-		assertFalse(extendedDomainClass.regexMatches(lastName, "abc"));
-		assertFalse(extendedDomainClass.regexMatches(lastName, "A"));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("lastName"));
+		assertEquals("[A-Z].+", attrib.getRegex());
+		assertTrue(attrib.regexMatches("Abc"));
+		assertFalse(attrib.regexMatches("abc"));
+		assertFalse(attrib.regexMatches("A"));
 	}
 
 	
@@ -51,12 +48,9 @@ public abstract class TestRegex extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute firstName = domainClass.getEAttributeNamed("firstName");
-		assertNull(extendedDomainClass.getRegex(firstName));
-		assertTrue(extendedDomainClass.regexMatches(firstName, "nonsense"));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("firstName"));
+		assertNull(attrib.getRegex());
+		assertTrue(attrib.regexMatches("nonsense"));
 	}
 }

@@ -12,9 +12,9 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * 
  * @author Dan Haywood
  */
-public final class FeatureId<V> implements IFeatureId {
+public final class FeatureId implements IFeatureId {
 
-	private final IDomainClass<V> _domainClass;
+	private final IDomainClass _domainClass;
 	private final Type _featureType;
 	private final String _name;
 	/**
@@ -22,16 +22,16 @@ public final class FeatureId<V> implements IFeatureId {
 	 */
 	private final String _asString;
 	
-	public static <T> IFeatureId create( 
+	public static IFeatureId create( 
 			final String name, 
-			final IDomainClass<T> domainClass, 
+			final IDomainClass domainClass, 
 			final Type featureType) {
 		return new FeatureId(name, domainClass, featureType);
 	}
 	
 	private FeatureId( 
 			final String name, 
-			final IDomainClass<V> domainClass, 
+			final IDomainClass domainClass, 
 			final Type featureType) {
 
 		_name = name;
@@ -43,7 +43,7 @@ public final class FeatureId<V> implements IFeatureId {
 	/*
 	 * @see de.berlios.rcpviewer.domain.runtime.IFeature#getDomainClass()
 	 */
-	public IDomainClass<V> getDomainClass() {
+	public IDomainClass getDomainClass() {
 		return _domainClass;
 	}
 

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
@@ -21,7 +21,7 @@ implements IDomainRegistry {
 	
 	private void registerClassesInDomains() throws CoreException {
 		IExtensionPoint extensionPoint=  
-			Platform.getExtensionRegistry().getExtensionPoint("de.berlios.rcpviewer.domain.runtime.domains");
+			Platform.getExtensionRegistry().getExtensionPoint("org.essentialplatform.domain.runtime.domains");
 		for (IConfigurationElement configurationElement: extensionPoint.getConfigurationElements()) {
 			// although the 'id' attribute is available to us, we don't need it.
 			IDomainBootstrap domainBootstrap= (IDomainBootstrap)configurationElement.createExecutableExtension("class");
@@ -31,11 +31,11 @@ implements IDomainRegistry {
 
 
 	public IDomain getDomain(final String domainName) {
-		return RuntimeDomain.instance(domainName);
+		return Domain.instance(domainName);
 	}
 
 	public Map<String, IDomain> getDomains() {
-		return RuntimeDomain.getDomains();
+		return Domain.getDomains();
 	}
 
 }

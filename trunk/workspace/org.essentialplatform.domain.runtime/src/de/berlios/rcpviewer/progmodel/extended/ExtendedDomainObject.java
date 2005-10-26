@@ -20,7 +20,12 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.AbstractDomainObjectAdapter;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOperationBinding;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference;
@@ -87,9 +92,9 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 	/*
 	 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject#getExtendedRuntimeDomainClass()
 	 */
-	public IExtendedRuntimeDomainClass<T> getExtendedRuntimeDomainClass() {
-		IRuntimeDomainClass<T> domainClass = adapts().getDomainClass(); 
-		return (IExtendedRuntimeDomainClass<T>)domainClass.getAdapter(IExtendedRuntimeDomainClass.class); 
+	public IExtendedRuntimeDomainClass getExtendedRuntimeDomainClass() {
+		IDomainClass domainClass = adapts().getDomainClass(); 
+		return (IExtendedRuntimeDomainClass)domainClass.getAdapter(IExtendedRuntimeDomainClass.class); 
 	}
 
 	/*
@@ -135,6 +140,9 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 	public class ExtendedAttribute implements IExtendedDomainObject.IExtendedAttribute {
 		
 		private final EAttribute _eAttribute;
+		private final IDomainClass.IAttribute _attribute;
+		private final IDomainObject.IObjectAttribute _objectAttribute;
+		
 		/**
 		 * Holds onto the current accessor prerequisites, if known.
 		 * 
@@ -155,6 +163,8 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 */
 		private ExtendedAttribute(final EAttribute eAttribute) {
 			this._eAttribute = eAttribute;
+			this._objectAttribute = adapts().getAttribute(_eAttribute);
+			this._attribute = _objectAttribute.getAttribute();
 		}
 
 		public <T> IExtendedDomainObject<T> getExtendedDomainObject() {
@@ -174,7 +184,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute#accessorPrerequisitesFor()
 		 */
 		public IPrerequisites accessorPrerequisitesFor()  {
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			
 			Method accessorPre = erdc.getAccessorPre(_eAttribute);
 			if (accessorPre == null) {
@@ -197,7 +207,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject#mutatorPrerequisitesFor(org.eclipse.emf.ecore.EAttribute, java.lang.Object)
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object candidateValue)  {
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			
 			Method mutatorPre = erdc.getMutatorPre(_eAttribute);
 			if (mutatorPre == null) {
@@ -233,8 +243,10 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedFeature#authorizationPrerequisitesFor()
 		 */
 		public IPrerequisites authorizationPrerequisitesFor()  {
-			IRuntimeDomainClass<T> rdc = adapts().getDomainClass();
-			return rdc.authorizationConstraintFor(_eAttribute);
+			IDomainClass rdc = adapts().getDomainClass();
+			IDomainClass.IAttribute attribute = rdc.getAttribute(_eAttribute);
+			RuntimeAttributeBinding binding = (RuntimeAttributeBinding)attribute.getBinding();
+			return binding.authorizationPrerequisites();
 		}
 
 		/*
@@ -331,8 +343,15 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedFeature#authorizationPrerequisitesFor()
 		 */
 		public IPrerequisites authorizationPrerequisitesFor()  {
-			IRuntimeDomainClass<T> rdc = adapts().getDomainClass();
-			return rdc.authorizationConstraintFor(_eReference);
+			IDomainClass rdc = adapts().getDomainClass();
+			IDomainClass.IReference reference = rdc.getReference(_eReference);
+			if (_eReference.isMany()) {
+				RuntimeCollectionReferenceBinding binding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+				return binding.authorizationPrerequisites();
+			} else {
+				RuntimeOneToOneReferenceBinding binding = (RuntimeOneToOneReferenceBinding)reference.getBinding();
+				return binding.authorizationPrerequisites();
+			}
 		}
 
 		
@@ -349,7 +368,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedReference#accessorPrerequisitesFor()
 		 */
 		public IPrerequisites accessorPrerequisitesFor() {
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			
 			Method accessorPre = erdc.getAccessorPre(_eReference);
 			if (accessorPre == null) {
@@ -375,7 +394,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		public IPrerequisites mutatorPrerequisitesFor(Object candidateValue) {
 			assert !_eReference.isMany(): "must be a single-valued (simple) reference";
 				
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			Method mutatorPre = erdc.getMutatorPre(_eReference);
 			if (mutatorPre == null) {
 				return Prerequisites.none();
@@ -400,7 +419,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		public IPrerequisites mutatorPrerequisitesFor(Object candidateValue, boolean beingAdded) {
 			assert _eReference.isMany(): "must be a multi-valued references (collections)";
 			
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			Method mutatorPre = beingAdded
 									?erdc.getAddToPre(_eReference)
 									:erdc.getRemoveFromPre(_eReference);
@@ -540,9 +559,15 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 			reset();
 		}
 		
-		public IPrerequisites authorizationPrerequisitesFor() {
-			IRuntimeDomainClass<T> rdc = adapts().getDomainClass();
-			return rdc.authorizationConstraintFor(_eOperation);
+		/*
+		 * 
+		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedFeature#authorizationPrerequisitesFor()
+		 */
+		public IPrerequisites authorizationPrerequisitesFor()  {
+			IDomainClass rdc = adapts().getDomainClass();
+			IDomainClass.IOperation operation = rdc.getOperation(_eOperation);
+			RuntimeOperationBinding binding = (RuntimeOperationBinding)operation.getBinding();
+			return binding.authorizationPrerequisites();
 		}
 		
 
@@ -624,7 +649,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 * @see de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation#prerequisitesFor()
 		 */
 		public IPrerequisites prerequisitesFor() {
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			Method invokePre = erdc.getInvokePre(_eOperation);
 			if (invokePre == null) {
 				return Prerequisites.none();
@@ -648,7 +673,7 @@ public class ExtendedDomainObject<T> extends AbstractDomainObjectAdapter<T> impl
 		 */
 		public Object[] reset() {
 			argsByPosition.clear();
-			IExtendedRuntimeDomainClass<T> erdc = getExtendedRuntimeDomainClass();
+			IExtendedRuntimeDomainClass erdc = getExtendedRuntimeDomainClass();
 			Method invokeDefaults = erdc.getInvokeDefaults(_eOperation);
 			if (invokeDefaults == null) {
 				return getArgs();

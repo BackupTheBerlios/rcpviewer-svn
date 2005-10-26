@@ -22,7 +22,7 @@ import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * @author Mike
@@ -30,7 +30,7 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
  */
 public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 
-	private final IRuntimeDomainClass<?> _dClass;
+	private final IDomainClass _dClass;
 	private final boolean _editable;
 	private final Map<EAttribute,Composite> _attributes;
 	private final Map<EReference,Composite> _references;
@@ -41,7 +41,7 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 	 * Constructor requires domain class.
 	 * @param class
 	 */
-	public DomainClassPart( IRuntimeDomainClass<?> dClass, boolean editable ) {
+	public DomainClassPart( IDomainClass dClass, boolean editable ) {
 		assert dClass != null;
 		_dClass = dClass;
 		_editable = editable;

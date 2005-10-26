@@ -6,9 +6,9 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
-public interface IExtendedRuntimeDomainClass<T> {
+import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 
-	public <V> boolean isCompatible(Class<V> adapterClassName);
+public interface IExtendedRuntimeDomainClass extends IRuntimeDomainClassAdapter {
 
 	/**
 	 * Returns the <code>getXxxPre()</code> for an attribute, or none if there 
@@ -112,6 +112,6 @@ public interface IExtendedRuntimeDomainClass<T> {
 	 * @return
 	 */
 	public Method getInvokeDefaults(EOperation operation);
-
+	
 
 }

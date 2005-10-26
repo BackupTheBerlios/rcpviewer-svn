@@ -15,11 +15,18 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.domain.DomainClass;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainClassAdapter;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IDomainClass.IAttribute;
+import de.berlios.rcpviewer.domain.IDomainClass.IOneToOneReference;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOperationBinding;
 import de.berlios.rcpviewer.persistence.PersistenceId;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
@@ -36,6 +43,7 @@ import de.berlios.rcpviewer.session.IResolvable;
 import de.berlios.rcpviewer.session.IResolvable.ResolveState;
 import de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute;
 import de.berlios.rcpviewer.session.IDomainObject.IObjectOperation;
+import de.berlios.rcpviewer.transaction.internal.OneToOneReferenceChange;
 
 /**
  * Wrapper for a POJO that implements the choreography between the rest of the
@@ -56,7 +64,7 @@ import de.berlios.rcpviewer.session.IDomainObject.IObjectOperation;
  */
 public final class DomainObject<T> implements IDomainObject<T> {
 
-	private IRuntimeDomainClass<T> _domainClass;
+	private IDomainClass _domainClass;
 	private final T _pojo;
 	private Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
 	private List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
@@ -78,7 +86,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param pojo    - the pojo that this domain object wraps and represents the state of
 	 * @param session - to attach to
 	 */
-	public static <V> DomainObject createTransient(final IRuntimeDomainClass<V> domainClass, final V pojo, final ISession session) {
+	public static <V> DomainObject createTransient(final IDomainClass domainClass, final V pojo, final ISession session) {
 		//DomainObject domainObject = new DomainObject(pojo);
 		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
 		domainObject.init(domainClass, session, PersistState.TRANSIENT, ResolveState.RESOLVED);
@@ -93,7 +101,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param pojo    - the pojo that this domain object wraps and represents the state of
 	 * @param session - to attach to
 	 */
-	public static <V> DomainObject createPersistent(final IRuntimeDomainClass<V> domainClass, final V pojo, final ISession session) {
+	public static <V> DomainObject createPersistent(final IDomainClass domainClass, final V pojo, final ISession session) {
 		//DomainObject domainObject = new DomainObject(pojo);
 		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
 		domainObject.init(domainClass, session, PersistState.PERSISTED, ResolveState.RESOLVED);
@@ -108,7 +116,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param pojo    - the pojo that this domain object wraps and represents the state of
 	 * @param session - to attach to
 	 */
-	public static <V> DomainObject recreatePersistent(final IRuntimeDomainClass<V> domainClass, final V pojo, final ISession session) {
+	public static <V> DomainObject recreatePersistent(final IDomainClass domainClass, final V pojo, final ISession session) {
 		//DomainObject domainObject = new DomainObject(pojo);
 		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
 		domainObject.init(domainClass, session, PersistState.PERSISTED, ResolveState.UNRESOLVED);
@@ -135,7 +143,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(final IRuntimeDomainClass<T> domainClass, final ISession session, PersistState persistState, ResolveState resolveState) {
+	private void init(final IDomainClass domainClass, final ISession session, PersistState persistState, ResolveState resolveState) {
 		this._domainClass = domainClass;
 		this._session = session;
 		this._persistState = persistState;
@@ -145,15 +153,15 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getDomainClass()
 	 */
-	public IRuntimeDomainClass<T> getDomainClass() {
+	public IDomainClass getDomainClass() {
 		return _domainClass;
 	}
 	/**
 	 * Returns the concrete implementation of {@link #getDomainClass()}.
 	 * @return
 	 */
-	RuntimeDomainClass<T> getDomainClassImpl() {
-		return (RuntimeDomainClass<T>)_domainClass;
+	DomainClass getDomainClassImpl() {
+		return (DomainClass)_domainClass;
 	}
 	
 	/*
@@ -174,7 +182,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * 
 	 * <p>
 	 * Note that this is not configured using 
-	 * {@link #init(IRuntimeDomainClass, ISession, PersistState, ResolveState)}.
+	 * {@link #init(IDomainClass, ISession, PersistState, ResolveState)}.
 	 * Instead, it will be derived from the values set directly by the
 	 * application (application-assigned), or it will be set by the object store
 	 * (objectstore-assigned).
@@ -194,7 +202,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			List<IDomainClassAdapter> classAdapters = getDomainClass().getAdapters();
 			for(IDomainClassAdapter classAdapter: classAdapters) {
 				// JAVA5_FIXME: should be using covariance of getAdapters()
-				IRuntimeDomainClassAdapter<T> runtimeClassAdapter = (IRuntimeDomainClassAdapter<T>)classAdapter;
+				IRuntimeDomainClassAdapter runtimeClassAdapter = (IRuntimeDomainClassAdapter)classAdapter;
 				adapter = runtimeClassAdapter.getObjectAdapterFor(this, objectAdapterClass); 
 				if (adapter != null) {
 					_adaptersByClass.put(adapter.getClass(), adapter);
@@ -415,9 +423,9 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	
 	private class ObjectAttribute implements IDomainObject.IObjectAttribute {
 
-		private IAttribute _attribute;
-		private List<IDomainObjectAttributeListener> _domainObjectAttributeListeners = 
-			new ArrayList<IDomainObjectAttributeListener>();
+		private final IDomainClass.IAttribute _attribute;
+		private final RuntimeAttributeBinding _runtimeBinding;
+		private final List<IDomainObjectAttributeListener> _domainObjectAttributeListeners = new ArrayList<IDomainObjectAttributeListener>();
 
 		/**
 		 * Do not instantiate directly, instead use {@link DomainObject#getAttribute(EAttribute)}
@@ -426,6 +434,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		private ObjectAttribute(final EAttribute eAttribute) {
 			_attribute = getDomainClass().getAttribute(eAttribute);
+			_runtimeBinding = (RuntimeAttributeBinding) _attribute.getBinding(); // JAVA5_FIXME
 		}
 
 		/*
@@ -446,43 +455,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#get()
 		 */
 		public Object get() {
-			Method accessorMethod = getDomainClass().getAccessorFor(_attribute.getEAttribute());
-			if (accessorMethod == null) {
-				throw new UnsupportedOperationException("Accesor method '" + accessorMethod + "' not accessible / could not be found");
-			}
-			String accessorMethodName = accessorMethod.getName();
-			try {
-				return accessorMethod.invoke(getDomainObject().getPojo());
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			}
+			return _runtimeBinding.invokeAccessor(getDomainObject().getPojo());
 		}
 
 		/*
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#set(java.lang.Object)
 		 */
 		public void set(Object newValue) {
-			Method mutatorMethod = getDomainClass().getMutatorFor(_attribute.getEAttribute());
-			if (mutatorMethod == null) {
-				throw new UnsupportedOperationException("Mutator method '" + mutatorMethod + "' not accessible / could not be found");
-			}
-			String mutatorMethodName = mutatorMethod.getName();
-			try {
-				mutatorMethod.invoke(getDomainObject().getPojo(), newValue);
-				
-				// think this is superfluous because the aspect will do our bidding for us...
-//				notifyAttributeListeners(newValue);
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e.getTargetException());
-			}
+			_runtimeBinding.invokeMutator(getDomainObject().getPojo(), newValue);
 		}
 		
 		/**
@@ -519,10 +499,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	private class ObjectReference implements IDomainObject.IObjectReference {
-		EReference _eReference;
+		
+		final EReference _eReference;
 		ResolveState _resolveState = ResolveState.UNRESOLVED;
 
-		List<IDomainObjectReferenceListener> _listeners = 
+		final List<IDomainObjectReferenceListener> _listeners = 
 			new ArrayList<IDomainObjectReferenceListener>();
 
 		/**
@@ -586,56 +567,33 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private class ObjectOneToOneReference extends ObjectReference
 	                                  implements IDomainObject.IObjectOneToOneReference {
 
+		private final IDomainClass.IOneToOneReference _oneToOneReference;
+		private final RuntimeOneToOneReferenceBinding _runtimeBinding;
+
 		private ObjectOneToOneReference(final EReference eReference) {
 			super(eReference);
-			assert !getDomainClass().getReference(eReference).isMultiple();
+			IDomainClass.IReference reference = getDomainClass().getReference(eReference);  
+			assert !reference.isMultiple();
+			_oneToOneReference = (IDomainClass.IOneToOneReference)reference;
+			_runtimeBinding = (RuntimeOneToOneReferenceBinding)_oneToOneReference.getBinding();
 		}
 
 		public <Q> Q get() {
-			Method accessorMethod = getDomainClass().getAccessorFor(_eReference);
-			if (accessorMethod == null) {
-				throw new UnsupportedOperationException("Accesor method '" + accessorMethod + "' not accessible / could not be found");
-			}
-			String accessorMethodName = accessorMethod.getName();
-
-			try {
-				return (Q)accessorMethod.invoke(getDomainObject().getPojo());
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			}
+			return (Q)_runtimeBinding.invokeAccessor(getDomainObject().getPojo());
 		}
 
 		/*
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference#set(de.berlios.rcpviewer.session.IDomainObject, java.lang.Object)
 		 */
 		public <Q> void set(IDomainObject<Q> domainObject) {
-			Method associatorOrDissociatorMethod = null;
-		
 			if (domainObject != null) {
-				associatorOrDissociatorMethod = getDomainClass().getAssociatorFor(_eReference);
-			} else {
-				associatorOrDissociatorMethod = getDomainClass().getDissociatorFor(_eReference); 
-			}
-			if (associatorOrDissociatorMethod == null) {
-				throw new UnsupportedOperationException("Associator/dissociator method '" + associatorOrDissociatorMethod + "' not accessible / could not be found");
-			}
-			String associatorOrDissociatorMethodName = associatorOrDissociatorMethod.getName();
-			try {
-				Object referencedObjectOrNull = (domainObject != null? domainObject.getPojo(): null);
-				associatorOrDissociatorMethod.invoke(getDomainObject().getPojo(), referencedObjectOrNull );
-				
+				_runtimeBinding.invokeAssociator(getDomainObject().getPojo(), domainObject.getPojo());
 				// TODO: the notifyListeners aspect should be doing this for us.
-				notifyListeners(referencedObjectOrNull);
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Associator/dissociator method '" + associatorOrDissociatorMethodName + "' not accessible");
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke associator/dissociator method '" + associatorOrDissociatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke associator/dissociator method '" + associatorOrDissociatorMethodName + "'", e);
+				notifyListeners(domainObject.getPojo());
+			} else {
+				_runtimeBinding.invokeDissociator(getDomainObject().getPojo(), null);
+				// TODO: the notifyListeners aspect should be doing this for us.
+				notifyListeners(null);
 			}
 		}
 
@@ -654,87 +612,46 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private class ObjectCollectionReference extends ObjectReference
 	                                  implements IDomainObject.IObjectCollectionReference {
 
+		private final IDomainClass.ICollectionReference _collectionReference;
+		private final RuntimeCollectionReferenceBinding _runtimeBinding;
+
 		private ObjectCollectionReference(final EReference eReference) {
 			super(eReference);
-			assert getDomainClass().getReference(eReference).isMultiple();
+			IDomainClass.IReference reference = getDomainClass().getReference(eReference);  
+			assert reference.isMultiple();
+			_collectionReference = (IDomainClass.ICollectionReference)reference;
+			_runtimeBinding = (RuntimeCollectionReferenceBinding)_collectionReference.getBinding();
 		}
 		
 		public <V> Collection<IDomainObject<V>> getCollection() {
-			Method collectionAccessorMethod = getDomainClass().getAccessorFor(_eReference);
-			Collection<IDomainObject<V>> collection;
-			try {
-				collection = (Collection<IDomainObject<V>>)collectionAccessorMethod.invoke(getPojo(), new Object[]{});
-				return Collections.unmodifiableCollection(collection);
-			} catch (IllegalArgumentException ex) {
-				// TODO - log?
-				return null;
-			} catch (IllegalAccessException ex) {
-				// TODO - log?
-				return null;
-			} catch (InvocationTargetException ex) {
-				// TODO - log?
-				return null;
-			}
+			Collection<IDomainObject<V>> collection =
+				(Collection<IDomainObject<V>>)_runtimeBinding.invokeAccessor(getPojo());
+			return Collections.unmodifiableCollection(collection);
 		}
 
 		public <Q> void addToCollection(IDomainObject<Q> domainObject) {
-			assert getDomainClass().getReference(_eReference).isMultiple();
-			assert getDomainClass().getReference(_eReference).getReferencedClass() == 
-				domainObject.getDomainClass();
+			assert _collectionReference.getReferencedClass() == domainObject.getDomainClass();
 			assert _eReference.isChangeable();
-			Method collectionAssociatorMethod = getDomainClass().getAssociatorFor(_eReference);
-			if (collectionAssociatorMethod == null) {
-				throw new RuntimeException("No associator method");
-			}
-			try {
-				collectionAssociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
-
-				// TODO: ideally the notifyListeners aspect should do this for us? 
-				// notify _domainObjectListeners
-				DomainObjectReferenceEvent event = 
-					new DomainObjectReferenceEvent(this, getPojo());
-				for(IDomainObjectReferenceListener listener: _listeners) {
-					listener.collectionAddedTo(event);
-				}
-			} catch (IllegalArgumentException ex) {
-				// TODO - log?
-				throw new RuntimeException(ex);
-			} catch (IllegalAccessException ex) {
-				// TODO - log?
-				throw new RuntimeException(ex);
-			} catch (InvocationTargetException ex) {
-				// TODO - log?
-				throw new RuntimeException(ex);
+			_runtimeBinding.invokeAddTo(getPojo(), domainObject.getPojo());
+			// TODO: ideally the notifyListeners aspect should do this for us? 
+			// notify _domainObjectListeners
+			DomainObjectReferenceEvent event = 
+				new DomainObjectReferenceEvent(this, getPojo());
+			for(IDomainObjectReferenceListener listener: _listeners) {
+				listener.collectionAddedTo(event);
 			}
 		}
-		public <Q> void removeFromCollection(IDomainObject<Q> domainObject) {
-			assert getDomainClass().getReference(_eReference).isMultiple();
-			assert getDomainClass().getReference(_eReference).getReferencedClass() == 
-				domainObject.getDomainClass();
-			assert _eReference.isChangeable();
-			Method collectionDissociatorMethod = getDomainClass().getDissociatorFor(_eReference);
-			if (collectionDissociatorMethod == null) {
-				throw new RuntimeException("No associator method");
-			}
-			try {
-				collectionDissociatorMethod.invoke(getPojo(), new Object[]{domainObject.getPojo()});
 
-				// TODO: ideally the notifyListeners aspect should do this for us? 
-				// notify _domainObjectListeners
-				DomainObjectReferenceEvent event = 
-					new DomainObjectReferenceEvent(this, getPojo());
-				for(IDomainObjectReferenceListener listener: _listeners) {
-					listener.collectionRemovedFrom(event);
-				}
-			} catch (IllegalArgumentException ex) {
-				// TODO - log?
-				throw new RuntimeException(ex);
-			} catch (IllegalAccessException ex) {
-				// TODO - log?
-				throw new RuntimeException(ex);
-			} catch (InvocationTargetException ex) {
-				// TODO - log?
-				throw new RuntimeException(ex);
+		public <Q> void removeFromCollection(IDomainObject<Q> domainObject) {
+			assert _collectionReference.getReferencedClass() == domainObject.getDomainClass();
+			assert _eReference.isChangeable();
+			_runtimeBinding.invokeRemoveFrom(getPojo(), domainObject.getPojo());
+			// TODO: ideally the notifyListeners aspect should do this for us? 
+			// notify _domainObjectListeners
+			DomainObjectReferenceEvent event = 
+				new DomainObjectReferenceEvent(this, getPojo());
+			for(IDomainObjectReferenceListener listener: _listeners) {
+				listener.collectionRemovedFrom(event);
 			}
 		}
 
@@ -755,17 +672,16 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	
 	private class ObjectOperation implements IDomainObject.IObjectOperation {
 		
-		private EOperation _eOperation;
-		private List<IDomainObjectOperationListener> _listeners = 
-			new ArrayList<IDomainObjectOperationListener>();
+		private final IDomainClass.IOperation operation;
+		private final EOperation _eOperation;
+		private final RuntimeOperationBinding _runtimeBinding;
+		
+		private final List<IDomainObjectOperationListener> _listeners = new ArrayList<IDomainObjectOperationListener>();
 
-		/**
-		 * Do not instantiate directly, instead use {@link DomainObject#getOperationNamed(String)}
-		 * 
-		 * @param eOperation
-		 */
 		ObjectOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
+			operation = getDomainClass().getOperation(eOperation);
+			_runtimeBinding = (RuntimeOperationBinding)operation.getBinding();
 		}
 		
 		public <T> IDomainObject<T> getDomainObject() {
@@ -777,21 +693,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		public Object invokeOperation(final Object[] args) {
-			Method operationMethod = getDomainClass().getInvokerFor(_eOperation);
-			if (operationMethod == null) {
-				throw new UnsupportedOperationException("Operation method '" + operationMethod + "' not accessible / could not be found");
-			}
-			String operationMethodName = operationMethod.getName();
-			try {
-				return operationMethod.invoke(getDomainObject().getPojo(), args);
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Operation invoker method '" + operationMethodName + "' not accessible");
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Operation invoker method '" + operationMethodName + "' not accessible");
-			} catch (InvocationTargetException e) {
-				throw new RuntimeException("Operation method threw an exception '" + operationMethodName + "'", e.getCause());
-			}
-			
+			return _runtimeBinding.invokeOperation(getDomainObject().getPojo(), args);
 		}
 
 		/**

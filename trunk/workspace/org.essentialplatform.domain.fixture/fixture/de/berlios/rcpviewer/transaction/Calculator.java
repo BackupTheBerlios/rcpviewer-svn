@@ -10,12 +10,12 @@ public class Calculator {
 		super();
 	}
 	
-	private int _result;
+	private int result;
 	public int getResult() {
-		return _result;
+		return result;
 	}
 	public void setInitialResult(int result) {
-		_result = result;
+		this.result = result;
 	}
 	
 	public void reset() {
@@ -23,11 +23,11 @@ public class Calculator {
 	}
 	
 	public void add(final int amount) {
-		_result += amount;
+		result += amount;
 	}
 
 	public void computeFactorial(final int n) {
-		_result = factorial(n);
+		result = factorial(n);
 	}
 	
 	public int factorial(final int n) {

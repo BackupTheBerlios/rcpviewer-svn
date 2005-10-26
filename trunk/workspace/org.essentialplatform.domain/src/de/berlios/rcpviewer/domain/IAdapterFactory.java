@@ -39,5 +39,5 @@ public interface IAdapterFactory<T> {
 	 * @param details
 	 * @return
 	 */
-	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass);
+	public T createAdapter(IDomainClass adaptedDomainClass);
 }

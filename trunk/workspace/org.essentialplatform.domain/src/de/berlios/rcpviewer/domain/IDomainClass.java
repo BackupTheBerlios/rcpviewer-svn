@@ -1,6 +1,7 @@
 package de.berlios.rcpviewer.domain;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -8,9 +9,20 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.progmodel.extended.AssignmentType;
+import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
+import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
+import de.berlios.rcpviewer.progmodel.extended.Id;
+import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
+import de.berlios.rcpviewer.progmodel.extended.Invisible;
+import de.berlios.rcpviewer.progmodel.extended.Mask;
+import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
+import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Named;
+import de.berlios.rcpviewer.progmodel.extended.Optional;
+import de.berlios.rcpviewer.progmodel.extended.Regex;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
 
 
 /**
@@ -27,8 +39,11 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  * 
  * @author Dan Haywood
  */
-public interface IDomainClass<T> {
+public interface IDomainClass {
 
+
+	/////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Represents a feature of this class.
 	 * 
@@ -95,7 +110,7 @@ public interface IDomainClass<T> {
 	 */
 	public boolean isChangeable();
 
-
+	
 	/**
 	 * Returns the description of this class (if any).
 	 * 
@@ -118,17 +133,179 @@ public interface IDomainClass<T> {
 	 */
 	public II18nData getI18nData();
 
+
+
+	/**
+	 * Whether this domain class cannot be persisted.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public boolean isTransientOnly();
+
+	/**
+	 * Returns the attributes of the extended domain class 
+	 * {@link IDomainClass#attributes()} in the order defined by the
+	 * {@link RelativeOrder} annotation.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> orderedAttributes();
+
+	/**
+	 * Returns the attributes of the extended domain class 
+	 * {@link IDomainClass#attributes()} that make up the identifier for this
+	 * domain object, in the order defined by the {@link Id} annotation.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> idAttributes();
+
+	/**
+	 * Returns a map keyed by name of each business key, whose value is a list
+	 * of the attribute(s) that make up that business key, in the order that
+	 * they were specified.
+	 * 
+	 * <p>
+	 * The {@link BusinessKey} annotation is used to indicate which attributes
+	 * are in a business key.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public Map<String, List<EAttribute>> businessKeys();
+
+	/**
+	 * Whether the identifier for this class consists of a single attribute.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public boolean isSimpleId();
 	
+	/**
+	 * Whether the identifier for this class consists of multiple attributes.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public boolean isCompositeId();
+
+	/**
+	 * The assignment type (application or objectstore etc) in effect for
+	 * this domain class.
+	 * 
+	 * <p>
+	 * Dependent upon whether the id is composite or simple, if integral, and
+	 * finally on the <tt>@Id</tt> annotation's <tt>assignedBy</tt> property. 
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @see Id
+	 * @return
+	 */
+	public AssignmentType getIdAssignmentType();
+	
+	/**
+	 * Whether this class may be searched for by the UI in some generic
+	 * search mechanism, eg Search.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public boolean isSearchable();
+
+	/**
+	 * Whether this class can be instantiated generically, eg File>New.
+	 * 
+	 * <p>
+	 * The majority of domain classes are expected to be instantiable.
+	 * 
+	 * <p>
+	 * In programming model: <code>@InDomain(instantiable=false)</code>.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public boolean isInstantiable();
+
+	/**
+	 * Whether instances of this class can be persisted, eg File>Save.
+	 * 
+	 * <p>
+	 * The majority of domain classes are expected to not be directly 
+	 * persistable.
+	 * 
+	 * <p>
+	 * In programming model: <code>@InDomain(nonPersistable=false)</code>.
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return
+	 */
+	public boolean isSaveable();
+
+	
+	/**
+	 * Whether all attributes in the class are by default immutable once 
+	 * persisted.
+	 * 
+	 * <p>
+	 * Note that even if this method returns <code>true</code>, it is still
+	 * possible for an individual attribute to be mutable if it opts out.  To
+	 * determine whether any given attribute is immutable once persisted, use
+	 * {@link #isImmutableOncePersisted(EAttribute)}. 
+	 * 
+	 * <p>
+	 * Extended semantics. 
+	 * 
+	 * @return true if all attributes for the class should be taken to be 
+	 *         immutable once persisted unless they explicitly have opted out.
+	 */
+	public boolean isImmutableOncePersisted();
+
 	///////////////////////////////////////////////////////////////
 	// attribute
 	
 	/**
-	 * Convenience method returning a type-safe iterable List over all 
-	 * EAttributes (whether inherited or not) known to the underlying EClass.
+	 * Returns all the EMF attributes of the class, including inherited attributes.
 	 * 
-	 * @return
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
 	 */
 	public List<EAttribute> attributes();
+	
+	
+	/**
+	 * Returns all the {@link IDomainClass.IAttribute}s of the class, 
+	 * including inherited attributes.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IAttribute> iAttributes();
 	
 	/**
 	 * Overloaded version of {@link #attributes()} to indicate whether to
@@ -165,6 +342,14 @@ public interface IDomainClass<T> {
 	 */
 	public IAttribute getAttribute(EAttribute eAttribute);
 
+	/**
+	 * Returns the binding of this class to {@link Deployment}.
+	 * 
+	 * JAVA5_FIXME: fix return type.
+	 * 
+	 * @return
+	 */
+	public Object getBinding();
 
 	/**
 	 * Encapsulates static semantics of an attribute of this class.
@@ -172,6 +357,7 @@ public interface IDomainClass<T> {
 	 * @author Dan Haywood
 	 */
 	public interface IAttribute extends IMember {
+		
 		/**
 		 * The underlying {@link EAttribute} that this represents.
 		 * @return
@@ -439,6 +625,180 @@ public interface IDomainClass<T> {
 		public II18nData getI18nDataFor();
 
 		/**
+		 * Whether the specified attribute is part of the persistence Id.
+		 * 
+		 * <p>
+		 * The {@link Id} annotation is used to indicate whether an attribute
+		 * is an identifier or not.
+		 *  
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute - attribute of the domain class that this is an extension of
+		 * @return
+		 */
+		public boolean isId();
+		
+		/**
+		 * Whether the specified attribute is optional for this domain class.
+		 * 
+		 * <p>
+		 * The {@link Optional} annotation is used to indicate whether an attribute
+		 * is optional or not.
+		 *  
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute - attribute of the domain class that this is an extension of
+		 * @return
+		 */
+		public boolean isOptional();
+
+		/**
+		 * Whether the specified attribute is mandatory for this domain class.
+		 * 
+		 * <p>
+		 * This is a convenience method; its value is defined as the logical NOT of
+		 * invoking {@link #isOptional(EAttribute)}.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute - attribute of the domain class that this is an extension of
+		 * @return
+		 */
+		public boolean isMandatory();
+
+		/**
+		 * Whether the specified attribute is invisible for this domain class.
+		 * 
+		 * <p>
+		 * The {@link Invisible} annotation is used to indicate whether an attribute
+		 * is optional or not.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute - attribute of the domain class that this is an extension of
+		 * @return
+		 */
+		public boolean isInvisible();
+
+		/**
+		 * Returns the field length (as displayed in the UI) of the specified
+		 * (string) attribute.
+		 * 
+		 * <p>
+		 * The {@link FieldLengthOf} annotation is used to indicate the field 
+		 * length of attributes.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public int getFieldLengthOf();
+
+		/**
+		 * Returns the max length (as persisted in the persistent data store) of 
+		 * the specified (string) attribute.
+		 * 
+		 * <p>
+		 * The {@link MaxLengthOf} annotation is used to indicate the maximum 
+		 * length of attributes.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public int getMaxLengthOf();
+
+		/**
+		 * Returns the min length (as required to be entered in the UI) of 
+		 * the specified (string) attribute.
+		 * 
+		 * <p>
+		 * The {@link MinLengthOf} annotation is used to indicate the minimum 
+		 * length of attributes.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public int getMinLengthOf();
+
+		/**
+		 * Whether this attribute can be edited for as long as the object has not
+		 * been persisted, but should be non-editable thereafter.
+		 * 
+		 * <p>
+		 * The {@link ImmutableOncePersisted} annotation is used to indicate  
+		 * whether the attribute has this semantic.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public boolean isImmutableOncePersisted();
+
+		/**
+		 * Whether the content of this (string) attribute must be formatted
+		 * according to a mask.
+		 * 
+		 * <p>
+		 * The {@link Mask} annotation is used to indicate the mask string;
+		 * returns null if none.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public String getMask();
+
+		/**
+		 * Whether the content of this (string) attribute must be formatted
+		 * according to a regex.
+		 * 
+		 * <p>
+		 * The {@link Mask} annotation is used to indicate the regex string;
+		 * returns null if none.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public String getRegex();
+
+		/**
+		 * Convenience method for determining whether the candidate value
+		 * is accepted by the regex associated with this attribute.
+		 * 
+		 * <p>
+		 * If no regex has been specified (using {@link Regex}) then
+		 * always returns true.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @param candidateValue
+		 * @return
+		 */
+		public boolean regexMatches(String candidateValue);
+
+
+		/**
 		 * Returns a feature identifier for the supplied attribute.
 		 * 
 		 * @param attribute
@@ -446,6 +806,15 @@ public interface IDomainClass<T> {
 		 */
 		public IFeatureId attributeIdFor();
 
+		/**
+		 * Returns the binding of this attribute to parameterized {@link Deployment}.
+		 * 
+		 * JAVA5_FIXME: fix return type.
+		 * 
+		 * @return
+		 */
+		public Object getBinding();
+		
 	}
 
 	///////////////////////////////////////////////////////////////
@@ -453,11 +822,22 @@ public interface IDomainClass<T> {
 	
 
 	/**
+	 * Returns EMF references from this class to other classes, including those 
+	 * inherited.
 	 * 
-	 * @return
+	 * <p>
+	 * The returned list is a copy and can be safely modified by the caller.
 	 */
 	public List<EReference> references();
 
+	/**
+	 * Returns {@link IDomainClass.IReference}s from this class to other 
+	 * classes, including those inherited.
+	 * 
+	 * <p>
+	 * The returned list is a copy and can be safely modified by the caller.
+	 */
+	public List<IReference> iReferences();
 
 	/**
 	 * Returns the reference with given name, or <tt>nothing</tt> if unknown.
@@ -513,7 +893,7 @@ public interface IDomainClass<T> {
 		 * @param departmentRef
 		 * @return
 		 */
-		public <V> IDomainClass<V> getReferencedClass();
+		public IDomainClass getReferencedClass();
 
 		/**
 		 * Returns a feature identifier for the supplied reference.
@@ -523,6 +903,15 @@ public interface IDomainClass<T> {
 		 */
 		public IFeatureId referenceIdFor();
 
+		/**
+		 * Returns the binding of this attribute to parameterized {@link Deployment}.
+		 * 
+		 * JAVA5_FIXME: fix return type.
+		 * 
+		 * @return
+		 */
+		public Object getBinding();
+		
 	}
 
 
@@ -571,23 +960,35 @@ public interface IDomainClass<T> {
 	
 	
 	/**
-	 * Convenience method returning a type-safe iterable List over all 
-	 * EOperations (whether static or instance, and whether inherited or not)
-	 * known to the underlying EClass.
+	 * Returns all the EMF operations (both static and instance) of the class, 
+	 * including inherited operations.
 	 * 
-	 * @return
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
 	 */
 	public List<EOperation> operations();
 	
 	/**
-	 * Overloaded version of {@link #operations()} to indicate whether to
-	 * return instance vs static vs all operations, and whether to include
-	 * inherited operations or not.
+	 * Returns all the EMF operations of the class, of the specified
+	 * {@link OperationKind}, and including inherited operations only if 
+	 * requested.
 	 * 
-	 * @return
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
 	 */
 	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited);
 
+	/**
+	 * Returns all the {@link IDomainClass.IOperation}s (both static and 
+	 * instance) of the class, including inherited operations.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IOperation> iOperations();
 
 	/**
 	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
@@ -739,7 +1140,7 @@ public interface IDomainClass<T> {
 		 * (see {@link #isParameterADomainObject(EOperation, int)}.
 		 * 
 		 * <p>
-		 * TODO: covariance of return types required for IRuntimeDomainClass subtype.
+		 * TODO: covariance of return types required for IDomainClass subtype.
 		 *
 		 * @param parameterPosition from 0 to n-1
 		 * @return
@@ -762,11 +1163,101 @@ public interface IDomainClass<T> {
 
 		
 		/**
+		 * Whether the specified parameter of the operation is optional for this 
+		 * domain class.
+		 * 
+		 * <p>
+		 * The {@link Optional} annotation is used to indicate whether an 
+		 * operation's parameter is optional or not.
+		 *  
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param parameterPosition
+		 * @return
+		 */
+		public boolean isOptional(int parameterPosition);
+
+		/**
+		 * Whether the specified parameter of the operation is mandatory for this 
+		 * domain class.
+		 * 
+		 * <p>
+		 * This is a convenience method; its value is defined as the logical NOT of
+		 * invoking {@link #isOptional(EOperation, int)}.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param parameterPosition
+		 * @return
+		 */
+		public boolean isMandatory(int parameterPosition);
+
+		/**
+		 * Returns the field length (as displayed in the UI) of the specified
+		 * (string) operation parameter.
+		 * 
+		 * <p>
+		 * The {@link FieldLengthOf} annotation is used to indicate the field 
+		 * length of operation parameters.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param parameterPosition
+		 * @return
+		 */
+		public int getFieldLengthOf(final int parameterPosition);
+
+		/**
+		 * Returns the max length (as persisted in the persistent data store) of 
+		 * the specified (string) operation parameters.
+		 * 
+		 * <p>
+		 * The {@link MaxLengthOf} annotation is used to indicate the maximum 
+		 * length of operation parameters.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param parameterPosition
+		 * @return
+		 */
+		public int getMaxLengthOf(final int parameterPosition);
+
+		/**
+		 * Returns the min length (as required to be entered in the UI) of 
+		 * the specified (string) operation parameter.
+		 * 
+		 * <p>
+		 * The {@link MinLengthOf} annotation is used to indicate the minimum 
+		 * length of operation parameters.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param parameterPosition
+		 * @return
+		 */
+		public int getMinLengthOf(final int parameterPosition);
+
+		/**
 		 * Returns a operation identifier for the supplied operation.
 		 * 
 		 * @return
 		 */
 		public IFeatureId operationIdFor();
+		
+		/**
+		 * Returns the binding of this attribute to parameterized {@link Deployment}.
+		 * 
+		 * JAVA5_FIXME: fix return type.
+		 * 
+		 * @return
+		 */
+		public Object getBinding();
+
 	}
 
 	

@@ -20,7 +20,7 @@ public final class RuntimeStandardProgModelRules extends StandardProgModelRules 
 	
 	/**
 	 * conforms to the signature of a getter of a value.  References to
-	 * {@link RuntimeDomainClass}es are treated as {@link Link}s.
+	 * {@link DomainClass}es are treated as {@link Link}s.
 	 * @param method
 	 * @return
 	 */

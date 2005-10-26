@@ -63,7 +63,7 @@ public class ImageUtil {
 	}
 	
 	/**
-	 * Creates an image for the passed <code>IDomainClass</code>.
+	 * Creates an image for the passed <code>IDomainClass.
 	 * <br>The image is discovered using the following logic:
 	 * <ol>
 	 * <li>looks for default image file in default location - that is a 
@@ -76,7 +76,7 @@ public class ImageUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static final Image getImage( IDomainClass<?> clazz ) {
+	public static final Image getImage( IDomainClass clazz ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		
 		Image image = LouisPlugin.getDefault().getImageRegistry().get( clazz.getName() );

@@ -20,7 +20,7 @@ public abstract class TestId extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -35,11 +35,8 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
 		List<EAttribute> idAttributes = 
-			extendedDomainClass.idAttributes();
+			domainClass.idAttributes();
 		assertEquals(0, idAttributes.size());
 	}
 
@@ -50,41 +47,28 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		List<EAttribute> idAttributes = 
-			extendedDomainClass.idAttributes();
+		List<EAttribute> idAttributes = domainClass.idAttributes();
 		assertEquals(1, idAttributes.size());
 		assertEquals("id", idAttributes.get(0).getName());
 	}
 	
 	public void testRelativeOrderingOfCompositeIdentifier() {
-		domainClass = 
-			lookupAny(CustomerWithCompositeId.class);
+		domainClass = lookupAny(CustomerWithCompositeId.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		List<EAttribute> idAttributes = 
-			extendedDomainClass.idAttributes();
+		List<EAttribute> idAttributes = domainClass.idAttributes();
 		assertEquals(2, idAttributes.size());
 		assertEquals("lastName", idAttributes.get(0).getName());
 		assertEquals("firstName", idAttributes.get(1).getName());
 	}
 
 	public void testIdImplicitAssignmentTypeForSimpleByteIdentifier() {
-		domainClass = 
-			lookupAny(CustomerWithSimpleByteId.class);
+		domainClass = lookupAny(CustomerWithSimpleByteId.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimpleShortIdentifier() {
@@ -93,10 +77,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimpleIntegerIdentifier() {
@@ -105,10 +86,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimpleLongIdentifier() {
@@ -117,10 +95,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimplePrimitiveByteIdentifier() {
@@ -129,10 +104,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimplePrimitiveShortIdentifier() {
@@ -141,10 +113,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimplePrimitiveIntIdentifier() {
@@ -153,10 +122,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimplePrimitiveLongIdentifier() {
@@ -165,10 +131,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimpleBigIntegerIdentifier() {
@@ -177,10 +140,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.OBJECT_STORE, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForSimpleNonIntegralIdentifier() {
@@ -189,10 +149,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForCompositeIdentifier() {
@@ -201,10 +158,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 
 	//////////
@@ -214,10 +168,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimpleShortIdentifier() {
@@ -226,10 +177,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimpleIntegerIdentifier() {
@@ -238,10 +186,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimpleLongIdentifier() {
@@ -250,10 +195,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimplePrimitiveByteIdentifier() {
@@ -262,10 +204,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimplePrimitiveShortIdentifier() {
@@ -274,10 +213,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimplePrimitiveIntIdentifier() {
@@ -286,10 +222,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimplePrimitiveLongIdentifier() {
@@ -298,10 +231,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdExplicitAssignmentTypeForSimpleBigIntegerIdentifier() {
@@ -310,10 +240,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		assertSame(AssignmentType.APPLICATION, extendedDomainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 
 }

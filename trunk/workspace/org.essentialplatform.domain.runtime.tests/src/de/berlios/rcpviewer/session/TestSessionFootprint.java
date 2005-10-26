@@ -3,7 +3,7 @@ package de.berlios.rcpviewer.session;
 import java.util.List;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 
@@ -24,8 +24,8 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	 */
 	public void testSessionFootprintIsImmutable() {
 		
-		IRuntimeDomainClass<Department> deptDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass deptDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.create(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -53,8 +53,8 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	 */
 	public void testSessionFootprintIgnoresDetached() {
 		
-		IRuntimeDomainClass<Department> deptDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass deptDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.create(deptDomainClass);
 		hrDeptDomainObject.getPojo().setName("HR");
@@ -83,8 +83,8 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	 */
 	public void testSessionFootprint() {
 		
-		IRuntimeDomainClass<Department> deptDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass deptDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> hrDeptDomainObject = 
 			(IDomainObject<Department>)session.create(deptDomainClass);
@@ -99,8 +99,8 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 		cateringDeptDomainObject.getPojo().setName("Catering");
 	
 	
-		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass)lookupAny(Employee.class);
 		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
 			(IDomainObject<Employee>)session.create(employeeDomainClass);
 		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();

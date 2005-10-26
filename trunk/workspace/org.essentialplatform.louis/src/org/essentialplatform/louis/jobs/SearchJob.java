@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.essentialplatform.louis.LouisPlugin;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Provides the user with a GUI means of finding a specific instance of the 
@@ -16,13 +16,13 @@ import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
  */
 public class SearchJob extends AbstractUserJob {
 
-	private final IRuntimeDomainClass _clazz;
+	private final IDomainClass _clazz;
 	
 	/**
 	 * Constructor requires the class to open.
 	 * @param clazz
 	 */
-	public SearchJob( IRuntimeDomainClass clazz ) {
+	public SearchJob( IDomainClass clazz ) {
 		super( LouisPlugin.getResourceString( "SearchJob.Name" ) ); //$NON-NLS-1$
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this._clazz = clazz;

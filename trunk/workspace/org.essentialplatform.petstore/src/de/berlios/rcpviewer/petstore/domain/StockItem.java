@@ -15,7 +15,7 @@ import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
@@ -127,7 +127,7 @@ public class StockItem {
      * </ul>
      * </i>
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Unique identifier for this stock item.  Items are numbered uniquely across products.")
     public String getItemId() {
         return _itemId;
@@ -161,7 +161,7 @@ public class StockItem {
      * </ul>
      * </i>
      */
-    @Order(2)
+    @RelativeOrder(2)
     @BusinessKey(name="product-description",pos=1)
     @DescribedAs("The type of product that this item represents.")
     public Product getProduct() {
@@ -190,7 +190,7 @@ public class StockItem {
      * </ul>
      * </i>
      */
-    @Order(3)
+    @RelativeOrder(3)
     @BusinessKey(name="product-description", pos=2)
 	@FieldLengthOf(50)
     @MaxLengthOf(255)
@@ -216,7 +216,7 @@ public class StockItem {
      * </ul>
      * </i>
      */
-    @Order(4)
+    @RelativeOrder(4)
 	@DescribedAs("Price to produce this stock item.")
     public BigDecimal getUnitCost() {
         return _unitCost;
@@ -240,7 +240,7 @@ public class StockItem {
      * </ul>
      * </i>
      */
-    @Order(5)
+    @RelativeOrder(5)
 	@DescribedAs("Price at which this item currently sells.")
     public BigDecimal getListPrice() {
         return _listPrice;
@@ -266,7 +266,7 @@ public class StockItem {
      * </ul>
      * </i>
      */
-    @Order(6)
+    @RelativeOrder(6)
 	@DescribedAs("Location of image file that illustrates this item.")
     public FilePath getImagePath() {
         return _imagePath;

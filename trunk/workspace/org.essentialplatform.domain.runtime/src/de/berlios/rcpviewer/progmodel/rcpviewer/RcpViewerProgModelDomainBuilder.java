@@ -7,7 +7,8 @@ import org.eclipse.emf.ecore.EClass;
 
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 /**
  * Adds annotations specific to the RCPViewer.
@@ -28,12 +29,8 @@ public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 	/**
 	 * TODO: use parameters to downcast?
 	 */
-	public <V> void build(IDomainClass<V> domainClass) {
-		build((IRuntimeDomainClass<V>)domainClass);
-	}
-
-	private <V> void build(IRuntimeDomainClass<V> domainClass) {
-		Class<V> javaClass = domainClass.getJavaClass();
+	public void build(IDomainClass domainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 		EClass eClass = domainClass.getEClass();
 		
 		// Install adapter object 

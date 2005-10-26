@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 
@@ -23,8 +23,8 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	
 	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	public void incompletetestCanPersistThroughDomainObject() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -46,8 +46,8 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	 * method.
 	 */
 	public void incompletetestCanPersistThroughPojo() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -63,8 +63,8 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 //	 */
 //	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 //	public void incompletetestCannotPersistIfNotAttachedToSession() {
-//		IRuntimeDomainClass<Department> domainClass = 
-//			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+//		IDomainClass domainClass = 
+//			(IDomainClass)lookupAny(Department.class);
 //		
 //		IDomainObject<Department> domainObject = domainClass.create(session);
 //		session.detach(domainObject);
@@ -84,8 +84,8 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	 * ALSO marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	 */
 	public void incompletetestCannotPersistMoreThanOnce() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);

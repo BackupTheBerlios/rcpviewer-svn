@@ -21,7 +21,7 @@ public abstract class TestMask extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -36,12 +36,9 @@ public abstract class TestMask extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute lastName = domainClass.getEAttributeNamed("lastName");
-		assertEquals("AAAA", extendedDomainClass.getMask(lastName));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("lastName"));
+		assertEquals("AAAA", attrib.getMask());
 	}
 
 	
@@ -51,11 +48,8 @@ public abstract class TestMask extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute firstName = domainClass.getEAttributeNamed("firstName");
-		assertNull(extendedDomainClass.getMask(firstName));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("firstName"));
+		assertNull(attrib.getMask());
 	}
 }

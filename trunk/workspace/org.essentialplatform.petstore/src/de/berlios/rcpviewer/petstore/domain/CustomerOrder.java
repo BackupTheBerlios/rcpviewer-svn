@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 import de.berlios.rcpviewer.progmodel.standard.ContainerOf;
@@ -118,7 +118,7 @@ public class CustomerOrder {
      * </ul>
      * </i>
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Unique identifier for this order.  Orders are numbered uniquely across Customers, rather than per Customer")
     public long getOrderId() { 
         return _orderId;
@@ -147,7 +147,7 @@ public class CustomerOrder {
      *      and annotations.
      * </i>
      */
-    @Order(2)
+    @RelativeOrder(2)
     @DescribedAs("Date that this order was placed")
     @ImmutableOncePersisted
     public Date getOrderDate() {
@@ -183,7 +183,7 @@ public class CustomerOrder {
      * 
      * @return
      */
-    @Order(3)
+    @RelativeOrder(3)
     @DescribedAs("The status of this order; affects whether it can be updated.")
     public Status getStatus() {
         return _status;
@@ -223,7 +223,7 @@ public class CustomerOrder {
      * </ul>
      * </i>
 	 */
-    @Order(4)
+    @RelativeOrder(4)
     @Derived
     @DescribedAs("The total cost of all items in this order.")
     public BigDecimal getTotal() {
@@ -253,7 +253,7 @@ public class CustomerOrder {
      * </ul>
      * </i>
      */
-    @Order(5)
+    @RelativeOrder(5)
     public Address getAddress() {
         return _address;
     }
@@ -280,7 +280,7 @@ public class CustomerOrder {
      *      and annotations.
      * </i>
      */
-    @Order(6)
+    @RelativeOrder(6)
     public CreditCard getCreditCard() {
         return _creditCard;
     }
@@ -301,7 +301,7 @@ public class CustomerOrder {
      *      and annotations.
      * </i>
      */
-    @Order(7)
+    @RelativeOrder(7)
     @DescribedAs("The customer that placed this order")
     public Customer getCustomer() {
         return _customer;
@@ -358,7 +358,7 @@ public class CustomerOrder {
      * 
      * @return
      */
-    @Order(8)
+    @RelativeOrder(8)
     @ContainerOf
     @TypeOf(StockItem.class)
     @OppositeOf("customerOrder")
@@ -463,7 +463,7 @@ public class CustomerOrder {
      * @param item
      * @param quantity - the quantity to add.  If omitted, then defaults to 1.
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Adds (or updates) this order to purchase an (additional) quantity of the specified item.  To remove, just drag out of the collection.")
     public void addOrderLine(
     		@DescribedAs("The item to purchase.")
@@ -528,7 +528,7 @@ public class CustomerOrder {
      * </i>
      *   
      */
-    @Order(2)
+    @RelativeOrder(2)
     @DescribedAs("Marks this order as having been delivered.")
     public void delivered() {
     	setStatus(Status.DELIVERED);
@@ -558,7 +558,7 @@ public class CustomerOrder {
      * </i>
      *   
      */
-    @Order(3)
+    @RelativeOrder(3)
     @DescribedAs("Cancel this order (provided still pending).")
     public void cancel() {
     	setStatus(Status.CANCELLED);

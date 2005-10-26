@@ -3,33 +3,34 @@ package de.berlios.rcpviewer.progmodel.standard;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.domain.DomainClass;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass.OppRefState;
+import de.berlios.rcpviewer.domain.DomainClass.OppRefState;
 
 /**
  * This is a horrible hack; called both by {@link de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder} 
- * and also {@link de.berlios.rcpviewer.domain.RuntimeDomain}. 
+ * and also {@link de.berlios.rcpviewer.domain.Domain}. 
  * 
  * @author Dan Haywood
  */
-public class OppositeReferencesIdentifier<T> {
+public class OppositeReferencesIdentifier {
 
 	private StandardProgModelSemanticsEmfSerializer serializer = new StandardProgModelSemanticsEmfSerializer();
 
-	private final RuntimeDomainClass<T> runtimeDomainClass;
-	public OppositeReferencesIdentifier(RuntimeDomainClass<T> runtimeDomainClass) {
-		this.runtimeDomainClass = runtimeDomainClass;
+	private final DomainClass domainClass;
+	public OppositeReferencesIdentifier(DomainClass runtimeDomainClass) {
+		this.domainClass = runtimeDomainClass;
 	}
 	public void identify() {
-		if (runtimeDomainClass.oppRefState == OppRefState.neverAgain) {
+		if (domainClass.oppRefState == OppRefState.neverAgain) {
 			return;
-		} else if (runtimeDomainClass.oppRefState == OppRefState.stillBuilding) {
+		} else if (domainClass.oppRefState == OppRefState.stillBuilding) {
 			// do nothing
-		} else if (runtimeDomainClass.oppRefState == OppRefState.onceMore) {
-			runtimeDomainClass.oppRefState = OppRefState.neverAgain;
+		} else if (domainClass.oppRefState == OppRefState.onceMore) {
+			domainClass.oppRefState = OppRefState.neverAgain;
 		}
 		
-		for(EReference reference: runtimeDomainClass.references()) {
+		for(EReference reference: domainClass.references()) {
 			// since later on we call this same method on the DomainClass 
 			// representing the referenced class, we have the possibility of
 			// an infinite loop if both sides have an @OppositeOf annotation.
@@ -38,8 +39,8 @@ public class OppositeReferencesIdentifier<T> {
 				continue;
 			}
 			EClass referencedEClass = reference.getEReferenceType();
-			IDomainClass<?> referencedClass = 
-				runtimeDomainClass.getDomain().domainClassFor(referencedEClass);
+			IDomainClass referencedClass = 
+				domainClass.getDomain().domainClassFor(referencedEClass);
 
 			OppositeOf oppositeOf = 
 				serializer.getReferenceOppositeOf(reference);

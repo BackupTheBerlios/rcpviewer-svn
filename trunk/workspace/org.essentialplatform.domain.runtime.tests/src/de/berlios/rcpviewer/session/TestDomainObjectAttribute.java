@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
@@ -19,8 +19,10 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanGetAttribute() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
+		getDomainInstance().done();
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -31,8 +33,8 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanSetAttribute() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
 		getDomainInstance().done();
 
@@ -44,8 +46,8 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 	}
 
 	public void testSettingAttributeNotifiesListeners() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
 		getDomainInstance().done();
 		
@@ -59,8 +61,8 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotSetAttributeToObjectOfWrongType() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
 		getDomainInstance().done();
 		

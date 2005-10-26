@@ -15,7 +15,7 @@ import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> {
@@ -92,7 +92,7 @@ public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> 
 		
 		// create 'child' attribute list gui
 		final ManagedForm childForm = new ManagedForm( childComposite );
-		IRuntimeDomainClass<?> dClass = EmfUtil.getCollectionDomainType( model );
+		IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
 		DomainClassGuiFactory childFactory = new DomainClassGuiFactory();
 		DomainClassPart childPart = childFactory.createGui( 
 				dClass, 

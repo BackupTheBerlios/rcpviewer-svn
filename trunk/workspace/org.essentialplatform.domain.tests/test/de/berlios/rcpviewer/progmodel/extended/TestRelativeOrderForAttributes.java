@@ -20,7 +20,7 @@ public abstract class TestRelativeOrderForAttributes extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -35,11 +35,8 @@ public abstract class TestRelativeOrderForAttributes extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
 		List<EAttribute> orderedAttributes = 
-			extendedDomainClass.orderedAttributes();
+			domainClass.orderedAttributes();
 		assertEquals("lastName", orderedAttributes.get(0).getName());
 		assertEquals("firstName", orderedAttributes.get(1).getName());
 		assertEquals("numberOfOrders", orderedAttributes.get(2).getName());

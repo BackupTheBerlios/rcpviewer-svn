@@ -28,7 +28,7 @@ import org.essentialplatform.louis.jobs.ReportJob;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainRegistry;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
@@ -179,10 +179,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	Map<String, IDomain> domains= domainRegistry.getDomains();
     	int count = 0;
 		for (IDomain domain: domains.values()) {
-    		for (IDomainClass<?> domainClass: domain.classes()) {
-				assert domainClass instanceof IRuntimeDomainClass;
+    		for (IDomainClass domainClass: domain.classes()) {
+				assert domainClass instanceof IDomainClass;
 				NewDomainObjectJob job = new NewDomainObjectJob( 
-						(IRuntimeDomainClass<?>)domainClass );
+						(IDomainClass)domainClass );
 				JobAction action = new JobAction( job );
 				// overwrite default name for action with class name
 				action.setText( domainClass.getName() ); 

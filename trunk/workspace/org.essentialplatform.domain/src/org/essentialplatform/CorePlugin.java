@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer;
+package org.essentialplatform;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;

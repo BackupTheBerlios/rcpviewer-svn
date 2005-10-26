@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
@@ -33,13 +33,13 @@ class DomainBootstrapJob extends AbstractBootstrapJob {
 	protected IStatus run(IProgressMonitor monitor) {  
 		try {
 			_bootstrap.registerClasses();
-			RuntimeDomain.instance().addBuilder( 
+			Domain.instance().addBuilder( 
 					new ExtendedProgModelDomainBuilder() );
 		}
 		catch ( CoreException ce ) {
 			return ce.getStatus();	
 		}
-		RuntimeDomain.instance().done();	
+		Domain.instance().done();	
 		return Status.OK_STATUS;	
 	}
 }

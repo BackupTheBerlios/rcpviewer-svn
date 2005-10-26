@@ -21,7 +21,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -36,12 +36,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute attrib = domainClass.getEAttributeNamed("suffix");
-		assertEquals(12, extendedDomainClass.getMinLengthOf(attrib));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("suffix"));
+		assertEquals(12, attrib.getMinLengthOf());
 	}
 
 	public void testDomainClassWithMinLengthOfSpecifiedOnOperationParameter() {
@@ -50,12 +47,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation op = domainClass.getEOperationNamed("updateSuffix");
-		assertEquals(12, extendedDomainClass.getMinLengthOf(op, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("updateSuffix"));
+		assertEquals(12, op.getMinLengthOf(0));
 	}
 
 	
@@ -70,12 +64,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute attrib = domainClass.getEAttributeNamed("middleName");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("middleName"));
+		assertEquals(0, attrib.getMinLengthOf());
 	}
 	
 	/**
@@ -89,12 +80,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation op = domainClass.getEOperationNamed("updateMiddleName");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("updateMiddleName"));
+		assertEquals(0, op.getMinLengthOf(0));
 	}
 
 	
@@ -109,12 +97,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute attrib = domainClass.getEAttributeNamed("lastName");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("lastName"));
+		assertEquals(0, attrib.getMinLengthOf());
 	}
 
 	/**
@@ -128,12 +113,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation op = domainClass.getEOperationNamed("updateLastName");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("updateLastName"));
+		assertEquals(0, op.getMinLengthOf(0));
 	}
 
 	
@@ -148,12 +130,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNegativeLengths");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("attributeWithNegativeLengths"));
+		assertEquals(0, attrib.getMinLengthOf());
 	}
 
 	
@@ -168,12 +147,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths"));
+		assertEquals(0, op.getMinLengthOf(0));
 	}
 
 	/**
@@ -187,12 +163,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute attrib = domainClass.getEAttributeNamed("attributeWithNoAnnotations");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(attrib));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("attributeWithNoAnnotations"));
+		assertEquals(0, attrib.getMinLengthOf());
 	}
 	
 
@@ -207,12 +180,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation op = domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations");
-		assertEquals(0, extendedDomainClass.getMinLengthOf(op, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations"));
+		assertEquals(0, op.getMinLengthOf(0));
 	}
 
 
@@ -227,12 +197,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute attrib = domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations");
-		assertEquals(-1, extendedDomainClass.getMinLengthOf(attrib));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations"));
+		assertEquals(-1, attrib.getMinLengthOf());
 	}
 
 
@@ -247,12 +214,9 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation op = domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations");
-		assertEquals(-1, extendedDomainClass.getMinLengthOf(op, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations"));
+		assertEquals(-1, op.getMinLengthOf(0));
 	}
 
 }

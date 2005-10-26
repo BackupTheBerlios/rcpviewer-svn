@@ -23,10 +23,15 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import de.berlios.rcpviewer.domain.EmfAnnotations;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
+import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelSemanticsEmfSerializer;
 import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.StandardProgModelSemanticsEmfSerializer;
 
 /**
  * Analyzes annotations specific to the extended programming model.
@@ -36,21 +41,17 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  */
 public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 
+	private final StandardProgModelSemanticsEmfSerializer standardSerializer = new StandardProgModelSemanticsEmfSerializer();
 	private final ExtendedProgModelSemanticsEmfSerializer serializer = new ExtendedProgModelSemanticsEmfSerializer();
 	
-	public <V> void build(IDomainClass<V> domainClass) {
-		build((IRuntimeDomainClass<V>)domainClass);
-	}
-
-	private <V> void build(IRuntimeDomainClass<V> domainClass) {
-		Class<V> javaClass = domainClass.getJavaClass();
+	public void build(IDomainClass domainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 		EClass eClass = domainClass.getEClass();
 		
 		// Install one adapter object under two different bindings so can be
 		// obtained in either context.
 		ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass> adapterFactory = 
 					new ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass>();
-		domainClass.setAdapterFactory(IExtendedDomainClass.class, adapterFactory);
 		domainClass.setAdapterFactory(IExtendedRuntimeDomainClass.class, adapterFactory);
 
 		// Instantiable (File>New)
@@ -60,25 +61,26 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		serializer.setClassLifecycle(eClass, lifecycle);
 
 		for(EAttribute attribute: domainClass.attributes()) {
-			Method accessorOrMutator = domainClass.getAccessorOrMutatorFor(attribute);
-			
 			processAccessorPre(attribute, domainClass, javaClass); // getXxxPre() method
 			processMutatorPre(attribute, domainClass, javaClass); // setXxxPre(..) method
 
 			// serialize extended semantics as EMF annotations
-			serializer.setAttributeRelativeOrder(attribute, accessorOrMutator.getAnnotation(RelativeOrder.class));
-			serializer.setAttributeId(attribute, accessorOrMutator.getAnnotation(Id.class));
-			serializer.setOptional(attribute, accessorOrMutator.getAnnotation(Optional.class));
-			serializer.setAttributeInvisible(attribute, accessorOrMutator.getAnnotation(Invisible.class));
-			serializer.setAttributeBusinessKey(attribute, accessorOrMutator.getAnnotation(BusinessKey.class));
-			serializer.setAttributeMask(attribute, accessorOrMutator.getAnnotation(Mask.class));
-			serializer.setAttributeRegex(attribute, accessorOrMutator.getAnnotation(Regex.class));
-			serializer.setAttributeImmutableOncePersisted(attribute, accessorOrMutator.getAnnotation(ImmutableOncePersisted.class));
+			IDomainClass.IAttribute iAttribute = domainClass.getAttribute(attribute);
+			RuntimeAttributeBinding attributeBinding = (RuntimeAttributeBinding)iAttribute.getBinding();
+
+			serializer.setAttributeRelativeOrder(attribute, attributeBinding.getAnnotation(RelativeOrder.class));
+			serializer.setAttributeId(attribute, attributeBinding.getAnnotation(Id.class));
+			serializer.setOptional(attribute, attributeBinding.getAnnotation(Optional.class));
+			serializer.setAttributeInvisible(attribute, attributeBinding.getAnnotation(Invisible.class));
+			serializer.setAttributeBusinessKey(attribute, attributeBinding.getAnnotation(BusinessKey.class));
+			serializer.setAttributeMask(attribute, attributeBinding.getAnnotation(Mask.class));
+			serializer.setAttributeRegex(attribute, attributeBinding.getAnnotation(Regex.class));
+			serializer.setAttributeImmutableOncePersisted(attribute, attributeBinding.getAnnotation(ImmutableOncePersisted.class));
 
 			if (returnsString(attribute)) {
-				serializer.setMinLengthOf(attribute, accessorOrMutator.getAnnotation(MinLengthOf.class));
-				serializer.setMaxLengthOf(attribute, accessorOrMutator.getAnnotation(MaxLengthOf.class));
-				serializer.setFieldLengthOf(attribute, accessorOrMutator.getAnnotation(FieldLengthOf.class));
+				serializer.setMinLengthOf(attribute, attributeBinding.getAnnotation(MinLengthOf.class));
+				serializer.setMaxLengthOf(attribute, attributeBinding.getAnnotation(MaxLengthOf.class));
+				serializer.setFieldLengthOf(attribute, attributeBinding.getAnnotation(FieldLengthOf.class));
 			}
 		}
 
@@ -90,7 +92,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 		
 		for(EOperation operation: domainClass.operations()) {
-			Method invoker = domainClass.getInvokerFor(operation);
+			Method invoker = standardSerializer.getOperationMethod(operation);
 
 			// xxxPre(..) method
 			processInvokerPre(operation, domainClass, javaClass, invoker); 
@@ -126,8 +128,8 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 	}
 	
-	private <V> void processAccessorPre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
-		Method accessor = domainClass.getAccessorFor(eAttribute);
+	private <V> void processAccessorPre(EAttribute eAttribute, IDomainClass domainClass, Class<V> javaClass) {
+		Method accessor = standardSerializer.getAttributeAccessorMethod(eAttribute);
 		if (accessor == null) {
 			return;
 		}
@@ -150,11 +152,11 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!isPublic(accessorPreCandidate)) {
 			return;
 		}
-		serializer.setAttributeAccessorPre(eAttribute, accessorPreCandidate.getName());
+		serializer.setAttributeAccessorPreMethod(eAttribute, accessorPreCandidate);
 	}
 
-	private <V> void processMutatorPre(EAttribute eAttribute, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
-		Method mutator = domainClass.getMutatorFor(eAttribute);
+	private <V> void processMutatorPre(EAttribute eAttribute, IDomainClass domainClass, Class<V> javaClass) {
+		Method mutator = standardSerializer.getAttributeMutatorMethod(eAttribute);
 		if (mutator == null) {
 			return;
 		}
@@ -178,11 +180,11 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!isPublic(mutatorPreCandidate)) {
 			return;
 		}
-		serializer.setAttributeMutatorPre(eAttribute, mutatorPreCandidate.getName());
+		serializer.setAttributeMutatorPreMethod(eAttribute, mutatorPreCandidate);
 	}
 
-	private <V> void processAccessorPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
-		Method accessor = domainClass.getAccessorFor(eReference);
+	private <V> void processAccessorPre(EReference eReference, IDomainClass domainClass, Class<V> javaClass) {
+		Method accessor = standardSerializer.getReferenceAccessor(eReference);
 		if (accessor == null) {
 			return;
 		}
@@ -205,18 +207,18 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		serializer.setReferenceMutatorPre(eReference, accessorPreCandidate.getName());
+		serializer.setReferenceAccessorPreMethod(eReference, accessorPreCandidate);
 	}
 
-	private <V> void processMutatorPre(EReference eReference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+	private <V> void processMutatorPre(EReference eReference, IDomainClass domainClass, Class<V> javaClass) {
 		if (eReference.isMany()) {
 			return;
 		}
-		Method accessor = domainClass.getMutatorFor(eReference);
-		if (accessor == null) {
+		Method mutator = standardSerializer.getReferenceMutator(eReference);
+		if (mutator == null) {
 			return;
 		}
-		String accessorPreMethodName = accessor.getName() + 
+		String accessorPreMethodName = mutator.getName() + 
 			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method mutatorPreCandidate;
 		try {
@@ -235,15 +237,15 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(mutatorPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		serializer.setReferenceMutatorPre(eReference, mutatorPreCandidate.getName());
+		serializer.setReferenceMutatorPreMethod(eReference, mutatorPreCandidate);
 	}
 
 
-	private <V> void processAddToPre(EReference reference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+	private <V> void processAddToPre(EReference reference, IDomainClass domainClass, Class<V> javaClass) {
 		if (!reference.isMany()) {
 			return;
 		}
-		Method addTo = domainClass.getAssociatorFor(reference);
+		Method addTo = standardSerializer.getReferenceCollectionAssociator(reference);
 		if (addTo == null) {
 			return;
 		}
@@ -266,15 +268,15 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(addToPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		serializer.setReferenceAddToPre(reference, addToPreCandidate.getName());
+		serializer.setReferenceAddToPreMethod(reference, addToPreCandidate);
 	}
 
 
-	private <V> void processRemoveFromPre(EReference reference, IRuntimeDomainClass<V> domainClass, Class<V> javaClass) {
+	private <V> void processRemoveFromPre(EReference reference, IDomainClass domainClass, Class<V> javaClass) {
 		if (!reference.isMany()) {
 			return;
 		}
-		Method removeFrom = domainClass.getDissociatorFor(reference);
+		Method removeFrom = standardSerializer.getReferenceCollectionDissociator(reference);
 		if (removeFrom == null) {
 			return;
 		}
@@ -297,11 +299,11 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(removeFromPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		serializer.setReferenceAddToPre(reference, removeFromPreCandidate.getName());
+		serializer.setReferenceRemoveFromPre(reference, removeFromPreCandidate);
 	}
 
 
-	private <V> void processInvokerPre(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass, Method invoker) {
+	private <V> void processInvokerPre(EOperation eOperation, IDomainClass domainClass, Class<V> javaClass, Method invoker) {
 		String invokerName = invoker.getName();
 		String invokerPreMethodName = invokerName + 
 			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
@@ -328,11 +330,14 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(invokerPreCandidate, IPrerequisites.class)) {
 			return;
 		}
-		serializer.setOperationPre(eOperation, invokerPreCandidate.getName());
+		serializer.setOperationPreMethod(eOperation, invokerPreCandidate);
 	}
 
 
-	private <V> void processInvokerDefaults(EOperation eOperation, IRuntimeDomainClass<V> domainClass, Class<V> javaClass, Method invoker) {
+	/*
+	 * TODO: there is similar code in the serializer (getter), so this should probably be moved into there
+	 */
+	private <V> void processInvokerDefaults(EOperation eOperation, IDomainClass domainClass, Class<V> javaClass, Method invoker) {
 		String invokerName = invoker.getName();
 		String invokerDefaultsMethodName = invokerName + 
 			ExtendedProgModelConstants.SUFFIX_OPERATION_DEFAULTS;
@@ -365,7 +370,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		if (!methodReturns(invokerDefaultsCandidate, Void.class)) {
 			return;
 		}
-		serializer.setOperationDefaults(eOperation, invokerDefaultsCandidate.getName());
+		serializer.setOperationDefaults(eOperation, invokerDefaultsCandidate);
 	}
 
 	private boolean returnsString(final EAttribute attribute) {

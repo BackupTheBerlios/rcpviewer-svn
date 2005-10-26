@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.extended;
+package de.berlios.rcpviewer.progmodel.standard;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,7 +16,7 @@ import de.berlios.rcpviewer.progmodel.extended.Id;
  * @author dkhaywood
  *
  */
-abstract class AbstractAttributeComparator implements Comparator<EAttribute> {
+public abstract class AbstractAttributeComparator implements Comparator<EAttribute> {
 
 	private final ExtendedProgModelSemanticsEmfSerializer _serializer = new ExtendedProgModelSemanticsEmfSerializer();
 

@@ -35,7 +35,7 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 /**
@@ -103,7 +103,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 		section.setClient( sectionArea );
 		
 		// create attribute list gui
-		IRuntimeDomainClass<?> dClass = EmfUtil.getCollectionDomainType( model );
+		IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
 		IGuiFactory detailsFactory = LouisPlugin.getDefault().getGuiFactory(
 				dClass, this );
 		IFormPart detailsPart = detailsFactory.createGui( 
@@ -142,7 +142,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 		assert part != null;
 		
 		// model data
-		final IRuntimeDomainClass<?> dClass = EmfUtil.getCollectionDomainType( model );
+		final IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
 		
 		// count columns for layout
 		int numColumns = 0;

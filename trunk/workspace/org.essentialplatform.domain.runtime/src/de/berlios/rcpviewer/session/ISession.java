@@ -3,10 +3,10 @@ package de.berlios.rcpviewer.session;
 import java.util.List;
 import java.util.Set;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 
 /**
@@ -39,7 +39,7 @@ public interface ISession {
 	public String getId();
 	
 	/**
-	 * The {@link RuntimeDomain} (or schema, or metamodel) that holds the
+	 * The {@link Domain} (or schema, or metamodel) that holds the
 	 * {@link IDomainClass}es for which every {@link IDomainObject} managed
 	 * by this session must correspond.
 	 *   
@@ -69,7 +69,7 @@ public interface ISession {
 	 * @param domainClass
 	 * @return an {@link IDomainObject} wrapping a newly created pojo.
 	 */
-	<T> IDomainObject<T> create(IRuntimeDomainClass<T> domainClass);
+	<T> IDomainObject<T> create(IDomainClass domainClass);
 
 	
 	/**
@@ -85,7 +85,7 @@ public interface ISession {
 	 * @return a persisted (though still-to-be-resolved) {@link IDomainObject},
 	 *         attached to the supplied session.
 	 */
-	<T> IDomainObject<T> recreate(IRuntimeDomainClass<T> domainClass);
+	<T> IDomainObject<T> recreate(IDomainClass domainClass);
 
 
 	/**
@@ -181,7 +181,7 @@ public interface ISession {
 	 * @param domainClass
 	 * @return
 	 */
-	<T> List<IDomainObject<T>> footprintFor(IDomainClass<T> domainClass);
+	<T> List<IDomainObject<T>> footprintFor(IDomainClass domainClass);
 
 	/**
 	 * Adds session listener.

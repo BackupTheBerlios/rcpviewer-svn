@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
@@ -20,8 +20,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	}
 
 	public void testCanSetAttributeIfAccessorPrerequisitesAllow() {
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
@@ -38,8 +38,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	}
 
 	public void testCannotSetAttributeIfAccessorPrerequisitesMakesUnusable() {
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
@@ -60,8 +60,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	}
 
 	public void testCannotSetAttributeIfAccessorPrerequisitesMakesInvisible() {
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
@@ -85,8 +85,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	 *
 	 */
 	public void testCannotSetAttributeIfMutatorPrerequisitesPrevent() {
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
@@ -109,10 +109,10 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	 *
 	 */
 	public void testAttributePrerequisitesChangedViaExternalStateChanged() {
-		IRuntimeDomainClass<Ping> pingDomainClass = 
-			(IRuntimeDomainClass<Ping>)lookupAny(Ping.class);
-		IRuntimeDomainClass<Pong> pongDomainClass = 
-			(IRuntimeDomainClass<Pong>)lookupAny(Pong.class);
+		IDomainClass pingDomainClass = 
+			(IDomainClass)lookupAny(Ping.class);
+		IDomainClass pongDomainClass = 
+			(IDomainClass)lookupAny(Pong.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		

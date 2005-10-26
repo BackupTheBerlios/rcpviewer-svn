@@ -5,7 +5,7 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.extended.Lookup;
 import de.berlios.rcpviewer.progmodel.extended.Mask;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 
 /**
  * Language, as defined by ISO639-1.
@@ -80,7 +80,7 @@ public class Language {
      * </ul>
      * </i>
 	 */
-	@Order(1)
+	@RelativeOrder(1)
 	@Mask("AA")
 	@DescribedAs("Two letter code for the language.")
 	public String getIsoA2Code() {
@@ -103,7 +103,7 @@ public class Language {
      * </ul>
      * </i>
 	 */
-	@Order(2)
+	@RelativeOrder(2)
 	@Mask("AAA")
 	@DescribedAs("Three letter code for the language.")
 	public String getIsoA3Code() {
@@ -126,7 +126,7 @@ public class Language {
      * </ul>
      * </i>
 	 */
-	@Order(3)
+	@RelativeOrder(3)
 	@MaxLengthOf(30)
 	@DescribedAs("Name of the language.")
 	public String getName() {

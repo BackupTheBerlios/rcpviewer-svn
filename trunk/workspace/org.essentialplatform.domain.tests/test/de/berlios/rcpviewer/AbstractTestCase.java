@@ -2,9 +2,11 @@ package de.berlios.rcpviewer;
 
 import junit.framework.TestCase;
 
+import de.berlios.rcpviewer.domain.Deployment;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment;
 
 /**
  *  
@@ -37,16 +39,18 @@ public abstract class AbstractTestCase extends TestCase {
 		return domainSpecifics.getDomainInstance(domainName);
 	}
 
-	protected <T> IDomainClass<T> lookupAny(Class<T> domainClassIdentifier) {
+	protected <T> IDomainClass lookupAny(Class<T> domainClassIdentifier) {
 		return domainSpecifics.lookupAny(domainClassIdentifier);
 	}
 	
 	protected void resetAll() {
 		domainSpecifics.resetAll();
+		Deployment.reset();
 	}
 	
 	protected void setUp() throws Exception {
 		super.setUp();
+		new RuntimeDeployment();
 	}
 
 	protected void tearDown() throws Exception {

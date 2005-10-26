@@ -1,21 +1,21 @@
 package de.berlios.rcpviewer;
 
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 
 public class RuntimeDomainSpecifics implements IDeploymentSpecifics {
 
-	public RuntimeDomain getDomainInstance() {
-		return RuntimeDomain.instance();
+	public Domain getDomainInstance() {
+		return Domain.instance();
 	}
-	public RuntimeDomain getDomainInstance(final String domainName) {
-		return RuntimeDomain.instance(domainName);
+	public Domain getDomainInstance(final String domainName) {
+		return Domain.instance(domainName);
 	}
-	public <T> IDomainClass<T> lookupAny(Class<T> domainClassIdentifier) {
-		return RuntimeDomain.lookupAny(domainClassIdentifier);
+	public <T> IDomainClass lookupAny(Class<T> domainClassIdentifier) {
+		return Domain.lookupAny(domainClassIdentifier);
 	}
 	public void resetAll() {
-		RuntimeDomain.resetAll();
+		Domain.resetAll();
 	}
 
 

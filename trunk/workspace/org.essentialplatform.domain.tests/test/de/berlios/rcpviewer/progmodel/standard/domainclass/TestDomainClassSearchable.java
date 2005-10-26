@@ -4,8 +4,6 @@ import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainClass;
 
 /**
  * Tests for the use of the <tt>Immutable</tt>.
@@ -18,7 +16,7 @@ public abstract class TestDomainClassSearchable extends AbstractTestCase {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -33,9 +31,7 @@ public abstract class TestDomainClassSearchable extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		IExtendedDomainClass extendedDomainClass = 
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertTrue(extendedDomainClass.isSearchable());
+		assertTrue(domainClass.isSearchable());
 	}
 	
 	public void testNonPersistableDomainClass() {
@@ -44,9 +40,7 @@ public abstract class TestDomainClassSearchable extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		IExtendedDomainClass extendedDomainClass = 
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertFalse(extendedDomainClass.isSearchable());
+		assertFalse(domainClass.isSearchable());
 	}
 	
 }

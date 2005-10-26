@@ -4,7 +4,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 
@@ -23,7 +23,7 @@ public abstract class TestImageDescriptor extends AbstractTestCase {
 	}
 
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -49,7 +49,7 @@ public abstract class TestImageDescriptor extends AbstractTestCase {
 	 */
 	public void incompletetestDomainClassWithImageUrlAtWithoutBuilderInstalled() {
 		domainClass = lookupAny(ProspectiveSale.class);
-		RuntimeDomain.instance().done();
+		Domain.instance().done();
 		
 		ImageDescriptor id = (ImageDescriptor)domainClass.getAdapter(ImageDescriptor.class);
 		assertNull(id);

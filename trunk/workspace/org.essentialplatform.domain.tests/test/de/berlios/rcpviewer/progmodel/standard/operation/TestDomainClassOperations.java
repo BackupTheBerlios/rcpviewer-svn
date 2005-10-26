@@ -6,12 +6,12 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.OperationKind;
 import de.berlios.rcpviewer.domain.IDomainClass.IOperation;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 
 /**
@@ -27,7 +27,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -255,8 +255,8 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		assertEquals(2, eOperation.getEParameters().size());
 		assertTrue(operation.isParameterADomainObject(0));
 		// HACK
-		IRuntimeDomainClass<?> eMarryFirstArgClass = (IRuntimeDomainClass)operation.getDomainClassFor(0);
-		assertSame(Man.class, eMarryFirstArgClass.getJavaClass());
+		IDomainClass eMarryFirstArgClass = (IDomainClass)operation.getDomainClassFor(0);
+		assertSame(Man.class, ((RuntimeClassBinding)eMarryFirstArgClass.getBinding()).getJavaClass());
 		
 	}
 

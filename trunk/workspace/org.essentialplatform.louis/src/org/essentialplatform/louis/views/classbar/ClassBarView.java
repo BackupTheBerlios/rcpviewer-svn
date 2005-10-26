@@ -26,7 +26,7 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Outlook-style bar for each class in Domain.
@@ -52,7 +52,7 @@ public class ClassBarView extends ViewPart {
 				DomainRegistryUtil.Filter.INSTANTIABLE );
 		boolean empty = true;
 		while ( it.hasNext() ) {
-			doAddClass( (IRuntimeDomainClass)it.next(), parent  );
+			doAddClass( (IDomainClass)it.next(), parent  );
 			empty = false;
     	}
 		
@@ -69,7 +69,7 @@ public class ClassBarView extends ViewPart {
 	 * As it says
 	 * @param clazz
 	 */
-	private void doAddClass( IRuntimeDomainClass<?> clazz, Composite parent ) {
+	private void doAddClass( IDomainClass clazz, Composite parent ) {
 		assert clazz != null;
 		assert parent != null;
 		

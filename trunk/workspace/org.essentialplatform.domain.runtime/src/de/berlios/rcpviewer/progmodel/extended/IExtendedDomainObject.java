@@ -14,7 +14,7 @@ import de.berlios.rcpviewer.session.IObservedFeature;
 
 public interface IExtendedDomainObject<T> extends IDomainObjectAdapter<T> {
 
-	public IExtendedRuntimeDomainClass<T> getExtendedRuntimeDomainClass();
+	public IExtendedRuntimeDomainClass getExtendedRuntimeDomainClass();
 
 	public interface IExtendedFeature extends IObservedFeature {
 		

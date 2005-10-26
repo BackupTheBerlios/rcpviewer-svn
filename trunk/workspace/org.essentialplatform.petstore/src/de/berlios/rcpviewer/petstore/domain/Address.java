@@ -5,7 +5,7 @@ import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Invisible;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
@@ -106,7 +106,7 @@ public class Address {
      * 
      * @return
      */
-    @Order(1)
+    @RelativeOrder(1)
     @FieldLengthOf(30)
     @MaxLengthOf(50)
     @DescribedAs("First line of the address (typically street name)")
@@ -134,7 +134,7 @@ public class Address {
      * 
      * @return
      */
-    @Order(2)
+    @RelativeOrder(2)
     @Optional
     @FieldLengthOf(30)
     @MaxLengthOf(50)
@@ -163,7 +163,7 @@ public class Address {
      * 
      * @return
      */
-    @Order(3)
+    @RelativeOrder(3)
     @DescribedAs("The city (or closest major town) for this address.")
     @MaxLengthOf(25)
     public String getCity() {
@@ -188,7 +188,7 @@ public class Address {
      * </ul>
      * </i>
      */
-    @Order(4)
+    @RelativeOrder(4)
     @MaxLengthOf(20)
     @DescribedAs("State (if US) or region (non US).")
     public String getState(  ) {
@@ -212,7 +212,7 @@ public class Address {
      * </ul>
      * </i>
      */
-    @Order(5)
+    @RelativeOrder(5)
     @MaxLengthOf(11)
     @DescribedAs("Zip code (if US) or postal code (non US).")
     public String getZipcode() {
@@ -250,7 +250,7 @@ public class Address {
      * </ul>
      * </i>
      */
-    @Order(6)
+    @RelativeOrder(6)
     @DescribedAs("Country in which this address resides")
     public Country getCountry() {
         return _country;

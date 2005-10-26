@@ -1,15 +1,14 @@
 package de.berlios.rcpviewer.domain;
 
-public abstract class AbstractDomainClassAdapter<T> 
-	implements IDomainClassAdapter<T> {
+public abstract class AbstractDomainClassAdapter implements IDomainClassAdapter {
 
-	private IDomainClass<T> adaptedDomainClass;
+	private IDomainClass adaptedDomainClass;
 
-	public AbstractDomainClassAdapter(final IDomainClass<T> domainClass) {
+	public AbstractDomainClassAdapter(final IDomainClass domainClass) {
 		this.adaptedDomainClass = domainClass;
 	}
 
-	public IDomainClass<T> adapts() {
+	public IDomainClass adapts() {
 		return adaptedDomainClass;
 	}
 

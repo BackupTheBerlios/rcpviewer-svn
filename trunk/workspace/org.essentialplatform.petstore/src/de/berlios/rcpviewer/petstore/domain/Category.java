@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.progmodel.extended.Invisible;
 import de.berlios.rcpviewer.progmodel.extended.Lookup;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
@@ -100,7 +100,7 @@ public class Category {
      * </ul>
      * </i>
      */
-    @Order(1)
+    @RelativeOrder(1)
     @FieldLengthOf(30)
     @MaxLengthOf(50)
     @DescribedAs("Name of this category.")
@@ -126,7 +126,7 @@ public class Category {
      * </ul>
      * </i>
      */
-    @Order(2)
+    @RelativeOrder(2)
     @FieldLengthOf(50)
     @MaxLengthOf(255)
     @DescribedAs("Description of this category.")
@@ -156,7 +156,7 @@ public class Category {
      * </ul>
      * </i>
      */
-    @Order(3)
+    @RelativeOrder(3)
     @TypeOf(Product.class)
     @DescribedAs("Products in this category.")
     public Set<Product> getProducts() {
@@ -197,7 +197,7 @@ public class Category {
      * 
      * @param product - product to be moved between categories
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Move a product from its current category into this category")
     public void reclassify(
     		@DescribedAs("Product to be reclassified")

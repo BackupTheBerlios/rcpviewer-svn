@@ -3,7 +3,8 @@ package de.berlios.rcpviewer.domain.runtime;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
+
 
 public abstract class AbstractDomainBootstrap 
 implements IDomainBootstrap {
@@ -36,7 +37,7 @@ implements IDomainBootstrap {
 	}
 	
 	private boolean register(Class<?> javaClass) {
-		return RuntimeDomain.lookupAny(javaClass) != null;
+		return Domain.lookupAny(javaClass) != null;
 	}
 
 

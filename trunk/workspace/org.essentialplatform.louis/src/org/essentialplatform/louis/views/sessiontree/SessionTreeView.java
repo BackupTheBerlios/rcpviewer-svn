@@ -20,7 +20,7 @@ import org.essentialplatform.louis.jobs.OpenDomainObjectJob;
 import org.essentialplatform.louis.jobs.SearchJob;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISessionManager;
@@ -93,8 +93,8 @@ public class SessionTreeView extends ViewPart {
 				// can only be one item
 				Object selected 
 					= ((StructuredSelection)event.getSelection()).getFirstElement();
-				if ( selected instanceof IRuntimeDomainClass ) {
-					new NewDomainObjectJob( (IRuntimeDomainClass)selected ).schedule();
+				if ( selected instanceof IDomainClass ) {
+					new NewDomainObjectJob( (IDomainClass)selected ).schedule();
 				}
 				else if ( selected instanceof IDomainObject ) {
 					new OpenDomainObjectJob( (IDomainObject)selected ).schedule();
@@ -156,8 +156,8 @@ public class SessionTreeView extends ViewPart {
 		if ( selection.isEmpty() ) return;
 		// single-selection mode
 		Object selected = selection.getFirstElement();
-		if ( selected instanceof IRuntimeDomainClass ) {
-			IRuntimeDomainClass clazz = (IRuntimeDomainClass)selected;
+		if ( selected instanceof IDomainClass ) {
+			IDomainClass clazz = (IDomainClass)selected;
 			mgr.add( new JobAction( new NewDomainObjectJob( clazz ) ) );
 			mgr.add( new JobAction( new SearchJob( clazz ) ) );
 		}

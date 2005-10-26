@@ -40,7 +40,7 @@ public interface IDeploymentSpecifics {
 	 * @param domainClassIdentifier
 	 * @return
 	 */
-	<T> IDomainClass<T> lookupAny(Class<T> domainClassIdentifier);
+	<T> IDomainClass lookupAny(Class<T> domainClassIdentifier);
 	void resetAll();
 
 }

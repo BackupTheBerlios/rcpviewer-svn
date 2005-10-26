@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
 public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
@@ -24,10 +24,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanRemoveFromCollection() {
-		IRuntimeDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>) lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass) lookupAny(Employee.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 		
@@ -51,10 +51,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	 *
 	 */
 	public void testGetCollection() {
-		IRuntimeDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass)lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.create(departmentDomainClass);
@@ -73,20 +73,20 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testGetReferencedClassForCollection() {
-		IDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		IDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass)lookupAny(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
 		assertSame(employeeDomainClass, departmentDomainClass.getReference(employeesCollection).getReferencedClass());
 	}
 
 	public void testListenersNotifiedWhenAddToCollection() {
-		IRuntimeDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass)lookupAny(Employee.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
@@ -109,10 +109,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testListenersNotifiedWhenRemoveFromCollection() {
-		IRuntimeDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass)lookupAny(Employee.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
@@ -140,10 +140,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanAddToCollection() {
-		IRuntimeDomainClass<Department> departmentDomainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
-		IRuntimeDomainClass<Employee> employeeDomainClass = 
-			(IRuntimeDomainClass<Employee>)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = 
+			(IDomainClass)lookupAny(Department.class);
+		IDomainClass employeeDomainClass = 
+			(IDomainClass)lookupAny(Employee.class);
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 

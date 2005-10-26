@@ -7,7 +7,7 @@ import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
@@ -70,7 +70,7 @@ public class Account {
      * 
      * @return
      */
-    @Order(1)
+    @RelativeOrder(1)
 	@MaxLengthOf(10)
     @DescribedAs("User ID that the customer uses to access their account.")
     public String getUserId() {
@@ -105,7 +105,7 @@ public class Account {
      * </ul>
      * </i>
      */
-    @Order(2)
+    @RelativeOrder(2)
 	@MaxLengthOf(10)
     @DescribedAs("Password that the customer must supply to access their account.")
     public String getPassword() {

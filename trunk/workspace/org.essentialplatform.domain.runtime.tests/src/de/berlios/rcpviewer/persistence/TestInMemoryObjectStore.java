@@ -4,10 +4,11 @@ import junit.framework.TestCase;
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.ISession;
@@ -29,7 +30,7 @@ public class TestInMemoryObjectStore extends TestCase {
 	private final IDomainBuilder domainBuilder = null;
 	private final IDeploymentSpecifics domainSpecifics = new RuntimeDomainSpecifics(); 
 
-	protected RuntimeDomain domain;
+	protected Domain domain;
 	protected SessionManager sessionManager;
 	protected ISession session;
 	protected InMemoryObjectStore objectStore;
@@ -39,7 +40,7 @@ public class TestInMemoryObjectStore extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		sessionManager = SessionManager.instance();
-		domain = RuntimeDomain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
+		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
 		session = sessionManager.createSession(domain, objectStore);
 		transactionManager = TransactionManager.instance();
@@ -62,7 +63,7 @@ public class TestInMemoryObjectStore extends TestCase {
 		return domainSpecifics.getDomainInstance(domainName);
 	}
 
-	protected <T> IDomainClass<T> lookupAny(Class<T> domainClassIdentifier) {
+	protected <T> IDomainClass lookupAny(Class<T> domainClassIdentifier) {
 		return domainSpecifics.lookupAny(domainClassIdentifier);
 	}
 	

@@ -17,7 +17,7 @@ public abstract class TestDomainClassAttributesCardinality extends AbstractTestC
 		super(domainSpecifics, domainAnalyzer);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}

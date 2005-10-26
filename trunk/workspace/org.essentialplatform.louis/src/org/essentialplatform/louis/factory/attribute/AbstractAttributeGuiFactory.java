@@ -36,7 +36,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 	
 	/**
 	 * Default description - blank String
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return ""; //$NON-NLS-1$

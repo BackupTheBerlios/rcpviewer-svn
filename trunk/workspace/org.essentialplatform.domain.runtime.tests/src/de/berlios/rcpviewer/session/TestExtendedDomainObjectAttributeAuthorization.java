@@ -5,7 +5,9 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomain;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeDomainBinding;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
@@ -19,8 +21,8 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 	}
 
 	public void testCanSetAttributeIfDefaultAuthorizationManagerConfigured() {
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
@@ -47,11 +49,12 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		IAuthorizationManager authorizationManager = 
 			(IAuthorizationManager)control.getMock();
 		
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getRuntimeDomainInstance().setAuthorizationManager(authorizationManager);
-		getDomainInstance().done();
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
+		IDomain domain = getDomainInstance();
+		domain.addBuilder(getDomainBuilder());
+		((RuntimeDomainBinding)domain.getBinding()).setAuthorizationManager(authorizationManager);
+		domain.done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
@@ -81,11 +84,12 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		IAuthorizationManager authorizationManager = 
 			(IAuthorizationManager)control.getMock();
 		
-		IRuntimeDomainClass<OrderConstrained> domainClass = 
-			(IRuntimeDomainClass<OrderConstrained>)lookupAny(OrderConstrained.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getRuntimeDomainInstance().setAuthorizationManager(authorizationManager);
-		getDomainInstance().done();
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(OrderConstrained.class);
+		IDomain domain = getDomainInstance(); 
+		domain.addBuilder(getDomainBuilder());
+		((RuntimeDomainBinding)domain.getBinding()).setAuthorizationManager(authorizationManager);
+		domain.done();
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);

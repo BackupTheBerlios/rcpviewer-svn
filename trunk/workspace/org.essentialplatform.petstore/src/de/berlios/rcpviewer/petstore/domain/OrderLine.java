@@ -10,7 +10,7 @@ import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Invisible;
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
 import de.berlios.rcpviewer.progmodel.standard.Derived;
@@ -195,7 +195,7 @@ public class OrderLine  {
      * </ul>
      * </i>
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("The item to which this order line relates (eg a male koi)")
     public StockItem getItem() {
         return _item;
@@ -212,7 +212,7 @@ public class OrderLine  {
      * 
      * @return
      */
-    @Order(2)
+    @RelativeOrder(2)
     @DescribedAs("The number of this item required (eg 3 male koi)")
     public int getQuantity() {
         return _quantity;
@@ -254,7 +254,7 @@ public class OrderLine  {
      * 
      * @return
      */
-    @Order(3)
+    @RelativeOrder(3)
     @DescribedAs("The price of a single item.  The overall cost of the order line item is derived from this and the quantity.")
     public BigDecimal getUnitPrice() {
         return _unitPrice;
@@ -281,7 +281,7 @@ public class OrderLine  {
      * </i>
      * @return
      */
-    @Order(4)
+    @RelativeOrder(4)
     @Derived
     @DescribedAs("The cost of this line item (quantity x unit price).")
     public BigDecimal getSubTotal() {

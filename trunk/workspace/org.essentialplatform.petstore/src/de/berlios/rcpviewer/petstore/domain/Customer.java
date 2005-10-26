@@ -7,7 +7,7 @@ import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Lookup;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
@@ -75,7 +75,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Unique identifier for this customer, allocated by the Petstore")
     @MaxLengthOf(10)
     public String getUserId() {
@@ -106,7 +106,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(2)
+    @RelativeOrder(2)
     public Account getAccount() {
         return _account;
     }
@@ -136,7 +136,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(3)
+    @RelativeOrder(3)
     @MaxLengthOf(50)
     @DescribedAs("Given (or first) name")
     public String getFirstname() {
@@ -164,7 +164,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(4)
+    @RelativeOrder(4)
     @MaxLengthOf(50)
     @DescribedAs("Family (or last) name")
     public String getLastname() {
@@ -192,7 +192,7 @@ public class Customer {
      * 
      * @return
      */
-    @Order(5)
+    @RelativeOrder(5)
     @BusinessKey(name="email")
     @MaxLengthOf(60)
     public String getEmail() { 
@@ -232,7 +232,7 @@ public class Customer {
      * </ul>
      * </i>
 	 */
-    @Order(6)
+    @RelativeOrder(6)
     @DescribedAs("The preferred language for this customer")
     public Language getLanguage() {
         return _language;
@@ -256,7 +256,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(7)
+    @RelativeOrder(7)
     @MaxLengthOf(10)
     @Optional
     @DescribedAs("A telephone number to contact this customer.")
@@ -300,7 +300,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(8)
+    @RelativeOrder(8)
     @ContainerOf
     public Address getAddress() {
         return _address;
@@ -342,7 +342,7 @@ public class Customer {
      * </ul>
      * </i>
      */
-    @Order(9)
+    @RelativeOrder(9)
     @ContainerOf
     public CreditCard getCreditCard() {
         return _creditCard;
@@ -372,7 +372,7 @@ public class Customer {
      * </i>
      * 
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Creates a new order for this Customer.  Initially the order will have no order lines")
     public CustomerOrder placeOrder() {
     	CustomerOrder order = 

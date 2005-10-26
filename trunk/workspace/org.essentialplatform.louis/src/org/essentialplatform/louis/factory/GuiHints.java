@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.widgets.Composite;
 import org.essentialplatform.louis.util.FontUtil;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Experiment...
@@ -32,7 +32,7 @@ public class GuiHints {
 	
 	public GuiHints( 
 			int style,
-			IRuntimeDomainClass<?> dClass, 
+			IDomainClass dClass, 
 			Composite parent ) {
 		if ( style < 1 ) throw new IllegalArgumentException();
 		if ( dClass == null ) throw new IllegalArgumentException();

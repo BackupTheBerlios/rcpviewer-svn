@@ -5,7 +5,7 @@ import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Lookup;
 import de.berlios.rcpviewer.progmodel.extended.Mask;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
@@ -74,7 +74,7 @@ public class Country {
 	 * 
 	 * @return
 	 */
-	@Order(1)
+	@RelativeOrder(1)
 	@MaxLengthOf(2)
 	@DescribedAs("Two letter code for a country, eg US, GB or DE")
 	public String getIsoA2Code() {
@@ -97,7 +97,7 @@ public class Country {
 	 * 
 	 * @return
 	 */
-	@Order(2)
+	@RelativeOrder(2)
 	@MaxLengthOf(2)
 	@DescribedAs("Three letter code for a country, eg USA, GBR or DEU")
 	public String getIsoA3Code() {
@@ -124,7 +124,7 @@ public class Country {
 	 * 
 	 * @return
 	 */
-	@Order(3)
+	@RelativeOrder(3)
 	@Mask("000")
 	@DescribedAs("Three digit Identifies a physical territory")
 	public String getIsoNumber() {
@@ -149,7 +149,7 @@ public class Country {
      * </ul>
      * </i>
 	 */
-	@Order(4)
+	@RelativeOrder(4)
 	@MaxLengthOf(50)
 	@DescribedAs("Name of country or (sometimes) geographically separate territories.")
 	public String getName() {
@@ -174,7 +174,7 @@ public class Country {
      * </ul>
      * </i>
 	 */
-	@Order(5)
+	@RelativeOrder(5)
 	@DescribedAs("Whether this country is on ISO's withdrawn list.")
 	public boolean isWithdrawn() {
 		return _withdrawn;

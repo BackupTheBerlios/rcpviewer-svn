@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
 public class TestSession extends AbstractRuntimeTestCase  {
@@ -26,8 +26,8 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * The returned object will be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -40,8 +40,8 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	}
 
 	public void testDomainObjectSessionIdTakenFromManagingSession() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			(IDomainObject<Department>)session.create(domainClass);
@@ -57,8 +57,8 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * The returned object will be attached to any session.
 	 */
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		IDomainObject<Department> domainObject = 
@@ -72,8 +72,8 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * Can create a domain object through the session. 
 	 */
 	public void testDomainObjectMarkedAsPersistentIfNotTransientOnly() {
-		IRuntimeDomainClass<Department> domainClass = 
-			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+		IDomainClass domainClass = 
+			(IDomainClass)lookupAny(Department.class);
 		domain.addBuilder(new ExtendedProgModelDomainBuilder());
 		domain.done();
 
@@ -87,8 +87,8 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * TODO: need the TransientOnly annotation in the ExtendedDomainClass 
 	 */
 	public void incompletetestDomainObjectMarkedAsTransientIfTransientOnly() {
-//		IRuntimeDomainClass<DepartmentTransientOnly> domainClass = 
-//			(IRuntimeDomainClass<DepartmentTransientOnly>)lookupAny(DepartmentTransientOnly.class);
+//		IDomainClass domainClass = 
+//			(IDomainClass)lookupAny(DepartmentTransientOnly.class);
 //		domain.addBuilder(new ExtendedProgModelDomainBuilder());
 //		domain.done();
 //
@@ -101,8 +101,8 @@ public class TestSession extends AbstractRuntimeTestCase  {
 
 	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	public void incompletetestCanRetrieveOncePersisted() {
-//		IRuntimeDomainClass<Department> domainClass = 
-//			(IRuntimeDomainClass<Department>)lookupAny(Department.class);
+//		IDomainClass domainClass = 
+//			(IDomainClass)lookupAny(Department.class);
 //
 //		IDomainObject<Department> domainObject = 
 //			(IDomainObject<Department>)session.create(domainClass);

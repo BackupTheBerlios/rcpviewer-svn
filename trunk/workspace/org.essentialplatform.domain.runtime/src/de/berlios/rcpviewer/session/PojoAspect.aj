@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EOperation;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.progmodel.standard.DomainObject;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
 import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
@@ -47,7 +47,7 @@ public abstract aspect PojoAspect {
 		return _domainObject;
 //		InDomain inDomain = this.getClass().getAnnotation(InDomain.class);
 //		String domainName = inDomain.value();
-//		RuntimeDomain domain = RuntimeDomain.instance(domainName);
+//		AbstractDomain domain = AbstractDomain.instance(domainName);
 //		SessionManager sessionManager = SessionManager.instance(); 
 //		for(ISession session: sessionManager.getAllSessions()) {
 //			if (domain != session.getDomain()) {
@@ -483,6 +483,9 @@ public abstract aspect PojoAspect {
 	 */
 	protected IDomainObject.IObjectAttribute getAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
 		EAttribute eAttribute = getEAttributeFor(domainObject, joinPointStaticPart);
+		if (eAttribute == null) {
+			return null;
+		}
 		IDomainObject.IObjectAttribute attribute = domainObject.getAttribute(eAttribute);
 		return attribute;
 	}

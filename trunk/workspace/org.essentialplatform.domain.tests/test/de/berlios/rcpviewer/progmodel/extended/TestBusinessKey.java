@@ -22,7 +22,7 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -37,11 +37,7 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		Map<String, List<EAttribute>> businessKeys = extendedDomainClass.businessKeys();
+		Map<String, List<EAttribute>> businessKeys = domainClass.businessKeys();
 		assertEquals(2, businessKeys.size());
 		
 		assertTrue(businessKeys.containsKey("name"));
@@ -64,13 +60,10 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute lastName = domainClass.getEAttributeNamed("lastName");
-		assertFalse(extendedDomainClass.isMandatory(lastName));
-		assertTrue(extendedDomainClass.isOptional(lastName));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("lastName"));
+		assertFalse(attrib.isMandatory());
+		assertTrue(attrib.isOptional());
 	}
 	
 	public void testDomainClassWithMandatoryParameterToMethod() {
@@ -79,13 +72,10 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation placeOrder = domainClass.getEOperationNamed("placeOrder");
-		assertTrue(extendedDomainClass.isMandatory(placeOrder, 0));
-		assertFalse(extendedDomainClass.isOptional(placeOrder, 0));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("placeOrder"));
+		assertTrue(op.isMandatory(0));
+		assertFalse(op.isOptional(0));
 	}
 
 	
@@ -95,13 +85,10 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EOperation placeOrder = domainClass.getEOperationNamed("placeOrder");
-		assertFalse(extendedDomainClass.isMandatory(placeOrder, 1));
-		assertTrue(extendedDomainClass.isOptional(placeOrder, 1));
+		IDomainClass.IOperation op = 
+			domainClass.getOperation(domainClass.getEOperationNamed("placeOrder"));
+		assertFalse(op.isMandatory(1));
+		assertTrue(op.isOptional(1));
 	}
 
 }

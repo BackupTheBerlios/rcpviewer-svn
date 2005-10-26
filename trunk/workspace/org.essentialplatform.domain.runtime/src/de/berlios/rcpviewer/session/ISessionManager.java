@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import java.util.Collection;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
@@ -14,7 +14,7 @@ import de.berlios.rcpviewer.persistence.IObjectStore;
  * <p>
  * Typically there will be precisely one {@link ISessionManager}, one
  * {@link ISessionFactory} and one {@link ISession}.  The 
- * {@link ISessionFactory} refers to a specific {@link RuntimeDomain} and a specific
+ * {@link ISessionFactory} refers to a specific {@link Domain} and a specific
  * (compatible) {@link IObjectStore} and passes these onto the {@link ISession}
  * that it creates.  The {@link ISession}'s identifier is also passed to it by 
  * the @link ISessionFactory}, but the factory obtains the identifier from
@@ -24,15 +24,15 @@ import de.berlios.rcpviewer.persistence.IObjectStore;
  * However, the design of a manager, a factory and sessions allows for more 
  * involved setups.  For example, we could have two {@link ISession}s built
  * from the same {@link ISessionFactory} (therefore relating to the same
- * {@link RuntimeDomain}), but with different {@link IObjectStore}s.  The  
+ * {@link Domain}), but with different {@link IObjectStore}s.  The  
  * {@link IDomainObject}s of each {@link ISession} would be distinct (eg a
  * development vs a production environment, or London vs Hong Kong).
  * 
  * <p>
  * Alternatively, there might be two {@link ISessionFactory}s, each configured
- * with a different {@link RuntimeDomain}.  Each would be used to create instances of
+ * with a different {@link Domain}.  Each would be used to create instances of
  * {@link IDomainObject}s referring to {@link IDomainClass}es of their
- * corresponding {@link RuntimeDomain}s.  For example, one domain might be the 
+ * corresponding {@link Domain}s.  For example, one domain might be the 
  * <i>default</i>  domain (holding classes modelling an order management
  * system, for example), and one domain might be an <i>email</i> domain 
  * (holding classes that represent emails and contacts), with an 

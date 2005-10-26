@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 
 /**
  * Static factory methods
@@ -60,7 +60,7 @@ public class CellEditorFactory {
 			editor = new TextCellEditor();
 		}
 		else {
-			IDomainClass domainClass = RuntimeDomain.instance().lookupNoRegister( clazz );
+			IDomainClass domainClass = Domain.instance().lookupNoRegister( clazz );
 			assert domainClass != null;
 			editor = new DomainObjectCellEditor( domainClass );
 		}

@@ -21,7 +21,7 @@ public abstract class TestImmutableOncePersisted extends AbstractTestCase {
 		super(domainSpecifics, domainBuilder);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -36,12 +36,9 @@ public abstract class TestImmutableOncePersisted extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute email = domainClass.getEAttributeNamed("email");
-		assertTrue(extendedDomainClass.isImmutableOncePersisted(email));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("email"));
+		assertTrue(attrib.isImmutableOncePersisted());
 	}
 
 	
@@ -51,12 +48,9 @@ public abstract class TestImmutableOncePersisted extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IExtendedDomainClass<?> extendedDomainClass =
-			domainClass.getAdapter(IExtendedDomainClass.class);
-		assertNotNull(extendedDomainClass);
-		
-		EAttribute firstName = domainClass.getEAttributeNamed("firstName");
-		assertFalse(extendedDomainClass.isImmutableOncePersisted(firstName));
+		IDomainClass.IAttribute attrib = 
+			domainClass.getAttribute(domainClass.getEAttributeNamed("firstName"));
+		assertFalse(attrib.isImmutableOncePersisted());
 	}
 
 }

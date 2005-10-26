@@ -15,16 +15,19 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.DomainClass;
 import de.berlios.rcpviewer.domain.Emf;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.LinkSemanticsType;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.DomainClass.OppRefState;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
-import de.berlios.rcpviewer.progmodel.standard.RuntimeDomainClass.OppRefState;
+
 
 /**
  * Builds standard domain model.
@@ -57,8 +60,8 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * is called as each {@link IDomainClass} is registered, rather than at the
 	 * end of registration via {@link de.berlios.rcpviewer.domain.IDomain#done()}.
 	 */
-	public <V> void build(IDomainClass<V> domainClass) {
-		init((RuntimeDomainClass)domainClass);
+	public void build(IDomainClass domainClass) {
+		init((DomainClass)domainClass);
 	}
 
 	/**
@@ -70,7 +73,7 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * {@link StandardProgModelDomainBuilder#done}, delegating back to 
 	 * {@link #wireUpOppositeReferences()}.
 	 */
-	public <T> void init(RuntimeDomainClass<T> runtimeDomainClass) {
+	public void init(DomainClass runtimeDomainClass) {
 		identifyClassSemantics(runtimeDomainClass);
 		identifyAccessors(runtimeDomainClass);
 		identifyMutators(runtimeDomainClass);
@@ -88,15 +91,18 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * 
 	 * <p>
 	 * TODO: should also identify class hierarchy
+	 * 
+	 * JAVA5_FIXME: downcasts for getAnnotation should not be needed...
 	 */
-	private <T> void identifyClassSemantics(RuntimeDomainClass<T> runtimeDomainClass) {
-		Class<T> javaClass = runtimeDomainClass.getJavaClass();
-		EClass eClass = runtimeDomainClass.getEClass();
-		InDomain domainAnnotation = javaClass.getAnnotation(InDomain.class);
+	private void identifyClassSemantics(DomainClass runtimeDomainClass) {
+		RuntimeClassBinding binding = (RuntimeClassBinding)runtimeDomainClass.getBinding();
 
-		serializer.setNamed(eClass, javaClass.getAnnotation(Named.class));
-		serializer.setDescribedAs(eClass, javaClass.getAnnotation(DescribedAs.class));
-		serializer.setImmutable(eClass, javaClass.getAnnotation(Immutable.class));
+		EClass eClass = runtimeDomainClass.getEClass();
+		InDomain domainAnnotation = (InDomain)binding.getAnnotation(InDomain.class);
+
+		serializer.setNamed(eClass, (Named)binding.getAnnotation(Named.class));
+		serializer.setDescribedAs(eClass, (DescribedAs)binding.getAnnotation(DescribedAs.class));
+		serializer.setImmutable(eClass, (Immutable)binding.getAnnotation(Immutable.class));
 	}
 
 	/**
@@ -111,9 +117,11 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * @param methods
 	 * @param attributesByName
 	 */
-	public void identifyAccessors(RuntimeDomainClass<?> runtimeDomainClass) {
+	public void identifyAccessors(DomainClass runtimeDomainClass) {
 		
-		Method[] methods = runtimeDomainClass.getJavaClass().getMethods();
+		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		
+		Method[] methods = javaClass.getMethods();
 		// search for accessors of value types
 		// initially all attributes start off read-only
 		for(int i=0; i<methods.length; i++) {
@@ -185,9 +193,10 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * this is not symmetric with {@link #identifyOperations()}.
 	 * 
 	 */
-	public void identifyMutators(RuntimeDomainClass<?> runtimeDomainClass) {
+	public void identifyMutators(DomainClass runtimeDomainClass) {
 
-		Method[] methods = runtimeDomainClass.getJavaClass().getMethods();
+		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Method[] methods = javaClass.getMethods();
 
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
@@ -221,9 +230,9 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	/**
 	 *  
 	 */
-	public void identifyUnSettableAttributes(RuntimeDomainClass<?> runtimeDomainClass) {
-	
-		Method[] methods = runtimeDomainClass.getJavaClass().getMethods();
+	public void identifyUnSettableAttributes(DomainClass runtimeDomainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;
 		Method unsetMethod = null;
 		for(EAttribute eAttribute: runtimeDomainClass.attributes()) {
@@ -252,9 +261,9 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 		}
 	}
 	
-	public void identifyReferences(RuntimeDomainClass<?> runtimeDomainClass) {
-
-		Method[] methods = runtimeDomainClass.getJavaClass().getMethods();
+	public void identifyReferences(DomainClass runtimeDomainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Method[] methods = javaClass.getMethods();
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
 
@@ -265,7 +274,7 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 			LinkSemanticsType linkSemanticsType = null;
 
 			Class<?> referencedJavaClass = methods[i].getReturnType();
-			IDomainClass<?> referencedDomainClass = null;
+			IDomainClass referencedDomainClass = null;
 			boolean couldBeCollection = true;
 			TypeOf associates = null;
 
@@ -353,8 +362,9 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 
 	
 	
-	public void identifyAssociatorsAndDissociators(RuntimeDomainClass<?> runtimeDomainClass) {
-		Method[] methods = runtimeDomainClass.getJavaClass().getMethods();
+	public void identifyAssociatorsAndDissociators(DomainClass runtimeDomainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Method[] methods = javaClass.getMethods();
 		for(EReference eReference: runtimeDomainClass.references()) {
 			Method associatorMethod = null;
 			Method dissociatorMethod = null;
@@ -390,8 +400,7 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 
-	public void identifyOppositeReferences(RuntimeDomainClass<?> runtimeDomainClass) {
-
+	public void identifyOppositeReferences(DomainClass runtimeDomainClass) {
 		new OppositeReferencesIdentifier(runtimeDomainClass).identify();
 	}
 
@@ -409,8 +418,9 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * TODO: EMF support lower and upper bounds, also ordered and unique?  
 	 * not yet exposing them (what would they mean?)
 	 */
-	public void identifyOperations(RuntimeDomainClass<?> runtimeDomainClass) {
-		Method[] methods = runtimeDomainClass.getJavaClass().getMethods();
+	public void identifyOperations(DomainClass runtimeDomainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Method[] methods = javaClass.getMethods();
 
 		eachMethod: 
 		for(int i=0; i<methods.length; i++) {
@@ -457,7 +467,7 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 				EDataType returnDataType = getEDataTypeFor(returnType);
 				eOperation.setEType(returnDataType);
 			} else if (returnsReference) {
-				IDomainClass<?> returnDomainClass = runtimeDomainClass.getDomain().lookup(returnType);
+				IDomainClass returnDomainClass = runtimeDomainClass.getDomain().lookup(returnType);
 				eOperation.setEType(returnDomainClass.getEClass());
 			} else {
 				// do nothing; EMF does not apparently have a built-in classifier for Void 
@@ -618,7 +628,7 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 		}
 		String domainName = 
 			getStandardProgModelRules().getValueTypeDomainName(dataType);
-		IDomain domain = RuntimeDomain.instance(domainName);
+		IDomain domain = Domain.instance(domainName);
 					
 		return emf.getEDataTypeFor(dataType, domain.getResourceSet());
 	}

@@ -24,6 +24,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 
 
@@ -108,6 +109,7 @@ public class LouisPlugin extends AbstractUIPlugin {
 	 */
 	public LouisPlugin() {
 		super();
+		new RuntimeDeployment();  // populates Deployment singleton.
 		__plugin = this;
 	}
 	

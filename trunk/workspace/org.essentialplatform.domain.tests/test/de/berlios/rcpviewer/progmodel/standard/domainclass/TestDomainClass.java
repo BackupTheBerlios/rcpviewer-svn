@@ -4,9 +4,9 @@ import org.eclipse.emf.ecore.EPackage;
 
 import de.berlios.rcpviewer.AbstractTestCase;
 import de.berlios.rcpviewer.IDeploymentSpecifics;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
 import de.berlios.rcpviewer.progmodel.standard.CustomerExplicitlyInDefaultDomain;
 import de.berlios.rcpviewer.progmodel.standard.CustomerImplicitlyInDefaultDomain;
 
@@ -22,7 +22,7 @@ public abstract class TestDomainClass extends AbstractTestCase {
 		super(domainSpecifics, domainAnalyzer);
 	}
 
-	private IDomainClass<?> domainClass;
+	private IDomainClass domainClass;
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
@@ -46,7 +46,7 @@ public abstract class TestDomainClass extends AbstractTestCase {
 	}
 
 	public void testGetDomainClassFromEClass() {
-		IDomainClass<Department> domainClass = lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		EClass eClass = domainClass.getEClass();
 		IDomainClass reverseDomainClass = getDomainInstance().domainClassFor(eClass);
 		assertNotNull(reverseDomainClass);
@@ -55,7 +55,7 @@ public abstract class TestDomainClass extends AbstractTestCase {
 	
 
 	public void testGetDomainFromDomainClassForImplicitDefaultDomain() {
-		IDomainClass<CustomerImplicitlyInDefaultDomain> domainClass = 
+		IDomainClass domainClass = 
 			lookupAny(CustomerImplicitlyInDefaultDomain.class);
 		
 		assertEquals("default", domainClass.getDomain().getName());
@@ -74,13 +74,13 @@ public abstract class TestDomainClass extends AbstractTestCase {
 	 *
 	 */
 	public void testGetDomainClassFromWrongDomainWillFindNothing() {
-		domainClass = RuntimeDomain.instance().lookup(Prospect.class);
+		domainClass = Domain.instance().lookup(Prospect.class);
 		
 		assertNull(domainClass);
 	}
 
 	public void testGetDomainFromDomainClassForExplicitCustomDomain() {
-		IDomainClass<Prospect> domainClass = 
+		IDomainClass domainClass = 
 			lookupAny(Prospect.class);
 		
 		assertEquals("marketing", domainClass.getDomain().getName());
@@ -88,10 +88,8 @@ public abstract class TestDomainClass extends AbstractTestCase {
 
 
 	public void testDomainsAreIndependent() {
-		IDomainClass<Customer> customerDomainClass = 
-			lookupAny(Customer.class);
-		IDomainClass<Prospect> prospectDomainClass = 
-			lookupAny(Prospect.class);
+		IDomainClass customerDomainClass = lookupAny(Customer.class);
+		IDomainClass prospectDomainClass = lookupAny(Prospect.class);
 		
 		assertEquals("marketing", prospectDomainClass.getDomain().getName());
 		assertEquals("default", customerDomainClass.getDomain().getName());

@@ -11,8 +11,8 @@ public class RcpViewerProgModelAdapterFactory<T> extends AbstractAdapterFactory<
 	public RcpViewerProgModelAdapterFactory(String url) {
 		super(url);
 	}
-	public <V> T createAdapter(IDomainClass<V> adaptedDomainClass) {
-		return (T)new RcpViewerDomainClass<V>(adaptedDomainClass);
+	public T createAdapter(IDomainClass adaptedDomainClass) {
+		return (T)new RcpViewerDomainClass(adaptedDomainClass);
 	}
 
 }

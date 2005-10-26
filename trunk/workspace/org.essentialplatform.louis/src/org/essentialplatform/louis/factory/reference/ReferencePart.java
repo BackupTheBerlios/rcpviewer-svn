@@ -17,7 +17,6 @@ import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
 import de.berlios.rcpviewer.session.IPojo;
-import de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference;
 
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 

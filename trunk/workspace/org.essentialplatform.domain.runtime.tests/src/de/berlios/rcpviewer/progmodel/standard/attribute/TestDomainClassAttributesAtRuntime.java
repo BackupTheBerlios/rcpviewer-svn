@@ -3,8 +3,9 @@ package de.berlios.rcpviewer.progmodel.standard.attribute;
 import org.eclipse.emf.ecore.EAttribute;
 
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.IDomainClass;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
 
 /**
  * Bind tests in {@link TestDomainClassAttributes} to the runtime environment.
@@ -19,12 +20,23 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 
 
 	
-	public void testCanHandleWriteOnlyAttributes() {
-		IRuntimeDomainClass<CustomerWithWriteOnlyAttribute> domainClass = 
-			RuntimeDomain.instance().lookupAny(CustomerWithWriteOnlyAttribute.class);
+	public void testDummy() {}
+	
+	/**
+	 * This test is now defunct since the RuntimeAttributeBinding which replaces
+	 * this functionality no longer exposes whether there is an accessor or a 
+	 * mutator (know-how-to instead of know-what). 
+	 */
+	public void incompletetestCanHandleWriteOnlyAttributes() {
+		IDomainClass domainClass = 
+			Domain.instance().lookupAny(CustomerWithWriteOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
+		// assertNotNull(domainClass.getAccessorOrMutatorFor(eAttribute));
 		
-		assertNotNull(domainClass.getAccessorOrMutatorFor(eAttribute));
+		
+		RuntimeAttributeBinding binding = (RuntimeAttributeBinding)domainClass.getAttribute(eAttribute).getBinding();
+		// we can't assert anything here really (except perhaps demonstrate 
+		// can invoke a mutator but no accessor)?
 		
 	}
 

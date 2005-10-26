@@ -15,7 +15,7 @@ import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.standard.ContainerOf;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
@@ -101,7 +101,7 @@ public class Product {
      * 
 	 * @return
 	 */
-	@Order(1)
+	@RelativeOrder(1)
     @BusinessKey(name="id")
 	@MinLengthOf(8)
 	@MaxLengthOf(10)
@@ -131,7 +131,7 @@ public class Product {
      * 
      * @return
      */
-    @Order(2)
+    @RelativeOrder(2)
     @BusinessKey(name="name")
     @FieldLengthOf(30)
     @MaxLengthOf(50)
@@ -159,7 +159,7 @@ public class Product {
      * 
      * @return
      */
-    @Order(3)
+    @RelativeOrder(3)
     @Optional
     @FieldLengthOf(50)
     @MaxLengthOf(255)
@@ -193,7 +193,7 @@ public class Product {
      * 
      * @return
      */
-    @Order(4)
+    @RelativeOrder(4)
     @ContainerOf
     @OppositeOf("products")
     @TypeOf(StockItem.class)
@@ -237,7 +237,7 @@ public class Product {
      * 
      * @return
      */
-    @Order(5)
+    @RelativeOrder(5)
     @ContainerOf()
     @OppositeOf("product")
     @TypeOf(StockItem.class)
@@ -281,7 +281,7 @@ public class Product {
      * 
      * @return
      */
-    @Order(1)
+    @RelativeOrder(1)
     @DescribedAs("Create a new item.  The item is not added to the product's set until it is persisted.")
     public StockItem newItem() {
     	

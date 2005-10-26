@@ -23,7 +23,7 @@ import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
 public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 
@@ -70,7 +70,7 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 		if( hints == null ) throw new IllegalArgumentException();
 		
 		// model data
-		IRuntimeDomainClass<?> collectionDomainType
+		IDomainClass collectionDomainType
 			= EmfUtil.getCollectionDomainType( model );
 		List<EAttribute> attributes
 			= EmfUtil.sort( collectionDomainType.attributes(), ANNOTATION );

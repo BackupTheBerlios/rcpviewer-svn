@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.essentialplatform.louis.LouisPlugin;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
@@ -20,13 +20,13 @@ import de.berlios.rcpviewer.session.ISessionManager;
  */
 public class NewDomainObjectJob extends AbstractUserJob {
 
-	private final IRuntimeDomainClass<?> _clazz;
+	private final IDomainClass _clazz;
 	
 	/**
 	 * Constructor requires the class to open.
 	 * @param clazz
 	 */
-	public NewDomainObjectJob( IRuntimeDomainClass<?> clazz ) {
+	public NewDomainObjectJob( IDomainClass clazz ) {
 		super( LouisPlugin.getResourceString( "NewDomainObjectJob.Name" ) ); //$NON-NLS-1$
 		if ( clazz == null ) throw new IllegalArgumentException();
 		this._clazz = clazz;

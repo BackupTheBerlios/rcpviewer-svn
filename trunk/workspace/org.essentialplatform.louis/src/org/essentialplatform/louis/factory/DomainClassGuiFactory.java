@@ -15,20 +15,20 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import de.berlios.rcpviewer.domain.IRuntimeDomainClass;
+import de.berlios.rcpviewer.domain.IDomainClass;
 
-public class DomainClassGuiFactory implements IGuiFactory<IRuntimeDomainClass<?>> {
+public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 	
 	/**
 	 * Returns <code>true</code> if model is an instance of 
-	 * <code>IRuntimeDomainClass</code>
+	 * <code>IDomainClass</code>
 	 * @param model
 	 * @param context
 	 * @return
 	 */
 	public boolean isApplicable(Object model, IGuiFactory context) {
 		if( model == null ) throw new IllegalArgumentException();
-		return ( model instanceof IRuntimeDomainClass<?> );
+		return ( model instanceof IDomainClass );
 	}
 	
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class DomainClassGuiFactory implements IGuiFactory<IRuntimeDomainClass<?>
 	 * @param hints
 	 */
 	public DomainClassPart createGui(
-			IRuntimeDomainClass<?> model, 
+			IDomainClass model, 
 			FormToolkit toolkit, 
 			Composite parent,
 			GuiHints hints) {

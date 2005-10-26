@@ -1,8 +1,8 @@
 package de.berlios.rcpviewer;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainBuilder;
-import de.berlios.rcpviewer.domain.runtime.IRuntimeDomain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
@@ -12,7 +12,7 @@ import de.berlios.rcpviewer.transaction.ITransactionManager;
 import de.berlios.rcpviewer.transaction.internal.TransactionManager;
 
 /**
- * Sets up a default {@link RuntimeDomain}, {@link SessionManager}, 
+ * Sets up a default {@link Domain}, {@link SessionManager}, 
  * {@link SessionFactory} (for this domain and with an 
  * {@link InMemoryObjectStore} and a {@link Session} for this.
  * 
@@ -29,7 +29,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		super(name, new RuntimeDomainSpecifics(), domainBuilder);
 	}
 	
-	protected RuntimeDomain domain;
+	protected Domain domain;
 	protected SessionManager sessionManager;
 	protected ISession session;
 	protected IObjectStore objectStore;
@@ -39,7 +39,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		sessionManager = SessionManager.instance();
-		domain = RuntimeDomain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
+		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
 		session = sessionManager.createSession(domain, objectStore);
 		transactionManager = TransactionManager.instance();
@@ -52,21 +52,11 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		session = null;
 		((InMemoryObjectStore)objectStore).reset();
 		objectStore = null;
-		RuntimeDomain.resetAll();
+		Domain.resetAll();
 		SessionManager.instance().reset();
 		transactionManager.reset();
 		transactionManager = null;
 		super.tearDown();
-	}
-	
-	/**
-	 * downcast {@link #getDomainInstance} to runtime.
-	 * 
-	 * TODO: fix covariance
-	 * @return
-	 */
-	protected IRuntimeDomain getRuntimeDomainInstance() {
-		return (IRuntimeDomain)getDomainInstance();
 	}
 
 

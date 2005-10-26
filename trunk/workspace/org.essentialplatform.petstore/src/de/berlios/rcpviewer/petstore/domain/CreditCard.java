@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.progmodel.extended.Invisible;
 import de.berlios.rcpviewer.progmodel.extended.Mask;
 import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.Order;
+import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
 
@@ -111,7 +111,7 @@ public class CreditCard {
      *      and annotations.
      * </i>
      */
-    @Order(1)
+    @RelativeOrder(1)
     @MaxLengthOf(10)
     @ImmutableOncePersisted
     @DescribedAs("Unique identifier for this card (for this type of card).")
@@ -159,7 +159,7 @@ public class CreditCard {
      * 
      * @return
      */
-    @Order(2)
+    @RelativeOrder(2)
     @ImmutableOncePersisted
     @DescribedAs("The clearing organization that operates this type of credit card.")
     public Type getType() {
@@ -193,7 +193,7 @@ public class CreditCard {
      * </ul>
      * </i>
      */
-    @Order(3)
+    @RelativeOrder(3)
     @Mask("MM-yyyy")
     @DescribedAs("Expiry date, as written on this credit card")
     public String getExpiryDate() {

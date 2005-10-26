@@ -10,13 +10,13 @@ package de.berlios.rcpviewer.domain;
  * 
  * @author Dan Haywood
  */
-public interface IDomainClassAdapter<T> {
+public interface IDomainClassAdapter {
 	
 	/**
 	 * The {@link IDomainClass} that this is an adapter for.
 	 *  
 	 * @return
 	 */
-	IDomainClass<T> adapts();
+	IDomainClass adapts();
 	
 }
