@@ -14,8 +14,10 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public final class RuntimeStandardProgModelRules extends StandardProgModelRules {
+public final class EssentialProgModelStandardSemanticsRuntimeRules extends EssentialProgModelStandardSemanticsRules {
 
+	public EssentialProgModelStandardSemanticsRuntimeRules() {}
+	
 	// ATTRIBUTES: START
 	
 	/**
@@ -124,10 +126,6 @@ public final class RuntimeStandardProgModelRules extends StandardProgModelRules 
 	}
 
 	// ATTRIBUTES: END
-
-	// OPERATIONS: START
-
-	// OPERATIONS: END
 
 	// LINKS: START
 	
@@ -281,7 +279,6 @@ public final class RuntimeStandardProgModelRules extends StandardProgModelRules 
 		}
 		return false;
 	}
-
 
 }
 

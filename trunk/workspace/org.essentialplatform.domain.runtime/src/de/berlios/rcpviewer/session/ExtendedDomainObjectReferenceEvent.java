@@ -2,10 +2,6 @@ package de.berlios.rcpviewer.session;
 
 import java.util.EventObject;
 
-import org.eclipse.emf.ecore.EReference;
-
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 
 
@@ -27,7 +23,7 @@ public final class ExtendedDomainObjectReferenceEvent extends EventObject {
 	 * @param source
 	 */
 	public ExtendedDomainObjectReferenceEvent(
-			final ExtendedDomainObject.ExtendedReference source, //  
+			final IDomainObject.IObjectReference source, //  
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;
@@ -36,10 +32,10 @@ public final class ExtendedDomainObjectReferenceEvent extends EventObject {
 	/**
 	 * Type-safe accessor to the source of this event.
 	 * 
-	 * @return the extended attribute that raised this event.
+	 * @return the reference that raised this event.
 	 */
-	public IExtendedDomainObject.IExtendedAttribute getExtendedAttribute() {
-		return (IExtendedDomainObject.IExtendedAttribute)getSource();
+	public IDomainObject.IObjectReference getReference() {
+		return (IDomainObject.IObjectReference)getSource();
 	}
 
 

@@ -6,17 +6,16 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites.Constraint;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 
 public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
 	public TestExtendedDomainObjectAttribute() {
-		super(new ExtendedProgModelDomainBuilder());
+		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
 	}
 
 	public void testCanSetAttributeIfAccessorPrerequisitesAllow() {
@@ -27,13 +26,12 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
-
-		IExtendedDomainObject.IExtendedAttribute nameAttrib = edo.getAttribute(nameEAttribute);
-		IPrerequisites prerequisites = nameAttrib.accessorPrerequisitesFor();
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		
+		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 	}
 
@@ -45,16 +43,14 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 		
 		domainObject.getPojo().ship();
 		
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
 		
-		IExtendedDomainObject.IExtendedAttribute attrib = edo.getAttribute(nameEAttribute);
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
-		assertNotNull(edo.getExtendedRuntimeDomainClass().getAccessorPre(nameEAttribute));
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 		assertEquals("Cannot change quantity once shipped", prerequisites.getDescription());
 	}
@@ -67,16 +63,14 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 		
 		domainObject.getPojo().shipAndRestrict();
 		
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
 		
-		IExtendedDomainObject.IExtendedAttribute attrib = edo.getAttribute(nameEAttribute); 
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
-		assertNotNull(edo.getExtendedRuntimeDomainClass().getAccessorPre(nameEAttribute));
 		assertSame(IPrerequisites.Constraint.INVISIBLE, prerequisites.getConstraint());
 	}
 
@@ -90,16 +84,13 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
+		IDomainObject<?> domainObject = session.create(domainClass);
 		
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
-		
-		IExtendedDomainObject.IExtendedAttribute attrib = edo.getAttribute(nameEAttribute); 
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+
 		IPrerequisites prerequisites = attrib.mutatorPrerequisitesFor(new Integer(-1));
-		assertNotNull(edo.getExtendedRuntimeDomainClass().getMutatorPre(nameEAttribute));
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 	}
 
@@ -109,6 +100,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	 *
 	 */
 	public void testAttributePrerequisitesChangedViaExternalStateChanged() {
+		
 		IDomainClass pingDomainClass = 
 			(IDomainClass)lookupAny(Ping.class);
 		IDomainClass pongDomainClass = 
@@ -116,69 +108,65 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainObject<Ping> pingDomainObject = 
-			(IDomainObject<Ping>)session.recreate(pingDomainClass);
-		IDomainObject<Pong> pongDomainObject = 
-			(IDomainObject<Pong>)session.recreate(pongDomainClass);
+		IDomainObject<?> pingDomainObject = session.recreate(pingDomainClass);
+		IDomainObject<?> pongDomainObject = session.recreate(pongDomainClass);
 
-		Ping ping = pingDomainObject.getPojo();
-		Pong pong = pongDomainObject.getPojo();
+		Ping ping = (Ping)pingDomainObject.getPojo();
+		Pong pong = (Pong)pongDomainObject.getPojo();
 		ping.setPong(pong);
 
-		EAttribute pingVisibleIfEAttribute = pingDomainObject.getEAttributeNamed("visibleOnlyIfPongPositive");
-		EAttribute pingUsableIfEAttribute = pingDomainObject.getEAttributeNamed("usableOnlyIfPongPositive");
-		
-		IExtendedDomainObject<OrderConstrained> pingExtendedDomainObject = 
-			pingDomainObject.getAdapter(IExtendedDomainObject.class);
-		IExtendedDomainObject.IExtendedAttribute pingVisibleIfAttrib = 
-			pingExtendedDomainObject.getAttribute(pingVisibleIfEAttribute); 
-		IExtendedDomainObject.IExtendedAttribute pingUsableIfAttrib = 
-			pingExtendedDomainObject.getAttribute(pingUsableIfEAttribute);
-		
+		EAttribute pingVisibleEAttrib = pingDomainObject.getEAttributeNamed("visibleOnlyIfPongPositive");
+		IDomainClass.IAttribute pingVisibleClassAttrib = pingDomainClass.getAttribute(pingVisibleEAttrib);
+		IDomainObject.IObjectAttribute pingVisibleAttrib = pingDomainObject.getAttribute(pingVisibleEAttrib);
+
+		EAttribute pingUsableEAttrib = pingDomainObject.getEAttributeNamed("usableOnlyIfPongPositive");
+		IDomainClass.IAttribute pingUsableClassAttrib = pingDomainClass.getAttribute(pingUsableEAttrib);
+		IDomainObject.IObjectAttribute pingUsableAttrib = pingDomainObject.getAttribute(pingUsableEAttrib);
+
 		// should now be two observed features held by the session.
 		assertEquals(2, session.getObservedFeatures().size());
 		
-		IPrerequisites pingVisibleIfAttribPrereqs = pingVisibleIfAttrib.accessorPrerequisitesFor();
-		IPrerequisites pingUsableIfAttribPrereqs = pingUsableIfAttrib.accessorPrerequisitesFor();
-		MyExtendedDomainObjectAttributeListener pingVisibleIfAttribListener =
-			pingVisibleIfAttrib.addExtendedDomainObjectAttributeListener(new MyExtendedDomainObjectAttributeListener());
-		MyExtendedDomainObjectAttributeListener pingUsableIfAttribListener =
-			pingUsableIfAttrib.addExtendedDomainObjectAttributeListener(new MyExtendedDomainObjectAttributeListener());
+		IPrerequisites pingVisibleIfAttribPrereqs = pingVisibleAttrib.accessorPrerequisitesFor();
+		IPrerequisites pingUsableIfAttribPrereqs = pingUsableAttrib.accessorPrerequisitesFor();
+		MyDomainObjectAttributeListener pingVisibleIfAttribListener =
+			pingVisibleAttrib.addListener(new MyDomainObjectAttributeListener());
+		MyDomainObjectAttributeListener pingUsableIfAttribListener =
+			pingUsableAttrib.addListener(new MyDomainObjectAttributeListener());
 		
 		// our listeners should not yet have been called
-		assertNull(pingVisibleIfAttribListener.event);
-		assertNull(pingUsableIfAttribListener.event);
+		assertNull(pingVisibleIfAttribListener.extendedEvent);
+		assertNull(pingUsableIfAttribListener.extendedEvent);
 		
 		// set a number; we should be notified because the "attribute" doesn't know any better.
 		pong.setNumber(2);
-		assertNotNull(pingVisibleIfAttribListener.event);
-		assertNotNull(pingUsableIfAttribListener.event);
+		assertNotNull(pingVisibleIfAttribListener.extendedEvent);
+		assertNotNull(pingUsableIfAttribListener.extendedEvent);
 		assertSame(
 				Constraint.NONE, 
-				pingVisibleIfAttribListener.event.getNewPrerequisites().getConstraint()); // no constraint yet
+				pingVisibleIfAttribListener.extendedEvent.getNewPrerequisites().getConstraint()); // no constraint yet
 		assertSame(
 				Constraint.NONE, 
-				pingUsableIfAttribListener.event.getNewPrerequisites().getConstraint()); // no constraint yet
+				pingUsableIfAttribListener.extendedEvent.getNewPrerequisites().getConstraint()); // no constraint yet
 
 		// reset
-		pingVisibleIfAttribListener.event = null;
-		pingUsableIfAttribListener.event = null;
+		pingVisibleIfAttribListener.extendedEvent = null;
+		pingUsableIfAttribListener.extendedEvent = null;
 
 		// set to another +ve number; our listeners shouldn't be called
 		pong.setNumber(5);
-		assertNull(pingVisibleIfAttribListener.event);
-		assertNull(pingUsableIfAttribListener.event);
+		assertNull(pingVisibleIfAttribListener.extendedEvent);
+		assertNull(pingUsableIfAttribListener.extendedEvent);
 
 		// set to a -ve number; our listeners should now be called because the prereqs have changed
 		pong.setNumber(-5);
-		assertNotNull(pingVisibleIfAttribListener.event);
-		assertNotNull(pingUsableIfAttribListener.event);
+		assertNotNull(pingVisibleIfAttribListener.extendedEvent);
+		assertNotNull(pingUsableIfAttribListener.extendedEvent);
 		assertSame(
 				Constraint.INVISIBLE, 
-				pingVisibleIfAttribListener.event.getNewPrerequisites().getConstraint()); // now invisible
+				pingVisibleIfAttribListener.extendedEvent.getNewPrerequisites().getConstraint()); // now invisible
 		assertSame(
 				Constraint.UNUSABLE, 
-				pingUsableIfAttribListener.event.getNewPrerequisites().getConstraint()); // now invisible
+				pingUsableIfAttribListener.extendedEvent.getNewPrerequisites().getConstraint()); // now invisible
 	}
 
 }

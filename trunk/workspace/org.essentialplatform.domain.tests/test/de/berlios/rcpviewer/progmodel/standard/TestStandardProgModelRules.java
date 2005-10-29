@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class TestStandardProgModelRules extends TestCase {
 
-	private RuntimeStandardProgModelRules namingConventions;
+	private EssentialProgModelStandardSemanticsRuntimeRules namingConventions;
 	private Method departmentGetNameMethod;
 	private Method departmentNotAnAccessorMethod;
 	private Method departmentGetSupervisorMethod;
@@ -25,7 +25,7 @@ public class TestStandardProgModelRules extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		namingConventions = new RuntimeStandardProgModelRules();
+		namingConventions = new EssentialProgModelStandardSemanticsRuntimeRules();
 
 		departmentGetNameMethod = Department.class.getMethod("getName", new Class[]{});
 		departmentNotAnAccessorMethod = Department.class.getMethod("foo", new Class[]{});;

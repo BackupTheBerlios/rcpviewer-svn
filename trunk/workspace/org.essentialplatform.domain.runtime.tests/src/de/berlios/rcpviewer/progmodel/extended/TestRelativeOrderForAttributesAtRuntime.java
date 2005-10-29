@@ -12,7 +12,7 @@ import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 public class TestRelativeOrderForAttributesAtRuntime extends TestRelativeOrderForAttributes {
 
 	public TestRelativeOrderForAttributesAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), null);
 	}
 
 }

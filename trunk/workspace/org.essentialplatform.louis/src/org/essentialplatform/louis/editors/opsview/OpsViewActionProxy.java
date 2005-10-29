@@ -26,7 +26,7 @@ class OpsViewActionProxy extends RunOperationJob  {
 	 * Constructor takes the operation to wrap and the instance this applies to
 	 * @param op
 	 */
-	OpsViewActionProxy( IDomainObject obj, EOperation op ) {
+	<T> OpsViewActionProxy( IDomainObject<T> obj, EOperation op ) {
 		super( obj, op);
 	}
 	

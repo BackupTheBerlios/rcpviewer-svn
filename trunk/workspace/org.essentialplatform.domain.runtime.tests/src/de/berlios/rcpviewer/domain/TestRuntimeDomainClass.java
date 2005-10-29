@@ -4,13 +4,12 @@ import java.io.PrintWriter;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 import de.berlios.rcpviewer.session.IDomainObject;
 
 public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 
 	public TestRuntimeDomainClass() {
-		super(new ExtendedProgModelDomainBuilder());
+		super(null);
 	}
 
 	protected void setUp() throws Exception {

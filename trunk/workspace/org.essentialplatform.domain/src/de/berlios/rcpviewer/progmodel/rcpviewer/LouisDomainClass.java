@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 
 /**
  * Extension of {@link IDomainClass} that supports semantics of the
- * rcpviewer programming model.
+ * programming model for the <i>Loius</i> viewing mechanism.
  * 
  * <p>
  * Typical usage:
@@ -25,11 +25,11 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * @author Dan Haywood
  *
  */
-public final class RcpViewerDomainClass extends AbstractDomainClassAdapter {
+public final class LouisDomainClass extends AbstractDomainClassAdapter {
 
-	private final RcpViewerProgModelSemanticsEmfSerializer serializer = new RcpViewerProgModelSemanticsEmfSerializer();
+	private final LouisProgModelSemanticsEmfSerializer serializer = new LouisProgModelSemanticsEmfSerializer();
 
-	public RcpViewerDomainClass(IDomainClass adaptedDomainClass) {
+	public LouisDomainClass(IDomainClass adaptedDomainClass) {
 		super(adaptedDomainClass);
 	}
 

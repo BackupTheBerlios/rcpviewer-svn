@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 
@@ -36,6 +37,9 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 				if ( _viewer != null ) {
 					_viewer.update( event.getSource(), null );
 				}
+			}
+			public void attributePrerequisitesChanged(ExtendedDomainObjectAttributeEvent event) {
+				// does nowt
 			}
 		};
 	}

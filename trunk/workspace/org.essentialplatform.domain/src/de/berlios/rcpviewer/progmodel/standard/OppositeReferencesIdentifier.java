@@ -15,7 +15,7 @@ import de.berlios.rcpviewer.domain.DomainClass.OppRefState;
  */
 public class OppositeReferencesIdentifier {
 
-	private StandardProgModelSemanticsEmfSerializer serializer = new StandardProgModelSemanticsEmfSerializer();
+	private EssentialProgModelStandardSemanticsEmfSerializer serializer = new EssentialProgModelStandardSemanticsEmfSerializer();
 
 	private final DomainClass domainClass;
 	public OppositeReferencesIdentifier(DomainClass runtimeDomainClass) {

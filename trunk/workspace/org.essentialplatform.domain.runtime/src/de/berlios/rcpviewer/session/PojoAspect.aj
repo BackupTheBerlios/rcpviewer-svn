@@ -22,7 +22,6 @@ import de.berlios.rcpviewer.progmodel.standard.DomainObject;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 
 
@@ -539,66 +538,4 @@ public abstract aspect PojoAspect {
 	}
 
 	
-	/**
-	 * Looks up the {@link IExtendedDomainObject.IExtendedAttribute} that 
-	 * corresponds to the signature represented by the supplied 
-	 * {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 * 
-	 * @return attribute or null
-	 */
-	protected IExtendedDomainObject.IExtendedAttribute getExtendedAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		// TODO: the cast could be avoided if IDomainObject were declared instead as IDomainObject<?>.
-		// however, in AspectJ as of 20050816 this blows up the compiler
-		IExtendedDomainObject extendedDomainObject = 
-			(IExtendedDomainObject)domainObject.getAdapter(IExtendedDomainObject.class);
-		EAttribute eAttribute = getEAttributeFor(domainObject, joinPointStaticPart);
-		IExtendedDomainObject.IExtendedAttribute extendedAttribute = 
-			extendedDomainObject.getAttribute(eAttribute);
-		return extendedAttribute;
-	}
-
-
-	/**
-	 * Looks up the {@link IExtendedDomainObject.IExtendedReference} that 
-	 * corresponds to the signature represented by the supplied 
-	 * {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 * 
-	 * @return reference or null
-	 */
-	protected IExtendedDomainObject.IExtendedReference getExtendedReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		// TODO: the cast could be avoided if IDomainObject were declared instead as IDomainObject<?>.
-		// however, in AspectJ as of 20050816 this blows up the compiler
-		IExtendedDomainObject extendedDomainObject = 
-			(IExtendedDomainObject)domainObject.getAdapter(IExtendedDomainObject.class);
-		EReference eReference = getEReferenceFor(domainObject, joinPointStaticPart);
-		IExtendedDomainObject.IExtendedReference extendedReference = 
-			extendedDomainObject.getReference(eReference);
-		return extendedReference;
-	}
-
-
-	/**
-	 * Looks up the {@link IExtendedDomainObject.IExtendedOperation} that 
-	 * corresponds to the signature represented by the supplied 
-	 * {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected IExtendedDomainObject.IExtendedOperation getExtendedOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		// TODO: the cast could be avoided if IDomainObject were declared instead as IDomainObject<?>.
-		// however, in AspectJ as of 20050816 this blows up the compiler
-		IExtendedDomainObject extendedDomainObject = 
-			(IExtendedDomainObject)domainObject.getAdapter(IExtendedDomainObject.class);
-		EOperation eOperation = getEOperationFor(domainObject, joinPointStaticPart);
-		IExtendedDomainObject.IExtendedOperation extendedOperation = 
-			extendedDomainObject.getOperation(eOperation);
-		return extendedOperation;
-	}
 }

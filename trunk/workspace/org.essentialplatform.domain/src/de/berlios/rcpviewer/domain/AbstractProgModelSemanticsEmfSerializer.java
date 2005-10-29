@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.domain.EmfAnnotations;
 import de.berlios.rcpviewer.progmodel.extended.AssignmentType;
 import de.berlios.rcpviewer.progmodel.extended.Id;
 import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsConstants;
 
 /**
  * Serializes and deserializes semantics for a programming model

@@ -23,7 +23,7 @@ import de.berlios.rcpviewer.domain.EmfAnnotations;
 public final class AttributeComparator extends AbstractAttributeComparator {
 
 	public AttributeComparator() {
-		super(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
+		super(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
 	}
 
 }

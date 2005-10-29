@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
 
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 
 /**
  * Binds the tests defined in {@link TestDomainClassImmutable} to the runtime 
@@ -13,7 +12,7 @@ import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 public class TestDomainClassInstantiableAtRuntime extends TestDomainClassInstantiable {
 
 	public TestDomainClassInstantiableAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), null);
 	}
 
 }

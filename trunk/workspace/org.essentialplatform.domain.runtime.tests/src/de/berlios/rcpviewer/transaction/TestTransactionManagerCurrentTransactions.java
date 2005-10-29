@@ -11,7 +11,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
@@ -35,7 +35,7 @@ public class TestTransactionManagerCurrentTransactions extends AbstractTransacti
 	public void testCommitTransactionClearsCurrentTransaction() {
 		IDomainClass domainClass = 
 			(IDomainClass)Domain.lookupAny(Calculator.class);
-		domain.addBuilder(new ExtendedProgModelDomainBuilder());
+		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
 		domain.done();
 		
 		IDomainObject<Calculator> domainObject = 

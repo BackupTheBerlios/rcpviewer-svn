@@ -11,7 +11,7 @@ import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.ProgModelConstants;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.ISession;
@@ -67,7 +67,7 @@ public abstract class AbstractTransactionManagerTestCase extends AbstractRuntime
 			(IDomainClass)Domain.lookupAny(EmailAddress.class);
 		orderDomainClass = 
 			(IDomainClass)Domain.lookupAny(Order.class);
-		domain.addBuilder(new ExtendedProgModelDomainBuilder());
+		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
 		domain.done();
 		
 		if (_setupObjects) {

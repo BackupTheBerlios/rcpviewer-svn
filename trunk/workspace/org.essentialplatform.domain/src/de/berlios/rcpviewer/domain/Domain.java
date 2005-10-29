@@ -198,9 +198,12 @@ public class Domain implements IDomain {
 	 * the domain is notified that all classes have been registered in
 	 * {@link Domain#done()}.
 	 * 
-	 * @param builder
+	 * @param builder - if null, then is ignored.
 	 */
 	public final void addBuilder(IDomainBuilder builder) {
+		if (builder == null) {
+			return;
+		}
 		_builders.add(builder);
 	}
 

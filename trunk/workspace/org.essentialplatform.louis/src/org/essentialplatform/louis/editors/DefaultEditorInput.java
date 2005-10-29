@@ -15,11 +15,11 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * @author Mike
  * @see org.essentialplatform.louis.editors.DefaultEditor
  */
-public class DefaultEditorInput implements IEditorInput {
+public class DefaultEditorInput<T> implements IEditorInput {
 
 	private static final Point IMAGE_SIZE = new Point( 16, 16 );
 	
-	private final IDomainObject<?> _domainObject;
+	private final IDomainObject<T> _domainObject;
 	
 	// lazily instantiated
 	private Image _image = null;
@@ -28,7 +28,7 @@ public class DefaultEditorInput implements IEditorInput {
 	 * @param obj
 	 * @param builder
 	 */
-	public DefaultEditorInput( IDomainObject obj ) {
+	public DefaultEditorInput( IDomainObject<T> obj ) {
 		if ( obj == null ) throw new IllegalArgumentException();
 		_domainObject = obj;
 	}
@@ -100,10 +100,11 @@ public class DefaultEditorInput implements IEditorInput {
 	}
 	
 	/**
-	 * Accessor
+	 * Underlying domain object for which this is the input.
+	 * 
 	 * @return
 	 */
-	public IDomainObject getDomainObject() {
+	public IDomainObject<T> getDomainObject() {
 		return _domainObject;
 	}
 	

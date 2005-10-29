@@ -18,7 +18,7 @@ import de.berlios.rcpviewer.progmodel.extended.Id;
  */
 public abstract class AbstractAttributeComparator implements Comparator<EAttribute> {
 
-	private final ExtendedProgModelSemanticsEmfSerializer _serializer = new ExtendedProgModelSemanticsEmfSerializer();
+	private final EssentialProgModelExtendedSemanticsEmfSerializer _serializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
 
 
 	private final String _annotationAttributeKey;

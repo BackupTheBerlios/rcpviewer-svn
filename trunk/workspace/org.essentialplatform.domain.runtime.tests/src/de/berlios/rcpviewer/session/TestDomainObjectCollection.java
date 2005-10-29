@@ -7,12 +7,12 @@ import org.eclipse.emf.ecore.EReference;
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 
 public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 
 	public TestDomainObjectCollection() {
-		super(new ExtendedProgModelDomainBuilder());
+		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
 	}
 
 	protected void setUp() throws Exception {

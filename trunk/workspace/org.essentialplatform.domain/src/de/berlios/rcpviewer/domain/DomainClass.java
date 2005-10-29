@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.domain;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +22,10 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.osgi.framework.Bundle;
 
+import de.berlios.rcpviewer.domain.Deployment.IAttributeBinding;
+import de.berlios.rcpviewer.domain.Deployment.IClassBinding;
+import de.berlios.rcpviewer.domain.Deployment.IOperationBinding;
+import de.berlios.rcpviewer.domain.Deployment.IReferenceBinding;
 import de.berlios.rcpviewer.domain.IDomainClass.IReference;
 import de.berlios.rcpviewer.progmodel.extended.AssignmentType;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
@@ -33,29 +38,28 @@ import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
 import de.berlios.rcpviewer.progmodel.extended.Named;
 import de.berlios.rcpviewer.progmodel.extended.Regex;
-import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
 import de.berlios.rcpviewer.progmodel.standard.AttributeComparator;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsEmfSerializer;
 import de.berlios.rcpviewer.progmodel.standard.FeatureId;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 import de.berlios.rcpviewer.progmodel.standard.IdComparator;
+import de.berlios.rcpviewer.progmodel.standard.JavaRules;
 import de.berlios.rcpviewer.progmodel.standard.OppositeReferencesIdentifier;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelRules;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsRules;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsEmfSerializer;
 
 public final class DomainClass implements IDomainClass {
 
-	
 	protected final IDomain _domain;
 	protected final EClass _eClass;
 	
 	/**
 	 * To deserialize semantics from EMF metamodel.
 	 */
-	private StandardProgModelSemanticsEmfSerializer _standardSerializer = new StandardProgModelSemanticsEmfSerializer();
-	private ExtendedProgModelSemanticsEmfSerializer _extendedSerializer = new ExtendedProgModelSemanticsEmfSerializer();
+	private EssentialProgModelStandardSemanticsEmfSerializer _standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
+	private EssentialProgModelExtendedSemanticsEmfSerializer _extendedSerializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
 
 	/**
 	 * for {@link Emf#isIntegralNumber(EDataType)}. 
@@ -85,11 +89,11 @@ public final class DomainClass implements IDomainClass {
 		this._eClass = eClass;
 	}
 
-	private Object _binding;
-	public Object getBinding() {
+	private IClassBinding _binding;
+	public IClassBinding getBinding() {
 		return _binding;
 	}
-	public void setBinding(Object binding) {
+	public void setBinding(IClassBinding binding) {
 		_binding = binding;
 	}
 
@@ -142,12 +146,12 @@ public final class DomainClass implements IDomainClass {
 	 */
 	public boolean isChangeable() {
 		EAnnotation annotation = 
-			_eClass.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+			_eClass.getEAnnotation(EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
 			return false;
 		}
 		String immutable = 
-			(String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY);
+			(String)annotation.getDetails().get(EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY);
 		return "false".equals(immutable);
 	}
 
@@ -420,7 +424,7 @@ public final class DomainClass implements IDomainClass {
 	private final class Attribute extends Member implements IDomainClass.IAttribute {
 
 		private final EAttribute _eAttribute;
-		private Object _binding;
+		private IAttributeBinding _binding;
 		
 		public Attribute(EAttribute eAttribute) {
 			_eAttribute = eAttribute;
@@ -432,7 +436,7 @@ public final class DomainClass implements IDomainClass {
 		public EAttribute getEAttribute() {
 			return _eAttribute;
 		}
-		void setBinding(Object binding) {
+		void setBinding(IAttributeBinding binding) {
 			_binding = binding;
 		}
 		
@@ -440,7 +444,7 @@ public final class DomainClass implements IDomainClass {
 		 * @see de.berlios.rcpviewer.domain.IDomainClass.IAttribute#isWriteOnly()
 		 */
 		public boolean isWriteOnly() {
-			return _eAttribute.getEAnnotation(StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
+			return _eAttribute.getEAnnotation(EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY) != null;
 		}
 		/*
 		 * @see de.berlios.rcpviewer.domain.IDomainClass.IAttribute#isChangeable()
@@ -591,7 +595,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see de.berlios.rcpviewer.domain.IDomainClass.IAttribute#getBinding()
 		 */
-		public Object getBinding() {
+		public IAttributeBinding getBinding() {
 			return _binding; // JAVA5_FIXME
 		}
 
@@ -602,6 +606,7 @@ public final class DomainClass implements IDomainClass {
 			return FeatureId.create(_eAttribute.getName(), getDomainClass(), IFeatureId.Type.ATTRIBUTE); 
 		}
 
+		
 		//////////////
 		// helpers
 		
@@ -611,6 +616,7 @@ public final class DomainClass implements IDomainClass {
 			return instanceClassName != null && instanceClassName.equals("java.lang.String");
 		}
 
+		
 	}
 
 	///////////////////////////////////////////////////////////////
@@ -714,52 +720,81 @@ public final class DomainClass implements IDomainClass {
 	}
 
 	private abstract class Reference extends Member implements IDomainClass.IReference {
-		private final EReference _reference;
-		private Object _binding;
-		Reference(EReference reference) {
-			_reference = reference;
+		final EReference _eReference;
+		private IReferenceBinding _binding;
+		Reference(EReference eReference) {
+			_eReference = eReference;
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#getEReference()
+		 */
 		public EReference getEReference() {
-			return _reference;
+			return _eReference;
 		}
 
-		public Object getBinding() {
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#getBinding()
+		 */
+		public IReferenceBinding getBinding() {
 			return _binding; // JAVA5_FIXME
 		}
-		void setBinding(Object binding) {
+		void setBinding(IReferenceBinding binding) {
 			_binding = binding;
 		}
 		
 
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#getReferencedClass()
+		 */
 		public IDomainClass getReferencedClass() {
-			EClass eClass = (EClass)_reference.getEReferenceType();
+			EClass eClass = (EClass)_eReference.getEReferenceType();
 			return _domain.lookupNoRegister(((Class<?>)eClass.getInstanceClass()));
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#isMultiple()
+		 */
 		public boolean isMultiple() {
-			return _reference.isMany();
+			return _eReference.isMany();
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#isOrdered()
+		 */
 		public boolean isOrdered() {
-			return _reference.isOrdered();
+			return _eReference.isOrdered();
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#isContainer()
+		 */
 		public boolean isContainer() {
-			return _reference.isContainer();
+			return _eReference.isContainer();
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#isUnique()
+		 */
 		public boolean isUnique() {
-			return _reference.isUnique();
+			return _eReference.isUnique();
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#isChangeable()
+		 */
 		public boolean isChangeable() {
-			return _reference.isChangeable();
+			return _eReference.isChangeable();
 		}
+		/*
+		 * @see de.berlios.rcpviewer.domain.IDomainClass.IReference#isDerived()
+		 */
 		public boolean isDerived() {
-			return _reference.isDerived();
+			return _eReference.isDerived();
 		}
 
 		/*
 		 * @see de.berlios.rcpviewer.domain.IDomainClass#referenceIdFor(org.eclipse.emf.ecore.EReference)
 		 */
 		public IFeatureId referenceIdFor() {
-			return FeatureId.create(_reference.getName(), getDomainClass(), IFeatureId.Type.REFERENCE);
+			return FeatureId.create(_eReference.getName(), getDomainClass(), IFeatureId.Type.REFERENCE);
 		}
+
+
 
 	}
 
@@ -785,6 +820,7 @@ public final class DomainClass implements IDomainClass {
 		public OneToOneReference(EReference reference) {
 			super(reference);
 		}
+		
 	}
 
 	
@@ -810,6 +846,7 @@ public final class DomainClass implements IDomainClass {
 		public CollectionReference(EReference reference) {
 			super(reference);
 		}
+
 	}
 
 	///////////////////////////////////////////////////////////////
@@ -893,7 +930,7 @@ public final class DomainClass implements IDomainClass {
 	private final class Operation extends Member implements IDomainClass.IOperation {
 		
 		private final EOperation _eOperation;
-		private Object _binding;
+		private IOperationBinding _binding;
 		
 		public Operation(EOperation eOperation) {
 			_eOperation = eOperation;
@@ -909,10 +946,10 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see de.berlios.rcpviewer.domain.IDomainClass.IOperation#getBinding()
 		 */
-		public Object getBinding() {
+		public IOperationBinding getBinding() {
 			return _binding;
 		}
-		void setBinding(Object binding) {
+		void setBinding(IOperationBinding binding) {
 			_binding = binding;
 		}
 
@@ -920,7 +957,7 @@ public final class DomainClass implements IDomainClass {
 		 * @see de.berlios.rcpviewer.domain.IDomainClass.IOperation#isStatic()
 		 */
 		public boolean isStatic() {
-			return _eOperation.getEAnnotation(StandardProgModelConstants.ANNOTATION_OPERATION_STATIC) != null;
+			return _eOperation.getEAnnotation(EssentialProgModelStandardSemanticsConstants.ANNOTATION_OPERATION_STATIC) != null;
 		}
 		
 		/*
@@ -1061,6 +1098,8 @@ public final class DomainClass implements IDomainClass {
 		}
 
 
+
+
 	}
 	
 	///////////////////////////////////////////////////////////////
@@ -1074,13 +1113,13 @@ public final class DomainClass implements IDomainClass {
 	 */
 	public <V> V getAdapter(Class<V> adapterClass) {
 		String annotationSource = 
-			StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName();
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName();
 		return getAdapter(annotationSource);
 	}
 
 	public List<IDomainClassAdapter> getAdapters() {
 		List<EAnnotation> annotations = 
-			_emfAnnotations.annotationsPrefixed(_eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX);
+			_emfAnnotations.annotationsPrefixed(_eClass, EssentialProgModelStandardSemanticsConstants.ANNOTATION_EXTENSIONS_PREFIX);
 		
 		List<IDomainClassAdapter> adapters = new ArrayList<IDomainClassAdapter>();
 		for(EAnnotation annotation: annotations) {
@@ -1104,7 +1143,7 @@ public final class DomainClass implements IDomainClass {
 		Map<String, String> details = 
 			_emfAnnotations.getAnnotationDetails(_eClass, annotationSource);
 		String adapterFactoryName = 
-			details.get(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
+			details.get(EssentialProgModelStandardSemanticsConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY);
 		if (adapterFactoryName == null) {
 			throw new IllegalArgumentException("No such adapter '" + adapterFactoryName + "'");
 		}
@@ -1180,10 +1219,10 @@ public final class DomainClass implements IDomainClass {
 	 */
 	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<? extends V> adapterFactory) {
 		EAnnotation eAnnotation = 
-			_emfAnnotations.annotationOf(_eClass, StandardProgModelConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
+			_emfAnnotations.annotationOf(_eClass, EssentialProgModelStandardSemanticsConstants.ANNOTATION_EXTENSIONS_PREFIX + adapterClass.getName());
 		Map<String,String> detailsPlusFactoryName = new HashMap<String,String>();
 		detailsPlusFactoryName.putAll(adapterFactory.getDetails());
-		detailsPlusFactoryName.put(StandardProgModelConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
+		detailsPlusFactoryName.put(EssentialProgModelStandardSemanticsConstants.ANNOTATION_EXTENSIONS_ADAPTER_FACTORY_NAME_KEY, adapterFactory.getClass().getName());
 		_emfAnnotations.putAnnotationDetails(eAnnotation, detailsPlusFactoryName);
 	}
 
@@ -1211,11 +1250,11 @@ public final class DomainClass implements IDomainClass {
 	 */
 	private String descriptionOf(EModelElement modelElement) {
 		EAnnotation annotation = 
-			modelElement.getEAnnotation(StandardProgModelConstants.ANNOTATION_ELEMENT);
+			modelElement.getEAnnotation(EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT);
 		if (annotation == null) {
 			return null;
 		}
-		return (String)annotation.getDetails().get(StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
+		return (String)annotation.getDetails().get(EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY);
 	}
 
 	private int computeFieldLengthOf(EModelElement modelElement) {
@@ -1240,9 +1279,9 @@ public final class DomainClass implements IDomainClass {
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf > 0) {
 			return minLengthOf;
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf <= 0) {
-			return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
+			return EssentialProgModelExtendedSemanticsConstants.FIELD_LENGTH_OF_DEFAULT;
 		}
-		return ExtendedProgModelConstants.FIELD_LENGTH_OF_DEFAULT;
+		return EssentialProgModelExtendedSemanticsConstants.FIELD_LENGTH_OF_DEFAULT;
 	}
 
 	private int computeMaxLengthOf(final EModelElement modelElement) {
@@ -1267,9 +1306,9 @@ public final class DomainClass implements IDomainClass {
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf > 0) {
 			return minLengthOf;
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf <= 0) {
-			return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
+			return EssentialProgModelExtendedSemanticsConstants.MAX_LENGTH_OF_DEFAULT;
 		}
-		return ExtendedProgModelConstants.MAX_LENGTH_OF_DEFAULT;
+		return EssentialProgModelExtendedSemanticsConstants.MAX_LENGTH_OF_DEFAULT;
 	}
 
 	private int computeMinLengthOf(final EModelElement modelElement) {
@@ -1287,9 +1326,9 @@ public final class DomainClass implements IDomainClass {
 		} else if (minLengthOf > 0 && maxLengthOf <= 0) {
 			return minLengthOf;
 		} else if (minLengthOf <= 0) {
-			return ExtendedProgModelConstants.MIN_LENGTH_OF_DEFAULT;
+			return EssentialProgModelExtendedSemanticsConstants.MIN_LENGTH_OF_DEFAULT;
 		}
-		return ExtendedProgModelConstants.MIN_LENGTH_OF_DEFAULT;
+		return EssentialProgModelExtendedSemanticsConstants.MIN_LENGTH_OF_DEFAULT;
 	}
 
 

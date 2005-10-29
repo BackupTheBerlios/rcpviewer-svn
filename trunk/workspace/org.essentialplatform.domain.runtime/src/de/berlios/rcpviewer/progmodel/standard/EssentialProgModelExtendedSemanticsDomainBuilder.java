@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.extended;
+package de.berlios.rcpviewer.progmodel.standard;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -27,11 +27,12 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
+import de.berlios.rcpviewer.progmodel.extended.*;
 import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelSemanticsEmfSerializer;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsEmfSerializer;
 
 /**
  * Analyzes annotations specific to the extended programming model.
@@ -39,20 +40,21 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelSemanticsEmfSeri
  * @author Dan Haywood
  *
  */
-public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
+public class EssentialProgModelExtendedSemanticsDomainBuilder implements IDomainBuilder {
 
-	private final StandardProgModelSemanticsEmfSerializer standardSerializer = new StandardProgModelSemanticsEmfSerializer();
-	private final ExtendedProgModelSemanticsEmfSerializer serializer = new ExtendedProgModelSemanticsEmfSerializer();
-	
+	private final EssentialProgModelStandardSemanticsEmfSerializer standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
+	private final EssentialProgModelExtendedSemanticsEmfSerializer serializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
+
+	/**
+	 * Prior to rev 521, this code also installed an adapter factory that was 
+	 * capable of instantiating an "extended domain object".  Subsequent to
+	 * rev 521, this functionality has been moved into domain object itself 
+	 * (and its bindings).
+	 */
 	public void build(IDomainClass domainClass) {
 		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 		EClass eClass = domainClass.getEClass();
 		
-		// Install one adapter object under two different bindings so can be
-		// obtained in either context.
-		ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass> adapterFactory = 
-					new ExtendedDomainClassAdapterFactory<ExtendedRuntimeDomainClass>();
-		domainClass.setAdapterFactory(IExtendedRuntimeDomainClass.class, adapterFactory);
 
 		// Instantiable (File>New)
 		// Searchable (Search>???)
@@ -134,7 +136,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String accessorPreMethodName = accessor.getName() + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method accessorPreCandidate;
 		try {
 			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -162,7 +164,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 		}
 		Class<?> attributeType = eAttribute.getEAttributeType().getInstanceClass();
 		String mutatorPreMethodName = mutator.getName() + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method mutatorPreCandidate;
 		try {
 			mutatorPreCandidate = javaClass.getMethod(mutatorPreMethodName, new Class[]{attributeType});
@@ -189,7 +191,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String accessorPreMethodName = accessor.getName() + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method accessorPreCandidate;
 		try {
 			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -219,7 +221,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String accessorPreMethodName = mutator.getName() + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method mutatorPreCandidate;
 		try {
 			mutatorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
@@ -250,7 +252,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String addToPreMethodName = addTo.getName() + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method addToPreCandidate;
 		try {
 			addToPreCandidate = javaClass.getMethod(addToPreMethodName, new Class[]{});
@@ -281,7 +283,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 			return;
 		}
 		String removeFromPreMethodName = removeFrom.getName() + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method removeFromPreCandidate;
 		try {
 			removeFromPreCandidate = javaClass.getMethod(removeFromPreMethodName, new Class[]{});
@@ -306,7 +308,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	private <V> void processInvokerPre(EOperation eOperation, IDomainClass domainClass, Class<V> javaClass, Method invoker) {
 		String invokerName = invoker.getName();
 		String invokerPreMethodName = invokerName + 
-			ExtendedProgModelConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
 		Method invokerPreCandidate;
 		try {
 			EList eParameters = eOperation.getEParameters();
@@ -340,7 +342,7 @@ public class ExtendedProgModelDomainBuilder implements IDomainBuilder {
 	private <V> void processInvokerDefaults(EOperation eOperation, IDomainClass domainClass, Class<V> javaClass, Method invoker) {
 		String invokerName = invoker.getName();
 		String invokerDefaultsMethodName = invokerName + 
-			ExtendedProgModelConstants.SUFFIX_OPERATION_DEFAULTS;
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_OPERATION_DEFAULTS;
 		Method invokerDefaultsCandidate;
 		try {
 			EList eParameters = eOperation.getEParameters();

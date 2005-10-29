@@ -22,7 +22,7 @@ public abstract class AbstractTestCase extends TestCase {
 	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
 		super(name);
 		this.domainSpecifics = domainSpecifics;
-		this.domainBuilder = domainBuilder;
+		this.domainBuilder = domainBuilder != null? domainBuilder: IDomainBuilder.NOOP;
 	}
 
 	private final IDomainBuilder domainBuilder;

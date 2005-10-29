@@ -12,4 +12,13 @@ class MyDomainObjectOperationListener implements IDomainObjectOperationListener 
 		this.event = event;
 	}
 
+	boolean operationPrerequisitesChangedCallbackCalled = false;
+	ExtendedDomainObjectOperationEvent extendedEvent;
+	
+	public void operationPrerequisitesChanged(ExtendedDomainObjectOperationEvent extendedEvent) {
+		operationPrerequisitesChangedCallbackCalled=true;
+		this.extendedEvent = extendedEvent;
+	}
+
+
 }

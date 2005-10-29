@@ -2,12 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import java.util.EventObject;
 
-import org.eclipse.emf.ecore.EAttribute;
-
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject; 
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedAttribute;
 
 
 /**
@@ -28,7 +23,7 @@ public final class ExtendedDomainObjectAttributeEvent extends EventObject  {
 	 * @param source
 	 */
 	public ExtendedDomainObjectAttributeEvent(
-			final ExtendedDomainObject.ExtendedAttribute source, // TODO: workaround ? 
+			final IDomainObject.IObjectAttribute source, // TODO: workaround ? 
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;
@@ -37,10 +32,10 @@ public final class ExtendedDomainObjectAttributeEvent extends EventObject  {
 	/**
 	 * Type-safe accessor to the source of this event.
 	 * 
-	 * @return the extended attribute that raised this event.
+	 * @return the attribute that raised this event.
 	 */
-	public IExtendedDomainObject.IExtendedAttribute getExtendedAttribute() {
-		return (IExtendedDomainObject.IExtendedAttribute)getSource();
+	public IDomainObject.IObjectAttribute getAttribute() {
+		return (IDomainObject.IObjectAttribute)getSource();
 	}
 
 	private final IPrerequisites newPrerequisites;

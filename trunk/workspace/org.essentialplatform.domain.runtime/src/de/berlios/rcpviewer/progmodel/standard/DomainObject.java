@@ -1,7 +1,11 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
 import de.berlios.rcpviewer.domain.DomainClass;
@@ -23,13 +29,19 @@ import de.berlios.rcpviewer.domain.IDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IDomainClass.IAttribute;
 import de.berlios.rcpviewer.domain.IDomainClass.IOneToOneReference;
+import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.AbstractRuntimeReferenceBinding;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOperationBinding;
 import de.berlios.rcpviewer.persistence.PersistenceId;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectAttributeEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectOperationEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 import de.berlios.rcpviewer.session.IDomainObjectListener;
@@ -50,79 +62,106 @@ import de.berlios.rcpviewer.transaction.internal.OneToOneReferenceChange;
  * platform and the pojo itself.
  * 
  * <p>
- * Additionally, knows its {@link IDomainClass} and also {@link ISession} 
- * (if any) to which it is currently attached.
+ * Additionally, knows its {@link IDomainClass} and also {@link ISession} (if
+ * any) to which it is currently attached.
  * 
  * <p>
- * Implementation note: created by {@link DomainAspect} (perthis aspect for 
+ * Implementation note: created by {@link DomainAspect} (perthis aspect for
  * pojos).
  * 
  * <p>
- * TODO: should implement the choreography of interacting with the underlying POJOs.
+ * TODO: should implement the choreography of interacting with the underlying
+ * POJOs.
  * 
  * @author Dan Haywood
  */
 public final class DomainObject<T> implements IDomainObject<T> {
 
 	private IDomainClass _domainClass;
+
 	private final T _pojo;
+
 	private Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
+
 	private List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
+
 	private ISession _session;
-	
+
 	private WeakHashMap<EAttribute, IObjectAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IObjectAttribute>();
+
 	private WeakHashMap<EReference, IObjectReference> _referencesByEReference = new WeakHashMap<EReference, IObjectReference>();
+
 	private WeakHashMap<EOperation, IObjectOperation> _operationsByEOperation = new WeakHashMap<EOperation, IObjectOperation>();
 
 	private PersistenceId _persistenceId = null;
+
 	private PersistState _persistState = PersistState.UNKNOWN;
+
 	private ResolveState _resolveState = ResolveState.UNKNOWN;
-	
+
 	/**
-	 * Creates a domain object to represent a pojo that cannot be persisted, and 
+	 * Creates a domain object to represent a pojo that cannot be persisted, and
 	 * attaches to the specified session.
 	 * 
 	 * @param domainClass
-	 * @param pojo    - the pojo that this domain object wraps and represents the state of
-	 * @param session - to attach to
+	 * @param pojo -
+	 *            the pojo that this domain object wraps and represents the
+	 *            state of
+	 * @param session -
+	 *            to attach to
 	 */
-	public static <V> DomainObject createTransient(final IDomainClass domainClass, final V pojo, final ISession session) {
-		//DomainObject domainObject = new DomainObject(pojo);
-		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
-		domainObject.init(domainClass, session, PersistState.TRANSIENT, ResolveState.RESOLVED);
+	public static <V> DomainObject<V> createTransient(
+			final IDomainClass domainClass, final V pojo, final ISession session) {
+		// DomainObject domainObject = new DomainObject(pojo);
+		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
+				.getDomainObject();
+		domainObject.init(domainClass, session, PersistState.TRANSIENT,
+				ResolveState.RESOLVED);
 		return domainObject;
 	}
-	
+
 	/**
 	 * Creates a domain object to represent a pojo that will be persisted when
 	 * the transaction commits, and attaches to the specified session.
 	 * 
 	 * @param domainClass
-	 * @param pojo    - the pojo that this domain object wraps and represents the state of
-	 * @param session - to attach to
+	 * @param pojo -
+	 *            the pojo that this domain object wraps and represents the
+	 *            state of
+	 * @param session -
+	 *            to attach to
 	 */
-	public static <V> DomainObject createPersistent(final IDomainClass domainClass, final V pojo, final ISession session) {
-		//DomainObject domainObject = new DomainObject(pojo);
-		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
-		domainObject.init(domainClass, session, PersistState.PERSISTED, ResolveState.RESOLVED);
+	public static <V> DomainObject<V> createPersistent(
+			final IDomainClass domainClass, final V pojo, final ISession session) {
+		// DomainObject domainObject = new DomainObject(pojo);
+		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
+				.getDomainObject();
+		domainObject.init(domainClass, session, PersistState.PERSISTED,
+				ResolveState.RESOLVED);
 		return domainObject;
 	}
-	
+
 	/**
-	 * Creates a domain object to represent a pojo that has been persisted, 
-	 * but not yet resolved, and attaches to the specified session.
+	 * Creates a domain object to represent a pojo that has been persisted, but
+	 * not yet resolved, and attaches to the specified session.
 	 * 
 	 * @param domainClass
-	 * @param pojo    - the pojo that this domain object wraps and represents the state of
-	 * @param session - to attach to
+	 * @param pojo -
+	 *            the pojo that this domain object wraps and represents the
+	 *            state of
+	 * @param session -
+	 *            to attach to
 	 */
-	public static <V> DomainObject recreatePersistent(final IDomainClass domainClass, final V pojo, final ISession session) {
-		//DomainObject domainObject = new DomainObject(pojo);
-		DomainObject domainObject = (DomainObject)((IPojo)pojo).getDomainObject();
-		domainObject.init(domainClass, session, PersistState.PERSISTED, ResolveState.UNRESOLVED);
+	public static <V> DomainObject recreatePersistent(
+			final IDomainClass domainClass, final V pojo, final ISession session) {
+		// DomainObject domainObject = new DomainObject(pojo);
+		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
+				.getDomainObject();
+		domainObject.init(domainClass, session, PersistState.PERSISTED,
+				ResolveState.UNRESOLVED);
 		return domainObject;
 	}
-	
+
 	/**
 	 * Creates a domain object attached to the session.
 	 * 
@@ -136,14 +175,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		this._pojo = pojo;
 	}
 
-	
 	/**
 	 * Initializes the domain object.
 	 * 
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(final IDomainClass domainClass, final ISession session, PersistState persistState, ResolveState resolveState) {
+	private void init(final IDomainClass domainClass, final ISession session,
+			PersistState persistState, ResolveState resolveState) {
 		this._domainClass = domainClass;
 		this._session = session;
 		this._persistState = persistState;
@@ -156,14 +195,16 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public IDomainClass getDomainClass() {
 		return _domainClass;
 	}
+
 	/**
 	 * Returns the concrete implementation of {@link #getDomainClass()}.
+	 * 
 	 * @return
 	 */
 	DomainClass getDomainClassImpl() {
-		return (DomainClass)_domainClass;
+		return (DomainClass) _domainClass;
 	}
-	
+
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getPojo()
 	 */
@@ -177,11 +218,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public PersistenceId getPersistenceId() {
 		return _persistenceId;
 	}
+
 	/**
 	 * Set the persistence Id.
 	 * 
 	 * <p>
-	 * Note that this is not configured using 
+	 * Note that this is not configured using
 	 * {@link #init(IDomainClass, ISession, PersistState, ResolveState)}.
 	 * Instead, it will be derived from the values set directly by the
 	 * application (application-assigned), or it will be set by the object store
@@ -199,21 +241,21 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public <V> V getAdapter(Class<V> objectAdapterClass) {
 		Object adapter = _adaptersByClass.get(objectAdapterClass);
 		if (adapter == null) {
-			List<IDomainClassAdapter> classAdapters = getDomainClass().getAdapters();
-			for(IDomainClassAdapter classAdapter: classAdapters) {
+			List<IDomainClassAdapter> classAdapters = getDomainClass()
+					.getAdapters();
+			for (IDomainClassAdapter classAdapter : classAdapters) {
 				// JAVA5_FIXME: should be using covariance of getAdapters()
-				IRuntimeDomainClassAdapter runtimeClassAdapter = (IRuntimeDomainClassAdapter)classAdapter;
-				adapter = runtimeClassAdapter.getObjectAdapterFor(this, objectAdapterClass); 
+				IRuntimeDomainClassAdapter runtimeClassAdapter = (IRuntimeDomainClassAdapter) classAdapter;
+				adapter = runtimeClassAdapter.getObjectAdapterFor(this,
+						objectAdapterClass);
 				if (adapter != null) {
 					_adaptersByClass.put(adapter.getClass(), adapter);
 					break;
 				}
 			}
 		}
-		return (V)adapter; // may still be null.
+		return (V) adapter; // may still be null.
 	}
-
-
 
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#isPersistent()
@@ -222,30 +264,28 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return _persistState.isPersistent();
 	}
 
+	// in process of removing; performed instead through transactions.
+	// public void persist() {
+	// if (isPersistent()) {
+	// throw new IllegalStateException("Already persisted.");
+	// }
+	// if (getSession() == null) {
+	// throw new IllegalStateException("Not attached to a _session");
+	// }
+	// getSession().persist(this);
+	// _persistent = true;
+	// }
 
 	// in process of removing; performed instead through transactions.
-//	public void persist() {
-//		if (isPersistent()) {
-//			throw new IllegalStateException("Already persisted.");
-//		}
-//		if (getSession() == null) {
-//			throw new IllegalStateException("Not attached to a _session");
-//		}
-//		getSession().persist(this);
-//		_persistent = true;
-//	}
-	
-
-	// in process of removing; performed instead through transactions.
-//	public void save() {
-//		if (!isPersistent()) {
-//			throw new IllegalStateException("Not yet persisted.");
-//		}
-//		if (getSession() == null) {
-//			throw new IllegalStateException("Not attached to a session");
-//		}
-//		getSession().save(this);
-//	}
+	// public void save() {
+	// if (!isPersistent()) {
+	// throw new IllegalStateException("Not yet persisted.");
+	// }
+	// if (getSession() == null) {
+	// throw new IllegalStateException("Not attached to a session");
+	// }
+	// getSession().save(this);
+	// }
 
 	/*
 	 * For the title we just return the POJO's <code>toString()</code>.
@@ -255,7 +295,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public String title() {
 		return _pojo.toString();
 	}
-
 
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getEAttributeNamed(java.lang.String)
@@ -278,7 +317,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return getDomainClass().getEOperationNamed(operationName);
 	}
 
-	
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getSession()
 	 */
@@ -297,18 +335,18 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			this.sessionId = session.getId();
 		} else {
 			if (!session.getId().equals(this.getSessionId())) {
-				throw new IllegalArgumentException(
-					"Session id does not match " +
-					"(_session.id = '" + session.getId() + "', " +
-					"this.sessionId = '" + this.getSessionId() + "')");
+				throw new IllegalArgumentException("Session id does not match "
+						+ "(_session.id = '" + session.getId() + "', "
+						+ "this.sessionId = '" + this.getSessionId() + "')");
 			}
 		}
 		this._session = session;
 	}
-	
+
 	public void detached() {
 		this._session = null;
 	}
+
 	/*
 	 * 
 	 * @see de.berlios.rcpviewer.session.IDomainObject#isAttached()
@@ -318,6 +356,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	private String sessionId;
+
 	/**
 	 * The identifier of the {@link ISession} that originally managed this
 	 * domain object.
@@ -332,24 +371,27 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 	public void clearSessionId() {
 		if (isAttached()) {
-			throw new IllegalStateException("Cannot clear _session id when attached to _session");
+			throw new IllegalStateException(
+					"Cannot clear _session id when attached to _session");
 		}
 		sessionId = null;
 	}
 
-	public synchronized IObjectAttribute getAttribute(final EAttribute eAttribute) {
+	public synchronized IObjectAttribute getAttribute(
+			final EAttribute eAttribute) {
 		IObjectAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
 			attribute = new ObjectAttribute(eAttribute);
 			_attributesByEAttribute.put(eAttribute, attribute);
 		}
+		getSession().addObservedFeature(attribute);
 		return attribute;
 	}
 
 	/**
-	 * Returns an {@link IObjectReference} for any EReference, whether it represents
-	 * a 1:1 reference or a collection.
-	 *  
+	 * Returns an {@link IObjectReference} for any EReference, whether it
+	 * represents a 1:1 reference or a collection.
+	 * 
 	 * @param eReference
 	 * @return
 	 */
@@ -366,42 +408,51 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			}
 			_referencesByEReference.put(eReference, reference);
 		}
+		getSession().addObservedFeature(reference);
 		return reference;
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getOneToOneReference(org.eclipse.emf.ecore.EReference)
 	 */
-	public synchronized IObjectOneToOneReference getOneToOneReference(final EReference eReference) {
+	public synchronized IObjectOneToOneReference getOneToOneReference(
+			final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
 		if (eReference.isMany()) {
-			throw new IllegalArgumentException("EMF reference represents a collection (ref='" + eReference + "'");
+			throw new IllegalArgumentException(
+				"EMF reference represents a collection (ref='" + eReference + "'");
 		}
-		IObjectOneToOneReference reference = (IObjectOneToOneReference)_referencesByEReference.get(eReference);
+		IObjectOneToOneReference reference = 
+			(IObjectOneToOneReference) _referencesByEReference.get(eReference);
 		if (reference == null) {
-				reference = new ObjectOneToOneReference(eReference);
+			reference = new ObjectOneToOneReference(eReference);
 			_referencesByEReference.put(eReference, reference);
 		}
+		getSession().addObservedFeature(reference);
 		return reference;
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#getCollectionReference(org.eclipse.emf.ecore.EReference)
 	 */
-	public synchronized IObjectCollectionReference getCollectionReference(final EReference eReference) {
+	public synchronized IObjectCollectionReference getCollectionReference(
+			final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
 		if (!eReference.isMany()) {
-			throw new IllegalArgumentException("EMF reference represents a 1:1 reference (ref='" + eReference + "'");
+			throw new IllegalArgumentException(
+				"EMF reference represents a 1:1 reference (ref='" + eReference + "'");
 		}
-		IObjectCollectionReference reference = (IObjectCollectionReference)_referencesByEReference.get(eReference);
+		IObjectCollectionReference reference = 
+			(IObjectCollectionReference) _referencesByEReference.get(eReference);
 		if (reference == null) {
-				reference = new ObjectCollectionReference(eReference);
+			reference = new ObjectCollectionReference(eReference);
 			_referencesByEReference.put(eReference, reference);
 		}
+		getSession().addObservedFeature(reference);
 		return reference;
 	}
 
@@ -417,22 +468,41 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			operation = new ObjectOperation(eOperation);
 			_operationsByEOperation.put(eOperation, operation);
 		}
+		getSession().addObservedFeature(operation);
 		return operation;
 	}
 
-	
 	private class ObjectAttribute implements IDomainObject.IObjectAttribute {
 
+		private final EAttribute _eAttribute;
+
 		private final IDomainClass.IAttribute _attribute;
+
 		private final RuntimeAttributeBinding _runtimeBinding;
-		private final List<IDomainObjectAttributeListener> _domainObjectAttributeListeners = new ArrayList<IDomainObjectAttributeListener>();
 
 		/**
-		 * Do not instantiate directly, instead use {@link DomainObject#getAttribute(EAttribute)}
+		 * Holds onto the current accessor prerequisites, if known.
+		 * 
+		 * <p>
+		 * Used to determine whether listeners should be notified (see
+		 * {@link #notifyListeners(IPrerequisites)}) whenever there is some
+		 * external state change ({@link #externalStateChanged()}).
+		 * 
+		 * <p>
+		 * Extended semantics.
+		 */
+		private IPrerequisites _currentPrerequisites;
+
+		private final List<IDomainObjectAttributeListener> _listeners = new ArrayList<IDomainObjectAttributeListener>();
+
+		/**
+		 * Do not instantiate directly, instead use
+		 * {@link DomainObject#getAttribute(EAttribute)}
 		 * 
 		 * @param eAttribute
 		 */
 		private ObjectAttribute(final EAttribute eAttribute) {
+			_eAttribute = eAttribute;
 			_attribute = getDomainClass().getAttribute(eAttribute);
 			_runtimeBinding = (RuntimeAttributeBinding) _attribute.getBinding(); // JAVA5_FIXME
 		}
@@ -440,12 +510,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		/*
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#getDomainObject()
 		 */
-		public <T> IDomainObject<T> getDomainObject() {
-			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
+		public IDomainObject<?> getDomainObject() {
+			return (IDomainObject) DomainObject.this; // JAVA_5_FIXME
 		}
 
 		/*
-		 * @see 
+		 * @see
 		 */
 		public IAttribute getAttribute() {
 			return _attribute;
@@ -462,57 +532,152 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#set(java.lang.Object)
 		 */
 		public void set(Object newValue) {
-			_runtimeBinding.invokeMutator(getDomainObject().getPojo(), newValue);
+			_runtimeBinding
+					.invokeMutator(getDomainObject().getPojo(), newValue);
 		}
-		
-		/**
-		 * Returns listener only because it simplifies test implementation to do so.
+
+		/*
+		 * Extended semantics.
 		 */
-		public <T extends IDomainObjectAttributeListener> T addListener(T listener) {
-			synchronized(_domainObjectAttributeListeners) {
-				if (!_domainObjectAttributeListeners.contains(listener)) {
-					_domainObjectAttributeListeners.add(listener);
+		public IPrerequisites accessorPrerequisitesFor() {
+			return _runtimeBinding.accessorPrerequisitesFor(getDomainObject()
+					.getPojo());
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites mutatorPrerequisitesFor(
+				final Object candidateValue) {
+			return _runtimeBinding.mutatorPrerequisitesFor(getDomainObject()
+					.getPojo(), candidateValue);
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites prerequisitesFor(final Object candidateValue) {
+			return accessorPrerequisitesFor().andRequire(
+					authorizationPrerequisitesFor()).andRequire(
+					mutatorPrerequisitesFor(candidateValue));
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites authorizationPrerequisitesFor() {
+			IDomainClass rdc = getDomainClass();
+			IDomainClass.IAttribute attribute = rdc.getAttribute(_eAttribute);
+			RuntimeAttributeBinding binding = (RuntimeAttributeBinding) attribute
+					.getBinding();
+			return binding.authorizationPrerequisites();
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public void externalStateChanged() {
+			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
+			IPrerequisites prerequisitesNow = accessorPrerequisitesFor();
+
+			boolean notifyListeners = prerequisitesPreviously == null
+					|| !prerequisitesPreviously.equals(prerequisitesNow);
+
+			_currentPrerequisites = prerequisitesNow;
+			if (notifyListeners) {
+				notifyListeners(_currentPrerequisites);
+			}
+		}
+
+		/**
+		 * Returns listener only because it simplifies test implementation to do
+		 * so.
+		 */
+		public <T extends IDomainObjectAttributeListener> T addListener(
+				T listener) {
+			synchronized (_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
 				}
 			}
 			return listener;
 		}
+
 		public void removeListener(IDomainObjectAttributeListener listener) {
-			synchronized(_domainObjectAttributeListeners) {
-				_domainObjectAttributeListeners.remove(listener);
+			synchronized (_listeners) {
+				_listeners.remove(listener);
 			}
 		}
-		
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#notifyListeners(java.lang.Object)
+		 */
+		public void notifyListeners(Object newValue) {
+			DomainObjectAttributeEvent event = new DomainObjectAttributeEvent(
+					this, newValue);
+			for (IDomainObjectAttributeListener listener : _listeners) {
+				listener.attributeChanged(event);
+			}
+		}
+
 		/**
 		 * public so that it can be invoked by NotifyListenersAspect.
 		 * 
+		 * <p>
+		 * Extended semantics.
+		 * 
 		 * @param attribute
-		 * @param newValue
+		 * @param newPrerequisites
 		 */
-		public void notifyListeners(Object newValue) {
-			DomainObjectAttributeEvent event = 
-				new DomainObjectAttributeEvent(this, newValue);
-			for(IDomainObjectAttributeListener listener: _domainObjectAttributeListeners) {
-				listener.attributeChanged(event);
+		public void notifyListeners(IPrerequisites newPrerequisites) {
+			ExtendedDomainObjectAttributeEvent event = new ExtendedDomainObjectAttributeEvent(
+					this, newPrerequisites);
+			for (IDomainObjectAttributeListener listener : _listeners) {
+				listener.attributePrerequisitesChanged(event);
 			}
+		}
+
+		@Override
+		public String toString() {
+			return getAttribute().toString() + ", " + _listeners.size()
+					+ " listeners" + ", prereqs=" + _currentPrerequisites;
 		}
 
 	}
 
 	private class ObjectReference implements IDomainObject.IObjectReference {
-		
-		final EReference _eReference;
-		ResolveState _resolveState = ResolveState.UNRESOLVED;
 
-		final List<IDomainObjectReferenceListener> _listeners = 
-			new ArrayList<IDomainObjectReferenceListener>();
+		final EReference _eReference;
+
+		final IDomainClass.IReference _reference;
 
 		/**
-		 * Do not instantiate directly, instead use {@link DomainObject#getReferenceNamed(String)}
+		 * Holds onto the current accessor prerequisites, if known.
+		 * 
+		 * <p>
+		 * Used to determine whether listeners should be notified (see
+		 * {@link #notifyReferenceListeners(IPrerequisites)}) whenever there is
+		 * some external state change ({@link #externalStateChanged()}).
+		 */
+		private IPrerequisites _currentPrerequisites;
+
+		ResolveState _resolveState = ResolveState.UNRESOLVED;
+
+		final AbstractRuntimeReferenceBinding _runtimeBinding;
+
+		final List<IDomainObjectReferenceListener> _listeners = new ArrayList<IDomainObjectReferenceListener>();
+
+		/**
+		 * Do not instantiate directly, instead use
+		 * {@link DomainObject#getReferenceNamed(String)}
 		 * 
 		 * @param eReference
 		 */
 		private ObjectReference(final EReference eReference) {
 			this._eReference = eReference;
+			this._reference = getDomainClass().getReference(eReference);
+			this._runtimeBinding = (AbstractRuntimeReferenceBinding) _reference
+					.getBinding(); // JAVA5_FIXME
 		}
 
 		/*
@@ -532,26 +697,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		/*
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#getDomainObject()
 		 */
-		public <T> IDomainObject<T> getDomainObject() {
-			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
-		}
-
-
-		/**
-		 * Returns listener only because it simplifies test implementation to do so.
-		 */
-		public <T extends IDomainObjectReferenceListener> T addListener(T listener) {
-			synchronized(_listeners) {
-				if (!_listeners.contains(listener)) {
-					_listeners.add(listener);
-				}
-			}
-			return listener;
-		}
-		public void removeListener(IDomainObjectReferenceListener listener) {
-			synchronized(_listeners) {
-				_listeners.remove(listener);
-			}
+		public <Q> IDomainObject<Q> getDomainObject() {
+			return (IDomainObject) DomainObject.this; // JAVA_5_FIXME
 		}
 
 		/*
@@ -562,28 +709,92 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			_resolveState = ResolveState.RESOLVED;
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectMember#authorizationPrerequisitesFor()
+		 */
+		public IPrerequisites authorizationPrerequisitesFor() {
+			return _runtimeBinding.authorizationPrerequisites();
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#accessorPrerequisitesFor()
+		 */
+		public IPrerequisites accessorPrerequisitesFor() {
+			return _runtimeBinding.accessorPrerequisitesFor(getPojo());
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IObservedFeature#externalStateChanged()
+		 */
+		public void externalStateChanged() {
+			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
+			IPrerequisites prerequisitesNow = accessorPrerequisitesFor();
+
+			boolean notifyListeners = prerequisitesPreviously == null
+					|| !prerequisitesPreviously.equals(prerequisitesNow);
+
+			_currentPrerequisites = prerequisitesNow;
+			if (notifyListeners) {
+				notifyReferenceListeners(_currentPrerequisites);
+			}
+		}
+
+		public <T extends IDomainObjectReferenceListener> T addListener(T listener) {
+			_listeners.add(listener);
+			return listener;
+		}
+
+		public void removeListener(IDomainObjectReferenceListener listener) {
+			_listeners.remove(listener);
+		}
+		
+		/**
+		 * public so that it can be invoked by NotifyListenersAspect.
+		 * 
+		 * <p>
+		 * Extended semantics.
+		 * 
+		 * @param attribute
+		 * @param newPrerequisites
+		 */
+		public void notifyReferenceListeners(IPrerequisites newPrerequisites) {
+			ExtendedDomainObjectReferenceEvent event = new ExtendedDomainObjectReferenceEvent(
+					this, newPrerequisites);
+			for (IDomainObjectReferenceListener listener : _listeners) {
+				listener.referencePrerequisitesChanged(event);
+			}
+		}
+
+		@Override
+		public String toString() {
+			return getEReference().toString() + ", " + _listeners.size()
+					+ " listeners" + ", prereqs=" + _currentPrerequisites;
+		}
+
 	}
-	
-	private class ObjectOneToOneReference extends ObjectReference
-	                                  implements IDomainObject.IObjectOneToOneReference {
+
+	private class ObjectOneToOneReference extends ObjectReference implements
+			IDomainObject.IObjectOneToOneReference {
 
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
+
 		private final RuntimeOneToOneReferenceBinding _runtimeBinding;
 
 		private ObjectOneToOneReference(final EReference eReference) {
 			super(eReference);
-			IDomainClass.IReference reference = getDomainClass().getReference(eReference);  
-			assert !reference.isMultiple();
-			_oneToOneReference = (IDomainClass.IOneToOneReference)reference;
-			_runtimeBinding = (RuntimeOneToOneReferenceBinding)_oneToOneReference.getBinding();
+			assert !_reference.isMultiple();
+			_oneToOneReference = (IDomainClass.IOneToOneReference) _reference;
+			_runtimeBinding = (RuntimeOneToOneReferenceBinding) _oneToOneReference
+					.getBinding();
 		}
 
 		public <Q> Q get() {
-			return (Q)_runtimeBinding.invokeAccessor(getDomainObject().getPojo());
+			return (Q) _runtimeBinding.invokeAccessor(getDomainObject().getPojo());
 		}
 
 		/*
-		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference#set(de.berlios.rcpviewer.session.IDomainObject, java.lang.Object)
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference#set(de.berlios.rcpviewer.session.IDomainObject,
+		 *      java.lang.Object)
 		 */
 		public <Q> void set(IDomainObject<Q> domainObject) {
 			if (domainObject != null) {
@@ -598,68 +809,132 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites prerequisitesFor(Object candidateValue) {
+			return accessorPrerequisitesFor().andRequire(
+					authorizationPrerequisitesFor()).andRequire(
+					mutatorPrerequisitesFor(candidateValue));
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites mutatorPrerequisitesFor(final Object candidateValue) {
+			return _runtimeBinding.mutatorPrerequisitesFor(getPojo(), candidateValue);
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#addListener(de.berlios.rcpviewer.session.IDomainObjectReferenceListener)
+		 */
+		public <Q extends IDomainObjectReferenceListener> Q addListener(Q listener) {
+			synchronized (_listeners) {
+				if (!_listeners.contains(listener)) {
+					_listeners.add(listener);
+				}
+			}
+			return listener;
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectReference#removeListener(de.berlios.rcpviewer.session.IDomainObjectReferenceListener)
+		 */
+		public void removeListener(IDomainObjectReferenceListener listener) {
+			synchronized (_listeners) {
+				_listeners.remove(listener);
+			}
+		}
+
+		/*
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOneToOneReference#notifyListeners(java.lang.Object)
 		 */
 		public void notifyListeners(Object referencedObject) {
-			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(this, referencedObject); 
-			for(IDomainObjectReferenceListener listener: _listeners) {
+			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(this, referencedObject);
+			for (IDomainObjectReferenceListener listener : _listeners) {
 				listener.referenceChanged(event);
 			}
 		}
-		
+
 	}
-	
-	private class ObjectCollectionReference extends ObjectReference
-	                                  implements IDomainObject.IObjectCollectionReference {
+
+	private class ObjectCollectionReference extends ObjectReference implements
+			IDomainObject.IObjectCollectionReference {
 
 		private final IDomainClass.ICollectionReference _collectionReference;
 		private final RuntimeCollectionReferenceBinding _runtimeBinding;
 
 		private ObjectCollectionReference(final EReference eReference) {
 			super(eReference);
-			IDomainClass.IReference reference = getDomainClass().getReference(eReference);  
-			assert reference.isMultiple();
-			_collectionReference = (IDomainClass.ICollectionReference)reference;
-			_runtimeBinding = (RuntimeCollectionReferenceBinding)_collectionReference.getBinding();
+			assert _reference.isMultiple();
+			_collectionReference = (IDomainClass.ICollectionReference) _reference;
+			_runtimeBinding = (RuntimeCollectionReferenceBinding) _collectionReference.getBinding();
 		}
-		
+
 		public <V> Collection<IDomainObject<V>> getCollection() {
-			Collection<IDomainObject<V>> collection =
-				(Collection<IDomainObject<V>>)_runtimeBinding.invokeAccessor(getPojo());
+			Collection<IDomainObject<V>> collection = 
+				(Collection<IDomainObject<V>>) _runtimeBinding.invokeAccessor(getPojo());
 			return Collections.unmodifiableCollection(collection);
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectCollectionReference#addToCollection(de.berlios.rcpviewer.session.IDomainObject)
+		 */
 		public <Q> void addToCollection(IDomainObject<Q> domainObject) {
-			assert _collectionReference.getReferencedClass() == domainObject.getDomainClass();
+			assert _collectionReference.getReferencedClass() == domainObject
+					.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeBinding.invokeAddTo(getPojo(), domainObject.getPojo());
-			// TODO: ideally the notifyListeners aspect should do this for us? 
+			// TODO: ideally the notifyListeners aspect should do this for us?
 			// notify _domainObjectListeners
-			DomainObjectReferenceEvent event = 
-				new DomainObjectReferenceEvent(this, getPojo());
-			for(IDomainObjectReferenceListener listener: _listeners) {
+			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
+					this, getPojo());
+			for (IDomainObjectReferenceListener listener : _listeners) {
 				listener.collectionAddedTo(event);
 			}
 		}
 
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectCollectionReference#removeFromCollection(de.berlios.rcpviewer.session.IDomainObject)
+		 */
 		public <Q> void removeFromCollection(IDomainObject<Q> domainObject) {
-			assert _collectionReference.getReferencedClass() == domainObject.getDomainClass();
+			assert _collectionReference.getReferencedClass() == domainObject
+					.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeBinding.invokeRemoveFrom(getPojo(), domainObject.getPojo());
-			// TODO: ideally the notifyListeners aspect should do this for us? 
+			// TODO: ideally the notifyListeners aspect should do this for us?
 			// notify _domainObjectListeners
-			DomainObjectReferenceEvent event = 
-				new DomainObjectReferenceEvent(this, getPojo());
-			for(IDomainObjectReferenceListener listener: _listeners) {
+			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
+					this, getPojo());
+			for (IDomainObjectReferenceListener listener : _listeners) {
 				listener.collectionRemovedFrom(event);
 			}
 		}
 
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites mutatorPrerequisitesFor(Object candidateValue, boolean beingAdded) {
+			return _runtimeBinding.mutatorPrerequisitesFor(getPojo(), candidateValue, beingAdded);
+		}
 		
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites prerequisitesFor(Object candidateValue,
+				boolean beingAdded) {
+			return accessorPrerequisitesFor().andRequire(
+					authorizationPrerequisitesFor()).andRequire(
+					mutatorPrerequisitesFor(candidateValue, beingAdded));
+		}
+
+		/*
+		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectCollectionReference#notifyListeners(java.lang.Object,
+		 *      boolean)
+		 */
 		public void notifyListeners(Object referencedObject, boolean beingAdded) {
-			DomainObjectReferenceEvent event = 
-				new DomainObjectReferenceEvent(this, referencedObject);
-			for(IDomainObjectReferenceListener listener: _listeners) {
+			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
+					this, referencedObject);
+			for (IDomainObjectReferenceListener listener : _listeners) {
 				if (beingAdded) {
 					listener.collectionAddedTo(event);
 				} else {
@@ -667,25 +942,61 @@ public final class DomainObject<T> implements IDomainObject<T> {
 				}
 			}
 		}
+
 	}
 
-	
 	private class ObjectOperation implements IDomainObject.IObjectOperation {
-		
-		private final IDomainClass.IOperation operation;
+
 		private final EOperation _eOperation;
+		private final IDomainClass.IOperation _operation;
 		private final RuntimeOperationBinding _runtimeBinding;
-		
 		private final List<IDomainObjectOperationListener> _listeners = new ArrayList<IDomainObjectOperationListener>();
 
+		/*
+		 * Extended semantics support.
+		 */
+		private final Map<Integer, Object> _argsByPosition = new HashMap<Integer, Object>();
+
+		/**
+		 * Holds onto the current (invoker) prerequisites, if known.
+		 * 
+		 * <p>
+		 * Used to determine whether listeners should be notified (see
+		 * {@link #notifyOperationListeners(IPrerequisites)}) whenever there is
+		 * some external state change ({@link #externalStateChanged()}).
+		 */
+		private IPrerequisites _currentPrerequisites;
+
+		
+		/*
+		 * Extended semantics support (move to binding)
+		 */
+		private final Class<?>[] _parameterTypes;
+
+		
+		/**
+		 * Will reset the arguments, according to {@link #reset()}.
+		 * 
+		 * @param eOperation
+		 */
 		ObjectOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
-			operation = getDomainClass().getOperation(eOperation);
-			_runtimeBinding = (RuntimeOperationBinding)operation.getBinding();
+			this._operation = getDomainClass().getOperation(eOperation);
+			_runtimeBinding = (RuntimeOperationBinding) _operation.getBinding();
+			
+			// extended semantics: move to binding
+			EList eParameters = _eOperation.getEParameters();
+			_parameterTypes = new Class<?>[eParameters.size()];
+			for (int i = 0; i < _parameterTypes.length; i++) {
+				EParameter eParameter = (EParameter) eParameters.get(i);
+				_parameterTypes[i] = eParameter.getEType().getInstanceClass();
+			}
+			
+			reset();
 		}
-		
-		public <T> IDomainObject<T> getDomainObject() {
-			return (IDomainObject)DomainObject.this; // JAVA_5_FIXME
+
+		public IDomainObject getDomainObject() {
+			return (IDomainObject) DomainObject.this; // JAVA_5_FIXME
 		}
 
 		public EOperation getEOperation() {
@@ -693,27 +1004,125 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		public Object invokeOperation(final Object[] args) {
-			return _runtimeBinding.invokeOperation(getDomainObject().getPojo(), args);
+			return _runtimeBinding.invokeOperation(getDomainObject().getPojo(),
+					args);
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites authorizationPrerequisitesFor() {
+			IDomainClass dc = getDomainClass();
+			IDomainClass.IOperation operation = dc.getOperation(_eOperation);
+			RuntimeOperationBinding binding = (RuntimeOperationBinding) operation.getBinding();
+			return binding.authorizationPrerequisites();
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public void setArg(final int position, final Object arg) {
+			
+			// todo: need to delegate to runtime binding
+			if (position < 0 || position >= _parameterTypes.length) {
+				throw new IllegalArgumentException(
+						"Invalid position: 0 <= position < "
+								+ _parameterTypes.length);
+			}
+			if (arg != null) {
+				if (!_runtimeBinding.isAssignableFromIncludingAutoboxing(
+						_parameterTypes[position], arg.getClass())) {
+					throw new IllegalArgumentException(
+							"Incompatible argument for position '" + position
+									+ "'; formal='"
+									+ _parameterTypes[position].getName()
+									+ ", actual='" + arg.getClass().getName()
+									+ "'");
+				}
+			}
+			
+			_argsByPosition.put(position, arg);
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public Object[] getArgs() {
+			return _runtimeBinding.getArgs(_argsByPosition);
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public IPrerequisites prerequisitesFor() {
+			return _runtimeBinding.prerequisitesFor(getPojo(), getArgs());
+		}
+		
+		/*
+		 * Extended semantics.
+		 */
+		public Object[] reset() {
+			_argsByPosition.clear();
+			return _runtimeBinding.reset(getPojo(), getArgs(), _argsByPosition); 
+		}
+
+		/*
+		 * Extended semantics.
+		 */
+		public void externalStateChanged() {
+			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
+			IPrerequisites prerequisitesNow = prerequisitesFor();
+
+			boolean notifyListeners = prerequisitesPreviously == null
+					|| !prerequisitesPreviously.equals(prerequisitesNow);
+
+			_currentPrerequisites = prerequisitesNow;
+			if (notifyListeners) {
+				notifyOperationListeners(_currentPrerequisites);
+			}
 		}
 
 		/**
-		 * Returns listener only because it simplifies test implementation to do so.
+		 * Returns listener only because it simplifies test implementation to do
+		 * so.
 		 */
-		public <T extends IDomainObjectOperationListener> T addListener(T listener) {
-			synchronized(_listeners) {
+		public <T extends IDomainObjectOperationListener> T addListener(
+				T listener) {
+			synchronized (_listeners) {
 				if (!_listeners.contains(listener)) {
 					_listeners.add(listener);
 				}
 			}
 			return listener;
 		}
+
 		/*
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectOperation#removeListener(de.berlios.rcpviewer.session.IDomainObjectOperationListener)
 		 */
 		public void removeListener(IDomainObjectOperationListener listener) {
-			synchronized(_listeners) {
+			synchronized (_listeners) {
 				_listeners.remove(listener);
 			}
+		}
+
+		/**
+		 * public so that it can be invoked by NotifyListenersAspect.
+		 * 
+		 * @param attribute
+		 * @param newPrerequisites
+		 */
+		public void notifyOperationListeners(IPrerequisites newPrerequisites) {
+			ExtendedDomainObjectOperationEvent event = new ExtendedDomainObjectOperationEvent(
+					this, newPrerequisites);
+			for (IDomainObjectOperationListener listener : _listeners) {
+				listener.operationPrerequisitesChanged(event);
+			}
+		}
+
+		public String toString() {
+			return getEOperation().toString() + ", " + _listeners.size()
+					+ " listeners" + ", args=" + getArgs() + ", prereqs="
+					+ _currentPrerequisites;
 		}
 
 	}
@@ -741,7 +1150,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		_persistState = PersistState.PERSISTED;
 	}
 
-
 	/*
 	 * @see de.berlios.rcpviewer.session.IResolvable#getResolveState()
 	 */
@@ -758,45 +1166,46 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	private void checkInState(ResolveState... resolveStates) {
-		for(int i=0; i<resolveStates.length; i++) {
+		for (int i = 0; i < resolveStates.length; i++) {
 			if (getResolveState() == resolveStates[i]) {
 				return;
 			}
 		}
-		throw new IllegalStateException(
-				"Current resolve state is '" + getResolveState() + "', "
-				+ "should be in state of '" + Arrays.asList(resolveStates) + "'");
+		throw new IllegalStateException("Current resolve state is '"
+				+ getResolveState() + "', " + "should be in state of '"
+				+ Arrays.asList(resolveStates) + "'");
 	}
 
 	private void checkInState(PersistState... persistStates) {
-		for(int i=0; i<persistStates.length; i++) {
+		for (int i = 0; i < persistStates.length; i++) {
 			if (getPersistState() == persistStates[i]) {
 				return;
 			}
 		}
-		throw new IllegalStateException(
-				"Current persist state is '" + getPersistState() + "', "
-				+ "should be in state of '" + Arrays.asList(persistStates) + "'");
+		throw new IllegalStateException("Current persist state is '"
+				+ getPersistState() + "', " + "should be in state of '"
+				+ Arrays.asList(persistStates) + "'");
 	}
 
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#addListener(null)
 	 */
 	public <T extends IDomainObjectListener> T addListener(T listener) {
-		synchronized(_domainObjectListeners) {
+		synchronized (_domainObjectListeners) {
 			if (!_domainObjectListeners.contains(listener)) {
 				_domainObjectListeners.add(listener);
 			}
 		}
 		return listener;
 	}
+
 	/*
 	 * @see de.berlios.rcpviewer.session.IDomainObject#removeListener(de.berlios.rcpviewer.session.IDomainObjectListener)
 	 */
 	public void removeListener(IDomainObjectListener listener) {
-		synchronized(_domainObjectListeners) {
+		synchronized (_domainObjectListeners) {
 			_domainObjectListeners.remove(listener);
 		}
 	}
-	
+
 }

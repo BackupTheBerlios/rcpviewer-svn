@@ -26,14 +26,14 @@ import de.berlios.rcpviewer.progmodel.extended.Named;
  *  
  * @author Dan Haywood
  */
-public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgModelSemanticsEmfSerializer {
+public final class EssentialProgModelStandardSemanticsEmfSerializer extends AbstractProgModelSemanticsEmfSerializer {
 
 	// any model element
 	
 	public Named getNamed(EModelElement modelElement) {
 		Map<String,String> attributeDetails = 
-			_emfAnnotations.getAnnotationDetails(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT);
-		final String value = attributeDetails.get(StandardProgModelConstants.ANNOTATION_ELEMENT_NAMED_KEY);
+			_emfAnnotations.getAnnotationDetails(modelElement, EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT);
+		final String value = attributeDetails.get(EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT_NAMED_KEY);
 		if (value == null) {
 			return null;
 		}
@@ -46,8 +46,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		if (named == null) return;
 		_emfAnnotations.putAnnotationDetails(
 				modelElement,
-				StandardProgModelConstants.ANNOTATION_ELEMENT,
-				StandardProgModelConstants.ANNOTATION_ELEMENT_NAMED_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT,
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT_NAMED_KEY, 
 				named.value());	
 	}
 
@@ -55,16 +55,16 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		if (describedAs == null) return;
 		_emfAnnotations.putAnnotationDetails(
 				modelElement,
-				StandardProgModelConstants.ANNOTATION_ELEMENT,
-				StandardProgModelConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT,
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT_DESCRIPTION_KEY, 
 				describedAs.value() );	
 	}
 
 	public void setImmutable(EModelElement modelElement, Immutable immutable) {
 		_emfAnnotations.putAnnotationDetails(
 				modelElement,
-				StandardProgModelConstants.ANNOTATION_ELEMENT,
-				StandardProgModelConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT,
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT_IMMUTABLE_KEY, 
 				"" + (immutable != null));	
 	}
 	
@@ -73,14 +73,14 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String methodName = 
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(attribute),
-				StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
 		return findMethod(javaClassFor(attribute), methodName);
 	}
 	public void setAttributeAccessorMethod(final EAttribute attribute, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				attribute,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY, 
 				method.getName());
 	}
 
@@ -88,35 +88,35 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String methodName = 
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(attribute),
-				StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
 		return findMethod(javaClassFor(attribute), methodName, typeAsArrayFor(attribute));
 	}
 	public void setAttributeMutatorMethod(final EAttribute attribute, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				attribute,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY, 
 				method.getName());
 	}
 	
 	public void setAttributeIsUnsetMethod(final EAttribute attribute, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				attribute,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_IS_UNSET_METHOD_NAME_KEY, 
 				method.getName());
 	}
 	
 	public void setAttributeUnsetMethod(final EAttribute attribute, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				attribute,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY, 
 				method.getName());
 	}
 	
 	public void setAttributeWriteOnly(final EAttribute attribute) {
-		_emfAnnotations.annotationOf(attribute, StandardProgModelConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
+		_emfAnnotations.annotationOf(attribute, EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_WRITE_ONLY);
 	}
 	
 	// references
@@ -124,8 +124,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 	public OppositeOf getReferenceOppositeOf(EReference reference) {
 		Map<String,String> referenceDetails = 
 			_emfAnnotations.getAnnotationDetails(
-				reference, StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE);
-		final String value = referenceDetails.get(StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY);
+				reference, EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_OPPOSITE);
+		final String value = referenceDetails.get(EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY);
 		if (value == null) {
 			return null;
 		}
@@ -138,8 +138,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		if (reference == null || oppositeOf == null) return;
 		_emfAnnotations.putAnnotationDetails(
 				reference,
-				StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE,
-				StandardProgModelConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_OPPOSITE,
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_OPPOSITE_KEY, 
 				oppositeOf.value());
 	}
 
@@ -147,14 +147,14 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String accessorMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
 		return findMethod(javaClassFor(reference), accessorMethodName);
 	}
 	public void setReferenceAccessor(final EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
 				reference,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY, 
 				method.getName());
 	}
 
@@ -165,7 +165,7 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String mutatorMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_MUTATOR_NAME_KEY);
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_MUTATOR_NAME_KEY);
 		return findMethod(
 				javaClassFor(reference), 
 				mutatorMethodName,
@@ -176,7 +176,7 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String associatorMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
-					StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY);
+					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY);
 		return findMethod(
 				javaClassFor(reference), 
 				associatorMethodName, 
@@ -185,8 +185,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 	public void setReferenceOneToOneAssociator(final EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
 				reference,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY, 
 				method.getName());
 	}
 
@@ -194,7 +194,7 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String associatorMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
-					StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY);
+					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY);
 		return findMethod(
 				javaClassFor(reference), 
 				associatorMethodName, 
@@ -203,8 +203,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 	public void setReferenceCollectionAssociator(final EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
 				reference,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY, 
 				method.getName());
 	}
 	
@@ -212,7 +212,7 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String dissociatorMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
-					StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY);
+					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY);
 		return findMethod(
 				javaClassFor(reference), 
 				dissociatorMethodName, 
@@ -221,8 +221,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 	public void setReferenceOneToOneDissociator(final EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
 				reference,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY, 
 				method.getName());
 	}
 
@@ -230,7 +230,7 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String dissociatorMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
-					StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY);
+					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY);
 		return findMethod(
 				javaClassFor(reference), 
 				dissociatorMethodName, 
@@ -239,8 +239,8 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 	public void setReferenceCollectionDissociator(final EReference reference, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
 				reference,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY, 
 				method.getName());
 	}
 	
@@ -249,21 +249,21 @@ public final class StandardProgModelSemanticsEmfSerializer extends AbstractProgM
 		String invokerMethodName = 
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(eOperation),
-				StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
 		return findMethod(javaClassFor(eOperation), invokerMethodName, parameterTypesFor(eOperation));
 	}
 	public void setOperationMethod(final EOperation eOperation, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
 				eOperation,
-				StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
-				StandardProgModelConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES, 
+				EssentialProgModelStandardSemanticsConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY, 
 				method.getName());
 	}
 	
 	public void setOperationStatic(EOperation eOperation) {
 		_emfAnnotations.annotationOf(
 			eOperation, 
-			StandardProgModelConstants.ANNOTATION_OPERATION_STATIC);	}
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_OPERATION_STATIC);	}
 	
 
 }

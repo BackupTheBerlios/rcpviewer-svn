@@ -12,7 +12,7 @@ import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 public class TestOptionalAtRuntime extends TestOptional {
 
 	public TestOptionalAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), null);
 	}
 
 }

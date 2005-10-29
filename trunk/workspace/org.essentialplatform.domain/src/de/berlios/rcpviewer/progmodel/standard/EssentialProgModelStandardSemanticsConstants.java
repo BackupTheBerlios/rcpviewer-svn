@@ -10,9 +10,9 @@ import de.berlios.rcpviewer.domain.IDomainClass;
  * 
  * @author Dan Haywood
  */
-public final class StandardProgModelConstants {
+public final class EssentialProgModelStandardSemanticsConstants {
 
-	private StandardProgModelConstants() {
+	private EssentialProgModelStandardSemanticsConstants() {
 	}
 
 	/**
@@ -20,7 +20,7 @@ public final class StandardProgModelConstants {
 	 * additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_ELEMENT = 
-		"http://rcpviewer.berlios.de/progmodel/standard/element";
+		"http://org.essentialplatform/progmodel/essential/standard/element";
 
 	/**
 	 * Key to details of EAnnotation with source of {@link #ANNOTATION_ELEMENT}
@@ -59,28 +59,28 @@ public final class StandardProgModelConstants {
 	 * {@link IDomainClass}/EClass.
 	 */
 	public static final String ANNOTATION_CLASS = 
-		"http://rcpviewer.berlios.de/progmodel/standard/class";
+		"http://org.essentialplatform/progmodel/essential/standard/class";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates 
 	 * that the EAttribute is write-only (has a mutator, no accessor).
 	 */
 	public final static String ANNOTATION_ATTRIBUTE_WRITE_ONLY = 
-		"http://rcpviewer.berlios.de/progmodel/standard/attribute/writeOnly";
+		"http://org.essentialplatform/progmodel/essential/standard/attribute/writeOnly";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EOperation indicates 
 	 * that the EOperation is static
 	 */
 	public static final String ANNOTATION_OPERATION_STATIC = 
-		"http://rcpviewer.berlios.de/progmodel/standard/operation/static";
+		"http://org.essentialplatform/progmodel/essential/standard/operation/static";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EReference indicates 
 	 * that the reference has indicated it has an opposite.
 	 */
 	public static final String ANNOTATION_REFERENCE_OPPOSITE = 
-		"http://rcpviewer.berlios.de/progmodel/standard/reference/opposite";
+		"http://org.essentialplatform/progmodel/essential/standard/reference/opposite";
 
 	/**
 	 * Key to EAnnotation details representing (names of) opposite reference
@@ -104,7 +104,7 @@ public final class StandardProgModelConstants {
 	 * an attribute, or an operation, or a reference.
 	 */
 	public static final String ANNOTATION_SOURCE_METHOD_NAMES = 
-		"http://rcpviewer.berlios.de/progmodel/standard/methodNames";
+		"http://org.essentialplatform/progmodel/essential/standard/methodNames";
 
 	/**
 	 * Key to EAnnotation details representing (names of) methods to access or
@@ -210,7 +210,7 @@ public final class StandardProgModelConstants {
 	 * adapter class.
 	 */
 	public static final String ANNOTATION_EXTENSIONS_PREFIX = 
-		"http://de.berlios.rcpviewer/progmodel/extensions/";
+		"http://org.essentialplatform/extensions/";
 
 	/**
 	 * Reserved key name for an element in details map of the EAnnotation on a

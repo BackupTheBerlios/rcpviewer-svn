@@ -2,7 +2,6 @@ package de.berlios.rcpviewer.session;
 
 import java.util.EventObject;
 
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 
 
 /**
@@ -22,7 +21,7 @@ public abstract class ExtendedDomainObjectEvent extends EventObject {
 	 * 
 	 * @param source
 	 */
-	public ExtendedDomainObjectEvent(final IExtendedDomainObject source) {
+	public ExtendedDomainObjectEvent(final IDomainObject<?> source) {
 		super(source);
 	}
 	
@@ -31,8 +30,8 @@ public abstract class ExtendedDomainObjectEvent extends EventObject {
 	 * 
 	 * @return the {@link IExtendedDomainObject} that raised the event.
 	 */
-	public IExtendedDomainObject getExtendedDomainObject() {
-		return (IExtendedDomainObject)this.getSource();
+	public IDomainObject<?> getExtendedDomainObject() {
+		return (IDomainObject<?>)this.getSource();
 	}
 
 }

@@ -2,7 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 
 public class TestSession extends AbstractRuntimeTestCase  {
 
@@ -74,7 +74,7 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	public void testDomainObjectMarkedAsPersistentIfNotTransientOnly() {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
-		domain.addBuilder(new ExtendedProgModelDomainBuilder());
+		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
 		domain.done();
 
 		IDomainObject<Department> domainObject = 

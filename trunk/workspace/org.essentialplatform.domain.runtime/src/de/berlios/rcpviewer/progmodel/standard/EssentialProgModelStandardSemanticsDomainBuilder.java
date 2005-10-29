@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 
+import de.berlios.rcpviewer.domain.AbstractCompositeDomainBuilder;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.DomainClass;
 import de.berlios.rcpviewer.domain.Emf;
@@ -26,8 +27,6 @@ import de.berlios.rcpviewer.domain.MethodNameHelper;
 import de.berlios.rcpviewer.domain.DomainClass.OppRefState;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
-
 
 /**
  * Builds standard domain model.
@@ -47,13 +46,13 @@ import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
  * @author Dan Haywood
  *
  */
-public class StandardProgModelDomainBuilder implements IDomainBuilder {
+public final class EssentialProgModelStandardSemanticsDomainBuilder  implements IDomainBuilder{
 
 	private Emf emf = new Emf();
-	private StandardProgModelSemanticsEmfSerializer serializer = new StandardProgModelSemanticsEmfSerializer();
+	private EssentialProgModelStandardSemanticsEmfSerializer serializer = new EssentialProgModelStandardSemanticsEmfSerializer();
 
-	private final StandardProgModelRules _standardProgModelRules = new RuntimeStandardProgModelRules();
-	private JavaProgModelRules _javaProgModelRules = new JavaProgModelRules();
+	private final EssentialProgModelStandardSemanticsRules _standardRuntimeRules = new EssentialProgModelStandardSemanticsRuntimeRules();
+	private JavaRules _javaRules = new JavaRules();
 
 	/**
 	 * Because this implementation is the primary domain builder, this method
@@ -70,7 +69,7 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	 * <p>
 	 * For bidirectional references we note any @OppositeOf annotations but
 	 * the actual wiring up of bidirectional references is done in the
-	 * {@link StandardProgModelDomainBuilder#done}, delegating back to 
+	 * {@link EssentialProgModelDomainBuilder#done}, delegating back to 
 	 * {@link #wireUpOppositeReferences()}.
 	 */
 	public void init(DomainClass runtimeDomainClass) {
@@ -641,17 +640,18 @@ public class StandardProgModelDomainBuilder implements IDomainBuilder {
 	}
 
 
-	public JavaProgModelRules getJavaProgModelRules() {
-		return _javaProgModelRules;
+	public JavaRules getJavaProgModelRules() {
+		return _javaRules;
 	}
 
-	public StandardProgModelRules getStandardProgModelRules() {
-		return _standardProgModelRules;
+	public EssentialProgModelStandardSemanticsRules getStandardProgModelRules() {
+		return _standardRuntimeRules;
 	}
 	
 	// TODO: should be using covariance
-	public RuntimeStandardProgModelRules getRuntimeStandardProgModelRules() {
-		return (RuntimeStandardProgModelRules)getStandardProgModelRules();
+	public EssentialProgModelStandardSemanticsRuntimeRules getRuntimeStandardProgModelRules() {
+		return (EssentialProgModelStandardSemanticsRuntimeRules)getStandardProgModelRules();
 	}
+
 
 }

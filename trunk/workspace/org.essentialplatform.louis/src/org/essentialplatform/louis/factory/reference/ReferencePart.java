@@ -14,6 +14,7 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.util.SWTUtil;
 
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
 import de.berlios.rcpviewer.session.IPojo;
@@ -51,6 +52,9 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 			}
 			public void referenceChanged(DomainObjectReferenceEvent event) {
 				refresh();
+			}
+			public void referencePrerequisitesChanged(ExtendedDomainObjectReferenceEvent event) {
+				// does nowt
 			}
 		};
 	}

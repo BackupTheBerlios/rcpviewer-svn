@@ -36,6 +36,7 @@ public final class InMemoryObjectStore implements IObjectStore {
 	 * @see de.berlios.rcpviewer.persistence.IObjectStore#save(de.berlios.rcpviewer.session.IDomainObject)
 	 */
 	public <T> void save(IDomainObject<T> domainObject) throws DuplicateObjectException {
+		// TODO:
 //		persist(domainObject.persistenceId(), domainObject.getPojo());
 	}
 
@@ -43,7 +44,7 @@ public final class InMemoryObjectStore implements IObjectStore {
 	 * @see de.berlios.rcpviewer.persistence.IObjectStore#update(de.berlios.rcpviewer.session.IDomainObject)
 	 */
 	public <T> void update(IDomainObject<T> domainObject) throws ConcurrencyException, DuplicateObjectException {
-		Object pojo = pojoByPersistenceIdFor(domainObject.getPojo().getClass());
+		T pojo = (T)pojoByPersistenceIdFor(domainObject.getPojo().getClass());
 		// make sure that the pojo that this domain Object is referencing is
 		// the one in our hash.
 		if (pojo != domainObject.getPojo()) {

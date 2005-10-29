@@ -1,5 +1,6 @@
 package de.berlios.rcpviewer.domain;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +10,14 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 
+import de.berlios.rcpviewer.domain.Deployment.IAttributeBinding;
+import de.berlios.rcpviewer.domain.Deployment.IClassBinding;
+import de.berlios.rcpviewer.domain.Deployment.IOperationBinding;
+import de.berlios.rcpviewer.domain.Deployment.IReferenceBinding;
 import de.berlios.rcpviewer.progmodel.extended.AssignmentType;
 import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
 import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Id;
 import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
 import de.berlios.rcpviewer.progmodel.extended.Invisible;
@@ -98,6 +104,15 @@ public interface IDomainClass {
 	 * @return
 	 */
 	public String getEClassName();
+
+	/**
+	 * Returns the binding of this class to {@link Deployment}.
+	 * 
+	 * JAVA5_FIXME: fix return type.
+	 * 
+	 * @return
+	 */
+	public IClassBinding getBinding();
 
 	/**
 	 * Whether this class overall is immutable, meaning that non of its
@@ -341,15 +356,6 @@ public interface IDomainClass {
 	 * @return
 	 */
 	public IAttribute getAttribute(EAttribute eAttribute);
-
-	/**
-	 * Returns the binding of this class to {@link Deployment}.
-	 * 
-	 * JAVA5_FIXME: fix return type.
-	 * 
-	 * @return
-	 */
-	public Object getBinding();
 
 	/**
 	 * Encapsulates static semantics of an attribute of this class.
@@ -798,6 +804,7 @@ public interface IDomainClass {
 		public boolean regexMatches(String candidateValue);
 
 
+
 		/**
 		 * Returns a feature identifier for the supplied attribute.
 		 * 
@@ -813,7 +820,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public Object getBinding();
+		public IAttributeBinding getBinding();
 		
 	}
 
@@ -910,7 +917,8 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public Object getBinding();
+		public IReferenceBinding getBinding();
+
 		
 	}
 
@@ -933,7 +941,10 @@ public interface IDomainClass {
 	 * 
 	 * @author Dan Haywood
 	 */
-	public interface IOneToOneReference extends IReference {}
+	public interface IOneToOneReference extends IReference {
+		
+		
+	}
 
 	///////////////////////////////////////////////////////////////
 	// collection
@@ -952,7 +963,9 @@ public interface IDomainClass {
 	 * 
 	 * @author Dan Haywood
 	 */
-	public interface ICollectionReference extends IReference {}
+	public interface ICollectionReference extends IReference {
+
+	}
 
 
 	///////////////////////////////////////////////////////////////
@@ -1015,6 +1028,7 @@ public interface IDomainClass {
 	 * @author Dan Haywood
 	 */
 	public interface IOperation extends IMember {
+		
 		/**
 		 * The underlying {@link EOperation} that this represents.
 		 * @return
@@ -1256,7 +1270,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public Object getBinding();
+		public IOperationBinding getBinding();
 
 	}
 

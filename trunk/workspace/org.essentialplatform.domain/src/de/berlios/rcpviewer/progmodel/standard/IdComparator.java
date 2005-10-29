@@ -21,7 +21,7 @@ import de.berlios.rcpviewer.progmodel.extended.Id;
 public final class IdComparator extends AbstractAttributeComparator {
 
 	public IdComparator() {
-		super(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_ID_VALUE);
+		super(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_ID_VALUE);
 	}
 
 

@@ -16,7 +16,16 @@ package de.berlios.rcpviewer.domain;
  *
  */
 public interface IDomainBuilder {
-	
+
+	/**
+	 * Null object pattern. 
+	 */	
+	public IDomainBuilder NOOP = new IDomainBuilder() {
+		public void build(IDomainClass domainClass) {
+			// noop
+		}
+	};
+
 	/**
 	 * Called for each domain class, for all domain builders except the
 	 * primary domain builder.

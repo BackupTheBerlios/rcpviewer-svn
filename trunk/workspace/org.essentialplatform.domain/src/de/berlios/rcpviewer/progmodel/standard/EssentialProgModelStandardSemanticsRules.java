@@ -1,7 +1,6 @@
 package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.domain.MethodNameHelper;
-import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
 
 /**
  * Helper class (package local) that encapsulates the various naming 
@@ -13,13 +12,13 @@ import de.berlios.rcpviewer.progmodel.java.JavaProgModelRules;
  * 
  * @author Dan Haywood
  */
-public abstract class StandardProgModelRules {
+public abstract class EssentialProgModelStandardSemanticsRules {
 
-	public StandardProgModelRules() {}
+	public EssentialProgModelStandardSemanticsRules() {}
 	
-	private JavaProgModelRules _javaProgModelRules = new JavaProgModelRules();
+	private JavaRules _javaProgModelRules = new JavaRules();
 	
-	protected JavaProgModelRules getJavaProgModelRules() {
+	protected JavaRules getJavaProgModelRules() {
 		return _javaProgModelRules;
 	}
 	

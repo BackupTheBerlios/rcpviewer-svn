@@ -63,7 +63,7 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 				if (objectStore instanceof InMemoryObjectStore) {
 					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
 					for (Object pojo: memoryObjectStore.allInstances()) {
-						IDomainObject domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
+						IDomainObject<?> domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
 						_allObjects.add(domainObject);
 					}
 				}

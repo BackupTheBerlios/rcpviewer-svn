@@ -44,7 +44,8 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 	 */
 	protected void externalStateChangedForObservedFeatures(IPojo pojo) {
 		
-		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject<?> domainObject = pojo.getDomainObject();
+		
 		if (domainObject != null) {
 			ISession session = domainObject.getSession();
 			for(IObservedFeature observedFeature: session.getObservedFeatures()) {

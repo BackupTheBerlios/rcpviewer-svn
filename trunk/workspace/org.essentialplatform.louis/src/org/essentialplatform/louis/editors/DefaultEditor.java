@@ -32,6 +32,7 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.views.ops.IOpsViewPage;
 
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 import de.berlios.rcpviewer.transaction.ITransactable;
@@ -124,6 +125,8 @@ public final class DefaultEditor extends EditorPart {
 				if( !getPartName().equals( newName  ) ) {
 					resetTitle();
 				}
+			}
+			public void attributePrerequisitesChanged(ExtendedDomainObjectAttributeEvent event) {
 			}
 		};
 		for ( EAttribute a : getDomainObject().getDomainClass().attributes() ) {

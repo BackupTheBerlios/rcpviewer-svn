@@ -8,16 +8,15 @@ import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeDomainBinding;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 
 public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRuntimeTestCase  {
 
 	public TestExtendedDomainObjectAttributeAuthorization() {
-		super(new ExtendedProgModelDomainBuilder());
+		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
 	}
 
 	public void testCanSetAttributeIfDefaultAuthorizationManagerConfigured() {
@@ -28,12 +27,10 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
-
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
-
-		IExtendedDomainObject.IExtendedAttribute attrib = edo.getAttribute(nameEAttribute); 
+		
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 	}
@@ -58,20 +55,18 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
-
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
+		
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
 
 		// set expectations
-		IFeatureId feature = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("quantity")).attributeIdFor();
+		IFeatureId feature = classAttrib.attributeIdFor();
 		authorizationManager.preconditionsFor(feature);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
 		control.setReturnValue(Prerequisites.none());
 		control.replay();
 		
-		IExtendedDomainObject.IExtendedAttribute attrib = edo.getAttribute(nameEAttribute); 
 		IPrerequisites prerequisites = attrib.authorizationPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 		
@@ -93,29 +88,24 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainObject<OrderConstrained> domainObject = 
 			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		EAttribute nameEAttribute = domainObject.getEAttributeNamed("quantity");
 
-		IExtendedDomainObject<OrderConstrained> edo = 
-			domainObject.getAdapter(IExtendedDomainObject.class);
+		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
 
 		// set expectations
-		IFeatureId featureId = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("quantity")).attributeIdFor();
+		IFeatureId featureId = classAttrib.attributeIdFor();
 		authorizationManager.preconditionsFor(featureId);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
 		IPrerequisites returnPrerequisites = Prerequisites.require(false, "Cannot edit quantity"); 
 		control.setReturnValue(returnPrerequisites);
 		control.replay();
 		
-		IExtendedDomainObject.IExtendedAttribute attrib = edo.getAttribute(nameEAttribute); 
 		IPrerequisites prerequisites = attrib.authorizationPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 		
 		// verify
 		control.verify();
-
 	}
-
-
 
 }

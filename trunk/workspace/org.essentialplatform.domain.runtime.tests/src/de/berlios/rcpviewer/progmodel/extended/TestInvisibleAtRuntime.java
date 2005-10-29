@@ -12,7 +12,7 @@ import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 public class TestInvisibleAtRuntime extends TestInvisible {
 
 	public TestInvisibleAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), null);
 	}
 
 }

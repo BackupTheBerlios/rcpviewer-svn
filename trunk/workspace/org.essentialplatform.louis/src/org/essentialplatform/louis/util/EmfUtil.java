@@ -19,7 +19,7 @@ import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
 import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsConstants;
 
 /**
  * Static methods for helping with EMF constructs
@@ -166,14 +166,14 @@ public class EmfUtil {
 		public int compare(T feature0, T feature1) {
 			
 			Map<String,String> attributeDetails0 = 
-				emfAnnotations.getAnnotationDetails(feature0, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+				emfAnnotations.getAnnotationDetails(feature0, EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE);
 			Map<String,String> attributeDetails1 = 
-				emfAnnotations.getAnnotationDetails(feature1, ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE);
+				emfAnnotations.getAnnotationDetails(feature1, EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE);
 			
 			String positionedAtStr0 = 
-				attributeDetails0.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
+				attributeDetails0.get(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
 			String positionedAtStr1 = 
-				attributeDetails1.get(ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
+				attributeDetails1.get(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
 			
 			
 			if (positionedAtStr0 != null && positionedAtStr1 == null) {

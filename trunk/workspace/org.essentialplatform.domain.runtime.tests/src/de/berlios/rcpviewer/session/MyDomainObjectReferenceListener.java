@@ -25,4 +25,13 @@ class MyDomainObjectReferenceListener implements IDomainObjectReferenceListener 
 		this.event = event;
 	}
 
+	boolean referencePrerequisitesChangedCallbackCalled = false;
+	ExtendedDomainObjectReferenceEvent extendedEvent;
+	
+	public void referencePrerequisitesChanged(ExtendedDomainObjectReferenceEvent extendedEvent) {
+		referencePrerequisitesChangedCallbackCalled=true;
+		this.extendedEvent = extendedEvent;
+	}
+
+
 }

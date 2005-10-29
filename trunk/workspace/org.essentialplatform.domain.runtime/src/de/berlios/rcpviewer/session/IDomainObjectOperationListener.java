@@ -11,4 +11,15 @@ package de.berlios.rcpviewer.session;
 public interface IDomainObjectOperationListener {
 
 	public void operationInvoked(DomainObjectOperationEvent event);
+	
+	/**
+	 * The prerequisites of an operation of the {@link IDomainObject} have been 
+	 * changed.
+	 *
+	 * <p>
+	 * Extended semantics.
+	 */
+	public void operationPrerequisitesChanged(ExtendedDomainObjectOperationEvent event);
+
+
 }

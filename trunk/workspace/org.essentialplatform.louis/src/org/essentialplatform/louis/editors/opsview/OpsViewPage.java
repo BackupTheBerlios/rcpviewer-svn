@@ -33,9 +33,9 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * <br>Each editor instance holds its own instance of this class.
  * @author Mike
  */
-public class OpsViewPage extends Page implements IOpsViewPage {
+public class OpsViewPage<T> extends Page implements IOpsViewPage {
 	
-	private final IDomainObject _domainObject; 
+	private final IDomainObject<T> _domainObject; 
 	
 	// temporary
 	private TreeViewer _viewer = null;
@@ -44,7 +44,7 @@ public class OpsViewPage extends Page implements IOpsViewPage {
 	 * Constructor passed parent domain object.
 	 * @param object
 	 */
-	public OpsViewPage( IDomainObject object ) {
+	public OpsViewPage( IDomainObject<T> object ) {
 		super();
 		assert object != null;
 		_domainObject = object;

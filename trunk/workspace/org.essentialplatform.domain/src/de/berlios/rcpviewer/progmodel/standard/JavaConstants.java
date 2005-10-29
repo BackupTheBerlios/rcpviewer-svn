@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.java;
+package de.berlios.rcpviewer.progmodel.standard;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,9 +17,9 @@ import de.berlios.rcpviewer.domain.LinkSemanticsType;
  * 
  * @author Dan Haywood
  */
-public final class JavaProgModelConstants {
+public final class JavaConstants {
 
-	private JavaProgModelConstants() {
+	private JavaConstants() {
 	}
 
 	/**

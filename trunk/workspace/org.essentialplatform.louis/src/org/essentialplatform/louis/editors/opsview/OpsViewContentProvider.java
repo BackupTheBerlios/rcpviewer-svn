@@ -33,7 +33,7 @@ class OpsViewContentProvider implements ITreeContentProvider {
 		if ( !( inputElement instanceof IDomainObject ) ) {
 			throw new IllegalArgumentException();
 		}
-		IDomainObject<?> obj = (IDomainObject)inputElement;
+		IDomainObject<?> obj = (IDomainObject<?>)inputElement;
 		List<EOperation> ops = obj.getDomainClass().operations(); 
 		if ( ops.isEmpty() ) {
 			return new Object[]{ new ErrorInput( 

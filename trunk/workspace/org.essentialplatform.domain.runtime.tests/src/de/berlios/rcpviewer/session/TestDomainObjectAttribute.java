@@ -6,8 +6,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.authorization.IAuthorizationManager;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
@@ -15,62 +13,52 @@ import de.berlios.rcpviewer.progmodel.standard.IFeatureId;
 public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
 	public TestDomainObjectAttribute() {
-		super(new ExtendedProgModelDomainBuilder());
+		super(null);
 	}
 
 	public void testCanGetAttribute() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass dc = lookupAny(Department.class);
+		IDomainObject<?> dobj = session.create(dc);
+		EAttribute eAttrib = dobj.getEAttributeNamed("name");
+		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
-		domainObject.getPojo().setName("HR");
-		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
-		String value = (String)nameAttribute.get();
+		Department pojo = (Department)dobj.getPojo();
+		pojo.setName("HR");  // set directly rather than using attrib.set()
+		String value = (String)attrib.get();
 		assertEquals("HR", value);
 	}
 
 	public void testCanSetAttribute() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
-		getDomainInstance().done();
-
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
-		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
-		nameAttribute.set("HR");
-		assertEquals("HR", domainObject.getPojo().getName());
+		IDomainClass dc = lookupAny(Department.class);
+		IDomainObject<?> dobj = session.create(dc);
+		EAttribute eAttrib = dobj.getEAttributeNamed("name");
+		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
+		
+		Department pojo = (Department)dobj.getPojo();
+		attrib.set("HR");
+		assertEquals("HR", pojo.getName());
 	}
 
 	public void testSettingAttributeNotifiesListeners() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass dc =  lookupAny(Department.class);
+		IDomainObject<?> dobj = session.create(dc);
+		EAttribute eAttrib = dobj.getEAttributeNamed("name");
+		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
-		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		MyDomainObjectAttributeListener l = 
-			nameAttribute.addListener(new MyDomainObjectAttributeListener());
-		nameAttribute.set("HR");
+			attrib.addListener(new MyDomainObjectAttributeListener());
+		attrib.set("HR");
 		assertTrue(l.attributeChangedCallbackCalled);
 	}
 
 	public void testCannotSetAttributeToObjectOfWrongType() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(new ExtendedProgModelDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass dc = lookupAny(Department.class);
+		IDomainObject<?> dobj = session.create(dc);
+		EAttribute eAttrib = dobj.getEAttributeNamed("name");
+		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
-		IDomainObject.IObjectAttribute nameAttribute = domainObject.getAttribute(domainObject.getEAttributeNamed("name"));
 		try {
-			nameAttribute.set(new Integer(1));
+			attrib.set(new Integer(1));
 			fail("Expected IllegalArgumentException to have been thrown");
 		} catch(IllegalArgumentException ex) {
 			// expected.

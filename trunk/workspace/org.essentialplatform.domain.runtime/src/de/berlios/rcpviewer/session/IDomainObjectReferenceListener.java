@@ -31,4 +31,14 @@ public interface IDomainObjectReferenceListener {
 	 * @param event
 	 */
 	public void referenceChanged(DomainObjectReferenceEvent event);
+	
+	/**
+	 * The prerequisites of a reference of the {@link IDomainObject} have been 
+	 * changed.
+	 *
+	 * <p>
+	 * Extended semantics.
+	 */
+	public void referencePrerequisitesChanged(ExtendedDomainObjectReferenceEvent event);
+
 }

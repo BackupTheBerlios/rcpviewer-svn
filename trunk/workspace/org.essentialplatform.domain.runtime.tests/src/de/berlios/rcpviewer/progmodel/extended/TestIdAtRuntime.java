@@ -2,6 +2,7 @@ package de.berlios.rcpviewer.progmodel.extended;
 
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 
+
 /**
  * Binds the tests defined in {@link TestId} to the runtime 
  * environment.
@@ -12,7 +13,7 @@ import de.berlios.rcpviewer.RuntimeDomainSpecifics;
 public class TestIdAtRuntime extends TestId {
 
 	public TestIdAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), null);
 	}
 
 }

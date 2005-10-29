@@ -2,10 +2,6 @@ package de.berlios.rcpviewer.session;
 
 import java.util.EventObject;
 
-import org.eclipse.emf.ecore.EAttribute;
-
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
-
 
 /**
  * Event object for events that impact an {@link IDomainObject}.

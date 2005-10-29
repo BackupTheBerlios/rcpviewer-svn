@@ -6,6 +6,7 @@ import org.eclipse.ui.forms.AbstractFormPart;
 import org.essentialplatform.louis.util.NullUtil;
 
 import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectAttributeEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectAttributeListener;
 
@@ -41,6 +42,8 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 		_listener = new IDomainObjectAttributeListener(){
 			public void attributeChanged(DomainObjectAttributeEvent event) {
 				refresh();
+			}
+			public void attributePrerequisitesChanged(ExtendedDomainObjectAttributeEvent event) {
 			}
 		};
 	}

@@ -1,10 +1,11 @@
-package de.berlios.rcpviewer.progmodel.java;
+package de.berlios.rcpviewer.progmodel.standard;
 
 import de.berlios.rcpviewer.domain.MethodNameHelper;
 
 /**
  * Helper class (package local) that encapsulates the various naming 
- * conventions of the java "programming model".
+ * conventions and rules of the Java programming language; for example the 
+ * definition of the primitive data types.
  * 
  * <p>
  * This class is final; there should be no need to subclass for runtime or
@@ -12,23 +13,24 @@ import de.berlios.rcpviewer.domain.MethodNameHelper;
  * 
  * @author Dan Haywood
  */
-public final class JavaProgModelRules {
+public final class JavaRules {
 
-	public JavaProgModelRules() {}
+
+	public JavaRules() {}
 	
 	// ATTRIBUTES: START
 	
 	/**
 	 * If one of the (hard-coded) classes in 
-	 * {@link StandardProgModelConstants#JDK_VALUE_TYPES}.
+	 * {@link EssentialProgModelStandardSemanticsConstants#JDK_VALUE_TYPES}.
 	 * 
 	 */
 	public final boolean isCoreValueType(final Class<?> javaClass) {
-		return JavaProgModelConstants.JDK_VALUE_TYPES.contains(javaClass);
+		return JavaConstants.JDK_VALUE_TYPES.contains(javaClass);
 	}
 	
 	public final boolean isCollectionType(final Class<?> clazz) {
-		return JavaProgModelConstants.COLLECTION_TYPES.contains(clazz);
+		return JavaConstants.COLLECTION_TYPES.contains(clazz);
 	}
 
 	public boolean isVoid(Class<?> javaDataType) {

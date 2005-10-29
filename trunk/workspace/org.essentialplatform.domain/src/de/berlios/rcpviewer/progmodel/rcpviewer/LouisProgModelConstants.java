@@ -6,13 +6,13 @@ package de.berlios.rcpviewer.progmodel.rcpviewer;
  * 
  * @author Dan Haywood
  */
-public final class RcpViewerProgModelConstants {
+public final class LouisProgModelConstants {
 
 	
 	/**
 	 * Cannot instantiate.
 	 */
-	private RcpViewerProgModelConstants() {
+	private LouisProgModelConstants() {
 	}
 
 	/**

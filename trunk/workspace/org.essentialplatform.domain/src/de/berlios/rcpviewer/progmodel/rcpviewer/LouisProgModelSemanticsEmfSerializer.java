@@ -12,7 +12,7 @@ import org.eclipse.emf.ecore.EReference;
 import sun.security.krb5.internal.crypto.b;
 
 import de.berlios.rcpviewer.domain.EmfAnnotations;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsConstants;
 
 /**
  * Serializes and deserializes semantics for the rcpviewer programming model
@@ -20,7 +20,7 @@ import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
  *  
  * @author Dan Haywood
  */
-public final class RcpViewerProgModelSemanticsEmfSerializer {
+public final class LouisProgModelSemanticsEmfSerializer {
 
 	private final EmfAnnotations _emfAnnotations = new EmfAnnotations();
 
@@ -28,8 +28,8 @@ public final class RcpViewerProgModelSemanticsEmfSerializer {
 
 	public ImageUrlAt getClassImageUrlAt(EClass eClass) {
 		Map<String,String> attributeDetails = 
-			_emfAnnotations.getAnnotationDetails(eClass, RcpViewerProgModelConstants.ANNOTATION_CLASS);
-		final String imageUrlAt = attributeDetails.get(RcpViewerProgModelConstants.ANNOTATION_CLASS_IMAGE_URL_AT_KEY);
+			_emfAnnotations.getAnnotationDetails(eClass, LouisProgModelConstants.ANNOTATION_CLASS);
+		final String imageUrlAt = attributeDetails.get(LouisProgModelConstants.ANNOTATION_CLASS_IMAGE_URL_AT_KEY);
 		if (imageUrlAt == null) return null;
 		return ImageUrlAt.Factory.create(imageUrlAt);
 	}
@@ -37,8 +37,8 @@ public final class RcpViewerProgModelSemanticsEmfSerializer {
 		if (imageUrlAt == null) return;
 		_emfAnnotations.putAnnotationDetails(
 				eClass, 
-				RcpViewerProgModelConstants.ANNOTATION_CLASS, 
-				RcpViewerProgModelConstants.ANNOTATION_CLASS_IMAGE_URL_AT_KEY, 
+				LouisProgModelConstants.ANNOTATION_CLASS, 
+				LouisProgModelConstants.ANNOTATION_CLASS_IMAGE_URL_AT_KEY, 
 				imageUrlAt.value());	
 	}
 }

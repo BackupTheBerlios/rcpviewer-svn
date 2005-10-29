@@ -20,7 +20,7 @@ public abstract class DomainObjectEvent extends EventObject {
 	 * 
 	 * @param source
 	 */
-	public DomainObjectEvent(final IDomainObject source) {
+	public DomainObjectEvent(final IDomainObject<?> source) {
 		super(source);
 	}
 	
@@ -29,8 +29,8 @@ public abstract class DomainObjectEvent extends EventObject {
 	 * 
 	 * @return the {@link IDomainObject} that raised the event.
 	 */
-	public IDomainObject getDomainObject() {
-		return (IDomainObject)this.getSource();
+	public IDomainObject<?> getDomainObject() {
+		return (IDomainObject<?>)this.getSource();
 	}
 
 }

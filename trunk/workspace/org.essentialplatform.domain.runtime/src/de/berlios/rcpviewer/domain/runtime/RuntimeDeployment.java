@@ -1,16 +1,25 @@
 package de.berlios.rcpviewer.domain.runtime;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.osgi.framework.Bundle;
@@ -26,14 +35,15 @@ import de.berlios.rcpviewer.domain.IDomainClass.IAttribute;
 import de.berlios.rcpviewer.domain.IDomainClass.ICollectionReference;
 import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
+import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
 import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.rcpviewer.RcpViewerProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.rcpviewer.LouisProgModelSemanticsEmfSerializer;
 import de.berlios.rcpviewer.progmodel.standard.DomainObject;
-import de.berlios.rcpviewer.progmodel.standard.ExtendedProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsEmfSerializer;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 import de.berlios.rcpviewer.progmodel.standard.OppositeReferencesIdentifier;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelDomainBuilder;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelSemanticsEmfSerializer;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsEmfSerializer;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.local.Session;
 
@@ -43,10 +53,68 @@ import de.berlios.rcpviewer.session.local.Session;
  * @author Dan Haywood
  */
 public final class RuntimeDeployment extends Deployment {
+	
+	private static Logger _logger = Logger.getLogger(RuntimeDeployment.class);
 
-	private static StandardProgModelSemanticsEmfSerializer __standardSerializer = new StandardProgModelSemanticsEmfSerializer();
-	private static ExtendedProgModelSemanticsEmfSerializer __extendedSerializer = new ExtendedProgModelSemanticsEmfSerializer();
-	private static RcpViewerProgModelSemanticsEmfSerializer __rcpViewerSerializer = new RcpViewerProgModelSemanticsEmfSerializer();
+	private static EssentialProgModelStandardSemanticsEmfSerializer __standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
+	private static EssentialProgModelExtendedSemanticsEmfSerializer __extendedSerializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
+	private static LouisProgModelSemanticsEmfSerializer __rcpViewerSerializer = new LouisProgModelSemanticsEmfSerializer();
+
+	private static Map<Class<?>, Object> __defaultValueByPrimitiveType = new HashMap<Class<?>, Object>();
+	private static Map<Class<?>, Class<?>> __wrapperTypeByPrimitiveType = new HashMap<Class<?>, Class<?>>();
+
+	static {
+		__defaultValueByPrimitiveType.put(byte.class, 0);
+		__defaultValueByPrimitiveType.put(short.class, 0);
+		__defaultValueByPrimitiveType.put(int.class, 0);
+		__defaultValueByPrimitiveType.put(long.class, 0);
+		__defaultValueByPrimitiveType.put(char.class, 0);
+		__defaultValueByPrimitiveType.put(float.class, 0);
+		__defaultValueByPrimitiveType.put(double.class, 0);
+		__defaultValueByPrimitiveType.put(boolean.class, false);
+		__defaultValueByPrimitiveType.put(String.class, null); // rather than
+																// ""
+		__defaultValueByPrimitiveType.put(Byte.class, 0);
+		__defaultValueByPrimitiveType.put(Short.class, 0);
+		__defaultValueByPrimitiveType.put(Integer.class, 0);
+		__defaultValueByPrimitiveType.put(Long.class, 0);
+		__defaultValueByPrimitiveType.put(Character.class, 0);
+		__defaultValueByPrimitiveType.put(Float.class, 0);
+		__defaultValueByPrimitiveType.put(Double.class, 0);
+		__defaultValueByPrimitiveType.put(Boolean.class, false);
+		__defaultValueByPrimitiveType
+				.put(BigInteger.class, new BigInteger("0"));
+		__defaultValueByPrimitiveType.put(BigDecimal.class, new BigDecimal(
+				"0.0"));
+
+		__wrapperTypeByPrimitiveType.put(byte.class, Byte.class);
+		__wrapperTypeByPrimitiveType.put(short.class, Short.class);
+		__wrapperTypeByPrimitiveType.put(int.class, Integer.class);
+		__wrapperTypeByPrimitiveType.put(long.class, Long.class);
+		__wrapperTypeByPrimitiveType.put(char.class, Character.class);
+		__wrapperTypeByPrimitiveType.put(float.class, Float.class);
+		__wrapperTypeByPrimitiveType.put(double.class, Double.class);
+		__wrapperTypeByPrimitiveType.put(boolean.class, Boolean.class);
+
+	}
+
+	/**
+	 * Converts primitive types into corresponding wrapped types, or leaves
+	 * alone if not a primitive type.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	private Class<?> wrapperTypeIfRequired(Class<?> type) {
+		Class<?> wrappedType = __wrapperTypeByPrimitiveType.get(type);
+		if (wrappedType != null) {
+			return wrappedType;
+		} else {
+			return type;
+		}
+
+	}
+
 
 	//////////////////////////////////////////////////////////////////////
 
@@ -65,7 +133,7 @@ public final class RuntimeDeployment extends Deployment {
 
 	@Override
 	public IDomainBuilder getPrimaryBuilder() {
-		return new StandardProgModelDomainBuilder();
+		return new EssentialProgModelDomainBuilder();
 	}
 
 	@Override
@@ -337,10 +405,48 @@ public final class RuntimeDeployment extends Deployment {
 			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
 			return domainBinding.getAuthorizationManager().preconditionsFor(_attribute.attributeIdFor());
 		}
+
+		public IPrerequisites accessorPrerequisitesFor(final Object pojo)  {
+			Method accessorPre = __extendedSerializer.getAttributeAccessorPreMethod(_eAttribute);
+			if (accessorPre == null) {
+				return Prerequisites.none();
+			}
+			try {
+				return (IPrerequisites)accessorPre.invoke(pojo, new Object[]{});
+			} catch (IllegalArgumentException ex) {
+				_logger.error("Problem obtaining accessor prerequisites for '" + _eAttribute + "'", ex);
+				return Prerequisites.invisible();
+			} catch (IllegalAccessException ex) {
+				_logger.error("Problem obtaining accessor prerequisites for '" + _eAttribute + "'", ex);
+				return Prerequisites.invisible();
+			} catch (InvocationTargetException ex) {
+				_logger.error("Problem obtaining accessor prerequisites for '" + _eAttribute + "'", ex);
+				return Prerequisites.invisible();
+			}
+		}
+
+		public IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue) {
+			Method mutatorPre = __extendedSerializer.getAttributeMutatorPreMethod(_eAttribute);;
+			if (mutatorPre == null) {
+				return Prerequisites.none();
+			}
+			try {
+				return (IPrerequisites)mutatorPre.invoke(pojo, new Object[]{candidateValue});
+			} catch (IllegalArgumentException ex) {
+				_logger.error("Problem obtaining mutator prerequisites for '" + _eAttribute + "'", ex);
+				return Prerequisites.invisible();
+			} catch (IllegalAccessException ex) {
+				_logger.error("Problem obtaining mutator prerequisites for '" + _eAttribute + "'", ex);
+				return Prerequisites.invisible();
+			} catch (InvocationTargetException ex) {
+				_logger.error("Problem obtaining mutator prerequisites for '" + _eAttribute + "'", ex);
+				return Prerequisites.invisible();
+			}
+		}
 		
 	}
 
-	static abstract class AbstractRuntimeReferenceBinding {
+	public static abstract class AbstractRuntimeReferenceBinding {
 		
 		final IDomainClass.IReference _reference;
 		final EReference _eReference;
@@ -377,6 +483,24 @@ public final class RuntimeDeployment extends Deployment {
 			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
 			return domainBinding.getAuthorizationManager().preconditionsFor(_reference.referenceIdFor());
 		}
+
+		public IPrerequisites accessorPrerequisitesFor(final Object pojo) {
+			Method accessorPre = __extendedSerializer.getReferenceAccessorPreMethod(_eReference); 
+			if (accessorPre == null) {
+				return Prerequisites.none();
+			}
+			try {
+				return (IPrerequisites)accessorPre.invoke(pojo, new Object[]{});
+			} catch (IllegalArgumentException ex) {
+				// TODO log?
+			} catch (IllegalAccessException ex) {
+				// TODO Auto-generated catch block
+			} catch (InvocationTargetException ex) {
+				// TODO Auto-generated catch block
+			}
+			return Prerequisites.none();
+		}
+
 
 	}
 	
@@ -434,6 +558,26 @@ public final class RuntimeDeployment extends Deployment {
 				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
 			}
 		}
+
+		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue) {
+			Method mutatorPre = __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
+			if (mutatorPre == null) {
+				return Prerequisites.none();
+			}
+			try {
+				return (IPrerequisites) mutatorPre.invoke(pojo, new Object[] { candidateValue });
+			} catch (IllegalArgumentException ex) {
+				_logger.error("Problem obtaining mutator prerequisites for '" + _eReference + "'", ex);
+				return Prerequisites.invisible();
+			} catch (IllegalAccessException ex) {
+				_logger.error("Problem obtaining mutator prerequisites for '" + _eReference + "'", ex);
+				return Prerequisites.invisible();
+			} catch (InvocationTargetException ex) {
+				_logger.error("Problem obtaining mutator prerequisites for '" + _eReference + "'", ex);
+				return Prerequisites.invisible();
+			}
+		}
+		
 	}
 		
 	public final static class RuntimeCollectionReferenceBinding extends AbstractRuntimeReferenceBinding implements ICollectionReferenceBinding {
@@ -490,6 +634,26 @@ public final class RuntimeDeployment extends Deployment {
 				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
 			}
 		}
+		
+		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue, final boolean beingAdded) {
+			Method mutatorPre = beingAdded 
+									? __extendedSerializer.getReferenceAddToPreMethod(_eReference)
+									: __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
+			if (mutatorPre == null) {
+				return Prerequisites.none();
+			}
+			try {
+				return (IPrerequisites) mutatorPre.invoke(pojo, new Object[] { candidateValue });
+			} catch (IllegalArgumentException ex) {
+				// TODO log?
+			} catch (IllegalAccessException ex) {
+				// TODO Auto-generated catch block
+			} catch (InvocationTargetException ex) {
+				// TODO Auto-generated catch block
+			}
+			return Prerequisites.none();
+		}
+
 	}
 
 	public final static class RuntimeOperationBinding implements IOperationBinding {
@@ -510,6 +674,12 @@ public final class RuntimeDeployment extends Deployment {
 		 */
 		private final Method _operationDefaults;
 
+		/*
+		 * Extended semantics support.
+		 */
+		private final Class<?>[] _parameterTypes;
+
+
 		public RuntimeOperationBinding(IDomainClass.IOperation operation) {
 			_operation = operation;
 			_eOperation = _operation.getEOperation();
@@ -517,6 +687,14 @@ public final class RuntimeDeployment extends Deployment {
 			_operationInvoker = __standardSerializer.getOperationMethod(_eOperation);
 			_operationPre = __extendedSerializer.getOperationPreMethod(_eOperation);
 			_operationDefaults = __extendedSerializer.getOperationDefaultsMethod(_eOperation);
+
+			// extended semantics
+			EList eParameters = _eOperation.getEParameters();
+			_parameterTypes = new Class<?>[eParameters.size()];
+			for (int i = 0; i < _parameterTypes.length; i++) {
+				EParameter eParameter = (EParameter) eParameters.get(i);
+				_parameterTypes[i] = eParameter.getEType().getInstanceClass();
+			}
 		}
 
 		public Object invokeOperation(final Object pojo, final Object[] args) {
@@ -541,6 +719,125 @@ public final class RuntimeDeployment extends Deployment {
 			return domainBinding.getAuthorizationManager().preconditionsFor(_operation.operationIdFor());
 		}
 
+		public IPrerequisites prerequisitesFor(final Object pojo, Object[] args) {
+
+			Method invokePre = __extendedSerializer.getOperationPreMethod(_eOperation);
+			if (invokePre == null) {
+				return Prerequisites.none();
+			}
+
+			try {
+				return (IPrerequisites) invokePre.invoke(pojo, args);
+			} catch (IllegalArgumentException ex) {
+				return Prerequisites.unusable(ex.getLocalizedMessage());
+			} catch (IllegalAccessException ex) {
+				return Prerequisites.unusable(ex.getLocalizedMessage());
+			} catch (InvocationTargetException ex) {
+				return Prerequisites.unusable(ex.getLocalizedMessage());
+			}
+		}
+
+		
+		public Object[] reset(final Object pojo, final Object[] args, Map<Integer, Object> argsByPosition) {
+			Method invokeDefaults = __extendedSerializer.getOperationDefaultsMethod(_eOperation);
+			if (invokeDefaults == null) {
+				return args;
+			}
+			
+			try {
+				// create an array of 1-element arrays; the defaulter method
+				// will expect this structure and will populate the element
+				// (simulates passing by reference)
+				Object[] argDefaultArrays = new Object[_parameterTypes.length];
+				for (int i = 0; i < argDefaultArrays.length; i++) {
+					argDefaultArrays[i] = Array.newInstance(_parameterTypes[i], 1);
+				}
+
+				// invoke the defaults method itself
+				invokeDefaults.invoke(pojo, argDefaultArrays);
+				// now copy out the elements into the actual arguments array
+				// held by this extendedOp object.
+				for (int i = 0; i < argDefaultArrays.length; i++) {
+					Object argDefaultArray = argDefaultArrays[i];
+					Object argDefault = Array.get(argDefaultArray, 0);
+					argsByPosition.put(i, argDefault);
+				}
+
+				return getArgs(argsByPosition);
+			} catch (IllegalArgumentException ex) {
+				return getArgs(argsByPosition);
+			} catch (IllegalAccessException ex) {
+				return getArgs(argsByPosition);
+			} catch (InvocationTargetException ex) {
+				return getArgs(argsByPosition);
+			}
+		}
+		
+		/*
+		 * Extended semantics.
+		 */
+		public Object[] getArgs(final Map<Integer, Object> argumentsByPosition) {
+			Object[] args = new Object[_eOperation.getEParameters().size()];
+			for (int i = 0; i < args.length; i++) {
+				args[i] = getArg(i, argumentsByPosition);
+			}
+			return args;
+		}
+
+
+
+		// helpers
+
+		private Object getArg(final int position, Map<Integer, Object> argsByPosition) {
+			Object arg = argsByPosition.get(position);
+			if (arg != null) {
+				return arg;
+			}
+			arg = __defaultValueByPrimitiveType.get(_parameterTypes[position]);
+			if (arg != null) {
+				return arg;
+			}
+			try {
+				Constructor<?> publicConstructor = _parameterTypes[position]
+						.getConstructor();
+				arg = publicConstructor.newInstance();
+				return arg;
+			} catch (Exception ex) {
+				throw new IllegalArgumentException(
+						"No public constructor for '"
+								+ _parameterTypes[position].getCanonicalName()
+								+ "'" + " (arg position=" + position + ")", ex);
+			}
+		}
+
+		public boolean isAssignableFromIncludingAutoboxing(Class<?> requiredType, Class<? extends Object> candidateType) {
+			if (requiredType == byte.class && candidateType == Byte.class) {
+				return true;
+			}
+			if (requiredType == short.class && candidateType == Short.class) {
+				return true;
+			}
+			if (requiredType == int.class && candidateType == Integer.class) {
+				return true;
+			}
+			if (requiredType == long.class && candidateType == Long.class) {
+				return true;
+			}
+			if (requiredType == char.class && candidateType == Character.class) {
+				return true;
+			}
+			if (requiredType == float.class && candidateType == Float.class) {
+				return true;
+			}
+			if (requiredType == double.class && candidateType == Double.class) {
+				return true;
+			}
+			if (requiredType == boolean.class && candidateType == Boolean.class) {
+				return true;
+			}
+			return requiredType.isAssignableFrom(candidateType);
+		}
+		
 	}
 
 

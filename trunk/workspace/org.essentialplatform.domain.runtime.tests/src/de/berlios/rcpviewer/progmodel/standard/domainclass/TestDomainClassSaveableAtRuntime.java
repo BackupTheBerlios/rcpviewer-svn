@@ -1,7 +1,7 @@
 package de.berlios.rcpviewer.progmodel.standard.domainclass;
 
 import de.berlios.rcpviewer.RuntimeDomainSpecifics;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 
 /**
  * Binds the tests defined in {@link TestDomainClassImmutable} to the runtime 
@@ -13,7 +13,7 @@ import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
 public class TestDomainClassSaveableAtRuntime extends TestDomainClassSaveable {
 
 	public TestDomainClassSaveableAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new ExtendedProgModelDomainBuilder());
+		super(new RuntimeDomainSpecifics(), new EssentialProgModelExtendedSemanticsDomainBuilder());
 	}
 
 }

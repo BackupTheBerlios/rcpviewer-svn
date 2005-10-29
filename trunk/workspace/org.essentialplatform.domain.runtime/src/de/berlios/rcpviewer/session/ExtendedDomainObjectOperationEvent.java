@@ -2,13 +2,7 @@ package de.berlios.rcpviewer.session;
 
 import java.util.EventObject;
 
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EReference;
-
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedDomainObject;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.IExtendedDomainObject.IExtendedOperation;
 
 
 /**
@@ -29,7 +23,7 @@ public final class ExtendedDomainObjectOperationEvent extends EventObject {
 	 * @param source
 	 */
 	public ExtendedDomainObjectOperationEvent(
-			final ExtendedDomainObject.ExtendedOperation source, // workaround 
+			final IDomainObject.IObjectOperation source, // workaround 
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;
@@ -38,10 +32,10 @@ public final class ExtendedDomainObjectOperationEvent extends EventObject {
 	/**
 	 * Type-safe accessor to the source of this event.
 	 * 
-	 * @return the extended attribute that raised this event.
+	 * @return the attribute that raised this event.
 	 */
-	public IExtendedDomainObject.IExtendedOperation getExtendedOperation() {
-		return (IExtendedDomainObject.IExtendedOperation)getSource();
+	public IDomainObject.IObjectOperation getOperation() {
+		return (IDomainObject.IObjectOperation)getSource();
 	}
 
 

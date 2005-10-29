@@ -2,17 +2,18 @@ package de.berlios.rcpviewer.progmodel.standard;
 
 
 /**
- * Set of constants relating to this package.
+ * Set of constants relating to the extended semantics of the <i>Essential</i>
+ * programming model.
  * 
  * @author Dan Haywood
  */
-public final class ExtendedProgModelConstants {
+public final class EssentialProgModelExtendedSemanticsConstants {
 
 	
 	/**
 	 * Cannot instantiate.
 	 */
-	private ExtendedProgModelConstants() {
+	private EssentialProgModelExtendedSemanticsConstants() {
 	}
 
 	/**
@@ -48,42 +49,42 @@ public final class ExtendedProgModelConstants {
 	 * indicates additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_ELEMENT = 
-		"http://rcpviewer.berlios.de/progmodel/extended/element";
+		"http://org.essentialplatform/progmodel/essential/extended/element";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EClass indicates
 	 * additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_CLASS = 
-		"http://rcpviewer.berlios.de/progmodel/extended/class";
+		"http://org.essentialplatform/progmodel/essential/extended/class";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EAttribute indicates
 	 * additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_ATTRIBUTE = 
-		"http://rcpviewer.berlios.de/progmodel/extended/attribute";
+		"http://org.essentialplatform/progmodel/essential/extended/attribute";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EReference indicates
 	 * additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_REFERENCE = 
-		"http://rcpviewer.berlios.de/progmodel/extended/reference";
+		"http://org.essentialplatform/progmodel/essential/extended/reference";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EOperation indicates
 	 * additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_OPERATION = 
-		"http://rcpviewer.berlios.de/progmodel/extended/operation";
+		"http://org.essentialplatform/progmodel/essential/extended/operation";
 
 	/**
 	 * Presence of an EAnnotation with this source on an EParameter indicates
 	 * additional information accessible from the details.
 	 */
 	public static final String ANNOTATION_OPERATION_PARAMETER = 
-		"http://rcpviewer.berlios.de/progmodel/extended/operation/parameter";
+		"http://org.essentialplatform/progmodel/essential/extended/operation/parameter";
 
 
 	/**
@@ -169,7 +170,7 @@ public final class ExtendedProgModelConstants {
 
 	/**
 	 * Key to details of EAnnotation with source of 
-	 * {@link ExtendedProgModelConstants#ANNOTATION_CLASS}
+	 * {@link EssentialProgModelExtendedSemanticsConstants#ANNOTATION_CLASS}
 	 * whose presence indicates whether the annotated class should be 
 	 * explicitly instantiatable through the UI. 
 	 */
@@ -178,7 +179,7 @@ public final class ExtendedProgModelConstants {
 
 	/**
 	 * Key to details of EAnnotation with source of 
-	 * {@link ExtendedProgModelConstants#ANNOTATION_CLASS} whose presence 
+	 * {@link EssentialProgModelExtendedSemanticsConstants#ANNOTATION_CLASS} whose presence 
 	 * indicates whether the annotated class should be explicitly saveable. 
 	 */
 	public static final String ANNOTATION_CLASS_SAVEABLE_KEY = 
@@ -186,7 +187,7 @@ public final class ExtendedProgModelConstants {
 
 	/**
 	 * Key to details of EAnnotation with source of 
-	 * {@link ExtendedProgModelConstants#ANNOTATION_CLASS} whose presence 
+	 * {@link EssentialProgModelExtendedSemanticsConstants#ANNOTATION_CLASS} whose presence 
 	 * indicates that the annotated class should be made available in a generic 
 	 * search capability.
 	 */

@@ -37,8 +37,8 @@ public class Session implements ISession, IObjectStoreAware {
 	 *  
 	 * @see #_domainObjectByPojo
 	 */
-	private Map<IDomainObject, Object> _pojoByDomainObject = 
-		new HashMap<IDomainObject, Object>();
+	private Map<IDomainObject<?>, Object> _pojoByDomainObject = 
+		new HashMap<IDomainObject<?>, Object>();
 
 	/**
 	 * Mapping of {@link IDomainObject} by the pojo that it wraps.
@@ -48,8 +48,8 @@ public class Session implements ISession, IObjectStoreAware {
 	 * 
 	 * @see #_pojoByDomainObject
 	 */
-	private Map<Object, IDomainObject> _domainObjectByPojo = 
-		new HashMap<Object, IDomainObject>();
+	private Map<Object, IDomainObject<?>> _domainObjectByPojo = 
+		new HashMap<Object, IDomainObject<?>>();
 
 	/**
 	 * Partitioned hash of objects by their class.
@@ -155,7 +155,7 @@ public class Session implements ISession, IObjectStoreAware {
 	 * 
 	 * @param pojo
 	 */
-	private <T> void createdPersistent(final IPojo pojo) {
+	private void createdPersistent(final IPojo pojo) {
 	}
 
 	/*
@@ -211,59 +211,51 @@ public class Session implements ISession, IObjectStoreAware {
 	 * @see de.berlios.rcpviewer.session.ISession#attach(de.berlios.rcpviewer.session.IDomainObject)
 	 */
 	public <T> void attach(IDomainObject<T> iDomainObject) {
-		assert iDomainObject instanceof DomainObject; // make sure own implementation
-		DomainObject domainObject = (DomainObject)iDomainObject;
+		DomainObject<T> domainObject = (DomainObject<T>)iDomainObject;
 		synchronized(domainObject) {
 			// make sure session id is compatible, or if not set then is in
 			// the same domain
-			{
-				String domainObjectSessionId = domainObject.getSessionId(); 
-				if (domainObjectSessionId != null) {
-					if (!this.getId().equals(domainObject.getSessionId())) {
+			String domainObjectSessionId = domainObject.getSessionId(); 
+			if (domainObjectSessionId != null) {
+				if (!this.getId().equals(domainObject.getSessionId())) {
+				throw new IllegalArgumentException(
+						"Incompatible session _id " +
+						"(this.id = '" + getId() + "', " +
+						"domainObject.sessionId = '" + 
+								domainObject.getSessionId() + "')");
+				}
+			} else {
+				
+				String domainObjectDomainName = 
+					domainObject.getDomainClass().getDomain().getName();
+				String sessionDomainName = this.getDomain().getName();
+				if (!domainObjectDomainName.equals(sessionDomainName)) {
 					throw new IllegalArgumentException(
-							"Incompatible session _id " +
-							"(this.id = '" + getId() + "', " +
-							"domainObject.sessionId = '" + 
-									domainObject.getSessionId() + "')");
-					}
-				} else {
-					
-					String domainObjectDomainName = 
-						domainObject.getDomainClass().getDomain().getName();
-					String sessionDomainName = this.getDomain().getName();
-					if (!domainObjectDomainName.equals(sessionDomainName)) {
-						throw new IllegalArgumentException(
-							"Incorrect domain " +
-							"this.domainName = '" + sessionDomainName + "', " +
-							"domainObject.domainName = ' " + 
-								domainObjectDomainName + ")");
-					}
+						"Incorrect domain " +
+						"this.domainName = '" + sessionDomainName + "', " +
+						"domainObject.domainName = ' " + 
+							domainObjectDomainName + ")");
 				}
 			}
+
 			// add to session hashes 
-			{
-				_pojoByDomainObject.put(domainObject, domainObject.getPojo());
-				_domainObjectByPojo.put(domainObject.getPojo(), domainObject);
-			}
+			_pojoByDomainObject.put(domainObject, domainObject.getPojo());
+			_domainObjectByPojo.put(domainObject.getPojo(), domainObject);
+
 			// add to partitioned hash of objects of this class
-			{
-				List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
-				if (domainObjects.contains(domainObject)) {
-					throw new IllegalArgumentException("pojo already attached to session.");
-				}
-				domainObjects.add(domainObject);
+			List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
+			if (domainObjects.contains(domainObject)) {
+				throw new IllegalArgumentException("pojo already attached to session.");
 			}
+			domainObjects.add(domainObject);
+
 			// tell _domain object the session it is attached to
-			{
-				domainObject.attached(this);
-			}
+			domainObject.attached(this);
 		}
 		// notify _listeners
-		{
-			SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
-			for(ISessionListener listener: _listeners) {
-				listener.domainObjectAttached(event);
-			}
+		SessionObjectEvent<T> event = new SessionObjectEvent(this, domainObject);
+		for(ISessionListener listener: _listeners) {
+			listener.domainObjectAttached(event);
 		}
 	}
 
@@ -271,26 +263,21 @@ public class Session implements ISession, IObjectStoreAware {
 	 * @see de.berlios.rcpviewer.session.ISession#detach(de.berlios.rcpviewer.session.IDomainObject)
 	 */
 	public <T> void detach(IDomainObject<T> iDomainObject) {
-		assert iDomainObject instanceof DomainObject; // make sure own implementation
-		DomainObject<T> domainObject = (DomainObject)iDomainObject;
+		DomainObject<T> domainObject = (DomainObject<T>)iDomainObject;
 		synchronized(domainObject) {
 			// remove from partitioned hash of objects of this class
-			{
-				List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
-				if (!domainObjects.contains(domainObject)) {
-					throw new IllegalArgumentException("pojo not attached to session.");
-				}
-				domainObjects.remove(domainObject);
+			List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
+			if (!domainObjects.contains(domainObject)) {
+				throw new IllegalArgumentException("pojo not attached to session.");
 			}
+			domainObjects.remove(domainObject);
+
 			// remove from global hash
-			{
-				_domainObjectByPojo.remove(domainObject.getPojo());
-				_pojoByDomainObject.remove(domainObject);
-			}
+			_domainObjectByPojo.remove(domainObject.getPojo());
+			_pojoByDomainObject.remove(domainObject);
+
 			// tell _domain object it is no longer attached to a session
-			{
-				domainObject.detached();
-			}
+			domainObject.detached();
 		}
 		// notify _listeners
 		SessionObjectEvent event = new SessionObjectEvent(this, domainObject);
@@ -316,8 +303,8 @@ public class Session implements ISession, IObjectStoreAware {
 	/*
 	 * @see de.berlios.rcpviewer.session.ISession#footprintFor(de.berlios.rcpviewer.domain.IDomainClass)
 	 */
-	public <T> List<IDomainObject<T>> footprintFor(IDomainClass domainClass) {
-		return (List)Collections.unmodifiableList(getDomainObjectsFor(domainClass));
+	public List<IDomainObject<?>> footprintFor(IDomainClass domainClass) {
+		return Collections.unmodifiableList(getDomainObjectsFor(domainClass));
 	}
 
 	/*
@@ -340,7 +327,7 @@ public class Session implements ISession, IObjectStoreAware {
 	 * @see de.berlios.rcpviewer.session.ISession#getDomainObjectFor(java.lang.Object, java.lang.Class)
 	 */
 	public <T> IDomainObject<T> getDomainObjectFor(Object pojo, Class<T> pojoClass) {
-		IDomainObject<T> domainObject = _domainObjectByPojo.get(pojo);
+		IDomainObject<T> domainObject = (IDomainObject<T>)_domainObjectByPojo.get(pojo);
 		if (domainObject == null) {
 			throw new IllegalStateException("Not attached to session");
 		}
@@ -357,7 +344,8 @@ public class Session implements ISession, IObjectStoreAware {
 		}
 		return domainObjects;
 	}
-	private List<IDomainObject<?>> getDomainObjectsFor(IDomainObject<?> domainObject) {
+	 
+	private <T> List<IDomainObject<?>> getDomainObjectsFor(IDomainObject<T> domainObject) {
 		return getDomainObjectsFor(domainObject.getDomainClass());
 	}
 

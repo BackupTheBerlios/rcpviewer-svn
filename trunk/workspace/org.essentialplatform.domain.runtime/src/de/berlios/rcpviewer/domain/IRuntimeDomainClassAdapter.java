@@ -6,7 +6,7 @@ import de.berlios.rcpviewer.session.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public interface IRuntimeDomainClassAdapter /* extends IDomainClassAdapter*/ {
+public interface IRuntimeDomainClassAdapter<T> /* extends IDomainClassAdapter*/ {
 	
 	/**
 	 * Returns the per-object adapter for an instance of a {@link IDomainObject}
@@ -21,7 +21,7 @@ public interface IRuntimeDomainClassAdapter /* extends IDomainClassAdapter*/ {
 	 * @param class of the required object adapter.
 	 * @return
 	 */
-	<V, T> V getObjectAdapterFor(IDomainObject<T> domainObject, Class<V> objectAdapterClass);
+	<V> V getObjectAdapterFor(IDomainObject<T> domainObject, Class<V> objectAdapterClass);
 		
 	/**
 	 * Whether the object adapter class is compatible with this class.

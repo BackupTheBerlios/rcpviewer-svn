@@ -128,9 +128,11 @@ public abstract class Deployment {
 	}
 	public interface IAttributeBinding {
 	}
-	public interface IOneToOneReferenceBinding {
+	public interface IReferenceBinding {
 	}
-	public interface ICollectionReferenceBinding {
+	public interface IOneToOneReferenceBinding extends IReferenceBinding {
+	}
+	public interface ICollectionReferenceBinding extends IReferenceBinding {
 	}
 	public interface IOperationBinding {
 	}

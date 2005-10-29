@@ -4,7 +4,7 @@ import org.eclipse.emf.ecore.EOperation;
 
 import de.berlios.rcpviewer.AbstractRuntimeTestCase;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.progmodel.extended.ExtendedProgModelDomainBuilder;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import de.berlios.rcpviewer.progmodel.standard.operation.CustomerOperationReturningDomainObject;
 import de.berlios.rcpviewer.progmodel.standard.operation.CustomerOperationReturningVoid;
 import de.berlios.rcpviewer.progmodel.standard.operation.Order;
@@ -12,7 +12,7 @@ import de.berlios.rcpviewer.progmodel.standard.operation.Order;
 public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 
 	public TestDomainObjectOperation() {
-		super(new ExtendedProgModelDomainBuilder());
+		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
 	}
 
 	protected void setUp() throws Exception {

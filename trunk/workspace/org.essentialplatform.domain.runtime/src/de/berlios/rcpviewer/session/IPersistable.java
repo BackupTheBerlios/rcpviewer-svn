@@ -1,7 +1,5 @@
 package de.berlios.rcpviewer.session;
 
-import de.berlios.rcpviewer.session.IResolvable;
-
 /**
  * Represents the capability for a domain object to be persisted.
  * 

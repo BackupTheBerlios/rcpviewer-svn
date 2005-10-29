@@ -10,6 +10,7 @@ import de.berlios.rcpviewer.session.ISession;
 import de.berlios.rcpviewer.session.local.SessionManager;
 import de.berlios.rcpviewer.transaction.ITransactionManager;
 import de.berlios.rcpviewer.transaction.internal.TransactionManager;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelDomainBuilder;
 
 /**
  * Sets up a default {@link Domain}, {@link SessionManager}, 
@@ -21,10 +22,18 @@ import de.berlios.rcpviewer.transaction.internal.TransactionManager;
  */
 public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 
+	/**
+	 * Provides null domainBuilder (the {@link EssentialProgModelDomainBuilder}
+	 * will still be used.
+	 */
+	public AbstractRuntimeTestCase() {
+		super(new RuntimeDomainSpecifics(), null);
+	}
+
 	public AbstractRuntimeTestCase(IDomainBuilder domainBuilder) {
 		super(new RuntimeDomainSpecifics(), domainBuilder);
 	}
-	
+
 	public AbstractRuntimeTestCase(String name, IDomainBuilder domainBuilder) {
 		super(name, new RuntimeDomainSpecifics(), domainBuilder);
 	}

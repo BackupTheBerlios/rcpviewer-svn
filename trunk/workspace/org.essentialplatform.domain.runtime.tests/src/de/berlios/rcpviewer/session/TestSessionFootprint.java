@@ -24,22 +24,20 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	 */
 	public void testSessionFootprintIsImmutable() {
 		
-		IDomainClass deptDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		hrDeptDomainObject.getPojo().setName("HR");
+		IDomainClass deptDomainClass = lookupAny(Department.class);
+		IDomainObject<?> hrDeptDomainObject = session.create(deptDomainClass);
+		Department pojo = (Department)hrDeptDomainObject.getPojo();
+		pojo.setName("HR");
 		
-		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		itDeptDomainObject.getPojo().setName("IT");
+		IDomainObject<?> itDeptDomainObject = session.create(deptDomainClass);
+		pojo = (Department)itDeptDomainObject.getPojo();
+		pojo.setName("IT");
 	
-		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		cateringDeptDomainObject.getPojo().setName("Catering");
+		IDomainObject<?> cateringDeptDomainObject = session.create(deptDomainClass);
+		pojo = (Department)cateringDeptDomainObject.getPojo();
+		pojo.setName("Catering");
 	
-		List<IDomainObject<Department>> departmentDomainObjects = 
-			session.footprintFor(deptDomainClass);
+		List<IDomainObject<?>> departmentDomainObjects = session.footprintFor(deptDomainClass);
 		try {
 			departmentDomainObjects.remove(itDeptDomainObject);
 			fail("Expected UnsupportedOperationException");
@@ -53,24 +51,22 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	 */
 	public void testSessionFootprintIgnoresDetached() {
 		
-		IDomainClass deptDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		hrDeptDomainObject.getPojo().setName("HR");
+		IDomainClass deptDomainClass = lookupAny(Department.class);
+		IDomainObject<?> hrDeptDomainObject = session.create(deptDomainClass);
+		Department pojo = (Department)hrDeptDomainObject.getPojo();
+		pojo.setName("HR");
 		
-		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		itDeptDomainObject.getPojo().setName("IT");
+		IDomainObject<?> itDeptDomainObject = session.create(deptDomainClass);
+		pojo = (Department)itDeptDomainObject.getPojo();
+		pojo.setName("IT");
 	
-		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		cateringDeptDomainObject.getPojo().setName("Catering");
+		IDomainObject<?> cateringDeptDomainObject = session.create(deptDomainClass);
+		pojo = (Department)cateringDeptDomainObject.getPojo();
+		pojo.setName("Catering");
 	
 		session.detach(itDeptDomainObject);
 	
-		List<IDomainObject<Department>> departmentDomainObjects = 
-			session.footprintFor(deptDomainClass);
+		List<IDomainObject<?>> departmentDomainObjects = session.footprintFor(deptDomainClass);
 		assertEquals(2, departmentDomainObjects.size());
 		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));
 		assertFalse(departmentDomainObjects.contains(itDeptDomainObject)); // not in footprint
@@ -83,37 +79,33 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	 */
 	public void testSessionFootprint() {
 		
-		IDomainClass deptDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass deptDomainClass = lookupAny(Department.class);
 		
-		IDomainObject<Department> hrDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		hrDeptDomainObject.getPojo().setName("HR");
+		IDomainObject<?> hrDeptDomainObject = session.create(deptDomainClass);
+		Department pojo = (Department)hrDeptDomainObject.getPojo();
+		pojo.setName("HR");
 		
-		IDomainObject<Department> itDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		itDeptDomainObject.getPojo().setName("IT");
+		IDomainObject<?> itDeptDomainObject = session.create(deptDomainClass);
+		pojo = (Department)itDeptDomainObject.getPojo();
+		pojo.setName("IT");
 	
-		IDomainObject<Department> cateringDeptDomainObject = 
-			(IDomainObject<Department>)session.create(deptDomainClass);
-		cateringDeptDomainObject.getPojo().setName("Catering");
+		IDomainObject<?> cateringDeptDomainObject = session.create(deptDomainClass);
+		pojo = (Department)cateringDeptDomainObject.getPojo();
+		pojo.setName("Catering");
 	
-	
-		IDomainClass employeeDomainClass = 
-			(IDomainClass)lookupAny(Employee.class);
-		IDomainObject<Employee> clarkKentEmployeeDomainObject = 
-			(IDomainObject<Employee>)session.create(employeeDomainClass);
-		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
+		IDomainObject<?> clarkKentEmployeeDomainObject = session.create(employeeDomainClass);
+		
+		Employee clarkKent = (Employee)clarkKentEmployeeDomainObject.getPojo();
 		clarkKent.setFirstName("Clark");
 		clarkKent.setSurname("Kent");
 		
-		IDomainObject<Employee> loisLaneEmployeeDomainObject = 
-			(IDomainObject<Employee>)session.create(employeeDomainClass);
-		Employee loisLane = loisLaneEmployeeDomainObject.getPojo();
+		IDomainObject<?> loisLaneEmployeeDomainObject = session.create(employeeDomainClass);
+		Employee loisLane = (Employee)loisLaneEmployeeDomainObject.getPojo();
 		loisLane.setFirstName("Lois");
 		loisLane.setSurname("Lane");
 		
-		List<IDomainObject<Department>> departmentDomainObjects = 
+		List<IDomainObject<?>> departmentDomainObjects = 
 			session.footprintFor(deptDomainClass);
 		assertEquals(3, departmentDomainObjects.size());
 		assertTrue(departmentDomainObjects.contains(hrDeptDomainObject));

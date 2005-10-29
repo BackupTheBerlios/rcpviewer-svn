@@ -16,6 +16,7 @@ import org.essentialplatform.louis.util.StringUtil;
 
 import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
 import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
+import de.berlios.rcpviewer.session.ExtendedDomainObjectReferenceEvent;
 import de.berlios.rcpviewer.session.IDomainObject;
 import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
 import de.berlios.rcpviewer.session.ISession;
@@ -50,6 +51,9 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 				refresh();
 			}
 			public void referenceChanged(DomainObjectReferenceEvent event) {
+				// does nowt
+			}
+			public void referencePrerequisitesChanged(ExtendedDomainObjectReferenceEvent event) {
 				// does nowt
 			}
 		};

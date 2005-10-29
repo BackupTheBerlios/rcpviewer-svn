@@ -7,7 +7,7 @@ package de.berlios.rcpviewer.session;
  * 
  * @author Dan Haywood
  */
-public final class SessionObjectEvent extends SessionEvent {
+public final class SessionObjectEvent<T> extends SessionEvent {
 
 	/**
 	 * 
@@ -19,15 +19,12 @@ public final class SessionObjectEvent extends SessionEvent {
 	 * 
 	 * @param source
 	 */
-	public SessionObjectEvent(final ISession source, final IDomainObject domainObject) {
+	public SessionObjectEvent(final ISession source, final IDomainObject<T> domainObject) {
 		super(source);
-		this.domainObject = domainObject;
 	}
 	
-
-	private IDomainObject domainObject;
-	public IDomainObject getDomainObject() {
-		return (IDomainObject)this.getSource();
+	public IDomainObject<T> getDomainObject() {
+		return (IDomainObject<T>)this.getSource();
 	}
 
 }

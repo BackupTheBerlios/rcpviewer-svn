@@ -24,7 +24,7 @@ import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding
  */
 public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 
-	private final RcpViewerProgModelSemanticsEmfSerializer serializer = new RcpViewerProgModelSemanticsEmfSerializer();
+	private final LouisProgModelSemanticsEmfSerializer serializer = new LouisProgModelSemanticsEmfSerializer();
 
 	/**
 	 * TODO: use parameters to downcast?
@@ -34,9 +34,9 @@ public class RcpViewerProgModelDomainBuilder implements IDomainBuilder {
 		EClass eClass = domainClass.getEClass();
 		
 		// Install adapter object 
-		RcpViewerProgModelAdapterFactory<RcpViewerDomainClass> adapterFactory = 
-			new RcpViewerProgModelAdapterFactory<RcpViewerDomainClass>();
-		domainClass.setAdapterFactory(RcpViewerDomainClass.class, adapterFactory);
+		LouisProgModelAdapterFactory<LouisDomainClass> adapterFactory = 
+			new LouisProgModelAdapterFactory<LouisDomainClass>();
+		domainClass.setAdapterFactory(LouisDomainClass.class, adapterFactory);
 
 
 		// imageUrlAt

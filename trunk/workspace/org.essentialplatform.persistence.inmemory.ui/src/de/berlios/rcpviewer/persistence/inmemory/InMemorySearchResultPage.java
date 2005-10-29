@@ -124,7 +124,7 @@ implements ISearchResultPage {
 				IStructuredSelection selection= (IStructuredSelection)event.getSelection();
 				if (selection.isEmpty())
 					return;
-				IDomainObject domainObject= (IDomainObject)selection.getFirstElement();
+				IDomainObject<?> domainObject= (IDomainObject<?>)selection.getFirstElement();
 				// REVIEW_CHANGE for Ted - using job mechanism now
 				/* old ...
 				OpenDomainObjectActionDelegate action= 

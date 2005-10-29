@@ -6,7 +6,6 @@ import java.util.Set;
 import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.domain.IDomain;
 import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.persistence.IObjectStore;
 
 /**
@@ -181,7 +180,7 @@ public interface ISession {
 	 * @param domainClass
 	 * @return
 	 */
-	<T> List<IDomainObject<T>> footprintFor(IDomainClass domainClass);
+	List<IDomainObject<?>> footprintFor(IDomainClass domainClass);
 
 	/**
 	 * Adds session listener.

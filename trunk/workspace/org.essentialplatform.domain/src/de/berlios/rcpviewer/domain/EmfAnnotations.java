@@ -18,8 +18,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelRules;
-import de.berlios.rcpviewer.progmodel.standard.StandardProgModelConstants;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsRules;
+import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelStandardSemanticsConstants;
 
 /**
  * Misnamed: is now support for serializing EMF annotations.
@@ -133,7 +133,7 @@ public final class EmfAnnotations {
 	}
 
 	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, boolean value) {
-		putAnnotationDetails(modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT, key, value?"true":"false");
+		putAnnotationDetails(modelElement, EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT, key, value?"true":"false");
 	}
 
 	public void putAnnotationDetails(EModelElement modelElement, String annotationSource, String key, String value) {
@@ -142,7 +142,7 @@ public final class EmfAnnotations {
 
 	/**
 	 * Puts annotation details for the model element using the source
-	 * {@link StandardProgModelConstants#ANNOTATION_ELEMENT}.
+	 * {@link EssentialProgModelStandardSemanticsConstants#ANNOTATION_ELEMENT}.
 	 * 
 	 * @param domainClass
 	 * @param modelElement
@@ -150,7 +150,7 @@ public final class EmfAnnotations {
 	 * @param value
 	 */
 	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String key, String value) {
-		putAnnotationDetails(domainClass, modelElement, StandardProgModelConstants.ANNOTATION_ELEMENT, key, value);
+		putAnnotationDetails(domainClass, modelElement, EssentialProgModelStandardSemanticsConstants.ANNOTATION_ELEMENT, key, value);
 	}
 
 	public void putAnnotationDetails(IDomainClass domainClass, EModelElement modelElement, String annotationSource, String key, String value) {
@@ -162,7 +162,7 @@ public final class EmfAnnotations {
 	}
 
 	public EAnnotation methodNamesAnnotationFor(EModelElement eModelElement) {
-		return annotationFor(eModelElement, StandardProgModelConstants.ANNOTATION_SOURCE_METHOD_NAMES);
+		return annotationFor(eModelElement, EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES);
 	}
 
 	public EAnnotation annotationFor(EModelElement eModelElement, final String annotationSource) {
