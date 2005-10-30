@@ -40,10 +40,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
-		assertTrue(employeesAfterAdd.contains(employeeDomainObject.getPojo()));
+		assertTrue(employeesAfterAdd.contains(employeeDomainObject));
 		employeesCollection.removeFromCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterRemove = employeesCollection.getCollection();
-		assertFalse(employeesAfterRemove.contains(employeeDomainObject.getPojo()));
+		assertFalse(employeesAfterRemove.contains(employeeDomainObject));
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		Collection<IDomainObject<Employee>> employees = 
 			employeesCollection.getCollection();
 		try {
-			IDomainObject<Employee> employeeDomainObject = 
+			IDomainObject<Employee> employeeDomainObject =  
 				session.create(employeeDomainClass);
 			employees.add(employeeDomainObject);
 			fail("Expected UnsupportedOperationException to have been thrown.");
@@ -159,7 +159,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 		assertEquals(1, employeesAfterAdd.size());
-		assertTrue(employeesAfterAdd.contains(employeeDomainObject.getPojo()));
+		assertTrue(employeesAfterAdd.contains(employeeDomainObject));
 	}
 
 

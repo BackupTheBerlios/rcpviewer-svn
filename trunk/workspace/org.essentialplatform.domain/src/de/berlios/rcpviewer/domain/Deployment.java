@@ -1,5 +1,9 @@
 package de.berlios.rcpviewer.domain;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Map;
+
 import org.eclipse.emf.ecore.EClass;
 import org.osgi.framework.Bundle;
 
@@ -7,6 +11,8 @@ import de.berlios.rcpviewer.domain.IDomainClass.IAttribute;
 import de.berlios.rcpviewer.domain.IDomainClass.ICollectionReference;
 import de.berlios.rcpviewer.domain.IDomainClass.IOneToOneReference;
 import de.berlios.rcpviewer.domain.IDomainClass.IOperation;
+import de.berlios.rcpviewer.progmodel.ProgrammingModelException;
+import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.standard.InDomain;
 
 
@@ -124,17 +130,58 @@ public abstract class Deployment {
 		 */
 		public Object classRepresentationFor(EClass eClass);
 	}
-	public interface IClassBinding {
+	public interface IClassBinding<T> {
+		public T newInstance();
+		
+		/**
+		 * Returns the specified annotation (if any) on the class.
+		 * 
+		 * @param <T>
+		 * @param annotationClass
+		 * @return
+		 */
+		public <Q extends Annotation> Q getAnnotation(Class<Q> annotationClass);
+
 	}
 	public interface IAttributeBinding {
+		Object invokeAccessor(Object pojo);
+		void invokeMutator(Object pojo, Object newValue);
+		IPrerequisites accessorPrerequisitesFor(Object pojo);
+		IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
 	}
 	public interface IReferenceBinding {
+		/**
+		 * Returns the pojo for a 1:1 reference, or a collection of pojos for
+		 * a collection reference.
+		 * 
+		 * @param pojo
+		 * @return
+		 */
+		Object invokeAccessor(Object pojo);
+		IPrerequisites authorizationPrerequisites();
+		IPrerequisites accessorPrerequisitesFor(Object pojo);
 	}
 	public interface IOneToOneReferenceBinding extends IReferenceBinding {
+		void invokeAssociator(Object pojo, Object referencedPojo);
+		void invokeDissociator(Object pojo, Object referencedPojo);
+		IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
 	}
 	public interface ICollectionReferenceBinding extends IReferenceBinding {
+		void invokeAddTo(Object pojo, Object referencedPojo);
+		void invokeRemoveFrom(Object pojo, Object referencedPojo);
+		IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue, boolean beingAdded);
 	}
 	public interface IOperationBinding {
+
+		Object invokeOperation(Object pojo, Object[] args);
+
+		void assertIsValid(int position, Object arg);
+
+		Object[] getArgs(Map<Integer, Object> argsByPosition);
+
+		IPrerequisites prerequisitesFor(Object pojo, Object[] args);
+
+		Object[] reset(Object pojo, Object[] args, Map<Integer, Object> argsByPosition); 
 	}
 
 }

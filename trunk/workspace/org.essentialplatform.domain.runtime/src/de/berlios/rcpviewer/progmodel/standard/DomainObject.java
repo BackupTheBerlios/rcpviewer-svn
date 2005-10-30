@@ -27,6 +27,11 @@ import de.berlios.rcpviewer.domain.IDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IDomainClass;
 import de.berlios.rcpviewer.domain.IDomainClassAdapter;
 import de.berlios.rcpviewer.domain.IRuntimeDomainClassAdapter;
+import de.berlios.rcpviewer.domain.Deployment.IAttributeBinding;
+import de.berlios.rcpviewer.domain.Deployment.ICollectionReferenceBinding;
+import de.berlios.rcpviewer.domain.Deployment.IOneToOneReferenceBinding;
+import de.berlios.rcpviewer.domain.Deployment.IOperationBinding;
+import de.berlios.rcpviewer.domain.Deployment.IReferenceBinding;
 import de.berlios.rcpviewer.domain.IDomainClass.IAttribute;
 import de.berlios.rcpviewer.domain.IDomainClass.IOneToOneReference;
 import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.AbstractRuntimeReferenceBinding;
@@ -478,8 +483,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		private final IDomainClass.IAttribute _attribute;
 
-		private final RuntimeAttributeBinding _runtimeBinding;
-
+		private final IAttributeBinding _runtimeBinding;
+		
 		/**
 		 * Holds onto the current accessor prerequisites, if known.
 		 * 
@@ -504,7 +509,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private ObjectAttribute(final EAttribute eAttribute) {
 			_eAttribute = eAttribute;
 			_attribute = getDomainClass().getAttribute(eAttribute);
-			_runtimeBinding = (RuntimeAttributeBinding) _attribute.getBinding(); // JAVA5_FIXME
+			_runtimeBinding = (IAttributeBinding) _attribute.getBinding(); // JAVA5_FIXME
 		}
 
 		/*
@@ -532,16 +537,15 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @see de.berlios.rcpviewer.session.IDomainObject.IObjectAttribute#set(java.lang.Object)
 		 */
 		public void set(Object newValue) {
-			_runtimeBinding
-					.invokeMutator(getDomainObject().getPojo(), newValue);
+			_runtimeBinding.invokeMutator(getDomainObject().getPojo(), newValue);
 		}
 
 		/*
 		 * Extended semantics.
 		 */
 		public IPrerequisites accessorPrerequisitesFor() {
-			return _runtimeBinding.accessorPrerequisitesFor(getDomainObject()
-					.getPojo());
+			return _runtimeBinding.accessorPrerequisitesFor(
+						getDomainObject().getPojo());
 		}
 
 		/*
@@ -549,8 +553,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(
 				final Object candidateValue) {
-			return _runtimeBinding.mutatorPrerequisitesFor(getDomainObject()
-					.getPojo(), candidateValue);
+			return _runtimeBinding.mutatorPrerequisitesFor(
+						getDomainObject().getPojo(), candidateValue);
 		}
 
 		/*
@@ -663,7 +667,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		ResolveState _resolveState = ResolveState.UNRESOLVED;
 
-		final AbstractRuntimeReferenceBinding _runtimeBinding;
+		final IReferenceBinding _runtimeBinding;
 
 		final List<IDomainObjectReferenceListener> _listeners = new ArrayList<IDomainObjectReferenceListener>();
 
@@ -676,8 +680,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private ObjectReference(final EReference eReference) {
 			this._eReference = eReference;
 			this._reference = getDomainClass().getReference(eReference);
-			this._runtimeBinding = (AbstractRuntimeReferenceBinding) _reference
-					.getBinding(); // JAVA5_FIXME
+			this._runtimeBinding = (IReferenceBinding) _reference.getBinding(); // JAVA5_FIXME
 		}
 
 		/*
@@ -730,8 +733,9 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
 			IPrerequisites prerequisitesNow = accessorPrerequisitesFor();
 
-			boolean notifyListeners = prerequisitesPreviously == null
-					|| !prerequisitesPreviously.equals(prerequisitesNow);
+			boolean notifyListeners = 
+				prerequisitesPreviously == null || 
+				!prerequisitesPreviously.equals(prerequisitesNow);
 
 			_currentPrerequisites = prerequisitesNow;
 			if (notifyListeners) {
@@ -778,14 +782,13 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
 
-		private final RuntimeOneToOneReferenceBinding _runtimeBinding;
+		private final IOneToOneReferenceBinding _runtimeBinding;
 
 		private ObjectOneToOneReference(final EReference eReference) {
 			super(eReference);
 			assert !_reference.isMultiple();
 			_oneToOneReference = (IDomainClass.IOneToOneReference) _reference;
-			_runtimeBinding = (RuntimeOneToOneReferenceBinding) _oneToOneReference
-					.getBinding();
+			_runtimeBinding = (IOneToOneReferenceBinding) _oneToOneReference.getBinding();
 		}
 
 		public <Q> Q get() {
@@ -861,18 +864,22 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			IDomainObject.IObjectCollectionReference {
 
 		private final IDomainClass.ICollectionReference _collectionReference;
-		private final RuntimeCollectionReferenceBinding _runtimeBinding;
+		private final ICollectionReferenceBinding _runtimeBinding;
 
 		private ObjectCollectionReference(final EReference eReference) {
 			super(eReference);
 			assert _reference.isMultiple();
 			_collectionReference = (IDomainClass.ICollectionReference) _reference;
-			_runtimeBinding = (RuntimeCollectionReferenceBinding) _collectionReference.getBinding();
+			_runtimeBinding = (ICollectionReferenceBinding) _collectionReference.getBinding();
 		}
 
 		public <V> Collection<IDomainObject<V>> getCollection() {
-			Collection<IDomainObject<V>> collection = 
-				(Collection<IDomainObject<V>>) _runtimeBinding.invokeAccessor(getPojo());
+			Collection<IPojo> pojoCollection = 
+				(Collection<IPojo>) _runtimeBinding.invokeAccessor(getPojo());
+			Collection<IDomainObject<V>> collection = new ArrayList<IDomainObject<V>>();
+			for(IPojo pojo: pojoCollection) {
+				collection.add(pojo.getDomainObject());
+			}
 			return Collections.unmodifiableCollection(collection);
 		}
 
@@ -932,8 +939,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 *      boolean)
 		 */
 		public void notifyListeners(Object referencedObject, boolean beingAdded) {
-			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
-					this, referencedObject);
+			DomainObjectReferenceEvent event = 
+				new DomainObjectReferenceEvent(this, referencedObject);
 			for (IDomainObjectReferenceListener listener : _listeners) {
 				if (beingAdded) {
 					listener.collectionAddedTo(event);
@@ -949,7 +956,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		private final EOperation _eOperation;
 		private final IDomainClass.IOperation _operation;
-		private final RuntimeOperationBinding _runtimeBinding;
+		private final IOperationBinding _runtimeBinding;
 		private final List<IDomainObjectOperationListener> _listeners = new ArrayList<IDomainObjectOperationListener>();
 
 		/*
@@ -968,12 +975,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private IPrerequisites _currentPrerequisites;
 
 		
-		/*
-		 * Extended semantics support (move to binding)
-		 */
-		private final Class<?>[] _parameterTypes;
-
-		
 		/**
 		 * Will reset the arguments, according to {@link #reset()}.
 		 * 
@@ -983,14 +984,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			this._eOperation = eOperation;
 			this._operation = getDomainClass().getOperation(eOperation);
 			_runtimeBinding = (RuntimeOperationBinding) _operation.getBinding();
-			
-			// extended semantics: move to binding
-			EList eParameters = _eOperation.getEParameters();
-			_parameterTypes = new Class<?>[eParameters.size()];
-			for (int i = 0; i < _parameterTypes.length; i++) {
-				EParameter eParameter = (EParameter) eParameters.get(i);
-				_parameterTypes[i] = eParameter.getEType().getInstanceClass();
-			}
 			
 			reset();
 		}
@@ -1004,8 +997,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		public Object invokeOperation(final Object[] args) {
-			return _runtimeBinding.invokeOperation(getDomainObject().getPojo(),
-					args);
+			return _runtimeBinding.invokeOperation(
+					getDomainObject().getPojo(),args);
 		}
 
 		/*
@@ -1022,25 +1015,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * Extended semantics.
 		 */
 		public void setArg(final int position, final Object arg) {
-			
-			// todo: need to delegate to runtime binding
-			if (position < 0 || position >= _parameterTypes.length) {
-				throw new IllegalArgumentException(
-						"Invalid position: 0 <= position < "
-								+ _parameterTypes.length);
-			}
-			if (arg != null) {
-				if (!_runtimeBinding.isAssignableFromIncludingAutoboxing(
-						_parameterTypes[position], arg.getClass())) {
-					throw new IllegalArgumentException(
-							"Incompatible argument for position '" + position
-									+ "'; formal='"
-									+ _parameterTypes[position].getName()
-									+ ", actual='" + arg.getClass().getName()
-									+ "'");
-				}
-			}
-			
+			_runtimeBinding.assertIsValid(position, arg);
 			_argsByPosition.put(position, arg);
 		}
 

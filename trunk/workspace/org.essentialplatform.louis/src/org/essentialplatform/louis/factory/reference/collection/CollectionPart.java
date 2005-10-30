@@ -1,6 +1,7 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -109,7 +110,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 			
 			// compare displayed list with model
 			IObjectCollectionReference ref = _container.getCollectionReference( _model );
-			List<IDomainObject<?>> model = getCollectionDomainObjects();
+			Collection<IDomainObject<?>> model = getCollectionDomainObjects();
 			
 			// in model, not displayed - remove
 			for ( IDomainObject<?> element : model ) {
@@ -250,21 +251,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	private List<IDomainObject<?>> getCollectionDomainObjects() {
 		List<IDomainObject<?>> elements = new ArrayList<IDomainObject<?>>();
 		if ( _container == null ) return elements;
-		try {
-			ISession session
-				= RuntimePlugin.getDefault().getSessionManager().get( 
-						_container.getSessionId() );
-			Class<?> collectionPojoType = _model.getEType().getInstanceClass();
-			for( Object pojo : _container.getCollectionReference( _model ).getCollection() ) {
-				IDomainObject dElem = session.getDomainObjectFor( 
-						pojo, collectionPojoType );
-				assert dElem != null;
-				elements.add( dElem );	
-			}
-		}
-		catch ( CoreException ce ) {
-			LouisPlugin.getDefault().getLog().log( ce.getStatus() );
-		}
+		elements.addAll(_container.getCollectionReference( _model ).getCollection());
 		return elements;
 	}
 	

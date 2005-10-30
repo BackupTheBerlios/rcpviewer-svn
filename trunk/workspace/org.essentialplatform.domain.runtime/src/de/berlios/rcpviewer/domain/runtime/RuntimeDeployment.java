@@ -156,7 +156,7 @@ public final class RuntimeDeployment extends Deployment {
 	public IClassBinding bindingFor(IDomainClass domainClass, Object classRepresentation) {
 		return bindingFor(domainClass, (Class<?>)classRepresentation);
 	}
-	private <V> RuntimeClassBinding<V> bindingFor(IDomainClass domainClass, Class<V> javaClass) {
+	private <V> IClassBinding<V> bindingFor(IDomainClass domainClass, Class<V> javaClass) {
 		return new RuntimeClassBinding<V>(domainClass, javaClass);
 	}
 	
@@ -275,7 +275,7 @@ public final class RuntimeDeployment extends Deployment {
 
 	}
 	
-	public final static class RuntimeClassBinding<T> implements IClassBinding {
+	public final static class RuntimeClassBinding<T> implements IClassBinding<T> {
 
 		private final IDomainClass _domainClass;
 		private final Class<T> _javaClass;
@@ -525,13 +525,13 @@ public final class RuntimeDeployment extends Deployment {
 		public boolean canAssociate() {
 			return _associator != null;
 		}
-		public Object invokeAssociator(final Object pojo, final Object referencedObject) {
+		public void invokeAssociator(final Object pojo, final Object referencedObject) {
 			if (_associator == null) {
 				throw new UnsupportedOperationException("No associator method");
 			}
 			String associatorMethodName = _associator.getName();
 			try {
-				return _associator.invoke(pojo, new Object[]{referencedObject});
+				_associator.invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Associator method '" + associatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -543,13 +543,13 @@ public final class RuntimeDeployment extends Deployment {
 		public boolean canDissociate() {
 			return _dissociator != null;
 		}
-		public Object invokeDissociator(final Object pojo, final Object referencedObject) {
+		public void invokeDissociator(final Object pojo, final Object referencedObject) {
 			if (_dissociator == null) {
 				throw new UnsupportedOperationException("No dissociator method");
 			}
 			String dissociatorMethodName = _dissociator.getName();
 			try {
-				return _dissociator.invoke(pojo, new Object[]{referencedObject});
+				_dissociator.invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Dissociator method '" + dissociatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -601,13 +601,13 @@ public final class RuntimeDeployment extends Deployment {
 		public boolean canAddTo() {
 			return _associator != null;
 		}
-		public Object invokeAddTo(final Object pojo, final Object referencedObject) {
+		public void invokeAddTo(final Object pojo, final Object referencedObject) {
 			if (_associator == null) {
 				throw new UnsupportedOperationException("No associator method");
 			}
 			String associatorMethodName = _associator.getName();
 			try {
-				return _associator.invoke(pojo, new Object[]{referencedObject});
+				_associator.invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Associator method '" + associatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -619,13 +619,13 @@ public final class RuntimeDeployment extends Deployment {
 		public boolean canRemoveFrom() {
 			return _dissociator != null;
 		}
-		public Object invokeRemoveFrom(final Object pojo, final Object referencedObject) {
+		public void invokeRemoveFrom(final Object pojo, final Object referencedObject) {
 			if (_dissociator == null) {
 				throw new UnsupportedOperationException("No dissociator method");
 			}
 			String dissociatorMethodName = _dissociator.getName();
 			try {
-				return _dissociator.invoke(pojo, new Object[]{referencedObject});
+				_dissociator.invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Dissociator method '" + dissociatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -836,6 +836,26 @@ public final class RuntimeDeployment extends Deployment {
 				return true;
 			}
 			return requiredType.isAssignableFrom(candidateType);
+		}
+
+		public void assertIsValid(int position, Object arg) {
+
+			if (position < 0 || position >= _parameterTypes.length) {
+				throw new IllegalArgumentException(
+						"Invalid position: 0 <= position < "
+								+ _parameterTypes.length);
+			}
+			if (arg != null) {
+				if (!isAssignableFromIncludingAutoboxing(
+						_parameterTypes[position], arg.getClass())) {
+					throw new IllegalArgumentException(
+							"Incompatible argument for position '" + position
+									+ "'; formal='"
+									+ _parameterTypes[position].getName()
+									+ ", actual='" + arg.getClass().getName()
+									+ "'");
+				}
+			}
 		}
 		
 	}
