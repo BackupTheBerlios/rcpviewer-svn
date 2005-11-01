@@ -6,4 +6,4 @@
  * The metamodel thus built only models information pertinent to the domain;
  * no UI specific information is captured. 
  */
-package de.berlios.rcpviewer.progmodel.standard;
+package org.essentialplatform.progmodel.standard;

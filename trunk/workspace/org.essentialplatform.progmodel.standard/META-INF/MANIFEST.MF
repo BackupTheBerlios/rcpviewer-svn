@@ -5,9 +5,9 @@ Bundle-SymbolicName: org.essentialplatform.progmodel.standard
 Bundle-Version: 0.0.1
 Bundle-ClassPath: standard.jar,
  bin/
-Bundle-Activator: de.berlios.rcpviewer.progmodel.standard.StandardPlugin
+Bundle-Activator: org.essentialplatform.progmodel.standard.StandardPlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Eclipse-AutoStart: true
-Export-Package: de.berlios.rcpviewer.progmodel.standard
+Export-Package: org.essentialplatform.progmodel.standard
