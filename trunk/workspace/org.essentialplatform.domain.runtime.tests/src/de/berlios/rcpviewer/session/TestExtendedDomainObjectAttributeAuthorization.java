@@ -25,8 +25,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
@@ -53,8 +52,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		((RuntimeDomainBinding)domain.getBinding()).setAuthorizationManager(authorizationManager);
 		domain.done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
@@ -86,8 +84,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		((RuntimeDomainBinding)domain.getBinding()).setAuthorizationManager(authorizationManager);
 		domain.done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);

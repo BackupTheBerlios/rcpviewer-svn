@@ -32,9 +32,8 @@ public class TestTransactionCommitInstantiate extends AbstractTransactionManager
 
 	public void testCanCommitATransactionForNewlyInstantiatedObject() {
 
-		IDomainObject<Customer> domainObject = 
-			(IDomainObject<Customer>)session.create(customerDomainClass);
-		Customer customer = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(customerDomainClass);
+		Customer customer = (Customer)domainObject.getPojo();
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer);
 		
 		assertSame(ITransaction.State.IN_PROGRESS, transaction.getState());

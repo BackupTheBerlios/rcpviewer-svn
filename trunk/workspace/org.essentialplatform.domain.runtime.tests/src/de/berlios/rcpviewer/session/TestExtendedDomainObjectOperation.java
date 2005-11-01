@@ -102,9 +102,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		IDomainObject<CustomerOperationWithDefaults> domainObject = 
-			(IDomainObject<CustomerOperationWithDefaults>) session.create(domainClass);
-		CustomerOperationWithDefaults pojo = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		CustomerOperationWithDefaults pojo = (CustomerOperationWithDefaults)domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
@@ -122,9 +121,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		IDomainObject<CustomerOperationWithDefaults> domainObject = 
-			(IDomainObject<CustomerOperationWithDefaults>) session.create(domainClass);
-		CustomerOperationWithDefaults pojo = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		CustomerOperationWithDefaults pojo = (CustomerOperationWithDefaults)domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
@@ -152,9 +150,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 
-		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = 
-			(IDomainObject<CustomerOperationWithPreAndArgs>) session.create(domainClass);
-		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		CustomerOperationWithPreAndArgs pojo = (CustomerOperationWithPreAndArgs)domainObject.getPojo();
 
 		Set<IObservedFeature> features = session.getObservedFeatures();
 		

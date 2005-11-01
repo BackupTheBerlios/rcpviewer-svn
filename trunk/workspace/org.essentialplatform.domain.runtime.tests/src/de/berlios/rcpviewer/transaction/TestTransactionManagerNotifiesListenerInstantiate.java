@@ -47,9 +47,8 @@ public class TestTransactionManagerNotifiesListenerInstantiate extends AbstractT
 
 	public void testInstantiatingAnObjectNotifiesTransactionManagerListenersOfNewTransaction() {
 		assertNull(listener.createdTransactionEvent);
-		IDomainObject<Customer> domainObject = 
-			(IDomainObject<Customer>)session.create(customerDomainClass);
-		Customer customer = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(customerDomainClass);
+		Customer customer = (Customer)domainObject.getPojo();
 		TransactionManagerEvent event = listener.createdTransactionEvent; 
 		assertNotNull(event);
 		assertSame(transactionManager, event.getTransactionManager());

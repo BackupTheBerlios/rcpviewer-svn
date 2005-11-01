@@ -26,14 +26,14 @@ public abstract class AbstractTransactionManagerTestCase extends AbstractRuntime
 	protected IDomainClass emailAddressDomainClass;
 	protected IDomainClass orderDomainClass;
 
-	protected IDomainObject<Calculator> calculatorDomainObject;
-	protected IDomainObject<Customer> customerDomainObject;
-	protected IDomainObject<EmailAddress> emailAddressDomainObject;
-	protected IDomainObject<EmailAddress> emailAddress2DomainObject;
-	protected IDomainObject<EmailAddress> emailAddress3DomainObject;
-	protected IDomainObject<Order> orderDomainObject;
-	protected IDomainObject<Order> order2DomainObject;
-	protected IDomainObject<Order> order3DomainObject;
+	protected IDomainObject<?> calculatorDomainObject;
+	protected IDomainObject<?> customerDomainObject;
+	protected IDomainObject<?> emailAddressDomainObject;
+	protected IDomainObject<?> emailAddress2DomainObject;
+	protected IDomainObject<?> emailAddress3DomainObject;
+	protected IDomainObject<?> orderDomainObject;
+	protected IDomainObject<?> order2DomainObject;
+	protected IDomainObject<?> order3DomainObject;
 
 	protected Calculator calculator;
 	protected Customer customer;
@@ -71,31 +71,23 @@ public abstract class AbstractTransactionManagerTestCase extends AbstractRuntime
 		domain.done();
 		
 		if (_setupObjects) {
-			calculatorDomainObject = 
-				(IDomainObject<Calculator>)session.recreate(calculatorDomainClass);
-			customerDomainObject = 
-				(IDomainObject<Customer>)session.recreate(customerDomainClass);
-			emailAddressDomainObject = 
-				(IDomainObject<EmailAddress>)session.recreate(emailAddressDomainClass);
-			emailAddress2DomainObject = 
-				(IDomainObject<EmailAddress>)session.recreate(emailAddressDomainClass);
-			emailAddress3DomainObject = 
-				(IDomainObject<EmailAddress>)session.recreate(emailAddressDomainClass);
-			orderDomainObject = 
-				(IDomainObject<Order>)session.recreate(orderDomainClass);
-			order2DomainObject = 
-				(IDomainObject<Order>)session.recreate(orderDomainClass);
-			order3DomainObject = 
-				(IDomainObject<Order>)session.recreate(orderDomainClass);
+			calculatorDomainObject = session.recreate(calculatorDomainClass);
+			customerDomainObject = session.recreate(customerDomainClass);
+			emailAddressDomainObject = session.recreate(emailAddressDomainClass);
+			emailAddress2DomainObject = session.recreate(emailAddressDomainClass);
+			emailAddress3DomainObject = session.recreate(emailAddressDomainClass);
+			orderDomainObject = session.recreate(orderDomainClass);
+			order2DomainObject = session.recreate(orderDomainClass);
+			order3DomainObject = session.recreate(orderDomainClass);
 
-			calculator = calculatorDomainObject.getPojo();
-			customer = customerDomainObject.getPojo();
-			emailAddress = emailAddressDomainObject.getPojo();
-			emailAddress2 = emailAddress2DomainObject.getPojo();
-			emailAddress3 = emailAddress3DomainObject.getPojo();
-			order = orderDomainObject.getPojo();
-			order2 = order2DomainObject.getPojo();
-			order3 = order3DomainObject.getPojo();
+			calculator = (Calculator)calculatorDomainObject.getPojo();
+			customer = (Customer)customerDomainObject.getPojo();
+			emailAddress = (EmailAddress)emailAddressDomainObject.getPojo();
+			emailAddress2 = (EmailAddress)emailAddress2DomainObject.getPojo();
+			emailAddress3 = (EmailAddress)emailAddress3DomainObject.getPojo();
+			order = (Order)orderDomainObject.getPojo();
+			order2 = (Order)order2DomainObject.getPojo();
+			order3 = (Order)order3DomainObject.getPojo();
 		}
 	}
 

@@ -29,9 +29,8 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
-		IDomainObject<CustomerOperationReturningVoid> domainObject = 
-			(IDomainObject<CustomerOperationReturningVoid>) session.create(domainClass);
-		CustomerOperationReturningVoid pojo = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		CustomerOperationReturningVoid pojo = (CustomerOperationReturningVoid)domainObject.getPojo();
 		
 		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
 		assertFalse(pojo.orderPlaced);
@@ -46,8 +45,7 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 
-		IDomainObject<CustomerOperationReturningDomainObject> domainObject = 
-			(IDomainObject<CustomerOperationReturningDomainObject>) session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		
 		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
 		Object retval = placeOrderOperation.invokeOperation(new Object[] {});
@@ -61,8 +59,7 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 		domain.addBuilder(getDomainBuilder());
 		domain.done();
 		
-		IDomainObject<CustomerOperationReturningDomainObject> domainObject = 
-			(IDomainObject<CustomerOperationReturningDomainObject>) session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 
 		// place a few orders...
 		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));

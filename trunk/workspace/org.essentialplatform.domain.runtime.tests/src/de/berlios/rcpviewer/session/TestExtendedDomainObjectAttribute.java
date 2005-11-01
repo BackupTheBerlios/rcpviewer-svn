@@ -24,8 +24,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
@@ -41,10 +40,9 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		
-		domainObject.getPojo().ship();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		OrderConstrained pojo = (OrderConstrained)domainObject.getPojo();
+		pojo.ship();
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
@@ -61,10 +59,9 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainObject<OrderConstrained> domainObject = 
-			(IDomainObject<OrderConstrained>)session.create(domainClass);
-		
-		domainObject.getPojo().shipAndRestrict();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		OrderConstrained pojo = (OrderConstrained)domainObject.getPojo();
+		pojo.shipAndRestrict();
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);

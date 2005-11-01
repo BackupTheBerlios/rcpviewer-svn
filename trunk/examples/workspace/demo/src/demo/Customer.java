@@ -3,7 +3,7 @@ package demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.berlios.rcpviewer.domain.RuntimeDomain;
+import de.berlios.rcpviewer.domain.Domain;
 import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
 import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
 import de.berlios.rcpviewer.progmodel.extended.Named;
@@ -81,7 +81,7 @@ public class Customer {
 		// following instantiates an Order
 		// yes, it's horrible, but will be replaced by a simple pointcut on {@InDomain).new
 		ISession session = SessionManager.instance().get(SessionManager.instance().getCurrentSessionId());
-		IDomainObject<Order> orderDo = session.create(RuntimeDomain.lookupAny(Order.class));
+		IDomainObject<Order> orderDo = session.create(Domain.lookupAny(Order.class));
 		Order order = orderDo.getPojo();
 		addToOrders(order);
 		return order;

@@ -26,8 +26,7 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		// domainObject.persist();
 		assertTrue(domainObject.isPersistent());
 	}
@@ -49,8 +48,7 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		// this test is marked incomplete and needs reworking anyway: persistence is now via xactn mgr.
 		// session.persist(domainObject.getPojo());
 		assertTrue(domainObject.isPersistent());
@@ -87,8 +85,7 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		// domainObject.persist();
 		try {
 			// domainObject.persist();

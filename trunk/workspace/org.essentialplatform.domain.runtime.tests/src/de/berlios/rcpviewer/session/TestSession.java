@@ -29,11 +29,10 @@ public class TestSession extends AbstractRuntimeTestCase  {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		assertNotNull(domainObject);
 		assertSame(domainObject.getDomainClass(), domainClass);
-		Department pojo = domainObject.getPojo();
+		Department pojo = (Department)domainObject.getPojo();
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
 		assertTrue(session.isAttached(domainObject));
@@ -43,8 +42,7 @@ public class TestSession extends AbstractRuntimeTestCase  {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		assertEquals(session.getId(), domainObject.getSessionId());
 	}
 
@@ -61,8 +59,7 @@ public class TestSession extends AbstractRuntimeTestCase  {
 			(IDomainClass)lookupAny(Department.class);
 		
 		MySessionListener l = session.addSessionListener(new MySessionListener());
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		assertTrue(l.attachedCallbackCalled);
 		assertFalse(l.detachedCallbackCalled);
 	}
@@ -77,8 +74,7 @@ public class TestSession extends AbstractRuntimeTestCase  {
 		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
 		domain.done();
 
-		IDomainObject<Department> domainObject = 
-			(IDomainObject<Department>)session.create(domainClass);
+		IDomainObject<?> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isPersistent());
 	}
 

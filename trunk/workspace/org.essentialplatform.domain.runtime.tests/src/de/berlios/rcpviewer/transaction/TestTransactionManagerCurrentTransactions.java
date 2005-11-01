@@ -38,9 +38,8 @@ public class TestTransactionManagerCurrentTransactions extends AbstractTransacti
 		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
 		domain.done();
 		
-		IDomainObject<Calculator> domainObject = 
-			(IDomainObject<Calculator>)session.create(domainClass);
-		Calculator calculator = domainObject.getPojo();
+		IDomainObject<?> domainObject = session.create(domainClass);
+		Calculator calculator = (Calculator)domainObject.getPojo();
 		assertEquals(1, transactionManager.getCurrentTransactions().size());
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		transaction.commit();
