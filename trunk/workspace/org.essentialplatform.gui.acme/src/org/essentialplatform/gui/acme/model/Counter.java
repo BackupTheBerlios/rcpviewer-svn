@@ -1,7 +1,7 @@
-package de.berlios.rcpviewer.gui.acme.model;
+package org.essentialplatform.gui.acme.model;
 
-import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.standard.DescribedAs;
 
 public class Counter {
 	

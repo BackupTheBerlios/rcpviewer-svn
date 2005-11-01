@@ -3,17 +3,17 @@
 <plugin>
 
    <extension point="org.essentialplatform.louis.domainclass">
-  	 	<impl class="de.berlios.rcpviewer.gui.acme.model.EasiestBean"/>
-   		<impl class="de.berlios.rcpviewer.gui.acme.model.EasyBean"/>
-   		<!-- <impl class="de.berlios.rcpviewer.gui.acme.model.AnotherEasyBean"/> -->
-   		<!-- <impl class="de.berlios.rcpviewer.gui.acme.model.Counter"/> -->
-        <impl class="de.berlios.rcpviewer.gui.acme.model.PrimitiveBean"/>
-        <impl class="de.berlios.rcpviewer.gui.acme.model.WrappedPrimitiveBean"/>
-        <impl class="de.berlios.rcpviewer.gui.acme.model.Beans"/>
+  	 	<impl class="org.essentialplatform.gui.acme.model.EasiestBean"/>
+   		<impl class="org.essentialplatform.gui.acme.model.EasyBean"/>
+   		<!-- <impl class="org.essentialplatform.gui.acme.model.AnotherEasyBean"/> -->
+   		<!-- <impl class="org.essentialplatform.gui.acme.model.Counter"/> -->
+        <impl class="org.essentialplatform.gui.acme.model.PrimitiveBean"/>
+        <impl class="org.essentialplatform.gui.acme.model.WrappedPrimitiveBean"/>
+        <impl class="org.essentialplatform.gui.acme.model.Beans"/>
    </extension>
    
    <extension point="org.essentialplatform.louis.guifactory">
-        <impl class="de.berlios.rcpviewer.gui.acme.factory.exts.ColourAttributeGuiFactory"/> 
+        <impl class="org.essentialplatform.gui.acme.factory.exts.ColourAttributeGuiFactory"/> 
    </extension>
 
 </plugin>

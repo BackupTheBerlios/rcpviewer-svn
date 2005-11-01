@@ -10,5 +10,5 @@ Bundle-Localization: plugin
 Eclipse-AutoStart: true
 Require-Bundle: org.aspectj.runtime,
  org.essentialplatform.louis
-Export-Package: de.berlios.rcpviewer.gui.acme.factory.exts,
- de.berlios.rcpviewer.gui.acme.model
+Export-Package: org.essentialplatform.gui.acme.factory.exts,
+ org.essentialplatform.gui.acme.model

@@ -1,11 +1,11 @@
-package de.berlios.rcpviewer.gui.acme.model;
+package org.essentialplatform.gui.acme.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.standard.TypeOf;
 
 /**
  * Stores many beans

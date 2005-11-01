@@ -1,9 +1,9 @@
-package de.berlios.rcpviewer.gui.acme.model;
+package org.essentialplatform.gui.acme.model;
 
 import org.essentialplatform.louis.util.RandomUtil;
 
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.standard.InDomain;
 
 /**
  * @author Mike

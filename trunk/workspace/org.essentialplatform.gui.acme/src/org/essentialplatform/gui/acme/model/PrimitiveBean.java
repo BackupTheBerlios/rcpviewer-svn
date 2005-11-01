@@ -1,140 +1,141 @@
-package de.berlios.rcpviewer.gui.acme.model;
+package org.essentialplatform.gui.acme.model;
 
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
 
 /**
  * @author Mike
  */
 @Lifecycle(instantiable=true,searchable=true,saveable=true)
 @InDomain
-public class WrappedPrimitiveBean {
+public class PrimitiveBean {
 	
-	private Boolean booleanField = null;
-	private Byte byteField = null;
-	private Short shortField = null;
-	private Character charField = null;
-	private Integer intField = null;
-	private Long longField = null;
-	private Float floatField = null;
-	private Double doubleField = null;
+	private boolean booleanField;
+	private byte byteField;
+	private short shortField;
+	private char charField;
+	private int intField;
+	private long longField;
+	private float floatField;
+	private double doubleField;
 	
-
+	/* getters / setters */
+	
 	/**
 	 * @return Returns the booleanField.
 	 */
-	public Boolean isBooleanField() {
+	public boolean isBooleanField() {
 		return booleanField;
 	}
 	
 	/**
 	 * @param booleanField The booleanField to set.
 	 */
-	public void setBooleanField(Boolean booleanField) {
+	public void setBooleanField(boolean booleanField) {
 		this.booleanField = booleanField;
 	}
 	
 	/**
 	 * @return Returns the byteField.
 	 */
-	public Byte getByteField() {
+	public byte getByteField() {
 		return byteField;
 	}
 	
 	/**
 	 * @param byteField The byteField to set.
 	 */
-	public void setByteField(Byte byteField) {
+	public void setByteField(byte byteField) {
 		this.byteField = byteField;
 	}
 	
 	/**
 	 * @return Returns the charField.
 	 */
-	public Character getCharField() {
+	public char getCharField() {
 		return charField;
 	}
 	
 	/**
 	 * @param charField The charField to set.
 	 */
-	public void setCharField(Character charField) {
+	public void setCharField(char charField) {
 		this.charField = charField;
 	}
 	
 	/**
 	 * @return Returns the doubleField.
 	 */
-	public Double getDoubleField() {
+	public double getDoubleField() {
 		return doubleField;
 	}
 	
 	/**
 	 * @param doubleField The doubleField to set.
 	 */
-	public void setDoubleField(Double doubleField) {
+	public void setDoubleField(double doubleField) {
 		this.doubleField = doubleField;
 	}
 	
 	/**
 	 * @return Returns the floatField.
 	 */
-	public Float getFloatField() {
+	public float getFloatField() {
 		return floatField;
 	}
 	
 	/**
 	 * @param floatField The floatField to set.
 	 */
-	public void setFloatField(Float floatField) {
+	public void setFloatField(float floatField) {
 		this.floatField = floatField;
 	}
 	
 	/**
 	 * @return Returns the intField.
 	 */
-	public Integer getIntField() {
+	public int getIntField() {
 		return intField;
 	}
 	
 	/**
 	 * @param intField The intField to set.
 	 */
-	public void setIntField(Integer intField) {
+	public void setIntField(int intField) {
 		this.intField = intField;
 	}
 	
 	/**
 	 * @return Returns the longField.
 	 */
-	public Long getLongField() {
+	public long getLongField() {
 		return longField;
 	}
 	
 	/**
 	 * @param longField The longField to set.
 	 */
-	public void setLongField(Long longField) {
+	public void setLongField(long longField) {
 		this.longField = longField;
 	}
 	
 	/**
 	 * @return Returns the shortField.
 	 */
-	public Short getShortField() {
+	public short getShortField() {
 		return shortField;
 	}
 	
 	/**
 	 * @param shortField The shortField to set.
 	 */
-	public void setShortField(Short shortField) {
+	public void setShortField(short shortField) {
 		this.shortField = shortField;
 	}
 		
-	
+
 	/* ops (actually renamed setters) */
 	
 	/**
@@ -216,4 +217,7 @@ public class WrappedPrimitiveBean {
 			short shortField) {
 		this.shortField = shortField;
 	}
+
+	
+
 }

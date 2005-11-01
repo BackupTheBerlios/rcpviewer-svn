@@ -1,10 +1,10 @@
-package de.berlios.rcpviewer.gui.acme.model;
+package org.essentialplatform.gui.acme.model;
 
 import java.util.Date;
 
 import org.essentialplatform.louis.util.RandomUtil;
 
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.Lifecycle;
 
 /**
  * 

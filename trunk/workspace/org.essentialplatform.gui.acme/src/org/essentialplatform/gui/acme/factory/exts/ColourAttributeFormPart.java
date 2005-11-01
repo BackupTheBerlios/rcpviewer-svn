@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.gui.acme.factory.exts;
+package org.essentialplatform.gui.acme.factory.exts;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.graphics.Color;
