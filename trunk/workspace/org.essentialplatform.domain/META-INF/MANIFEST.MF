@@ -18,14 +18,14 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.essentialplatform.progmodel.standard;visibility:=reexport,
  org.apache.log4j;visibility:=reexport
 Eclipse-AutoStart: true
-Export-Package: de.berlios.rcpviewer,
- de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.progmodel,
- de.berlios.rcpviewer.progmodel.extended,
- de.berlios.rcpviewer.progmodel.java,
- de.berlios.rcpviewer.progmodel.rcpviewer,
- de.berlios.rcpviewer.progmodel.standard,
- de.berlios.rcpviewer.progmodel.standard.impl,
+Export-Package: org.essentialplatform,
+ org.essentialplatform.domain,
+ org.essentialplatform.progmodel,
+ org.essentialplatform.progmodel.extended,
+ org.essentialplatform.progmodel.java,
+ org.essentialplatform.progmodel.rcpviewer,
+ org.essentialplatform.progmodel.standard,
+ org.essentialplatform.progmodel.standard.impl,
  org.essentialplatform
 Bundle-Vendor: Rssential Platform Development Team
 DynamicImport-Package: *

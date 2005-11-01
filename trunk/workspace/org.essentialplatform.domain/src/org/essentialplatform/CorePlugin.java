@@ -10,7 +10,7 @@ public class CorePlugin extends Plugin {
 
 	private static CorePlugin instance;
 	
-	public static final String ID = "de.berlios.rcpviewer.domain";
+	public static final String ID = "org.essentialplatform.domain";
 	
 	private ResourceBundle resourceBundle;
 	public static CorePlugin getInstance() {
@@ -36,7 +36,7 @@ public class CorePlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("de.berlios.rcpviewer.core.CorePluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.essentialplatform.core.CorePluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
