@@ -25,15 +25,15 @@ import org.essentialplatform.louis.jobs.JobAction;
 import org.essentialplatform.louis.jobs.NewDomainObjectJob;
 import org.essentialplatform.louis.jobs.ReportJob;
 
-import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainRegistry;
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
+import org.essentialplatform.domain.IDomain;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainRegistry;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
-	public static final String CONTRIBUTION_ITEM_ID = "de.berlios.rcpviewer"; //$NON-NLS-1$
+	public static final String CONTRIBUTION_ITEM_ID = "org.essentialplatform"; //$NON-NLS-1$
 	
 	private static final String ADDITIONS_GROUP_ID = "additions"; //$NON-NLS-1$
 

@@ -5,11 +5,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainRegistry;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.session.ISessionManager;
+import org.essentialplatform.domain.IDomain;
+import org.essentialplatform.domain.IDomainRegistry;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.persistence.IObjectStore;
+import org.essentialplatform.session.ISessionManager;
 
 /**
  * Starts a new session on a domain

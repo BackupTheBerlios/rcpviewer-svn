@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.essentialplatform.louis.LouisPlugin;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
 
 /**
  * @author Mike

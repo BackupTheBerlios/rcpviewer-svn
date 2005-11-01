@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * @author Mike

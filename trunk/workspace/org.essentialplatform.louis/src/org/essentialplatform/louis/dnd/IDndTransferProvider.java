@@ -12,7 +12,7 @@ import org.eclipse.swt.dnd.Transfer;
 public interface IDndTransferProvider {
 	
 	public static final String EXTENSION_POINT_ID
-		= "de.berlios.rcpviewer.gui.transferprovider"; //$NON-NLS-1$
+		= "org.essentialplatform.gui.transferprovider"; //$NON-NLS-1$
 
 	/**
 	 * 

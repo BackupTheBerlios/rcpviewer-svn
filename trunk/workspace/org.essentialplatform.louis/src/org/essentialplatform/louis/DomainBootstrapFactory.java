@@ -1,11 +1,11 @@
 package org.essentialplatform.louis;
 
-import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.domain.runtime.IDomainBootstrap;
 
 /**
  * Creates <code>IDomainBootstrap</code> that will initialise the <code>Domain</code>.
- * @see de.berlios.rcpviewer.domain.runtime.IDomainBootstrap
- * @see de.berlios.rcpviewer.domain.Domain;
+ * @see org.essentialplatform.domain.runtime.IDomainBootstrap
+ * @see org.essentialplatform.domain.Domain;
  * @author Mike
  */
 class DomainBootstrapFactory {

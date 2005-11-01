@@ -35,8 +35,8 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Generic form part for single references to <code>IDomainObject</code>'s.
@@ -59,7 +59,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return ""; //$NON-NLS-1$

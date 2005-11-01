@@ -1,7 +1,7 @@
 package org.essentialplatform.louis.dnd;
 
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Used for transferring an arbitary class within the application.

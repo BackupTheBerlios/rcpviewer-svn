@@ -8,8 +8,8 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Label provider for session tree.

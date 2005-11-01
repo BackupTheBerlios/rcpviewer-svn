@@ -22,7 +22,7 @@ import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
 
 /**
  * @author Mike
@@ -149,7 +149,7 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 		}
 
 		/* (non-Javadoc)
-		 * @see de.berlios.rcpviewer.gui.widgets.AbstractFormDisplay#open()
+		 * @see org.essentialplatform.gui.widgets.AbstractFormDisplay#open()
 		 */
 		@Override
 		public int open() {

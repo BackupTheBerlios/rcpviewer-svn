@@ -14,7 +14,7 @@ import org.eclipse.ui.PlatformUI;
 import org.essentialplatform.louis.editors.DefaultEditor;
 import org.essentialplatform.louis.editors.DefaultEditorInput;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 
 

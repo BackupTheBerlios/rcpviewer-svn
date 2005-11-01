@@ -15,13 +15,13 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.util.StringUtil;
 
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
-import de.berlios.rcpviewer.session.ExtendedDomainObjectReferenceEvent;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.IDomainObject.IObjectCollectionReference;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.session.DomainObjectReferenceEvent;
+import org.essentialplatform.session.ExtendedDomainObjectReferenceEvent;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.IDomainObjectReferenceListener;
+import org.essentialplatform.session.ISession;
+import org.essentialplatform.session.IDomainObject.IObjectCollectionReference;
 
 class CollectionPart extends AbstractFormPart implements IConfigurable {
 
@@ -292,7 +292,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 		}
 		
 		/* (non-Javadoc)
-		 * @see org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener#displayValueChanged(de.berlios.rcpviewer.session.IDomainObject)
+		 * @see org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener#displayValueChanged(org.essentialplatform.session.IDomainObject)
 		 */
 		public void displayValueChanged(IDomainObject<?> value) {
 			if ( _listeners != null ) {

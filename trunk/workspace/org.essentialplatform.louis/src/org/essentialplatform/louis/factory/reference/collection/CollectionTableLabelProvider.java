@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.essentialplatform.louis.LouisPlugin;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * @author Mike

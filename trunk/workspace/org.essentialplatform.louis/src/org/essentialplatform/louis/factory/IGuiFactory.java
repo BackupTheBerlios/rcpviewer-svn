@@ -22,7 +22,7 @@ public interface IGuiFactory<T> {
 	 * Extension point
 	 */
 	public static final String EXTENSION_POINT_ID
-		= "de.berlios.rcpviewer.guifactory"; //$NON-NLS-1$
+		= "org.essentialplatform.guifactory"; //$NON-NLS-1$
 	
 	/**
 	 * Default style for sections.

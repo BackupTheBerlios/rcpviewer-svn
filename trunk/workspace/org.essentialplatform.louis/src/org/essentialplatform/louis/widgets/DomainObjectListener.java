@@ -3,10 +3,10 @@
  */
 package org.essentialplatform.louis.widgets;
 
-import de.berlios.rcpviewer.session.DomainObjectAttributeEvent;
-import de.berlios.rcpviewer.session.DomainObjectEvent;
-import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
-import de.berlios.rcpviewer.session.IDomainObjectListener;
+import org.essentialplatform.session.DomainObjectAttributeEvent;
+import org.essentialplatform.session.DomainObjectEvent;
+import org.essentialplatform.session.DomainObjectReferenceEvent;
+import org.essentialplatform.session.IDomainObjectListener;
 
 /**
  * Adapater for the interface.
@@ -19,7 +19,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see de.berlios.rcpviewer.session.IDomainObjectListener#attributeChanged(de.berlios.rcpviewer.session.DomainObjectAttributeEvent)
+	 * @see org.essentialplatform.session.IDomainObjectListener#attributeChanged(org.essentialplatform.session.DomainObjectAttributeEvent)
 	 */
 	public void attributeChanged(DomainObjectAttributeEvent event) {
 		// TODO Auto-generated method stub
@@ -28,7 +28,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see de.berlios.rcpviewer.session.IDomainObjectListener#collectionAddedTo(de.berlios.rcpviewer.session.DomainObjectReferenceEvent)
+	 * @see org.essentialplatform.session.IDomainObjectListener#collectionAddedTo(org.essentialplatform.session.DomainObjectReferenceEvent)
 	 */
 	public void collectionAddedTo(DomainObjectReferenceEvent event) {
 		// TODO Auto-generated method stub
@@ -37,7 +37,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see de.berlios.rcpviewer.session.IDomainObjectListener#collectionRemovedFrom(de.berlios.rcpviewer.session.DomainObjectReferenceEvent)
+	 * @see org.essentialplatform.session.IDomainObjectListener#collectionRemovedFrom(org.essentialplatform.session.DomainObjectReferenceEvent)
 	 */
 	public void collectionRemovedFrom(DomainObjectReferenceEvent event) {
 		// TODO Auto-generated method stub
@@ -46,7 +46,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see de.berlios.rcpviewer.session.IDomainObjectListener#persisted(de.berlios.rcpviewer.session.DomainObjectEvent)
+	 * @see org.essentialplatform.session.IDomainObjectListener#persisted(org.essentialplatform.session.DomainObjectEvent)
 	 */
 	public void persisted(DomainObjectEvent event) {
 		// TODO Auto-generated method stub

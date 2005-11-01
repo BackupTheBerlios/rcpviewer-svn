@@ -1,7 +1,7 @@
 package org.essentialplatform.louis;
 
-import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
+import org.essentialplatform.persistence.IObjectStore;
+import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
 
 /**
  * Creates <code>IObjectStore</code>.

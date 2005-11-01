@@ -93,7 +93,7 @@ public class BigDecimalAttributeGuiFactory
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.attribute.AttributeGuiFactory#createFormPart(org.eclipse.emf.ecore.EAttribute, org.eclipse.swt.widgets.Text)
+	 * @see org.essentialplatform.gui.factory.attribute.AttributeGuiFactory#createFormPart(org.eclipse.emf.ecore.EAttribute, org.eclipse.swt.widgets.Text)
 	 */
 	@Override
 	protected AbstractAttributeFormPart<BigDecimal,Text> createFormPart(

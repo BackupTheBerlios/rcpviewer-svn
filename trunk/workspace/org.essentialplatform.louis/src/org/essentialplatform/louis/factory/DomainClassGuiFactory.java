@@ -15,7 +15,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
 
 public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 	
@@ -32,7 +32,7 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return ""; //$NON-NLS-1$

@@ -14,10 +14,10 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.ISession;
 
 /**
  * @author Mike

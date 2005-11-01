@@ -32,8 +32,8 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Generic form part for <code>isMany() EReference's</code> (i.e. collections)
@@ -62,7 +62,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return ""; //$NON-NLS-1$
@@ -349,7 +349,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 		}
 		
 		/* (non-Javadoc)
-		 * @see org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener#displayValueChanged(de.berlios.rcpviewer.session.IDomainObject)
+		 * @see org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener#displayValueChanged(org.essentialplatform.session.IDomainObject)
 		 */
 		public void displayValueChanged(IDomainObject<?> value) {
 			_currentSelection = value;

@@ -30,7 +30,7 @@ import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListen
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Handles dynamic behaviour for the collection gui.
@@ -257,7 +257,7 @@ class CollectionTablePart extends ConfigurableAdapter
 		}
 
 		/* (non-Javadoc)
-		 * @see de.berlios.rcpviewer.gui.widgets.AbstractFormDisplay#open()
+		 * @see org.essentialplatform.gui.widgets.AbstractFormDisplay#open()
 		 */
 		@Override
 		public int open() {

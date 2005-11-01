@@ -31,7 +31,7 @@ class DefaultGuiFactory implements IGuiFactory<Object> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return ""; //$NON-NLS-1$

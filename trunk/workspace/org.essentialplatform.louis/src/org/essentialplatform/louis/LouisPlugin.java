@@ -23,9 +23,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
-import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment;
-import de.berlios.rcpviewer.persistence.IObjectStore;
+import org.essentialplatform.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.persistence.IObjectStore;
 
 
 /**

@@ -7,11 +7,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.essentialplatform.louis.LouisPlugin;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.ISessionManager;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.ISession;
+import org.essentialplatform.session.ISessionManager;
 
 /**
  * Creates a new instance of the passed domain class and opens the default editor.

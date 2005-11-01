@@ -25,8 +25,8 @@ import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
 
 /**
  * Outlook-style bar for each class in Domain.

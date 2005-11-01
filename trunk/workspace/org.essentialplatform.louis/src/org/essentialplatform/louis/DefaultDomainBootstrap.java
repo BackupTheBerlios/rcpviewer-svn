@@ -5,8 +5,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.domain.Domain;
+import org.essentialplatform.domain.runtime.IDomainBootstrap;
 
 /**
  * Initialises the <code>Domain</code> by looking for implementors of 
@@ -23,7 +23,7 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 	public static final String CLASS_PROPERTY = "class"; //$NON-NLS-1$
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.domain.runtime.IDomainBootstrap#registerClasses()
+	 * @see org.essentialplatform.domain.runtime.IDomainBootstrap#registerClasses()
 	 * 
 	 */
 	public void registerClasses() throws CoreException {

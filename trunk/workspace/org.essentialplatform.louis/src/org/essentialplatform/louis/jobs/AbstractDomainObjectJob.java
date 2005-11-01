@@ -3,7 +3,7 @@
  */
 package org.essentialplatform.louis.jobs;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Super class for all GUI jobs associated with a specific 

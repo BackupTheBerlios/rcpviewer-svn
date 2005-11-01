@@ -6,7 +6,7 @@ import org.eclipse.ui.forms.IFormPart;
 import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Indicates that the part's model functionality is delegated to the 

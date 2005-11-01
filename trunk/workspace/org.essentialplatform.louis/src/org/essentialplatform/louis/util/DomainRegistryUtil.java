@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainRegistry;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
+import org.essentialplatform.domain.IDomain;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainRegistry;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
 
 /**
  * Static helper methods domain registry functions.

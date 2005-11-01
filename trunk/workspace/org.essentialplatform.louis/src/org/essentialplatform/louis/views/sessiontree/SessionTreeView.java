@@ -20,10 +20,10 @@ import org.essentialplatform.louis.jobs.OpenDomainObjectJob;
 import org.essentialplatform.louis.jobs.SearchJob;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISessionManager;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.ISessionManager;
 
 /**
  * Displays all objects attached to the session started by

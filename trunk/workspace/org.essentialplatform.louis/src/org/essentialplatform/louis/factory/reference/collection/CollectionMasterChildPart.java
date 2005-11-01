@@ -7,7 +7,7 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.DomainClassPart;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 
 /**
@@ -113,14 +113,14 @@ class CollectionMasterChildPart implements ICollectionChildPart, IConfigurable {
 	 * configurable part of the gui */
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IConfigurableFormPart#addListener(de.berlios.rcpviewer.gui.factory.IConfigurableFormPart.IGuiConfiguratorListener)
+	 * @see org.essentialplatform.gui.factory.IConfigurableFormPart#addListener(org.essentialplatform.gui.factory.IConfigurableFormPart.IGuiConfiguratorListener)
 	 */
 	public boolean addConfigurableListener(IConfigurableListener listener) {
 		return _childPart.addConfigurableListener( listener );
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IConfigurableFormPart#removeListener(de.berlios.rcpviewer.gui.factory.IConfigurableFormPart.IGuiConfiguratorListener)
+	 * @see org.essentialplatform.gui.factory.IConfigurableFormPart#removeListener(org.essentialplatform.gui.factory.IConfigurableFormPart.IGuiConfiguratorListener)
 	 */
 	public boolean removeConfigurableListener(IConfigurableListener listener) {
 		return _childPart.removeConfigurableListener( listener );

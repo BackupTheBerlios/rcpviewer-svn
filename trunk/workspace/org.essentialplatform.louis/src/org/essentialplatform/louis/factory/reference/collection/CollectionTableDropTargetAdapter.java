@@ -12,7 +12,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.dnd.IAccessibleObjectTransfer;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * DnD for reference collection.

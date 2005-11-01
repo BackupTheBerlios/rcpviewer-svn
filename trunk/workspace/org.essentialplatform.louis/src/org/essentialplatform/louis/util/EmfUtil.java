@@ -12,14 +12,14 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.ETypedElement;
 
-import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.domain.EmfAnnotations;
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
-import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.standard.EssentialProgModelExtendedSemanticsConstants;
+import org.essentialplatform.domain.Domain;
+import org.essentialplatform.domain.EmfAnnotations;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
+import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsConstants;
 
 /**
  * Static methods for helping with EMF constructs

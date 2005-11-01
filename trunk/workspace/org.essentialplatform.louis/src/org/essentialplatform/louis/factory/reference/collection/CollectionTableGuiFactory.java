@@ -23,7 +23,7 @@ import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
 
 public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 
@@ -45,7 +45,7 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return LouisPlugin.getResourceString( 

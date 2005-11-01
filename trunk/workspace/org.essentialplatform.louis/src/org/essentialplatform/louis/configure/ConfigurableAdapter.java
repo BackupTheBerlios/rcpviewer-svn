@@ -19,7 +19,7 @@ public abstract class ConfigurableAdapter implements IConfigurable {
 	private List<IConfigurableListener> _listeners = null;
 
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiConfigurator#addListener(de.berlios.rcpviewer.gui.factory.IGuiConfigurator.IConfigurableListener)
+	 * @see org.essentialplatform.gui.factory.IGuiConfigurator#addListener(org.essentialplatform.gui.factory.IGuiConfigurator.IConfigurableListener)
 	 */
 	public boolean addConfigurableListener(IConfigurableListener listener) {
 		if ( listener == null ) throw new IllegalArgumentException();
@@ -30,7 +30,7 @@ public abstract class ConfigurableAdapter implements IConfigurable {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiConfigurator#removeListener(de.berlios.rcpviewer.gui.factory.IGuiConfigurator.IConfigurableListener)
+	 * @see org.essentialplatform.gui.factory.IGuiConfigurator#removeListener(org.essentialplatform.gui.factory.IGuiConfigurator.IConfigurableListener)
 	 */
 	public boolean removeConfigurableListener(IConfigurableListener listener) {
 		if ( listener == null ) throw new IllegalArgumentException();

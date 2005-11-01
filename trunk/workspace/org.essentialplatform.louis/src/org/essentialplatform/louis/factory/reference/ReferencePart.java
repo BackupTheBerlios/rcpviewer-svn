@@ -13,11 +13,11 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.util.SWTUtil;
 
-import de.berlios.rcpviewer.session.DomainObjectReferenceEvent;
-import de.berlios.rcpviewer.session.ExtendedDomainObjectReferenceEvent;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.IDomainObjectReferenceListener;
-import de.berlios.rcpviewer.session.IPojo;
+import org.essentialplatform.session.DomainObjectReferenceEvent;
+import org.essentialplatform.session.ExtendedDomainObjectReferenceEvent;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.IDomainObjectReferenceListener;
+import org.essentialplatform.session.IPojo;
 
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 
@@ -129,7 +129,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	/* IConfigurable contract - delegate to details */
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IConfigurable#run()
+	 * @see org.essentialplatform.gui.factory.IConfigurable#run()
 	 */
 	public void run() {
 		if ( _detailsPart instanceof IConfigurable ) {
@@ -138,7 +138,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IConfigurable#addListener(de.berlios.rcpviewer.gui.factory.IConfigurable.IConfigurableListener)
+	 * @see org.essentialplatform.gui.factory.IConfigurable#addListener(org.essentialplatform.gui.factory.IConfigurable.IConfigurableListener)
 	 */
 	public boolean addConfigurableListener(IConfigurableListener listener) {
 		if ( _detailsPart instanceof IConfigurable ) {
@@ -148,7 +148,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IConfigurable#removeListener(de.berlios.rcpviewer.gui.factory.IConfigurable.IConfigurableListener)
+	 * @see org.essentialplatform.gui.factory.IConfigurable#removeListener(org.essentialplatform.gui.factory.IConfigurable.IConfigurableListener)
 	 */
 	public boolean removeConfigurableListener(IConfigurableListener listener) {
 		if ( _detailsPart instanceof IConfigurable ) {

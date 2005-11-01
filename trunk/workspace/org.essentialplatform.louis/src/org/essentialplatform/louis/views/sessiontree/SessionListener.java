@@ -9,13 +9,13 @@ import org.eclipse.ui.PartInitException;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.PlatformUtil;
 
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.ISessionListener;
-import de.berlios.rcpviewer.session.ISessionManager;
-import de.berlios.rcpviewer.session.ISessionManagerListener;
-import de.berlios.rcpviewer.session.SessionManagerEvent;
-import de.berlios.rcpviewer.session.SessionObjectEvent;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.session.ISession;
+import org.essentialplatform.session.ISessionListener;
+import org.essentialplatform.session.ISessionManager;
+import org.essentialplatform.session.ISessionManagerListener;
+import org.essentialplatform.session.SessionManagerEvent;
+import org.essentialplatform.session.SessionObjectEvent;
 
 /**
  * Implements both <code>ISessionListener</code> and 
@@ -48,7 +48,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	/* ISessionListener contract */
 
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.session.ISessionListener#domainObjectAttached(de.berlios.rcpviewer.session.SessionObjectEvent)
+	 * @see org.essentialplatform.session.ISessionListener#domainObjectAttached(org.essentialplatform.session.SessionObjectEvent)
 	 */
 	public void domainObjectAttached(SessionObjectEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();
@@ -58,7 +58,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.session.ISessionListener#domainObjectDetached(de.berlios.rcpviewer.session.SessionObjectEvent)
+	 * @see org.essentialplatform.session.ISessionListener#domainObjectDetached(org.essentialplatform.session.SessionObjectEvent)
 	 */
 	public void domainObjectDetached(SessionObjectEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();
@@ -71,7 +71,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Null method
-	 * @see de.berlios.rcpviewer.session.ISessionManagerListener#sessionCreated(de.berlios.rcpviewer.session.SessionManagerEvent)
+	 * @see org.essentialplatform.session.ISessionManagerListener#sessionCreated(org.essentialplatform.session.SessionManagerEvent)
 	 */
 	public void sessionCreated(SessionManagerEvent event) {
 		// null method
@@ -79,7 +79,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Brings this view to the fore
-	 * @see de.berlios.rcpviewer.session.ISessionManagerListener#sessionNowCurrent(de.berlios.rcpviewer.session.SessionManagerEvent)
+	 * @see org.essentialplatform.session.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.session.SessionManagerEvent)
 	 */
 	public void sessionNowCurrent(SessionManagerEvent event) {
 		try {
@@ -96,7 +96,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	/**
 	 * Dispose this and the session listener of the removed session is the
 	 * parent session.
-	 * @see de.berlios.rcpviewer.session.ISessionManagerListener#sessionRemoved(de.berlios.rcpviewer.session.SessionManagerEvent)
+	 * @see org.essentialplatform.session.ISessionManagerListener#sessionRemoved(org.essentialplatform.session.SessionManagerEvent)
 	 */
 	public void sessionRemoved(SessionManagerEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();

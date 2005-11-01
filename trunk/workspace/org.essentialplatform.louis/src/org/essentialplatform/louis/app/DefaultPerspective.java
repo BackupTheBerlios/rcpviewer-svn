@@ -44,7 +44,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	 *   </ul>
 	 * </ul>
 	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
-	 * @see de.berlios.rcpviewer.gui.views.classbar.ClassBarView;
+	 * @see org.essentialplatform.gui.views.classbar.ClassBarView;
 	 */
 	public void createInitialLayout( final IPageLayout layout) {
 		if ( layout == null ) throw new IllegalArgumentException();

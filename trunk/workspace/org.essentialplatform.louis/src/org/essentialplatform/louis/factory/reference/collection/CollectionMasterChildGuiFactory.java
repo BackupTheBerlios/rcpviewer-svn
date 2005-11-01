@@ -15,8 +15,8 @@ import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.session.IDomainObject;
 
 public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> {
 	
@@ -38,7 +38,7 @@ public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> 
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.berlios.rcpviewer.gui.factory.IGuiFactory#getDescription()
+	 * @see org.essentialplatform.gui.factory.IGuiFactory#getDescription()
 	 */
 	public String getDescription() {
 		return LouisPlugin.getResourceString( 

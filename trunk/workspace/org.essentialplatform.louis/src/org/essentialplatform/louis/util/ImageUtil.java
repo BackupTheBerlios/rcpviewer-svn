@@ -9,7 +9,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.essentialplatform.louis.LouisPlugin;
 import org.osgi.framework.Bundle;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
 
 /**
  * Static methods for handling image operations.

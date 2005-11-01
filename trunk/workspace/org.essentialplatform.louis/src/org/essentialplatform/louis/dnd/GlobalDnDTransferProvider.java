@@ -17,9 +17,9 @@ import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.util.DomainRegistryUtil.Filter;
 
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.IDomainClass;
-import de.berlios.rcpviewer.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.

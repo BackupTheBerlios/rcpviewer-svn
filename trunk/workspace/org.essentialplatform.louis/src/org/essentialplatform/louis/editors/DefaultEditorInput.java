@@ -8,7 +8,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.ImageUtil;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Input for the <code>DefaultEditor</code>

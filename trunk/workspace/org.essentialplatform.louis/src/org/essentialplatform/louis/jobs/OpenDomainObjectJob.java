@@ -12,7 +12,7 @@ import org.essentialplatform.louis.util.PlatformUtil;
 import org.essentialplatform.louis.views.ops.OpsView;
 import org.essentialplatform.louis.views.sessiontree.SessionTreeView;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Opens the passed domain object.

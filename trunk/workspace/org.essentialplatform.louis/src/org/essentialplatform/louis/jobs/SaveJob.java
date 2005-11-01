@@ -9,10 +9,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.forms.IManagedForm;
 import org.essentialplatform.louis.LouisPlugin;
 
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.transaction.ITransactable;
-import de.berlios.rcpviewer.transaction.ITransaction;
-import de.berlios.rcpviewer.transaction.internal.TransactionManager;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.transaction.ITransactable;
+import org.essentialplatform.transaction.ITransaction;
+import org.essentialplatform.transaction.internal.TransactionManager;
 
 /**
  * 

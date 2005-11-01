@@ -9,7 +9,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.progress.UIJob;
 import org.essentialplatform.louis.jobs.OpenDomainObjectJob;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 /**
  * Opens the selected domain object in its own editor
