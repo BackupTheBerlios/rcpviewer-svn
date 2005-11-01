@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.rcpviewer;
+package org.essentialplatform.progmodel.rcpviewer;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -63,7 +63,7 @@ public class RcpviewerPlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("de.berlios.rcpviewer.progmodel.rcpviewer.RcpviewerPluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.essentialplatform.progmodel.rcpviewer.RcpviewerPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}

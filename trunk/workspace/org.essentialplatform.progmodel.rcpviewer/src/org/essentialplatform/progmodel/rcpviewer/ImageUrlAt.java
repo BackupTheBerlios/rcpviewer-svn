@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.progmodel.rcpviewer;
+package org.essentialplatform.progmodel.rcpviewer;
 import java.lang.annotation.*;
 
 /**
