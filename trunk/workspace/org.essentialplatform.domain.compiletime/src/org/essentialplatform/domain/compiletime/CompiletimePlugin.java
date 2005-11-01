@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.domain.compiletime;
+package org.essentialplatform.domain.compiletime;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -63,7 +63,7 @@ public class CompiletimePlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("de.berlios.rcpviewer.domain.compiletime.CompiletimePluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.essentialplatform.domain.compiletime.CompiletimePluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
