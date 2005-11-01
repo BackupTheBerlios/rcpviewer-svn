@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.tests;
+package org.essentialplatform.tests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -18,11 +18,11 @@ public class AllEssentialPlatformTests {
 
 	// TODO: add Compile-time tests etc.
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for de.berlios.rcpviewer.tests");
+		TestSuite suite = new TestSuite("Test for org.essentialplatform.tests");
 		//$JUnit-BEGIN$
-		suite.addTest(de.berlios.rcpviewer.AllTests.suite()); // generic
-		suite.addTest(de.berlios.rcpviewer.AllRuntimeTests.suite());
-		suite.addTest(de.berlios.rcpviewer.progmodel.extended.tests.AllTests.suite());
+		suite.addTest(org.essentialplatform.AllTests.suite()); // generic
+		suite.addTest(org.essentialplatform.AllRuntimeTests.suite());
+		suite.addTest(org.essentialplatform.progmodel.extended.tests.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

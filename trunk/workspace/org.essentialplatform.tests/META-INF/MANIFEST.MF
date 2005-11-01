@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.essentialplatform.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  etc/
-Bundle-Activator: de.berlios.rcpviewer.tests.TestsPlugin
+Bundle-Activator: org.essentialplatform.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit;visibility:=reexport,

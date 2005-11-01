@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.tests;
+package org.essentialplatform.tests;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -65,7 +65,7 @@ public class TestsPlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("de.berlios.rcpviewer.tests.TestsPluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.essentialplatform.tests.TestsPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
