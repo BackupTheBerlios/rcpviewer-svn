@@ -1,7 +1,7 @@
-package de.berlios.rcpviewer.progmodel.extended.tests;
+package org.essentialplatform.progmodel.extended.tests;
 
-import de.berlios.rcpviewer.progmodel.extended.Requirement;
-import de.berlios.rcpviewer.progmodel.extended.IRequirement;
+import org.essentialplatform.progmodel.extended.Requirement;
+import org.essentialplatform.progmodel.extended.IRequirement;
 import junit.framework.TestCase;
 
 public class TestPrerequisites extends TestCase {

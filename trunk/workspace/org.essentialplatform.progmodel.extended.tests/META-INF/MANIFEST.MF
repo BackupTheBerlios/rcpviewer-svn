@@ -6,5 +6,5 @@ Bundle-Version: 1.0.0
 Bundle-Localization: plugin
 Require-Bundle: org.essentialplatform.progmodel.extended;visibility:=reexport,
  org.junit;visibility:=reexport
-Export-Package: de.berlios.rcpviewer.progmodel.extended.tests
+Export-Package: org.essentialplatform.progmodel.extended.tests
 Bundle-ClassPath: bin/
