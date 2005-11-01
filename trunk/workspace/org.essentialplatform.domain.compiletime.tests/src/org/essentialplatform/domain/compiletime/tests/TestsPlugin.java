@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.domain.compiletime.tests;
+package org.essentialplatform.domain.compiletime.tests;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -63,7 +63,7 @@ public class TestsPlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("de.berlios.rcpviewer.domain.compiletime.tests.TestsPluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.essentialplatform.domain.compiletime.tests.TestsPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}

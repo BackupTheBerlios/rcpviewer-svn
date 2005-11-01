@@ -4,7 +4,7 @@ Bundle-Name: Tests Plug-in
 Bundle-SymbolicName: org.essentialplatform.domain.compiletime.tests
 Bundle-Version: 1.0.0
 Bundle-ClassPath: tests.jar
-Bundle-Activator: de.berlios.rcpviewer.domain.compiletime.tests.TestsPlugin
+Bundle-Activator: org.essentialplatform.domain.compiletime.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Eclipse-AutoStart: true
