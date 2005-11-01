@@ -5,10 +5,10 @@ Bundle-SymbolicName: org.essentialplatform.progmodel.extended
 Bundle-Version: 1.0.0
 Bundle-ClassPath: extended.jar,
  bin/
-Bundle-Activator: de.berlios.rcpviewer.progmodel.extended.ExtendedPlugin
+Bundle-Activator: org.essentialplatform.progmodel.extended.ExtendedPlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.standard
 Eclipse-AutoStart: true
-Export-Package: de.berlios.rcpviewer.progmodel.extended
+Export-Package: org.essentialplatform.progmodel.extended
