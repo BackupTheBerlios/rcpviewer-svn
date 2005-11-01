@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.essentialplatform.domain.fixture
 Bundle-Version: 0.0.1
 Bundle-ClassPath: fixture.jar,
  bin/
-Bundle-Activator: de.berlios.rcpviewer.domain.fixture.FixturePlugin
+Bundle-Activator: org.essentialplatform.domain.fixture.FixturePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.extended;visibility:=reexport,
@@ -13,18 +13,18 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.standard;visibility:=reexport,
  org.essentialplatform.domain.runtime
 Eclipse-AutoStart: true
-Export-Package: de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.persistence,
- de.berlios.rcpviewer.progmodel.extended,
- de.berlios.rcpviewer.progmodel.rcpviewer,
- de.berlios.rcpviewer.progmodel.standard,
- de.berlios.rcpviewer.progmodel.standard.attribute,
- de.berlios.rcpviewer.progmodel.standard.domainclass,
- de.berlios.rcpviewer.progmodel.standard.impl,
- de.berlios.rcpviewer.progmodel.standard.namesanddesc,
- de.berlios.rcpviewer.progmodel.standard.namingconventions,
- de.berlios.rcpviewer.progmodel.standard.operation,
- de.berlios.rcpviewer.progmodel.standard.reference,
- de.berlios.rcpviewer.session,
- de.berlios.rcpviewer.transaction
+Export-Package: org.essentialplatform.domain,
+ org.essentialplatform.persistence,
+ org.essentialplatform.progmodel.extended,
+ org.essentialplatform.progmodel.rcpviewer,
+ org.essentialplatform.progmodel.standard,
+ org.essentialplatform.progmodel.standard.attribute,
+ org.essentialplatform.progmodel.standard.domainclass,
+ org.essentialplatform.progmodel.standard.impl,
+ org.essentialplatform.progmodel.standard.namesanddesc,
+ org.essentialplatform.progmodel.standard.namingconventions,
+ org.essentialplatform.progmodel.standard.operation,
+ org.essentialplatform.progmodel.standard.reference,
+ org.essentialplatform.session,
+ org.essentialplatform.transaction
 Bundle-Vendor: RcpViewer Development Team
