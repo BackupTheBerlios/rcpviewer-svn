@@ -7,6 +7,6 @@
 
    <extension
          point="org.essentialplatform.domain.runtime.objectstorebootstrap">
-         <impl class="de.berlios.rcpviewer.persistence.NoopObjectStoreBootStrap"/>
+         <impl class="org.essentialplatform.persistence.NoopObjectStoreBootStrap"/>
    </extension>
 </plugin>
