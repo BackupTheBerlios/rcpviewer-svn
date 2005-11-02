@@ -2,6 +2,7 @@ package org.essentialplatform.persistence;
 
 import junit.framework.TestCase;
 
+import org.essentialplatform.domain.Deployment;
 import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomain;
 import org.essentialplatform.domain.IDomainBuilder;
@@ -46,6 +47,7 @@ public class TestInMemoryObjectStore extends TestCase {
 
 	protected void tearDown() throws Exception {
 		resetAll();
+		Deployment.reset();
 		super.tearDown();
 	}
 

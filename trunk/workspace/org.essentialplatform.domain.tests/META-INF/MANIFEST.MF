@@ -22,6 +22,7 @@ Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform,
  org.essentialplatform.domain,
+ org.essentialplatform.domain.emf,
  org.essentialplatform.domain.tests,
  org.essentialplatform.progmodel.extended,
  org.essentialplatform.progmodel.rcpviewer,
