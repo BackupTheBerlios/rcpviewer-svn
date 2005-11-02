@@ -1,8 +1,10 @@
 package org.essentialplatform;
 
+import org.essentialplatform.domain.Deployment;
 import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomainBuilder;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
 import org.essentialplatform.persistence.IObjectStore;
 import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.progmodel.standard.ProgModelConstants;
@@ -22,22 +24,18 @@ import org.essentialplatform.progmodel.standard.EssentialProgModelDomainBuilder;
  */
 public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 
-	/**
-	 * Provides null domainBuilder (the {@link EssentialProgModelDomainBuilder}
-	 * will still be used.
-	 */
 	public AbstractRuntimeTestCase() {
-		super(new RuntimeDomainSpecifics(), null);
+		super(null);
 	}
 
 	public AbstractRuntimeTestCase(IDomainBuilder domainBuilder) {
-		super(new RuntimeDomainSpecifics(), domainBuilder);
+		super(domainBuilder);
 	}
 
 	public AbstractRuntimeTestCase(String name, IDomainBuilder domainBuilder) {
-		super(name, new RuntimeDomainSpecifics(), domainBuilder);
+		super(name, domainBuilder);
 	}
-	
+
 	protected Domain domain;
 	protected SessionManager sessionManager;
 	protected ISession session;
@@ -47,6 +45,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+		new RuntimeDeployment();
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
@@ -65,6 +64,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		SessionManager.instance().reset();
 		transactionManager.reset();
 		transactionManager = null;
+		Deployment.reset();
 		super.tearDown();
 	}
 

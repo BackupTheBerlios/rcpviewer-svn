@@ -7,43 +7,28 @@ import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
 
 public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 
-	public TestSessionAttachDetach() {
-		super(null);
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testCanAttachToSessionIfIdMatches() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
 	}
 
 	public void testCanDetachFromSessionThroughDomainObject() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(session.isAttached(domainObject));
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
 	}
 
 	public void testCannotAttachToSessionIfAlreadyAttached() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(session.isAttached(domainObject));
 		try {
 			session.attach(domainObject);
@@ -54,10 +39,9 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testDetachFromSesionNotifiesListeners() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = 
+		IDomainObject<Department> domainObject = 
 			session.create(domainClass);
 		MySessionListener l = session.addSessionListener(new MySessionListener());
 		session.detach(domainObject);
@@ -66,10 +50,9 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanReAttachFromSessionThroughDomainObject() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
 		session.attach(domainObject);
@@ -77,20 +60,18 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testDomainObjectSessionIdNotRemovedWhenDetached() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		String sessionIdBeforeDetach = domainObject.getSessionId();
 		session.detach(domainObject);
 		assertEquals(sessionIdBeforeDetach, domainObject.getSessionId());
 	}
 
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
 		assertFalse(session.isAttached(domainObject));
 		try {
@@ -102,10 +83,9 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotAttachToSessionIfIdDoesNotMatch() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
@@ -122,10 +102,9 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotClearDomainObjectSessionIdIfAttached() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		try {
 			domainObject.clearSessionId();
@@ -140,7 +119,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		session.detach(domainObject);
 		domainObject.clearSessionId();
@@ -153,10 +132,9 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	 *
 	 */
 	public void testDomainObjectCanBeAttachedToSessionForSameDomainIfHasNoSessionId() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		session.detach(domainObject);
 		domainObject.clearSessionId();
@@ -181,9 +159,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		ISession sessionForMarketingDomain = sessionManager.createSession(marketingDomain, new InMemoryObjectStore());
 		
 		// create domain object from default domain
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainObject<?> departmentDomainObject = 
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainObject<Department> departmentDomainObject = 
 			sessionForDefaultDomain.create(departmentDomainClass);
 
 		// detach and clear its session Id

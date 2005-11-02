@@ -1,6 +1,8 @@
 package org.essentialplatform.progmodel.standard.domainclass;
-import org.essentialplatform.RuntimeDomainSpecifics;
+
+import org.essentialplatform.domain.Deployment;
 import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
 import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 
@@ -12,23 +14,23 @@ import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeClassBindin
  */
 public class TestDomainClassAtRuntime extends TestDomainClass {
 
-	public TestDomainClassAtRuntime() {
-		super(new RuntimeDomainSpecifics(), null);
-	}
-	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		new RuntimeDeployment();
 	}
-
+	
+	@Override
 	protected void tearDown() throws Exception {
+		Deployment.reset();
 		super.tearDown();
 	}
 	
 	public void testGetJavaClass() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(CustomerWithNoAttributes.class);
+		IDomainClass domainClass = lookupAny(CustomerWithNoAttributes.class);
 		
-		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		RuntimeClassBinding binding = (RuntimeClassBinding)domainClass.getBinding();
+		Class<CustomerWithNoAttributes> javaClass = binding.getJavaClass();
 		assertSame(CustomerWithNoAttributes.class, javaClass);
 	}
 

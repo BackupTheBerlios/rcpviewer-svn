@@ -2,7 +2,6 @@ package org.essentialplatform.session;
 
 import org.essentialplatform.AbstractRuntimeTestCase;
 import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 
 public class TestSession extends AbstractRuntimeTestCase  {
 
@@ -26,23 +25,21 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * The returned object will be attached to any session.
 	 */
 	public void testCanInstantiateDomainObjectFromSession() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertNotNull(domainObject);
 		assertSame(domainObject.getDomainClass(), domainClass);
-		Department pojo = (Department)domainObject.getPojo();
+		Department pojo = domainObject.getPojo();
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
 		assertTrue(session.isAttached(domainObject));
 	}
 
 	public void testDomainObjectSessionIdTakenFromManagingSession() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertEquals(session.getId(), domainObject.getSessionId());
 	}
 
@@ -55,11 +52,10 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * The returned object will be attached to any session.
 	 */
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
 		MySessionListener l = session.addSessionListener(new MySessionListener());
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(l.attachedCallbackCalled);
 		assertFalse(l.detachedCallbackCalled);
 	}
@@ -69,12 +65,9 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * Can create a domain object through the session. 
 	 */
 	public void testDomainObjectMarkedAsPersistentIfNotTransientOnly() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(Department.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isPersistent());
 	}
 
@@ -83,13 +76,9 @@ public class TestSession extends AbstractRuntimeTestCase  {
 	 * TODO: need the TransientOnly annotation in the ExtendedDomainClass 
 	 */
 	public void incompletetestDomainObjectMarkedAsTransientIfTransientOnly() {
-//		IDomainClass domainClass = 
-//			(IDomainClass)lookupAny(DepartmentTransientOnly.class);
-//		domain.addBuilder(new ExtendedProgModelDomainBuilder());
-//		domain.done();
+//		IDomainClass domainClass = lookupAny(DepartmentTransientOnly.class);
 //
-//		IDomainObject<DepartmentTransientOnly> domainObject = 
-//			(IDomainObject<DepartmentTransientOnly>)session.create(domainClass);
+//		IDomainObject<DepartmentTransientOnly> domainObject = session.create(domainClass);
 //		assertFalse(domainObject.isPersistent());
 	}
 
@@ -97,11 +86,9 @@ public class TestSession extends AbstractRuntimeTestCase  {
 
 	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	public void incompletetestCanRetrieveOncePersisted() {
-//		IDomainClass domainClass = 
-//			(IDomainClass)lookupAny(Department.class);
+//		IDomainClass domainClass = lookupAny(Department.class);
 //
-//		IDomainObject<Department> domainObject = 
-//			(IDomainObject<Department>)session.create(domainClass);
+//		IDomainObject<Department> domainObject = session.create(domainClass);
 //		Department dept = domainObject.getPojo();
 //		dept.setName("HR"); // name is used in Department's toString() -> title
 //		// domainObject.persist();

@@ -1,7 +1,8 @@
 package org.essentialplatform.progmodel.extended;
 
-import org.essentialplatform.RuntimeDomainSpecifics;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
+import org.essentialplatform.domain.Deployment;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
+
 
 /**
  * Binds the tests defined in {@link TestRegex} to the runtime 
@@ -12,8 +13,16 @@ import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemant
  */
 public class TestRegexAtRuntime extends TestRegex {
 
-	public TestRegexAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new EssentialProgModelExtendedSemanticsDomainBuilder());
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		new RuntimeDeployment();
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		Deployment.reset();
+		super.tearDown();
 	}
 
 }

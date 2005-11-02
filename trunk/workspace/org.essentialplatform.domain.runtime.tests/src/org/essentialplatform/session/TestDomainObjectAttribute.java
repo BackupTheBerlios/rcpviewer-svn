@@ -18,11 +18,11 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
 	public void testCanGetAttribute() {
 		IDomainClass dc = lookupAny(Department.class);
-		IDomainObject<?> dobj = session.create(dc);
+		IDomainObject<Department> dobj = session.create(dc);
 		EAttribute eAttrib = dobj.getEAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		
-		Department pojo = (Department)dobj.getPojo();
+		Department pojo = dobj.getPojo();
 		pojo.setName("HR");  // set directly rather than using attrib.set()
 		String value = (String)attrib.get();
 		assertEquals("HR", value);
@@ -30,18 +30,18 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
 	public void testCanSetAttribute() {
 		IDomainClass dc = lookupAny(Department.class);
-		IDomainObject<?> dobj = session.create(dc);
+		IDomainObject<Department> dobj = session.create(dc);
 		EAttribute eAttrib = dobj.getEAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		
-		Department pojo = (Department)dobj.getPojo();
+		Department pojo = dobj.getPojo();
 		attrib.set("HR");
 		assertEquals("HR", pojo.getName());
 	}
 
 	public void testSettingAttributeNotifiesListeners() {
-		IDomainClass dc =  lookupAny(org.essentialplatform.session.Department.class);
-		IDomainObject<?> dobj = session.create(dc);
+		IDomainClass dc =  lookupAny(Department.class);
+		IDomainObject<Department> dobj = session.create(dc);
 		EAttribute eAttrib = dobj.getEAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		
@@ -52,8 +52,8 @@ public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCannotSetAttributeToObjectOfWrongType() {
-		IDomainClass dc = lookupAny(org.essentialplatform.session.Department.class);
-		IDomainObject<?> dobj = session.create(dc);
+		IDomainClass dc = lookupAny(Department.class);
+		IDomainObject<Department> dobj = session.create(dc);
 		EAttribute eAttrib = dobj.getEAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		

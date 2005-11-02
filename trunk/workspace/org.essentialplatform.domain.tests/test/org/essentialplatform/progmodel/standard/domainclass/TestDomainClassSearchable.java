@@ -1,8 +1,6 @@
 package org.essentialplatform.progmodel.standard.domainclass;
 
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
 
 /**
@@ -12,33 +10,16 @@ import org.essentialplatform.domain.IDomainClass;
  */
 public abstract class TestDomainClassSearchable extends AbstractTestCase {
 
-	public TestDomainClassSearchable(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
 	private IDomainClass domainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 	
 	public void testSearchableDomainClass() {
-		domainClass = 
-			lookupAny(SearchableCustomer.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		domainClass = lookupAny(SearchableCustomer.class);
 
 		assertTrue(domainClass.isSearchable());
 	}
 	
 	public void testNonPersistableDomainClass() {
-		domainClass = 
-			lookupAny(NonSearchableCustomer.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		domainClass = lookupAny(NonSearchableCustomer.class);
 
 		assertFalse(domainClass.isSearchable());
 	}

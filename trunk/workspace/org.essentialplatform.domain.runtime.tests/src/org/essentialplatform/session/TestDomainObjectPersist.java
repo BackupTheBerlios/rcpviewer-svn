@@ -23,10 +23,9 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	
 	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	public void incompletetestCanPersistThroughDomainObject() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		// domainObject.persist();
 		assertTrue(domainObject.isPersistent());
 	}
@@ -45,36 +44,13 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	 * method.
 	 */
 	public void incompletetestCanPersistThroughPojo() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		// this test is marked incomplete and needs reworking anyway: persistence is now via xactn mgr.
 		// session.persist(domainObject.getPojo());
 		assertTrue(domainObject.isPersistent());
 	}
-
-	// COMMENTED OUT BECAUSE (A) INCOMPLETE AND (B) THIS FUNCTIONALITY IS BEING
-	// RELOCATED TO SESSION (OR AT LEAST, MOVED OUT OF RUNTIMEDOMAINCLASS)
-//	/**
-//	 * Create directly from DomainClass rather than from Session. 
-//	 */
-//	// marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
-//	public void incompletetestCannotPersistIfNotAttachedToSession() {
-//		IDomainClass domainClass = 
-//			(IDomainClass)lookupAny(Department.class);
-//		
-//		IDomainObject<Department> domainObject = domainClass.create(session);
-//		session.detach(domainObject);
-//		assertFalse(session.isAttached(domainObject));
-//		try {
-//			// domainObject.persist();
-//			fail("IllegalStateException should have been thrown.");
-//		} catch(IllegalStateException ex) {
-//			// expected
-//		}
-//	}
-
 
 	/**
 	 * 
@@ -82,10 +58,9 @@ public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 	 * ALSO marked as incomplete, needs to be refactored or removed since persistence now done through xactns.
 	 */
 	public void incompletetestCannotPersistMoreThanOnce() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
+		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = session.create(domainClass);
 		// domainObject.persist();
 		try {
 			// domainObject.persist();

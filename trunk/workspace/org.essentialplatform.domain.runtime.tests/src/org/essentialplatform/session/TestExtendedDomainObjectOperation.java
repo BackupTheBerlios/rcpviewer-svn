@@ -1,14 +1,11 @@
 package org.essentialplatform.session;
 
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EOperation;
-
 import org.essentialplatform.AbstractRuntimeTestCase;
 import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationWithDefaults;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationWithPre;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationWithPreAndArgs;
@@ -16,25 +13,11 @@ import org.essentialplatform.progmodel.standard.operation.Product;
 
 public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 
-	public TestExtendedDomainObjectOperation() {
-		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 	public void testOperationNoArgWithPre() {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithPre.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
 
-		IDomainObject<?> domainObject = session.create(domainClass);
-		CustomerOperationWithPre pojo = (CustomerOperationWithPre)domainObject.getPojo();
+		IDomainObject<CustomerOperationWithPre> domainObject = session.create(domainClass);
+		CustomerOperationWithPre pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
@@ -50,13 +33,10 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
 	public void testOperationArgsAndPre() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationWithPreAndArgs.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+ 		IDomainClass domainClass = lookupAny(CustomerOperationWithPreAndArgs.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
-		CustomerOperationWithPreAndArgs pojo = (CustomerOperationWithPreAndArgs)domainObject.getPojo();
+		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = session.create(domainClass);
+		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
@@ -97,13 +77,10 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
 	public void testOperationDefaults() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationWithDefaults.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(CustomerOperationWithDefaults.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
-		CustomerOperationWithDefaults pojo = (CustomerOperationWithDefaults)domainObject.getPojo();
+		IDomainObject<CustomerOperationWithDefaults> domainObject = session.create(domainClass);
+		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
@@ -116,13 +93,10 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 
 
 	public void testOperationResetDefaults() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationWithDefaults.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(CustomerOperationWithDefaults.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
-		CustomerOperationWithDefaults pojo = (CustomerOperationWithDefaults)domainObject.getPojo();
+		IDomainObject<CustomerOperationWithDefaults> domainObject = session.create(domainClass);
+		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
@@ -145,13 +119,10 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 	 *
 	 */
 	public void incompletetestOperationListener() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationWithPreAndArgs.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(CustomerOperationWithPreAndArgs.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
-		CustomerOperationWithPreAndArgs pojo = (CustomerOperationWithPreAndArgs)domainObject.getPojo();
+		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = session.create(domainClass);
+		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
 
 		Set<IObservedFeature> features = session.getObservedFeatures();
 		

@@ -40,7 +40,7 @@ import org.essentialplatform.progmodel.standard.EssentialProgModelStandardSemant
  * @author Dan Haywood
  *
  */
-public class EssentialProgModelExtendedSemanticsDomainBuilder implements IDomainBuilder {
+class EssentialProgModelExtendedSemanticsDomainBuilder implements IDomainBuilder {
 
 	private final EssentialProgModelStandardSemanticsEmfSerializer standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
 	private final EssentialProgModelExtendedSemanticsEmfSerializer serializer = new EssentialProgModelExtendedSemanticsEmfSerializer();

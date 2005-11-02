@@ -14,34 +14,16 @@ import org.essentialplatform.session.IDomainObject;
  */
 public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 
-	public TestExtendedClassAdapter() {
-		super();
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testDummy() {}
 	
 	public void obsoletetestGetAdapter() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(Department.class);
 
 //		assertNotNull(domainClass.getAdapter(IExtendedRuntimeDomainClass.class));
 	}
 
 	public void obsoletetestIsCompatible() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(Department.class);
 		
 //		IExtendedRuntimeDomainClass classAdapter = 
 //			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);
@@ -50,10 +32,7 @@ public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
 	}
 	
 	public void obsoletetestGetObjectAdapterFor() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(Department.class);
 		
 //		IExtendedRuntimeDomainClass classAdapter = 
 //			domainClass.getAdapter(IExtendedRuntimeDomainClass.class);

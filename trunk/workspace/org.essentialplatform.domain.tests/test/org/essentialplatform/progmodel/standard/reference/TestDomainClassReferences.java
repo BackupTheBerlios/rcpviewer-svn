@@ -2,26 +2,17 @@ package org.essentialplatform.progmodel.standard.reference;
 
 
 import org.eclipse.emf.ecore.EReference;
-
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
 import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.domain.IDomainClass.IReference;
 
 public abstract class TestDomainClassReferences extends AbstractTestCase {
 
-	public TestDomainClassReferences(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
 	private IDomainClass departmentDomainClass;
 	private IDomainClass employeeDomainClass;
 	private IDomainClass nameDomainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
+	
 	protected void tearDown() throws Exception {
 		departmentDomainClass = null;
 		employeeDomainClass = null;
@@ -180,7 +171,6 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		
 		departmentDomainClass = lookupAny(BiDir3Department.class);
 		employeeDomainClass = lookupAny(BiDir3Employee.class);
-		// getDomainInstance().done(); // necessary for bidir.
 
 		EReference refDepartmentToEmployees = 
 			departmentDomainClass.getEReferenceNamed("employees");

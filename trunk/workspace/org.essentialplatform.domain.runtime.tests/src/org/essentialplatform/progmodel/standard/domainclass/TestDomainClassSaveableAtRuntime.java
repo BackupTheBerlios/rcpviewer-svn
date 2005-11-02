@@ -1,7 +1,9 @@
 package org.essentialplatform.progmodel.standard.domainclass;
 
-import org.essentialplatform.RuntimeDomainSpecifics;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
+import org.essentialplatform.domain.Deployment;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
+
+
 
 /**
  * Binds the tests defined in {@link TestDomainClassImmutable} to the runtime 
@@ -12,8 +14,16 @@ import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemant
  */
 public class TestDomainClassSaveableAtRuntime extends TestDomainClassSaveable {
 
-	public TestDomainClassSaveableAtRuntime() {
-		super(new RuntimeDomainSpecifics(), new EssentialProgModelExtendedSemanticsDomainBuilder());
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		new RuntimeDeployment();
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		Deployment.reset();
+		super.tearDown();
 	}
 
 }

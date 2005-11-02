@@ -1,33 +1,19 @@
 package org.essentialplatform.session;
 
-import org.easymock.MockControl;
 import org.eclipse.emf.ecore.EAttribute;
-
 import org.essentialplatform.AbstractRuntimeTestCase;
-import org.essentialplatform.authorization.IAuthorizationManager;
 import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Prerequisites;
 import org.essentialplatform.progmodel.extended.IPrerequisites.Constraint;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
-import org.essentialplatform.progmodel.standard.IFeatureId;
 
 public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  {
 
-	public TestExtendedDomainObjectAttribute() {
-		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
-	}
-
 	public void testCanSetAttributeIfAccessorPrerequisitesAllow() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(OrderConstrained.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
@@ -35,17 +21,13 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	}
 
 	public void testCannotSetAttributeIfAccessorPrerequisitesMakesUnusable() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(OrderConstrained.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
-		OrderConstrained pojo = (OrderConstrained)domainObject.getPojo();
+		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
+		OrderConstrained pojo = domainObject.getPojo();
 		pojo.ship();
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
@@ -54,17 +36,13 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	}
 
 	public void testCannotSetAttributeIfAccessorPrerequisitesMakesInvisible() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(OrderConstrained.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
-		OrderConstrained pojo = (OrderConstrained)domainObject.getPojo();
+		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
+		OrderConstrained pojo = domainObject.getPojo();
 		pojo.shipAndRestrict();
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
@@ -76,15 +54,11 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	 *
 	 */
 	public void testCannotSetAttributeIfMutatorPrerequisitesPrevent() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(OrderConstrained.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
 
 		IPrerequisites prerequisites = attrib.mutatorPrerequisitesFor(new Integer(-1));
@@ -98,33 +72,25 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 	 */
 	public void testAttributePrerequisitesChangedViaExternalStateChanged() {
 		
-		IDomainClass pingDomainClass = 
-			(IDomainClass)lookupAny(Ping.class);
-		IDomainClass pongDomainClass = 
-			(IDomainClass)lookupAny(Pong.class);
-		getDomainInstance().addBuilder(getDomainBuilder());
-		getDomainInstance().done();
+		IDomainClass pingDomainClass = lookupAny(Ping.class);
+		IDomainClass pongDomainClass = lookupAny(Pong.class);
 		
-		IDomainObject<?> pingDomainObject = session.recreate(pingDomainClass);
-		IDomainObject<?> pongDomainObject = session.recreate(pongDomainClass);
+		IDomainObject<Ping> pingDomainObject = session.recreate(pingDomainClass);
+		IDomainObject<Pong> pongDomainObject = session.recreate(pongDomainClass);
 
-		Ping ping = (Ping)pingDomainObject.getPojo();
-		Pong pong = (Pong)pongDomainObject.getPojo();
+		Ping ping = pingDomainObject.getPojo();
+		Pong pong = pongDomainObject.getPojo();
 		ping.setPong(pong);
 
 		EAttribute pingVisibleEAttrib = pingDomainObject.getEAttributeNamed("visibleOnlyIfPongPositive");
-		IDomainClass.IAttribute pingVisibleClassAttrib = pingDomainClass.getAttribute(pingVisibleEAttrib);
 		IDomainObject.IObjectAttribute pingVisibleAttrib = pingDomainObject.getAttribute(pingVisibleEAttrib);
 
 		EAttribute pingUsableEAttrib = pingDomainObject.getEAttributeNamed("usableOnlyIfPongPositive");
-		IDomainClass.IAttribute pingUsableClassAttrib = pingDomainClass.getAttribute(pingUsableEAttrib);
 		IDomainObject.IObjectAttribute pingUsableAttrib = pingDomainObject.getAttribute(pingUsableEAttrib);
 
 		// should now be two observed features held by the session.
 		assertEquals(2, session.getObservedFeatures().size());
 		
-		IPrerequisites pingVisibleIfAttribPrereqs = pingVisibleAttrib.accessorPrerequisitesFor();
-		IPrerequisites pingUsableIfAttribPrereqs = pingUsableAttrib.accessorPrerequisitesFor();
 		MyDomainObjectAttributeListener pingVisibleIfAttribListener =
 			pingVisibleAttrib.addListener(new MyDomainObjectAttributeListener());
 		MyDomainObjectAttributeListener pingUsableIfAttribListener =

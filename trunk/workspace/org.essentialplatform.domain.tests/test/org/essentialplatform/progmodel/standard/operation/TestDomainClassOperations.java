@@ -1,13 +1,7 @@
 package org.essentialplatform.progmodel.standard.operation;
 
-
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
-
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.domain.OperationKind;
 import org.essentialplatform.domain.IDomainClass.IOperation;
@@ -23,18 +17,7 @@ import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeClassBindin
  */
 public abstract class TestDomainClassOperations extends AbstractTestCase {
 
-	public TestDomainClassOperations(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
 	private IDomainClass domainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 
 	/**
 	 * Methods which are public are implicitly picked up as a user-invokable

@@ -6,37 +6,17 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.AbstractRuntimeTestCase;
 import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 
 public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 
-	public TestDomainObjectCollection() {
-		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testCanRemoveFromCollection() {
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainClass employeeDomainClass = 
-			(IDomainClass) lookupAny(Employee.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
-		IDomainObject<Department> departmentDomainObject = 
-			session.recreate(departmentDomainClass);
+		IDomainObject<Department> departmentDomainObject = session.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
-		IDomainObject<Employee> employeeDomainObject = 
-			session.recreate(employeeDomainClass);
+		IDomainObject<Employee> employeeDomainObject = session.recreate(employeeDomainClass);
 		
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
@@ -51,10 +31,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	 *
 	 */
 	public void testGetCollection() {
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainClass employeeDomainClass = 
-			(IDomainClass)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
 			session.create(departmentDomainClass);
@@ -73,22 +51,16 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testGetReferencedClassForCollection() {
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainClass employeeDomainClass = 
-			(IDomainClass)lookupAny(Employee.class);
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
 		assertSame(employeeDomainClass, departmentDomainClass.getReference(employeesCollection).getReferencedClass());
 	}
 
 	public void testListenersNotifiedWhenAddToCollection() {
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainClass employeeDomainClass = 
-			(IDomainClass)lookupAny(Employee.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
@@ -109,12 +81,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testListenersNotifiedWhenRemoveFromCollection() {
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainClass employeeDomainClass = 
-			(IDomainClass)lookupAny(Employee.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
@@ -140,12 +108,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 	}
 
 	public void testCanAddToCollection() {
-		IDomainClass departmentDomainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		IDomainClass employeeDomainClass = 
-			(IDomainClass)lookupAny(Employee.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass departmentDomainClass = lookupAny(Department.class);
+		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);

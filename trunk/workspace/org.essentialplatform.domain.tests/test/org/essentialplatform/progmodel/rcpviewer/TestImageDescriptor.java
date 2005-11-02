@@ -1,9 +1,7 @@
 package org.essentialplatform.progmodel.rcpviewer;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
 import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
@@ -18,19 +16,12 @@ import org.essentialplatform.domain.IDomainClass;
  */
 public abstract class TestImageDescriptor extends AbstractTestCase {
 
-	public TestImageDescriptor(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
+	public TestImageDescriptor(IDomainBuilder domainBuilder) {
+		super(domainBuilder);
 	}
 
 
 	private IDomainClass domainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 	
 	public void testDomainClassWithImageUrlAt() {
 		domainClass = lookupAny(ProspectiveSale.class);

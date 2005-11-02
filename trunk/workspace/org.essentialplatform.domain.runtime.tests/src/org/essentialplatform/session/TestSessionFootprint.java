@@ -25,16 +25,16 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	public void testSessionFootprintIsImmutable() {
 		
 		IDomainClass deptDomainClass = lookupAny(Department.class);
-		IDomainObject<?> hrDeptDomainObject = session.create(deptDomainClass);
-		Department pojo = (Department)hrDeptDomainObject.getPojo();
+		IDomainObject<Department> hrDeptDomainObject = session.create(deptDomainClass);
+		Department pojo = hrDeptDomainObject.getPojo();
 		pojo.setName("HR");
 		
-		IDomainObject<?> itDeptDomainObject = session.create(deptDomainClass);
-		pojo = (Department)itDeptDomainObject.getPojo();
+		IDomainObject<Department> itDeptDomainObject = session.create(deptDomainClass);
+		pojo = itDeptDomainObject.getPojo();
 		pojo.setName("IT");
 	
-		IDomainObject<?> cateringDeptDomainObject = session.create(deptDomainClass);
-		pojo = (Department)cateringDeptDomainObject.getPojo();
+		IDomainObject<Department> cateringDeptDomainObject = session.create(deptDomainClass);
+		pojo = cateringDeptDomainObject.getPojo();
 		pojo.setName("Catering");
 	
 		List<IDomainObject<?>> departmentDomainObjects = session.footprintFor(deptDomainClass);
@@ -52,16 +52,16 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 	public void testSessionFootprintIgnoresDetached() {
 		
 		IDomainClass deptDomainClass = lookupAny(Department.class);
-		IDomainObject<?> hrDeptDomainObject = session.create(deptDomainClass);
-		Department pojo = (Department)hrDeptDomainObject.getPojo();
+		IDomainObject<Department> hrDeptDomainObject = session.create(deptDomainClass);
+		Department pojo = hrDeptDomainObject.getPojo();
 		pojo.setName("HR");
 		
-		IDomainObject<?> itDeptDomainObject = session.create(deptDomainClass);
-		pojo = (Department)itDeptDomainObject.getPojo();
+		IDomainObject<Department> itDeptDomainObject = session.create(deptDomainClass);
+		pojo = itDeptDomainObject.getPojo();
 		pojo.setName("IT");
 	
-		IDomainObject<?> cateringDeptDomainObject = session.create(deptDomainClass);
-		pojo = (Department)cateringDeptDomainObject.getPojo();
+		IDomainObject<Department> cateringDeptDomainObject = session.create(deptDomainClass);
+		pojo = cateringDeptDomainObject.getPojo();
 		pojo.setName("Catering");
 	
 		session.detach(itDeptDomainObject);
@@ -81,27 +81,27 @@ public class TestSessionFootprint extends AbstractRuntimeTestCase  {
 		
 		IDomainClass deptDomainClass = lookupAny(Department.class);
 		
-		IDomainObject<?> hrDeptDomainObject = session.create(deptDomainClass);
-		Department pojo = (Department)hrDeptDomainObject.getPojo();
+		IDomainObject<Department> hrDeptDomainObject = session.create(deptDomainClass);
+		Department pojo = hrDeptDomainObject.getPojo();
 		pojo.setName("HR");
 		
-		IDomainObject<?> itDeptDomainObject = session.create(deptDomainClass);
-		pojo = (Department)itDeptDomainObject.getPojo();
+		IDomainObject<Department> itDeptDomainObject = session.create(deptDomainClass);
+		pojo = itDeptDomainObject.getPojo();
 		pojo.setName("IT");
 	
-		IDomainObject<?> cateringDeptDomainObject = session.create(deptDomainClass);
-		pojo = (Department)cateringDeptDomainObject.getPojo();
+		IDomainObject<Department> cateringDeptDomainObject = session.create(deptDomainClass);
+		pojo = cateringDeptDomainObject.getPojo();
 		pojo.setName("Catering");
 	
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
-		IDomainObject<?> clarkKentEmployeeDomainObject = session.create(employeeDomainClass);
+		IDomainObject<Employee> clarkKentEmployeeDomainObject = session.create(employeeDomainClass);
 		
-		Employee clarkKent = (Employee)clarkKentEmployeeDomainObject.getPojo();
+		Employee clarkKent = clarkKentEmployeeDomainObject.getPojo();
 		clarkKent.setFirstName("Clark");
 		clarkKent.setSurname("Kent");
 		
-		IDomainObject<?> loisLaneEmployeeDomainObject = session.create(employeeDomainClass);
-		Employee loisLane = (Employee)loisLaneEmployeeDomainObject.getPojo();
+		IDomainObject<Employee> loisLaneEmployeeDomainObject = session.create(employeeDomainClass);
+		Employee loisLane = loisLaneEmployeeDomainObject.getPojo();
 		loisLane.setFirstName("Lois");
 		loisLane.setSurname("Lane");
 		

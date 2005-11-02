@@ -1,23 +1,9 @@
 package org.essentialplatform.transaction;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EOperation;
-
-import org.essentialplatform.AbstractRuntimeTestCase;
-import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.domain.Domain;
-import org.essentialplatform.persistence.IObjectStore;
-import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
-import org.essentialplatform.progmodel.standard.ProgModelConstants;
+import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.session.IDomainObject;
-import org.essentialplatform.session.ISession;
-import org.essentialplatform.session.local.SessionManager;
 import org.essentialplatform.transaction.internal.TransactionManager;
-import junit.framework.TestCase;
 
 public class TestTransactionManagerCurrentTransactions extends AbstractTransactionManagerTestCase {
 
@@ -33,13 +19,10 @@ public class TestTransactionManagerCurrentTransactions extends AbstractTransacti
 	// IMPLICITLY START, COMMIT
 
 	public void testCommitTransactionClearsCurrentTransaction() {
-		IDomainClass domainClass = 
-			(IDomainClass)Domain.lookupAny(Calculator.class);
-		domain.addBuilder(new EssentialProgModelExtendedSemanticsDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = Domain.lookupAny(Calculator.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
-		Calculator calculator = (Calculator)domainObject.getPojo();
+		IDomainObject<Calculator> domainObject = session.create(domainClass);
+		Calculator calculator = domainObject.getPojo();
 		assertEquals(1, transactionManager.getCurrentTransactions().size());
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		transaction.commit();

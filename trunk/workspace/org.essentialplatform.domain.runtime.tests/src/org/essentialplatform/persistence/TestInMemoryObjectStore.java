@@ -1,14 +1,11 @@
 package org.essentialplatform.persistence;
 
 import junit.framework.TestCase;
-import org.essentialplatform.AbstractRuntimeTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.RuntimeDomainSpecifics;
+
 import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomain;
 import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.Domain;
 import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.progmodel.standard.ProgModelConstants;
 import org.essentialplatform.session.ISession;
@@ -28,7 +25,6 @@ public class TestInMemoryObjectStore extends TestCase {
 	}
 
 	private final IDomainBuilder domainBuilder = null;
-	private final IDeploymentSpecifics domainSpecifics = new RuntimeDomainSpecifics(); 
 
 	protected Domain domain;
 	protected SessionManager sessionManager;
@@ -56,19 +52,19 @@ public class TestInMemoryObjectStore extends TestCase {
 	}
 
 	protected IDomain getDomainInstance() {
-		return domainSpecifics.getDomainInstance();
+		return Domain.instance();
 	}
 	
 	protected IDomain getDomainInstance(final String domainName) {
-		return domainSpecifics.getDomainInstance(domainName);
+		return Domain.instance(domainName);
 	}
 
 	protected <T> IDomainClass lookupAny(Class<T> domainClassIdentifier) {
-		return domainSpecifics.lookupAny(domainClassIdentifier);
+		return Domain.lookupAny(domainClassIdentifier);
 	}
 	
 	protected void resetAll() {
-		domainSpecifics.resetAll();
+		Domain.resetAll();
 	}
 	
 	

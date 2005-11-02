@@ -1,10 +1,9 @@
 package org.essentialplatform.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
-
-import org.essentialplatform.RuntimeDomainSpecifics;
-import org.essentialplatform.domain.Domain;
+import org.essentialplatform.domain.Deployment;
 import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
 import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
 
 /**
@@ -14,13 +13,18 @@ import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeAttributeBi
  */
 public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttributes {
 
-	public TestDomainClassAttributesAtRuntime() {
-		super(new RuntimeDomainSpecifics(), null);
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		new RuntimeDeployment();
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		Deployment.reset();
+		super.tearDown();
 	}
 
-
-	
-	public void testDummy() {}
 	
 	/**
 	 * This test is now defunct since the RuntimeAttributeBinding which replaces
@@ -28,8 +32,7 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 	 * mutator (know-how-to instead of know-what). 
 	 */
 	public void incompletetestCanHandleWriteOnlyAttributes() {
-		IDomainClass domainClass = 
-			Domain.instance().lookupAny(CustomerWithWriteOnlyAttribute.class);
+		IDomainClass domainClass = lookupAny(CustomerWithWriteOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		// assertNotNull(domainClass.getAccessorOrMutatorFor(eAttribute));
 		

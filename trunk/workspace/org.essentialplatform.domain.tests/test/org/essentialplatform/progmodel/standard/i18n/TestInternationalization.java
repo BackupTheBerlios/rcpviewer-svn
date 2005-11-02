@@ -1,23 +1,9 @@
 package org.essentialplatform.progmodel.standard.i18n;
 
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.domain.IDomainBuilder;
 
 public abstract class TestInternationalization extends AbstractTestCase {
 
-	public TestInternationalization(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 	public void testDummy() {
 	}
 

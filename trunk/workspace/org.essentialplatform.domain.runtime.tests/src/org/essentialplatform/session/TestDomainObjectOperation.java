@@ -1,36 +1,18 @@
 package org.essentialplatform.session;
 
-import org.eclipse.emf.ecore.EOperation;
-
 import org.essentialplatform.AbstractRuntimeTestCase;
 import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.progmodel.standard.EssentialProgModelExtendedSemanticsDomainBuilder;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationReturningDomainObject;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationReturningVoid;
 import org.essentialplatform.progmodel.standard.operation.Order;
 
 public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 
-	public TestDomainObjectOperation() {
-		super(new EssentialProgModelExtendedSemanticsDomainBuilder());
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testCanInvokeOperationReturningVoid() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationReturningVoid.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(CustomerOperationReturningVoid.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
-		CustomerOperationReturningVoid pojo = (CustomerOperationReturningVoid)domainObject.getPojo();
+		IDomainObject<CustomerOperationReturningVoid> domainObject = session.create(domainClass);
+		CustomerOperationReturningVoid pojo = domainObject.getPojo();
 		
 		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
 		assertFalse(pojo.orderPlaced);
@@ -40,12 +22,9 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
  	public void testCanInvokeOperationReturningDomainObject() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationReturningDomainObject.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(CustomerOperationReturningDomainObject.class);
 
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
 		
 		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
 		Object retval = placeOrderOperation.invokeOperation(new Object[] {});
@@ -54,12 +33,9 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 	}
 
  	public void testCanInvokeOperationReturningPrimitive() {
-		IDomainClass domainClass = 
-			(IDomainClass) lookupAny(CustomerOperationReturningDomainObject.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(CustomerOperationReturningDomainObject.class);
 		
-		IDomainObject<?> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
 
 		// place a few orders...
 		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));

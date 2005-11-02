@@ -1,5 +1,7 @@
 package org.essentialplatform.progmodel.standard.operation;
-import org.essentialplatform.RuntimeDomainSpecifics;
+
+import org.essentialplatform.domain.Deployment;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
 
 
 /**
@@ -8,20 +10,18 @@ import org.essentialplatform.RuntimeDomainSpecifics;
  * 
  * @author Dan Haywood
  */
-public class TestDomainClassOperationsAtRuntime 
-					extends TestDomainClassOperations {
+public class TestDomainClassOperationsAtRuntime extends TestDomainClassOperations {
 
-	public TestDomainClassOperationsAtRuntime() {
-		super(new RuntimeDomainSpecifics(), null);
-	}
-	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
+		new RuntimeDeployment();
 	}
 	
+	@Override
+	protected void tearDown() throws Exception {
+		Deployment.reset();
+		super.tearDown();
+	}
 
 }

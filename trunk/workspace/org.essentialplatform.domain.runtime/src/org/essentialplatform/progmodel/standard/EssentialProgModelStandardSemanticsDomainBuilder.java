@@ -46,7 +46,7 @@ import org.essentialplatform.progmodel.extended.Named;
  * @author Dan Haywood
  *
  */
-public final class EssentialProgModelStandardSemanticsDomainBuilder  implements IDomainBuilder{
+final class EssentialProgModelStandardSemanticsDomainBuilder implements IDomainBuilder{
 
 	private Emf emf = new Emf();
 	private EssentialProgModelStandardSemanticsEmfSerializer serializer = new EssentialProgModelStandardSemanticsEmfSerializer();

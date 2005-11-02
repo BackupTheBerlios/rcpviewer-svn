@@ -8,23 +8,8 @@ import org.essentialplatform.session.IDomainObject;
 
 public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 
-	public TestRuntimeDomainClass() {
-		super(null);
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
 	public void testCreateTransientCreatesUnderlyingPojo() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
 			session.create(domainClass);
@@ -42,8 +27,7 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 //	 * The returned object will not be attached to any session.
 //	 */
 //	public void testCanInstantiateDomainObjectFromDomainClass() {
-//		IDomainClass domainClass = 
-//			(IDomainClass)lookupAny(Department.class);
+//		IDomainClass domainClass = lookupAny(Department.class);
 //		domain.addBuilder(getDomainBuilder());
 //		domain.done();
 //		
@@ -61,14 +45,10 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	 * Cannot instantiate if don't play by the rules.
 	 */
 	public void testCannotInstantiateDomainObjectWithoutNoArgConstructor() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(DepartmentWithoutNoArgConstructor.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(DepartmentWithoutNoArgConstructor.class);
 
 		try {
-			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = 
-				session.create(domainClass);
+			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = session.create(domainClass);
 			fail("Expected exception to have been thrown.");
 		} catch(ProgrammingModelException ex) {
 			// expected
@@ -76,10 +56,7 @@ public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
 	}
 
 	public void incompletetestSerializeEmfResourceSet() {
-		IDomainClass domainClass = 
-			(IDomainClass)lookupAny(Department.class);
-		domain.addBuilder(getDomainBuilder());
-		domain.done();
+		IDomainClass domainClass = lookupAny(Department.class);
 
 		domainClass.getDomain().serializeTo(new PrintWriter(System.out));
 	}

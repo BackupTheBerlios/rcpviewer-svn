@@ -1,19 +1,6 @@
 package org.essentialplatform.persistence;
 
 import junit.framework.TestCase;
-import org.essentialplatform.AbstractRuntimeTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.RuntimeDomainSpecifics;
-import org.essentialplatform.domain.IDomain;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.Domain;
-import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
-import org.essentialplatform.progmodel.standard.ProgModelConstants;
-import org.essentialplatform.session.ISession;
-import org.essentialplatform.session.local.SessionManager;
-import org.essentialplatform.transaction.ITransactionManager;
-import org.essentialplatform.transaction.internal.TransactionManager;
 
 /**
  * Have copied down stuff from subclass; need to simplify.

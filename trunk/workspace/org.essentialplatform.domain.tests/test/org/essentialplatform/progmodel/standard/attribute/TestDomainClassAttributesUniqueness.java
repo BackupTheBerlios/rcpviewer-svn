@@ -1,27 +1,12 @@
 package org.essentialplatform.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
-
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
 
 public abstract class TestDomainClassAttributesUniqueness extends AbstractTestCase {
 
-	public TestDomainClassAttributesUniqueness(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
 	private IDomainClass domainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
 		domainClass = lookupAny(CustomerWithNoUniquenessReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");

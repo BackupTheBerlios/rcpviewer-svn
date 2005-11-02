@@ -1,6 +1,8 @@
 package org.essentialplatform.progmodel.extended;
 
-import org.essentialplatform.RuntimeDomainSpecifics;
+import org.essentialplatform.domain.Deployment;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
+
 
 /**
  * Binds the tests defined in {@link TestInvisible} to the runtime 
@@ -11,8 +13,16 @@ import org.essentialplatform.RuntimeDomainSpecifics;
  */
 public class TestInvisibleAtRuntime extends TestInvisible {
 
-	public TestInvisibleAtRuntime() {
-		super(new RuntimeDomainSpecifics(), null);
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		new RuntimeDeployment();
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		Deployment.reset();
+		super.tearDown();
 	}
 
 }

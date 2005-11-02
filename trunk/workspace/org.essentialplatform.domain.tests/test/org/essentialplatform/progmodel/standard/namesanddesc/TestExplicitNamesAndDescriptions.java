@@ -1,10 +1,7 @@
 package org.essentialplatform.progmodel.standard.namesanddesc;
 
 import org.eclipse.emf.ecore.EOperation;
-
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
-import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
 
 /**
@@ -19,19 +16,7 @@ import org.essentialplatform.domain.IDomainClass;
  */
 public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase {
 
-	public TestExplicitNamesAndDescriptions(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
 	private IDomainClass domainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 
 	public void testDomainClassThatIsExplicitlyNamed() {
 		domainClass = lookupAny(ProspectiveSale.class);

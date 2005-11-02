@@ -16,10 +16,12 @@
    		-->
    </extension>
    
+   <!--
    <extension
          point="org.essentialplatform.louis.guifactory">
          <impl class="org.essentialplatform.petstore.gui.FilePathGuiFactory"/>
    </extension>
+   -->
 
 
 </plugin>

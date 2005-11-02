@@ -3,6 +3,7 @@ package org.essentialplatform;
 import junit.framework.TestCase;
 
 import org.essentialplatform.domain.Deployment;
+import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomain;
 import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
@@ -14,14 +15,16 @@ import org.essentialplatform.domain.runtime.RuntimeDeployment;
  */
 public abstract class AbstractTestCase extends TestCase {
 
-	public AbstractTestCase(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
-		this.domainSpecifics = domainSpecifics;
+	public AbstractTestCase() {
+		this(null);
+	}
+	
+	public AbstractTestCase(IDomainBuilder domainBuilder) {
 		this.domainBuilder = domainBuilder;
 	}
 	
-	public AbstractTestCase(String name, IDeploymentSpecifics domainSpecifics, IDomainBuilder domainBuilder) {
+	public AbstractTestCase(String name, IDomainBuilder domainBuilder) {
 		super(name);
-		this.domainSpecifics = domainSpecifics;
 		this.domainBuilder = domainBuilder != null? domainBuilder: IDomainBuilder.NOOP;
 	}
 
@@ -30,27 +33,25 @@ public abstract class AbstractTestCase extends TestCase {
 		return domainBuilder;
 	}
 
-	private final IDeploymentSpecifics domainSpecifics; 
 	protected IDomain getDomainInstance() {
-		return domainSpecifics.getDomainInstance();
+		return Domain.instance();
 	}
 	
 	protected IDomain getDomainInstance(final String domainName) {
-		return domainSpecifics.getDomainInstance(domainName);
+		return Domain.instance(domainName);
 	}
 
 	protected <T> IDomainClass lookupAny(Class<T> domainClassIdentifier) {
-		return domainSpecifics.lookupAny(domainClassIdentifier);
+		return Domain.lookupAny(domainClassIdentifier);
 	}
 	
 	protected void resetAll() {
-		domainSpecifics.resetAll();
+		Domain.resetAll();
 		Deployment.reset();
 	}
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
 	}
 
 	protected void tearDown() throws Exception {

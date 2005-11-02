@@ -1,9 +1,7 @@
 package org.essentialplatform.progmodel.standard.domainclass;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.IDeploymentSpecifics;
 import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
@@ -18,18 +16,7 @@ import org.essentialplatform.progmodel.standard.CustomerImplicitlyInDefaultDomai
  */
 public abstract class TestDomainClass extends AbstractTestCase {
 
-	public TestDomainClass(IDeploymentSpecifics domainSpecifics, IDomainBuilder domainAnalyzer) {
-		super(domainSpecifics, domainAnalyzer);
-	}
-
 	private IDomainClass domainClass;
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 	
 	public void testGetEClass() {
 		domainClass = lookupAny(CustomerWithNoAttributes.class);

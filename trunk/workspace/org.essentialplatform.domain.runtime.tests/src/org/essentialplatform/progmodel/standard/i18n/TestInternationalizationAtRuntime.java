@@ -1,5 +1,7 @@
 package org.essentialplatform.progmodel.standard.i18n;
-import org.essentialplatform.RuntimeDomainSpecifics;
+
+import org.essentialplatform.domain.Deployment;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
 
 
 /**
@@ -9,17 +11,16 @@ import org.essentialplatform.RuntimeDomainSpecifics;
  */
 public class TestInternationalizationAtRuntime extends TestInternationalization {
 
-	public TestInternationalizationAtRuntime() {
-		super(new RuntimeDomainSpecifics(), null);
-	}
-	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-	}
-
-	protected void tearDown() throws Exception {
-		super.tearDown();
+		new RuntimeDeployment();
 	}
 	
+	@Override
+	protected void tearDown() throws Exception {
+		Deployment.reset();
+		super.tearDown();
+	}
 	
 }
