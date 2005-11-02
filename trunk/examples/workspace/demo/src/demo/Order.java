@@ -2,9 +2,9 @@ package demo;
 
 import java.util.Date;
 
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.standard.InDomain;
 
 @Lifecycle(instantiable=true)
 @InDomain

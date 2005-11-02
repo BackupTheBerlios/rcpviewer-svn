@@ -3,19 +3,19 @@ package demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.berlios.rcpviewer.domain.Domain;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.Programmatic;
-import de.berlios.rcpviewer.progmodel.standard.TypeOf;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.local.Session;
-import de.berlios.rcpviewer.session.local.SessionManager;
+import org.essentialplatform.domain.Domain;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.standard.Programmatic;
+import org.essentialplatform.progmodel.standard.TypeOf;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.ISession;
+import org.essentialplatform.session.local.Session;
+import org.essentialplatform.session.local.SessionManager;
 
 @Lifecycle(instantiable=true)
 @InDomain
