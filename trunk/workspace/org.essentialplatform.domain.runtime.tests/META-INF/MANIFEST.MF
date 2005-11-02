@@ -6,7 +6,7 @@ Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/,
  etc/log4j.properties
-Bundle-Activator: de.berlios.rcpviewer.domain.runtime.tests.TestsPlugin
+Bundle-Activator: org.essentialplatform.domain.runtime.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.domain.fixture;visibility:=reexport,
@@ -17,15 +17,15 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  net.sf.plugins.easymock;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: RcpViewer Development Team
-Export-Package: de.berlios.rcpviewer,
- de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.domain.runtime.tests,
- de.berlios.rcpviewer.progmodel.extended,
- de.berlios.rcpviewer.progmodel.rcpviewer,
- de.berlios.rcpviewer.progmodel.standard.attribute,
- de.berlios.rcpviewer.progmodel.standard.domainclass,
- de.berlios.rcpviewer.progmodel.standard.i18n,
- de.berlios.rcpviewer.progmodel.standard.namesanddesc,
- de.berlios.rcpviewer.progmodel.standard.operation,
- de.berlios.rcpviewer.progmodel.standard.reference,
- de.berlios.rcpviewer.session
+Export-Package: org.essentialplatform,
+ org.essentialplatform.domain,
+ org.essentialplatform.domain.runtime.tests,
+ org.essentialplatform.progmodel.extended,
+ org.essentialplatform.progmodel.rcpviewer,
+ org.essentialplatform.progmodel.standard.attribute,
+ org.essentialplatform.progmodel.standard.domainclass,
+ org.essentialplatform.progmodel.standard.i18n,
+ org.essentialplatform.progmodel.standard.namesanddesc,
+ org.essentialplatform.progmodel.standard.operation,
+ org.essentialplatform.progmodel.standard.reference,
+ org.essentialplatform.session
