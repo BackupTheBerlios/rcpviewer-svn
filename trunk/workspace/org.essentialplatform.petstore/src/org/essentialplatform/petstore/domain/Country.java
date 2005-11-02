@@ -1,15 +1,15 @@
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.Lookup;
-import de.berlios.rcpviewer.progmodel.extended.Mask;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.Lookup;
+import org.essentialplatform.progmodel.extended.Mask;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.extended.MinLengthOf;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.extended.SaveOperation;
 
 /**
  * Country, as defined by ISO3166.

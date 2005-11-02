@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.petstore.gui;
+package org.essentialplatform.petstore.gui;
 
 import java.util.Date;
 
@@ -20,7 +20,7 @@ import org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import de.berlios.rcpviewer.petstore.domain.FilePath;
+import org.essentialplatform.petstore.domain.FilePath;
 
 
 /**

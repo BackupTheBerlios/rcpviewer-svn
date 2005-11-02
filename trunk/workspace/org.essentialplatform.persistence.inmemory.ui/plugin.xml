@@ -5,18 +5,18 @@
          point="org.eclipse.search.searchPages">
       <page
             canSearchEnclosingProjects="false"
-            class="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchPage"
+            class="org.essentialplatform.persistence.inmemory.InMemorySearchPage"
             enabled="true"
-            id="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchPage"
+            id="org.essentialplatform.persistence.inmemory.InMemorySearchPage"
             label="In Memory Object Store Search"
             showScopeSection="false"/>
    </extension>
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
-            class="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchResultPage"
-            id="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchResultPage"
-            searchResultClass="de.berlios.rcpviewer.persistence.inmemory.InMemorySearchQuery"/>
+            class="org.essentialplatform.persistence.inmemory.InMemorySearchResultPage"
+            id="org.essentialplatform.persistence.inmemory.InMemorySearchResultPage"
+            searchResultClass="org.essentialplatform.persistence.inmemory.InMemorySearchQuery"/>
    </extension>
 
 

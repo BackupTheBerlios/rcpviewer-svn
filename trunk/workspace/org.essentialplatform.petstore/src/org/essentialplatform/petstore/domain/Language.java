@@ -1,11 +1,11 @@
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.extended.Lookup;
-import de.berlios.rcpviewer.progmodel.extended.Mask;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.Lookup;
+import org.essentialplatform.progmodel.extended.Mask;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
 
 /**
  * Language, as defined by ISO639-1.

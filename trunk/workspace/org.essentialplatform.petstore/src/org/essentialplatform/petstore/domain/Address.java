@@ -1,15 +1,15 @@
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
-import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.Invisible;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.FieldLengthOf;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.Invisible;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.extended.Optional;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.extended.SaveOperation;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
 
 
 

@@ -1,13 +1,13 @@
 /**
  * 
  */
-package de.berlios.rcpviewer.petstore.gui;
+package org.essentialplatform.petstore.gui;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Text;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart;
 
-import de.berlios.rcpviewer.petstore.domain.FilePath;
+import org.essentialplatform.petstore.domain.FilePath;
 
 /**
  * @author Mike

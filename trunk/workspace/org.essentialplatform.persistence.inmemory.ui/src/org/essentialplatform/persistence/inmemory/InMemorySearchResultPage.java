@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.persistence.inmemory;
+package org.essentialplatform.persistence.inmemory;
 
 import net.sf.plugins.utils.SWTUtils;
 
@@ -22,7 +22,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPageSite;
 import org.essentialplatform.louis.jobs.OpenDomainObjectJob;
 
-import de.berlios.rcpviewer.session.IDomainObject;
+import org.essentialplatform.session.IDomainObject;
 
 public class InMemorySearchResultPage
 implements ISearchResultPage {

@@ -1,10 +1,10 @@
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
 import java.io.File;
 
-import de.berlios.rcpviewer.progmodel.extended.IStringParser;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.standard.Value;
+import org.essentialplatform.progmodel.extended.IStringParser;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.standard.Value;
 
 /**
  * Custom value object that represents a relative or absolute file or directory.

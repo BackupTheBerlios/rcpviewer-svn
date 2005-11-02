@@ -4,23 +4,23 @@
  * To change this generated comment go to
  * Window>Preferences>Java>Code Generation>Code Template
  */
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
-import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.invisible;
+import static org.essentialplatform.progmodel.extended.Prerequisites.invisible;
 
 import java.io.Serializable;
 
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
-import de.berlios.rcpviewer.progmodel.extended.Invisible;
-import de.berlios.rcpviewer.progmodel.extended.Mask;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.ImmutableOncePersisted;
+import org.essentialplatform.progmodel.extended.Invisible;
+import org.essentialplatform.progmodel.extended.Mask;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.extended.Optional;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.extended.SaveOperation;
 
 
 /**

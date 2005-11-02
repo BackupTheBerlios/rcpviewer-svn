@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.persistence.inmemory;
+package org.essentialplatform.persistence.inmemory;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogConstants;

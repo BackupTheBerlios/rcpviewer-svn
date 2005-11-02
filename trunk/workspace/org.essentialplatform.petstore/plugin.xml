@@ -3,22 +3,22 @@
 <plugin>
 
    <extension point="org.essentialplatform.louis.domainclass">
-   		<impl class="de.berlios.rcpviewer.petstore.domain.Customer"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.CustomerOrder"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.Product"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.StockItem"/>
+   		<impl class="org.essentialplatform.petstore.domain.Customer"/>
+   		<impl class="org.essentialplatform.petstore.domain.CustomerOrder"/>
+   		<impl class="org.essentialplatform.petstore.domain.Product"/>
+   		<impl class="org.essentialplatform.petstore.domain.StockItem"/>
    		<!--
-   		<impl class="de.berlios.rcpviewer.petstore.domain.Category"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.Account"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.Address"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.CreditCard"/>
-   		<impl class="de.berlios.rcpviewer.petstore.domain.OrderLine"/>
+   		<impl class="org.essentialplatform.petstore.domain.Category"/>
+   		<impl class="org.essentialplatform.petstore.domain.Account"/>
+   		<impl class="org.essentialplatform.petstore.domain.Address"/>
+   		<impl class="org.essentialplatform.petstore.domain.CreditCard"/>
+   		<impl class="org.essentialplatform.petstore.domain.OrderLine"/>
    		-->
    </extension>
    
    <extension
          point="org.essentialplatform.louis.guifactory">
-         <impl class="de.berlios.rcpviewer.petstore.gui.FilePathGuiFactory"/>
+         <impl class="org.essentialplatform.petstore.gui.FilePathGuiFactory"/>
    </extension>
 
 

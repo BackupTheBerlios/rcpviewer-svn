@@ -1,19 +1,19 @@
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
-import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.require;
-import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
-import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.extended.Lookup;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
-import de.berlios.rcpviewer.progmodel.standard.ContainerOf;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
+import static org.essentialplatform.progmodel.extended.Prerequisites.require;
+import org.essentialplatform.progmodel.extended.BusinessKey;
+import org.essentialplatform.progmodel.extended.IAppContainer;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.extended.Optional;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.extended.Lookup;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.extended.SaveOperation;
+import org.essentialplatform.progmodel.standard.ContainerOf;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
 
 
 /**

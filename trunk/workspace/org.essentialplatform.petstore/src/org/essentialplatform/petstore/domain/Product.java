@@ -1,28 +1,28 @@
 /*
  * Created on Feb 22, 2003
  */
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import de.berlios.rcpviewer.progmodel.extended.DeleteOperation;
-import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
-import de.berlios.rcpviewer.progmodel.extended.BusinessKey;
-import de.berlios.rcpviewer.progmodel.extended.FieldLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.MaxLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.MinLengthOf;
-import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.standard.ContainerOf;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.standard.OppositeOf;
-import de.berlios.rcpviewer.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.extended.DeleteOperation;
+import org.essentialplatform.progmodel.extended.IAppContainer;
+import org.essentialplatform.progmodel.extended.BusinessKey;
+import org.essentialplatform.progmodel.extended.FieldLengthOf;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.MaxLengthOf;
+import org.essentialplatform.progmodel.extended.MinLengthOf;
+import org.essentialplatform.progmodel.extended.Optional;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.standard.ContainerOf;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.standard.OppositeOf;
+import org.essentialplatform.progmodel.standard.TypeOf;
 
 
 /**

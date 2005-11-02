@@ -4,7 +4,7 @@ Bundle-Name: Petstore Plug-in
 Bundle-SymbolicName: org.essentialplatform.petstore;singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: petstore.jar
-Bundle-Activator: de.berlios.rcpviewer.petstore.PetstorePlugin
+Bundle-Activator: org.essentialplatform.petstore.PetstorePlugin
 Bundle-Vendor: RcpViewer Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.aspectj.runtime;visibility:=reexport,

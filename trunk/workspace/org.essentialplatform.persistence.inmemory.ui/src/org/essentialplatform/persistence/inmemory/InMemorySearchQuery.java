@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.persistence.inmemory;
+package org.essentialplatform.persistence.inmemory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,10 +22,10 @@ import org.eclipse.search.ui.ISearchResultListener;
 import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.swt.graphics.Image;
 
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.persistence.IObjectStore;
-import de.berlios.rcpviewer.session.IDomainObject;
-import de.berlios.rcpviewer.session.ISession;
+import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.persistence.IObjectStore;
+import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.session.ISession;
 
 public final class InMemorySearchQuery
 implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentProvider
@@ -72,7 +72,7 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 			for (ISearchResultListener listener: _searchListeners)
 				listener.searchResultChanged(new SearchResultEvent(this) { });
 			
-			return new Status(Status.OK, "de.berlios.rcpviewer.persistence.inmemory.ui", 0, "", null);
+			return new Status(Status.OK, "org.essentialplatform.persistence.inmemory.ui", 0, "", null);
 
 		} catch (CoreException e) {
 			throw new OperationCanceledException(e.getMessage());

@@ -1,4 +1,4 @@
-package de.berlios.rcpviewer.petstore.domain;
+package org.essentialplatform.petstore.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -8,22 +8,22 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import de.berlios.rcpviewer.progmodel.standard.Derived;
-import de.berlios.rcpviewer.progmodel.standard.InDomain;
-import de.berlios.rcpviewer.progmodel.standard.OppositeOf;
-import de.berlios.rcpviewer.progmodel.extended.Named;
-import de.berlios.rcpviewer.progmodel.standard.TypeOf;
-import de.berlios.rcpviewer.progmodel.extended.IAppContainer;
-import de.berlios.rcpviewer.progmodel.extended.IPrerequisites;
-import de.berlios.rcpviewer.progmodel.extended.ImmutableOncePersisted;
-import de.berlios.rcpviewer.progmodel.extended.Lifecycle;
-import de.berlios.rcpviewer.progmodel.extended.Optional;
-import de.berlios.rcpviewer.progmodel.extended.RelativeOrder;
-import de.berlios.rcpviewer.progmodel.extended.Prerequisites;
-import de.berlios.rcpviewer.progmodel.extended.SaveOperation;
-import de.berlios.rcpviewer.progmodel.standard.ContainerOf;
-import de.berlios.rcpviewer.progmodel.standard.DescribedAs;
-import static de.berlios.rcpviewer.progmodel.extended.Prerequisites.*;
+import org.essentialplatform.progmodel.standard.Derived;
+import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.standard.OppositeOf;
+import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.extended.IAppContainer;
+import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.extended.ImmutableOncePersisted;
+import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.extended.Optional;
+import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.extended.SaveOperation;
+import org.essentialplatform.progmodel.standard.ContainerOf;
+import org.essentialplatform.progmodel.standard.DescribedAs;
+import static org.essentialplatform.progmodel.extended.Prerequisites.*;
 
 
 /**
