@@ -1,4 +1,4 @@
-package org.essentialplatform.domain;
+package org.essentialplatform.domain.emf;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

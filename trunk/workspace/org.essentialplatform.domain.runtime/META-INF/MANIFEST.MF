@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.essentialplatform.domain.runtime; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: runtime.jar
 Bundle-Activator: org.essentialplatform.domain.runtime.RuntimePlugin
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.domain;visibility:=reexport,

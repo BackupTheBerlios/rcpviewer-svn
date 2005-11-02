@@ -1,2 +1,1 @@
-src.includes = fixture/,\
-               pluginsrc/
+src.includes = src/

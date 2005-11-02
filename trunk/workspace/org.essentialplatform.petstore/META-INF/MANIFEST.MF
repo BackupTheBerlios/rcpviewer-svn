@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Petstore Plug-in
+Bundle-Name: Petstore Example Application
 Bundle-SymbolicName: org.essentialplatform.petstore;singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: petstore.jar
 Bundle-Activator: org.essentialplatform.petstore.PetstorePlugin
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.aspectj.runtime;visibility:=reexport,
  org.essentialplatform.louis;visibility:=reexport

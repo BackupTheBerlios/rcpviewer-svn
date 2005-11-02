@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Domain Plug-in
+Bundle-Name: Essential Platform Domain Plug-in
 Bundle-SymbolicName: org.essentialplatform.domain; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: core.jar,
  bin/
-Bundle-Activator: org.essentialplatform.CorePlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.eclipse.emf.ecore;visibility:=reexport,
@@ -27,5 +26,5 @@ Export-Package: org.essentialplatform,
  org.essentialplatform.progmodel.standard,
  org.essentialplatform.progmodel.standard.impl,
  org.essentialplatform
-Bundle-Vendor: Rssential Platform Development Team
+Bundle-Vendor: Essential Platform Development Team
 DynamicImport-Package: *

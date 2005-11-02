@@ -9,7 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.essentialplatform.progmodel.standard");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestStandardProgModelRules.class);
+		suite.addTestSuite(TestEssentialProgModelStandardRules.class);
 		//$JUnit-END$
 		return suite;
 	}

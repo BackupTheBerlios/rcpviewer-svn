@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests Plug-in
+Bundle-Name: Essential Platform Deployment-neutral Tests
 Bundle-SymbolicName: org.essentialplatform.domain.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.domain.runtime;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform,
  org.essentialplatform.domain,
  org.essentialplatform.domain.tests,

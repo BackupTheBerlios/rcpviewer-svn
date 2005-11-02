@@ -1,4 +1,4 @@
-package org.essentialplatform.domain;
+package org.essentialplatform.domain.emf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,12 +6,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EModelElement;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-
+import org.essentialplatform.domain.Emf;
 import org.essentialplatform.domain.EmfAnnotations;
 
 /**

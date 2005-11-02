@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Compiletime Plug-in
+Bundle-Name: Essential Platform Compile-time Plug-in
 Bundle-SymbolicName: org.essentialplatform.domain.compiletime
 Bundle-Version: 1.0.0
 Bundle-ClassPath: compiletime.jar
@@ -9,3 +9,4 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.domain;visibility:=reexport
 Eclipse-AutoStart: true
+Bundle-Vendor: Essential Platform Development Team

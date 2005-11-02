@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests Plug-in
+Bundle-Name: Essential Platform Runtime-Deployment Tests
 Bundle-SymbolicName: org.essentialplatform.domain.runtime.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/,
  etc/log4j.properties
-Bundle-Activator: org.essentialplatform.domain.runtime.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.domain.fixture;visibility:=reexport,
@@ -16,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit;visibility:=reexport,
  net.sf.plugins.easymock;visibility:=reexport
 Eclipse-AutoStart: true
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform,
  org.essentialplatform.domain,
  org.essentialplatform.domain.runtime.tests,

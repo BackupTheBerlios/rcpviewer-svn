@@ -22,3 +22,4 @@ Export-Package: org.essentialplatform.louis,
  org.essentialplatform.louis.jobs,
  org.essentialplatform.louis.util,
  org.essentialplatform.louis.widgets
+Bundle-Vendor: Essential Platform Development Team

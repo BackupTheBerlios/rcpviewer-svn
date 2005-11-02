@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Demo Plug-in
 Bundle-SymbolicName: demo;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: demo.DemoPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.aspectj.runtime;visibility:=reexport,
  org.essentialplatform.louis
 Eclipse-AutoStart: true
 Export-Package: demo
+Bundle-Vendor: Essential Platform Development Team

@@ -1,6 +1,6 @@
 Bundle-ManifestVersion: 2
 Bundle-Name: org.apache.log4j
-Bundle-Vendor: jakarta.apache.org
+Bundle-Vendor: logging.apache.org
 Bundle-GlobalName: org.apache.log4j
 Bundle-SymbolicName: org.apache.log4j
 Bundle-Version: 1.2.8

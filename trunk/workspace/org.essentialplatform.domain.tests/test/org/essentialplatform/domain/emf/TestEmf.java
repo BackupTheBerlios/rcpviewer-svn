@@ -1,4 +1,5 @@
-package org.essentialplatform.domain;
+package org.essentialplatform.domain.emf;
+import org.essentialplatform.domain.*;
 
 import java.util.HashMap;
 import java.util.Map;

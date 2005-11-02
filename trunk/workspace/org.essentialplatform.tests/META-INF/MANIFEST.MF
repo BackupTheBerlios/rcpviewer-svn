@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests Plug-in
+Bundle-Name: Essential Platform Tests Plug-in
 Bundle-SymbolicName: org.essentialplatform.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,

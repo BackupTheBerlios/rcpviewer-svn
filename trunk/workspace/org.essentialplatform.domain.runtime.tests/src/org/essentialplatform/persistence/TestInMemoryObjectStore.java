@@ -6,6 +6,7 @@ import org.essentialplatform.domain.Domain;
 import org.essentialplatform.domain.IDomain;
 import org.essentialplatform.domain.IDomainBuilder;
 import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.domain.runtime.RuntimeDeployment;
 import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.progmodel.standard.ProgModelConstants;
 import org.essentialplatform.session.ISession;
@@ -35,6 +36,7 @@ public class TestInMemoryObjectStore extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
+		new RuntimeDeployment();
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();

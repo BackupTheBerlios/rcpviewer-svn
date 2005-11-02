@@ -9,9 +9,9 @@ import org.essentialplatform.progmodel.standard.namingconventions.Employee;
 
 import junit.framework.TestCase;
 
-public class TestStandardProgModelRules extends TestCase {
+public class TestEssentialProgModelStandardRules extends TestCase {
 
-	private EssentialProgModelStandardSemanticsRuntimeRules namingConventions;
+	private EssentialProgModelStandardSemanticsRuntimeRules rules;
 	private Method departmentGetNameMethod;
 	private Method departmentNotAnAccessorMethod;
 	private Method departmentGetSupervisorMethod;
@@ -25,7 +25,7 @@ public class TestStandardProgModelRules extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		namingConventions = new EssentialProgModelStandardSemanticsRuntimeRules();
+		rules = new EssentialProgModelStandardSemanticsRuntimeRules();
 
 		departmentGetNameMethod = Department.class.getMethod("getName", new Class[]{});
 		departmentNotAnAccessorMethod = Department.class.getMethod("foo", new Class[]{});;
@@ -40,41 +40,41 @@ public class TestStandardProgModelRules extends TestCase {
 	
 	@Override
 	protected void tearDown() throws Exception {
-		namingConventions = null;
+		rules = null;
 		super.tearDown();
 	}
 	
 	public void testIsAccessorWhenIs() {
-		assertTrue(namingConventions.isAccessor(departmentGetNameMethod));
+		assertTrue(rules.isAccessor(departmentGetNameMethod));
 	}
 	
 	public void testIsAccessorWhenNot(final Method method) {
-		assertFalse(namingConventions.isAccessor(departmentNotAnAccessorMethod));
+		assertFalse(rules.isAccessor(departmentNotAnAccessorMethod));
 	}
 
 	public void testIsAccessorWhenIsActuallyAReference() {
-		assertFalse(namingConventions.isAccessor(departmentGetSupervisorMethod));
+		assertFalse(rules.isAccessor(departmentGetSupervisorMethod));
 	}
 
 	public void testIsAccessorWhenIsActuallyACollection() {
-		assertFalse(namingConventions.isAccessor(departmentGetEmployeesMethod));
+		assertFalse(rules.isAccessor(departmentGetEmployeesMethod));
 	}
 
 	public void testIsMutatorWhenIs() {
-		assertTrue(namingConventions.isMutator(departmentSetNameMethod));
+		assertTrue(rules.isMutator(departmentSetNameMethod));
 	}
 
 	public void testIsMutatorWhenNot() {
-		assertFalse(namingConventions.isMutator(departmentNotAMutatorMethod));
+		assertFalse(rules.isMutator(departmentNotAMutatorMethod));
 	}
 
 	public void testIsMutatorWhenIsActuallyAReference() {
-		assertFalse(namingConventions.isMutator(departmentSetSupervisorMethod));
+		assertFalse(rules.isMutator(departmentSetSupervisorMethod));
 	}
 
 	public void testAssertAccessorWhenIs() {
 		try {
-			namingConventions.assertAccessor(departmentGetNameMethod);
+			rules.assertAccessor(departmentGetNameMethod);
 		} catch(Exception ex) {
 			fail("Assertion should succeed.");
 		}
@@ -82,7 +82,7 @@ public class TestStandardProgModelRules extends TestCase {
 	
 	public void testAssertAccessorWhenNot() {
 		try {
-			namingConventions.assertAccessor(departmentNotAnAccessorMethod);
+			rules.assertAccessor(departmentNotAnAccessorMethod);
 			fail("Assertion error expected.");
 		} catch(AssertionError error) {
 		}
@@ -90,7 +90,7 @@ public class TestStandardProgModelRules extends TestCase {
 
 	public void testAssertAccessorWhenActuallyAReference() {
 		try {
-			namingConventions.assertAccessor(departmentGetSupervisorMethod);
+			rules.assertAccessor(departmentGetSupervisorMethod);
 			fail("Assertion error expected.");
 		} catch(AssertionError error) {
 		}
@@ -98,7 +98,7 @@ public class TestStandardProgModelRules extends TestCase {
 
 	public void testAssertAccessorWhenActuallyACollection() {
 		try {
-			namingConventions.assertAccessor(departmentGetEmployeesMethod);
+			rules.assertAccessor(departmentGetEmployeesMethod);
 			fail("Assertion error expected.");
 		} catch(AssertionError error) {
 		}
@@ -106,7 +106,7 @@ public class TestStandardProgModelRules extends TestCase {
 
 	public void testAssertMutatorWhenIs() {
 		try {
-			namingConventions.assertMutator(departmentSetNameMethod);
+			rules.assertMutator(departmentSetNameMethod);
 		} catch(AssertionError error) {
 			fail("Assertion should succeed.");
 		}
@@ -114,7 +114,7 @@ public class TestStandardProgModelRules extends TestCase {
 
 	public void testAssertMutatorWhenNot() {
 		try {
-			namingConventions.assertMutator(departmentNotAMutatorMethod);
+			rules.assertMutator(departmentNotAMutatorMethod);
 			fail("Assertion error expected.");
 		} catch(AssertionError error) {
 		}
@@ -122,7 +122,7 @@ public class TestStandardProgModelRules extends TestCase {
 
 	public void testAssertMutatorWhenActuallyAReference() {
 		try {
-			namingConventions.assertMutator(departmentSetSupervisorMethod);
+			rules.assertMutator(departmentSetSupervisorMethod);
 			fail("Assertion error expected.");
 		} catch(AssertionError error) {
 		}
@@ -181,19 +181,19 @@ public class TestStandardProgModelRules extends TestCase {
 	}
 	
 	public void testDeriveAttributeNameForAccessor() {
-		assertEquals("name", namingConventions.deriveAttributeName(departmentGetNameMethod));
+		assertEquals("name", rules.deriveAttributeName(departmentGetNameMethod));
 	}
 
 	public void testDeriveAttributeNameForMultiPartAccessor() {
-		assertEquals("numberOfEmployees", namingConventions.deriveAttributeName(departmentGetNumberOfEmployeesMethod));
+		assertEquals("numberOfEmployees", rules.deriveAttributeName(departmentGetNumberOfEmployeesMethod));
 	}
 
 	public void testDeriveAttributeNameForMutator() {
-		assertEquals("name", namingConventions.deriveAttributeName(departmentSetNameMethod));
+		assertEquals("name", rules.deriveAttributeName(departmentSetNameMethod));
 	}
 
 	public void testDeriveAttributeNameForMultiPartMutator() {
-		assertEquals("numberOfEmployees", namingConventions.deriveAttributeName(departmentSetNumberOfEmployeesMethod));
+		assertEquals("numberOfEmployees", rules.deriveAttributeName(departmentSetNumberOfEmployeesMethod));
 	}
 
 	public void incompletetestDeriveAttributeNameWhenNeitherAccessorNorMutator() {

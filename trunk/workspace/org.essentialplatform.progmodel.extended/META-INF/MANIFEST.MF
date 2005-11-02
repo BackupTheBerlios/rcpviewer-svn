@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Extended Programming Model Plug-in
+Bundle-Name: Essential Programming Model Extended Semantics
 Bundle-SymbolicName: org.essentialplatform.progmodel.extended
 Bundle-Version: 1.0.0
 Bundle-ClassPath: extended.jar,
  bin/
 Bundle-Activator: org.essentialplatform.progmodel.extended.ExtendedPlugin
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.standard

@@ -5,18 +5,6 @@ import org.essentialplatform.domain.Domain;
 
 public class TestRuntimeDomain extends AbstractRuntimeTestCase {
 
-	public TestRuntimeDomain() {
-		super(null);
-	}
-
-	public void setUp() throws Exception {
-		super.setUp();
-	}
-	
-	public void tearDown() throws Exception {
-		super.tearDown();
-	}
-	
 	public void testDefaultDomainCreatedIfRequested() {
 		IDomain domain = getDomainInstance(); 
 		assertNotNull(domain);
@@ -24,27 +12,23 @@ public class TestRuntimeDomain extends AbstractRuntimeTestCase {
 	}
 	
 	public void testDomainCreatedWhenSomethingRegistered() {
-		IDomainClass domainClass = 
-			lookupAny(ClassInOtherDomain.class);
+		IDomainClass domainClass = lookupAny(ClassInOtherDomain.class);
 		
 		assertEquals(1, Domain.instance("other").classes().size());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainImplicitly() {
-		IDomainClass domainClass = 
-			lookupAny(ClassInDefaultDomainImplicitly.class);
+		IDomainClass domainClass = lookupAny(ClassInDefaultDomainImplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDefaultDomainExplicitly() {
-		IDomainClass domainClass = 
-			lookupAny(ClassInDefaultDomainExplicitly.class);
+		IDomainClass domainClass = lookupAny(ClassInDefaultDomainExplicitly.class);
 		assertEquals("default", domainClass.getDomain().getName());
 	}
 	
 	public void testDomainOfDomainClassCorrespondsToThatOfInDomainExplicit() {
-		IDomainClass domainClass = 
-			lookupAny(ClassInOtherDomain.class);
+		IDomainClass domainClass = lookupAny(ClassInOtherDomain.class);
 		assertEquals("other", domainClass.getDomain().getName());
 	}
 	
@@ -62,6 +46,5 @@ public class TestRuntimeDomain extends AbstractRuntimeTestCase {
 		}
 		assertSame(domains[0], domains[1]);
 	}
-
 
 }

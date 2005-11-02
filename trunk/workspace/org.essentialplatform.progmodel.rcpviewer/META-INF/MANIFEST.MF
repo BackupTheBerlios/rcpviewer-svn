@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Rcpviewer Programming Model Plug-in
+Bundle-Name: Louis Programming Model
 Bundle-SymbolicName: org.essentialplatform.progmodel.rcpviewer
 Bundle-Version: 0.0.1
 Bundle-ClassPath: rcpviewer.jar,
  bin/
 Bundle-Activator: org.essentialplatform.progmodel.rcpviewer.RcpviewerPlugin
-Bundle-Vendor: RcpViewer Development Team
+Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Eclipse-AutoStart: true
