@@ -22,7 +22,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		List<EAttribute> idAttributes = 
-			domainClass.idAttributes();
+			domainClass.idEAttributes();
 		assertEquals(0, idAttributes.size());
 	}
 
@@ -33,7 +33,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		List<EAttribute> idAttributes = domainClass.idAttributes();
+		List<EAttribute> idAttributes = domainClass.idEAttributes();
 		assertEquals(1, idAttributes.size());
 		assertEquals("id", idAttributes.get(0).getName());
 	}
@@ -43,7 +43,7 @@ public abstract class TestId extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		List<EAttribute> idAttributes = domainClass.idAttributes();
+		List<EAttribute> idAttributes = domainClass.idEAttributes();
 		assertEquals(2, idAttributes.size());
 		assertEquals("lastName", idAttributes.get(0).getName());
 		assertEquals("firstName", idAttributes.get(1).getName());

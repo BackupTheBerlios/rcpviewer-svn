@@ -25,11 +25,11 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		departmentDomainClass = lookupAny(Department.class);
 		employeeDomainClass = lookupAny(Employee.class);
 		
-		assertEquals(1, departmentDomainClass.references().size());
-		EReference eRefToEmployees = departmentDomainClass.references().get(0);
-		IReference reference = employeeDomainClass.getReference(eRefToEmployees);
+		assertEquals(1, departmentDomainClass.eReferences().size());
+		EReference eRefToEmployees = departmentDomainClass.eReferences().get(0);
+		IReference reference = employeeDomainClass.getIReference(eRefToEmployees);
 		assertEquals("employees", eRefToEmployees.getName());
-		assertSame(employeeDomainClass, reference.getReferencedClass());
+		assertSame(employeeDomainClass, reference.getReferencedDomainClass());
 		assertTrue(reference.isMultiple());
 		assertFalse(reference.isOrdered());
 		assertFalse(reference.isContainer());
@@ -42,11 +42,11 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		departmentDomainClass = lookupAny(Department.class);
 		employeeDomainClass = lookupAny(Employee.class);
 		
-		assertEquals(1, employeeDomainClass.references().size());
-		EReference eRefToEmployees = employeeDomainClass.references().get(0);
-		IReference reference = employeeDomainClass.getReference(eRefToEmployees);
+		assertEquals(1, employeeDomainClass.eReferences().size());
+		EReference eRefToEmployees = employeeDomainClass.eReferences().get(0);
+		IReference reference = employeeDomainClass.getIReference(eRefToEmployees);
 		assertEquals("department", eRefToEmployees.getName());
-		assertSame(departmentDomainClass, reference.getReferencedClass());
+		assertSame(departmentDomainClass, reference.getReferencedDomainClass());
 		assertFalse(reference.isMultiple());
 		assertFalse(reference.isOrdered());
 		assertFalse(reference.isContainer());
@@ -59,9 +59,9 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		departmentDomainClass = lookupAny(DepartmentImmutableEmployeeCollection.class);
 		employeeDomainClass = lookupAny(Employee.class);
 		
-		assertEquals(1, departmentDomainClass.references().size());
-		EReference eRefToEmployees = departmentDomainClass.references().get(0);
-		IReference reference = employeeDomainClass.getReference(eRefToEmployees);
+		assertEquals(1, departmentDomainClass.eReferences().size());
+		EReference eRefToEmployees = departmentDomainClass.eReferences().get(0);
+		IReference reference = employeeDomainClass.getIReference(eRefToEmployees);
 		assertEquals("employees", eRefToEmployees.getName());
 		assertFalse(reference.isChangeable());
 	} 
@@ -70,11 +70,11 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		employeeDomainClass = lookupAny(EmployeeImmutableNameRef.class);
 		nameDomainClass = lookupAny(ReferencesName.class);
 		
-		assertEquals(1, employeeDomainClass.references().size());
-		EReference eRefToName = employeeDomainClass.references().get(0);
-		IReference reference = employeeDomainClass.getReference(eRefToName);
+		assertEquals(1, employeeDomainClass.eReferences().size());
+		EReference eRefToName = employeeDomainClass.eReferences().get(0);
+		IReference reference = employeeDomainClass.getIReference(eRefToName);
 		assertEquals("name", eRefToName.getName());
-		assertSame(nameDomainClass, reference.getReferencedClass());
+		assertSame(nameDomainClass, reference.getReferencedDomainClass());
 		assertFalse(reference.isChangeable());
 	} 
 
@@ -82,7 +82,7 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		departmentDomainClass = lookupAny(DepartmentDerivedReferences.class);
 		
 		EReference derivedRefToEmployees = departmentDomainClass.getEReferenceNamed("terminatedEmployees");
-		IReference reference = departmentDomainClass.getReference(derivedRefToEmployees);
+		IReference reference = departmentDomainClass.getIReference(derivedRefToEmployees);
 		assertEquals("terminatedEmployees", derivedRefToEmployees.getName());
 		assertTrue(reference.isMultiple());
 		assertTrue(reference.isDerived());
@@ -93,7 +93,7 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 		employeeDomainClass = lookupAny(Employee.class);
 				
 		EReference eDerivedRefToEmployee = departmentDomainClass.getEReferenceNamed("mostRecentJoiner");
-		IReference reference = employeeDomainClass.getReference(eDerivedRefToEmployee);
+		IReference reference = employeeDomainClass.getIReference(eDerivedRefToEmployee);
 		assertFalse(reference.isMultiple());
 		assertTrue(reference.isDerived());
 	} 

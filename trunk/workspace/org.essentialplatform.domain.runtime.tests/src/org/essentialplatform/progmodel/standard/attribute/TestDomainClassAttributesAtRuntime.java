@@ -37,7 +37,7 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 		// assertNotNull(domainClass.getAccessorOrMutatorFor(eAttribute));
 		
 		
-		RuntimeAttributeBinding binding = (RuntimeAttributeBinding)domainClass.getAttribute(eAttribute).getBinding();
+		RuntimeAttributeBinding binding = (RuntimeAttributeBinding)domainClass.getIAttribute(eAttribute).getBinding();
 		// we can't assert anything here really (except perhaps demonstrate 
 		// can invoke a mutator but no accessor)?
 		

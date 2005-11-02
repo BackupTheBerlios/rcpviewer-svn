@@ -82,7 +82,7 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 		
 		if ( hints.styleMatches( GuiHints.INCLUDE_ATTRIBUTES ) ) {
 			// loop through all attributes
-			for ( EAttribute attribute : EmfUtil.sort( model.attributes(), ANNOTATION ) ) {       
+			for ( EAttribute attribute : EmfUtil.sort( model.eAttributes(), ANNOTATION ) ) {       
 	
 				// composite 
 				Composite composite = toolkit.createComposite( parent);
@@ -103,7 +103,7 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 		if ( hints.styleMatches( GuiHints.INCLUDE_REFERENCES ) ) {
 			// loop through all references
 			for ( EReference reference : EmfUtil.sort( 
-					model.references(), ALPHABETICAL ) ) {       
+					model.eReferences(), ALPHABETICAL ) ) {       
 		
 				// composite
 				Composite composite = toolkit.createComposite( parent );

@@ -30,20 +30,20 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(CustomerWithPublicVisibilityOperation.class);
 		
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
-		IDomainClass.IOperation operation = domainClass.getOperation(eOperation);
+		IDomainClass.IOperation operation = domainClass.getIOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
 		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("create");
-		operation = domainClass.getOperation(eOperation);
+		operation = domainClass.getIOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("create", eOperation.getName());
 		assertTrue(operation.isStatic());
 
-		assertEquals(2, domainClass.operations().size());
-		assertEquals(1, domainClass.operations(OperationKind.INSTANCE, true).size());
-		assertEquals(1, domainClass.operations(OperationKind.STATIC, true).size());
+		assertEquals(2, domainClass.eOperations().size());
+		assertEquals(1, domainClass.eOperations(OperationKind.INSTANCE, true).size());
+		assertEquals(1, domainClass.eOperations(OperationKind.STATIC, true).size());
 	}
 	
 	/**
@@ -61,8 +61,8 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		eOperation = domainClass.getEOperationNamed("create");
 		assertNull(eOperation);
 
-		assertEquals(0, domainClass.operations(OperationKind.INSTANCE, false).size());
-		assertEquals(0, domainClass.operations(OperationKind.STATIC, false).size());
+		assertEquals(0, domainClass.eOperations(OperationKind.INSTANCE, false).size());
+		assertEquals(0, domainClass.eOperations(OperationKind.STATIC, false).size());
 	}
 	
 	/**
@@ -120,14 +120,14 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(CustomerWithNoArgOperation.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("placeOrder");
-		IDomainClass.IOperation operation = domainClass.getOperation(eOperation);
+		IDomainClass.IOperation operation = domainClass.getIOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("placeOrder", eOperation.getName());
 		assertEquals(0, eOperation.getEParameters().size());
 		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("create");
-		operation = domainClass.getOperation(eOperation);
+		operation = domainClass.getIOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("create", eOperation.getName());
 		assertEquals(0, eOperation.getEParameters().size());
@@ -138,7 +138,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(CustomerWithPrimitiveArgOperation.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("rankAs");
-		IOperation operation = domainClass.getOperation(eOperation); 
+		IOperation operation = domainClass.getIOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("rankAs", eOperation.getName());
 		assertEquals(1, eOperation.getEParameters().size());
@@ -148,7 +148,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("createWithRank");
-		operation = domainClass.getOperation(eOperation);
+		operation = domainClass.getIOperation(eOperation);
 		assertNotNull(eOperation);
 		assertEquals("createWithRank", eOperation.getName());
 		assertEquals(1, eOperation.getEParameters().size());
@@ -162,7 +162,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(OperationsCustomerPositionedOnMap.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("positionAt");
-		IOperation operation = domainClass.getOperation(eOperation); 
+		IOperation operation = domainClass.getIOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("positionAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
@@ -175,7 +175,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("createAtPosition");
-		operation = domainClass.getOperation(eOperation); 
+		operation = domainClass.getIOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("createAtPosition", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
@@ -193,7 +193,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass = lookupAny(Appointment.class);
 		
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
-		IOperation operation = domainClass.getOperation(eOperation); 
+		IOperation operation = domainClass.getIOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("moveTo", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
@@ -206,7 +206,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		assertFalse(operation.isStatic());
 		
 		eOperation = domainClass.getEOperationNamed("createAt");
-		operation = domainClass.getOperation(eOperation); 
+		operation = domainClass.getIOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("createAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
@@ -232,7 +232,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		domainClass.getDomain().done();
 
 		EOperation eOperation = domainClass.getEOperationNamed("marry");
-		IOperation operation = domainClass.getOperation(eOperation); 
+		IOperation operation = domainClass.getIOperation(eOperation); 
 		assertNotNull(eOperation);
 		assertEquals("marry", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
@@ -302,22 +302,22 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 
 	public void testAccessorsNotPickedUpAsOperation() {
 		domainClass = lookupAny(AppointmentWithAccessor.class);
-		assertEquals(2, domainClass.operations().size());
+		assertEquals(2, domainClass.eOperations().size());
 	}
 
 	public void testMutatorsNotPickedUpAsOperation() {
 		domainClass = lookupAny(AppointmentWithMutator.class);
-		assertEquals(2, domainClass.operations().size());
+		assertEquals(2, domainClass.eOperations().size());
 	}
 
 	public void testSingleReferencessNotPickedUpAsOperation() {
 		domainClass = lookupAny(AppointmentWithSingleReference.class);
-		assertEquals(2, domainClass.operations().size());
+		assertEquals(2, domainClass.eOperations().size());
 	}
 
 	public void testCollectionsNotPickedUpAsOperation() {
 		domainClass = lookupAny(AppointmentWithCollection.class);
-		assertEquals(2, domainClass.operations().size());
+		assertEquals(2, domainClass.eOperations().size());
 	}
 
 }

@@ -46,10 +46,10 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
-		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
+		IDomainClass.IAttribute classAttrib = domainClass.getIAttribute(eAttrib);
 
 		// set expectations
-		IFeatureId feature = classAttrib.attributeIdFor();
+		IFeatureId feature = classAttrib.getFeatureId();
 		authorizationManager.preconditionsFor(feature);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
 		control.setReturnValue(Prerequisites.none());
@@ -76,10 +76,10 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 
 		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
-		IDomainClass.IAttribute classAttrib = domainClass.getAttribute(eAttrib);
+		IDomainClass.IAttribute classAttrib = domainClass.getIAttribute(eAttrib);
 
 		// set expectations
-		IFeatureId featureId = classAttrib.attributeIdFor();
+		IFeatureId featureId = classAttrib.getFeatureId();
 		authorizationManager.preconditionsFor(featureId);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
 		IPrerequisites returnPrerequisites = Prerequisites.require(false, "Cannot edit quantity"); 

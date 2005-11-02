@@ -41,11 +41,11 @@ public class GuiHints {
 		_style = style;
 		
 		int maxLabelLength = 0;
-		for ( EAttribute a : dClass.attributes() ) {       
+		for ( EAttribute a : dClass.eAttributes() ) {       
 			int length = a.getName().length();
 			if ( length > maxLabelLength ) maxLabelLength = length;
 		}
-		for ( EReference r : dClass.references() ) {
+		for ( EReference r : dClass.eReferences() ) {
 			int length = r.getName().length();
 			if ( length > maxLabelLength ) maxLabelLength = length;
 		}
@@ -60,7 +60,7 @@ public class GuiHints {
 		// more faff - want to align labels even if references have toggle 
 		// icons - could do much faff calculating size - make do with hardcode 
 		// value for now
-		if ( !dClass.references().isEmpty() ) {
+		if ( !dClass.eReferences().isEmpty() ) {
 			columnWidths[0] = columnWidths[0] + 4;
 		}
 		

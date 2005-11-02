@@ -207,14 +207,14 @@ public final class DomainClass implements IDomainClass {
 	 * @see org.essentialplatform.progmodel.extended.IDomainClass#isSimpleId()
 	 */
 	public boolean isSimpleId() {
-		return idAttributes().size() == 1;
+		return idEAttributes().size() == 1;
 	}
 
 	/*
 	 * @see org.essentialplatform.progmodel.extended.IExtendedDomainClass#isCompositeId()
 	 */
 	public boolean isCompositeId() {
-		return idAttributes().size() > 1;
+		return idEAttributes().size() > 1;
 	}
 	
 	/*
@@ -225,7 +225,7 @@ public final class DomainClass implements IDomainClass {
 		if (isCompositeId()) {
 			return defaultAssignmentType;
 		}
-		List<EAttribute> attributes = attributes();
+		List<EAttribute> attributes = eAttributes();
 		for(Iterator<EAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
 			EAttribute attr = iter.next();
 			Id id = _extendedSerializer.getAttributeId(attr);
@@ -253,7 +253,7 @@ public final class DomainClass implements IDomainClass {
 	public Map<String, List<EAttribute>> businessKeys() {
 		Map<String, Map<Integer,EAttribute>> businessKeyAttributesByPosByName = 
 			new HashMap<String, Map<Integer,EAttribute>>();
-		for(EAttribute attribute: attributes()) {
+		for(EAttribute attribute: eAttributes()) {
 			BusinessKey businessKey = _extendedSerializer.getAttributeBusinessKey(attribute);
 			if (businessKey == null) {
 				continue;
@@ -326,7 +326,7 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#containsAttribute(org.eclipse.emf.ecore.EAttribute)
 	 */
-	public boolean containsAttribute(EAttribute eAttribute) {
+	public boolean containsEAttribute(EAttribute eAttribute) {
 		return this._eClass.getEAllAttributes().contains(eAttribute);
 	}
 
@@ -334,7 +334,7 @@ public final class DomainClass implements IDomainClass {
 	 * @see org.essentialplatform.domain.IDomainClass#getEAttributeNamed(java.lang.String)
 	 */
 	public EAttribute getEAttributeNamed(String attributeName) {
-		for(EAttribute eAttribute: attributes() ) {
+		for(EAttribute eAttribute: eAttributes() ) {
 			if (eAttribute.getName().equals(attributeName)) {
 				return eAttribute;
 			}
@@ -345,7 +345,7 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#getAttribute(org.eclipse.emf.ecore.EAttribute)
 	 */
-	public synchronized IAttribute getAttribute(final EAttribute eAttribute) {
+	public synchronized IAttribute getIAttribute(final EAttribute eAttribute) {
 		IAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
 			Attribute concreteAttribute = new Attribute(eAttribute);
@@ -360,8 +360,8 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#attributes()
 	 */
-	public List<EAttribute> attributes() {
-		return attributes(true);
+	public List<EAttribute> eAttributes() {
+		return eAttributes(true);
 	}
 
 	/**
@@ -372,7 +372,7 @@ public final class DomainClass implements IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<EAttribute> attributes(boolean includeInherited) {
+	public List<EAttribute> eAttributes(boolean includeInherited) {
 		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
 		EList attributes = includeInherited?
 								getEClass().getEAllAttributes():
@@ -386,8 +386,8 @@ public final class DomainClass implements IDomainClass {
 	 */
 	public List<IAttribute> iAttributes() {
 		List<IAttribute> attributes = new ArrayList<IAttribute>();
-		for(EAttribute eAttribute: attributes()) {
-			attributes.add(getAttribute(eAttribute));
+		for(EAttribute eAttribute: eAttributes()) {
+			attributes.add(getIAttribute(eAttribute));
 		}
 		return attributes;
 	}
@@ -395,8 +395,8 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.progmodel.extended.IDomainClass#orderedAttributes()
 	 */
-	public List<EAttribute> orderedAttributes() {
-		List<EAttribute> attributes = attributes();
+	public List<EAttribute> orderedEAttributes() {
+		List<EAttribute> attributes = eAttributes();
 		Collections.sort(attributes, new AttributeComparator());
 		return attributes;
 	}
@@ -404,11 +404,11 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.progmodel.extended.IDomainClass#idAttributes()
 	 */
-	public List<EAttribute> idAttributes() {
-		List<EAttribute> attributes = attributes();
+	public List<EAttribute> idEAttributes() {
+		List<EAttribute> attributes = eAttributes();
 		for(Iterator<EAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
 			EAttribute attr = iter.next();
-			if (!getAttribute(attr).isId()) {
+			if (!getIAttribute(attr).isId()) {
 				iter.remove();
 			}
 		}
@@ -503,7 +503,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#getI18nDataFor()
 		 */
-		public II18nData getI18nDataFor() {
+		public II18nData getI18nData() {
 			throw new RuntimeException("Not yet implemented");
 		}
 
@@ -602,7 +602,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass#attributeIdFor(org.eclipse.emf.ecore.EAttribute)
 		 */
-		public IFeatureId attributeIdFor() {
+		public IFeatureId getFeatureId() {
 			return FeatureId.create(_eAttribute.getName(), getDomainClass(), IFeatureId.Type.ATTRIBUTE); 
 		}
 
@@ -645,7 +645,7 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#references()
 	 */
-	public List<EReference> references() {
+	public List<EReference> eReferences() {
 		return references(true);
 	}
 
@@ -654,8 +654,8 @@ public final class DomainClass implements IDomainClass {
 	 */
 	public List<IReference> iReferences() {
 		List<IReference> references = new ArrayList<IReference>();
-		for(EReference eReference: references()) {
-			references.add(getReference(eReference));
+		for(EReference eReference: eReferences()) {
+			references.add(getIReference(eReference));
 		}
 		return references;
 	}
@@ -680,7 +680,7 @@ public final class DomainClass implements IDomainClass {
 	}
 
 	public EReference getEReferenceNamed(String referenceName) {
-		for(EReference eReference: references() ) {
+		for(EReference eReference: eReferences() ) {
 			if (eReference.getName().equals(referenceName)) {
 				return eReference;
 			}
@@ -699,7 +699,7 @@ public final class DomainClass implements IDomainClass {
 	 * @param eReference
 	 * @return
 	 */
-	public synchronized IReference getReference(final EReference eReference) {
+	public synchronized IReference getIReference(final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
@@ -746,7 +746,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IReference#getReferencedClass()
 		 */
-		public IDomainClass getReferencedClass() {
+		public IDomainClass getReferencedDomainClass() {
 			EClass eClass = (EClass)_eReference.getEReferenceType();
 			return _domain.lookupNoRegister(((Class<?>)eClass.getInstanceClass()));
 		}
@@ -790,7 +790,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass#referenceIdFor(org.eclipse.emf.ecore.EReference)
 		 */
-		public IFeatureId referenceIdFor() {
+		public IFeatureId getFeatureId() {
 			return FeatureId.create(_eReference.getName(), getDomainClass(), IFeatureId.Type.REFERENCE);
 		}
 
@@ -801,7 +801,7 @@ public final class DomainClass implements IDomainClass {
 	///////////////////////////////////////////////////////////////
 	// 1:1 references 
 
-	public synchronized IOneToOneReference getOneToOneReference(final EReference eReference) {
+	public synchronized IOneToOneReference getIOneToOneReference(final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
@@ -827,7 +827,7 @@ public final class DomainClass implements IDomainClass {
 	///////////////////////////////////////////////////////////////
 	// collections 
 	
-	public synchronized ICollectionReference getCollectionReference(final EReference eReference) {
+	public synchronized ICollectionReference getICollectionReference(final EReference eReference) {
 		if (eReference == null) {
 			return null;
 		}
@@ -855,22 +855,22 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#operations()
 	 */
-	public List<EOperation> operations() {
-		return operations(OperationKind.ALL, true);
+	public List<EOperation> eOperations() {
+		return eOperations(OperationKind.ALL, true);
 	}
 
 
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#operations(org.essentialplatform.domain.OperationKind, boolean)
 	 */
-	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited) {
+	public List<EOperation> eOperations(OperationKind operationKind, boolean includeInherited) {
 		List<EOperation> eOperations = new ArrayList<EOperation>();
 		EList operations = includeInherited?
 								getEClass().getEAllOperations():
 								getEClass().getEOperations();
 		for(Iterator iter = operations.iterator(); iter.hasNext(); ) {
 			EOperation eOperation = (EOperation)iter.next();
-			IOperation operation = getOperation(eOperation);
+			IOperation operation = getIOperation(eOperation);
 			switch(operationKind) {
 				case INSTANCE:
 					if (!operation.isStatic()) {
@@ -894,14 +894,14 @@ public final class DomainClass implements IDomainClass {
 	 */
 	public List<IOperation> iOperations() {
 		List<IOperation> operations = new ArrayList<IOperation>();
-		for(EOperation eOperation: operations()) {
-			operations.add(getOperation(eOperation));
+		for(EOperation eOperation: eOperations()) {
+			operations.add(getIOperation(eOperation));
 		}
 		return operations;
 	}
 
 	public EOperation getEOperationNamed(String operationName) {
-		for(EOperation eOperation: operations() ) {
+		for(EOperation eOperation: eOperations() ) {
 			if (eOperation.getName().equals(operationName)) {
 				return eOperation;
 			}
@@ -909,7 +909,7 @@ public final class DomainClass implements IDomainClass {
 		return null;
 	}
 
-	public synchronized IOperation getOperation(EOperation eOperation) {
+	public synchronized IOperation getIOperation(EOperation eOperation) {
 		if (eOperation == null) {
 			return null;
 		}
@@ -974,7 +974,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IOperation#getI18nDataFor()
 		 */
-		public II18nData getI18nDataFor() {
+		public II18nData getI18nData() {
 			throw new RuntimeException("Not yet implemented");
 		}
 
@@ -1074,7 +1074,7 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass#operationIdFor(org.eclipse.emf.ecore.EOperation)
 		 */
-		public IFeatureId operationIdFor() {
+		public IFeatureId getFeatureId() {
 			return FeatureId.create(_eOperation.getName(), getDomainClass(), IFeatureId.Type.OPERATION);
 		}
 

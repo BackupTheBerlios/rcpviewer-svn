@@ -20,7 +20,7 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("firstName"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName"));
 		assertTrue(attrib.isMandatory());
 		assertFalse(attrib.isOptional());
 	}
@@ -32,7 +32,7 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("placeOrder"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("placeOrder"));
 		assertTrue(op.isMandatory(0));
 		assertFalse(op.isOptional(0));
 	}
@@ -46,7 +46,7 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("lastName"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("lastName"));
 		assertFalse(attrib.isMandatory());
 		assertTrue(attrib.isOptional());
 	}
@@ -58,7 +58,7 @@ public abstract class TestOptional extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("placeOrder"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("placeOrder"));
 		assertFalse(op.isMandatory(1));
 		assertTrue(op.isOptional(1));
 	}

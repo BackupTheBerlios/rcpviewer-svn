@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.essentialplatform.session.DomainObjectAttributeEvent;
 import org.essentialplatform.session.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.domain.IDomainClass;
 import org.essentialplatform.session.IDomainObjectAttributeListener;
 
 /**
@@ -88,7 +89,7 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 	private void addListeners( List<IDomainObject<?>> elements ) {
 		assert elements != null;
 		for ( IDomainObject<?> element : elements ) {
-			for ( EAttribute att : element.getDomainClass().attributes() ) {
+			for ( EAttribute att : element.getDomainClass().eAttributes() ) {
 				element.getAttribute( att ).addListener( _attListener );
 			}
 		}
@@ -98,7 +99,7 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 	private void removeListeners( List<IDomainObject<?>> elements ) {
 		assert elements != null;
 		for ( IDomainObject<?> element : elements ) {
-			for ( EAttribute att : element.getDomainClass().attributes() ) {
+			for ( EAttribute att : element.getDomainClass().eAttributes() ) {
 				element.getAttribute( att ).removeListener( _attListener );
 			}
 		}

@@ -12,20 +12,20 @@ public abstract class TestDomainClassAttributesUnsettability extends AbstractTes
 		domainClass = lookupAny(CustomerWithUnsettableAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertTrue(eAttribute.isUnsettable());
-		assertTrue(domainClass.getAttribute(eAttribute).isUnsettable());
+		assertTrue(domainClass.getIAttribute(eAttribute).isUnsettable());
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
 		domainClass = lookupAny(CustomerWithOnlyIsUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
-		assertFalse(domainClass.getAttribute(eAttribute).isUnsettable());
+		assertFalse(domainClass.getIAttribute(eAttribute).isUnsettable());
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
 		domainClass = lookupAny(CustomerWithOnlyUnsetForAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
 		assertFalse(eAttribute.isUnsettable());
-		assertFalse(domainClass.getAttribute(eAttribute).isUnsettable());
+		assertFalse(domainClass.getIAttribute(eAttribute).isUnsettable());
 	}
 
 	

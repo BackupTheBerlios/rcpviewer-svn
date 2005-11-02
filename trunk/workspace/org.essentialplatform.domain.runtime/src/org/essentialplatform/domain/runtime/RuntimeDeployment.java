@@ -403,7 +403,7 @@ public final class RuntimeDeployment extends Deployment {
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _attribute.getDomainClass().getDomain();
 			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
-			return domainBinding.getAuthorizationManager().preconditionsFor(_attribute.attributeIdFor());
+			return domainBinding.getAuthorizationManager().preconditionsFor(_attribute.getFeatureId());
 		}
 
 		public IPrerequisites accessorPrerequisitesFor(final Object pojo)  {
@@ -481,7 +481,7 @@ public final class RuntimeDeployment extends Deployment {
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _reference.getDomainClass().getDomain();
 			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
-			return domainBinding.getAuthorizationManager().preconditionsFor(_reference.referenceIdFor());
+			return domainBinding.getAuthorizationManager().preconditionsFor(_reference.getFeatureId());
 		}
 
 		public IPrerequisites accessorPrerequisitesFor(final Object pojo) {
@@ -716,7 +716,7 @@ public final class RuntimeDeployment extends Deployment {
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _operation.getDomainClass().getDomain();
 			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
-			return domainBinding.getAuthorizationManager().preconditionsFor(_operation.operationIdFor());
+			return domainBinding.getAuthorizationManager().preconditionsFor(_operation.getFeatureId());
 		}
 
 		public IPrerequisites prerequisitesFor(final Object pojo, Object[] args) {

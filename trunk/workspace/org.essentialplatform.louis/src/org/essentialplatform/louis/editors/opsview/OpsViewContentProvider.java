@@ -34,7 +34,7 @@ class OpsViewContentProvider implements ITreeContentProvider {
 			throw new IllegalArgumentException();
 		}
 		IDomainObject<?> obj = (IDomainObject<?>)inputElement;
-		List<EOperation> ops = obj.getDomainClass().operations(); 
+		List<EOperation> ops = obj.getDomainClass().eOperations(); 
 		if ( ops.isEmpty() ) {
 			return new Object[]{ new ErrorInput( 
 				LouisPlugin.getResourceString( "OpsViewContentProvider.NoOps" )) }; //$NON-NLS-1$

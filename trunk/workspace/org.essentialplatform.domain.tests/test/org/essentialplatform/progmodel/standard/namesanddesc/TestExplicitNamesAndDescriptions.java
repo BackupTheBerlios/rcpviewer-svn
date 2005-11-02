@@ -64,7 +64,7 @@ public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase 
 		domainClass = lookupAny(Appointment.class);
 
 		EOperation eOperation = domainClass.getEOperationNamed("moveTo");
-		IDomainClass.IOperation operation = domainClass.getOperation(eOperation);
+		IDomainClass.IOperation operation = domainClass.getIOperation(eOperation);
 		assertEquals("moveTo", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
 		assertEquals("newPeriod", operation.getNameFor(0));
@@ -73,7 +73,7 @@ public abstract class TestExplicitNamesAndDescriptions extends AbstractTestCase 
 		assertEquals("The reasoning for moving the appointment", operation.getDescriptionFor(1));
 		
 		eOperation = domainClass.getEOperationNamed("createAt");
-		operation = domainClass.getOperation(eOperation);
+		operation = domainClass.getIOperation(eOperation);
 		assertEquals("createAt", eOperation.getName());
 		assertEquals(2, eOperation.getEParameters().size());
 		assertEquals("timePeriod", operation.getNameFor(0));

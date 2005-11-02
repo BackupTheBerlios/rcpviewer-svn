@@ -19,7 +19,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("suffix"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("suffix"));
 		assertEquals(12, attrib.getMinLengthOf());
 	}
 
@@ -30,7 +30,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("updateSuffix"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("updateSuffix"));
 		assertEquals(12, op.getMinLengthOf(0));
 	}
 
@@ -47,7 +47,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("middleName"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("middleName"));
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 	
@@ -63,7 +63,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("updateMiddleName"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("updateMiddleName"));
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -80,7 +80,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("lastName"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("lastName"));
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 
@@ -96,7 +96,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("updateLastName"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("updateLastName"));
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -113,7 +113,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("attributeWithNegativeLengths"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("attributeWithNegativeLengths"));
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 
@@ -130,7 +130,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths"));
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -146,7 +146,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("attributeWithNoAnnotations"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("attributeWithNoAnnotations"));
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 	
@@ -163,7 +163,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations"));
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -180,7 +180,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations"));
 		assertEquals(-1, attrib.getMinLengthOf());
 	}
 
@@ -197,7 +197,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IOperation op = 
-			domainClass.getOperation(domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations"));
+			domainClass.getIOperation(domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations"));
 		assertEquals(-1, op.getMinLengthOf(0));
 	}
 

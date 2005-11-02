@@ -73,7 +73,7 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 		IDomainClass collectionDomainType
 			= EmfUtil.getCollectionDomainType( model );
 		List<EAttribute> attributes
-			= EmfUtil.sort( collectionDomainType.attributes(), ANNOTATION );
+			= EmfUtil.sort( collectionDomainType.eAttributes(), ANNOTATION );
 
 		// layout
 		parent.setLayout( new GridLayout() );

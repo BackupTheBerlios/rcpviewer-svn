@@ -19,7 +19,7 @@ public abstract class TestInvisible extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("id"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("id"));
 		assertTrue(attrib.isInvisible());
 	}
 
@@ -31,7 +31,7 @@ public abstract class TestInvisible extends AbstractTestCase {
 		getDomainInstance().done();
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getAttribute(domainClass.getEAttributeNamed("firstName"));
+			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName"));
 		assertFalse(attrib.isInvisible());
 	}
 	

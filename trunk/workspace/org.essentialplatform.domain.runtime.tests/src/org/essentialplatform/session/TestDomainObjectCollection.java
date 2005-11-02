@@ -55,7 +55,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
 		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
-		assertSame(employeeDomainClass, departmentDomainClass.getReference(employeesCollection).getReferencedClass());
+		assertSame(employeeDomainClass, departmentDomainClass.getIReference(employeesCollection).getReferencedDomainClass());
 	}
 
 	public void testListenersNotifiedWhenAddToCollection() {

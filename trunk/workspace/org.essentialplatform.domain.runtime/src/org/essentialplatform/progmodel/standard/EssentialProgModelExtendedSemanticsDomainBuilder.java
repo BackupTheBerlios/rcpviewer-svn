@@ -62,12 +62,12 @@ class EssentialProgModelExtendedSemanticsDomainBuilder implements IDomainBuilder
 		Lifecycle lifecycle = javaClass.getAnnotation(Lifecycle.class);
 		serializer.setClassLifecycle(eClass, lifecycle);
 
-		for(EAttribute attribute: domainClass.attributes()) {
+		for(EAttribute attribute: domainClass.eAttributes()) {
 			processAccessorPre(attribute, domainClass, javaClass); // getXxxPre() method
 			processMutatorPre(attribute, domainClass, javaClass); // setXxxPre(..) method
 
 			// serialize extended semantics as EMF annotations
-			IDomainClass.IAttribute iAttribute = domainClass.getAttribute(attribute);
+			IDomainClass.IAttribute iAttribute = domainClass.getIAttribute(attribute);
 			RuntimeAttributeBinding attributeBinding = (RuntimeAttributeBinding)iAttribute.getBinding();
 
 			serializer.setAttributeRelativeOrder(attribute, attributeBinding.getAnnotation(RelativeOrder.class));
@@ -86,14 +86,14 @@ class EssentialProgModelExtendedSemanticsDomainBuilder implements IDomainBuilder
 			}
 		}
 
-		for(EReference eReference: domainClass.references()) {
+		for(EReference eReference: domainClass.eReferences()) {
 			processAccessorPre(eReference, domainClass, javaClass); // getXxxPre() method
 			processMutatorPre(eReference, domainClass, javaClass); // setXxxPre(..) method (simple reference only)
 			processAddToPre(eReference, domainClass, javaClass); // addToXxxPre(..) method (collections only)
 			processRemoveFromPre(eReference, domainClass, javaClass); // removeFromXxxPre(..) method (collections only)
 		}
 		
-		for(EOperation operation: domainClass.operations()) {
+		for(EOperation operation: domainClass.eOperations()) {
 			Method invoker = standardSerializer.getOperationMethod(operation);
 
 			// xxxPre(..) method

@@ -11,21 +11,21 @@ public abstract class TestDomainClassAttributesUniqueness extends AbstractTestCa
 		domainClass = lookupAny(CustomerWithNoUniquenessReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
-		assertTrue(domainClass.getAttribute(eAttribute).isUnique());
+		assertTrue(domainClass.getIAttribute(eAttribute).isUnique());
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
 		domainClass = lookupAny(CustomerWithUniqueReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertTrue(eAttribute.isUnique());
-		assertTrue(domainClass.getAttribute(eAttribute).isUnique());
+		assertTrue(domainClass.getIAttribute(eAttribute).isUnique());
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
 		domainClass = lookupAny(CustomerWithNonUniqueReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertFalse(eAttribute.isUnique());
-		assertFalse(domainClass.getAttribute(eAttribute).isUnique());
+		assertFalse(domainClass.getIAttribute(eAttribute).isUnique());
 	}
 
 	public void incompletetestUniquenessOfEAttributeWhenSpecifiedWithoutUpperBound() {

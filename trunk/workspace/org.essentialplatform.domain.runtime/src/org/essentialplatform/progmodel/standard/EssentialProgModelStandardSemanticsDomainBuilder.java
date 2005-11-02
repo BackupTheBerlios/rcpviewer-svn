@@ -234,7 +234,7 @@ final class EssentialProgModelStandardSemanticsDomainBuilder implements IDomainB
 		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;
 		Method unsetMethod = null;
-		for(EAttribute eAttribute: runtimeDomainClass.attributes()) {
+		for(EAttribute eAttribute: runtimeDomainClass.eAttributes()) {
 			for(int i=0; i<methods.length; i++) {
 				if (getRuntimeStandardProgModelRules().isIsUnsetMethodFor(methods[i], eAttribute)) {
 					isUnsetMethod = methods[i];
@@ -364,7 +364,7 @@ final class EssentialProgModelStandardSemanticsDomainBuilder implements IDomainB
 	public void identifyAssociatorsAndDissociators(DomainClass runtimeDomainClass) {
 		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
-		for(EReference eReference: runtimeDomainClass.references()) {
+		for(EReference eReference: runtimeDomainClass.eReferences()) {
 			Method associatorMethod = null;
 			Method dissociatorMethod = null;
 			for(int i=0; i<methods.length; i++) {

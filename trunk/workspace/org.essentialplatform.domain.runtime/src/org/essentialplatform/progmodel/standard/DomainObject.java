@@ -508,7 +508,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		private ObjectAttribute(final EAttribute eAttribute) {
 			_eAttribute = eAttribute;
-			_attribute = getDomainClass().getAttribute(eAttribute);
+			_attribute = getDomainClass().getIAttribute(eAttribute);
 			_runtimeBinding = (IAttributeBinding) _attribute.getBinding(); // JAVA5_FIXME
 		}
 
@@ -571,7 +571,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		public IPrerequisites authorizationPrerequisitesFor() {
 			IDomainClass rdc = getDomainClass();
-			IDomainClass.IAttribute attribute = rdc.getAttribute(_eAttribute);
+			IDomainClass.IAttribute attribute = rdc.getIAttribute(_eAttribute);
 			RuntimeAttributeBinding binding = (RuntimeAttributeBinding) attribute
 					.getBinding();
 			return binding.authorizationPrerequisites();
@@ -679,7 +679,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		private ObjectReference(final EReference eReference) {
 			this._eReference = eReference;
-			this._reference = getDomainClass().getReference(eReference);
+			this._reference = getDomainClass().getIReference(eReference);
 			this._runtimeBinding = (IReferenceBinding) _reference.getBinding(); // JAVA5_FIXME
 		}
 
@@ -887,7 +887,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @see org.essentialplatform.session.IDomainObject.IObjectCollectionReference#addToCollection(org.essentialplatform.session.IDomainObject)
 		 */
 		public <Q> void addToCollection(IDomainObject<Q> domainObject) {
-			assert _collectionReference.getReferencedClass() == domainObject
+			assert _collectionReference.getReferencedDomainClass() == domainObject
 					.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeBinding.invokeAddTo(getPojo(), domainObject.getPojo());
@@ -904,7 +904,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @see org.essentialplatform.session.IDomainObject.IObjectCollectionReference#removeFromCollection(org.essentialplatform.session.IDomainObject)
 		 */
 		public <Q> void removeFromCollection(IDomainObject<Q> domainObject) {
-			assert _collectionReference.getReferencedClass() == domainObject
+			assert _collectionReference.getReferencedDomainClass() == domainObject
 					.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeBinding.invokeRemoveFrom(getPojo(), domainObject.getPojo());
@@ -982,7 +982,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		ObjectOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
-			this._operation = getDomainClass().getOperation(eOperation);
+			this._operation = getDomainClass().getIOperation(eOperation);
 			_runtimeBinding = (RuntimeOperationBinding) _operation.getBinding();
 			
 			reset();
@@ -1006,7 +1006,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 */
 		public IPrerequisites authorizationPrerequisitesFor() {
 			IDomainClass dc = getDomainClass();
-			IDomainClass.IOperation operation = dc.getOperation(_eOperation);
+			IDomainClass.IOperation operation = dc.getIOperation(_eOperation);
 			RuntimeOperationBinding binding = (RuntimeOperationBinding) operation.getBinding();
 			return binding.authorizationPrerequisites();
 		}

@@ -30,7 +30,7 @@ public class OppositeReferencesIdentifier {
 			domainClass.oppRefState = OppRefState.neverAgain;
 		}
 		
-		for(EReference reference: domainClass.references()) {
+		for(EReference reference: domainClass.eReferences()) {
 			// since later on we call this same method on the DomainClass 
 			// representing the referenced class, we have the possibility of
 			// an infinite loop if both sides have an @OppositeOf annotation.

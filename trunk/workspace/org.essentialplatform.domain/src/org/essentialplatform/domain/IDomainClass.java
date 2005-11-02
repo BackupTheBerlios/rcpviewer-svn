@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.domain.Deployment.IAttributeBinding;
 import org.essentialplatform.domain.Deployment.IClassBinding;
+import org.essentialplatform.domain.Deployment.IOneToOneReferenceBinding;
 import org.essentialplatform.domain.Deployment.IOperationBinding;
 import org.essentialplatform.domain.Deployment.IReferenceBinding;
 import org.essentialplatform.progmodel.extended.AssignmentType;
@@ -58,6 +59,14 @@ public interface IDomainClass {
 	 */
 	public interface IMember {
 		IDomainClass getDomainClass();
+
+		/**
+		 * Returns a feature identifier for the supplied member.
+		 * 
+		 * @return
+		 */
+		public IFeatureId getFeatureId();
+		
 	}
 
 	/**
@@ -162,7 +171,7 @@ public interface IDomainClass {
 
 	/**
 	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#attributes()} in the order defined by the
+	 * {@link IDomainClass#eAttributes()} in the order defined by the
 	 * {@link RelativeOrder} annotation.
 	 * 
 	 * <p>
@@ -170,11 +179,11 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public List<EAttribute> orderedAttributes();
+	public List<EAttribute> orderedEAttributes();
 
 	/**
 	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#attributes()} that make up the identifier for this
+	 * {@link IDomainClass#eAttributes()} that make up the identifier for this
 	 * domain object, in the order defined by the {@link Id} annotation.
 	 * 
 	 * <p>
@@ -182,7 +191,7 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public List<EAttribute> idAttributes();
+	public List<EAttribute> idEAttributes();
 
 	/**
 	 * Returns a map keyed by name of each business key, whose value is a list
@@ -309,9 +318,18 @@ public interface IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<EAttribute> attributes();
+	public List<EAttribute> eAttributes();
 	
 	
+	/**
+	 * Overloaded version of {@link #eAttributes()} to indicate whether to
+	 * include inherited attributes or not.
+	 * 
+	 * @return
+	 */
+	public List<EAttribute> eAttributes(boolean includeInherited);
+
+
 	/**
 	 * Returns all the {@link IDomainClass.IAttribute}s of the class, 
 	 * including inherited attributes.
@@ -322,14 +340,6 @@ public interface IDomainClass {
 	 */
 	public List<IAttribute> iAttributes();
 	
-	/**
-	 * Overloaded version of {@link #attributes()} to indicate whether to
-	 * include inherited attributes or not.
-	 * 
-	 * @return
-	 */
-	public List<EAttribute> attributes(boolean includeInherited);
-
 
 	/**
 	 * Returns the attribute with given name, or <tt>nothing</tt> if unknown.
@@ -346,7 +356,7 @@ public interface IDomainClass {
 	 * @param eAttribute
 	 * @return
 	 */
-	public boolean containsAttribute(EAttribute eAttribute);
+	public boolean containsEAttribute(EAttribute eAttribute);
 
 	/**
 	 * Returns an {@link IAttribute} represented by the supplied 
@@ -355,7 +365,7 @@ public interface IDomainClass {
 	 * @param eAttribute
 	 * @return
 	 */
-	public IAttribute getAttribute(EAttribute eAttribute);
+	public IAttribute getIAttribute(EAttribute eAttribute);
 
 	/**
 	 * Encapsulates static semantics of an attribute of this class.
@@ -628,7 +638,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public II18nData getI18nDataFor();
+		public II18nData getI18nData();
 
 		/**
 		 * Whether the specified attribute is part of the persistence Id.
@@ -804,19 +814,8 @@ public interface IDomainClass {
 		public boolean regexMatches(String candidateValue);
 
 
-
-		/**
-		 * Returns a feature identifier for the supplied attribute.
-		 * 
-		 * @param attribute
-		 * @return
-		 */
-		public IFeatureId attributeIdFor();
-
 		/**
 		 * Returns the binding of this attribute to parameterized {@link Deployment}.
-		 * 
-		 * JAVA5_FIXME: fix return type.
 		 * 
 		 * @return
 		 */
@@ -835,7 +834,7 @@ public interface IDomainClass {
 	 * <p>
 	 * The returned list is a copy and can be safely modified by the caller.
 	 */
-	public List<EReference> references();
+	public List<EReference> eReferences();
 
 	/**
 	 * Returns {@link IDomainClass.IReference}s from this class to other 
@@ -861,7 +860,7 @@ public interface IDomainClass {
 	 * @param eAttribute
 	 * @return
 	 */
-	public IReference getReference(EReference eReference);
+	public IReference getIReference(EReference eReference);
 
 	
 	/**
@@ -897,18 +896,9 @@ public interface IDomainClass {
 		 * determined directly.  If the reference is a 1:m, then the domain class
 		 * will have been read from the @Associates annotation.
 		 *   
-		 * @param departmentRef
 		 * @return
 		 */
-		public IDomainClass getReferencedClass();
-
-		/**
-		 * Returns a feature identifier for the supplied reference.
-		 * 
-		 * @param reference
-		 * @return
-		 */
-		public IFeatureId referenceIdFor();
+		public IDomainClass getReferencedDomainClass();
 
 		/**
 		 * Returns the binding of this attribute to parameterized {@link Deployment}.
@@ -917,8 +907,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public IReferenceBinding getBinding();
-
+		public <T extends IReferenceBinding> T getBinding();
 		
 	}
 
@@ -933,17 +922,14 @@ public interface IDomainClass {
 	 * @param eReference
 	 * @return
 	 */
-	public IOneToOneReference getOneToOneReference(EReference eReference);
+	public IOneToOneReference getIOneToOneReference(EReference eReference);
 
 
 	/**
 	 * Encapsulates static semantics of a 1:1 reference of this class.
-	 * 
-	 * @author Dan Haywood
 	 */
 	public interface IOneToOneReference extends IReference {
-		
-		
+
 	}
 
 	///////////////////////////////////////////////////////////////
@@ -956,15 +942,12 @@ public interface IDomainClass {
 	 * @param eReference
 	 * @return
 	 */
-	public ICollectionReference getCollectionReference(EReference eReference);
+	public ICollectionReference getICollectionReference(EReference eReference);
 
 	/**
 	 * Encapsulates static semantics of a collection reference of this class.
-	 * 
-	 * @author Dan Haywood
 	 */
 	public interface ICollectionReference extends IReference {
-
 	}
 
 
@@ -980,7 +963,7 @@ public interface IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<EOperation> operations();
+	public List<EOperation> eOperations();
 	
 	/**
 	 * Returns all the EMF operations of the class, of the specified
@@ -991,7 +974,15 @@ public interface IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<EOperation> operations(OperationKind operationKind, boolean includeInherited);
+	public List<EOperation> eOperations(OperationKind operationKind, boolean includeInherited);
+
+	/**
+	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
+	 * 
+	 * @param operationName
+	 * @return
+	 */
+	public EOperation getEOperationNamed(String operationName);
 
 	/**
 	 * Returns all the {@link IDomainClass.IOperation}s (both static and 
@@ -1004,22 +995,13 @@ public interface IDomainClass {
 	public List<IOperation> iOperations();
 
 	/**
-	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
-	 * 
-	 * @param operationName
-	 * @return
-	 */
-	public EOperation getEOperationNamed(String operationName);
-
-
-	/**
 	 * Returns an {@link IAttribute} represented by the supplied 
 	 * {@link EAttribute}; reference semantics.
 	 *  
 	 * @param eAttribute
 	 * @return
 	 */
-	public IOperation getOperation(EOperation eOperation);
+	public IOperation getIOperation(EOperation eOperation);
 
 
 	/**
@@ -1091,7 +1073,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public II18nData getI18nDataFor();
+		public II18nData getI18nData();
 
 		
 
@@ -1257,16 +1239,7 @@ public interface IDomainClass {
 		public int getMinLengthOf(final int parameterPosition);
 
 		/**
-		 * Returns a operation identifier for the supplied operation.
-		 * 
-		 * @return
-		 */
-		public IFeatureId operationIdFor();
-		
-		/**
 		 * Returns the binding of this attribute to parameterized {@link Deployment}.
-		 * 
-		 * JAVA5_FIXME: fix return type.
 		 * 
 		 * @return
 		 */

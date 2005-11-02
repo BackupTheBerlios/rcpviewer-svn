@@ -19,14 +19,14 @@ public abstract class TestDomainClassAttributesCardinality extends AbstractTestC
 		domainClass = lookupAny(CustomerWithNoLowerBoundReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getLowerBound());
-		assertEquals(1, domainClass.getAttribute(eAttribute).getLowerBound());
+		assertEquals(1, domainClass.getIAttribute(eAttribute).getLowerBound());
 	}
 
 	public void testLowerBoundOfEAttributeWhenSpecified() {
 		domainClass = lookupAny(CustomerWithLowerBoundReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(0, eAttribute.getLowerBound());
-		assertEquals(0, domainClass.getAttribute(eAttribute).getLowerBound());
+		assertEquals(0, domainClass.getIAttribute(eAttribute).getLowerBound());
 	}
 
 	public void incompletetestLowerBoundOfEAttributeWithDatatypeNotSupporting() {
@@ -38,14 +38,14 @@ public abstract class TestDomainClassAttributesCardinality extends AbstractTestC
 		domainClass = lookupAny(CustomerWithNoUpperBoundReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(1, eAttribute.getUpperBound());
-		assertEquals(1, domainClass.getAttribute(eAttribute).getLowerBound());
+		assertEquals(1, domainClass.getIAttribute(eAttribute).getLowerBound());
 	}
 
 	public void testUpperBoundOfEAttributeWhenSpecified() {
 		domainClass = lookupAny(CustomerWithUpperBoundReadOnlyAttribute.class);
 		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
 		assertEquals(3, eAttribute.getUpperBound());
-		assertEquals(3, domainClass.getAttribute(eAttribute).getUpperBound());
+		assertEquals(3, domainClass.getIAttribute(eAttribute).getUpperBound());
 	}
 
 	public void incompletetestUpperBoundOfEAttributeWithDatatypeNotSupporting() {

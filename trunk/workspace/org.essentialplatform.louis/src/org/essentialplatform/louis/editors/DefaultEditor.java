@@ -129,7 +129,7 @@ public final class DefaultEditor extends EditorPart {
 			public void attributePrerequisitesChanged(ExtendedDomainObjectAttributeEvent event) {
 			}
 		};
-		for ( EAttribute a : getDomainObject().getDomainClass().attributes() ) {
+		for ( EAttribute a : getDomainObject().getDomainClass().eAttributes() ) {
 			getDomainObject().getAttribute( a ).addListener( _nameListener );
 		}
 		
@@ -162,7 +162,7 @@ public final class DefaultEditor extends EditorPart {
 		}
 		if ( _nameListener != null ) {
 			IDomainObject<?> object = getDomainObject();
-			for ( EAttribute a : object.getDomainClass().attributes() ) {
+			for ( EAttribute a : object.getDomainClass().eAttributes() ) {
 				object.getAttribute( a ).removeListener( _nameListener );
 			}
 		}

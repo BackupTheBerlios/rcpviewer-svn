@@ -77,7 +77,7 @@ public class EmfUtil {
 	 */
 	public static final boolean canAddTo( EReference eReference ) {
 		IDomainClass rdc = getContainerDomainType( eReference );
-		IDomainClass.IReference reference = rdc.getReference(eReference);
+		IDomainClass.IReference reference = rdc.getIReference(eReference);
 		if (reference.isMultiple()) {
 			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
 			return runtimeBinding.canAddTo();
@@ -94,7 +94,7 @@ public class EmfUtil {
 	 */
 	public static final boolean canRemoveFrom( EReference eReference ) {
 		IDomainClass rdc = getContainerDomainType( eReference );
-		IDomainClass.IReference reference = rdc.getReference(eReference);
+		IDomainClass.IReference reference = rdc.getIReference(eReference);
 		if (reference.isMultiple()) {
 			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
 			return runtimeBinding.canRemoveFrom();
