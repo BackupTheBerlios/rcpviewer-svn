@@ -5,12 +5,14 @@ import java.util.Date;
 import org.essentialplatform.louis.util.RandomUtil;
 
 import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.standard.InDomain;
 
 /**
  * 
  * @author Mike
  */
 @Lifecycle(instantiable=true,searchable=true,saveable=true)
+@InDomain
 public class AnotherEasyBean {
 	
 	private int field0 = 0;

@@ -12,8 +12,10 @@
         <impl class="org.essentialplatform.gui.acme.model.Beans"/>
    </extension>
    
+   <!--
    <extension point="org.essentialplatform.louis.guifactory">
         <impl class="org.essentialplatform.gui.acme.factory.exts.ColourAttributeGuiFactory"/> 
    </extension>
+   -->
 
 </plugin>
