@@ -1,0 +1,82 @@
+1 Extensions to Programming Model
+
+Extended prog model, to test/implement:
+* Lookup        - type
+* FieldLengthOf - value type
+* MinLengthOf   - value type
+* MaxLengthOf   - value type
+* Mask          - value type
+* Regex         - value type
+* ImmutableOncePersisted - type
+* SaveOperation    - operation
+* DeleteOperation  - operation
+
+Go through the javadoc of Petstore and make sure semantics described there are all honoured.
+
+Also:
+* sort out the interplay between @SaveOperation and @Lifecycle(saveable=...)
+* Customer#setLanguage() is being picked up as an operation.
+
+followed by Facade
+
+TODOs:
+tests for ExtendedReference 
+- addTo/removeFrom/accessor
+
+tests for ExtendedOperation
+- prereqs
+
+
+----
+STUFF BELOW IS OUT OF DATE...
+
+ref: Eclipse:/de.berlios.rcpviewer.progmodel.IProgrammingModel
+
+1.1 @Searchable
+
+* applies to ~~@Target(TYPE)~~
+* indicates that the domain class should be made available in search window.
+* implement using an ~~EAnnotation~~
+
+1.1 @NonPersistable
+
+* applies to ~~@Target(TYPE)~~
+* indicates that should not be possible to persist (useful for some derived objects).
+* implement using an ~~EAnnotation~~
+
+1.1 @PositionedAt(int)
+
+* applies to ~~@Target(METHOD)~~
+* DONE: when applied to a method representing a getter of an attribute, indicates its position relative to other attributes, eg as shown in UI.
+* TODO: when applied to a method representing an action, indicates its position on the menu
+* implement using an ~~EAnnotation~~, with its ~~details~~ holding value serialized to a String
+
+1.1 @I18nNameKey(String)
+
+* same applicability as ~~@Name~~, overrides ~~@Name~~ if present
+* key to resource bundle, provides name for current locale
+* implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
+
+1.1 @PluralName(String)
+
+* applies to ~~@Target(TYPE)~~
+* indicates the plural name of the class where the plural form is irregular, or the ~~@Singular(String)~~ annotation is in use.
+* overridden by I18n annotations if present
+* implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
+
+1.1 @I18nPluralNamelKey(String)
+
+* same applicability as ~~@PluralName~~, overrides ~~@PluralName~~ if present
+* key to resource bundle, provides plural name for current locale
+* implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
+
+1.1 @I18nDescriptionKey(String)
+
+* same applicability as ~~@Description~~, overrides ~~@Description~~ if present
+* key to resource bundle, provides description for current locale
+* implement using an ~~EAnnotation~~, with its ~~details~~ holding value as a String
+
+1.1 Help
+
+Haven't specified a help annotation: the framework should be able to allocate a feature Id eg ~~com.mycompany.Department#getEmployees~~ and use that to look up help transparently.
+

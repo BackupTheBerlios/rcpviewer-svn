@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Essential Platform Domain Plug-in
+Bundle-SymbolicName: org.essentialplatform.domain; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-ClassPath: core.jar,
+ bin/
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.jface;visibility:=reexport,
+ org.junit;visibility:=reexport,
+ org.eclipse.osgi;visibility:=reexport,
+ org.eclipse.core.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.extended;visibility:=reexport,
+ org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
+ org.essentialplatform.progmodel.standard;visibility:=reexport,
+ org.apache.log4j;visibility:=reexport
+Eclipse-AutoStart: true
+Export-Package: org.essentialplatform,
+ org.essentialplatform.domain,
+ org.essentialplatform.progmodel,
+ org.essentialplatform.progmodel.extended,
+ org.essentialplatform.progmodel.java,
+ org.essentialplatform.progmodel.rcpviewer,
+ org.essentialplatform.progmodel.standard,
+ org.essentialplatform.progmodel.standard.impl,
+ org.essentialplatform
+Bundle-Vendor: Essential Platform Development Team
+DynamicImport-Package: *

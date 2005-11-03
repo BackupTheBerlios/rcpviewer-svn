@@ -1,0 +1,26 @@
+accessingAttributeOnPojo(IPojo)
+accessingOneToOneReferenceOnPojo(IPojo)
+accessingCollectionReferenceOnPojo(IPojo)
+
+- and for each, do a resolve.  make into a Resolve aspect which subclasses PojoAspect.
+
+---------
+thinking about ObjectStore:
+
+
+findUsing(IQuery): List<IPojo>
+
+- provide an implementation of IQuery that restricts to all instances of a single type
+- every IPojo will be resolved, and with a IPersistedId
+
+resolve(IPersistedId): IPojo
+- locates the object
+- copies over the attributes
+
+
+resolve(IPojo, IReference)
+
+the implementation should
+
+
+when ask for a pojo, it should copy over the attributes and set references to null and IReference.resolveState = false
