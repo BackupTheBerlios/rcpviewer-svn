@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Essential Programming Model Compiletime Support
+Bundle-SymbolicName: org.essentialplatform.progmodel.essential.compiletime; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.essentialplatform.progmodel.essential.compiletime.CompiletimePlugin
+Bundle-Vendor: Essential Platform Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-AutoStart: true

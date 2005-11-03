@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Louis Programming Model Compile-time Support
+Bundle-SymbolicName: org.essentialplatform.progmodel.louis.compiletime; singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Activator: org.essentialplatform.progmodel.louis.compiletime.CompiletimePlugin
+Bundle-Vendor: Essential Platform Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-AutoStart: true
