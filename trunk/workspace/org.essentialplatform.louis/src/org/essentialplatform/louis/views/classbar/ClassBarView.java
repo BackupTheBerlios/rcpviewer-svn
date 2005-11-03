@@ -25,8 +25,7 @@ import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Outlook-style bar for each class in Domain.

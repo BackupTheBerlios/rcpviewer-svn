@@ -5,11 +5,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import org.essentialplatform.domain.IDomain;
-import org.essentialplatform.domain.IDomainRegistry;
-import org.essentialplatform.domain.runtime.RuntimePlugin;
-import org.essentialplatform.persistence.IObjectStore;
-import org.essentialplatform.session.ISessionManager;
+import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.runtime.RuntimePlugin;
+import org.essentialplatform.runtime.domain.IDomainRegistry;
+import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.session.ISessionManager;
 
 /**
  * Starts a new session on a domain

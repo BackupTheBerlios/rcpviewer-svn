@@ -8,8 +8,8 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 /**
  * Label provider for session tree.

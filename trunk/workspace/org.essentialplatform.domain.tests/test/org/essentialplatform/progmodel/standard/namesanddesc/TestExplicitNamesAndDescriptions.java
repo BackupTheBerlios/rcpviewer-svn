@@ -2,7 +2,7 @@ package org.essentialplatform.progmodel.standard.namesanddesc;
 
 import org.eclipse.emf.ecore.EOperation;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Tests for the use of the <tt>Named</tt> and <tt>DescribedAs</tt>.

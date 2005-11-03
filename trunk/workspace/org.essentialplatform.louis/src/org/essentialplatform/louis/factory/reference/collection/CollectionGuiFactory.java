@@ -32,8 +32,8 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 /**
  * Generic form part for <code>isMany() EReference's</code> (i.e. collections)

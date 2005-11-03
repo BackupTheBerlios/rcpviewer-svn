@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.essentialplatform.louis.LouisPlugin;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Provides the user with a GUI means of finding a specific instance of the 

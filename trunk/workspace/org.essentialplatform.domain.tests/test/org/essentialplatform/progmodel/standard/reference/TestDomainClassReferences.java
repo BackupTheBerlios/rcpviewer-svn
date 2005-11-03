@@ -3,9 +3,9 @@ package org.essentialplatform.progmodel.standard.reference;
 
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.IDomainClass.IReference;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass.IReference;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
 
 public abstract class TestDomainClassReferences extends AbstractTestCase {
 
@@ -102,7 +102,7 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 	 * Department 1 <-> m Employee, as annotated from Department.
 	 *
 	 * <p>
-	 * Note that {@link org.essentialplatform.domain.IDomain#done()} must be
+	 * Note that {@link org.essentialplatform.core.domain.IDomain#done()} must be
 	 * called in order for bidirectional relationships to be identified.
 	 */
 	public void testBidirectionalRelationshipIsPickedUpAnnotatedFromParent() {
@@ -133,7 +133,7 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 	 * Department 1 <-> m Employee, as annotated from Child.
 	 *
 	 * <p>
-	 * Note that {@link org.essentialplatform.domain.IDomain#done()} must be
+	 * Note that {@link org.essentialplatform.core.domain.IDomain#done()} must be
 	 * called in order for bidirectional relationships to be identified.
 	 */
 	public void testBidirectionalRelationshipIsPickedUpAnnotatedFromChild() {
@@ -164,7 +164,7 @@ public abstract class TestDomainClassReferences extends AbstractTestCase {
 	 * Department 1 <-> m Employee, as annotated from both ends.
 	 * 
 	 * <p>
-	 * Note that {@link org.essentialplatform.domain.IDomain#done()} must be
+	 * Note that {@link org.essentialplatform.core.domain.IDomain#done()} must be
 	 * called in order for bidirectional relationships to be identified.
 	 */
 	public void testBidirectionalRelationshipIsPickedUpAnnotatedFromBothSides() {

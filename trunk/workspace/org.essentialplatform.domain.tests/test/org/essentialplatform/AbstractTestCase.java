@@ -2,12 +2,12 @@ package org.essentialplatform;
 
 import junit.framework.TestCase;
 
-import org.essentialplatform.domain.Deployment;
-import org.essentialplatform.domain.Domain;
-import org.essentialplatform.domain.IDomain;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
 
 /**
  *  

@@ -7,7 +7,7 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.DomainClassPart;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 
 /**

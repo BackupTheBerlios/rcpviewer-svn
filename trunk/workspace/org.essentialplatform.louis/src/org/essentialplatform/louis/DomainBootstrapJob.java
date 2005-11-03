@@ -5,9 +5,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import org.essentialplatform.domain.Domain;
-import org.essentialplatform.domain.runtime.IDomainBootstrap;
-import org.essentialplatform.progmodel.rcpviewer.RcpViewerProgModelDomainBuilder;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.runtime.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.runtime.progmodel.rcpviewer.RcpViewerProgModelDomainBuilder;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
 
 /**
  * Tests for the use of the <tt>@RelativeOrder</tt> annotation.

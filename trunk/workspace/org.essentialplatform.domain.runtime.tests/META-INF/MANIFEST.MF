@@ -8,23 +8,23 @@ Bundle-ClassPath: tests.jar,
  etc/log4j.properties
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- org.essentialplatform.domain.fixture;visibility:=reexport,
+ org.essentialplatform.core.fixture;visibility:=reexport,
  org.essentialplatform.domain.tests;visibility:=reexport,
- org.essentialplatform.domain.runtime;visibility:=reexport,
- org.essentialplatform.domain;visibility:=reexport,
+ org.essentialplatform.runtime;visibility:=reexport,
+ org.essentialplatform.core;visibility:=reexport,
  org.junit;visibility:=reexport,
  net.sf.plugins.easymock;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
-Export-Package: org.essentialplatform,
- org.essentialplatform.domain,
- org.essentialplatform.domain.runtime.tests,
- org.essentialplatform.progmodel.extended,
- org.essentialplatform.progmodel.rcpviewer,
- org.essentialplatform.progmodel.standard.attribute,
- org.essentialplatform.progmodel.standard.domainclass,
- org.essentialplatform.progmodel.standard.i18n,
- org.essentialplatform.progmodel.standard.namesanddesc,
- org.essentialplatform.progmodel.standard.operation,
- org.essentialplatform.progmodel.standard.reference,
- org.essentialplatform.session
+Export-Package: org.essentialplatform.runtime.tests,
+ org.essentialplatform.runtime.tests.domain,
+ org.essentialplatform.runtime.tests.progmodel.extended,
+ org.essentialplatform.runtime.tests.progmodel.rcpviewer,
+ org.essentialplatform.runtime.tests.progmodel.standard.attribute,
+ org.essentialplatform.runtime.tests.progmodel.standard.domainclass,
+ org.essentialplatform.runtime.tests.progmodel.standard.i18n,
+ org.essentialplatform.runtime.tests.progmodel.standard.namesanddesc,
+ org.essentialplatform.runtime.tests.progmodel.standard.operation,
+ org.essentialplatform.runtime.tests.progmodel.standard.reference,
+ org.essentialplatform.runtime.tests.session,
+ org.essentialplatform.runtime.tests.transaction

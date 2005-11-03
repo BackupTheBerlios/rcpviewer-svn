@@ -1,7 +1,7 @@
 package org.essentialplatform.louis.dnd;
 
 
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 /**
  * Used for transferring an arbitary class within the application.

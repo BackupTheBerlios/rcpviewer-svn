@@ -1,7 +1,7 @@
 package org.essentialplatform.louis;
 
-import org.essentialplatform.persistence.IObjectStore;
-import org.essentialplatform.persistence.inmemory.InMemoryObjectStore;
+import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 
 /**
  * Creates <code>IObjectStore</code>.

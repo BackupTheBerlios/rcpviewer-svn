@@ -3,7 +3,7 @@ package demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.essentialplatform.domain.Domain;
+import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.extended.IPrerequisites;
 import org.essentialplatform.progmodel.extended.Lifecycle;
 import org.essentialplatform.progmodel.extended.Named;
@@ -12,10 +12,10 @@ import org.essentialplatform.progmodel.extended.RelativeOrder;
 import org.essentialplatform.progmodel.standard.InDomain;
 import org.essentialplatform.progmodel.standard.Programmatic;
 import org.essentialplatform.progmodel.standard.TypeOf;
-import org.essentialplatform.session.IDomainObject;
-import org.essentialplatform.session.ISession;
-import org.essentialplatform.session.local.Session;
-import org.essentialplatform.session.local.SessionManager;
+import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.session.local.Session;
+import org.essentialplatform.runtime.session.local.SessionManager;
 
 @Lifecycle(instantiable=true)
 @InDomain

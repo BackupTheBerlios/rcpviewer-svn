@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.essentialplatform.louis.LouisPlugin;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * @author Mike

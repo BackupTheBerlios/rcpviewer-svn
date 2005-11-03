@@ -30,7 +30,7 @@ import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListen
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 /**
  * Handles dynamic behaviour for the collection gui.

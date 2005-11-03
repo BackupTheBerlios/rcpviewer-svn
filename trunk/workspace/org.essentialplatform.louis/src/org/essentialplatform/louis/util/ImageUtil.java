@@ -9,7 +9,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.essentialplatform.louis.LouisPlugin;
 import org.osgi.framework.Bundle;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Static methods for handling image operations.

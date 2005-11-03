@@ -4,8 +4,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.Domain;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Static factory methods

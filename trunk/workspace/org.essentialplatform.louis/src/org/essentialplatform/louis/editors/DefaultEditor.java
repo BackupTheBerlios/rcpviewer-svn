@@ -31,13 +31,13 @@ import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.views.ops.IOpsViewPage;
 
-import org.essentialplatform.session.DomainObjectAttributeEvent;
-import org.essentialplatform.session.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.session.IDomainObject;
-import org.essentialplatform.session.IDomainObjectAttributeListener;
-import org.essentialplatform.transaction.ITransactable;
-import org.essentialplatform.transaction.ITransaction;
-import org.essentialplatform.transaction.internal.TransactionManager;
+import org.essentialplatform.runtime.session.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.session.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.transaction.ITransactable;
+import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.transaction.internal.TransactionManager;
 
 /**
  * Core editor for GUI layer.

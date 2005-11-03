@@ -1,10 +1,10 @@
 package org.essentialplatform.louis;
 
-import org.essentialplatform.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.runtime.domain.runtime.IDomainBootstrap;
 
 /**
  * Creates <code>IDomainBootstrap</code> that will initialise the <code>Domain</code>.
- * @see org.essentialplatform.domain.runtime.IDomainBootstrap
+ * @see org.essentialplatform.runtime.domain.runtime.IDomainBootstrap
  * @see org.essentialplatform.domain.Domain;
  * @author Mike
  */

@@ -16,10 +16,9 @@ import org.eclipse.swt.dnd.Transfer;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.util.DomainRegistryUtil.Filter;
+import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.

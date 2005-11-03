@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Essential Platform Domain Plug-in
-Bundle-SymbolicName: org.essentialplatform.domain; singleton:=true
+Bundle-Name: Essential Platform Core Plug-in
+Bundle-SymbolicName: org.essentialplatform.core; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: core.jar,
  bin/
@@ -18,13 +18,23 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.apache.log4j;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform,
- org.essentialplatform.domain,
- org.essentialplatform.progmodel,
- org.essentialplatform.progmodel.extended,
- org.essentialplatform.progmodel.java,
- org.essentialplatform.progmodel.rcpviewer,
- org.essentialplatform.progmodel.standard,
- org.essentialplatform.progmodel.standard.impl,
- org.essentialplatform
+ org.essentialplatform.core.deployment,
+ org.essentialplatform.core.domain,
+ org.essentialplatform.core.domain.adapters,
+ org.essentialplatform.core.domain.builders,
+ org.essentialplatform.core.domain.event,
+ org.essentialplatform.core.emf,
+ org.essentialplatform.core.features,
+ org.essentialplatform.core.i18n,
+ org.essentialplatform.core.progmodel,
+ org.essentialplatform.core.util,
+ org.essentialplatform.progmodel.essential.core,
+ org.essentialplatform.progmodel.essential.core.domain,
+ org.essentialplatform.progmodel.essential.core.emf,
+ org.essentialplatform.progmodel.essential.core.util,
+ org.essentialplatform.progmodel.louis.core,
+ org.essentialplatform.progmodel.louis.core.domain,
+ org.essentialplatform.progmodel.louis.core.domain.adapters,
+ org.essentialplatform.progmodel.louis.core.emf
 Bundle-Vendor: Essential Platform Development Team
 DynamicImport-Package: *

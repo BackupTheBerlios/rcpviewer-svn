@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 
-import org.essentialplatform.persistence.IObjectStore;
-import org.essentialplatform.persistence.IObjectStoreBootStrap;
+import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.persistence.IObjectStoreBootStrap;
 
 /**
  * Initialises the passed object store by looking for implementors

@@ -15,7 +15,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 	

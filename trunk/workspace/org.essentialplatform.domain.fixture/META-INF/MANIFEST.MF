@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Domain Tests Fixture Plug-in
-Bundle-SymbolicName: org.essentialplatform.domain.fixture
+Bundle-Name: Core Fixtures Plug-in
+Bundle-SymbolicName: org.essentialplatform.core.fixture
 Bundle-Version: 0.0.1
 Bundle-ClassPath: fixture.jar,
  bin/
@@ -10,9 +10,10 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.extended;visibility:=reexport,
  org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
  org.essentialplatform.progmodel.standard;visibility:=reexport,
- org.essentialplatform.domain.runtime
+ org.essentialplatform.runtime;visibility:=reexport
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.domain,
+Export-Package: org.essentialplatform.core.fixture.domain,
+ org.essentialplatform.core.fixture.emf,
  org.essentialplatform.persistence,
  org.essentialplatform.progmodel.extended,
  org.essentialplatform.progmodel.rcpviewer,

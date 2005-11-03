@@ -1,7 +1,7 @@
 package org.essentialplatform.progmodel.standard.domainclass;
 
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Tests for the use of the <tt>Immutable</tt>.

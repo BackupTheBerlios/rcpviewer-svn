@@ -1,28 +1,29 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.essentialplatform.domain.runtime
-Bundle-SymbolicName: org.essentialplatform.domain.runtime; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Name: Essential Platform Runtime Model
+Bundle-SymbolicName: org.essentialplatform.runtime; singleton:=true
+Bundle-Version: 0.0.1
 Bundle-ClassPath: runtime.jar
 Bundle-Activator: org.essentialplatform.domain.runtime.RuntimePlugin
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
- org.essentialplatform.domain;visibility:=reexport,
+ org.essentialplatform.core;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.authorization,
- org.essentialplatform.domain,
- org.essentialplatform.domain.runtime,
- org.essentialplatform.internal,
- org.essentialplatform.persistence,
- org.essentialplatform.persistence.inmemory,
- org.essentialplatform.progmodel.extended,
- org.essentialplatform.progmodel.rcpviewer,
- org.essentialplatform.progmodel.standard,
- org.essentialplatform.progmodel.standard.aspects,
- org.essentialplatform.session,
- org.essentialplatform.session.local,
- org.essentialplatform.tracing,
- org.essentialplatform.transaction,
- org.essentialplatform.transaction.internal
+ org.essentialplatform.runtime,
+ org.essentialplatform.runtime.domain,
+ org.essentialplatform.runtime.authorization,
+ org.essentialplatform.runtime.domain.runtime,
+ org.essentialplatform.runtime.internal,
+ org.essentialplatform.runtime.persistence,
+ org.essentialplatform.runtime.persistence.inmemory,
+ org.essentialplatform.runtime.progmodel.rcpviewer,
+ org.essentialplatform.runtime.progmodel.standard,
+ org.essentialplatform.runtime.session,
+ org.essentialplatform.runtime.session.local,
+ org.essentialplatform.runtime.tracing,
+ org.essentialplatform.runtime.transaction,
+ org.essentialplatform.runtime.transaction.internal
+Plugin-Class: org.essentialplatform.runtime.domain.runtime.RuntimePlugin

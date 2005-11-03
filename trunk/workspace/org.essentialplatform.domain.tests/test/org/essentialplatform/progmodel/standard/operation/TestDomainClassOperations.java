@@ -2,10 +2,10 @@ package org.essentialplatform.progmodel.standard.operation;
 
 import org.eclipse.emf.ecore.EOperation;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.OperationKind;
-import org.essentialplatform.domain.IDomainClass.IOperation;
-import org.essentialplatform.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.OperationKind;
+import org.essentialplatform.core.domain.IDomainClass.IOperation;
+import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 
 /**

@@ -2,7 +2,7 @@ package org.essentialplatform.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 public abstract class TestDomainClassAttributesUnsettability extends AbstractTestCase {
 

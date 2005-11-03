@@ -14,10 +14,10 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.runtime.RuntimePlugin;
-import org.essentialplatform.session.IDomainObject;
-import org.essentialplatform.session.ISession;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.RuntimePlugin;
+import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.session.ISession;
 
 /**
  * @author Mike

@@ -24,12 +24,11 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.jobs.JobAction;
 import org.essentialplatform.louis.jobs.NewDomainObjectJob;
 import org.essentialplatform.louis.jobs.ReportJob;
+import org.essentialplatform.runtime.domain.IDomainRegistry;
 
-import org.essentialplatform.domain.IDomain;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.IDomainRegistry;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.RuntimePlugin;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	

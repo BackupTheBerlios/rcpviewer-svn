@@ -2,9 +2,10 @@ package org.essentialplatform.progmodel.rcpviewer;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.Domain;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
 
 /**
  * Tests for the use of the <tt>ImageUrlAt</tt> annotations.

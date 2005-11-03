@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.essentialplatform.domain.IDomain;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.domain.IDomainRegistry;
-import org.essentialplatform.domain.runtime.RuntimePlugin;
+import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.RuntimePlugin;
+import org.essentialplatform.runtime.domain.IDomainRegistry;
 
 /**
  * Static helper methods domain registry functions.

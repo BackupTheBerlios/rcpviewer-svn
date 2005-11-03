@@ -22,7 +22,7 @@ import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * @author Mike

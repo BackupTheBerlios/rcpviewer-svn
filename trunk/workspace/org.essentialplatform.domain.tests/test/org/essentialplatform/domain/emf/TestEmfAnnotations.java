@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EModelElement;
-import org.essentialplatform.domain.Emf;
-import org.essentialplatform.domain.EmfAnnotations;
+import org.essentialplatform.core.emf.Emf;
+import org.essentialplatform.core.emf.EmfAnnotations;
 
 /**
  * Independent (so also applicable) to both runtime and compiletime, 

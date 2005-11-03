@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.ecore.EOperation;
 import org.essentialplatform.louis.LouisPlugin;
 
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 /**
  * Runs the passed operation on the passed object with the passed arguements.

@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.widgets.Composite;
 import org.essentialplatform.louis.util.FontUtil;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Experiment...

@@ -1,4 +1,7 @@
 package org.essentialplatform.domain.emf;
+import org.essentialplatform.core.emf.Emf;
+import org.essentialplatform.core.emf.EmfAnnotations;
+import org.essentialplatform.core.fixture.emf.EmfFacadeDatePeriod;
 import org.essentialplatform.domain.*;
 
 import java.util.HashMap;
@@ -13,7 +16,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
-import org.essentialplatform.domain.EmfAnnotations;
 
 /**
  * Independent (so also applicable) to both runtime and compiletime, 
@@ -118,17 +120,17 @@ public class TestEmf extends TestCase {
 
 	public void testGetEPackageForRegularPackage() {
 		Package javaPackage = 
-			org.essentialplatform.domain.ClassInRegularPackage.class.getPackage();
+			org.essentialplatform.core.fixture.domain.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
 			emf.getEPackageFor(javaPackage, new ResourceSetImpl());
 		assertNotNull(ePackage);
-		assertEquals("http://org.essentialplatform.domain/2005/org.essentialplatform.domain", ePackage.getNsURI());
-		assertEquals("org.essentialplatform.domain", ePackage.getName());
+		assertEquals("http://org.essentialplatform.domain/2005/org.essentialplatform.core.fixture.domain", ePackage.getNsURI());
+		assertEquals("org.essentialplatform.core.fixture.domain", ePackage.getName());
 	}
 	
 	public void testFindPackageWithNameUsingRegularPackageWhenNotYetCreated() {
 		Package javaPackage = 
-			org.essentialplatform.domain.ClassInRegularPackage.class.getPackage();
+			org.essentialplatform.core.fixture.domain.ClassInRegularPackage.class.getPackage();
 		EPackage ePackage = 
 			emf.findPackageWithName(javaPackage.getName(), new ResourceSetImpl());
 		assertNull(ePackage);
@@ -137,7 +139,7 @@ public class TestEmf extends TestCase {
 	
 	public void testFindPackageWithNameUsingRegularPackageWhenCreated() {
 		Package javaPackage = 
-			org.essentialplatform.domain.ClassInRegularPackage.class.getPackage();
+			org.essentialplatform.core.fixture.domain.ClassInRegularPackage.class.getPackage();
 		
 		ResourceSet resourceSet = new ResourceSetImpl();
 		
@@ -149,8 +151,8 @@ public class TestEmf extends TestCase {
 			emf.findPackageWithName(javaPackage.getName(), resourceSet);
 		
 		assertNotNull(ePackage);
-		assertEquals("http://org.essentialplatform.domain/2005/org.essentialplatform.domain", ePackage.getNsURI());
-		assertEquals("org.essentialplatform.domain", ePackage.getName());
+		assertEquals("http://org.essentialplatform.domain/2005/org.essentialplatform.core.fixture.domain", ePackage.getNsURI());
+		assertEquals("org.essentialplatform.core.fixture.domain", ePackage.getName());
 	}
 	
 	public void testFindPackageWithNameUsingNonExistentPackage() {

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainBuilder;
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
 
 /**
  * Tests for the use of the {@link org.essentialplatform.progmodel.extended.Optional}.

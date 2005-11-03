@@ -5,10 +5,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.essentialplatform.louis.util.NullUtil;
 
-import org.essentialplatform.session.DomainObjectAttributeEvent;
-import org.essentialplatform.session.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.session.IDomainObject;
-import org.essentialplatform.session.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.session.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.session.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObjectAttributeListener;
 
 
 /**

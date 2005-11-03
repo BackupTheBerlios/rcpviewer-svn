@@ -23,7 +23,7 @@ import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import org.essentialplatform.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass;
 
 public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 

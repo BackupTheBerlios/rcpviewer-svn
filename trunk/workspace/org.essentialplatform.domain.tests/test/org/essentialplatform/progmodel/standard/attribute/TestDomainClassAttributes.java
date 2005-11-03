@@ -2,8 +2,8 @@ package org.essentialplatform.progmodel.standard.attribute;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.AbstractTestCase;
-import org.essentialplatform.domain.IDomainClass;
-import org.essentialplatform.progmodel.standard.IFeatureId;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.features.IFeatureId;
 
 public abstract class TestDomainClassAttributes extends AbstractTestCase {
 

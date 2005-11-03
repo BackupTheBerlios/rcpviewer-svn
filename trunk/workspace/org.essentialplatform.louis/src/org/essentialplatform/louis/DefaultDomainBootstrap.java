@@ -5,8 +5,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
-import org.essentialplatform.domain.Domain;
-import org.essentialplatform.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.runtime.domain.runtime.IDomainBootstrap;
 
 /**
  * Initialises the <code>Domain</code> by looking for implementors of 

@@ -14,7 +14,7 @@ import org.eclipse.ui.PlatformUI;
 import org.essentialplatform.louis.editors.DefaultEditor;
 import org.essentialplatform.louis.editors.DefaultEditorInput;
 
-import org.essentialplatform.session.IDomainObject;
+import org.essentialplatform.runtime.session.IDomainObject;
 
 
 

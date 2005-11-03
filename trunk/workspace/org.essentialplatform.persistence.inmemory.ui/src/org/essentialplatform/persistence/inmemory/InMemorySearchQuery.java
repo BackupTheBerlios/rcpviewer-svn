@@ -22,10 +22,11 @@ import org.eclipse.search.ui.ISearchResultListener;
 import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.swt.graphics.Image;
 
-import org.essentialplatform.domain.runtime.RuntimePlugin;
-import org.essentialplatform.persistence.IObjectStore;
-import org.essentialplatform.session.IDomainObject;
-import org.essentialplatform.session.ISession;
+import org.essentialplatform.runtime.RuntimePlugin;
+import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
+import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.session.ISession;
 
 public final class InMemorySearchQuery
 implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentProvider

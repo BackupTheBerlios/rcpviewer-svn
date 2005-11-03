@@ -23,9 +23,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
-import org.essentialplatform.domain.runtime.IDomainBootstrap;
-import org.essentialplatform.domain.runtime.RuntimeDeployment;
-import org.essentialplatform.persistence.IObjectStore;
+import org.essentialplatform.runtime.domain.runtime.IDomainBootstrap;
+import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.persistence.IObjectStore;
 
 
 /**

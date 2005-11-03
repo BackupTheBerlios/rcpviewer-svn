@@ -3,10 +3,10 @@
  */
 package org.essentialplatform.louis.widgets;
 
-import org.essentialplatform.session.DomainObjectAttributeEvent;
-import org.essentialplatform.session.DomainObjectEvent;
-import org.essentialplatform.session.DomainObjectReferenceEvent;
-import org.essentialplatform.session.IDomainObjectListener;
+import org.essentialplatform.runtime.session.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.session.DomainObjectEvent;
+import org.essentialplatform.runtime.session.DomainObjectReferenceEvent;
+import org.essentialplatform.runtime.session.IDomainObjectListener;
 
 /**
  * Adapater for the interface.
@@ -19,7 +19,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see org.essentialplatform.session.IDomainObjectListener#attributeChanged(org.essentialplatform.session.DomainObjectAttributeEvent)
+	 * @see org.essentialplatform.runtime.session.IDomainObjectListener#attributeChanged(org.essentialplatform.runtime.session.DomainObjectAttributeEvent)
 	 */
 	public void attributeChanged(DomainObjectAttributeEvent event) {
 		// TODO Auto-generated method stub
@@ -28,7 +28,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see org.essentialplatform.session.IDomainObjectListener#collectionAddedTo(org.essentialplatform.session.DomainObjectReferenceEvent)
+	 * @see org.essentialplatform.runtime.session.IDomainObjectListener#collectionAddedTo(org.essentialplatform.runtime.session.DomainObjectReferenceEvent)
 	 */
 	public void collectionAddedTo(DomainObjectReferenceEvent event) {
 		// TODO Auto-generated method stub
@@ -37,7 +37,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see org.essentialplatform.session.IDomainObjectListener#collectionRemovedFrom(org.essentialplatform.session.DomainObjectReferenceEvent)
+	 * @see org.essentialplatform.runtime.session.IDomainObjectListener#collectionRemovedFrom(org.essentialplatform.runtime.session.DomainObjectReferenceEvent)
 	 */
 	public void collectionRemovedFrom(DomainObjectReferenceEvent event) {
 		// TODO Auto-generated method stub
@@ -46,7 +46,7 @@ public class DomainObjectListener implements IDomainObjectListener {
 
 	/**
 	 * Null method
-	 * @see org.essentialplatform.session.IDomainObjectListener#persisted(org.essentialplatform.session.DomainObjectEvent)
+	 * @see org.essentialplatform.runtime.session.IDomainObjectListener#persisted(org.essentialplatform.runtime.session.DomainObjectEvent)
 	 */
 	public void persisted(DomainObjectEvent event) {
 		// TODO Auto-generated method stub
