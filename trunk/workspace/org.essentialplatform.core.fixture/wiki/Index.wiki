@@ -1,0 +1,5 @@
+1 About this plugin
+Fixture for the (abstract) tests defined in Eclipse:/de.berlios.rcpviewer.domain.tests/wiki/Index.wiki.
+
+The concrete implementations of these tests (in either Eclipse:/de.berlios.rcpviewer.domain.compiletime.tests/wiki/Index.wiki or Eclipse:/de.berlios.rcpviewer.domain.runtime.tests/wiki/Index.wiki) depend on and reference these fixtures.
+

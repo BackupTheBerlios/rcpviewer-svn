@@ -1,0 +1,15 @@
+Have moved most over to code, however this one remains:
+
+Generation control flags (reference, from http://download.eclipse.org/tools/emf/scripts/docs.php?doc=references/overview/EMF.html)
+
+(we will use to represent equivalent semantics)
+
+* ResolveProxies (default is true)
+
+ResolveProxies only applies to non-containment references. ResolveProxies implies that the reference may span documents, and therefore needs to include proxy checking and resolution in the get method, as described earlier in this paper.
+
+You can optimize the generated get pattern for references that you know will never be used in a cross document scenario by setting resolveProxies to false. In that case, the generated get method will be optimally efficient[21] .
+      
+
+~~Reckon this will be useful when doing links... (hibernate/EJB3 hint for lazy loading)~~
+
