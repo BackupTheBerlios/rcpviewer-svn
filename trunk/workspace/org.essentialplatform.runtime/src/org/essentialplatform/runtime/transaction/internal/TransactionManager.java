@@ -20,7 +20,7 @@ import org.essentialplatform.runtime.transaction.ITransactionManager;
 import org.essentialplatform.runtime.transaction.ITransactionManagerListener;
 import org.essentialplatform.runtime.transaction.TransactionManagerEvent;
 import org.essentialplatform.runtime.transaction.ITransaction.State;
-import org.essentialplatform.transaction.*;
+import org.essentialplatform.runtime.transaction.*;
 
 /**
  * Manages {@link ITransaction}s, stored local to thread.

@@ -21,7 +21,7 @@ import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.ITransactionListener;
 import org.essentialplatform.runtime.transaction.TranMgmtConstants;
 import org.essentialplatform.runtime.transaction.TransactionEvent;
-import org.essentialplatform.transaction.*;
+import org.essentialplatform.runtime.transaction.*;
 
 
 /**
