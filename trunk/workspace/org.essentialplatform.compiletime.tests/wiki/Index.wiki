@@ -1,7 +1,0 @@
-1 About this plugin
-Tests for Eclipse:/de.berlios.rcpviewer.domain.compiletime/wiki/Index.wiki.
-
-Tests either:
-* extends from general (abstract) test in Eclipse:/de.berlios.rcpviewer.domain.tests/wiki/Index.wiki, or
-* are specific to the compile-time environment.
-
