@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.essentialplatform.louis.jobs.RunOperationJob;
 
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
  * Wraps an op on the ops view

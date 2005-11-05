@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.ITransaction.State;
-import org.essentialplatform.runtime.transaction.internal.AttributeChange;
+import org.essentialplatform.runtime.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
 
 /**
  * Creates, tracks and records both in-progress and committed 

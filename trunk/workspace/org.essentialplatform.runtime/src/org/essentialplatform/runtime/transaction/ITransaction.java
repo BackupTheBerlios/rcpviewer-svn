@@ -3,9 +3,11 @@ package org.essentialplatform.runtime.transaction;
 import java.util.List;
 import java.util.Set;
 
-import org.essentialplatform.runtime.transaction.IChange;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
-import org.essentialplatform.runtime.transaction.internal.AttributeChange;
+import org.essentialplatform.runtime.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.IChange;
+import org.essentialplatform.runtime.transaction.event.ITransactionListener;
 
 /**
  * Represents a transaction either in progress, committed or (potentially)

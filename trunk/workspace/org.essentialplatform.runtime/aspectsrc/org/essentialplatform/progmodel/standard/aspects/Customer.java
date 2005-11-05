@@ -3,8 +3,8 @@ package org.essentialplatform.progmodel.standard.aspects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 
 @InDomain
 class Customer {

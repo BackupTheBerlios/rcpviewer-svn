@@ -1,7 +1,8 @@
 package org.essentialplatform.progmodel.extended.tests;
 
-import org.essentialplatform.progmodel.extended.Requirement;
-import org.essentialplatform.progmodel.extended.IRequirement;
+import org.essentialplatform.progmodel.essential.app.IRequirement;
+import org.essentialplatform.progmodel.essential.app.Requirement;
+
 import junit.framework.TestCase;
 
 public class TestPrerequisites extends TestCase {

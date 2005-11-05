@@ -1,6 +1,6 @@
 package org.essentialplatform.progmodel.standard.aspects;
 
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
 class EmailAddress {

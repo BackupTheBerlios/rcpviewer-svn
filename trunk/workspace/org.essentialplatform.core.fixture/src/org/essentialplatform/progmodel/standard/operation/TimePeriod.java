@@ -2,6 +2,7 @@
  * 
  */
 package org.essentialplatform.progmodel.standard.operation;
+import org.essentialplatform.progmodel.essential.app.Value;
 import org.essentialplatform.progmodel.standard.*;
 
 @Value

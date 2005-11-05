@@ -4,8 +4,8 @@ import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.standard.domainclass.CustomerWithNoAttributes;
 import org.essentialplatform.progmodel.standard.domainclass.TestDomainClass;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 
 /**

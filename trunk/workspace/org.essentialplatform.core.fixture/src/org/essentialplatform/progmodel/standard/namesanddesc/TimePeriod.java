@@ -3,7 +3,7 @@
  */
 package org.essentialplatform.progmodel.standard.namesanddesc;
 
-import org.essentialplatform.progmodel.standard.Value;
+import org.essentialplatform.progmodel.essential.app.Value;
 
 @Value
 public class TimePeriod {

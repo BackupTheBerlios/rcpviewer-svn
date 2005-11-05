@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.progmodel.ProgrammingModelException;
 import org.essentialplatform.core.fixture.domain.Department;
 import org.essentialplatform.core.fixture.domain.DepartmentWithoutNoArgConstructor;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 
 public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {

@@ -22,7 +22,7 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.session.ISessionManager;
 
 /**

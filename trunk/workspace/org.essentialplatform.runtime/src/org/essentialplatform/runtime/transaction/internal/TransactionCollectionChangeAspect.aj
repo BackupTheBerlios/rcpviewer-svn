@@ -1,17 +1,16 @@
 package org.essentialplatform.runtime.transaction.internal;
 
+import org.apache.log4j.Logger;
+
 import org.aspectj.lang.JoinPoint;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import org.essentialplatform.runtime.session.IPojo;
-import org.essentialplatform.runtime.transaction.IChange;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
-
-import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.transaction.*;
+import org.essentialplatform.runtime.transaction.changes.*;
 
 public abstract aspect TransactionCollectionChangeAspect extends TransactionChangeAspect {
 	

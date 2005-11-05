@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.persistence.DuplicateObjectException;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.PersistenceId;
-import org.essentialplatform.runtime.session.IDomainObject;
 
 /**
  * 

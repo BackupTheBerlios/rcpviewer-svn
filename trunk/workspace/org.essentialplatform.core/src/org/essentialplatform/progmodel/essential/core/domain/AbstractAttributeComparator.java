@@ -8,8 +8,8 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EAttribute;
 
 import org.essentialplatform.core.emf.EmfAnnotations;
+import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.extended.Id;
 
 /**
  * Compare attributes according to an annotation. 

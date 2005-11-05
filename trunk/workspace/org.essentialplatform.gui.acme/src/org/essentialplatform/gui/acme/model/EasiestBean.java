@@ -2,8 +2,8 @@ package org.essentialplatform.gui.acme.model;
 
 import org.essentialplatform.louis.util.RandomUtil;
 
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
 
 /**
  * @author Mike

@@ -4,7 +4,7 @@ import org.essentialplatform.AbstractTestCase;
 import org.essentialplatform.core.domain.IDomainClass;
 
 /**
- * Tests for the use of the {@link org.essentialplatform.progmodel.extended.Optional}.
+ * Tests for the use of the {@link org.essentialplatform.progmodel.essential.app.Optional}.
  * 
  * @author Dan Haywood
  */

@@ -15,10 +15,10 @@ import org.eclipse.emf.ecore.ETypedElement;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.emf.EmfAnnotations;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
+import org.essentialplatform.runtime.RuntimeDeployment.RuntimeCollectionReferenceBinding;
+import org.essentialplatform.runtime.RuntimeDeployment.RuntimeOneToOneReferenceBinding;
 
 /**
  * Static methods for helping with EMF constructs

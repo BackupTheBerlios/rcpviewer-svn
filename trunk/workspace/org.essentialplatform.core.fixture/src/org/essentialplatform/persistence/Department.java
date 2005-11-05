@@ -1,6 +1,6 @@
 package org.essentialplatform.persistence;
 
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 
 @InDomain

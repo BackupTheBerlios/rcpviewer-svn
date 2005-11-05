@@ -1,11 +1,12 @@
 package org.essentialplatform.session;
 
-import static org.essentialplatform.progmodel.extended.IPrerequisites.Constraint.INVISIBLE;
-import static org.essentialplatform.progmodel.extended.Prerequisites.require;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Prerequisites;
-import org.essentialplatform.progmodel.extended.IPrerequisites.Constraint;
-import org.essentialplatform.progmodel.standard.InDomain;
+import static org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint.INVISIBLE;
+import static org.essentialplatform.progmodel.essential.app.Prerequisites.require;
+
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint;
 
 /**
  * This class is observed, and has prerequisites that depend upon another

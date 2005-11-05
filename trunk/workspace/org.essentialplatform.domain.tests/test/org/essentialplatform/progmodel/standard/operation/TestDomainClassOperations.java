@@ -5,7 +5,7 @@ import org.essentialplatform.AbstractTestCase;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.OperationKind;
 import org.essentialplatform.core.domain.IDomainClass.IOperation;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 
 /**

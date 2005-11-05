@@ -21,20 +21,20 @@ import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.core.i18n.II18nData;
-import org.essentialplatform.progmodel.extended.AssignmentType;
-import org.essentialplatform.progmodel.extended.BusinessKey;
-import org.essentialplatform.progmodel.extended.FieldLengthOf;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Id;
-import org.essentialplatform.progmodel.extended.ImmutableOncePersisted;
-import org.essentialplatform.progmodel.extended.Invisible;
-import org.essentialplatform.progmodel.extended.Mask;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.extended.MinLengthOf;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.extended.Optional;
-import org.essentialplatform.progmodel.extended.Regex;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
+import org.essentialplatform.progmodel.essential.app.BusinessKey;
+import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.Id;
+import org.essentialplatform.progmodel.essential.app.ImmutableOncePersisted;
+import org.essentialplatform.progmodel.essential.app.Invisible;
+import org.essentialplatform.progmodel.essential.app.Mask;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.Optional;
+import org.essentialplatform.progmodel.essential.app.Regex;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 
 
 /**

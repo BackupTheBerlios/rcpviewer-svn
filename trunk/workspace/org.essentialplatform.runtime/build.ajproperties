@@ -1,3 +1,2 @@
 src.includes = src/,\
-               aspectsrc/,\
                pluginsrc/

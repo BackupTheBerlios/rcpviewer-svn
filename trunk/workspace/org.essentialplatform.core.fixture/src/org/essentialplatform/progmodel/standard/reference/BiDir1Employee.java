@@ -1,4 +1,5 @@
 package org.essentialplatform.progmodel.standard.reference;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.standard.*;
 
 /**

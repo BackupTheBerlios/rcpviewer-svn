@@ -1,7 +1,11 @@
 package org.essentialplatform.progmodel.extended;
 
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.Named;
 
 @InDomain
 public class CustomerToTestMinMaxFieldLengthOf {

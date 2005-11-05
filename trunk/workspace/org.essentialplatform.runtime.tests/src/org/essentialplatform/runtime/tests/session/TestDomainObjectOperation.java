@@ -4,7 +4,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationReturningDomainObject;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationReturningVoid;
 import org.essentialplatform.progmodel.standard.operation.Order;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 
 public class TestDomainObjectOperation extends AbstractRuntimeTestCase {

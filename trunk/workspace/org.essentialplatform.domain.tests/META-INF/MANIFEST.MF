@@ -17,7 +17,9 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
  org.essentialplatform.progmodel.standard;visibility:=reexport,
  org.essentialplatform.runtime;visibility:=reexport,
- org.aspectj.runtime;visibility:=reexport
+ org.aspectj.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.core,
+ org.essentialplatform.progmodel.louis.runtime
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform,

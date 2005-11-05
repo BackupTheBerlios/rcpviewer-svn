@@ -1,9 +1,9 @@
 package org.essentialplatform.runtime.tests.progmodel.rcpviewer;
 
 import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
 import org.essentialplatform.progmodel.rcpviewer.TestImageDescriptor;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
-import org.essentialplatform.runtime.progmodel.rcpviewer.RcpViewerProgModelDomainBuilder;
+import org.essentialplatform.runtime.RuntimeDeployment;
 
 
 /**
@@ -15,7 +15,7 @@ import org.essentialplatform.runtime.progmodel.rcpviewer.RcpViewerProgModelDomai
 public class TestImageDescriptorAtRuntime extends TestImageDescriptor {
 
 	public TestImageDescriptorAtRuntime() {
-		super(new RcpViewerProgModelDomainBuilder());
+		super(new LouisProgModelRuntimeBuilder());
 	}
 
 	@Override

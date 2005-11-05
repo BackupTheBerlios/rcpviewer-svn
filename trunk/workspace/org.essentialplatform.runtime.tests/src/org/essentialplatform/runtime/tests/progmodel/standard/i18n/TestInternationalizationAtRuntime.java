@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.tests.progmodel.standard.i18n;
 
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.progmodel.standard.i18n.TestInternationalization;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeDeployment;
 
 
 /**

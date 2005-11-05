@@ -7,10 +7,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-import org.essentialplatform.runtime.domain.IDomainRegistry;
-import org.essentialplatform.runtime.internal.DomainRegistry;
+import org.essentialplatform.runtime.domain.adapters.IDomainRegistry;
 import org.essentialplatform.runtime.session.ISessionManager;
-import org.essentialplatform.runtime.session.local.SessionManager;
+import org.essentialplatform.runtime.session.SessionManager;
 
 /**
  * The main plugin class to be used in the desktop.

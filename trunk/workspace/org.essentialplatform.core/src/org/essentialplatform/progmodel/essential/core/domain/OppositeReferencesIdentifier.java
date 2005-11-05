@@ -6,8 +6,8 @@ import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.DomainClass.OppRefState;
+import org.essentialplatform.progmodel.essential.app.OppositeOf;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.standard.OppositeOf;
 
 /**
  * This is a horrible hack; called both by {@link org.essentialplatform.progmodel.standard.StandardProgModelDomainBuilder} 

@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.transaction.internal;
 
-import org.essentialplatform.runtime.session.PojoAspect;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.ITransactionManager;
+import org.essentialplatform.runtime.domain.PojoAspect;
+import org.essentialplatform.runtime.transaction.*;
+import org.essentialplatform.runtime.transaction.changes.*;
 
 public abstract aspect TransactionAspect extends PojoAspect {
 	

@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.tests.progmodel.standard.attribute;
 
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.progmodel.standard.attribute.TestDomainClassAttributesCardinality;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeDeployment;
 
 
 /**

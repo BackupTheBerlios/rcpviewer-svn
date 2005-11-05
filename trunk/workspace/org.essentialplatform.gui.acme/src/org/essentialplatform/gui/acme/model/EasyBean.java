@@ -4,9 +4,9 @@ import java.util.Date;
 
 import org.eclipse.swt.graphics.Color;
 
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 
 /**
  * @author Mike

@@ -24,7 +24,7 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.jobs.JobAction;
 import org.essentialplatform.louis.jobs.NewDomainObjectJob;
 import org.essentialplatform.louis.jobs.ReportJob;
-import org.essentialplatform.runtime.domain.IDomainRegistry;
+import org.essentialplatform.runtime.domain.adapters.IDomainRegistry;
 
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;

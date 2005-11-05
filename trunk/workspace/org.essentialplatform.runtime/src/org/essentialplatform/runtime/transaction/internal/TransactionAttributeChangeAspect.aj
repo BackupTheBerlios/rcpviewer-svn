@@ -4,17 +4,16 @@ import java.lang.reflect.Field;
 
 import org.apache.log4j.Logger;
 
-import org.essentialplatform.runtime.session.IPojo;
-import org.essentialplatform.runtime.transaction.IChange;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.domain.*;
+import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.transaction.*;
+import org.essentialplatform.runtime.transaction.changes.*;
+import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 
 import org.aspectj.lang.Signature;
 import org.eclipse.emf.ecore.EAttribute;
 import org.aspectj.lang.JoinPoint;
 
-import org.essentialplatform.runtime.session.IPersistable.PersistState;
-import org.essentialplatform.runtime.session.*;
 
 import java.util.Collection;
 import org.apache.log4j.Logger;
@@ -94,6 +93,7 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 		}
 
 	}
+
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// TEMPORARILY MOVED FROM NOTIFYLISTENERS, SINCE FOR SOME REASON NOT BEING APPLIED...
@@ -222,5 +222,6 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 			observedFeature.externalStateChanged();
 		}
 	}
+
 
 }

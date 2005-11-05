@@ -5,3 +5,12 @@ Bundle-SymbolicName: org.essentialplatform.progmodel.louis.core
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
+Export-Package: org.essentialplatform.progmodel.louis.core,
+ org.essentialplatform.progmodel.louis.core.domain,
+ org.essentialplatform.progmodel.louis.core.domain.adapters,
+ org.essentialplatform.progmodel.louis.core.emf
+Require-Bundle: org.eclipse.emf.common,
+ org.eclipse.emf.ecore,
+ org.eclipse.jface,
+ org.eclipse.jface.text,
+ org.essentialplatform.core

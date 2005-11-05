@@ -11,4 +11,5 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.standard
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.progmodel.extended
+Export-Package: org.essentialplatform.progmodel.essential.app,
+ org.essentialplatform.progmodel.extended

@@ -3,7 +3,7 @@ package org.essentialplatform.transaction;
 
 import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
 public class EmailAddress {

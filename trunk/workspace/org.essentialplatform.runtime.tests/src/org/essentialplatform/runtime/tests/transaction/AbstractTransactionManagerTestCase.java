@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.tests.transaction;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.transaction.Calculator;
 import org.essentialplatform.transaction.Customer;

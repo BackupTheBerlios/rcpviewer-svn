@@ -6,23 +6,23 @@ package org.essentialplatform.petstore.domain;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.essentialplatform.progmodel.extended.DeleteOperation;
-import org.essentialplatform.progmodel.extended.IAppContainer;
-import org.essentialplatform.progmodel.extended.BusinessKey;
-import org.essentialplatform.progmodel.extended.FieldLengthOf;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.extended.MinLengthOf;
-import org.essentialplatform.progmodel.extended.Optional;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.progmodel.extended.Prerequisites;
-import org.essentialplatform.progmodel.standard.ContainerOf;
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.standard.OppositeOf;
-import org.essentialplatform.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.essential.app.BusinessKey;
+import org.essentialplatform.progmodel.essential.app.ContainerOf;
+import org.essentialplatform.progmodel.essential.app.DeleteOperation;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.IAppContainer;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.OppositeOf;
+import org.essentialplatform.progmodel.essential.app.Optional;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 
 
 /**

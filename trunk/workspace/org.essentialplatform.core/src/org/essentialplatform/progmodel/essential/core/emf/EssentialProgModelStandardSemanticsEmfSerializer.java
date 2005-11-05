@@ -16,13 +16,13 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.emf.AbstractProgModelSemanticsEmfSerializer;
 import org.essentialplatform.core.emf.EmfAnnotations;
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.Id;
+import org.essentialplatform.progmodel.essential.app.Immutable;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.OppositeOf;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
-import org.essentialplatform.progmodel.extended.AssignmentType;
-import org.essentialplatform.progmodel.extended.Id;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.Immutable;
-import org.essentialplatform.progmodel.standard.OppositeOf;
 
 /**
  * Serializes and deserializes semantics for the extended programming model

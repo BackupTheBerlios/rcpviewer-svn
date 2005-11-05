@@ -1,6 +1,6 @@
 package org.essentialplatform.progmodel.standard.attribute;
 
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
 public class CustomerToTestFeatureIds {

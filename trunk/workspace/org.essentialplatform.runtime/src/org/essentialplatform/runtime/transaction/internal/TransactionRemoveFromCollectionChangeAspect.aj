@@ -8,13 +8,11 @@ import org.aspectj.lang.JoinPoint;
 
 import org.apache.log4j.Logger;
 
-import org.essentialplatform.runtime.session.IPojo;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
-import org.essentialplatform.runtime.transaction.IChange;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
+import org.essentialplatform.runtime.transaction.*;
+import org.essentialplatform.runtime.transaction.changes.*;
 
 
 

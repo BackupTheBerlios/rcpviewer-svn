@@ -6,8 +6,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.runtime.domain.runtime.IDomainBootstrap;
-import org.essentialplatform.runtime.progmodel.rcpviewer.RcpViewerProgModelDomainBuilder;
+import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
+import org.essentialplatform.runtime.IDomainBootstrap;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.
@@ -34,7 +34,7 @@ class DomainBootstrapJob extends AbstractBootstrapJob {
 		try {
 			_bootstrap.registerClasses();
 			Domain.instance().addBuilder( 
-					new RcpViewerProgModelDomainBuilder() );
+					new LouisProgModelRuntimeBuilder() );
 		}
 		catch ( CoreException ce ) {
 			return ce.getStatus();	

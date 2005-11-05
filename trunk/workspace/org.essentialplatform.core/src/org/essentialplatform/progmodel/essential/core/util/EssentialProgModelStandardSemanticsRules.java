@@ -1,8 +1,8 @@
 package org.essentialplatform.progmodel.essential.core.util;
 
 import org.essentialplatform.core.util.MethodNameHelper;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.Value;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Value;
 
 /**
  * Helper class (package local) that encapsulates the various naming 

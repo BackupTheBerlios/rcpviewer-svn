@@ -3,9 +3,12 @@ package org.essentialplatform.progmodel.extended;
 import org.essentialplatform.AbstractTestCase;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MinLengthOf;
 
 /**
- * Tests for the use of the {@link org.essentialplatform.progmodel.extended.Optional}.
+ * Tests for the use of the {@link org.essentialplatform.progmodel.essential.app.Optional}.
  * 
  * @author Dan Haywood
  */

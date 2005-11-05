@@ -1,7 +1,9 @@
 package org.essentialplatform.progmodel.extended;
 
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.Optional;
 
 @InDomain
 public class CustomerToTestOptionalAnnotation {

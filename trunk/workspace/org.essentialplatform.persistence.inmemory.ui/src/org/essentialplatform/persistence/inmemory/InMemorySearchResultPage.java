@@ -22,7 +22,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPageSite;
 import org.essentialplatform.louis.jobs.OpenDomainObjectJob;
 
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 public class InMemorySearchResultPage
 implements ISearchResultPage {

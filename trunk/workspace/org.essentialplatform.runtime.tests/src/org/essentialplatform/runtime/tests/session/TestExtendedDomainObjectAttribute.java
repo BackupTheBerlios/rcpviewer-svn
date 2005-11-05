@@ -2,9 +2,9 @@ package org.essentialplatform.runtime.tests.session;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.IPrerequisites.Constraint;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.session.OrderConstrained;
 import org.essentialplatform.session.Ping;

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Status;
 
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.domain.IDomainRegistry;
+import org.essentialplatform.runtime.domain.adapters.IDomainRegistry;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.session.ISessionManager;
 

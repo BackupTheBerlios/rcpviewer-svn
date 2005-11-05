@@ -7,10 +7,10 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-import org.essentialplatform.runtime.session.DomainObjectAttributeEvent;
-import org.essentialplatform.runtime.session.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.runtime.session.IDomainObject;
-import org.essentialplatform.runtime.session.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.event.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.core.domain.IDomainClass;
 
 /**

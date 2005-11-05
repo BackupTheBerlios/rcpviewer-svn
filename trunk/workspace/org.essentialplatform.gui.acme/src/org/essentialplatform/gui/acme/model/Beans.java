@@ -3,9 +3,9 @@ package org.essentialplatform.gui.acme.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 
 /**
  * Stores many beans

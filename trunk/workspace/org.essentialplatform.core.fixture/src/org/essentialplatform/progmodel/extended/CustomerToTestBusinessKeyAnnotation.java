@@ -1,7 +1,8 @@
 package org.essentialplatform.progmodel.extended;
 
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.BusinessKey;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
 public class CustomerToTestBusinessKeyAnnotation {

@@ -1,15 +1,15 @@
 package org.essentialplatform.petstore.domain;
 
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Lookup;
-import org.essentialplatform.progmodel.extended.Mask;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.progmodel.extended.MinLengthOf;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.extended.Prerequisites;
-import org.essentialplatform.progmodel.extended.SaveOperation;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lookup;
+import org.essentialplatform.progmodel.essential.app.Mask;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
+import org.essentialplatform.progmodel.essential.app.SaveOperation;
 
 /**
  * Country, as defined by ISO3166.

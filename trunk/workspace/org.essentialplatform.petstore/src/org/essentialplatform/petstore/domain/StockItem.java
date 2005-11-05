@@ -3,24 +3,24 @@
  */
 package org.essentialplatform.petstore.domain;
 
-import static org.essentialplatform.progmodel.extended.Prerequisites.none;
+import static org.essentialplatform.progmodel.essential.app.Prerequisites.none;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.essentialplatform.progmodel.extended.BusinessKey;
-import org.essentialplatform.progmodel.extended.DeleteOperation;
-import org.essentialplatform.progmodel.extended.FieldLengthOf;
-import org.essentialplatform.progmodel.extended.IAppContainer;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.progmodel.extended.Prerequisites;
-import org.essentialplatform.progmodel.extended.SaveOperation;
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.OppositeOf;
+import org.essentialplatform.progmodel.essential.app.BusinessKey;
+import org.essentialplatform.progmodel.essential.app.DeleteOperation;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.IAppContainer;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.OppositeOf;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
+import org.essentialplatform.progmodel.essential.app.SaveOperation;
 
 
 /**

@@ -23,9 +23,9 @@ import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.swt.graphics.Image;
 
 import org.essentialplatform.runtime.RuntimePlugin;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
-import org.essentialplatform.runtime.session.IDomainObject;
 import org.essentialplatform.runtime.session.ISession;
 
 public final class InMemorySearchQuery

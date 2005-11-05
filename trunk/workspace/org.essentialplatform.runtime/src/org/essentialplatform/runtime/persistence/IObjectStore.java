@@ -1,6 +1,6 @@
 package org.essentialplatform.runtime.persistence;
 
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.session.ISession;
 
 /**

@@ -9,7 +9,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 
 /**
- * Tests for the use of the {@link org.essentialplatform.progmodel.extended.Optional}.
+ * Tests for the use of the {@link org.essentialplatform.progmodel.essential.app.Optional}.
  * 
  * @author Dan Haywood
  */

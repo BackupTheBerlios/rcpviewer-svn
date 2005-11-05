@@ -20,9 +20,9 @@ import sun.reflect.generics.repository.ClassRepository;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.deployment.Deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesIdentifier;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.ProgModelConstants;
 
 
 

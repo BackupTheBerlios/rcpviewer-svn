@@ -5,8 +5,8 @@ import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.standard.attribute.CustomerWithWriteOnlyAttribute;
 import org.essentialplatform.progmodel.standard.attribute.TestDomainClassAttributes;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment.RuntimeAttributeBinding;
+import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeDeployment.RuntimeAttributeBinding;
 
 /**
  * Bind tests in {@link TestDomainClassAttributes} to the runtime environment.

@@ -5,10 +5,10 @@ import org.eclipse.emf.ecore.EAttribute;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.features.IFeatureId;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.authorization.IAuthorizationManager;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.session.Department;
 

@@ -3,8 +3,8 @@ package org.essentialplatform.core.fixture.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.essentialplatform.progmodel.standard.TypeOf;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 
 
 @InDomain

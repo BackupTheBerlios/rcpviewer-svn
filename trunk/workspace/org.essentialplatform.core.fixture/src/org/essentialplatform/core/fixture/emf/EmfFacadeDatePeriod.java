@@ -1,7 +1,8 @@
 package org.essentialplatform.core.fixture.emf;
 
 import java.util.Date;
-import org.essentialplatform.progmodel.standard.Value;
+
+import org.essentialplatform.progmodel.essential.app.Value;
 
 /**
  * An application-defined value object (datatype)

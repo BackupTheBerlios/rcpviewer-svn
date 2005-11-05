@@ -1,9 +1,10 @@
 package org.essentialplatform.session;
 
-import static org.essentialplatform.progmodel.extended.IPrerequisites.Constraint.INVISIBLE;
-import static org.essentialplatform.progmodel.extended.Prerequisites.require;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.standard.InDomain;
+import static org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint.INVISIBLE;
+import static org.essentialplatform.progmodel.essential.app.Prerequisites.require;
+
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
 public class OrderConstrained {

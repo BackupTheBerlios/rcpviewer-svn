@@ -1,11 +1,11 @@
 package org.essentialplatform.petstore.domain;
 
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.extended.Lookup;
-import org.essentialplatform.progmodel.extended.Mask;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lookup;
+import org.essentialplatform.progmodel.essential.app.Mask;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 
 /**
  * Language, as defined by ISO639-1.

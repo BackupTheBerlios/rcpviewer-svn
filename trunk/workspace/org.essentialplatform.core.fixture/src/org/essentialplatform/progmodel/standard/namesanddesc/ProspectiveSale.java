@@ -2,7 +2,9 @@
  * 
  */
 package org.essentialplatform.progmodel.standard.namesanddesc;
-import org.essentialplatform.progmodel.extended.Named;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.standard.*;
 
 @Named("Customer")

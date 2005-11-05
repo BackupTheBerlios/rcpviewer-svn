@@ -8,7 +8,7 @@ import org.essentialplatform.louis.editors.DefaultEditor;
 import org.essentialplatform.louis.util.PlatformUtil;
 import org.essentialplatform.louis.views.sessiontree.SessionTreeView;
 
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
  * Dunno what this might do eventually ... 

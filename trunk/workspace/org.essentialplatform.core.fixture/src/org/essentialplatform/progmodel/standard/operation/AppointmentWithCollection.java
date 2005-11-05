@@ -2,6 +2,8 @@
  * 
  */
 package org.essentialplatform.progmodel.standard.operation;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 import org.essentialplatform.progmodel.standard.*;
 
 import java.util.List;

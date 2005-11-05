@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.ui.forms;visibility:=reexport,
  org.eclipse.ui.views;visibility:=reexport,
  org.eclipse.ui.console;visibility:=reexport,
- org.essentialplatform.runtime
+ org.essentialplatform.runtime,
+ org.essentialplatform.progmodel.louis.runtime
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.louis,
  org.essentialplatform.louis.dnd,

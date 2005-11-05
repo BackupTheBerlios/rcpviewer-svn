@@ -7,7 +7,6 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
 
 /**
  *  

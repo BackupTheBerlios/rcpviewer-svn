@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.authorization;
 
 import org.essentialplatform.core.features.IFeatureId;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
 /**
  * Convenience adapter for implementing {@link AuthorizationManager}s.

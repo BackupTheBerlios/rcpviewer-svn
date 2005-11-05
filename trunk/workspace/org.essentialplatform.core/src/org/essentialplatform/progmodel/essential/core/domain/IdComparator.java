@@ -8,8 +8,8 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EAttribute;
 
 import org.essentialplatform.core.emf.EmfAnnotations;
+import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
-import org.essentialplatform.progmodel.extended.Id;
 
 /**
  * Extension of {@link IDomainClass}, derived from {@link RelativeOrder}

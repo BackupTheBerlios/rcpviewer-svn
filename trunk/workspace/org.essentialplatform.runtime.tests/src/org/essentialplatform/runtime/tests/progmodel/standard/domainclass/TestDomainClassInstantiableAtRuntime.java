@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.tests.progmodel.standard.domainclass;
 
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.progmodel.standard.domainclass.TestDomainClassInstantiable;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeDeployment;
 
 /**
  * Binds the tests defined in {@link TestDomainClassImmutable} to the runtime 

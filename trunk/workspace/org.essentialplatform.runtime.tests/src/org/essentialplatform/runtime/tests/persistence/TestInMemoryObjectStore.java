@@ -7,13 +7,13 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.progmodel.standard.ProgModelConstants;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
+import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.local.SessionManager;
+import org.essentialplatform.runtime.session.SessionManager;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
-import org.essentialplatform.runtime.transaction.internal.TransactionManager;
+import org.essentialplatform.runtime.transaction.TransactionManager;
 
 /**
  * Have copied down stuff from subclass; need to simplify.

@@ -14,10 +14,10 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
+import org.essentialplatform.progmodel.essential.app.Id;
+import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
-import org.essentialplatform.progmodel.extended.AssignmentType;
-import org.essentialplatform.progmodel.extended.Id;
-import org.essentialplatform.progmodel.extended.Named;
 
 /**
  * Serializes and deserializes semantics for a programming model

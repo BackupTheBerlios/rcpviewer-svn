@@ -3,7 +3,9 @@
  */
 package org.essentialplatform.progmodel.extended;
 
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
+import org.essentialplatform.progmodel.essential.app.Id;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
 public class CustomerWithSimpleByteIdAssignedByApplication {

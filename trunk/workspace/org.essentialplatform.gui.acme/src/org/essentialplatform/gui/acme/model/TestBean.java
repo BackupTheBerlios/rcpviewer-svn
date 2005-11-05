@@ -1,6 +1,6 @@
 package org.essentialplatform.gui.acme.model;
 
-import org.essentialplatform.progmodel.extended.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
 
 /**
  * Test

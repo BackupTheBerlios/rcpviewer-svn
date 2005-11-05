@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
 
 import org.eclipse.emf.ecore.EAttribute;
 

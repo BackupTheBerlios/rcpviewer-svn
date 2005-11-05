@@ -4,13 +4,13 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.EOperation;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationWithDefaults;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationWithPre;
 import org.essentialplatform.progmodel.standard.operation.CustomerOperationWithPreAndArgs;
 import org.essentialplatform.progmodel.standard.operation.Product;
-import org.essentialplatform.runtime.session.IDomainObject;
-import org.essentialplatform.runtime.session.IObservedFeature;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IObservedFeature;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 
 public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {

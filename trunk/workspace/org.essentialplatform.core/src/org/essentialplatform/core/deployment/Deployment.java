@@ -15,8 +15,8 @@ import org.essentialplatform.core.domain.IDomainClass.IOneToOneReference;
 import org.essentialplatform.core.domain.IDomainClass.IOperation;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.progmodel.ProgrammingModelException;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 
 /**

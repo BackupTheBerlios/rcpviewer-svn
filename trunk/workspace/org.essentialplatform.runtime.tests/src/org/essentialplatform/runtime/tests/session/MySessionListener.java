@@ -3,8 +3,8 @@
  */
 package org.essentialplatform.runtime.tests.session;
 
-import org.essentialplatform.runtime.session.ISessionListener;
-import org.essentialplatform.runtime.session.SessionObjectEvent;
+import org.essentialplatform.runtime.session.event.ISessionListener;
+import org.essentialplatform.runtime.session.event.SessionObjectEvent;
 
 class MySessionListener implements ISessionListener {
 	boolean attachedCallbackCalled = false;

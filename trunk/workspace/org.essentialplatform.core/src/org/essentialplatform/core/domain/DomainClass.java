@@ -40,6 +40,17 @@ import org.essentialplatform.core.emf.EmfAnnotations;
 import org.essentialplatform.core.features.FeatureId;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.core.i18n.II18nData;
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
+import org.essentialplatform.progmodel.essential.app.BusinessKey;
+import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.Id;
+import org.essentialplatform.progmodel.essential.app.ImmutableOncePersisted;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.Mask;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.domain.AttributeComparator;
@@ -49,17 +60,6 @@ import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExte
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
 import org.essentialplatform.progmodel.essential.core.util.JavaRules;
-import org.essentialplatform.progmodel.extended.AssignmentType;
-import org.essentialplatform.progmodel.extended.BusinessKey;
-import org.essentialplatform.progmodel.extended.FieldLengthOf;
-import org.essentialplatform.progmodel.extended.Id;
-import org.essentialplatform.progmodel.extended.ImmutableOncePersisted;
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.Mask;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.extended.MinLengthOf;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.extended.Regex;
 
 public final class DomainClass implements IDomainClass {
 

@@ -1,9 +1,9 @@
 package org.essentialplatform.gui.acme.model;
 
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.Named;
 
 /**
  * @author Mike

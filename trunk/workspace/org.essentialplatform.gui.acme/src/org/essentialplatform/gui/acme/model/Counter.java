@@ -1,7 +1,7 @@
 package org.essentialplatform.gui.acme.model;
 
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.standard.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.Named;
 
 public class Counter {
 	

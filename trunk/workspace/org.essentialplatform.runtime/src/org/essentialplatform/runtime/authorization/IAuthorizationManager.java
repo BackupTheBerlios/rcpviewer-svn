@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.authorization;
 
 import org.essentialplatform.core.features.IFeatureId;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
  * Facade for determining whether the current user can see and if so can use

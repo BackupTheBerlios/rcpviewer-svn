@@ -3,8 +3,8 @@
  */
 package org.essentialplatform.runtime.tests.session;
 
-import org.essentialplatform.runtime.session.DomainObjectEvent;
-import org.essentialplatform.runtime.session.IDomainObjectListener;
+import org.essentialplatform.runtime.domain.event.DomainObjectEvent;
+import org.essentialplatform.runtime.domain.event.IDomainObjectListener;
 
 class MyDomainObjectListener implements IDomainObjectListener {
 	boolean persistedCallbackCalled = false;

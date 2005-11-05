@@ -16,7 +16,7 @@ import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListen
 import org.essentialplatform.louis.util.EmfUtil;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> {
 	

@@ -9,15 +9,16 @@ import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.Section;
+
+import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.event.DomainObjectReferenceEvent;
+import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectReferenceEvent;
+import org.essentialplatform.runtime.domain.event.IDomainObjectReferenceListener;
+
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.util.SWTUtil;
-
-import org.essentialplatform.runtime.session.DomainObjectReferenceEvent;
-import org.essentialplatform.runtime.session.ExtendedDomainObjectReferenceEvent;
-import org.essentialplatform.runtime.session.IDomainObject;
-import org.essentialplatform.runtime.session.IDomainObjectReferenceListener;
-import org.essentialplatform.runtime.session.IPojo;
 
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 

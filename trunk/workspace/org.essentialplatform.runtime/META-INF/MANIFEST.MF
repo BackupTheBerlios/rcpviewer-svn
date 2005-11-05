@@ -9,12 +9,17 @@ Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
- org.aspectj.runtime;visibility:=reexport
+ org.aspectj.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.core
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.authorization,
+ org.essentialplatform.progmodel.essential.runtime,
+ org.essentialplatform.progmodel.louis.runtime,
  org.essentialplatform.runtime,
- org.essentialplatform.runtime.domain,
  org.essentialplatform.runtime.authorization,
+ org.essentialplatform.runtime.domain,
+ org.essentialplatform.runtime.domain.adapters,
+ org.essentialplatform.runtime.domain.event,
  org.essentialplatform.runtime.domain.runtime,
  org.essentialplatform.runtime.internal,
  org.essentialplatform.runtime.persistence,
@@ -22,8 +27,11 @@ Export-Package: org.essentialplatform.authorization,
  org.essentialplatform.runtime.progmodel.rcpviewer,
  org.essentialplatform.runtime.progmodel.standard,
  org.essentialplatform.runtime.session,
+ org.essentialplatform.runtime.session.event,
  org.essentialplatform.runtime.session.local,
  org.essentialplatform.runtime.tracing,
  org.essentialplatform.runtime.transaction,
+ org.essentialplatform.runtime.transaction.changes,
+ org.essentialplatform.runtime.transaction.event,
  org.essentialplatform.runtime.transaction.internal
-Plugin-Class: org.essentialplatform.runtime.domain.runtime.RuntimePlugin
+Plugin-Class: org.essentialplatform.runtime.RuntimePlugin

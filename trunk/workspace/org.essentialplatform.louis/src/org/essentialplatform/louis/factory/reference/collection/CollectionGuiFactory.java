@@ -33,7 +33,7 @@ import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
  * Generic form part for <code>isMany() EReference's</code> (i.e. collections)

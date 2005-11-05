@@ -2,8 +2,8 @@ package org.essentialplatform.runtime.tests.session;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
-import org.essentialplatform.runtime.session.IDomainObject;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.session.Department;

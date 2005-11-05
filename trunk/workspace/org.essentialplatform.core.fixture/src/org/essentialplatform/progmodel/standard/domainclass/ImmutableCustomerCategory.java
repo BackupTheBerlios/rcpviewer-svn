@@ -3,8 +3,8 @@
  */
 package org.essentialplatform.progmodel.standard.domainclass;
 
-import org.essentialplatform.progmodel.standard.Immutable;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.Immutable;
+import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @Immutable
 @InDomain("default")

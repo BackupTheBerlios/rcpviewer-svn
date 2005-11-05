@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.AbstractTestCase;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
 
 /**
  * Tests for the use of the <tt>@Id</tt> annotation.

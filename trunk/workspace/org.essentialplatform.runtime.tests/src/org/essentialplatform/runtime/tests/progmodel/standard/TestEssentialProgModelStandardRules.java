@@ -1,18 +1,18 @@
 package org.essentialplatform.runtime.tests.progmodel.standard;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeRules;
 import org.essentialplatform.progmodel.standard.*;
 
 import java.lang.reflect.Method;
 
 import org.essentialplatform.progmodel.standard.namingconventions.Department;
 import org.essentialplatform.progmodel.standard.namingconventions.Employee;
-import org.essentialplatform.runtime.progmodel.standard.EssentialProgModelStandardSemanticsRuntimeRules;
 
 
 import junit.framework.TestCase;
 
 public class TestEssentialProgModelStandardRules extends TestCase {
 
-	private EssentialProgModelStandardSemanticsRuntimeRules rules;
+	private EssentialProgModelRuntimeRules rules;
 	private Method departmentGetNameMethod;
 	private Method departmentNotAnAccessorMethod;
 	private Method departmentGetSupervisorMethod;
@@ -26,7 +26,7 @@ public class TestEssentialProgModelStandardRules extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		rules = new EssentialProgModelStandardSemanticsRuntimeRules();
+		rules = new EssentialProgModelRuntimeRules();
 
 		departmentGetNameMethod = Department.class.getMethod("getName", new Class[]{});
 		departmentNotAnAccessorMethod = Department.class.getMethod("foo", new Class[]{});;

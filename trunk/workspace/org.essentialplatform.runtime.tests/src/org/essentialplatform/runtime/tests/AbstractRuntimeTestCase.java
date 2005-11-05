@@ -4,15 +4,15 @@ import org.essentialplatform.AbstractTestCase;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.progmodel.standard.ProgModelConstants;
-import org.essentialplatform.runtime.domain.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
+import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.local.Session;
-import org.essentialplatform.runtime.session.local.SessionManager;
+import org.essentialplatform.runtime.session.Session;
+import org.essentialplatform.runtime.session.SessionManager;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
-import org.essentialplatform.runtime.transaction.internal.TransactionManager;
+import org.essentialplatform.runtime.transaction.TransactionManager;
 
 /**
  * Sets up a default {@link Domain}, {@link SessionManager}, 

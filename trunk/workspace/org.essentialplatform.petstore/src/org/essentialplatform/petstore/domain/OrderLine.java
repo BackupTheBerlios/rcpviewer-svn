@@ -6,17 +6,19 @@ package org.essentialplatform.petstore.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Invisible;
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.progmodel.extended.Prerequisites;
-import static org.essentialplatform.progmodel.extended.Prerequisites.*;
-import org.essentialplatform.progmodel.standard.Derived;
-import org.essentialplatform.progmodel.standard.DescribedAs;
-import org.essentialplatform.progmodel.standard.Immutable;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.Derived;
+import org.essentialplatform.progmodel.essential.app.DescribedAs;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.Immutable;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Invisible;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
+
+import static org.essentialplatform.progmodel.essential.app.Prerequisites.*;
+
 import org.essentialplatform.petstore.domain.StockItem;
 
 /**

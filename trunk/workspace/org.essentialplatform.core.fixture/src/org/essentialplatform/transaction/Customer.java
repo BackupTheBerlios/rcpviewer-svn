@@ -4,9 +4,9 @@ package org.essentialplatform.transaction;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.essentialplatform.progmodel.extended.IAppContainer;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.TypeOf;
+import org.essentialplatform.progmodel.essential.app.IAppContainer;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 
 @InDomain
 public class Customer {

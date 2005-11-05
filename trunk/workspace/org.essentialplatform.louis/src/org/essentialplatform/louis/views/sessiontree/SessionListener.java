@@ -11,11 +11,11 @@ import org.essentialplatform.louis.util.PlatformUtil;
 
 import org.essentialplatform.runtime.RuntimePlugin;
 import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.ISessionListener;
 import org.essentialplatform.runtime.session.ISessionManager;
-import org.essentialplatform.runtime.session.ISessionManagerListener;
-import org.essentialplatform.runtime.session.SessionManagerEvent;
-import org.essentialplatform.runtime.session.SessionObjectEvent;
+import org.essentialplatform.runtime.session.event.ISessionListener;
+import org.essentialplatform.runtime.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.session.event.SessionManagerEvent;
+import org.essentialplatform.runtime.session.event.SessionObjectEvent;
 
 /**
  * Implements both <code>ISessionListener</code> and 
@@ -71,7 +71,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Null method
-	 * @see org.essentialplatform.runtime.session.ISessionManagerListener#sessionCreated(org.essentialplatform.runtime.session.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.session.event.ISessionManagerListener#sessionCreated(org.essentialplatform.runtime.session.event.SessionManagerEvent)
 	 */
 	public void sessionCreated(SessionManagerEvent event) {
 		// null method
@@ -79,7 +79,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Brings this view to the fore
-	 * @see org.essentialplatform.runtime.session.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.runtime.session.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.session.event.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.runtime.session.event.SessionManagerEvent)
 	 */
 	public void sessionNowCurrent(SessionManagerEvent event) {
 		try {
@@ -96,7 +96,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	/**
 	 * Dispose this and the session listener of the removed session is the
 	 * parent session.
-	 * @see org.essentialplatform.runtime.session.ISessionManagerListener#sessionRemoved(org.essentialplatform.runtime.session.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.session.event.ISessionManagerListener#sessionRemoved(org.essentialplatform.runtime.session.event.SessionManagerEvent)
 	 */
 	public void sessionRemoved(SessionManagerEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();

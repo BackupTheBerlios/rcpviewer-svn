@@ -2,9 +2,9 @@ package org.essentialplatform.petstore.domain;
 
 import java.io.File;
 
-import org.essentialplatform.progmodel.extended.IStringParser;
-import org.essentialplatform.progmodel.extended.MaxLengthOf;
-import org.essentialplatform.progmodel.standard.Value;
+import org.essentialplatform.progmodel.essential.app.IStringParser;
+import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.Value;
 
 /**
  * Custom value object that represents a relative or absolute file or directory.

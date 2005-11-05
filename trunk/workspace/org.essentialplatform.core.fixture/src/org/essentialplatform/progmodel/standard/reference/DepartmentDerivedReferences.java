@@ -1,4 +1,8 @@
 package org.essentialplatform.progmodel.standard.reference;
+import org.essentialplatform.progmodel.essential.app.Derived;
+import org.essentialplatform.progmodel.essential.app.Immutable;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 import org.essentialplatform.progmodel.standard.*;
 
 import java.util.Collection;

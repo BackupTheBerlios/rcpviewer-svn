@@ -5,7 +5,9 @@ import java.util.Collection;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.session.event.ISessionManagerListener;
 
 /**
  * A singleton that, with the co-operation of {@link ISessionFactory}, keeps 

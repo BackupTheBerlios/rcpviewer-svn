@@ -1,15 +1,16 @@
 package org.essentialplatform.runtime.transaction.internal;
 
-import org.essentialplatform.runtime.progmodel.standard.DomainObject;
-import org.essentialplatform.runtime.session.IDomainObject;
-import org.essentialplatform.runtime.session.IPojo;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.IObservedFeature;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
-
 import org.apache.log4j.Logger;
+
+import org.essentialplatform.runtime.domain.DomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.domain.IObservedFeature;
+
+import org.essentialplatform.runtime.session.ISession;
+
+import org.essentialplatform.runtime.transaction.*;
+import org.essentialplatform.runtime.transaction.changes.*;
 
 public abstract aspect TransactionChangeAspect extends TransactionAspect {
 

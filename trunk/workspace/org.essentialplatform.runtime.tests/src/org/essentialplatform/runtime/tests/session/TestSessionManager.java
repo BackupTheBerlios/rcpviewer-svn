@@ -4,8 +4,8 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.ISessionManagerListener;
-import org.essentialplatform.runtime.session.SessionManagerEvent;
+import org.essentialplatform.runtime.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.session.event.SessionManagerEvent;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 
 public class TestSessionManager extends AbstractRuntimeTestCase  {
