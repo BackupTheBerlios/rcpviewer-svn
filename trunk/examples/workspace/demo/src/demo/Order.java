@@ -2,9 +2,9 @@ package demo;
 
 import java.util.Date;
 
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.standard.InDomain;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.Named;
 
 @Lifecycle(instantiable=true)
 @InDomain

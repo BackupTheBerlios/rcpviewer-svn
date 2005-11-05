@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.progmodel.extended.IPrerequisites;
-import org.essentialplatform.progmodel.extended.Lifecycle;
-import org.essentialplatform.progmodel.extended.Named;
-import org.essentialplatform.progmodel.extended.Prerequisites;
-import org.essentialplatform.progmodel.extended.RelativeOrder;
-import org.essentialplatform.progmodel.standard.InDomain;
-import org.essentialplatform.progmodel.standard.Programmatic;
-import org.essentialplatform.progmodel.standard.TypeOf;
-import org.essentialplatform.runtime.session.IDomainObject;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.Lifecycle;
+import org.essentialplatform.progmodel.essential.app.Named;
+import org.essentialplatform.progmodel.essential.app.Prerequisites;
+import org.essentialplatform.progmodel.essential.app.Programmatic;
+import org.essentialplatform.progmodel.essential.app.RelativeOrder;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.local.Session;
-import org.essentialplatform.runtime.session.local.SessionManager;
+import org.essentialplatform.runtime.session.Session;
+import org.essentialplatform.runtime.session.SessionManager;
 
 @Lifecycle(instantiable=true)
 @InDomain
