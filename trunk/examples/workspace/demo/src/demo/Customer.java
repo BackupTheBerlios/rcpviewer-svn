@@ -3,7 +3,6 @@ package demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Lifecycle;
@@ -12,6 +11,8 @@ import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.progmodel.essential.app.Programmatic;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
+
+import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.session.Session;
