@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.tests.transaction;
 
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.transaction.Customer;
 import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.transaction.Customer;
 
 /**
  * @see TestTransactionManagerStartTransaction

@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.tests.persistence;
 
-import org.essentialplatform.persistence.Department;
-import org.essentialplatform.persistence.Employee;
+import org.essentialplatform.runtime.fixture.persistence.Department;
+import org.essentialplatform.runtime.fixture.persistence.Employee;
 import org.essentialplatform.runtime.persistence.PersistenceId;
 
 import junit.framework.TestCase;

@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.IDomainBootstrap;
 import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.persistence.IObjectStore;
@@ -109,7 +110,7 @@ public class LouisPlugin extends AbstractUIPlugin {
 	 */
 	public LouisPlugin() {
 		super();
-		new RuntimeDeployment();  // populates Deployment singleton.
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());  // populates Deployment singleton.
 		__plugin = this;
 	}
 	

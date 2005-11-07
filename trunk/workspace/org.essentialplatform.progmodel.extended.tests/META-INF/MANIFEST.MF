@@ -4,8 +4,8 @@ Bundle-Name: Essential Programming Model Extended Semantics Tests
 Bundle-SymbolicName: org.essentialplatform.progmodel.extended.tests
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
-Require-Bundle: org.essentialplatform.progmodel.extended;visibility:=reexport,
- org.junit;visibility:=reexport
-Export-Package: org.essentialplatform.progmodel.extended.tests
+Require-Bundle: org.junit;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app
+Export-Package: org.essentialplatform.progmodel.essential.app.tests
 Bundle-ClassPath: bin/
 Bundle-Vendor: Essential Platform Development Team

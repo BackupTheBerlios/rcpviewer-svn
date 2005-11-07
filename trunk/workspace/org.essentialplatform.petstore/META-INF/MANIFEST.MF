@@ -7,6 +7,9 @@ Bundle-ClassPath: petstore.jar
 Bundle-Activator: org.essentialplatform.petstore.PetstorePlugin
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
-Require-Bundle: org.aspectj.runtime;visibility:=reexport,
- org.essentialplatform.louis;visibility:=reexport
+Require-Bundle: org.aspectj.runtime,
+ org.essentialplatform.progmodel.essential.app,
+ org.essentialplatform.progmodel.louis.app,
+ org.essentialplatform.core,
+ org.essentialplatform.louis
 Eclipse-AutoStart: true

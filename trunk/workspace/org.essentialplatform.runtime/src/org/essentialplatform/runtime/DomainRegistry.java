@@ -20,7 +20,7 @@ implements IDomainRegistry {
 	
 	private void registerClassesInDomains() throws CoreException {
 		IExtensionPoint extensionPoint=  
-			Platform.getExtensionRegistry().getExtensionPoint("org.essentialplatform.domain.runtime.domains");
+			Platform.getExtensionRegistry().getExtensionPoint("org.essentialplatform.runtime.domains");
 		for (IConfigurationElement configurationElement: extensionPoint.getConfigurationElements()) {
 			// although the 'id' attribute is available to us, we don't need it.
 			IDomainBootstrap domainBootstrap= (IDomainBootstrap)configurationElement.createExecutableExtension("class");

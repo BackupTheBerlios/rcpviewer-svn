@@ -5,3 +5,10 @@ Bundle-SymbolicName: org.essentialplatform.progmodel.louis.runtime
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
+Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.essentialplatform.core;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.app;visibility:=reexport,
+ org.essentialplatform.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.core;visibility:=reexport
+Export-Package: org.essentialplatform.progmodel.louis.runtime

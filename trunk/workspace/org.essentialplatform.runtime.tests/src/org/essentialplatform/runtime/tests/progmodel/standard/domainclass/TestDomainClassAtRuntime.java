@@ -2,10 +2,11 @@ package org.essentialplatform.runtime.tests.progmodel.standard.domainclass;
 
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.progmodel.standard.domainclass.CustomerWithNoAttributes;
-import org.essentialplatform.progmodel.standard.domainclass.TestDomainClass;
+import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithNoAttributes;
 import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClass;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 
 /**
@@ -19,7 +20,7 @@ public class TestDomainClassAtRuntime extends TestDomainClass {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

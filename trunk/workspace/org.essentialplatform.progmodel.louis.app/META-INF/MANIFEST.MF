@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.essentialplatform.progmodel.louis.app
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
+Export-Package: org.essentialplatform.progmodel.louis.app

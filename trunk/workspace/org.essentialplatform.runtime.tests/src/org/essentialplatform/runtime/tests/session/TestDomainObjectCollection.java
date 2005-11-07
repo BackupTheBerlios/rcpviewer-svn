@@ -6,9 +6,9 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.session.Department;
+import org.essentialplatform.runtime.fixture.session.Employee;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.session.Department;
-import org.essentialplatform.session.Employee;
 
 public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 

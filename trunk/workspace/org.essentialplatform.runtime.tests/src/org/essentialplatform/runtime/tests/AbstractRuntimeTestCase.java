@@ -1,10 +1,11 @@
 package org.essentialplatform.runtime.tests;
 
-import org.essentialplatform.AbstractTestCase;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.core.tests.AbstractTestCase;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
@@ -45,7 +46,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();

@@ -3,10 +3,11 @@ package org.essentialplatform.runtime.tests.progmodel.standard.attribute;
 import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.progmodel.standard.attribute.CustomerWithWriteOnlyAttribute;
-import org.essentialplatform.progmodel.standard.attribute.TestDomainClassAttributes;
+import org.essentialplatform.core.fixture.progmodel.essential.standard.attribute.CustomerWithWriteOnlyAttribute;
 import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.RuntimeDeployment.RuntimeAttributeBinding;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassAttributes;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 /**
  * Bind tests in {@link TestDomainClassAttributes} to the runtime environment.
@@ -18,7 +19,7 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

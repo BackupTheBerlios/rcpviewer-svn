@@ -1,8 +1,9 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.domainclass;
 
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.progmodel.standard.domainclass.TestDomainClassInstantiable;
 import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassInstantiable;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 /**
  * Binds the tests defined in {@link TestDomainClassImmutable} to the runtime 
@@ -16,7 +17,7 @@ public class TestDomainClassInstantiableAtRuntime extends TestDomainClassInstant
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

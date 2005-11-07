@@ -20,9 +20,9 @@ public class AllEssentialPlatformTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for org.essentialplatform.tests");
 		//$JUnit-BEGIN$
-		suite.addTest(org.essentialplatform.AllTests.suite()); // deployment-neutral
+		suite.addTest(org.essentialplatform.core.tests.AllTests.suite()); // deployment-neutral
 		suite.addTest(org.essentialplatform.runtime.tests.AllRuntimeTests.suite()); // specific to runtime
-		suite.addTest(org.essentialplatform.progmodel.extended.tests.AllTests.suite());
+		suite.addTest(org.essentialplatform.progmodel.essential.app.tests.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

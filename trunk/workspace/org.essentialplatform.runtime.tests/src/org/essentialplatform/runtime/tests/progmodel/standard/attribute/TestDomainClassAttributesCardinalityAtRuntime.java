@@ -1,8 +1,10 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.attribute;
 
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.progmodel.standard.attribute.TestDomainClassAttributesCardinality;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassAttributesCardinality;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 
 /**
@@ -17,7 +19,7 @@ public class TestDomainClassAttributesCardinalityAtRuntime extends
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

@@ -3,9 +3,9 @@ package org.essentialplatform.runtime.tests.transaction;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.transaction.Calculator;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.TransactionManager;
-import org.essentialplatform.transaction.Calculator;
 
 public class TestTransactionManagerCurrentTransactions extends AbstractTransactionManagerTestCase {
 

@@ -13,7 +13,11 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.runtime;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.junit;visibility:=reexport,
- net.sf.plugins.easymock;visibility:=reexport
+ net.sf.plugins.easymock;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.app;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.runtime;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform.runtime.tests,

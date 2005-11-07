@@ -1,14 +1,8 @@
 package org.essentialplatform.progmodel.essential.core.domain;
 
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
-
-import org.essentialplatform.core.emf.EmfAnnotations;
-import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 
 /**

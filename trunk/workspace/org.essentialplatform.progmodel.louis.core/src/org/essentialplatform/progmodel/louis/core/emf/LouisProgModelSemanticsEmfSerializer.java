@@ -13,8 +13,8 @@ import sun.security.krb5.internal.crypto.b;
 
 import org.essentialplatform.core.emf.EmfAnnotations;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
+import org.essentialplatform.progmodel.louis.app.ImageUrlAt;
 import org.essentialplatform.progmodel.louis.core.LouisProgModelConstants;
-import org.essentialplatform.progmodel.rcpviewer.ImageUrlAt;
 
 /**
  * Serializes and deserializes semantics for the rcpviewer programming model

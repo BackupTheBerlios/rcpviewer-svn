@@ -9,8 +9,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.adapters.AbstractDomainClassAdapter;
+import org.essentialplatform.progmodel.louis.app.ImageUrlAt;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.rcpviewer.ImageUrlAt;
 
 
 /**

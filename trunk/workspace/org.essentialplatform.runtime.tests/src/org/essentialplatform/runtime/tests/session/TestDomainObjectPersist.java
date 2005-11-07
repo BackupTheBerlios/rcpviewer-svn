@@ -2,8 +2,8 @@ package org.essentialplatform.runtime.tests.session;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.session.Department;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.session.Department;
 
 public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
 

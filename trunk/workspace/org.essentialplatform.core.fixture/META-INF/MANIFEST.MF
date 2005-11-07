@@ -7,13 +7,22 @@ Bundle-ClassPath: fixture.jar,
  bin/
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.extended;visibility:=reexport,
- org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
- org.essentialplatform.progmodel.standard;visibility:=reexport,
- org.essentialplatform.runtime;visibility:=reexport
+ org.essentialplatform.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.app;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.core.fixture.domain,
  org.essentialplatform.core.fixture.emf,
+ org.essentialplatform.core.fixture.progmodel.essential.extended,
+ org.essentialplatform.core.fixture.progmodel.essential.standard,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.attribute,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.impl,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.namesanddesc,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.namingconventions,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.operation,
+ org.essentialplatform.core.fixture.progmodel.essential.standard.reference,
+ org.essentialplatform.core.fixture.progmodel.louis,
  org.essentialplatform.persistence,
  org.essentialplatform.progmodel.extended,
  org.essentialplatform.progmodel.rcpviewer,
@@ -25,6 +34,9 @@ Export-Package: org.essentialplatform.core.fixture.domain,
  org.essentialplatform.progmodel.standard.namingconventions,
  org.essentialplatform.progmodel.standard.operation,
  org.essentialplatform.progmodel.standard.reference,
+ org.essentialplatform.runtime.fixture.persistence,
+ org.essentialplatform.runtime.fixture.session,
+ org.essentialplatform.runtime.fixture.transaction,
  org.essentialplatform.session,
  org.essentialplatform.transaction
 Bundle-Vendor: Essential Platform Development Team

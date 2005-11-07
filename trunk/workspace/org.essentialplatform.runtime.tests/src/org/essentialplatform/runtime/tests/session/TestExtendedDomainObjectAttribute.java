@@ -5,10 +5,10 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.session.OrderConstrained;
+import org.essentialplatform.runtime.fixture.session.Ping;
+import org.essentialplatform.runtime.fixture.session.Pong;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.session.OrderConstrained;
-import org.essentialplatform.session.Ping;
-import org.essentialplatform.session.Pong;
 
 public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  {
 

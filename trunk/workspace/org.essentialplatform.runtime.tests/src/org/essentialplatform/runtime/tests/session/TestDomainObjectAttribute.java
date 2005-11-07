@@ -9,8 +9,8 @@ import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.session.Department;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.session.Department;
 
 public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
 

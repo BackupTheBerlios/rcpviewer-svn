@@ -1,8 +1,9 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.operation;
 
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.progmodel.standard.operation.TestDomainClassOperations;
 import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassOperations;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 
 /**
@@ -16,7 +17,7 @@ public class TestDomainClassOperationsAtRuntime extends TestDomainClassOperation
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

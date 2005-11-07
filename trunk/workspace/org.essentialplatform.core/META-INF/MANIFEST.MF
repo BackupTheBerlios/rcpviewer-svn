@@ -12,10 +12,9 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.junit;visibility:=reexport,
  org.eclipse.osgi;visibility:=reexport,
  org.eclipse.core.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.extended;visibility:=reexport,
- org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
- org.essentialplatform.progmodel.standard;visibility:=reexport,
- org.apache.log4j;visibility:=reexport
+ org.apache.log4j;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.app;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform,
  org.essentialplatform.core.deployment,
@@ -31,10 +30,6 @@ Export-Package: org.essentialplatform,
  org.essentialplatform.progmodel.essential.core,
  org.essentialplatform.progmodel.essential.core.domain,
  org.essentialplatform.progmodel.essential.core.emf,
- org.essentialplatform.progmodel.essential.core.util,
- org.essentialplatform.progmodel.louis.core,
- org.essentialplatform.progmodel.louis.core.domain,
- org.essentialplatform.progmodel.louis.core.domain.adapters,
- org.essentialplatform.progmodel.louis.core.emf
+ org.essentialplatform.progmodel.essential.core.util
 Bundle-Vendor: Essential Platform Development Team
 DynamicImport-Package: *

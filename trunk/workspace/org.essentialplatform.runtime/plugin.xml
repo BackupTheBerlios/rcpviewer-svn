@@ -7,6 +7,6 @@
 
    <extension
          point="org.essentialplatform.runtime.objectstorebootstrap">
-         <impl class="org.essentialplatform.persistence.NoopObjectStoreBootStrap"/>
+         <impl class="org.essentialplatform.runtime.NoopObjectStoreBootStrap"/>
    </extension>
 </plugin>

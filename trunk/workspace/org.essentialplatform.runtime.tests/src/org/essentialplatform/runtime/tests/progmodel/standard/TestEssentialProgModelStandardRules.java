@@ -1,11 +1,11 @@
 package org.essentialplatform.runtime.tests.progmodel.standard;
+import org.essentialplatform.core.fixture.progmodel.essential.standard.namingconventions.Department;
+import org.essentialplatform.core.fixture.progmodel.essential.standard.namingconventions.Employee;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeRules;
 import org.essentialplatform.progmodel.standard.*;
 
 import java.lang.reflect.Method;
 
-import org.essentialplatform.progmodel.standard.namingconventions.Department;
-import org.essentialplatform.progmodel.standard.namingconventions.Employee;
 
 
 import junit.framework.TestCase;

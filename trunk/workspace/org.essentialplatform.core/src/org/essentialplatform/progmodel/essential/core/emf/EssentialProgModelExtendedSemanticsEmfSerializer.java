@@ -29,7 +29,6 @@ import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.domain.AbstractAttributeComparator;
-import org.essentialplatform.progmodel.extended.*;
 
 /**
  * Serializes and deserializes semantics for the extended programming model

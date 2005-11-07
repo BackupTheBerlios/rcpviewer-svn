@@ -2,8 +2,8 @@ package org.essentialplatform.runtime.tests.progmodel.extended;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.fixture.session.Department;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.session.Department;
 
 /**
  * These tests are obsolete since ExtendedDomainClass et al have been incorporated

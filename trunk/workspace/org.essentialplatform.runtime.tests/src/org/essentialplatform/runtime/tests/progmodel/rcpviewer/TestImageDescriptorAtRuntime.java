@@ -1,8 +1,9 @@
 package org.essentialplatform.runtime.tests.progmodel.rcpviewer;
 
 import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
+import org.essentialplatform.progmodel.louis.core.tests.TestImageDescriptor;
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.progmodel.rcpviewer.TestImageDescriptor;
 import org.essentialplatform.runtime.RuntimeDeployment;
 
 
@@ -21,7 +22,7 @@ public class TestImageDescriptorAtRuntime extends TestImageDescriptor {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

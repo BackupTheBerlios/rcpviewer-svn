@@ -1,7 +1,8 @@
 package org.essentialplatform.runtime.tests.progmodel.extended;
 
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.progmodel.extended.TestRegex;
+import org.essentialplatform.progmodel.essential.core.tests.TestRegex;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.RuntimeDeployment;
 
 
@@ -17,7 +18,7 @@ public class TestRegexAtRuntime extends TestRegex {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

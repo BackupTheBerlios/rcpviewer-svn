@@ -1,8 +1,9 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.reference;
 
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.progmodel.standard.reference.TestDomainClassReferences;
 import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassReferences;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 
 /**
@@ -16,7 +17,7 @@ public class TestDomainClassReferencesAtRuntime extends TestDomainClassReference
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

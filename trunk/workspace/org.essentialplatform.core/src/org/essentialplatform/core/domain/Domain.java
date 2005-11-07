@@ -154,10 +154,6 @@ public class Domain implements IDomain {
 	/**
 	 * Creates a new domain using specified {@link IDomainBuilder}.
 	 * 
-	 * <p>
-	 * The primary builder is obtained from the {@link Deployment}.
-	 * 
-	 * @see #getPrimaryBuilder()
 	 */
 	public Domain(final String name){
 		if (domainsByName.get(name) != null) {

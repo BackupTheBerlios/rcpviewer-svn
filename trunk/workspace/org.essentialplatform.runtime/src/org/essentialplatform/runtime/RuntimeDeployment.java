@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -16,35 +15,22 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EcoreFactory;
-import org.osgi.framework.Bundle;
-
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.IDomainClass.IAttribute;
-import org.essentialplatform.core.domain.IDomainClass.ICollectionReference;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.progmodel.ProgrammingModelException;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
-import org.essentialplatform.progmodel.essential.app.RelativeOrder;
-import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesIdentifier;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
 import org.essentialplatform.runtime.authorization.IAuthorizationManager;
-import org.essentialplatform.runtime.domain.DomainObject;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.session.Session;
+import org.osgi.framework.Bundle;
 
 /**
  * A binding of {@link IDomainClass} for the runtime environment.
@@ -118,21 +104,26 @@ public final class RuntimeDeployment extends Deployment {
 	//////////////////////////////////////////////////////////////////////
 
 
+	private final IDomainBuilder _primaryBuilder;
+	
 	/**
 	 * Sets the current binding to be RUNTIME.
 	 * 
 	 * @throws RuntimeException if a binding has already been set.
 	 */
-	public RuntimeDeployment() {}
+	public RuntimeDeployment(IDomainBuilder primaryBuilder) {
+		_primaryBuilder = primaryBuilder;
+	}
 
 	@Override
 	public Bundle getBundle() {
 		return Platform.getBundle("org.essentialplatform.domain.runtime");
 	}
 
+	
 	@Override
 	public IDomainBuilder getPrimaryBuilder() {
-		return new EssentialProgModelRuntimeBuilder();
+		return _primaryBuilder;
 	}
 
 	@Override

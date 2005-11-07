@@ -4,3 +4,8 @@ Bundle-Name: Runtime Plug-in
 Bundle-SymbolicName: org.essentialplatform.progmodel.essential.runtime
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
+Require-Bundle: org.essentialplatform.core;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.core;visibility:=reexport,
+ org.essentialplatform.runtime;visibility:=reexport
+Export-Package: org.essentialplatform.progmodel.essential.runtime

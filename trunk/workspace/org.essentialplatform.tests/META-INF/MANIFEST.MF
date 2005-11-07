@@ -14,9 +14,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.essentialplatform.core.fixture;visibility:=reexport,
  org.essentialplatform.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.extended;visibility:=reexport,
- org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
- org.essentialplatform.progmodel.standard;visibility:=reexport,
- org.essentialplatform.progmodel.extended.tests
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.app;visibility:=reexport,
+ org.essentialplatform.progmodel.extended.tests;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team

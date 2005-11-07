@@ -1,8 +1,9 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.namesanddesc;
 
 import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.progmodel.standard.namesanddesc.TestExplicitNamesAndDescriptions;
 import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.progmodel.essential.core.tests.TestExplicitNamesAndDescriptions;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
 
 
@@ -17,7 +18,7 @@ public class TestExplicitNamesAndDescriptionsAtRuntime extends TestExplicitNames
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

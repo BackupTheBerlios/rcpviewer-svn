@@ -4,28 +4,25 @@ Bundle-Name: Essential Platform Runtime Model
 Bundle-SymbolicName: org.essentialplatform.runtime; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: runtime.jar
-Bundle-Activator: org.essentialplatform.domain.runtime.RuntimePlugin
+Bundle-Activator: org.essentialplatform.runtime.RuntimePlugin
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.louis.core
+ org.essentialplatform.progmodel.louis.core;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.app;visibility:=reexport
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.authorization,
- org.essentialplatform.progmodel.essential.runtime,
+Export-Package: org.essentialplatform.progmodel.essential.runtime,
  org.essentialplatform.progmodel.louis.runtime,
  org.essentialplatform.runtime,
  org.essentialplatform.runtime.authorization,
  org.essentialplatform.runtime.domain,
  org.essentialplatform.runtime.domain.adapters,
  org.essentialplatform.runtime.domain.event,
- org.essentialplatform.runtime.domain.runtime,
- org.essentialplatform.runtime.internal,
  org.essentialplatform.runtime.persistence,
  org.essentialplatform.runtime.persistence.inmemory,
- org.essentialplatform.runtime.progmodel.rcpviewer,
- org.essentialplatform.runtime.progmodel.standard,
  org.essentialplatform.runtime.session,
  org.essentialplatform.runtime.session.event,
  org.essentialplatform.runtime.session.local,

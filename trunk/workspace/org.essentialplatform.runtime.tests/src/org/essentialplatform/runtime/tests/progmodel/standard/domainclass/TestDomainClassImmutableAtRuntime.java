@@ -1,9 +1,8 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.domainclass;
 
-
 import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassImmutable;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.progmodel.standard.domainclass.TestDomainClassImmutable;
 import org.essentialplatform.runtime.RuntimeDeployment;
 
 /**
@@ -18,7 +17,7 @@ public class TestDomainClassImmutableAtRuntime extends TestDomainClassImmutable 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment();
+		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
 	}
 	
 	@Override

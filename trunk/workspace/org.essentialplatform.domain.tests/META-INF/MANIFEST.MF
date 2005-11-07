@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.essentialplatform.domain.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/
-Bundle-Activator: org.essentialplatform.domain.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.ui;visibility:=reexport,
@@ -13,20 +12,21 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.essentialplatform.core.fixture;visibility:=reexport,
- org.essentialplatform.progmodel.extended;visibility:=reexport,
- org.essentialplatform.progmodel.rcpviewer;visibility:=reexport,
- org.essentialplatform.progmodel.standard;visibility:=reexport,
  org.essentialplatform.runtime;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.louis.core,
- org.essentialplatform.progmodel.louis.runtime
+ org.essentialplatform.progmodel.louis.core;visibility:=reexport,
+ org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform,
+ org.essentialplatform.core.tests,
+ org.essentialplatform.core.tests.emf,
  org.essentialplatform.domain,
  org.essentialplatform.domain.emf,
- org.essentialplatform.domain.tests,
+ org.essentialplatform.progmodel.essential.core.tests,
  org.essentialplatform.progmodel.extended,
+ org.essentialplatform.progmodel.louis.core.tests,
  org.essentialplatform.progmodel.rcpviewer,
  org.essentialplatform.progmodel.standard.attribute,
  org.essentialplatform.progmodel.standard.domainclass,
