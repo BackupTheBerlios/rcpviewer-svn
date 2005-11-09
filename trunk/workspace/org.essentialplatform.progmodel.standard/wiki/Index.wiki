@@ -1,4 +1,0 @@
-1 About this Plugin
-Defines the API for the ~~Standard~~ programming model, at least so far as the domain programmer is concerned.  In practical terms, it contains a very small number of annotations, no more.
-
-The ~~Standard~~ programming model aims to capture only the information that is intrinsic to EMF (our canonical standard) makes available.  Much of this information can be gleaned directly from programming conventions (for example, a getter with no setter means an attribute with isChangeable=false), but a couple of annotations are required.  For example, @Aggregated annotates a reference with composition (aggregation by value) semantics.
