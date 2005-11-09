@@ -24,7 +24,6 @@ public abstract class EssentialProgModelStandardSemanticsRules {
 		return _javaProgModelRules;
 	}
 	
-	// ATTRIBUTES: START
 	
 	/**
 	 * @see deriveAttributeName
@@ -50,20 +49,13 @@ public abstract class EssentialProgModelStandardSemanticsRules {
 		throw new IllegalArgumentException("getter or setter expected");
 	}
 	
-	// ATTRIBUTES: END
 
-	// OPERATIONS: START
-
-	// OPERATIONS: END
-
-	// LINKS: START
 	
 	/**
-	 * @see deriveLinkName
 	 * @param name
 	 * @return
 	 */
-	public final String deriveLinkName(final String name) {
+	public final String deriveReferenceName(final String name) {
 		if (name.startsWith("get")) {
 			if (name.length() <= 3) {
 				throw new IllegalArgumentException("name of link method too short");
@@ -85,7 +77,6 @@ public abstract class EssentialProgModelStandardSemanticsRules {
 		throw new IllegalArgumentException("association method expected");
 	}
 
-	// LINKS: END
 
 
 	/**

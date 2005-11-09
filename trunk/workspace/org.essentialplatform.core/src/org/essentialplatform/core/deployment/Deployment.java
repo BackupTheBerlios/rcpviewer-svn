@@ -161,17 +161,17 @@ public abstract class Deployment {
 		 * @return
 		 */
 		Object invokeAccessor(Object pojo);
+		void invokeAssociator(Object pojo, Object referencedPojo);
+		boolean canAssociate();
+		boolean canDissociate();
+		void invokeDissociator(Object pojo, Object referencedPojo);
 		IPrerequisites authorizationPrerequisites();
 		IPrerequisites accessorPrerequisitesFor(Object pojo);
 	}
 	public interface IOneToOneReferenceBinding extends IReferenceBinding {
-		void invokeAssociator(Object pojo, Object referencedPojo);
-		void invokeDissociator(Object pojo, Object referencedPojo);
 		IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
 	}
 	public interface ICollectionReferenceBinding extends IReferenceBinding {
-		void invokeAddTo(Object pojo, Object referencedPojo);
-		void invokeRemoveFrom(Object pojo, Object referencedPojo);
 		IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue, boolean beingAdded);
 	}
 	public interface IOperationBinding {

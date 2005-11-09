@@ -6,15 +6,13 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.factory.DomainClassGuiFactory;
 import org.essentialplatform.louis.factory.DomainClassPart;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
-import org.essentialplatform.louis.util.EmfUtil;
-
-import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 public class CollectionMasterChildGuiFactory implements IGuiFactory<IDomainClass.IReference> {

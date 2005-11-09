@@ -4,7 +4,6 @@
 package org.essentialplatform.louis.factory.reference;
 
 import org.eclipse.core.runtime.jobs.Job;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -25,17 +24,15 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.jobs.SearchJob;
-import org.essentialplatform.louis.util.EmfUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
-
-import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
@@ -165,7 +162,7 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 		field.setLayoutData( fieldData );
 		
 		// add buttton
-		if ( EmfUtil.canAddTo( model ) ) {
+		if ( model.getBinding().canAssociate() ) {
 			numColumns++;
 			Button add = toolkit.createButton( parent, "", SWT.PUSH ); //$NON-NLS-1$
 			add.setImage( 
@@ -187,7 +184,7 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 			});
 		}
 		
-		if ( EmfUtil.canRemoveFrom( model ) ) {
+		if ( model.getBinding().canDissociate() ) {
 			numColumns++;
 			final Button remove = toolkit.createButton( 
 					parent, "", SWT.PUSH ); //$NON-NLS-1$
@@ -263,7 +260,7 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 		});
 		
 		// DnD - drop target?
-		if ( EmfUtil.canAddTo( ref ) ) {
+		if ( ref.getBinding().canAssociate() ) {
 			final DropTarget target = new DropTarget( 
 					field, 
 					DND.DROP_MOVE | DND.DROP_COPY );

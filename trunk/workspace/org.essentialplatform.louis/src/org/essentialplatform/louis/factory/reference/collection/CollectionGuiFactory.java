@@ -19,6 +19,7 @@ import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.PageBook;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
 import org.essentialplatform.louis.factory.DomainClassGuiFactory;
@@ -26,13 +27,9 @@ import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.jobs.SearchJob;
-import org.essentialplatform.louis.util.EmfUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
-
-import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.IDomainClass.IReference;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
@@ -219,7 +216,7 @@ public class CollectionGuiFactory implements IGuiFactory<IDomainClass.IReference
 		final IDomainClass dClass = model.getReferencedDomainClass();
 		
 		// add button
-		if ( EmfUtil.canAddTo( model ) ) {
+		if ( model.getBinding().canAssociate() ) {
 			numColumns++;
 			Button add = toolkit.createButton( toolbar, "", SWT.PUSH ); //$NON-NLS-1$
 			add.setImage( 
@@ -242,7 +239,7 @@ public class CollectionGuiFactory implements IGuiFactory<IDomainClass.IReference
 		}
 		
 		// remove button
-		if ( EmfUtil.canRemoveFrom( model ) ) {
+		if ( model.getBinding().canDissociate() ) {
 			numColumns++;
 			final Button remove = toolkit.createButton( toolbar, "", SWT.PUSH ); //$NON-NLS-1$
 			remove.setImage( 

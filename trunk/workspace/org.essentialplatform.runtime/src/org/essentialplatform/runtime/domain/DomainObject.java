@@ -869,7 +869,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			assert _collectionReference.getReferencedDomainClass() == domainObject
 					.getDomainClass();
 			assert _eReference.isChangeable();
-			_runtimeBinding.invokeAddTo(getPojo(), domainObject.getPojo());
+			_runtimeBinding.invokeAssociator(getPojo(), domainObject.getPojo());
 			// TODO: ideally the notifyListeners aspect should do this for us?
 			// notify _domainObjectListeners
 			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
@@ -886,7 +886,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			assert _collectionReference.getReferencedDomainClass() == domainObject
 					.getDomainClass();
 			assert _eReference.isChangeable();
-			_runtimeBinding.invokeRemoveFrom(getPojo(), domainObject.getPojo());
+			_runtimeBinding.invokeDissociator(getPojo(), domainObject.getPojo());
 			// TODO: ideally the notifyListeners aspect should do this for us?
 			// notify _domainObjectListeners
 			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(

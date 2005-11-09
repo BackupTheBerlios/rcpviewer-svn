@@ -254,7 +254,7 @@ public final class EssentialProgModelRuntimeRules extends EssentialProgModelStan
 	 * @return
 	 */
 	public final String deriveReferenceName(final Method associationMethod) {
-		return deriveLinkName(associationMethod.getName());
+		return deriveReferenceName(associationMethod.getName());
 	}
 
 	// LINKS: END

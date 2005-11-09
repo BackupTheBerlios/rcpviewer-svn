@@ -28,8 +28,6 @@ Export-Package: org.essentialplatform,
  org.essentialplatform.core.progmodel,
  org.essentialplatform.core.util,
  org.essentialplatform.progmodel.essential.core,
- org.essentialplatform.progmodel.essential.core.domain,
- org.essentialplatform.progmodel.essential.core.emf,
- org.essentialplatform.progmodel.essential.core.util
+ org.essentialplatform.progmodel.essential.core.emf
 Bundle-Vendor: Essential Platform Development Team
 DynamicImport-Package: *

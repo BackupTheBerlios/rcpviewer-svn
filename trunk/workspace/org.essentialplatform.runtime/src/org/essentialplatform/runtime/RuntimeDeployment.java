@@ -520,9 +520,15 @@ public final class RuntimeDeployment extends Deployment {
 			return __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
 		}
 
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canAssociate()
+		 */
 		public boolean canAssociate() {
 			return getAssociator() != null;
 		}
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
+		 */
 		public void invokeAssociator(final Object pojo, final Object referencedObject) {
 			if (getAssociator() == null) {
 				throw new UnsupportedOperationException("No associator method");
@@ -538,9 +544,15 @@ public final class RuntimeDeployment extends Deployment {
 				throw new UnsupportedOperationException("Could not invoke associator method '" + associatorMethodName + "'", e);
 			}
 		}
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canDissociate()
+		 */
 		public boolean canDissociate() {
 			return getDissociator() != null;
 		}
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
+		 */
 		public void invokeDissociator(final Object pojo, final Object referencedObject) {
 			if (getDissociator() == null) {
 				throw new UnsupportedOperationException("No dissociator method");
@@ -557,6 +569,9 @@ public final class RuntimeDeployment extends Deployment {
 			}
 		}
 
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IOneToOneReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object)
+		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue) {
 			Method mutatorPre = __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
 			if (mutatorPre == null) {
@@ -605,10 +620,16 @@ public final class RuntimeDeployment extends Deployment {
 			return __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
 		}
 
-		public boolean canAddTo() {
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canAssociate()
+		 */
+		public boolean canAssociate() {
 			return getAssociator() != null;
 		}
-		public void invokeAddTo(final Object pojo, final Object referencedObject) {
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
+		 */
+		public void invokeAssociator(final Object pojo, final Object referencedObject) {
 			if (getAssociator() == null) {
 				throw new UnsupportedOperationException("No associator method");
 			}
@@ -623,10 +644,16 @@ public final class RuntimeDeployment extends Deployment {
 				throw new UnsupportedOperationException("Could not invoke associator method '" + associatorMethodName + "'", e);
 			}
 		}
-		public boolean canRemoveFrom() {
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canDissociate()
+		 */
+		public boolean canDissociate() {
 			return getDissociator() != null;
 		}
-		public void invokeRemoveFrom(final Object pojo, final Object referencedObject) {
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
+		 */
+		public void invokeDissociator(final Object pojo, final Object referencedObject) {
 			if (getDissociator() == null) {
 				throw new UnsupportedOperationException("No dissociator method");
 			}
@@ -641,7 +668,10 @@ public final class RuntimeDeployment extends Deployment {
 				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
 			}
 		}
-		
+
+		/*
+		 * @see org.essentialplatform.core.deployment.Deployment.ICollectionReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object, boolean)
+		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue, final boolean beingAdded) {
 			Method mutatorPre = beingAdded 
 									? __extendedSerializer.getReferenceAddToPreMethod(_eReference)

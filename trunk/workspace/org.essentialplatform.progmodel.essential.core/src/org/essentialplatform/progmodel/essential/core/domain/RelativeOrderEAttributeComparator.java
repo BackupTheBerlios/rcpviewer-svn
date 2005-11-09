@@ -1,6 +1,6 @@
 package org.essentialplatform.progmodel.essential.core.domain;
 
-import org.essentialplatform.core.domain.AbstractAttributeComparator;
+import org.essentialplatform.core.domain.AbstractEAttributeComparator;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
@@ -14,9 +14,9 @@ import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtended
  * @author dkhaywood
  *
  */
-public final class AttributeComparator extends AbstractAttributeComparator {
+public final class RelativeOrderEAttributeComparator extends AbstractEAttributeComparator {
 
-	public AttributeComparator() {
+	public RelativeOrderEAttributeComparator() {
 		super(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_RELATIVE_ORDER_KEY);
 	}
 

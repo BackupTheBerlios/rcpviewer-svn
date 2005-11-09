@@ -10,13 +10,32 @@ import org.essentialplatform.core.domain.IDomainClass;
  * within it.
  * 
  * <p>
- * The <i>primary</i> domain builder is hard-coded (TODO: make into an
- * extension point); <i>secondary</i> domain builders can be registered using 
- * {@link IDomain#addBuilder(IDomainBuilder)} and will be called for each
- * known {@link IDomainClass} when {@link IDomain#done()} is called.
- *  
- * @author Dan Haywood
+ * The <i>primary</i> domain builder takes responsibliity for building up the
+ * base structure of the metamodel, identifying classes, attributes, references
+ * and so forth.  In addition, <i>secondary</i> domain builders can be 
+ * registered to capture additional semantics specific to the programming 
+ * model that they represent.  The semantics are typically stored in
+ * extension classes.  A typical example would be to capture annotations 
+ * specific to the host platform for which the viewing mechanism is targetted
+ * (eg Eclipse RCP or perhaps CSS or Tapestry components).
  *
+ * <p>
+ * In addition, Domain builders targetted for the runtime environment will
+ * create {@link IDomainClass}es implementations that have a binding
+ * ({@link org.essentialplatform.core.domain.IDomainClass#getBinding()}) that
+ * in turn can be used to instantiation domain objects (to wrap the underlying
+ * pojos).  These domain object take care of the choreography between the
+ * larger Essential platform and an individual pojo.  This choreography may
+ * become pluggable eventually, and would be supported by a strategy of the
+ * runtime binding which would delegate the interactions.
+ * 
+ * <p>
+ * TODO: the primary and secondary builders are currently hard-coded; make 
+ * into an extension point.  (The former is passed as a constructor to
+ * {@link org.essentialplatform.runtime.RuntimeDeployment}; the latter are 
+ * passed in using {@link Domain#addBuilder(IDomainBuilder)}.
+ * 
+ * @author Dan Haywood
  */
 public interface IDomainBuilder {
 

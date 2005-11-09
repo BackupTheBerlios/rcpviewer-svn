@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 
-import org.essentialplatform.core.domain.AbstractAttributeComparator;
+import org.essentialplatform.core.domain.AbstractEAttributeComparator;
 import org.essentialplatform.core.emf.EmfAnnotations;
 import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
@@ -20,9 +20,9 @@ import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtended
  * @author dkhaywood
  *
  */
-public final class IdComparator extends AbstractAttributeComparator {
+public final class IdEAttributeComparator extends AbstractEAttributeComparator {
 
-	public IdComparator() {
+	public IdEAttributeComparator() {
 		super(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_ID_VALUE);
 	}
 

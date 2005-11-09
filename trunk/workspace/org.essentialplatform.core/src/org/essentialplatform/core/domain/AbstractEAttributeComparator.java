@@ -11,7 +11,7 @@ import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExte
  * @author dkhaywood
  *
  */
-public abstract class AbstractAttributeComparator implements Comparator<EAttribute> {
+public abstract class AbstractEAttributeComparator implements Comparator<EAttribute> {
 
 	private final EssentialProgModelExtendedSemanticsEmfSerializer _serializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
 
@@ -23,7 +23,7 @@ public abstract class AbstractAttributeComparator implements Comparator<EAttribu
 	 * 
 	 * @param annotationAttributeKey - ExtendedProgModelConstants.ANNOTATION_ATTRIBUTE_?????_KEY
 	 */
-	protected AbstractAttributeComparator(final String annotationAttributeKey) {
+	protected AbstractEAttributeComparator(final String annotationAttributeKey) {
 		_annotationAttributeKey = annotationAttributeKey;
 	}
 	

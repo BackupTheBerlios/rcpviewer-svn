@@ -2,6 +2,7 @@ package org.essentialplatform.progmodel.essential.core.emf;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
@@ -13,10 +14,11 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.emf.AbstractProgModelSemanticsEmfSerializer;
-import org.essentialplatform.core.domain.AbstractAttributeComparator;
+import org.essentialplatform.core.domain.AbstractEAttributeComparator;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.app.ImmutableOncePersisted;
 import org.essentialplatform.progmodel.essential.app.Invisible;
@@ -38,6 +40,8 @@ import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandard
  * @author Dan Haywood
  */
 public final class EssentialProgModelExtendedSemanticsEmfSerializer extends AbstractProgModelSemanticsEmfSerializer {
+
+	private final EssentialProgModelStandardSemanticsEmfSerializer standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
 
 	// any model element
 	public Optional getOptional(EModelElement modelElement) {
@@ -298,7 +302,7 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 	 * 
 	 *  <p>
 	 *  Admittedly, this doesn't follow the model of the other methods, but
-	 *  is more extensible.  It is used by {@link AbstractAttributeComparator}. 
+	 *  is more extensible.  It is used by {@link AbstractEAttributeComparator}. 
 	 */
 	public Integer getAttributeAnnotationInt(EAttribute attribute, String annotationKey) {
 		Map<String,String> attributeDetails = 
@@ -333,12 +337,36 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
 		return findMethod(javaClassFor(attribute), methodName);
 	}
-	public void setAttributeAccessorPreMethod(EAttribute attribute, Method method) {
+	
+	public <V> void setAttributeAccessorPreMethodIfPossible(EAttribute eAttribute, Class<V> javaClass) {
+		Method accessor = standardSerializer.getAttributeAccessorMethod(eAttribute);
+		if (accessor == null) {
+			return;
+		}
+		String accessorPreMethodName = accessor.getName() + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method accessorPreCandidate;
+		try {
+			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (accessorPreCandidate == null) {
+			return;
+		}
+		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		if (!isPublic(accessorPreCandidate)) {
+			return;
+		}
 		_emfAnnotations.putAnnotationDetails(
-				attribute,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
+			eAttribute,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
+			accessorPreCandidate.getName());
 	}
 
 	public Method getAttributeMutatorPreMethod(EAttribute attribute) {
@@ -348,16 +376,39 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 		Class<?> attributeType = attribute.getEAttributeType().getInstanceClass();
 		return findMethod(javaClassFor(attribute), methodName, new Class[]{attributeType});
 	}
-	public void setAttributeMutatorPreMethod(EAttribute attribute, Method method) {
+	
+	public <V> void setAttributeMutatorPreMethodIfPossible(EAttribute eAttribute, Class<V> javaClass) {
+		Method mutator = standardSerializer.getAttributeMutatorMethod(eAttribute);
+		if (mutator == null) {
+			return;
+		}
+		Class<?> attributeType = eAttribute.getEAttributeType().getInstanceClass();
+		String mutatorPreMethodName = mutator.getName() + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method mutatorPreCandidate;
+		try {
+			mutatorPreCandidate = javaClass.getMethod(mutatorPreMethodName, new Class[]{attributeType});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (mutatorPreCandidate == null) {
+			return;
+		}
+		if (!methodReturns(mutatorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		if (!isPublic(mutatorPreCandidate)) {
+			return;
+		}
 		_emfAnnotations.putAnnotationDetails(
-				attribute,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
+			eAttribute,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
+			mutatorPreCandidate.getName());
 	}
 
-	// references
-	
 	/**
 	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
 	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
@@ -368,18 +419,38 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY);
 		return findMethod(javaClassFor(reference), methodName);
 	}
-	/**
-	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
-	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
-	 */
-	public void setReferenceAccessorPreMethod(EReference reference, Method method) {
+	
+	public <V> void setReferenceAccessorPreMethodIfPossible(EReference eReference, Class<V> javaClass) {
+		Method accessor = standardSerializer.getReferenceAccessor(eReference);
+		if (accessor == null) {
+			return;
+		}
+		String accessorPreMethodName = accessor.getName() + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method accessorPreCandidate;
+		try {
+			accessorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (accessorPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(accessorPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(accessorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
 		_emfAnnotations.putAnnotationDetails(
-				reference,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
+			eReference,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_ACCESSOR_PRECONDITION_METHOD_NAME_KEY, 
+			accessorPreCandidate.getName());
 	}
-
+	
 	/**
 	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
 	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
@@ -392,18 +463,46 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 		Class<?> referenceType = reference.getEType().getInstanceClass();
 		return findMethod(javaClassFor(reference), methodName, new Class[]{referenceType});
 	}
+	
+
 	/**
 	 * TODO: I think this actually corresponds to the preconditions for a 1:1 reference only (since there
 	 * is also getReferenceAddToPre / getReferenceRemoveFromPre methods.
 	 */
-	public void setReferenceMutatorPreMethod(EReference reference, Method method) {
+	public <V> void setReferenceMutatorPreMethodIfPossible(EReference eReference, Class<V> javaClass) {
+		if (eReference.isMany()) {
+			return;
+		}
+		Method mutator = standardSerializer.getReferenceMutator(eReference);
+		if (mutator == null) {
+			return;
+		}
+		String accessorPreMethodName = mutator.getName() + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method mutatorPreCandidate;
+		try {
+			mutatorPreCandidate = javaClass.getMethod(accessorPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (mutatorPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(mutatorPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(mutatorPreCandidate, IPrerequisites.class)) {
+			return;
+		}
 		_emfAnnotations.putAnnotationDetails(
-				reference,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
+			eReference,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_MUTATOR_PRECONDITION_METHOD_NAME_KEY, 
+			mutatorPreCandidate.getName());
 	}
-	
+
 	public Method getReferenceAddToPreMethod(EReference reference) {
 		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
@@ -411,12 +510,39 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 		Class<?> referenceType = reference.getEType().getInstanceClass();
 		return findMethod(javaClassFor(reference), methodName, new Class[]{referenceType});
 	}
-	public void setReferenceAddToPreMethod(EReference reference, Method method) {
+
+	public <V> void setReferenceAddToPreMethodIfPossible(EReference reference, Class<V> javaClass) {
+		if (!reference.isMany()) {
+			return;
+		}
+		Method addTo = standardSerializer.getReferenceCollectionAssociator(reference);
+		if (addTo == null) {
+			return;
+		}
+		String addToPreMethodName = addTo.getName() + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method addToPreCandidate;
+		try {
+			addToPreCandidate = javaClass.getMethod(addToPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (addToPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(addToPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(addToPreCandidate, IPrerequisites.class)) {
+			return;
+		}
 		_emfAnnotations.putAnnotationDetails(
-				reference,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
+			reference,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_ADD_TO_PRECONDITION_METHOD_NAME_KEY, 
+			addToPreCandidate.getName());
 	}
 
 	public Method getReferenceRemoveFromPreMethod(EReference reference) {
@@ -426,14 +552,41 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 		Class<?> referenceType = reference.getEType().getInstanceClass();
 		return findMethod(javaClassFor(reference), methodName, new Class[]{referenceType});
 	}
-	public void setReferenceRemoveFromPre(EReference reference, Method method) {
-		_emfAnnotations.putAnnotationDetails(
-				reference,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
-	}
 	
+	public <V> void setReferenceRemoveFromPreMethodIfPossible(EReference reference, Class<V> javaClass) {
+		if (!reference.isMany()) {
+			return;
+		}
+		Method removeFrom = standardSerializer.getReferenceCollectionDissociator(reference);
+		if (removeFrom == null) {
+			return;
+		}
+		String removeFromPreMethodName = removeFrom.getName() + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method removeFromPreCandidate;
+		try {
+			removeFromPreCandidate = javaClass.getMethod(removeFromPreMethodName, new Class[]{});
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (removeFromPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(removeFromPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(removeFromPreCandidate, IPrerequisites.class)) {
+			return;
+		}
+		_emfAnnotations.putAnnotationDetails(
+			reference,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_REFERENCE_REMOVE_FROM_PRECONDITION_METHOD_NAME_KEY, 
+			removeFromPreCandidate.getName());
+	}
+
 	// operations
 	public Method getOperationPreMethod(EOperation operation) {
 		String methodName = _emfAnnotations.getAnnotationDetail(
@@ -447,14 +600,41 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 		}
 		return findMethod(javaClassFor(operation), methodName, parameterTypes);
 	}
-	public void setOperationPreMethod(EOperation operation, Method method) {
+
+	public <V> void setOperationPreMethodIfPossible(EOperation eOperation, Class<V> javaClass, Method invoker) {
+		String invokerName = invoker.getName();
+		String invokerPreMethodName = invokerName + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_ELEMENT_PRECONDITIONS;
+		Method invokerPreCandidate;
+		try {
+			EList eParameters = eOperation.getEParameters();
+			Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+			for(int i=0; i<parameterTypes.length; i++) {
+				EParameter eParameter = (EParameter)eParameters.get(i);
+				parameterTypes[i] = eParameter.getEType().getInstanceClass();
+			}
+			invokerPreCandidate = javaClass.getMethod(invokerPreMethodName, parameterTypes);
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (invokerPreCandidate == null) {
+			return;
+		}
+		if (!isPublic(invokerPreCandidate)) {
+			return;
+		}
+		if (!methodReturns(invokerPreCandidate, IPrerequisites.class)) {
+			return;
+		}
 		_emfAnnotations.putAnnotationDetails(
-				operation,
-				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
-				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY, 
-				method.getName());
+			eOperation,
+			EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
+			EssentialProgModelExtendedSemanticsConstants.ANNOTATION_OPERATION_PRECONDITION_METHOD_NAME_KEY, 
+			invokerPreCandidate.getName());
 	}
-	
+
 	public Method getOperationDefaultsMethod(EOperation operation) {
 		String methodName = _emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(operation), 
@@ -473,7 +653,64 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 		}
 		return findMethod(javaClassFor(operation), methodName, parameterTypes);
 	}
-	public void setOperationDefaults(EOperation operation, Method method) {
+	
+	public <V> void setOperationDefaultsIfPossible(EOperation eOperation, Class<V> javaClass, Method invoker) {
+		String invokerName = invoker.getName();
+		String invokerDefaultsMethodName = invokerName + 
+			EssentialProgModelExtendedSemanticsConstants.SUFFIX_OPERATION_DEFAULTS;
+		Method invokerDefaultsCandidate;
+		try {
+			EList eParameters = eOperation.getEParameters();
+			Class<?>[] parameterTypes = new Class<?>[eParameters.size()];
+			for(int i=0; i<parameterTypes.length; i++) {
+				// find the type of this parameter
+				EParameter eParameter = (EParameter)eParameters.get(i);
+				Class<?> parameterType = eParameter.getEType().getInstanceClass();
+				// create a prototype array of this type
+				Object argDefaultArray = Array.newInstance(parameterType, 1);
+				// now obtain the class of this array of the required type
+				Class<?> arrayOfParameterType = argDefaultArray.getClass();
+				parameterTypes[i] = arrayOfParameterType;
+			}
+			invokerDefaultsCandidate = javaClass.getMethod(invokerDefaultsMethodName, (Class[])parameterTypes);
+		} catch (SecurityException ex) {
+			return;
+		} catch (NoSuchMethodException ex) {
+			return;
+		}
+		if (invokerDefaultsCandidate == null) {
+			return;
+		}
+		if (!isPublic(invokerDefaultsCandidate)) {
+			return;
+		}
+		if (!methodReturns(invokerDefaultsCandidate, Void.class)) {
+			return;
+		}
+		setOperationDefaults(eOperation, invokerDefaultsCandidate);
+	}
+	private boolean isPublic(Method method) {
+		return Modifier.isPublic(method.getModifiers());
+	}
+	/**
+	 * Although methods that are <code>void</code> do not actually reflectively
+	 * return <code>Void.class</code>, this method will - as a convenience - 
+	 * make that interpretation.
+	 * 
+	 * @param method
+	 * @param javaClass
+	 * @return
+	 */
+	private boolean methodReturns(Method method, Class<?> javaClass) {
+		// hack, good enough for us.
+		if (javaClass == Void.class) {
+			return method.getReturnType() == null ||
+			       "void".equals(method.getReturnType().getName());
+		}
+		return javaClass.isAssignableFrom(method.getReturnType());
+	}
+
+	private void setOperationDefaults(EOperation operation, Method method) {
 		_emfAnnotations.putAnnotationDetails(
 				operation,
 				EssentialProgModelStandardSemanticsConstants.ANNOTATION_SOURCE_METHOD_NAMES,  
