@@ -3,26 +3,24 @@ package org.essentialplatform.louis.factory.reference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.Section;
-
-import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.louis.LouisPlugin;
+import org.essentialplatform.louis.configure.IConfigurable;
+import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.domain.event.DomainObjectReferenceEvent;
 import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectReferenceEvent;
 import org.essentialplatform.runtime.domain.event.IDomainObjectReferenceListener;
 
-import org.essentialplatform.louis.LouisPlugin;
-import org.essentialplatform.louis.configure.IConfigurable;
-import org.essentialplatform.louis.util.SWTUtil;
-
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 
-	private final EReference _model;
+	private final IDomainClass.IReference _model;
 	private final IDomainObjectReferenceListener _listener;
 	private final IFormPart _detailsPart;
 	
@@ -36,7 +34,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * @param ref
 	 * @param pages
 	 */
-	ReferencePart( EReference ref, IFormPart detailsPart ) {
+	ReferencePart( IDomainClass.IReference ref, IFormPart detailsPart ) {
 		super();
 		assert ref != null;
 		assert detailsPart != null;

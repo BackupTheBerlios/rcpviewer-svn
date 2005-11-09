@@ -1,4 +1,4 @@
-package org.essentialplatform.progmodel.essential.core.domain;
+package org.essentialplatform.core.domain;
 
 import java.util.Comparator;
 

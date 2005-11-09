@@ -1,6 +1,5 @@
 package org.essentialplatform.core.domain;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -9,11 +8,9 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.deployment.Deployment.IAttributeBinding;
 import org.essentialplatform.core.deployment.Deployment.IClassBinding;
-import org.essentialplatform.core.deployment.Deployment.IOneToOneReferenceBinding;
 import org.essentialplatform.core.deployment.Deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.Deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
@@ -24,7 +21,6 @@ import org.essentialplatform.core.i18n.II18nData;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.app.ImmutableOncePersisted;
 import org.essentialplatform.progmodel.essential.app.Invisible;
@@ -34,7 +30,6 @@ import org.essentialplatform.progmodel.essential.app.MinLengthOf;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.Optional;
 import org.essentialplatform.progmodel.essential.app.Regex;
-import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 
 
 /**
@@ -63,8 +58,23 @@ public interface IDomainClass {
 	 *
 	 */
 	public interface IMember {
+		
+		/**
+		 * The containing {@link IDomainClass} of this member.
+		 * 
+		 * @return
+		 */
 		IDomainClass getDomainClass();
 
+
+		/**
+		 * The name of this member.
+		 * 
+		 * @return
+		 */
+		String getName();
+
+		
 		/**
 		 * Returns a feature identifier for the supplied member.
 		 * 
@@ -176,27 +186,33 @@ public interface IDomainClass {
 
 	/**
 	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#eAttributes()} in the order defined by the
-	 * {@link RelativeOrder} annotation.
+	 * {@link IDomainClass#iAttributes()} that make up the identifier for this
+	 * domain object.
 	 * 
 	 * <p>
 	 * Extended semantics. 
 	 * 
 	 * @return
 	 */
-	public List<EAttribute> orderedEAttributes();
+	public List<IAttribute> idIAttributes();
+
 
 	/**
 	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#eAttributes()} that make up the identifier for this
-	 * domain object, in the order defined by the {@link Id} annotation.
+	 * {@link IDomainClass#iAttributes()} that make up the identifier for this
+	 * domain object; the attributes are sorted by the supplied comparator.
 	 * 
+	 * <p>
+	 * Although any comparator can be used, it only makes sense to use a
+	 * comparator that uses semantics relevant to attributes that logically 
+	 * represent part of the domain's Id.
+	 *  
 	 * <p>
 	 * Extended semantics. 
 	 * 
 	 * @return
 	 */
-	public List<EAttribute> idEAttributes();
+	public List<IAttribute> idIAttributes(IAttributeComparator comparator);
 
 	/**
 	 * Returns a map keyed by name of each business key, whose value is a list
@@ -212,7 +228,7 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public Map<String, List<EAttribute>> businessKeys();
+	public Map<String, List<IDomainClass.IAttribute>> businessKeys();
 
 	/**
 	 * Whether the identifier for this class consists of a single attribute.
@@ -316,28 +332,10 @@ public interface IDomainClass {
 	///////////////////////////////////////////////////////////////
 	// attribute
 	
-	/**
-	 * Returns all the EMF attributes of the class, including inherited attributes.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<EAttribute> eAttributes();
-	
-	
-	/**
-	 * Overloaded version of {@link #eAttributes()} to indicate whether to
-	 * include inherited attributes or not.
-	 * 
-	 * @return
-	 */
-	public List<EAttribute> eAttributes(boolean includeInherited);
-
 
 	/**
 	 * Returns all the {@link IDomainClass.IAttribute}s of the class, 
-	 * including inherited attributes.
+	 * including inherited attributes; the order is indeterminate.
 	 * 
 	 * <p>
 	 * The returned list is a copy and so may safely be modified by the caller
@@ -347,21 +345,55 @@ public interface IDomainClass {
 	
 
 	/**
+	 * Returns all the {@link IDomainClass.IAttribute}s of the class, 
+	 * including inherited attributes, in the order specified by the supplied
+	 * {@link IAttributeComparator}.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IAttribute> iAttributes(final IAttributeComparator comparator);
+
+	
+	/**
+	 * Returns the {@link IDomainClass.IAttribute}s of the class that are
+	 * satisfied by the supplied filter.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IAttribute> iAttributes(final IAttributeFilter filter);
+
+	
+	/**
+	 * Returns the {@link IDomainClass.IAttribute}s of the class that are
+	 * satisfied by the supplied filter; the order is indeterminate.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IAttribute> iAttributes(final IAttributeFilter filter, final IAttributeComparator comparator);
+
+	
+	/**
 	 * Returns the attribute with given name, or <tt>nothing</tt> if unknown.
 	 * 
 	 * @param attributeName
 	 * @return
 	 */
-	public EAttribute getEAttributeNamed(String attributeName);
+	public IAttribute getIAttributeNamed(String attributeName);
 
 	/**
 	 * Whether the EClass wrapped by this DomainClass contains the 
-	 * EAttribute.
+	 * IAttribute.
 	 * 
-	 * @param eAttribute
+	 * @param iAttribute
 	 * @return
 	 */
-	public boolean containsEAttribute(EAttribute eAttribute);
+	public boolean containsIAttribute(IDomainClass.IAttribute iAttribute);
 
 	/**
 	 * Returns an {@link IAttribute} represented by the supplied 
@@ -381,6 +413,13 @@ public interface IDomainClass {
 		
 		/**
 		 * The underlying {@link EAttribute} that this represents.
+		 * 
+		 * <p>
+		 * For use only internally.
+		 * 
+		 * <p>
+		 * TODO: add an aspect to enforce this.
+		 * 
 		 * @return
 		 */
 		EAttribute getEAttribute();
@@ -825,21 +864,12 @@ public interface IDomainClass {
 		 * @return
 		 */
 		public IAttributeBinding getBinding();
-		
+
 	}
 
 	///////////////////////////////////////////////////////////////
 	// reference
 	
-
-	/**
-	 * Returns EMF references from this class to other classes, including those 
-	 * inherited.
-	 * 
-	 * <p>
-	 * The returned list is a copy and can be safely modified by the caller.
-	 */
-	public List<EReference> eReferences();
 
 	/**
 	 * Returns {@link IDomainClass.IReference}s from this class to other 
@@ -856,7 +886,7 @@ public interface IDomainClass {
 	 * @param referenceName
 	 * @return
 	 */
-	public EReference getEReferenceNamed(String referenceName);
+	public IDomainClass.IReference getIReferenceNamed(String referenceName);
 
 	/**
 	 * Returns an {@link IReference} represented by the supplied 
@@ -961,17 +991,7 @@ public interface IDomainClass {
 	
 	
 	/**
-	 * Returns all the EMF operations (both static and instance) of the class, 
-	 * including inherited operations.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<EOperation> eOperations();
-	
-	/**
-	 * Returns all the EMF operations of the class, of the specified
+	 * Returns all the operations of the class, of the specified
 	 * {@link OperationKind}, and including inherited operations only if 
 	 * requested.
 	 * 
@@ -979,7 +999,7 @@ public interface IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<EOperation> eOperations(OperationKind operationKind, boolean includeInherited);
+	public List<IOperation> iOperations(OperationKind operationKind, boolean includeInherited);
 
 	/**
 	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
@@ -987,7 +1007,7 @@ public interface IDomainClass {
 	 * @param operationName
 	 * @return
 	 */
-	public EOperation getEOperationNamed(String operationName);
+	public IDomainClass.IOperation getIOperationNamed(String operationName);
 
 	/**
 	 * Returns all the {@link IDomainClass.IOperation}s (both static and 

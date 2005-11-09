@@ -36,11 +36,11 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 	 */
 	public void incompletetestCanHandleWriteOnlyAttributes() {
 		IDomainClass domainClass = lookupAny(CustomerWithWriteOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
 		// assertNotNull(domainClass.getAccessorOrMutatorFor(eAttribute));
 		
 		
-		RuntimeAttributeBinding binding = (RuntimeAttributeBinding)domainClass.getIAttribute(eAttribute).getBinding();
+		RuntimeAttributeBinding binding = (RuntimeAttributeBinding)iAttribute.getBinding();
 		// we can't assert anything here really (except perhaps demonstrate 
 		// can invoke a mutator but no accessor)?
 		

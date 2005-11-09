@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
@@ -25,7 +25,7 @@ import org.essentialplatform.runtime.session.ISession;
 
 class CollectionPart extends AbstractFormPart implements IConfigurable {
 
-	private final EReference _model;
+	private final IDomainClass.IReference _model;
 	private final IDomainObjectReferenceListener _domainListener;
 	private final ListenerForwarder _partListener;
 	private final List<ICollectionChildPart> _children;
@@ -40,7 +40,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 * @param ref
 	 * @param pages
 	 */
-	CollectionPart( EReference ref ) {
+	CollectionPart( IDomainClass.IReference ref ) {
 		super();
 		assert ref != null;
 		_model = ref;

@@ -1,7 +1,7 @@
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Button;
+import org.essentialplatform.core.domain.IDomainClass;
 
 
 /**
@@ -15,7 +15,7 @@ class BooleanAttributeFormPart
 	 * @param model
 	 * @param control
 	 */
-	BooleanAttributeFormPart( EAttribute model ) {
+	BooleanAttributeFormPart( IDomainClass.IAttribute model ) {
 		super(model );
 	}
 

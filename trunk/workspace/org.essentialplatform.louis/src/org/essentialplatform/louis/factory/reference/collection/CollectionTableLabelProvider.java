@@ -5,12 +5,12 @@ package org.essentialplatform.louis.factory.reference.collection;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.essentialplatform.louis.LouisPlugin;
 
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
@@ -20,9 +20,9 @@ import org.essentialplatform.runtime.domain.IDomainObject;
 class CollectionTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
 	
-	private final  List<EAttribute> _attributes;
+	private final  List<IDomainClass.IAttribute> _attributes;
 	
-	CollectionTableLabelProvider( List<EAttribute> attributes ) {
+	CollectionTableLabelProvider( List<IDomainClass.IAttribute> attributes ) {
 		assert attributes != null;
 		_attributes = attributes;
 	}
@@ -45,8 +45,9 @@ class CollectionTableLabelProvider extends LabelProvider implements
 			return LouisPlugin.getText( element );
 		}
 		else {
+			IDomainObject<?> domainObject = ((IDomainObject<?>)element);
 			return LouisPlugin.getText(
-					((IDomainObject<?>)element).getAttribute( 
+					domainObject.getAttribute( 
 							_attributes.get( --columnIndex ) ).get() );
 		}
 	}

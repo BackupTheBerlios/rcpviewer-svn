@@ -5,8 +5,8 @@ package org.essentialplatform.louis.factory.attribute;
 
 import java.util.Date;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 
 
@@ -20,7 +20,7 @@ class DateAttributeFormPart extends AbstractAttributeFormPart<Date,Text> {
 	 * @param model
 	 * @param control
 	 */
-	DateAttributeFormPart(EAttribute model) {
+	DateAttributeFormPart(IDomainClass.IAttribute model) {
 		super( model );
 	}
 

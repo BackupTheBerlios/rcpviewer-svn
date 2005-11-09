@@ -1,11 +1,7 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
-import static org.essentialplatform.louis.util.EmfUtil.SortType.ANNOTATION;
-
 import java.util.List;
 
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -18,14 +14,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.EmfUtil;
 
-import org.essentialplatform.core.domain.IDomainClass;
-
-public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
+public class CollectionTableGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 
 	/**
 	 * Returns <code>true</code> if a multiple reference and parent is
@@ -38,8 +34,8 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 		if( model == null ) throw new IllegalArgumentException();
 		if( parent == null ) return false;
 		if ( !( parent instanceof CollectionGuiFactory ) ) return false;
-		if ( model instanceof EReference ) {
-			return ((EReference)model).isMany();
+		if ( model instanceof IDomainClass.IReference ) {
+			return ((IDomainClass.IReference)model).isMultiple();
 		}
 		return false;
 	}
@@ -60,7 +56,7 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 	 * @return
 	 */
 	public CollectionTablePart createGui(
-			EReference model, 
+			IDomainClass.IReference model, 
 			FormToolkit toolkit,
 			Composite parent, 
 			GuiHints hints) {
@@ -70,10 +66,9 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 		if( hints == null ) throw new IllegalArgumentException();
 		
 		// model data
-		IDomainClass collectionDomainType
-			= EmfUtil.getCollectionDomainType( model );
-		List<EAttribute> attributes
-			= EmfUtil.sort( collectionDomainType.eAttributes(), ANNOTATION );
+		IDomainClass collectionDomainType = model.getReferencedDomainClass();
+		// TODO: was calling EmfUtil here
+		List<IDomainClass.IAttribute> iAttributes = collectionDomainType.iAttributes();
 
 		// layout
 		parent.setLayout( new GridLayout() );
@@ -103,10 +98,10 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 			LouisPlugin.getResourceString( 
 				"CollectionTableGuiFactory.FirstColumnHeader") ); //$NON-NLS-1$
 		if ( hints.styleMatches( GuiHints.INCLUDE_ATTRIBUTES ) ) {
-			for ( EAttribute attribute : attributes ) { 
+			for ( IDomainClass.IAttribute iAttribute : iAttributes ) { 
 				TableColumn column = new TableColumn( table, SWT.LEFT );
-				column.setText( attribute.getName() );
-				part.addAttribute( attribute, column );
+				column.setText( iAttribute.getName() );
+				part.addAttribute( iAttribute, column );
 			}
 			table.setLinesVisible( true );
 			table.setHeaderVisible( true );
@@ -114,7 +109,7 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 
 		// label provider 
 		viewer.setLabelProvider( 
-				new CollectionTableLabelProvider( attributes ) );
+				new CollectionTableLabelProvider( iAttributes ) );
 
 		// content provider a seperate class as quite complicated
 		viewer.setContentProvider( new CollectionTableContentProvider() );
@@ -127,7 +122,7 @@ public class CollectionTableGuiFactory implements IGuiFactory<EReference> {
 				table, 
 				DND.DROP_MOVE | DND.DROP_COPY );
 		final Transfer transfer = LouisPlugin.getTransfer(  
-				model.getEType().getInstanceClass() );
+				model.getReferencedDomainClass().getEClass().getInstanceClass() );
 		dragSource.setTransfer( new Transfer[]{ transfer } );
 		dragSource.addDragListener ( 
 				new CollectionTableDragSourceListener( viewer ) );

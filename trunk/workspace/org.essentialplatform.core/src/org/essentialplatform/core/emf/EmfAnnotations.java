@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
-import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
 
 /**
  * Misnamed: is now support for serializing EMF annotations.

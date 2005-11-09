@@ -122,7 +122,7 @@ public final class EssentialProgModelStandardSemanticsConstants {
 	 * <p>
 	 * Holds key to the mutator method (applicable only if changeable).
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY = "set";
+	public static final String ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY = "set";
 
 	/**
 	 * Key to EAnnotation details representing (names of) methods to access or
@@ -140,7 +140,7 @@ public final class EssentialProgModelStandardSemanticsConstants {
 	 * <p>
 	 * Holds key to the unset method (applicable only if isUnsettable is true).
 	 */
-	public static final String ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY = "unset";
+	public static final String ANNOTATION_ATTRIBUTE_UNSET_METHOD_NAME_KEY = "unset";
 
 	/**
 	 * Key to EAnnotation details representing (name of) underlying method that

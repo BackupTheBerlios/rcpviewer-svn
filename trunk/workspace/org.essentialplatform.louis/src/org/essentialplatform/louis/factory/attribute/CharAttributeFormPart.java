@@ -1,7 +1,7 @@
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 
 
 /**
@@ -13,7 +13,7 @@ class CharAttributeFormPart extends AbstractAttributeFormPart<Character,Text> {
 	 * @param model
 	 * @param control
 	 */
-	CharAttributeFormPart( EAttribute model ) {
+	CharAttributeFormPart( IDomainClass.IAttribute model ) {
 		super( model );
 	}
 

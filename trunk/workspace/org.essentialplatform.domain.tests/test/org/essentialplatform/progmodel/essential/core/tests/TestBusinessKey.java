@@ -24,19 +24,19 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		Map<String, List<EAttribute>> businessKeys = domainClass.businessKeys();
+		Map<String, List<IDomainClass.IAttribute>> businessKeys = domainClass.businessKeys();
 		assertEquals(2, businessKeys.size());
 		
 		assertTrue(businessKeys.containsKey("name"));
-		List<EAttribute> attributesForNameBusinessKey = businessKeys.get("name");
+		List<IDomainClass.IAttribute> attributesForNameBusinessKey = businessKeys.get("name");
 		assertEquals(2, attributesForNameBusinessKey.size());
-		assertSame(domainClass.getEAttributeNamed("lastName"), attributesForNameBusinessKey.get(0));
-		assertSame(domainClass.getEAttributeNamed("firstName"), attributesForNameBusinessKey.get(1));
+		assertSame(domainClass.getIAttributeNamed("lastName"), attributesForNameBusinessKey.get(0));
+		assertSame(domainClass.getIAttributeNamed("firstName"), attributesForNameBusinessKey.get(1));
 
 		assertTrue(businessKeys.containsKey("email"));
-		List<EAttribute> attributesForEmailBusinessKey = businessKeys.get("email");
+		List<IDomainClass.IAttribute> attributesForEmailBusinessKey = businessKeys.get("email");
 		assertEquals(1, attributesForEmailBusinessKey.size());
-		assertSame(domainClass.getEAttributeNamed("email"), attributesForEmailBusinessKey.get(0));
+		assertSame(domainClass.getIAttributeNamed("email"), attributesForEmailBusinessKey.get(0));
 
 	}
 
@@ -47,8 +47,7 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("lastName"));
+		IDomainClass.IAttribute attrib = domainClass.getIAttributeNamed("lastName");
 		assertFalse(attrib.isMandatory());
 		assertTrue(attrib.isOptional());
 	}
@@ -59,8 +58,7 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("placeOrder"));
+		IDomainClass.IOperation op = domainClass.getIOperationNamed("placeOrder");
 		assertTrue(op.isMandatory(0));
 		assertFalse(op.isOptional(0));
 	}
@@ -72,8 +70,7 @@ public abstract class TestBusinessKey extends AbstractTestCase {
 		getDomainInstance().addBuilder(getDomainBuilder());
 		getDomainInstance().done();
 		
-		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("placeOrder"));
+		IDomainClass.IOperation op = domainClass.getIOperationNamed("placeOrder");
 		assertFalse(op.isMandatory(1));
 		assertTrue(op.isOptional(1));
 	}

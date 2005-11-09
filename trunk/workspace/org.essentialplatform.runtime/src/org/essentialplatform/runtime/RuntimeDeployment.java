@@ -304,52 +304,44 @@ public final class RuntimeDeployment extends Deployment {
 		
 	}
 
+	/**
+	 * Implementation note: methods are looked up from serializer (rather than,
+	 * say, caching in constructor) because when the binding is first 
+	 * instantiated the EMF meta-model may not have been fully populated.
+	 */
 	public final static class RuntimeAttributeBinding implements IAttributeBinding {
 
 		private final IDomainClass.IAttribute _attribute;
 		private final EAttribute _eAttribute;
 		
-		/**
-		 * Derived, may be null for write-only attribute.
-		 */
-		private final Method _accessor;
-		/**
-		 * Derived, may be null for write-only reference.
-		 */
-		private final Method _mutator;
-		/**
-		 * Derived, typically is the accessor method, but will be the mutator 
-		 * method for a write-only attribute; never null.
-		 */
-		private final Method _accessorOrMutator;
-		/**
-		 * Derived, may be null.
-		 */
-		private final Method _accessorPre;
-		/**
-		 * Derived, may be null.
-		 */
-		private final Method _mutatorPre;
-
 		public RuntimeAttributeBinding(IDomainClass.IAttribute attribute) {
 			_attribute = attribute;
 			_eAttribute = _attribute.getEAttribute();
-			
-			_accessor = __standardSerializer.getAttributeAccessorMethod(_eAttribute);
-			_mutator = __standardSerializer.getAttributeMutatorMethod(_eAttribute);
-			_accessorOrMutator = _accessor!=null?_accessor:_mutator;
-			
-			_accessorPre = __extendedSerializer.getAttributeAccessorPreMethod(_eAttribute);
-			_mutatorPre = __extendedSerializer.getAttributeMutatorPreMethod(_eAttribute);
 		}
 		
+		private Method getAccessor() {
+			return __standardSerializer.getAttributeAccessorMethod(_eAttribute);
+		}
+		private Method getMutator() {
+			return __standardSerializer.getAttributeMutatorMethod(_eAttribute);
+		}
+		private Method getAccessorOrMutator() {
+			return getAccessor()!=null?getAccessor():getMutator();
+		}
+		private Method getAccessorPre() {
+			return __extendedSerializer.getAttributeAccessorPreMethod(_eAttribute);
+		}
+		private Method getMutatorPre() {
+			return __extendedSerializer.getAttributeMutatorPreMethod(_eAttribute);
+		}
+
 		public Object invokeAccessor(final Object pojo) {
-			if (_accessor == null) {
-				throw new UnsupportedOperationException("Accesor method '" + _accessor + "' not accessible / could not be found");
+			if (getAccessor() == null) {
+				throw new UnsupportedOperationException("Accesor method '" + getAccessor() + "' not accessible / could not be found");
 			}
-			String accessorMethodName = _accessor.getName();
+			String accessorMethodName = getAccessor().getName();
 			try {
-				return _accessor.invoke(pojo);
+				return getAccessor().invoke(pojo);
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -360,12 +352,12 @@ public final class RuntimeDeployment extends Deployment {
 		}
 
 		public void invokeMutator(final Object pojo, final Object newValue) {
-			if (_mutator == null) {
-				throw new UnsupportedOperationException("Mutator method '" + _mutator + "' not accessible / could not be found");
+			if (getMutator() == null) {
+				throw new UnsupportedOperationException("Mutator method '" + getMutator() + "' not accessible / could not be found");
 			}
-			String mutatorMethodName = _mutator.getName();
+			String mutatorMethodName = getMutator().getName();
 			try {
-				_mutator.invoke(pojo, newValue);
+				getMutator().invoke(pojo, newValue);
 				// previously there was a call to notifyAttributeListeners(newValue) here;
 				// however this is superfluous since the NotifyListeners aspect will do
 				// our bidding for us.
@@ -387,7 +379,7 @@ public final class RuntimeDeployment extends Deployment {
 		 * @return
 		 */
 		public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-			return _accessorOrMutator.getAnnotation(annotationClass);
+			return getAccessorOrMutator().getAnnotation(annotationClass);
 		}
 
 		public IPrerequisites authorizationPrerequisites() {
@@ -433,32 +425,39 @@ public final class RuntimeDeployment extends Deployment {
 				return Prerequisites.invisible();
 			}
 		}
+
 		
 	}
 
+	/**
+	 * Implementation note: methods are looked up from serializer (rather than,
+	 * say, caching in constructor) because when the binding is first 
+	 * instantiated the EMF meta-model may not have been fully populated.
+	 */
 	public static abstract class AbstractRuntimeReferenceBinding {
 		
 		final IDomainClass.IReference _reference;
 		final EReference _eReference;
 
-		final Method _accessor;
-		final Method _mutator;
-
 		public AbstractRuntimeReferenceBinding(IDomainClass.IReference reference) {
 			_reference = reference;
 			_eReference = reference.getEReference();
-			
-			_accessor = __standardSerializer.getReferenceAccessor(_eReference);
-			_mutator = __standardSerializer.getReferenceMutator(_eReference);
 		}
 		
+		Method getAccessor() {
+			return __standardSerializer.getReferenceAccessor(_eReference);
+		}
+		Method getMutator() {
+			return __standardSerializer.getReferenceMutator(_eReference);
+		}
+
 		public Object invokeAccessor(final Object pojo) {
-			if (_accessor == null) {
+			if (getAccessor() == null) {
 				throw new UnsupportedOperationException("No accessor method");
 			}
-			String accessorMethodName = _accessor.getName();
+			String accessorMethodName = getAccessor().getName();
 			try {
-				return _accessor.invoke(pojo);
+				return getAccessor().invoke(pojo);
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -494,34 +493,43 @@ public final class RuntimeDeployment extends Deployment {
 
 	}
 	
+	/**
+	 * Implementation note: methods are looked up from serializer (rather than,
+	 * say, caching in constructor) because when the binding is first 
+	 * instantiated the EMF meta-model may not have been fully populated.
+	 */
 	public final static class RuntimeOneToOneReferenceBinding extends AbstractRuntimeReferenceBinding implements IOneToOneReferenceBinding {
 
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
-		private final Method _associator;
-		private final Method _dissociator;
-		private final Method _associatorPre;
-		private final Method _dissociatorPre;
 
 		public RuntimeOneToOneReferenceBinding(IDomainClass.IOneToOneReference oneToOneReference) {
 			super(oneToOneReference);
 			_oneToOneReference = oneToOneReference; // downcast
-			
-			_associator = __standardSerializer.getReferenceOneToOneAssociator(_eReference);
-			_dissociator = __standardSerializer.getReferenceOneToOneDissociator(_eReference);
-			_associatorPre = __extendedSerializer.getReferenceAccessorPreMethod(_eReference);
-			_dissociatorPre = __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
+		}
+
+		private Method getAssociator() {
+			return __standardSerializer.getReferenceOneToOneAssociator(_eReference);
+		}
+		private Method getDissociator() {
+			return __standardSerializer.getReferenceOneToOneDissociator(_eReference);
+		}
+		private Method getAssociatorPre() {
+			return __extendedSerializer.getReferenceAccessorPreMethod(_eReference);
+		}
+		private Method getDissociatorPre() {
+			return __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
 		}
 
 		public boolean canAssociate() {
-			return _associator != null;
+			return getAssociator() != null;
 		}
 		public void invokeAssociator(final Object pojo, final Object referencedObject) {
-			if (_associator == null) {
+			if (getAssociator() == null) {
 				throw new UnsupportedOperationException("No associator method");
 			}
-			String associatorMethodName = _associator.getName();
+			String associatorMethodName = getAssociator().getName();
 			try {
-				_associator.invoke(pojo, new Object[]{referencedObject});
+				getAssociator().invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Associator method '" + associatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -531,15 +539,15 @@ public final class RuntimeDeployment extends Deployment {
 			}
 		}
 		public boolean canDissociate() {
-			return _dissociator != null;
+			return getDissociator() != null;
 		}
 		public void invokeDissociator(final Object pojo, final Object referencedObject) {
-			if (_dissociator == null) {
+			if (getDissociator() == null) {
 				throw new UnsupportedOperationException("No dissociator method");
 			}
-			String dissociatorMethodName = _dissociator.getName();
+			String dissociatorMethodName = getDissociator().getName();
 			try {
-				_dissociator.invoke(pojo, new Object[]{referencedObject});
+				getDissociator().invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Dissociator method '" + dissociatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -570,34 +578,43 @@ public final class RuntimeDeployment extends Deployment {
 		
 	}
 		
+	/**
+	 * Implementation note: methods are looked up from serializer (rather than,
+	 * say, caching in constructor) because when the binding is first 
+	 * instantiated the EMF meta-model may not have been fully populated.
+	 */
 	public final static class RuntimeCollectionReferenceBinding extends AbstractRuntimeReferenceBinding implements ICollectionReferenceBinding {
 
 		private final IDomainClass.ICollectionReference _collectionReference;
-		private final Method _associator;
-		private final Method _dissociator;
-		private final Method _associatorPre;
-		private final Method _dissociatorPre;
 
 		public RuntimeCollectionReferenceBinding(IDomainClass.ICollectionReference collectionReference) {
 			super(collectionReference);
 			_collectionReference = collectionReference; // downcast
-			
-			_associator = __standardSerializer.getReferenceCollectionAssociator(_eReference);
-			_dissociator = __standardSerializer.getReferenceCollectionDissociator(_eReference);
-			_associatorPre = __extendedSerializer.getReferenceAddToPreMethod(_eReference);
-			_dissociatorPre = __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
+		}
+
+		private Method getAssociator() {
+			return __standardSerializer.getReferenceCollectionAssociator(_eReference);
+		}
+		private Method getDissociator() {
+			return __standardSerializer.getReferenceCollectionDissociator(_eReference);
+		}
+		private Method getAssociatorPre() {
+			return __extendedSerializer.getReferenceAddToPreMethod(_eReference);
+		}
+		private Method getDissociatorPre() {
+			return __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
 		}
 
 		public boolean canAddTo() {
-			return _associator != null;
+			return getAssociator() != null;
 		}
 		public void invokeAddTo(final Object pojo, final Object referencedObject) {
-			if (_associator == null) {
+			if (getAssociator() == null) {
 				throw new UnsupportedOperationException("No associator method");
 			}
-			String associatorMethodName = _associator.getName();
+			String associatorMethodName = getAssociator().getName();
 			try {
-				_associator.invoke(pojo, new Object[]{referencedObject});
+				getAssociator().invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Associator method '" + associatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -607,15 +624,15 @@ public final class RuntimeDeployment extends Deployment {
 			}
 		}
 		public boolean canRemoveFrom() {
-			return _dissociator != null;
+			return getDissociator() != null;
 		}
 		public void invokeRemoveFrom(final Object pojo, final Object referencedObject) {
-			if (_dissociator == null) {
+			if (getDissociator() == null) {
 				throw new UnsupportedOperationException("No dissociator method");
 			}
-			String dissociatorMethodName = _dissociator.getName();
+			String dissociatorMethodName = getDissociator().getName();
 			try {
-				_dissociator.invoke(pojo, new Object[]{referencedObject});
+				getDissociator().invoke(pojo, new Object[]{referencedObject});
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Dissociator method '" + dissociatorMethodName + "' not accessible", e);
 			} catch (IllegalAccessException e) {
@@ -646,24 +663,16 @@ public final class RuntimeDeployment extends Deployment {
 
 	}
 
+	/**
+	 * Implementation note: methods are looked up from serializer (rather than,
+	 * say, caching in constructor) because when the binding is first 
+	 * instantiated the EMF meta-model may not have been fully populated.
+	 */
 	public final static class RuntimeOperationBinding implements IOperationBinding {
 
 		private final IDomainClass.IOperation _operation;
 		private final EOperation _eOperation;
 		
-		/**
-		 * Not null.
-		 */
-		private final Method _operationInvoker;
-		/**
-		 * Derived, may be null.
-		 */
-		private final Method _operationPre;
-		/**
-		 * Derived, may be null.
-		 */
-		private final Method _operationDefaults;
-
 		/*
 		 * Extended semantics support.
 		 */
@@ -674,10 +683,6 @@ public final class RuntimeDeployment extends Deployment {
 			_operation = operation;
 			_eOperation = _operation.getEOperation();
 			
-			_operationInvoker = __standardSerializer.getOperationMethod(_eOperation);
-			_operationPre = __extendedSerializer.getOperationPreMethod(_eOperation);
-			_operationDefaults = __extendedSerializer.getOperationDefaultsMethod(_eOperation);
-
 			// extended semantics
 			EList eParameters = _eOperation.getEParameters();
 			_parameterTypes = new Class<?>[eParameters.size()];
@@ -687,13 +692,32 @@ public final class RuntimeDeployment extends Deployment {
 			}
 		}
 
+		/**
+		 * Not null.
+		 */
+		private Method getOperationInvoker() {
+			return __standardSerializer.getOperationMethod(_eOperation);
+		}
+		/**
+		 * Derived, may be null.
+		 */
+		private Method getOperationPre() {
+			return __extendedSerializer.getOperationPreMethod(_eOperation);
+		}
+		/**
+		 * Derived, may be null.
+		 */
+		private Method getOperationDefaults() {
+			return __extendedSerializer.getOperationDefaultsMethod(_eOperation);
+		}
+
 		public Object invokeOperation(final Object pojo, final Object[] args) {
-			if (_operationInvoker == null) {
+			if (getOperationInvoker() == null) {
 				throw new UnsupportedOperationException("No operation invoker method.");
 			}
-			String operationInvokerMethodName = _operationInvoker.getName();
+			String operationInvokerMethodName = getOperationInvoker().getName();
 			try {
-				return _operationInvoker.invoke(pojo, args);
+				return getOperationInvoker().invoke(pojo, args);
 			} catch (SecurityException e) {
 				throw new UnsupportedOperationException("Operation invoker method '" + operationInvokerMethodName + "' not accessible");
 			} catch (IllegalAccessException e) {

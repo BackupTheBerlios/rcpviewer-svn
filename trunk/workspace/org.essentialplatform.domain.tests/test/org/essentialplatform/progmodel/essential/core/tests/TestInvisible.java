@@ -17,7 +17,7 @@ public abstract class TestInvisible extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestInvisibleAnnotation.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("id"));
+			domainClass.getIAttributeNamed("id");
 		assertTrue(attrib.isInvisible());
 	}
 
@@ -26,7 +26,7 @@ public abstract class TestInvisible extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestInvisibleAnnotation.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName"));
+			domainClass.getIAttributeNamed("firstName");
 		assertFalse(attrib.isInvisible());
 	}
 	

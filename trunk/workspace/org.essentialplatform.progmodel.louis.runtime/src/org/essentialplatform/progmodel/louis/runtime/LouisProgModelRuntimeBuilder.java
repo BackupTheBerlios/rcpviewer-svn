@@ -41,4 +41,11 @@ public class LouisProgModelRuntimeBuilder implements IDomainBuilder {
 		// imageUrlAt
 		serializer.setClassImageUrlAt(eClass, javaClass.getAnnotation(ImageUrlAt.class));
 	}
+
+	/*
+	 * @see org.essentialplatform.core.domain.builders.IDomainBuilder#identifyOppositeReferencesFor(org.essentialplatform.core.domain.IDomainClass)
+	 */
+	public void identifyOppositeReferencesFor(IDomainClass domainClass) {
+		// does nothing
+	}
 }

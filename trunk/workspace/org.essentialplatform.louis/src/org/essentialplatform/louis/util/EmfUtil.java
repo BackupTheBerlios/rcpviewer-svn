@@ -29,31 +29,14 @@ public class EmfUtil {
 	public static enum SortType { ALPHABETICAL, ANNOTATION }
 	
 	/**
-	 * Whether the passed element represents a modifiable entity.
-	 * @param element
-	 * @return
-	 */
-	public static boolean isModifiable( ETypedElement element ) {
-		if ( element == null ) throw new IllegalArgumentException();
-		if ( element instanceof EAttribute ) {
-			return ((EAttribute)element).isChangeable();
-		}
-		if ( element instanceof EParameter ) {
-			return true;
-		}
-		return false;
-	}
-	
-	/**
 	 * As its says.
 	 * @param ref
 	 * @return
 	 */
 	public static final IDomainClass getCollectionDomainType( 
-			EReference ref ) {
+			IDomainClass.IReference ref ) {
 		if( ref == null ) throw new IllegalArgumentException();
-		return (IDomainClass)Domain.instance().lookupNoRegister( 
-					(Class<?>)ref.getEType().getInstanceClass() );		
+		return ref.getReferencedDomainClass();
 	}
 	
 	/**
@@ -62,11 +45,9 @@ public class EmfUtil {
 	 * @return
 	 */
 	public static final IDomainClass getContainerDomainType( 
-			EReference ref ) {
+			IDomainClass.IReference ref ) {
 		if( ref == null ) throw new IllegalArgumentException();
-		Class<?> containerPojoType = ((EClassifier)ref.eContainer()).getInstanceClass();
-		return (IDomainClass)Domain.instance().lookupNoRegister( 
-					containerPojoType );
+		return ref.getDomainClass();
 	}
 	
 	/**
@@ -74,14 +55,12 @@ public class EmfUtil {
 	 * @param eReference
 	 * @return
 	 */
-	public static final boolean canAddTo( EReference eReference ) {
-		IDomainClass rdc = getContainerDomainType( eReference );
-		IDomainClass.IReference reference = rdc.getIReference(eReference);
-		if (reference.isMultiple()) {
-			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+	public static final boolean canAddTo( IDomainClass.IReference iReference ) {
+		if (iReference.isMultiple()) {
+			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)iReference.getBinding();
 			return runtimeBinding.canAddTo();
 		} else  {
-			RuntimeOneToOneReferenceBinding runtimeBinding = (RuntimeOneToOneReferenceBinding)reference.getBinding();
+			RuntimeOneToOneReferenceBinding runtimeBinding = (RuntimeOneToOneReferenceBinding)iReference.getBinding();
 			return runtimeBinding.canAssociate();
 		}
 	}	
@@ -91,14 +70,12 @@ public class EmfUtil {
 	 * @param ref
 	 * @return
 	 */
-	public static final boolean canRemoveFrom( EReference eReference ) {
-		IDomainClass rdc = getContainerDomainType( eReference );
-		IDomainClass.IReference reference = rdc.getIReference(eReference);
-		if (reference.isMultiple()) {
-			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)reference.getBinding();
+	public static final boolean canRemoveFrom( IDomainClass.IReference iReference ) {
+		if (iReference.isMultiple()) {
+			RuntimeCollectionReferenceBinding runtimeBinding = (RuntimeCollectionReferenceBinding)iReference.getBinding();
 			return runtimeBinding.canRemoveFrom();
 		} else {
-			RuntimeOneToOneReferenceBinding runtimeBinding = (RuntimeOneToOneReferenceBinding)reference.getBinding();
+			RuntimeOneToOneReferenceBinding runtimeBinding = (RuntimeOneToOneReferenceBinding)iReference.getBinding();
 			return runtimeBinding.canDissociate();
 		}
 	}	

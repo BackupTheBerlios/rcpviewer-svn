@@ -16,22 +16,11 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.aspectj.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.louis.core;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.essential.app;visibility:=reexport
+ org.essentialplatform.progmodel.essential.app;visibility:=reexport,
+ org.essentialplatform.progmodel.essential.core
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
-Export-Package: org.essentialplatform,
- org.essentialplatform.core.tests,
+Export-Package: org.essentialplatform.core.tests,
  org.essentialplatform.core.tests.emf,
- org.essentialplatform.domain,
- org.essentialplatform.domain.emf,
  org.essentialplatform.progmodel.essential.core.tests,
- org.essentialplatform.progmodel.extended,
- org.essentialplatform.progmodel.louis.core.tests,
- org.essentialplatform.progmodel.rcpviewer,
- org.essentialplatform.progmodel.standard.attribute,
- org.essentialplatform.progmodel.standard.domainclass,
- org.essentialplatform.progmodel.standard.i18n,
- org.essentialplatform.progmodel.standard.namesanddesc,
- org.essentialplatform.progmodel.standard.namingconventions,
- org.essentialplatform.progmodel.standard.operation,
- org.essentialplatform.progmodel.standard.reference
+ org.essentialplatform.progmodel.louis.core.tests

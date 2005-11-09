@@ -3,16 +3,15 @@
  */
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
-import org.essentialplatform.louis.util.EmfUtil;
 
 
 /**
@@ -30,9 +29,9 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
+		if ( model instanceof IDomainClass.IAttribute ) {
 			return String.class.equals( 
-					((EAttribute)model).getEType().getInstanceClass() );
+					((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass() );
 		}
 		return false;
 	}
@@ -40,13 +39,12 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 
 	/**
 	 * Adds a <code>SWT.WRAP</code> field that fills the area.
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createMainControl(org.eclipse.swt.widgets.Composite, AbstractAttributeFormPart, EAttribute, GuiHints)
 	 */
 	@Override
 	protected Text createMainControl(
 			Composite parent, 
 			final AbstractAttributeFormPart<String, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		assert parent != null;
 		final Text text = new Text( parent, SWT.WRAP );
@@ -69,7 +67,7 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 	
 	@Override
 	protected AbstractAttributeFormPart<String, Text> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new StringAttributeFormPart( model );
 	}
 }

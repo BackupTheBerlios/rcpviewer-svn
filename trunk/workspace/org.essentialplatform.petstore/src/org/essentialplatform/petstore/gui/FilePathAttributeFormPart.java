@@ -3,10 +3,9 @@
  */
 package org.essentialplatform.petstore.gui;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart;
-
 import org.essentialplatform.petstore.domain.FilePath;
 
 /**
@@ -19,7 +18,7 @@ class FilePathAttributeFormPart extends AbstractAttributeFormPart<FilePath,Text>
 	 * @param model
 	 * @param control
 	 */
-	public FilePathAttributeFormPart( EAttribute model ) {
+	public FilePathAttributeFormPart( IDomainClass.IAttribute model ) {
 		super( model );
 	}
 

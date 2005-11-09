@@ -5,7 +5,6 @@ package org.essentialplatform.louis.factory.attribute;
 
 import java.math.BigDecimal;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -13,9 +12,9 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
-import org.essentialplatform.louis.util.EmfUtil;
 import org.essentialplatform.louis.util.SWTUtil;
 
 
@@ -34,9 +33,9 @@ public class BigDecimalAttributeGuiFactory
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
+		if ( model instanceof IDomainClass.IAttribute ) {
 			return BigDecimal.class.isAssignableFrom( 
-					((EAttribute)model).getEType().getInstanceClass() );
+					((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass() );
 		}
 		return false;
 	}
@@ -44,13 +43,13 @@ public class BigDecimalAttributeGuiFactory
 
 	/**
 	 * Adds input verification to standard functionality.
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createMainControl(org.eclipse.swt.widgets.Composite, AbstractAttributeFormPart, EAttribute, GuiHints)
+	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createMainControl(org.eclipse.swt.widgets.Composite, AbstractAttributeFormPart, IDomainClass.IAttribute, GuiHints)
 	 */
 	@Override
 	protected Text createMainControl(
 			Composite parent, 
 			final AbstractAttributeFormPart<BigDecimal, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		assert parent != null;
 		final Text text = new Text( parent, SWT.NONE );
@@ -93,11 +92,11 @@ public class BigDecimalAttributeGuiFactory
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.essentialplatform.gui.factory.attribute.AttributeGuiFactory#createFormPart(org.eclipse.emf.ecore.EAttribute, org.eclipse.swt.widgets.Text)
+	 * @see org.essentialplatform.gui.factory.attribute.AttributeGuiFactory#createFormPart(org.essentialplatform.core.domain.IDomainClass.IAttribute, org.eclipse.swt.widgets.Text)
 	 */
 	@Override
 	protected AbstractAttributeFormPart<BigDecimal,Text> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new BigDecimalAttributeFormPart( model );
 	}
 

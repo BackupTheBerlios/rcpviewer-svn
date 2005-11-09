@@ -20,6 +20,8 @@ import org.essentialplatform.core.deployment.Deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
+import org.essentialplatform.core.domain.IDomainClass.IOperation;
+import org.essentialplatform.core.domain.IDomainClass.IReference;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.RuntimeDeployment.RuntimeAttributeBinding;
@@ -271,24 +273,24 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	/*
-	 * @see org.essentialplatform.session.IDomainObject#getEAttributeNamed(java.lang.String)
+	 * @see org.essentialplatform.session.IDomainObject#getIAttributeNamed(java.lang.String)
 	 */
-	public EAttribute getEAttributeNamed(String attributeName) {
-		return getDomainClass().getEAttributeNamed(attributeName);
+	public IAttribute getIAttributeNamed(String attributeName) {
+		return getDomainClass().getIAttributeNamed(attributeName);
 	}
 
 	/*
-	 * @see org.essentialplatform.session.IDomainObject#getEReferenceNamed(java.lang.String)
+	 * @see org.essentialplatform.session.IDomainObject#getIReferenceNamed(java.lang.String)
 	 */
-	public EReference getEReferenceNamed(final String referenceName) {
-		return getDomainClass().getEReferenceNamed(referenceName);
+	public IReference getIReferenceNamed(final String referenceName) {
+		return getDomainClass().getIReferenceNamed(referenceName);
 	}
 
 	/*
-	 * @see org.essentialplatform.session.IDomainObject#getEOperationNamed(java.lang.String)
+	 * @see org.essentialplatform.session.IDomainObject#getIOperationNamed(java.lang.String)
 	 */
-	public EOperation getEOperationNamed(final String operationName) {
-		return getDomainClass().getEOperationNamed(operationName);
+	public IOperation getIOperationNamed(final String operationName) {
+		return getDomainClass().getIOperationNamed(operationName);
 	}
 
 	/*
@@ -352,7 +354,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	public synchronized IObjectAttribute getAttribute(
-			final EAttribute eAttribute) {
+			final IDomainClass.IAttribute iAttribute) {
+		if (iAttribute == null) {
+			return null;
+		}
+		EAttribute eAttribute = iAttribute.getEAttribute();
 		IObjectAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
 			attribute = new ObjectAttribute(eAttribute);
@@ -369,10 +375,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param eReference
 	 * @return
 	 */
-	synchronized IObjectReference getReference(final EReference eReference) {
-		if (eReference == null) {
+	synchronized IObjectReference getReference(final IDomainClass.IReference iReference) {
+		if (iReference == null) {
 			return null;
 		}
+		EReference eReference = iReference.getEReference(); 
 		IObjectReference reference = _referencesByEReference.get(eReference);
 		if (reference == null) {
 			if (eReference.isMany()) {
@@ -390,10 +397,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @see org.essentialplatform.session.IDomainObject#getOneToOneReference(org.eclipse.emf.ecore.EReference)
 	 */
 	public synchronized IObjectOneToOneReference getOneToOneReference(
-			final EReference eReference) {
-		if (eReference == null) {
+			final IDomainClass.IReference iReference) {
+		if (iReference == null) {
 			return null;
 		}
+		EReference eReference = iReference.getEReference(); 
 		if (eReference.isMany()) {
 			throw new IllegalArgumentException(
 				"EMF reference represents a collection (ref='" + eReference + "'");
@@ -412,10 +420,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @see org.essentialplatform.session.IDomainObject#getCollectionReference(org.eclipse.emf.ecore.EReference)
 	 */
 	public synchronized IObjectCollectionReference getCollectionReference(
-			final EReference eReference) {
-		if (eReference == null) {
+			final IDomainClass.IReference iReference) {
+		if (iReference == null) {
 			return null;
 		}
+		EReference eReference = iReference.getEReference();
 		if (!eReference.isMany()) {
 			throw new IllegalArgumentException(
 				"EMF reference represents a 1:1 reference (ref='" + eReference + "'");
@@ -433,10 +442,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/*
 	 * @see org.essentialplatform.session.IDomainObject#getOperation(org.eclipse.emf.ecore.EOperation)
 	 */
-	public synchronized IObjectOperation getOperation(EOperation eOperation) {
-		if (eOperation == null) {
+	public synchronized IObjectOperation getOperation(IDomainClass.IOperation iOperation) {
+		if (iOperation == null) {
 			return null;
 		}
+		EOperation eOperation = iOperation.getEOperation();
 		IObjectOperation operation = _operationsByEOperation.get(eOperation);
 		if (operation == null) {
 			operation = new ObjectOperation(eOperation);
@@ -653,10 +663,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		/*
-		 * @see org.essentialplatform.session.IDomainObject.IObjectReference#getEReference()
+		 * @see org.essentialplatform.session.IDomainObject.IObjectReference#getReference()
 		 */
-		public EReference getEReference() {
-			return _eReference;
+		public IReference getReference() {
+			return _reference;
 		}
 
 		/*
@@ -740,7 +750,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		@Override
 		public String toString() {
-			return getEReference().toString() + ", " + _listeners.size()
+			return _eReference.toString() + ", " + _listeners.size()
 					+ " listeners" + ", prereqs=" + _currentPrerequisites;
 		}
 
@@ -961,8 +971,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			return (IDomainObject) DomainObject.this; // JAVA_5_FIXME
 		}
 
-		public EOperation getEOperation() {
-			return _eOperation;
+		public IOperation getOperation() {
+			return _operation;
 		}
 
 		public Object invokeOperation(final Object[] args) {
@@ -1064,7 +1074,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 		public String toString() {
-			return getEOperation().toString() + ", " + _listeners.size()
+			return _eOperation.toString() + ", " + _listeners.size()
 					+ " listeners" + ", args=" + getArgs() + ", prereqs="
 					+ _currentPrerequisites;
 		}

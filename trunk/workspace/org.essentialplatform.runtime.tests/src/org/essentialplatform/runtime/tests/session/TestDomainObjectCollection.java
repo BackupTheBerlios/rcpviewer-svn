@@ -18,7 +18,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> departmentDomainObject = session.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
-			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = session.recreate(employeeDomainClass);
 		
 		employeesCollection.addToCollection(employeeDomainObject);
@@ -40,7 +40,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		IDomainObject<Department> departmentDomainObject = 
 			session.create(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
-			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		Collection<IDomainObject<Employee>> employees = 
 			employeesCollection.getCollection();
 		try {
@@ -57,8 +57,8 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		IDomainClass departmentDomainClass = lookupAny(Department.class);
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
-		EReference employeesCollection = departmentDomainClass.getEReferenceNamed("employees");
-		assertSame(employeeDomainClass, departmentDomainClass.getIReference(employeesCollection).getReferencedDomainClass());
+		IDomainClass.IReference employeesCollection = departmentDomainClass.getIReferenceNamed("employees");
+		assertSame(employeeDomainClass, employeesCollection.getReferencedDomainClass());
 	}
 
 	public void testListenersNotifiedWhenAddToCollection() {
@@ -70,7 +70,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
-			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		MyDomainObjectReferenceListener l =
 			employeesCollection.addListener(new MyDomainObjectReferenceListener());
 	
@@ -90,11 +90,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
-			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);
 		employeesCollection.addToCollection(employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
 	
 		MyDomainObjectReferenceListener l =
 			employeesCollection.addListener(new MyDomainObjectReferenceListener());
@@ -103,8 +102,6 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		assertFalse(l.collectionRemovedFromCallbackCalled);
 	
 		employeesCollection.removeFromCollection(employeeDomainObject);
-		Collection<IDomainObject<Employee>> employeesAfterRemove = 
-			employeesCollection.getCollection();
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertTrue(l.collectionRemovedFromCallbackCalled);
@@ -117,7 +114,7 @@ public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
 		IDomainObject<Department> departmentDomainObject = 
 			session.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
-			departmentDomainObject.getCollectionReference(departmentDomainObject.getEReferenceNamed("employees"));
+			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
 			session.recreate(employeeDomainClass);
 		

@@ -1,23 +1,14 @@
 package org.essentialplatform.core.emf;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
-
-import org.essentialplatform.progmodel.essential.app.AssignmentType;
-import org.essentialplatform.progmodel.essential.app.Id;
-import org.essentialplatform.progmodel.essential.app.Named;
-import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
 
 /**
  * Serializes and deserializes semantics for a programming model

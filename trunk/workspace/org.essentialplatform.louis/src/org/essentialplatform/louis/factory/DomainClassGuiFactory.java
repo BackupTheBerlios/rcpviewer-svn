@@ -1,10 +1,5 @@
 package org.essentialplatform.louis.factory;
 
-import static org.essentialplatform.louis.util.EmfUtil.SortType.ALPHABETICAL;
-import static org.essentialplatform.louis.util.EmfUtil.SortType.ANNOTATION;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -12,10 +7,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.essentialplatform.louis.LouisPlugin;
-import org.essentialplatform.louis.util.EmfUtil;
-
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.louis.LouisPlugin;
 
 public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 	
@@ -82,7 +75,8 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 		
 		if ( hints.styleMatches( GuiHints.INCLUDE_ATTRIBUTES ) ) {
 			// loop through all attributes
-			for ( EAttribute attribute : EmfUtil.sort( model.eAttributes(), ANNOTATION ) ) {       
+			// TODO: was calling EmfUtil here...
+			for ( IDomainClass.IAttribute iAttribute : model.iAttributes() ) {
 	
 				// composite 
 				Composite composite = toolkit.createComposite( parent);
@@ -90,20 +84,20 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 				toolkit.paintBordersFor( composite );
 				
 				// call factory method
-				IGuiFactory factory = LouisPlugin.getDefault().getGuiFactory(
-						attribute, this );
-				IFormPart attributePart = factory.createGui( 
-						attribute, toolkit, composite, hints ) ;
+				IGuiFactory factory = 
+					LouisPlugin.getDefault().getGuiFactory(iAttribute, this );
+				IFormPart attributePart = 
+					factory.createGui(iAttribute, toolkit, composite, hints ) ;
 				part.addChildPart( attributePart );
-				part.addAttribute( attribute, composite );
+				part.addAttribute( iAttribute, composite );
 				childrenAdded = true;
 			}
 		}
 		
 		if ( hints.styleMatches( GuiHints.INCLUDE_REFERENCES ) ) {
 			// loop through all references
-			for ( EReference reference : EmfUtil.sort( 
-					model.eReferences(), ALPHABETICAL ) ) {       
+			// TODO: was calling EmfUtil here
+			for ( IDomainClass.IReference iReference : model.iReferences() ) {
 		
 				// composite
 				Composite composite = toolkit.createComposite( parent );
@@ -112,12 +106,12 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 				toolkit.paintBordersFor( composite );
 				
 				// call factory method
-				IGuiFactory factory = LouisPlugin.getDefault().getGuiFactory(
-						reference, this );
-				IFormPart referencePart = factory.createGui( 
-						reference, toolkit, composite, hints );
+				IGuiFactory factory = 
+					LouisPlugin.getDefault().getGuiFactory( iReference, this );
+				IFormPart referencePart = 
+					factory.createGui( iReference, toolkit, composite, hints );
 				part.addChildPart( referencePart );
-				part.addReference( reference, composite );
+				part.addReference( iReference, composite );
 				childrenAdded = true;
 			}
 		}

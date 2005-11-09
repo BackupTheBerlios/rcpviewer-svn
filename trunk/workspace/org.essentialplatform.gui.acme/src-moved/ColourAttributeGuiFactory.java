@@ -3,7 +3,6 @@
  */
 package org.essentialplatform.gui.acme.factory.exts;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -21,6 +20,7 @@ import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * @author Mike
@@ -34,29 +34,26 @@ public class ColourAttributeGuiFactory extends AbstractAttributeGuiFactory<Color
 	 */
 	public boolean isApplicable(Object model, IGuiFactory parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
+		if ( model instanceof IDomainClass.IAttribute ) {
 			return Color.class.equals( 
-					((EAttribute)model).getEType().getInstanceClass() );
+					((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass() );
 		}
 		return false;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createFormPart(org.eclipse.emf.ecore.EAttribute)
+
+	/*
+	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createFormPart(org.essentialplatform.core.domain.IDomainClass.IAttribute)
 	 */
 	@Override
-	protected AbstractAttributeFormPart<Color, Text> createFormPart(EAttribute model) {
+	protected AbstractAttributeFormPart<Color, Text> createFormPart(IDomainClass.IAttribute model) {
 		return new ColourAttributeFormPart( model );
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createMainControl(org.eclipse.swt.widgets.Composite, org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart, org.eclipse.emf.ecore.EAttribute)
-	 */
+
 	@Override
 	protected Text createMainControl(
 			Composite parent, 
 			AbstractAttributeFormPart<Color, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		Text text = new Text( parent, SWT.NONE );
 		text.setBackground( parent.getBackground() );
@@ -65,14 +62,11 @@ public class ColourAttributeGuiFactory extends AbstractAttributeGuiFactory<Color
 		return text;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createAdditionalEditControls(org.eclipse.swt.widgets.Composite, org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart, org.eclipse.emf.ecore.EAttribute)
-	 */
 	@Override
 	protected Control[] createAdditionalEditControls(
 			final Composite parent, 
 			final AbstractAttributeFormPart<Color, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 
 		assert parent != null;

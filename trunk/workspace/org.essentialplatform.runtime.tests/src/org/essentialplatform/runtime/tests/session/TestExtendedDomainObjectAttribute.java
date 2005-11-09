@@ -1,6 +1,5 @@
 package org.essentialplatform.runtime.tests.session;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint;
@@ -17,8 +16,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
@@ -31,8 +30,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		OrderConstrained pojo = domainObject.getPojo();
 		pojo.ship();
 		
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
@@ -46,8 +45,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		OrderConstrained pojo = domainObject.getPojo();
 		pojo.shipAndRestrict();
 		
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.INVISIBLE, prerequisites.getConstraint());
@@ -62,8 +61,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 		
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 
 		IPrerequisites prerequisites = attrib.mutatorPrerequisitesFor(new Integer(-1));
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
@@ -86,10 +85,10 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  
 		Pong pong = pongDomainObject.getPojo();
 		ping.setPong(pong);
 
-		EAttribute pingVisibleEAttrib = pingDomainObject.getEAttributeNamed("visibleOnlyIfPongPositive");
+		IDomainClass.IAttribute pingVisibleEAttrib = pingDomainObject.getIAttributeNamed("visibleOnlyIfPongPositive");
 		IDomainObject.IObjectAttribute pingVisibleAttrib = pingDomainObject.getAttribute(pingVisibleEAttrib);
 
-		EAttribute pingUsableEAttrib = pingDomainObject.getEAttributeNamed("usableOnlyIfPongPositive");
+		IDomainClass.IAttribute pingUsableEAttrib = pingDomainObject.getIAttributeNamed("usableOnlyIfPongPositive");
 		IDomainObject.IObjectAttribute pingUsableAttrib = pingDomainObject.getAttribute(pingUsableEAttrib);
 
 		// should now be two observed features held by the session.

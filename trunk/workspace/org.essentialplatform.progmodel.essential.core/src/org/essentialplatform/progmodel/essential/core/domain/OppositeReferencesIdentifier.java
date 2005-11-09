@@ -32,27 +32,29 @@ public class OppositeReferencesIdentifier {
 			domainClass.oppRefState = OppRefState.neverAgain;
 		}
 		
-		for(EReference reference: domainClass.eReferences()) {
+		for(IDomainClass.IReference iReference: domainClass.iReferences()) {
+			EReference eReference = iReference.getEReference();
 			// since later on we call this same method on the DomainClass 
 			// representing the referenced class, we have the possibility of
 			// an infinite loop if both sides have an @OppositeOf annotation.
 			// this guard prevents this from happening.
-			if (reference.getEOpposite() != null) {
+			if (eReference.getEOpposite() != null) {
 				continue;
 			}
-			EClass referencedEClass = reference.getEReferenceType();
+			EClass referencedEClass = eReference.getEReferenceType();
 			IDomainClass referencedClass = 
 				domainClass.getDomain().domainClassFor(referencedEClass);
 
 			OppositeOf oppositeOf = 
-				serializer.getReferenceOppositeOf(reference);
+				serializer.getReferenceOppositeOf(eReference);
 			if (oppositeOf != null) {
 				// annotation on this end, so set up the opposite
-				EReference oppositeReference = 
-					referencedClass.getEReferenceNamed(oppositeOf.value());
-				if(oppositeReference != null) {
-					reference.setEOpposite(oppositeReference);
-					oppositeReference.setEOpposite(reference);
+				IDomainClass.IReference oppositeIReference = 
+					referencedClass.getIReferenceNamed(oppositeOf.value());
+				if(oppositeIReference != null) {
+					EReference oppositeEReference = oppositeIReference.getEReference();
+					eReference.setEOpposite(oppositeEReference);
+					oppositeEReference.setEOpposite(eReference);
 				}
 			} else {
 				// no annotation this end, but its possible that the referenced

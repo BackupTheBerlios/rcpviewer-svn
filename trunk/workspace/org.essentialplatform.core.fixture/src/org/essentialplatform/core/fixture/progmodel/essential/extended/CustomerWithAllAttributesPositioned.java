@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.essentialplatform.core.fixture.progmodel.essential.extended;
 
 import org.essentialplatform.progmodel.essential.app.InDomain;

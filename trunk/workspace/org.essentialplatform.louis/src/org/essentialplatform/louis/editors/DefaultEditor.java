@@ -5,7 +5,6 @@ import static org.essentialplatform.louis.util.FontUtil.CharWidthType.AVERAGE;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -18,6 +17,17 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.part.EditorPart;
+
+import org.essentialplatform.core.domain.IDomainClass.IAttribute;
+
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.event.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.transaction.ITransactable;
+import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.transaction.TransactionManager;
+
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
 import org.essentialplatform.louis.configure.IConfigurable;
@@ -30,14 +40,6 @@ import org.essentialplatform.louis.jobs.SaveJob;
 import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.views.ops.IOpsViewPage;
-
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.domain.event.DomainObjectAttributeEvent;
-import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.TransactionManager;
 
 /**
  * Core editor for GUI layer.
@@ -129,7 +131,7 @@ public final class DefaultEditor extends EditorPart {
 			public void attributePrerequisitesChanged(ExtendedDomainObjectAttributeEvent event) {
 			}
 		};
-		for ( EAttribute a : getDomainObject().getDomainClass().eAttributes() ) {
+		for ( IAttribute a : getDomainObject().getDomainClass().iAttributes() ) {
 			getDomainObject().getAttribute( a ).addListener( _nameListener );
 		}
 		
@@ -162,7 +164,7 @@ public final class DefaultEditor extends EditorPart {
 		}
 		if ( _nameListener != null ) {
 			IDomainObject<?> object = getDomainObject();
-			for ( EAttribute a : object.getDomainClass().eAttributes() ) {
+			for ( IAttribute a : object.getDomainClass().iAttributes() ) {
 				object.getAttribute( a ).removeListener( _nameListener );
 			}
 		}

@@ -3,8 +3,6 @@
  */
 package org.essentialplatform.louis.factory;
 
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.widgets.Composite;
 import org.essentialplatform.louis.util.FontUtil;
 
@@ -41,13 +39,17 @@ public class GuiHints {
 		_style = style;
 		
 		int maxLabelLength = 0;
-		for ( EAttribute a : dClass.eAttributes() ) {       
-			int length = a.getName().length();
-			if ( length > maxLabelLength ) maxLabelLength = length;
+		for ( IDomainClass.IAttribute iAttribute : dClass.iAttributes() ) {
+			int length = iAttribute.getName().length();
+			if ( length > maxLabelLength ) {
+				maxLabelLength = length;
+			}
 		}
-		for ( EReference r : dClass.eReferences() ) {
-			int length = r.getName().length();
-			if ( length > maxLabelLength ) maxLabelLength = length;
+		for ( IDomainClass.IReference iReference : dClass.iReferences() ) {
+			int length = iReference.getName().length();
+			if ( length > maxLabelLength ) {
+				maxLabelLength = length;
+			}
 		}
 		_maxLabelLength = maxLabelLength;
 		
@@ -60,7 +62,7 @@ public class GuiHints {
 		// more faff - want to align labels even if references have toggle 
 		// icons - could do much faff calculating size - make do with hardcode 
 		// value for now
-		if ( !dClass.eReferences().isEmpty() ) {
+		if ( !dClass.iReferences().isEmpty() ) {
 			columnWidths[0] = columnWidths[0] + 4;
 		}
 		

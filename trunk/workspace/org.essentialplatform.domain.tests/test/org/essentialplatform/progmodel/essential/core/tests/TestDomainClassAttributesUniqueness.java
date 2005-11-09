@@ -12,23 +12,23 @@ public abstract class TestDomainClassAttributesUniqueness extends AbstractTestCa
 	private IDomainClass domainClass;
 	public void testUniquenessOfEAttributeWhenNoneSpecified() {
 		domainClass = lookupAny(CustomerWithNoUniquenessReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isUnique());
-		assertTrue(domainClass.getIAttribute(eAttribute).isUnique());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isUnique());
+		assertTrue(iAttribute.getEAttribute().isUnique());
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsTrue() {
 		domainClass = lookupAny(CustomerWithUniqueReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isUnique());
-		assertTrue(domainClass.getIAttribute(eAttribute).isUnique());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isUnique());
+		assertTrue(iAttribute.getEAttribute().isUnique());
 	}
 
 	public void testUniquenessOfEAttributeWhenSpecifiedAsFalse() {
 		domainClass = lookupAny(CustomerWithNonUniqueReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(eAttribute.isUnique());
-		assertFalse(domainClass.getIAttribute(eAttribute).isUnique());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertFalse(iAttribute.isUnique());
+		assertFalse(iAttribute.getEAttribute().isUnique());
 	}
 
 	public void incompletetestUniquenessOfEAttributeWhenSpecifiedWithoutUpperBound() {

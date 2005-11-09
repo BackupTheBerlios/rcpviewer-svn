@@ -15,14 +15,11 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
-import sun.reflect.generics.repository.ClassRepository;
-
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.deployment.Deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
-import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesIdentifier;
 
 
 
@@ -253,17 +250,14 @@ public class Domain implements IDomain {
 		}
 
 		// see if this class has already registered; return it if so.
-		// TODO: covariance of lookupNoRegister...
-		IDomainClass domainClass = (IDomainClass) lookupNoRegister(classRepresentation);
+		IDomainClass domainClass = lookupNoRegister(classRepresentation);
 		if (domainClass != null) {
 			//
-			// HACK to pick up opposite references for case when
-			// the side with @OppositeOf was registered second.
+			// To support (primary) domain builders that need assistance in
+			// handling bidirectional relationships where the "other" side is
+			// registered second.
 			//
-			// the domain class will only actually do the work once, not on
-			// every subsequent lookup.
-			//
-			new OppositeReferencesIdentifier((DomainClass)domainClass).identify();
+			getPrimaryBuilder().identifyOppositeReferencesFor(domainClass);
 			return domainClass;
 		}
 

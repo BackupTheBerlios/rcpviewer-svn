@@ -3,9 +3,6 @@ package org.essentialplatform.louis.factory;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -32,8 +29,8 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 
 	private final IDomainClass _dClass;
 	private final boolean _editable;
-	private final Map<EAttribute,Composite> _attributes;
-	private final Map<EReference,Composite> _references;
+	private final Map<IDomainClass.IAttribute,Composite> _attributes;
+	private final Map<IDomainClass.IReference,Composite> _references;
 	
 	/* Constructors */
 	
@@ -45,8 +42,8 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 		assert dClass != null;
 		_dClass = dClass;
 		_editable = editable;
-		_attributes = new LinkedHashMap<EAttribute,Composite>();
-		_references = new LinkedHashMap<EReference,Composite>();
+		_attributes = new LinkedHashMap<IDomainClass.IAttribute,Composite>();
+		_references = new LinkedHashMap<IDomainClass.IReference,Composite>();
 	}
 	
 	/* overridden IFormPart contract */
@@ -90,7 +87,7 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 	 * @param attribute
 	 * @param area
 	 */
-	void addAttribute( EAttribute attribute, Composite area ) {
+	void addAttribute( IDomainClass.IAttribute attribute, Composite area ) {
 		assert attribute != null;
 		assert area != null;
 		_attributes.put( attribute, area );
@@ -103,7 +100,7 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 	 * @param ref
 	 * @param area
 	 */
-	void addReference( EReference reference, Composite area ) {
+	void addReference( IDomainClass.IReference reference, Composite area ) {
 		assert reference != null;
 		assert area != null;
 		_references.put( reference, area );
@@ -130,8 +127,8 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 	}
 	
 	// as it says
-	private boolean isInitiallyVisible( EStructuralFeature feature ) {
-		assert feature != null;
+	private boolean isInitiallyVisible( IDomainClass.IMember member ) {
+		assert member != null;
 		// eventually pick up initial settings from persistence mechanism...
 		// TODO
 		return true;
@@ -162,12 +159,12 @@ public class DomainClassPart extends AbstractCascadingFormPart<IFormPart> {
 			body.setLayout( new GridLayout() );
 			
 			// add visibility check boxes
-			for( EAttribute attribute : _attributes.keySet() ) {
+			for( IDomainClass.IAttribute attribute : _attributes.keySet() ) {
 				addCheckBox( attribute.getName(),
 						     body,
 						     _attributes.get( attribute ) );
 			}
-			for( EReference reference : _references.keySet() ) {
+			for( IDomainClass.IReference reference : _references.keySet() ) {
 				addCheckBox( reference.getName(),
 						     body,
 						     _references.get( reference ) );

@@ -3,9 +3,10 @@ package org.essentialplatform.louis.jobs;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.ecore.EOperation;
+
 import org.essentialplatform.louis.LouisPlugin;
 
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
@@ -17,17 +18,17 @@ import org.essentialplatform.runtime.domain.IDomainObject;
  */
 public class RunOperationJob extends AbstractDomainObjectJob {
 
-	private final EOperation _eOperation;
+	private final IDomainClass.IOperation _iOperation;
 	private final Object[] _args;
 	
 	/**
 	 * Constructor where no arguments are passed
 	 * @param object
-	 * @param operation
+	 * @param iOperation
 	 */
 	public RunOperationJob( IDomainObject object,
-							EOperation operation ) {
-		this(object, operation, new Object[ operation.getEParameters().size() ]);
+							IDomainClass.IOperation iOperation ) {
+		this(object, iOperation, new Object[ iOperation.getEOperation().getEParameters().size() ]);
 	}
 	
 	
@@ -38,15 +39,15 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 	 * @param operation
 	 */
 	public RunOperationJob( IDomainObject object,
-							EOperation operation,
+							IDomainClass.IOperation iOperation,
 							Object[] args ) {
 		super( RunOperationJob.class.getName(), object );
-		if ( operation == null ) throw new IllegalArgumentException();
+		if ( iOperation == null ) throw new IllegalArgumentException();
 		if ( args == null ) throw new IllegalArgumentException();
-		if ( args.length != operation.getEParameters().size() ) {
+		if ( args.length != iOperation.getEOperation().getEParameters().size() ) {
 			throw new IllegalArgumentException();
 		}
-		_eOperation = operation;
+		_iOperation = iOperation;
 		_args = args;
 	}
 	
@@ -78,11 +79,11 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 					args[i] = _args[i];
 				}
 			}
-			getDomainObject().getOperation( _eOperation ).invokeOperation( args );
+			getDomainObject().getOperation( _iOperation ).invokeOperation( args );
 			ReportJob report = new ReportJob(
 					LouisPlugin.getResourceString( "RunOperationJob.Ok"), //$NON-NLS-1$
 					ReportJob.INFO,
-					_eOperation.getName() );
+					_iOperation.getName() );
 			report.schedule();
 		}
 		else {
@@ -105,8 +106,8 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 	/**
 	 * @return Returns the op.
 	 */
-	protected EOperation getOp() {
-		return _eOperation;
+	protected IDomainClass.IOperation getOp() {
+		return _iOperation;
 	}
 
 	

@@ -19,12 +19,12 @@ public abstract class TestDomainClassAttributes extends AbstractTestCase {
 
 	public void testGetAttributesWhenNone() {
 		domainClass = lookupAny(CustomerWithNoAttributes.class);
-		assertEquals(0, domainClass.eAttributes().size());
+		assertEquals(0, domainClass.iAttributes().size());
 	}
 
 	public void testGetAttributesForPrimitives() {
 		domainClass = lookupAny(CustomerWithEveryPrimitiveTypeAccessor.class);
-		assertEquals(8, domainClass.eAttributes().size());
+		assertEquals(8, domainClass.iAttributes().size());
 	}
 	
 	public void incompletetestGetAttributesIgnoringInherited() {
@@ -37,71 +37,68 @@ public abstract class TestDomainClassAttributes extends AbstractTestCase {
 		for(String attributeName: new String[] { 
 								"aByte", "aShort", "anInt", "aLong", 
 								"aChar", "aFloat", "aDouble", "aBoolean", }) {
-			EAttribute eAttribute = domainClass.getEAttributeNamed(attributeName);
-			assertEquals(attributeName, eAttribute.getName());
+			IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed(attributeName);
+			assertEquals(attributeName, iAttribute.getName());
 		}
 	}
 
 	public void testGetEAttributeNamedForNoneExisting() {
 		domainClass = lookupAny(CustomerWithEveryPrimitiveTypeAccessor.class);
-		assertNull(domainClass.getEAttributeNamed("nonExistingAttribute"));
+		assertNull(domainClass.getIAttributeNamed("nonExistingAttribute"));
 	}
 
 	public void testWhetherEAttributeIsChangeableForReadWriteAttribute() {
 		domainClass = lookupAny(CustomerWithReadWriteAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isChangeable());
-		assertTrue(domainClass.getIAttribute(eAttribute).isChangeable());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isChangeable());
 	}
 
 	public void testWhetherEAttributeIsChangeableForReadOnlyAttribute() {
 		domainClass = lookupAny(CustomerWithReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(eAttribute.isChangeable());
-		assertFalse(domainClass.getIAttribute(eAttribute).isChangeable());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertFalse(iAttribute.isChangeable());
 	}
 
 	public void testWhetherEAttributeIsChangeableForWriteOnlyAttribute() {
 		domainClass = lookupAny(CustomerWithWriteOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isChangeable());
-		assertTrue(domainClass.getIAttribute(eAttribute).isChangeable());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isChangeable());
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsWriteOnlyForReadWriteAttribute() {
 		domainClass = lookupAny(CustomerWithReadWriteAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(domainClass.getIAttribute(eAttribute).isWriteOnly());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertFalse(iAttribute.isWriteOnly());
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsReadOnlyForReadOnlyAttribute() {
 		domainClass = lookupAny(CustomerWithReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(domainClass.getIAttribute(eAttribute).isWriteOnly());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertFalse(iAttribute.isWriteOnly());
 	}
 	
 	public void testWhetherEAttributeIsAnnotatedAsWriteOnlyForWriteOnlyAttribute() {
 		domainClass = lookupAny(CustomerWithWriteOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(domainClass.getIAttribute(eAttribute).isWriteOnly());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isWriteOnly());
 	}
 
 	public void testWhetherEAttributeIsDerivedForNonDerivedReadOnlyAttribute() {
 		domainClass = lookupAny(CustomerWithNonDerivedReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(eAttribute.isDerived());
-		assertFalse(eAttribute.isTransient());
-		assertFalse(eAttribute.isVolatile());
-		assertFalse(domainClass.getIAttribute(eAttribute).isDerived());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertFalse(iAttribute.isDerived());
+		assertFalse(iAttribute.getEAttribute().isDerived());
+		assertFalse(iAttribute.getEAttribute().isTransient());
+		assertFalse(iAttribute.getEAttribute().isVolatile());
 	}
 	
 	public void testWhetherEAttributeIsDerivedForDerivedReadOnlyAttribute() {
 		domainClass = lookupAny(CustomerWithDerivedReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isDerived());
-		assertTrue(eAttribute.isTransient());
-		assertTrue(eAttribute.isVolatile());
-		assertTrue(domainClass.getIAttribute(eAttribute).isDerived());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isDerived());
+		assertTrue(iAttribute.getEAttribute().isDerived());
+		assertTrue(iAttribute.getEAttribute().isTransient());
+		assertTrue(iAttribute.getEAttribute().isVolatile());
 	}
 
 	public void incompletetestWhetherEAttributeIsDerivedForDerivedWriteOnlyAttribute() {
@@ -117,7 +114,7 @@ public abstract class TestDomainClassAttributes extends AbstractTestCase {
 	public void testFeatureIdForAttribute() {
 		domainClass = lookupAny(CustomerToTestFeatureIds.class);
 		IFeatureId firstNameFeatureId = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName")).getFeatureId();
+			domainClass.getIAttributeNamed("firstName").getFeatureId();
 		assertSame(domainClass, firstNameFeatureId.getDomainClass());
 		assertSame(IFeatureId.Type.ATTRIBUTE, firstNameFeatureId.getFeatureType());
 		assertEquals("firstName", firstNameFeatureId.getName());

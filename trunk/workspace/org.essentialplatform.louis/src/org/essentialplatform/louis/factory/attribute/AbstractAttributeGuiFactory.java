@@ -1,6 +1,5 @@
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -17,10 +16,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
-import org.essentialplatform.louis.util.EmfUtil;
 import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 
@@ -31,7 +30,7 @@ import org.essentialplatform.louis.util.ImageUtil;
  *
  */
 public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control> 
-		implements IGuiFactory<EAttribute>{
+		implements IGuiFactory<IDomainClass.IAttribute>{
 	
 	
 	/**
@@ -50,7 +49,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 	 * @return
 	 */
 	public IFormPart createGui(
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			FormToolkit toolkit, 
 			Composite parent, 
 			GuiHints hints) {
@@ -78,7 +77,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 		label.setFont( FontUtil.getLabelFont() );
 		
 		// icon
-		Class pojoClass = model.getEType().getInstanceClass() ;
+		Class pojoClass = model.getEAttribute().getEType().getInstanceClass() ;
 		GridData iconData = new GridData();
 		if ( hints.getColumnWidths().length == 3 
 					&& hints.getColumnWidths()[1] != 0 ) {
@@ -163,7 +162,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 	 * @return
 	 */
 	protected abstract AbstractAttributeFormPart<T1,T2> createFormPart( 
-			EAttribute model );
+			IDomainClass.IAttribute model );
 	
 	/**
 	 * Subclasses must define:
@@ -181,7 +180,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 	protected abstract T2 createMainControl ( 
 			Composite parent, 
 			AbstractAttributeFormPart<T1, T2> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints );
 	
 	/**
@@ -196,7 +195,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 	protected Control[] createAdditionalEditControls(
 			Composite parent, 
 			AbstractAttributeFormPart<T1,T2> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints ) {
 		return null;
 	}
@@ -207,10 +206,10 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 	 * @param hints
 	 * @return
 	 */
-	protected boolean isEditable( EAttribute model, GuiHints hints ) {
+	protected boolean isEditable( IDomainClass.IAttribute model, GuiHints hints ) {
 		assert model != null;
 		assert hints != null;
 		return !hints.styleMatches( GuiHints.READ_ONLY ) 
-					&& EmfUtil.isModifiable( model );
+					&& model.isChangeable();
 	}
 }

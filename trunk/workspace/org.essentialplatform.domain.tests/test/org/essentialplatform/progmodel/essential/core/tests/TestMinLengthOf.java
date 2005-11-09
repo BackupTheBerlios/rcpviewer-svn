@@ -19,8 +19,8 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 	public void testDomainClassWithMinLengthOfSpecifiedOnAttribute() {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
-		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("suffix"));
+		IDomainClass.IAttribute attrib =  
+			domainClass.getIAttributeNamed("suffix");
 		assertEquals(12, attrib.getMinLengthOf());
 	}
 
@@ -28,7 +28,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("updateSuffix"));
+			domainClass.getIOperationNamed("updateSuffix");
 		assertEquals(12, op.getMinLengthOf(0));
 	}
 
@@ -42,7 +42,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("middleName"));
+			domainClass.getIAttributeNamed("middleName");
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 	
@@ -55,7 +55,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("updateMiddleName"));
+			domainClass.getIOperationNamed("updateMiddleName");
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -69,7 +69,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("lastName"));
+			domainClass.getIAttributeNamed("lastName");
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 
@@ -82,7 +82,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("updateLastName"));
+			domainClass.getIOperationNamed("updateLastName");
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -96,7 +96,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("attributeWithNegativeLengths"));
+			domainClass.getIAttributeNamed("attributeWithNegativeLengths");
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 
@@ -110,7 +110,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNegativeLengths"));
+			domainClass.getIOperationNamed("operationToUpdateAttributeWithNegativeLengths");
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -123,7 +123,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("attributeWithNoAnnotations"));
+			domainClass.getIAttributeNamed("attributeWithNoAnnotations");
 		assertEquals(0, attrib.getMinLengthOf());
 	}
 	
@@ -137,7 +137,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("operationToUpdateAttributeWithNoAnnotations"));
+			domainClass.getIOperationNamed("operationToUpdateAttributeWithNoAnnotations");
 		assertEquals(0, op.getMinLengthOf(0));
 	}
 
@@ -151,7 +151,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("nonStringAttributeWithLengthAnnotations"));
+			domainClass.getIAttributeNamed("nonStringAttributeWithLengthAnnotations");
 		assertEquals(-1, attrib.getMinLengthOf());
 	}
 
@@ -165,7 +165,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMinMaxFieldLengthOf.class);
 		
 		IDomainClass.IOperation op = 
-			domainClass.getIOperation(domainClass.getEOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations"));
+			domainClass.getIOperationNamed("operationToUpdateNonStringAttributeWithLengthAnnotations");
 		assertEquals(-1, op.getMinLengthOf(0));
 	}
 

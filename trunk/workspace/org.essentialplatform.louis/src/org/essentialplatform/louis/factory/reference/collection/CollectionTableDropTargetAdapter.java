@@ -3,12 +3,12 @@
  */
 package org.essentialplatform.louis.factory.reference.collection;
 
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.dnd.IAccessibleObjectTransfer;
 
@@ -21,13 +21,13 @@ import org.essentialplatform.runtime.domain.IDomainObject;
 class CollectionTableDropTargetAdapter extends DropTargetAdapter {
 	
 	private final CollectionTablePart _part;
-	private final EReference _ref;
+	private final IDomainClass.IReference _ref;
 	private final Transfer _transfer;
 	private boolean _checkUnique = false;
 	
 	CollectionTableDropTargetAdapter( 
 			CollectionTablePart part,
-			EReference ref, 
+			IDomainClass.IReference ref, 
 			Transfer transfer ) {
 		super();
 		assert part != null;

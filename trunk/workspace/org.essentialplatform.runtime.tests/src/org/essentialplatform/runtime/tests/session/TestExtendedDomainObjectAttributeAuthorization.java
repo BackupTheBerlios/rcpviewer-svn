@@ -1,8 +1,6 @@
 package org.essentialplatform.runtime.tests.session;
 
 import org.easymock.MockControl;
-import org.eclipse.emf.ecore.EAttribute;
-
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.features.IFeatureId;
@@ -21,8 +19,8 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 		
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
 		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
@@ -46,12 +44,11 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 		
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
-		IDomainClass.IAttribute classAttrib = domainClass.getIAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 
 		// set expectations
-		IFeatureId feature = classAttrib.getFeatureId();
+		IFeatureId feature = iAttrib.getFeatureId();
 		authorizationManager.preconditionsFor(feature);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
 		control.setReturnValue(Prerequisites.none());
@@ -76,12 +73,11 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
 
-		EAttribute eAttrib = domainObject.getEAttributeNamed("quantity");
-		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(eAttrib);
-		IDomainClass.IAttribute classAttrib = domainClass.getIAttribute(eAttrib);
+		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
+		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 
 		// set expectations
-		IFeatureId featureId = classAttrib.getFeatureId();
+		IFeatureId featureId = iAttrib.getFeatureId();
 		authorizationManager.preconditionsFor(featureId);
 		control.setMatcher(MockControl.EQUALS_MATCHER);
 		IPrerequisites returnPrerequisites = Prerequisites.require(false, "Cannot edit quantity"); 

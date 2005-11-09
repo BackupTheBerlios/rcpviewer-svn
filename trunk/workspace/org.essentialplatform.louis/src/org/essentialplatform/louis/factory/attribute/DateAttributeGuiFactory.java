@@ -7,7 +7,6 @@ import static org.essentialplatform.louis.LouisPlugin.DATE_FORMATTER;
 
 import java.util.Date;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -15,6 +14,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.FontUtil;
@@ -38,9 +38,9 @@ public class DateAttributeGuiFactory extends AbstractAttributeGuiFactory<Date,Te
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
+		if ( model instanceof IDomainClass.IAttribute ) {
 			return Date.class.isAssignableFrom( 
-					((EAttribute)model).getEType().getInstanceClass() );
+					((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass() );
 		}
 		return false;
 	}
@@ -49,7 +49,7 @@ public class DateAttributeGuiFactory extends AbstractAttributeGuiFactory<Date,Te
 	protected Text createMainControl(
 			Composite parent, 
 			AbstractAttributeFormPart<Date, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		assert parent != null;
 		
@@ -68,14 +68,14 @@ public class DateAttributeGuiFactory extends AbstractAttributeGuiFactory<Date,Te
 	
 	@Override
 	protected AbstractAttributeFormPart<Date, Text> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new DateAttributeFormPart( model );
 	}
 	
 	@Override
 	protected Control[] createAdditionalEditControls(
 			final Composite parent, 
-			final AbstractAttributeFormPart<Date, Text> part, EAttribute model, GuiHints hints) {
+			final AbstractAttributeFormPart<Date, Text> part, IDomainClass.IAttribute model, GuiHints hints) {
 		assert parent != null;
 		assert part != null;
 		// change date via calendar widget

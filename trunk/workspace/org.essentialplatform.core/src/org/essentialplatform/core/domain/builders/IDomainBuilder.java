@@ -27,6 +27,10 @@ public interface IDomainBuilder {
 		public void build(IDomainClass domainClass) {
 			// noop
 		}
+
+		public void identifyOppositeReferencesFor(IDomainClass domainClass) {
+			// noop
+		}
 	};
 
 	/**
@@ -37,5 +41,19 @@ public interface IDomainBuilder {
 	 * @param domainClass
 	 */
 	public void build(IDomainClass domainClass);
+
+	/**
+	 * The {@link IDomain} will always call this method before returning a 
+	 * looked up domain class, so that the builder can, if necessary, fully
+	 * process any bi-directional relationships.
+	 * 
+	 * <p>
+	 * Builders that are able to fully process the domain model from 
+	 * {@link #build(IDomainClass)} can provide a no-op implementation of this
+	 * method.
+	 * 
+	 * @param domainClass
+	 */
+	public void identifyOppositeReferencesFor(IDomainClass domainClass);
 
 }

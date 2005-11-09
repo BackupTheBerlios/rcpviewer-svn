@@ -1,7 +1,7 @@
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 
 
 /**
@@ -16,7 +16,7 @@ class StringAttributeFormPart extends AbstractAttributeFormPart<String,Text> {
 	 * @param model
 	 * @param control
 	 */
-	StringAttributeFormPart( EAttribute model ) {
+	StringAttributeFormPart( IDomainClass.IAttribute model ) {
 		super( model );
 	}
 

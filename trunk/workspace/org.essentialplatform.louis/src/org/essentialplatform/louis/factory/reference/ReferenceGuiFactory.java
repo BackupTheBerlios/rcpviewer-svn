@@ -4,7 +4,7 @@
 package org.essentialplatform.louis.factory.reference;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.emf.ecore.EReference;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -42,7 +42,7 @@ import org.essentialplatform.runtime.domain.IDomainObject;
  * Generic form part for single references to <code>IDomainObject</code>'s.
  * @author Mike
  */
-public class ReferenceGuiFactory implements IGuiFactory<EReference> {
+public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 	
 	/**
 	 * Returns <code>true</code> if a single reference
@@ -52,8 +52,8 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 	 */
 	public boolean isApplicable(Object model, IGuiFactory context) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EReference ) {
-			return !((EReference)model).isMany();
+		if ( model instanceof IDomainClass.IReference ) {
+			return !((IDomainClass.IReference)model).isMultiple();
 		}
 		return false;
 	}
@@ -74,7 +74,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 	 * @return
 	 */
 	public ReferencePart createGui(
-			EReference model, 
+			IDomainClass.IReference model, 
 			FormToolkit toolkit, 
 			Composite parent, 
 			GuiHints hints) {
@@ -103,7 +103,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 		section.setClient( sectionArea );
 		
 		// create attribute list gui
-		IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
+		IDomainClass dClass = model.getReferencedDomainClass();
 		IGuiFactory detailsFactory = LouisPlugin.getDefault().getGuiFactory(
 				dClass, this );
 		IFormPart detailsPart = detailsFactory.createGui( 
@@ -132,7 +132,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 	/* private gui generation methids */
 	
 	private Text buildSectionHeaderContents( 
-			EReference model,
+			IDomainClass.IReference model,
 			FormToolkit toolkit,
 			Composite parent,
 			final ReferencePart part ){
@@ -142,7 +142,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 		assert part != null;
 		
 		// model data
-		final IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
+		final IDomainClass dClass = model.getReferencedDomainClass();
 		
 		// count columns for layout
 		int numColumns = 0;
@@ -229,7 +229,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 	}
 	
 	private Text createField( 
-			EReference ref,
+			IDomainClass.IReference ref,
 			Composite parent, 
 			FormToolkit toolkit,
 			final ReferencePart part ){
@@ -248,7 +248,7 @@ public class ReferenceGuiFactory implements IGuiFactory<EReference> {
 				field, 
 				DND.DROP_MOVE | DND.DROP_COPY );
 		Transfer transfer = LouisPlugin.getTransfer( 
-				ref.getEType().getInstanceClass() );
+				ref.getReferencedDomainClass().getEClass().getInstanceClass() );
 		dragSource.setTransfer( new Transfer[]{ transfer } );
 		dragSource.addDragListener (new DragSourceListener () {
 			public void dragStart(DragSourceEvent event) {

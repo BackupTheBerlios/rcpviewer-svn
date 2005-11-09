@@ -191,6 +191,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 					}
 				}
 			}
+			
 		}
 	}
 	
@@ -206,9 +207,9 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 * this is not symmetric with {@link #identifyOperations()}.
 	 * 
 	 */
-	public void identifyMutators(DomainClass runtimeDomainClass) {
+	public void identifyMutators(DomainClass domainClass) {
 
-		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 
 		for(int i=0; i<methods.length; i++) {
@@ -218,9 +219,11 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 			}
 
 			String attributeName = getRuntimeStandardProgModelRules().deriveAttributeName(method);
-			EAttribute eAttribute = runtimeDomainClass.getEAttributeNamed(attributeName);
-
-			if (eAttribute != null) {
+			IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed(attributeName);
+			
+			EAttribute eAttribute = null;
+			if (iAttribute != null) {
+				eAttribute = iAttribute.getEAttribute(); 
 				eAttribute.setChangeable(true);
 			} else {
 				eAttribute = EcoreFactory.eINSTANCE.createEAttribute();
@@ -229,7 +232,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 				eAttribute.setEType(eDataType);
 				eAttribute.setName(attributeName);
 
-				((List<? super EAttribute>)runtimeDomainClass.getEClass().getEStructuralFeatures()).add(eAttribute);
+				((List<? super EAttribute>)domainClass.getEClass().getEStructuralFeatures()).add(eAttribute);
 
 				serializer.setAttributeWriteOnly(eAttribute);
 			}
@@ -243,12 +246,13 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	/**
 	 *  
 	 */
-	public void identifyUnSettableAttributes(DomainClass runtimeDomainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+	public void identifyUnSettableAttributes(DomainClass domainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;
 		Method unsetMethod = null;
-		for(EAttribute eAttribute: runtimeDomainClass.eAttributes()) {
+		for(IDomainClass.IAttribute iAttribute: domainClass.iAttributes()) {
+			EAttribute eAttribute = iAttribute.getEAttribute();
 			for(int i=0; i<methods.length; i++) {
 				if (getRuntimeStandardProgModelRules().isIsUnsetMethodFor(methods[i], eAttribute)) {
 					isUnsetMethod = methods[i];
@@ -274,8 +278,8 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 		}
 	}
 	
-	public void identifyReferences(DomainClass runtimeDomainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+	public void identifyReferences(DomainClass domainClass) {
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
@@ -308,7 +312,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 			}
 			if (couldBeCollection) {
 				referencedJavaClass = associates.value();
-				referencedDomainClass = runtimeDomainClass.getDomain().lookup(referencedJavaClass);
+				referencedDomainClass = domainClass.getDomain().lookup(referencedJavaClass);
 				if (referencedDomainClass == null) {
 					// what they're referencing isn't a domain class
 					couldBeCollection = false;
@@ -316,14 +320,14 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 			}
 			if (!couldBeCollection) {
 				// treat as a 1:1 reference
-				referencedDomainClass = runtimeDomainClass.getDomain().lookup(referencedJavaClass);
+				referencedDomainClass = domainClass.getDomain().lookup(referencedJavaClass);
 				if (referencedDomainClass != null) {
 					// 1:1
 					linkSemanticsType = LinkSemanticsType.SIMPLE_REF;	
 				} 				
 			}
 			String referenceName = getRuntimeStandardProgModelRules().deriveReferenceName(method);
-			if (runtimeDomainClass.getEReferenceNamed(referenceName) != null) {
+			if (domainClass.getIReferenceNamed(referenceName) != null) {
 				continue;
 			}
 
@@ -361,7 +365,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 			// eReference.setLowerBound( ... set by linkSemanticsType ...);
 
 
-			((List<? super EReference>)runtimeDomainClass.getEClass().getEStructuralFeatures()).add(eReference);
+			((List<? super EReference>)domainClass.getEClass().getEStructuralFeatures()).add(eReference);
 
 			serializer.setReferenceAccessor(eReference, method);
 
@@ -378,7 +382,8 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	public void identifyAssociatorsAndDissociators(DomainClass runtimeDomainClass) {
 		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
-		for(EReference eReference: runtimeDomainClass.eReferences()) {
+		for(IDomainClass.IReference iReference: runtimeDomainClass.iReferences()) {
+			EReference eReference = iReference.getEReference();
 			Method associatorMethod = null;
 			Method dissociatorMethod = null;
 			for(int i=0; i<methods.length; i++) {
@@ -413,8 +418,8 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	}
 
 
-	public void identifyOppositeReferences(DomainClass runtimeDomainClass) {
-		new OppositeReferencesIdentifier(runtimeDomainClass).identify();
+	public void identifyOppositeReferences(IDomainClass domainClass) {
+		new OppositeReferencesIdentifier(((DomainClass)domainClass)).identify();
 	}
 
 
@@ -667,5 +672,8 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 		return (EssentialProgModelRuntimeRules)getStandardProgModelRules();
 	}
 
+	public void identifyOppositeReferencesFor(IDomainClass domainClass) {
+		new OppositeReferencesIdentifier((DomainClass)domainClass).identify();		
+	}
 
 }

@@ -5,7 +5,6 @@ package org.essentialplatform.louis.factory.attribute;
 
 import static org.essentialplatform.louis.util.FontUtil.CharWidthType.SAFE;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -14,6 +13,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.FontUtil;
@@ -34,8 +34,8 @@ public class CharAttributeGuiFactory extends AbstractAttributeGuiFactory<Charact
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
-			Class attributeClass = ((EAttribute)model).getEType().getInstanceClass();
+		if ( model instanceof IDomainClass.IAttribute ) {
+			Class attributeClass = ((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass();
 			if ( char.class == attributeClass ) return true;
 			if ( Character.class == attributeClass ) return true;
 		}
@@ -47,7 +47,7 @@ public class CharAttributeGuiFactory extends AbstractAttributeGuiFactory<Charact
 	protected Text createMainControl(
 			Composite parent, 
 			final AbstractAttributeFormPart<Character, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		assert parent != null;
 		
@@ -91,7 +91,7 @@ public class CharAttributeGuiFactory extends AbstractAttributeGuiFactory<Charact
 	
 	@Override
 	protected AbstractAttributeFormPart<Character, Text> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new CharAttributeFormPart( model );
 	}
 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -33,16 +32,20 @@ import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass.IReference;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
- * Generic form part for <code>isMany() EReference's</code> (i.e. collections)
+ * Generic form part for <code>CollectionReference</code>s
  *  of <code>IDomainObject</code>'s.
- *  <br>This class basically handles the gui creation, dynamic behaviour is 
+ *  
+ *  <br>
+ *  This class basically handles the gui creation, dynamic behaviour is 
  *  delegated to <code>CollectionPartController</code>
+ *  
  * @author Mike
  */
-public class CollectionGuiFactory implements IGuiFactory<EReference> {
+public class CollectionGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 	
 	/**
 	 * Returns <code>true</code> if a multiple reference and parent is
@@ -55,8 +58,8 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 		if( model == null ) throw new IllegalArgumentException();
 		if( parent == null ) return false;
 		if ( !( parent instanceof DomainClassGuiFactory ) ) return false;
-		if ( model instanceof EReference ) {
-			return ((EReference)model).isMany();
+		if ( model instanceof IDomainClass.IReference ) {
+			return ((IDomainClass.IReference)model).isMultiple();
 		}
 		return false;
 	}
@@ -76,7 +79,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 	 * @return
 	 */
 	public CollectionPart createGui(
-			final EReference model, 
+			final IDomainClass.IReference model, 
 			FormToolkit toolkit, 
 			Composite parent, 
 			GuiHints hints) {
@@ -162,7 +165,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 	
 	// just to tidy code
 	private Label buildSectionHeaderContents( 
-			EReference model,
+			IDomainClass.IReference model,
 			FormToolkit toolkit,
 			Composite parent ){
 		assert model != null;
@@ -179,7 +182,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 		Label icon = toolkit.createLabel( parent, "" ); //$NON-NLS-1$
 		icon.setImage( 
 				ImageUtil.resize(
-					ImageUtil.getImage( EmfUtil.getCollectionDomainType( model ) ),
+					ImageUtil.getImage( model.getReferencedDomainClass() ),
 				PART_ICON_SIZE ) );	
 		icon.setLayoutData( new GridData() );
 
@@ -196,7 +199,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 	// just to tidy code - the 'toolbar' here is a conceipt -
 	// actually we are setting the description Control of the section
 	private void createToolbar(
-			final EReference model,
+			final IDomainClass.IReference model,
 			FormToolkit toolkit, 
 			final CollectionPart part,
 			Composite toolbar,
@@ -213,7 +216,7 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 		int numColumns = 0;
 		
 		// model data
-		final IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
+		final IDomainClass dClass = model.getReferencedDomainClass();
 		
 		// add button
 		if ( EmfUtil.canAddTo( model ) ) {
@@ -364,5 +367,6 @@ public class CollectionGuiFactory implements IGuiFactory<EReference> {
 			}
 		}
 	}
+
 	
 }

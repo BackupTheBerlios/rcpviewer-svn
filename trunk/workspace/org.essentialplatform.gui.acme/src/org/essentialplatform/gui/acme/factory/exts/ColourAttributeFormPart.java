@@ -1,9 +1,9 @@
 package org.essentialplatform.gui.acme.factory.exts;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Text;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart;
+import org.essentialplatform.core.domain.IDomainClass;
 
 
 /**
@@ -15,7 +15,7 @@ class ColourAttributeFormPart extends AbstractAttributeFormPart<Color,Text> {
 	 * @param model
 	 * @param control
 	 */
-	ColourAttributeFormPart( EAttribute model ) {
+	ColourAttributeFormPart( IDomainClass.IAttribute model ) {
 		super(model );
 	}
 

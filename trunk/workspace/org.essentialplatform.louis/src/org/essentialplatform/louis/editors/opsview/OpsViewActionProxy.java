@@ -6,11 +6,11 @@ package org.essentialplatform.louis.editors.opsview;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
-import org.essentialplatform.louis.jobs.RunOperationJob;
 
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.louis.jobs.RunOperationJob;
 
 /**
  * Wraps an op on the ops view
@@ -26,7 +26,7 @@ class OpsViewActionProxy extends RunOperationJob  {
 	 * Constructor takes the operation to wrap and the instance this applies to
 	 * @param op
 	 */
-	<T> OpsViewActionProxy( IDomainObject<T> obj, EOperation op ) {
+	<T> OpsViewActionProxy( IDomainObject<T> obj, IDomainClass.IOperation op ) {
 		super( obj, op);
 	}
 	
@@ -52,7 +52,7 @@ class OpsViewActionProxy extends RunOperationJob  {
 			sb.append( getOp().getName() );
 			sb.append( "(" ); //$NON-NLS-1$
 			boolean firstParam = true;
-			for ( Object param : getOp().getEParameters() ) {
+			for ( Object param : getOp().getEOperation().getEParameters() ) {
 				if ( firstParam ) {
 					firstParam = false;
 				}
@@ -72,7 +72,7 @@ class OpsViewActionProxy extends RunOperationJob  {
 	 */
 	OpsViewParameterProxy[] getParams() {
 		if ( _params == null ) {
-			EList list = getOp().getEParameters();
+			EList list = getOp().getEOperation().getEParameters();
 			_params = new OpsViewParameterProxy[ list.size() ];
 			for ( int i=0 ; i < _params.length ; i++ ) {
 				_params[i] = new OpsViewParameterProxy( 

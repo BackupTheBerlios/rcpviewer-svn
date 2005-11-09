@@ -5,8 +5,8 @@ package org.essentialplatform.louis.factory.attribute;
 
 import java.math.BigDecimal;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 
 
 /**
@@ -20,7 +20,7 @@ class BigDecimalAttributeFormPart extends AbstractAttributeFormPart<BigDecimal,T
 	 * @param model
 	 * @param control
 	 */
-	BigDecimalAttributeFormPart( EAttribute model ) {
+	BigDecimalAttributeFormPart( IDomainClass.IAttribute model ) {
 		super( model );
 	}
 

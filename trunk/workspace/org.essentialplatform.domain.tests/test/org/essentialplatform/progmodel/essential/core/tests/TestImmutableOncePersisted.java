@@ -17,7 +17,7 @@ public abstract class TestImmutableOncePersisted extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestImmutableOncePersistedAnnotation.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("email"));
+			domainClass.getIAttributeNamed("email");
 		assertTrue(attrib.isImmutableOncePersisted());
 	}
 
@@ -26,7 +26,7 @@ public abstract class TestImmutableOncePersisted extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestImmutableOncePersistedAnnotation.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName"));
+			domainClass.getIAttributeNamed("firstName");
 		assertFalse(attrib.isImmutableOncePersisted());
 	}
 

@@ -292,7 +292,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 * 
 		 * @return
 		 */
-		public EReference getEReference();
+		public IDomainClass.IReference getReference();
 		
 		/**
 		 * Register interest in changes in either the value of this reference 
@@ -602,7 +602,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 * 
 		 * @return
 		 */
-		public EOperation getEOperation();
+		public IDomainClass.IOperation getOperation();
 		
 
 		/**
@@ -750,7 +750,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @param attributeName
 	 * @return
 	 */
-	public EAttribute getEAttributeNamed(String attributeName);
+	public IDomainClass.IAttribute getIAttributeNamed(String attributeName);
 
 	/**
 	 * Convenience method that should return the same as the 
@@ -759,7 +759,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @param operationName
 	 * @return
 	 */
-	public EOperation getEOperationNamed(String operationName);
+	public IDomainClass.IOperation getIOperationNamed(String operationName);
 
 	/**
 	 * Convenience method that should return the same as the 
@@ -768,7 +768,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @param operationName
 	 * @return
 	 */
-	public EReference getEReferenceNamed(String referenceName);
+	public IDomainClass.IReference getIReferenceNamed(String referenceName);
 
 	/**
 	 * Adds domain object listener.
@@ -882,10 +882,10 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * Returns an {@link IObjectAttribute} such that the run-time state of this
 	 * attribute of the owning {@link IDomainObject} can be interacted with.
 	 * 
-	 * @param eAttribute
+	 * @param iAttribute
 	 * @return
 	 */
-	public IObjectAttribute getAttribute(EAttribute eAttribute);
+	public IObjectAttribute getAttribute(IDomainClass.IAttribute iAttribute);
 
 	/**
 	 * Returns an {@link IObjectOneToOneReference} such that the run-time state of this
@@ -895,7 +895,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @return the reference.
 	 * @throws IllegalArgumentException if the EReference represents a collection.
 	 */
-	public IObjectOneToOneReference getOneToOneReference(EReference eReference) throws IllegalArgumentException;
+	public IObjectOneToOneReference getOneToOneReference(IDomainClass.IReference iReference) throws IllegalArgumentException;
 
 
 	/**
@@ -906,7 +906,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @return
 	 * @throws IllegalArgumentException if the EReference represents a 1:1 reference.
 	 */
-	public IObjectCollectionReference getCollectionReference(EReference eReference);
+	public IObjectCollectionReference getCollectionReference(IDomainClass.IReference iReference);
 
 	/**
 	 * Returns an {@link IObjectOperation} such that the run-time state of this
@@ -915,7 +915,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @param eOperation
 	 * @return
 	 */
-	public IObjectOperation getOperation(EOperation eOperation);
+	public IObjectOperation getOperation(IDomainClass.IOperation iOperation);
 
 	
 }

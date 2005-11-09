@@ -18,7 +18,7 @@ public abstract class TestRegex extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestRegex.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("lastName"));
+			domainClass.getIAttributeNamed("lastName");
 		assertEquals("[A-Z].+", attrib.getRegex());
 		assertTrue(attrib.regexMatches("Abc"));
 		assertFalse(attrib.regexMatches("abc"));
@@ -30,7 +30,7 @@ public abstract class TestRegex extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestRegex.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName"));
+			domainClass.getIAttributeNamed("firstName");
 		assertNull(attrib.getRegex());
 		assertTrue(attrib.regexMatches("nonsense"));
 	}

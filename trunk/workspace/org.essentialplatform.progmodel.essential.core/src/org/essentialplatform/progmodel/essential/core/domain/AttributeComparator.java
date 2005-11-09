@@ -1,16 +1,9 @@
 package org.essentialplatform.progmodel.essential.core.domain;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
+import org.essentialplatform.core.domain.AbstractAttributeComparator;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
-
-import org.eclipse.emf.ecore.EAttribute;
-
-import org.essentialplatform.core.emf.EmfAnnotations;
 
 
 /**

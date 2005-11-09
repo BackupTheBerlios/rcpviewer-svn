@@ -1,8 +1,5 @@
 package org.essentialplatform.runtime.tests.session;
 
-import java.util.Set;
-
-import org.eclipse.emf.ecore.EOperation;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.CustomerOperationWithDefaults;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.CustomerOperationWithPre;
@@ -10,7 +7,6 @@ import org.essentialplatform.core.fixture.progmodel.essential.standard.operation
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Product;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.domain.IObservedFeature;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 
 public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
@@ -21,8 +17,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		IDomainObject<CustomerOperationWithPre> domainObject = session.create(domainClass);
 		CustomerOperationWithPre pojo = domainObject.getPojo();
 		
-		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
-		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
+		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("placeOrder");
+		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);
 		
 		IPrerequisites prereqs; 
 		pojo.placeOrderVeto = false;
@@ -38,10 +34,9 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
  		IDomainClass domainClass = lookupAny(CustomerOperationWithPreAndArgs.class);
 
 		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = session.create(domainClass);
-		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
 		
-		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
-		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
+		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("computeDifference");
+		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);
 		
 		IPrerequisites prereqs;
 		
@@ -84,8 +79,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		IDomainObject<CustomerOperationWithDefaults> domainObject = session.create(domainClass);
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
-		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
-		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
+		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("placeOrder");
+		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);
 		
 		// instantiating should have reset implicitly, picking up the defaults
 		Object[] args = op.getArgs();
@@ -100,8 +95,8 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		IDomainObject<CustomerOperationWithDefaults> domainObject = session.create(domainClass);
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
-		EOperation eOperation = domainObject.getEOperationNamed("placeOrder");
-		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
+		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("placeOrder");
+		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);
 		
 		// trash the defaults
 		op.setArg(0, new Product());
@@ -124,12 +119,9 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithPreAndArgs.class);
 
 		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = session.create(domainClass);
-		CustomerOperationWithPreAndArgs pojo = domainObject.getPojo();
-
-		Set<IObservedFeature> features = session.getObservedFeatures();
 		
-		EOperation eOperation = domainObject.getEOperationNamed("computeDifference");
-		IDomainObject.IObjectOperation op = domainObject.getOperation(eOperation);
+		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("computeDifference");
+		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);
 	}
 
 

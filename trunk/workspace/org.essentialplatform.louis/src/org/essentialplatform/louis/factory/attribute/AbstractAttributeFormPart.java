@@ -1,10 +1,9 @@
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.AbstractFormPart;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.util.NullUtil;
-
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectAttributeEvent;
@@ -21,7 +20,7 @@ import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener
 public abstract class AbstractAttributeFormPart<T1,T2 extends Control> 
 		extends AbstractFormPart {
 	
-	private final EAttribute _model;
+	private final IDomainClass.IAttribute _model;
 	private final IDomainObjectAttributeListener _listener;
 	
 	private T2 _control;
@@ -33,7 +32,7 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 * @param model
 	 * @param text
 	 */
-	protected AbstractAttributeFormPart( EAttribute model ) {
+	protected AbstractAttributeFormPart( IDomainClass.IAttribute model ) {
 		super();
 		assert model != null;
 		_model = model;

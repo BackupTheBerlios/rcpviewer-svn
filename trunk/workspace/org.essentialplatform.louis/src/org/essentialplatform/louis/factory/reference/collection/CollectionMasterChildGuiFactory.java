@@ -1,6 +1,5 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
@@ -18,7 +17,7 @@ import org.essentialplatform.louis.util.EmfUtil;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
-public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> {
+public class CollectionMasterChildGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 	
 	/**
 	 * Returns <code>true</code> if a multiple reference and parent is
@@ -31,8 +30,8 @@ public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> 
 		if( model == null ) throw new IllegalArgumentException();
 		if( parent == null ) return false;
 		if ( !( parent instanceof CollectionGuiFactory ) ) return false;
-		if ( model instanceof EReference ) {
-			return ((EReference)model).isMany();
+		if ( model instanceof IDomainClass.IReference ) {
+			return ((IDomainClass.IReference)model).isMultiple();
 		}
 		return false;
 	}
@@ -54,7 +53,7 @@ public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> 
 	 * @return
 	 */
 	public CollectionMasterChildPart createGui(
-			EReference model, 
+			IDomainClass.IReference model, 
 			FormToolkit toolkit,
 			Composite parent, 
 			GuiHints hints) {
@@ -92,7 +91,7 @@ public class CollectionMasterChildGuiFactory implements IGuiFactory<EReference> 
 		
 		// create 'child' attribute list gui
 		final ManagedForm childForm = new ManagedForm( childComposite );
-		IDomainClass dClass = EmfUtil.getCollectionDomainType( model );
+		IDomainClass dClass = model.getReferencedDomainClass();
 		DomainClassGuiFactory childFactory = new DomainClassGuiFactory();
 		DomainClassPart childPart = childFactory.createGui( 
 				dClass, 

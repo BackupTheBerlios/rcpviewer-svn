@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.emf.AbstractProgModelSemanticsEmfSerializer;
+import org.essentialplatform.core.domain.AbstractAttributeComparator;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
@@ -28,7 +29,7 @@ import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
-import org.essentialplatform.progmodel.essential.core.domain.AbstractAttributeComparator;
+
 
 /**
  * Serializes and deserializes semantics for the extended programming model

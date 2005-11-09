@@ -5,12 +5,12 @@ package org.essentialplatform.louis.editors.opsview;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
@@ -34,7 +34,7 @@ class OpsViewContentProvider implements ITreeContentProvider {
 			throw new IllegalArgumentException();
 		}
 		IDomainObject<?> obj = (IDomainObject<?>)inputElement;
-		List<EOperation> ops = obj.getDomainClass().eOperations(); 
+		List<IDomainClass.IOperation> ops = obj.getDomainClass().iOperations(); 
 		if ( ops.isEmpty() ) {
 			return new Object[]{ new ErrorInput( 
 				LouisPlugin.getResourceString( "OpsViewContentProvider.NoOps" )) }; //$NON-NLS-1$

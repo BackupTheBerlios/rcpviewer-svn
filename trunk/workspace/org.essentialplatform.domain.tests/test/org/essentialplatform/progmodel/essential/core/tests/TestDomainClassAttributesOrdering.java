@@ -13,23 +13,23 @@ public abstract class TestDomainClassAttributesOrdering extends AbstractTestCase
 	
 	public void testOrderingOfEAttributeWhenNoneSpecified() {
 		domainClass = lookupAny(CustomerWithNoOrderingReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isOrdered());
-		assertTrue(domainClass.getIAttribute(eAttribute).isOrdered());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isOrdered());
+		assertTrue(iAttribute.getEAttribute().isOrdered());
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsTrue() {
 		domainClass = lookupAny(CustomerWithOrderingReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertTrue(eAttribute.isOrdered());
-		assertTrue(domainClass.getIAttribute(eAttribute).isOrdered());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertTrue(iAttribute.isOrdered());
+		assertTrue(iAttribute.getEAttribute().isOrdered());
 	}
 
 	public void testOrderingOfEAttributeWhenSpecifiedAsFalse() {
 		domainClass = lookupAny(CustomerWithoutOrderingReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertFalse(eAttribute.isOrdered());
-		assertFalse(domainClass.getIAttribute(eAttribute).isOrdered());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertFalse(iAttribute.isOrdered());
+		assertFalse(iAttribute.getEAttribute().isOrdered());
 	}
 
 	public void incompletetestOrderingOfEAttributeWhenSpecifiedWithoutUpperBound() {

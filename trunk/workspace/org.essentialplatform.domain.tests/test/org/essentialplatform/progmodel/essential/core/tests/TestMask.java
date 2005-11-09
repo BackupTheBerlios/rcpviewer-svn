@@ -17,7 +17,7 @@ public abstract class TestMask extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMask.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("lastName"));
+			domainClass.getIAttributeNamed("lastName");
 		assertEquals("AAAA", attrib.getMask());
 	}
 
@@ -26,7 +26,7 @@ public abstract class TestMask extends AbstractTestCase {
 		domainClass = lookupAny(CustomerToTestMask.class);
 		
 		IDomainClass.IAttribute attrib = 
-			domainClass.getIAttribute(domainClass.getEAttributeNamed("firstName"));
+			domainClass.getIAttributeNamed("firstName");
 		assertNull(attrib.getMask());
 	}
 }

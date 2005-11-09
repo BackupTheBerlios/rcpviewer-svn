@@ -1,13 +1,12 @@
 package org.essentialplatform.louis.factory.attribute;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
-import org.essentialplatform.louis.util.EmfUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 
 public class BooleanAttributeGuiFactory 
@@ -22,31 +21,28 @@ public class BooleanAttributeGuiFactory
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
-			Class attributeClass = ((EAttribute)model).getEType().getInstanceClass();
+		if ( model instanceof IDomainClass.IAttribute ) {
+			Class attributeClass = ((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass();
 			if ( boolean.class == attributeClass ) return true;
 			if ( Boolean.class == attributeClass ) return true;
 		}
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createFormPart(org.eclipse.emf.ecore.EAttribute)
+	/*
+	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createFormPart(org.essentialplatform.core.domain.IDomainClass.IAttribute)
 	 */
 	@Override
 	protected AbstractAttributeFormPart<Boolean, Button> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new BooleanAttributeFormPart( model );
 	}
-
-	/* (non-Javadoc)
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createMainControl(org.eclipse.swt.widgets.Composite, org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart, org.eclipse.emf.ecore.EAttribute)
-	 */
+	
 	@Override
 	protected Button createMainControl(
 			Composite parent, 
 			final AbstractAttributeFormPart<Boolean, Button> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		
 		final Button button= new Button( parent, SWT.CHECK );

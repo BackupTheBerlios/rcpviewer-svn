@@ -16,16 +16,16 @@ public abstract class TestDomainClassAttributesCardinality extends AbstractTestC
 
 	public void testLowerBoundOfEAttributeWhenNoneSpecified() {
 		domainClass = lookupAny(CustomerWithNoLowerBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(1, eAttribute.getLowerBound());
-		assertEquals(1, domainClass.getIAttribute(eAttribute).getLowerBound());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertEquals(1, iAttribute.getLowerBound());
+		assertEquals(1, iAttribute.getEAttribute().getLowerBound());
 	}
 
 	public void testLowerBoundOfEAttributeWhenSpecified() {
 		domainClass = lookupAny(CustomerWithLowerBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(0, eAttribute.getLowerBound());
-		assertEquals(0, domainClass.getIAttribute(eAttribute).getLowerBound());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertEquals(0, iAttribute.getLowerBound());
+		assertEquals(0, iAttribute.getEAttribute().getLowerBound());
 	}
 
 	public void incompletetestLowerBoundOfEAttributeWithDatatypeNotSupporting() {
@@ -35,16 +35,16 @@ public abstract class TestDomainClassAttributesCardinality extends AbstractTestC
 
 	public void testUpperBoundOfEAttributeWhenNoneSpecified() {
 		domainClass = lookupAny(CustomerWithNoUpperBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(1, eAttribute.getUpperBound());
-		assertEquals(1, domainClass.getIAttribute(eAttribute).getLowerBound());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertEquals(1, iAttribute.getUpperBound());
+		assertEquals(1, iAttribute.getEAttribute().getUpperBound());
 	}
 
 	public void testUpperBoundOfEAttributeWhenSpecified() {
 		domainClass = lookupAny(CustomerWithUpperBoundReadOnlyAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("surname");
-		assertEquals(3, eAttribute.getUpperBound());
-		assertEquals(3, domainClass.getIAttribute(eAttribute).getUpperBound());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("surname");
+		assertEquals(3, iAttribute.getUpperBound());
+		assertEquals(3, iAttribute.getEAttribute().getUpperBound());
 	}
 
 	public void incompletetestUpperBoundOfEAttributeWithDatatypeNotSupporting() {

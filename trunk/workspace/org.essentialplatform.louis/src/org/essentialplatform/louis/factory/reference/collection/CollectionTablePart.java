@@ -5,8 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,13 +22,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.IManagedForm;
+
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.domain.IDomainObject;
+
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigurableAdapter;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
-
-import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
  * Handles dynamic behaviour for the collection gui.
@@ -38,9 +38,9 @@ import org.essentialplatform.runtime.domain.IDomainObject;
 class CollectionTablePart extends ConfigurableAdapter 
 		implements ICollectionChildPart {
 	
-	private final EReference _model;
+	private final IDomainClass.IReference _model;
 	private final TableViewer _viewer;
-	private final Map<EAttribute,TableColumn> _attributes;
+	private final Map<IDomainClass.IAttribute,TableColumn> _attributes;
 	
 	private IDomainObject<?> _container = null;
 	private List<IReferencePartDisplayListener> _listeners = null;
@@ -55,12 +55,12 @@ class CollectionTablePart extends ConfigurableAdapter
 	 * @param ref
 	 * @param pages
 	 */
-	CollectionTablePart( EReference ref, TableViewer viewer ) {
+	CollectionTablePart( IDomainClass.IReference ref, TableViewer viewer ) {
 		assert ref != null;
 		_model = ref;
 		assert viewer != null;
 		_viewer = viewer;
-		_attributes = new LinkedHashMap<EAttribute,TableColumn>();
+		_attributes = new LinkedHashMap<IDomainClass.IAttribute,TableColumn>();
 		
 		_viewer.addSelectionChangedListener( new ISelectionChangedListener(){
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -217,7 +217,7 @@ class CollectionTablePart extends ConfigurableAdapter
 	 * @param attribute
 	 * @param area
 	 */
-	void addAttribute( EAttribute attribute, TableColumn column ) {
+	void addAttribute( IDomainClass.IAttribute attribute, TableColumn column ) {
 		assert attribute != null;
 		assert column != null;
 		_attributes.put( attribute, column );
@@ -238,8 +238,8 @@ class CollectionTablePart extends ConfigurableAdapter
 	}
 	
 	// as it says
-	private boolean isInitiallyVisible( EAttribute attribute ) {
-		assert attribute != null;
+	private boolean isInitiallyVisible( IDomainClass.IMember member) {
+		assert member != null;
 		// eventually pick up initial settings from persistence mechanism...
 		// TODO
 		return true;
@@ -270,7 +270,7 @@ class CollectionTablePart extends ConfigurableAdapter
 			body.setLayout( new GridLayout() );
 			
 			// add visibility check boxes
-			for( EAttribute attribute : _attributes.keySet() ) {
+			for( IDomainClass.IAttribute attribute : _attributes.keySet() ) {
 				addCheckBox( attribute.getName(),
 						     body,
 						     _attributes.get( attribute ) );

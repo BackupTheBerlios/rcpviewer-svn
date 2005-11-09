@@ -2,16 +2,14 @@ package org.essentialplatform.louis.factory.reference.collection;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener;
-import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Extracts pojo collection contents and wraps in IDomainObjects 
@@ -89,8 +87,8 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 	private void addListeners( List<IDomainObject<?>> elements ) {
 		assert elements != null;
 		for ( IDomainObject<?> element : elements ) {
-			for ( EAttribute att : element.getDomainClass().eAttributes() ) {
-				element.getAttribute( att ).addListener( _attListener );
+			for ( IDomainClass.IAttribute iAttribute : element.getDomainClass().iAttributes() ) {
+				element.getAttribute( iAttribute ).addListener( _attListener );
 			}
 		}
 	}
@@ -99,8 +97,8 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 	private void removeListeners( List<IDomainObject<?>> elements ) {
 		assert elements != null;
 		for ( IDomainObject<?> element : elements ) {
-			for ( EAttribute att : element.getDomainClass().eAttributes() ) {
-				element.getAttribute( att ).removeListener( _attListener );
+			for ( IDomainClass.IAttribute iAttribute : element.getDomainClass().iAttributes() ) {
+				element.getAttribute( iAttribute ).removeListener( _attListener );
 			}
 		}
 	}

@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
+import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
@@ -28,6 +29,7 @@ import org.essentialplatform.progmodel.essential.app.Optional;
 import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
+import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesIdentifier;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.runtime.RuntimeDeployment.RuntimeAttributeBinding;
@@ -61,38 +63,40 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 		Lifecycle lifecycle = javaClass.getAnnotation(Lifecycle.class);
 		serializer.setClassLifecycle(eClass, lifecycle);
 
-		for(EAttribute attribute: domainClass.eAttributes()) {
-			processAccessorPre(attribute, domainClass, javaClass); // getXxxPre() method
-			processMutatorPre(attribute, domainClass, javaClass); // setXxxPre(..) method
+		for(IDomainClass.IAttribute iAttribute: domainClass.iAttributes()) {
+			EAttribute eAttribute = iAttribute.getEAttribute();
+			processAccessorPre(eAttribute, domainClass, javaClass); // getXxxPre() method
+			processMutatorPre(eAttribute, domainClass, javaClass); // setXxxPre(..) method
 
 			// serialize extended semantics as EMF annotations
-			IDomainClass.IAttribute iAttribute = domainClass.getIAttribute(attribute);
 			RuntimeAttributeBinding attributeBinding = (RuntimeAttributeBinding)iAttribute.getBinding();
 
-			serializer.setAttributeRelativeOrder(attribute, attributeBinding.getAnnotation(RelativeOrder.class));
-			serializer.setAttributeId(attribute, attributeBinding.getAnnotation(Id.class));
-			serializer.setOptional(attribute, attributeBinding.getAnnotation(Optional.class));
-			serializer.setAttributeInvisible(attribute, attributeBinding.getAnnotation(Invisible.class));
-			serializer.setAttributeBusinessKey(attribute, attributeBinding.getAnnotation(BusinessKey.class));
-			serializer.setAttributeMask(attribute, attributeBinding.getAnnotation(Mask.class));
-			serializer.setAttributeRegex(attribute, attributeBinding.getAnnotation(Regex.class));
-			serializer.setAttributeImmutableOncePersisted(attribute, attributeBinding.getAnnotation(ImmutableOncePersisted.class));
+			serializer.setAttributeRelativeOrder(eAttribute, attributeBinding.getAnnotation(RelativeOrder.class));
+			serializer.setAttributeId(eAttribute, attributeBinding.getAnnotation(Id.class));
+			serializer.setOptional(eAttribute, attributeBinding.getAnnotation(Optional.class));
+			serializer.setAttributeInvisible(eAttribute, attributeBinding.getAnnotation(Invisible.class));
+			serializer.setAttributeBusinessKey(eAttribute, attributeBinding.getAnnotation(BusinessKey.class));
+			serializer.setAttributeMask(eAttribute, attributeBinding.getAnnotation(Mask.class));
+			serializer.setAttributeRegex(eAttribute, attributeBinding.getAnnotation(Regex.class));
+			serializer.setAttributeImmutableOncePersisted(eAttribute, attributeBinding.getAnnotation(ImmutableOncePersisted.class));
 
-			if (returnsString(attribute)) {
-				serializer.setMinLengthOf(attribute, attributeBinding.getAnnotation(MinLengthOf.class));
-				serializer.setMaxLengthOf(attribute, attributeBinding.getAnnotation(MaxLengthOf.class));
-				serializer.setFieldLengthOf(attribute, attributeBinding.getAnnotation(FieldLengthOf.class));
+			if (returnsString(eAttribute)) {
+				serializer.setMinLengthOf(eAttribute, attributeBinding.getAnnotation(MinLengthOf.class));
+				serializer.setMaxLengthOf(eAttribute, attributeBinding.getAnnotation(MaxLengthOf.class));
+				serializer.setFieldLengthOf(eAttribute, attributeBinding.getAnnotation(FieldLengthOf.class));
 			}
 		}
 
-		for(EReference eReference: domainClass.eReferences()) {
+		for(IDomainClass.IReference iReference: domainClass.iReferences()) {
+			EReference eReference = iReference.getEReference();
 			processAccessorPre(eReference, domainClass, javaClass); // getXxxPre() method
 			processMutatorPre(eReference, domainClass, javaClass); // setXxxPre(..) method (simple reference only)
 			processAddToPre(eReference, domainClass, javaClass); // addToXxxPre(..) method (collections only)
 			processRemoveFromPre(eReference, domainClass, javaClass); // removeFromXxxPre(..) method (collections only)
 		}
 		
-		for(EOperation operation: domainClass.eOperations()) {
+		for(IDomainClass.IOperation iOperation: domainClass.iOperations()) {
+			EOperation operation = iOperation.getEOperation();
 			Method invoker = standardSerializer.getOperationMethod(operation);
 
 			// xxxPre(..) method
@@ -356,7 +360,7 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 				Class<?> arrayOfParameterType = argDefaultArray.getClass();
 				parameterTypes[i] = arrayOfParameterType;
 			}
-			invokerDefaultsCandidate = javaClass.getMethod(invokerDefaultsMethodName, parameterTypes);
+			invokerDefaultsCandidate = javaClass.getMethod(invokerDefaultsMethodName, (Class[])parameterTypes);
 		} catch (SecurityException ex) {
 			return;
 		} catch (NoSuchMethodException ex) {
@@ -388,7 +392,7 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 	 * @param javaClass
 	 * @return
 	 */
-	private boolean methodReturns(Method method, Class javaClass) {
+	private boolean methodReturns(Method method, Class<?> javaClass) {
 		// hack, good enough for us.
 		if (javaClass == Void.class) {
 			return method.getReturnType() == null ||
@@ -401,6 +405,16 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 		return Modifier.isPublic(method.getModifiers());
 	}
 	
+	/**
+	 * Does nothing.
+	 * 
+	 * <p>
+	 * The companion {@link ExtendedProgModelStandardRuntimeBuilder} does the
+	 * heavy lifting here.
+	 */
+	public void identifyOppositeReferencesFor(IDomainClass domainClass) {
+		// does nothing		
+	}
 
 }
 

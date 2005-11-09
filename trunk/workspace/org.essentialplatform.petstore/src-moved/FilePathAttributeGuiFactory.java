@@ -5,7 +5,6 @@ package org.essentialplatform.petstore.gui;
 
 import java.util.Date;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -14,6 +13,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
+
+import org.essentialplatform.core.domain.IDomainClass;
+
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.attribute.AbstractAttributeFormPart;
@@ -39,9 +41,9 @@ public class FilePathAttributeGuiFactory
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
+		if ( model instanceof IDomainClass.IAttribute ) {
 			return Date.class.isAssignableFrom( 
-					((EAttribute)model).getEType().getInstanceClass() );
+					((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass() );
 		}
 		return false;
 	}
@@ -50,7 +52,7 @@ public class FilePathAttributeGuiFactory
 	protected Text createMainControl(
 			Composite parent, 
 			AbstractAttributeFormPart<FilePath, Text> part, 
-			EAttribute model,
+			IDomainClass.IAttribute model,
 			GuiHints hints ) {
 		assert parent != null;
 		
@@ -63,7 +65,7 @@ public class FilePathAttributeGuiFactory
 	
 	@Override
 	protected AbstractAttributeFormPart<FilePath, Text> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new FilePathAttributeFormPart( model );
 	}
 	
@@ -71,7 +73,7 @@ public class FilePathAttributeGuiFactory
 	protected Control[] createAdditionalEditControls(
 			final Composite parent, 
 			final AbstractAttributeFormPart<FilePath, Text> part, 
-			EAttribute model,
+			IDomainClass.IAttribute model,
 			GuiHints hints ) {
 		assert parent != null;
 		assert part != null;

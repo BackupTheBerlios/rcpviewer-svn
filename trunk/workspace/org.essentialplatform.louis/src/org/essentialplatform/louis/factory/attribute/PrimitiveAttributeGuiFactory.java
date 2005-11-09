@@ -7,7 +7,6 @@ import static org.essentialplatform.louis.util.FontUtil.CharWidthType.SAFE;
 
 import java.lang.reflect.Method;
 
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,6 +15,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.FontUtil;
@@ -38,8 +38,8 @@ public class PrimitiveAttributeGuiFactory<T> extends AbstractAttributeGuiFactory
 	 */
 	public boolean isApplicable(Object model, IGuiFactory<?> parent) {
 		if( model == null ) throw new IllegalArgumentException();
-		if ( model instanceof EAttribute ) {
-			Class attributeClass = ((EAttribute)model).getEType().getInstanceClass();
+		if ( model instanceof IDomainClass.IAttribute ) {
+			Class attributeClass = ((IDomainClass.IAttribute)model).getEAttribute().getEType().getInstanceClass();
 			if ( attributeClass.isPrimitive() 
 					|| PrimitiveUtil.isWrapperClass( attributeClass )) {
 				return PrimitiveUtil.hasValueOfMethod( attributeClass );
@@ -49,21 +49,17 @@ public class PrimitiveAttributeGuiFactory<T> extends AbstractAttributeGuiFactory
 	}
 	
 
-	/**
-	 * Defines size of field and adds a verify listener
-	 * @see org.essentialplatform.louis.factory.attribute.AbstractAttributeGuiFactory#createMainControl(org.eclipse.swt.widgets.Composite, AbstractAttributeFormPart, EAttribute, GuiHints)
-	 */
 	@Override
 	protected Text createMainControl(
 			Composite parent, 
 			final AbstractAttributeFormPart<T, Text> part, 
-			EAttribute model, 
+			IDomainClass.IAttribute model, 
 			GuiHints hints) {
 		assert parent != null;
 		assert model != null;
 		
 		// decide width & style of text box
-		Class type = model.getEType().getInstanceClass();
+		Class type = model.getEAttribute().getEType().getInstanceClass();
 		GridData data;
 		int style = Integer.MIN_VALUE;
 		if ( type == byte.class || type == Byte.class ) {
@@ -155,7 +151,7 @@ public class PrimitiveAttributeGuiFactory<T> extends AbstractAttributeGuiFactory
 	
 	@Override
 	protected AbstractAttributeFormPart<T, Text> createFormPart(
-			EAttribute model) {
+			IDomainClass.IAttribute model) {
 		return new PrimitiveAttributeFormPart<T>( model );
 	}
 }

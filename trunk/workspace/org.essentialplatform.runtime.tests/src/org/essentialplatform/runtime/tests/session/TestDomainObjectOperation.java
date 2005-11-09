@@ -15,7 +15,8 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 		IDomainObject<CustomerOperationReturningVoid> domainObject = session.create(domainClass);
 		CustomerOperationReturningVoid pojo = domainObject.getPojo();
 		
-		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
+		IDomainObject.IObjectOperation placeOrderOperation = 
+			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
 		assertFalse(pojo.orderPlaced);
 		Object retval = placeOrderOperation.invokeOperation(new Object[] {});
 		assertTrue(pojo.orderPlaced);
@@ -27,7 +28,8 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 
 		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
 		
-		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
+		IDomainObject.IObjectOperation placeOrderOperation = 
+			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
 		Object retval = placeOrderOperation.invokeOperation(new Object[] {});
 		assertNotNull(retval);
 		assertTrue(retval instanceof Order);
@@ -39,13 +41,15 @@ public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
 		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
 
 		// place a few orders...
-		IDomainObject.IObjectOperation placeOrderOperation = domainObject.getOperation(domainObject.getEOperationNamed("placeOrder"));
+		IDomainObject.IObjectOperation placeOrderOperation = 
+			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
 		placeOrderOperation.invokeOperation(new Object[] {});
 		placeOrderOperation.invokeOperation(new Object[] {});
 		placeOrderOperation.invokeOperation(new Object[] {});
 
 		// how many?
-		IDomainObject.IObjectOperation numberOfOrdersPlacedOperation = domainObject.getOperation(domainObject.getEOperationNamed("numberOfOrdersPlaced"));
+		IDomainObject.IObjectOperation numberOfOrdersPlacedOperation = 
+			domainObject.getOperation(domainObject.getIOperationNamed("numberOfOrdersPlaced"));
 		assertNotNull(numberOfOrdersPlacedOperation);
 		Object retval = numberOfOrdersPlacedOperation.invokeOperation(new Object[] {});
 		assertNotNull(retval);

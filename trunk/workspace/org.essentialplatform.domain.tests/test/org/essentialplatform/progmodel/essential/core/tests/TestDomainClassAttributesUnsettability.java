@@ -13,22 +13,22 @@ public abstract class TestDomainClassAttributesUnsettability extends AbstractTes
 	
 	public void testWhetherEAttributeIsUnsettableWhenIs() {
 		domainClass = lookupAny(CustomerWithUnsettableAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
-		assertTrue(eAttribute.isUnsettable());
-		assertTrue(domainClass.getIAttribute(eAttribute).isUnsettable());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("age");
+		assertTrue(iAttribute.isUnsettable());
+		assertTrue(iAttribute.getEAttribute().isUnsettable());
 	}
 
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingUnsetMethod() {
 		domainClass = lookupAny(CustomerWithOnlyIsUnsetForAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
-		assertFalse(eAttribute.isUnsettable());
-		assertFalse(domainClass.getIAttribute(eAttribute).isUnsettable());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("age");
+		assertFalse(iAttribute.isUnsettable());
+		assertFalse(iAttribute.getEAttribute().isUnsettable());
 	}
 	public void testWhetherEAttributeIsUnsettableWhenNotDueToMissingIsUnsetMethod() {
 		domainClass = lookupAny(CustomerWithOnlyUnsetForAttribute.class);
-		EAttribute eAttribute = domainClass.getEAttributeNamed("age");
-		assertFalse(eAttribute.isUnsettable());
-		assertFalse(domainClass.getIAttribute(eAttribute).isUnsettable());
+		IDomainClass.IAttribute iAttribute = domainClass.getIAttributeNamed("age");
+		assertFalse(iAttribute.isUnsettable());
+		assertFalse(iAttribute.getEAttribute().isUnsettable());
 	}
 
 	

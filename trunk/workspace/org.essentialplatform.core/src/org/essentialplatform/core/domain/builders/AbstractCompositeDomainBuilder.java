@@ -64,4 +64,10 @@ public abstract class AbstractCompositeDomainBuilder implements IDomainBuilder {
 		}
 	}
 
+	public final void identifyOppositeReferencesFor(IDomainClass domainClass) {
+		for(IDomainBuilder builder: _builders) {
+			builder.identifyOppositeReferencesFor(domainClass);
+		}
+	}
+
 }
