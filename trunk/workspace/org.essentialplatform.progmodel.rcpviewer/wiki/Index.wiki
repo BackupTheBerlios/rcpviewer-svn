@@ -1,4 +1,0 @@
-1 About this Plugin
-Defines the API for the ~~RcpViewer~~ programming model, at least so far as the domain programmer is concerned.  In practical terms, it contains a set of annotations, no more.
-
-The ~~RcpViewer~~ programming model defines a set of semantics that this particular implementation of the Naked Objects pattern for Eclipse RCP can use.  An example is an ImageDescriptor Url for icons.

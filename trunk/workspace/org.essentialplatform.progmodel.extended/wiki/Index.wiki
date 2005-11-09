@@ -1,4 +1,0 @@
-1 About this Plugin
-Defines the API for the ~~Extended~~ programming model, at least so far as the domain programmer is concerned.  In practical terms, it contains a set of annotations, no more.
-
-The ~~Extended~~ programming model defines a set of semantics that any Naked Objects-like application is likely to require, but that goes over and above the set of semantics that EMF (our canonical standard) makes available.  An example is field length.
