@@ -1,10 +1,9 @@
 package org.essentialplatform.core.fixture.progmodel.essential.standard.reference;
-import org.essentialplatform.progmodel.essential.app.InDomain;
-import org.essentialplatform.progmodel.essential.app.TypeOf;
-import org.essentialplatform.progmodel.standard.*;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.TypeOf;
 
 /**
  * Has a 1:m relationship with Employee.

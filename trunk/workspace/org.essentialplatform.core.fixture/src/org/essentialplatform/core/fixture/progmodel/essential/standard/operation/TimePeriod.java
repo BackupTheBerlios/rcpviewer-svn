@@ -3,7 +3,6 @@
  */
 package org.essentialplatform.core.fixture.progmodel.essential.standard.operation;
 import org.essentialplatform.progmodel.essential.app.Value;
-import org.essentialplatform.progmodel.standard.*;
 
 @Value
 public class TimePeriod {

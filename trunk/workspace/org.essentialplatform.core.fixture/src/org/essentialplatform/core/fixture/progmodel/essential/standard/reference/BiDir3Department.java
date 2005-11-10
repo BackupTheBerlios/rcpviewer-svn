@@ -1,11 +1,10 @@
 package org.essentialplatform.core.fixture.progmodel.essential.standard.reference;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.OppositeOf;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
-import org.essentialplatform.progmodel.standard.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * The @OppositeOf annotation is for these fixture classes applied to both ends. 

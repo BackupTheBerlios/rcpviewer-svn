@@ -1,7 +1,6 @@
 package org.essentialplatform.core.fixture.progmodel.essential.standard.reference;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.OppositeOf;
-import org.essentialplatform.progmodel.standard.*;
 
 /**
  * The @OppositeOf annotation is for these fixture classes applied to the

@@ -1,14 +1,13 @@
 package org.essentialplatform.progmodel.essential.runtime;
 
-import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
-import org.essentialplatform.progmodel.standard.*;
-
 import java.lang.reflect.Method;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
-
+import org.eclipse.swt.widgets.Link;
+import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.util.MethodNameHelper;
+import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**

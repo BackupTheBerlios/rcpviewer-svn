@@ -2,11 +2,10 @@
  * 
  */
 package org.essentialplatform.core.fixture.progmodel.essential.standard.operation;
+import java.util.List;
+
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
-import org.essentialplatform.progmodel.standard.*;
-
-import java.util.List;
 
 
 

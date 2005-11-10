@@ -3,7 +3,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.CustomerExplicitlyInDefaultDomain;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.CustomerImplicitlyInDefaultDomain;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.Customer;

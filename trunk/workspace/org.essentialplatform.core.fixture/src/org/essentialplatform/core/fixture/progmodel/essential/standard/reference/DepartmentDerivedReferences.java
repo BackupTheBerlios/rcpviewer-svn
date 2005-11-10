@@ -1,13 +1,12 @@
 package org.essentialplatform.core.fixture.progmodel.essential.standard.reference;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.essentialplatform.progmodel.essential.app.Derived;
 import org.essentialplatform.progmodel.essential.app.Immutable;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
-import org.essentialplatform.progmodel.standard.*;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Has a 1:m unidirectional relationship with Employee, and a separate

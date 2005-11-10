@@ -5,7 +5,6 @@ package org.essentialplatform.core.fixture.progmodel.essential.standard.namesand
 import org.essentialplatform.progmodel.essential.app.DescribedAs;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Named;
-import org.essentialplatform.progmodel.standard.*;
 
 
 @InDomain
