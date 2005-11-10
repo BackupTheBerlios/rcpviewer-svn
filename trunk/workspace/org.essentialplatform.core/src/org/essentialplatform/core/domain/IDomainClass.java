@@ -1,8 +1,12 @@
 package org.essentialplatform.core.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -16,6 +20,7 @@ import org.essentialplatform.core.deployment.Deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.core.domain.filters.IFilter;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.core.i18n.II18nData;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
@@ -185,36 +190,6 @@ public interface IDomainClass {
 	public boolean isTransientOnly();
 
 	/**
-	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#iAttributes()} that make up the identifier for this
-	 * domain object.
-	 * 
-	 * <p>
-	 * Extended semantics. 
-	 * 
-	 * @return
-	 */
-	public List<IAttribute> idIAttributes();
-
-
-	/**
-	 * Returns the attributes of the extended domain class 
-	 * {@link IDomainClass#iAttributes()} that make up the identifier for this
-	 * domain object; the attributes are sorted by the supplied comparator.
-	 * 
-	 * <p>
-	 * Although any comparator can be used, it only makes sense to use a
-	 * comparator that uses semantics relevant to attributes that logically 
-	 * represent part of the domain's Id.
-	 *  
-	 * <p>
-	 * Extended semantics. 
-	 * 
-	 * @return
-	 */
-	public List<IAttribute> idIAttributes(IAttributeComparator comparator);
-
-	/**
 	 * Returns a map keyed by name of each business key, whose value is a list
 	 * of the attribute(s) that make up that business key, in the order that
 	 * they were specified.
@@ -347,13 +322,13 @@ public interface IDomainClass {
 	/**
 	 * Returns all the {@link IDomainClass.IAttribute}s of the class, 
 	 * including inherited attributes, in the order specified by the supplied
-	 * {@link IAttributeComparator}.
+	 * {@link Comparator}.
 	 * 
 	 * <p>
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<IAttribute> iAttributes(final IAttributeComparator comparator);
+	public List<IAttribute> iAttributes(final Comparator<IAttribute> comparator);
 
 	
 	/**
@@ -364,7 +339,7 @@ public interface IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<IAttribute> iAttributes(final IAttributeFilter filter);
+	public List<IAttribute> iAttributes(final IFilter<IAttribute> filter);
 
 	
 	/**
@@ -375,7 +350,7 @@ public interface IDomainClass {
 	 * The returned list is a copy and so may safely be modified by the caller
 	 * with no side-effects.
 	 */
-	public List<IAttribute> iAttributes(final IAttributeFilter filter, final IAttributeComparator comparator);
+	public List<IAttribute> iAttributes(final IFilter<IAttribute> filter, final Comparator<IAttribute> comparator);
 
 	
 	/**
@@ -881,6 +856,42 @@ public interface IDomainClass {
 	public List<IReference> iReferences();
 
 	/**
+	 * Returns all the {@link IDomainClass.IReference}s of the class, 
+	 * including inherited references, in the order specified by the supplied
+	 * {@link Comparator}.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IReference> iReferences(final Comparator<IReference> comparator);
+
+	
+	/**
+	 * Returns the {@link IDomainClass.IReference}s of the class that are
+	 * satisfied by the supplied filter.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IReference> iReferences(final IFilter<IReference> filter);
+
+	
+	/**
+	 * Returns the {@link IDomainClass.IReference}s of the class that are
+	 * satisfied by the supplied filter; the order is indeterminate.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IReference> iReferences(final IFilter<IReference> filter, final Comparator<IReference> comparator);
+
+	
+
+
+	/**
 	 * Returns the reference with given name, or <tt>nothing</tt> if unknown.
 	 * 
 	 * @param referenceName
@@ -989,25 +1000,6 @@ public interface IDomainClass {
 	///////////////////////////////////////////////////////////////
 	// operations
 	
-	
-	/**
-	 * Returns all the operations of the class, of the specified
-	 * {@link OperationKind}, and including inherited operations only if 
-	 * requested.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	public List<IOperation> iOperations(OperationKind operationKind, boolean includeInherited);
-
-	/**
-	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
-	 * 
-	 * @param operationName
-	 * @return
-	 */
-	public IDomainClass.IOperation getIOperationNamed(String operationName);
 
 	/**
 	 * Returns all the {@link IDomainClass.IOperation}s (both static and 
@@ -1019,6 +1011,48 @@ public interface IDomainClass {
 	 */
 	public List<IOperation> iOperations();
 
+	/**
+	 * Returns all the {@link IDomainClass.IOperation}s of the class, 
+	 * including inherited operations, in the order specified by the supplied
+	 * {@link Comparator}.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IOperation> iOperations(final Comparator<IOperation> comparator);
+
+	
+	/**
+	 * Returns the {@link IDomainClass.IOperation}s of the class that are
+	 * satisfied by the supplied filter.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IOperation> iOperations(final IFilter<IOperation> filter);
+
+	
+	/**
+	 * Returns the {@link IDomainClass.IOperation}s of the class that are
+	 * satisfied by the supplied filter; the order is indeterminate.
+	 * 
+	 * <p>
+	 * The returned list is a copy and so may safely be modified by the caller
+	 * with no side-effects.
+	 */
+	public List<IOperation> iOperations(final IFilter<IOperation> filter, final Comparator<IOperation> comparator);
+
+	
+
+	/**
+	 * Returns the operation with given name, or <tt>nothing</tt> if unknown.
+	 * 
+	 * @param operationName
+	 * @return
+	 */
+	public IDomainClass.IOperation getIOperationNamed(String operationName);
 	/**
 	 * Returns an {@link IAttribute} represented by the supplied 
 	 * {@link EAttribute}; reference semantics.

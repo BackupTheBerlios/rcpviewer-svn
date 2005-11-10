@@ -24,8 +24,11 @@ import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
+import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
+import org.essentialplatform.core.domain.filters.NoopClassFilter;
 
 /**
  * Outlook-style bar for each class in Domain.
@@ -45,15 +48,15 @@ public class ClassBarView extends ViewPart {
 		GridLayout layout = new GridLayout();
 		layout.verticalSpacing = 0;
 		parent.setLayout( layout );
-		
+
 		// get all classes from domain(s)
-		Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses(
-				DomainRegistryUtil.Filter.INSTANTIABLE );
 		boolean empty = true;
-		while ( it.hasNext() ) {
-			doAddClass( (IDomainClass)it.next(), parent  );
+		for(IDomainClass domainClass: DomainRegistryUtil.allClasses(
+											new InstantiableClassFilter())) {
+			doAddClass( domainClass, parent  );
 			empty = false;
-    	}
+		}
+		
 		
 		// error message on status line if necessary
 		if ( empty ) {

@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.deployment.Deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.core.domain.filters.IFilter;
 
 /**
  * A registry of {@link IDomainClass}es within a given domain (or meta-model, 
@@ -52,9 +53,24 @@ public interface IDomain {
 	 * Returns a collection of {@link IDomainClass}es, each one parameterized
 	 * by a different type.
 	 * 
+	 * <p>
+	 * The returned collection is immutable. 
+	 * 
 	 * @return
 	 */
 	public Collection<IDomainClass> classes();
+	
+	/**
+	 * Returns a collection of {@link IDomainClass}es, each one parameterized
+	 * by a different type, filtered by the supplied filter.
+	 * 
+	 * <p>
+	 * The returned collection is immutable. 
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	public Collection<IDomainClass> classes(IFilter<IDomainClass> filter);
 	
 	
 	/**

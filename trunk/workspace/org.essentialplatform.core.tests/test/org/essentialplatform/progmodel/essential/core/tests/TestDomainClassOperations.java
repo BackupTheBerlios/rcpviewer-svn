@@ -1,9 +1,10 @@
 package org.essentialplatform.progmodel.essential.core.tests;
 
-import org.eclipse.emf.ecore.EOperation;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.OperationKind;
 import org.essentialplatform.core.domain.IDomainClass.IOperation;
+import org.essentialplatform.core.domain.filters.InstanceOperationFilter;
+import org.essentialplatform.core.domain.filters.Not;
+import org.essentialplatform.core.domain.filters.StaticOperationFilter;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Appointment;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.AppointmentWithAccessor;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.AppointmentWithCollection;
@@ -56,8 +57,8 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(operation.isStatic());
 
 		assertEquals(2, domainClass.iOperations().size());
-		assertEquals(1, domainClass.iOperations(OperationKind.INSTANCE, true).size());
-		assertEquals(1, domainClass.iOperations(OperationKind.STATIC, true).size());
+		assertEquals(1, domainClass.iOperations(new InstanceOperationFilter()).size());
+		assertEquals(1, domainClass.iOperations(new Not(new InstanceOperationFilter())).size());
 	}
 	
 	/**
@@ -75,8 +76,8 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		operation = domainClass.getIOperationNamed("create");
 		assertNull(operation);
 
-		assertEquals(0, domainClass.iOperations(OperationKind.INSTANCE, false).size());
-		assertEquals(0, domainClass.iOperations(OperationKind.STATIC, false).size());
+		assertEquals(0, domainClass.iOperations(new InstanceOperationFilter()).size());
+		assertEquals(0, domainClass.iOperations(new StaticOperationFilter()).size());
 	}
 	
 	/**

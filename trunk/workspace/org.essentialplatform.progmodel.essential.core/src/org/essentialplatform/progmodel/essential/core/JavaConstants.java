@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.LinkSemanticsType;
 
 /**

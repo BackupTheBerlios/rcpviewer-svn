@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.deployment.Deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.core.domain.filters.IFilter;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 
@@ -202,16 +203,29 @@ public class Domain implements IDomain {
 		_builders.add(builder);
 	}
 
-	/**
-	 * Returns a collection of {@link IDomainClass}es, each one parameterized
-	 * by a different type.
-	 * 
-	 * @return
+	/*
+	 * @see org.essentialplatform.core.domain.IDomain#classes()
 	 */
 	public final Collection<IDomainClass> classes() {
-		return Collections.unmodifiableCollection((Collection<IDomainClass>)_domainClassesByClassRepresentation.values());
+		return Collections.unmodifiableCollection(
+			(Collection<IDomainClass>)_domainClassesByClassRepresentation.values());
 	}
 	
+
+	/*
+	 * @see org.essentialplatform.core.domain.IDomain#classes(org.essentialplatform.core.domain.filters.IFilter)
+	 */
+	public Collection<IDomainClass> classes(IFilter<IDomainClass> filter) {
+		Collection<IDomainClass> classes = 
+			(Collection<IDomainClass>)_domainClassesByClassRepresentation.values();
+		Collection<IDomainClass> filteredClasses = new ArrayList<IDomainClass>();
+		for(IDomainClass domainClass: classes) {
+			if (filter.accept(domainClass)) {
+				filteredClasses.add(domainClass);
+			}
+		}
+		return Collections.unmodifiableCollection(filteredClasses);
+	}
 
 
 	/**

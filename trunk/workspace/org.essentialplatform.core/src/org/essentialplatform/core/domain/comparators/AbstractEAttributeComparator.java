@@ -1,4 +1,4 @@
-package org.essentialplatform.core.domain;
+package org.essentialplatform.core.domain.comparators;
 
 import java.util.Comparator;
 

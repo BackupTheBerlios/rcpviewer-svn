@@ -15,6 +15,7 @@ import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
 import org.essentialplatform.runtime.RuntimePlugin;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.session.ISession;
@@ -104,12 +105,9 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 			_sessionId = session.getId();
 			List<IDomainClass> populatedClasses = new ArrayList<IDomainClass>();
 
-			Iterator<IDomainClass> it = DomainRegistryUtil.iterateAllClasses(
-					DomainRegistryUtil.Filter.INSTANTIABLE );
-			while ( it.hasNext() ) {
-				IDomainClass clazz = it.next();
-				if ( !session.footprintFor( clazz ).isEmpty() ) { 
-					populatedClasses.add( clazz );
+			for(IDomainClass domainClass: DomainRegistryUtil.allClasses(new InstantiableClassFilter())) {
+				if ( !session.footprintFor( domainClass ).isEmpty() ) { 
+					populatedClasses.add( domainClass );
 				}
 			}
 			return populatedClasses.toArray();

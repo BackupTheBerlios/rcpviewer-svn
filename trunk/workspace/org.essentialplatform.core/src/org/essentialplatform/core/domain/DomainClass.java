@@ -2,6 +2,7 @@ package org.essentialplatform.core.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ import org.essentialplatform.core.deployment.Deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.Deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
+import org.essentialplatform.core.domain.filters.IFilter;
+import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.core.emf.Emf;
 import org.essentialplatform.core.emf.EmfAnnotations;
 import org.essentialplatform.core.features.FeatureId;
@@ -205,14 +208,14 @@ public final class DomainClass implements IDomainClass {
 	 * @see org.essentialplatform.progmodel.extended.IDomainClass#isSimpleId()
 	 */
 	public boolean isSimpleId() {
-		return idIAttributes().size() == 1;
+		return iAttributes(new IdAttributeFilter()).size() == 1;
 	}
 
 	/*
 	 * @see org.essentialplatform.progmodel.extended.IExtendedDomainClass#isCompositeId()
 	 */
 	public boolean isCompositeId() {
-		return idIAttributes().size() > 1;
+		return iAttributes(new IdAttributeFilter()).size() > 1;
 	}
 	
 	/*
@@ -223,14 +226,15 @@ public final class DomainClass implements IDomainClass {
 		if (isCompositeId()) {
 			return defaultAssignmentType;
 		}
-		List<EAttribute> attributes = eAttributes();
-		for(Iterator<EAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
-			EAttribute attr = iter.next();
-			Id id = _extendedSerializer.getAttributeId(attr);
+		List<IAttribute> attributes = iAttributes();
+		for(Iterator<IAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
+			IAttribute attr = iter.next();
+			EAttribute eAttr = attr.getEAttribute();
+			Id id = _extendedSerializer.getAttributeId(eAttr);
 			if (id == null) {
 				continue;
 			}
-			EDataType attributeType = attr.getEAttributeType();
+			EDataType attributeType = eAttr.getEAttributeType();
 			if (!_emf.isIntegralNumber(attributeType)) {
 				return defaultAssignmentType;
 			}
@@ -353,30 +357,17 @@ public final class DomainClass implements IDomainClass {
 	}
 
 
-	/**
-	 * Returns all the attributes of the class, including inherited attributes
-	 * only if requested.
-	 * 
-	 * <p>
-	 * The returned list is a copy and so may safely be modified by the caller
-	 * with no side-effects.
-	 */
-	private List<EAttribute> eAttributes() {
-		final boolean includeInherited = true;
-		List<EAttribute> eAttributes = new ArrayList<EAttribute>();
-		EList attributes = includeInherited?
-								getEClass().getEAllAttributes():
-								getEClass().getEAttributes();
-		eAttributes.addAll(attributes);
-		return eAttributes;
-	}
-
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#iAttributes()
 	 */
 	public List<IAttribute> iAttributes() {
+		final boolean includeInherited = true;
+		EList eAttributes = includeInherited?
+								getEClass().getEAllAttributes():
+								getEClass().getEAttributes();
+
 		List<IAttribute> attributes = new ArrayList<IAttribute>();
-		for(EAttribute eAttribute: eAttributes()) {
+		for(EAttribute eAttribute: (List<EAttribute>)eAttributes) {
 			attributes.add(getIAttribute(eAttribute));
 		}
 		return attributes;
@@ -385,7 +376,7 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.core.domain.IDomainClass#iAttributes(org.essentialplatform.core.domain.IAttributeComparator)
 	 */
-	public List<IAttribute> iAttributes(final IAttributeComparator comparator) {
+	public List<IAttribute> iAttributes(final Comparator<IAttribute> comparator) {
 		List<IAttribute> attributes = iAttributes();
 		Collections.sort(attributes, comparator);
 		return attributes;
@@ -394,7 +385,7 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.core.domain.IDomainClass#iAttributes(org.essentialplatform.core.domain.IAttributeFilter)
 	 */
-	public List<IAttribute> iAttributes(IAttributeFilter filter) {
+	public List<IAttribute> iAttributes(IFilter<IAttribute> filter) {
 		List<IAttribute> attributes = iAttributes();
 		List<IAttribute> filteredAttributes = new ArrayList<IAttribute>();
 		for(IAttribute attribute: attributes) {
@@ -408,37 +399,13 @@ public final class DomainClass implements IDomainClass {
 	/*
 	 * @see org.essentialplatform.core.domain.IDomainClass#iAttributes(org.essentialplatform.core.domain.IAttributeFilter, org.essentialplatform.core.domain.IAttributeComparator)
 	 */
-	public List<IAttribute> iAttributes(IAttributeFilter filter, IAttributeComparator comparator) {
+	public List<IAttribute> iAttributes(IFilter<IAttribute> filter, Comparator<IAttribute> comparator) {
 		List<IAttribute> attributes = iAttributes(filter);
 		Collections.sort(attributes, comparator);
 		return attributes;
 	}
 
 
-	/*
-	 * @see org.essentialplatform.progmodel.extended.IDomainClass#idIAttributes()
-	 */
-	public List<IAttribute> idIAttributes() {
-		List<IAttribute> attributes = iAttributes();
-		for(Iterator<IAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
-			IAttribute attr = iter.next();
-			if (!attr.isId()) {
-				iter.remove();
-			}
-		}
-		//Collections.sort(attributes, new IdComparator());
-		return attributes;
-	}
-	
-	/*
-	 * @see org.essentialplatform.progmodel.extended.IDomainClass#idIAttributes()
-	 */
-	public List<IAttribute> idIAttributes(IAttributeComparator comparator) {
-		List<IAttribute> attributes = idIAttributes();
-		Collections.sort(attributes, comparator);
-		return attributes;
-	}
-	
 	public int getNumberOfAttributes() {
 		return getEClass().getEAllAttributes().size();
 	}
@@ -682,37 +649,51 @@ public final class DomainClass implements IDomainClass {
 	 * @see org.essentialplatform.domain.IDomainClass#iReferences()
 	 */
 	public List<IReference> iReferences() {
+		final boolean includeInherited = true;
+		EList eReferences = includeInherited?
+								getEClass().getEAllReferences():
+								getEClass().getEReferences();
+
 		List<IReference> references = new ArrayList<IReference>();
-		for(EReference eReference: eReferences()) {
+		for(EReference eReference: (List<EReference>)eReferences) {
 			references.add(getIReference(eReference));
 		}
 		return references;
 	}
 
-
-	private List<EReference> eReferences() {
-		return references(true);
-	}
-
-
-	/**
-	 * Returns references from this class to other classes, specifying whether
-	 * inherited references should be included.
-	 * 
-	 * @param includeInherited
-	 * @return
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#iReferences(org.essentialplatform.core.domain.IComparator<IReference>)
 	 */
-	private List<EReference> references(final boolean includeInherited) {
-		List<EReference> references = new ArrayList<EReference>();
-		EClass eClass = getEClass();
-		EList eReferenceList = includeInherited? eClass.getEAllReferences(): eClass.getEReferences();
-		for(Iterator<?> iter = eReferenceList.iterator(); iter.hasNext(); ) {
-			EReference ref = (EReference)iter.next();
-			references.add(ref);
-		}
+	public List<IReference> iReferences(final Comparator<IReference> comparator) {
+		List<IReference> references = iReferences();
+		Collections.sort(references, comparator);
 		return references;
 	}
 
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#iReferences(org.essentialplatform.core.domain.IFilter<IReference>)
+	 */
+	public List<IReference> iReferences(IFilter<IReference> filter) {
+		List<IReference> references = iReferences();
+		List<IReference> filteredReferences = new ArrayList<IReference>();
+		for(IReference reference: references) {
+			if (filter.accept(reference)) {
+				filteredReferences.add(reference);
+			}
+		}
+		return filteredReferences;
+	}
+	
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#iReferences(org.essentialplatform.core.domain.IFilter<IReference>, org.essentialplatform.core.domain.IComparator<IReference>)
+	 */
+	public List<IReference> iReferences(IFilter<IReference> filter, Comparator<IReference> comparator) {
+		List<IReference> references = iReferences(filter);
+		Collections.sort(references, comparator);
+		return references;
+	}
+
+	
 	public IReference getIReferenceNamed(String referenceName) {
 		for(IReference iReference: iReferences() ) {
 			if (iReference.getName().equals(referenceName)) {
@@ -913,41 +894,54 @@ public final class DomainClass implements IDomainClass {
 
 
 	/*
-	 * @see org.essentialplatform.domain.IDomainClass#operations(org.essentialplatform.domain.OperationKind, boolean)
-	 */
-	public List<IOperation> iOperations(OperationKind operationKind, boolean includeInherited) {
-		List<IOperation> iOperations = new ArrayList<IOperation>();
-		EList operations = includeInherited?
-								getEClass().getEAllOperations():
-								getEClass().getEOperations();
-		for(Iterator iter = operations.iterator(); iter.hasNext(); ) {
-			EOperation eOperation = (EOperation)iter.next();
-			IOperation operation = getIOperation(eOperation);
-			switch(operationKind) {
-				case INSTANCE:
-					if (!operation.isStatic()) {
-						iOperations.add(operation);
-					}
-					break;
-				case STATIC:
-					if (operation.isStatic()) {
-						iOperations.add(operation);
-					}
-					break;
-				case ALL:
-					iOperations.add(operation);
-			}
-		}
-		return iOperations;
-	}
-
-	/*
 	 * @see org.essentialplatform.domain.IDomainClass#iOperations()
 	 */
 	public List<IOperation> iOperations() {
-		return iOperations(OperationKind.ALL, true);
+		final boolean includeInherited = true;
+		EList eOperations = includeInherited?
+								getEClass().getEAllOperations():
+								getEClass().getEOperations();
+
+		List<IOperation> operations = new ArrayList<IOperation>();
+		for(EOperation eOperation: (List<EOperation>)eOperations) {
+			operations.add(getIOperation(eOperation));
+		}
+		return operations;
 	}
 
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#iOperations(org.essentialplatform.core.domain.IComparator<IOperation>)
+	 */
+	public List<IOperation> iOperations(final Comparator<IOperation> comparator) {
+		List<IOperation> operations = iOperations();
+		Collections.sort(operations, comparator);
+		return operations;
+	}
+
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#iOperations(org.essentialplatform.core.domain.IFilter<IOperation>)
+	 */
+	public List<IOperation> iOperations(IFilter<IOperation> filter) {
+		List<IOperation> operations = iOperations();
+		List<IOperation> filteredOperations = new ArrayList<IOperation>();
+		for(IOperation operation: operations) {
+			if (filter.accept(operation)) {
+				filteredOperations.add(operation);
+			}
+		}
+		return filteredOperations;
+	}
+	
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#iOperations(org.essentialplatform.core.domain.IFilter<IOperation>, org.essentialplatform.core.domain.IComparator<IOperation>)
+	 */
+	public List<IOperation> iOperations(IFilter<IOperation> filter, Comparator<IOperation> comparator) {
+		List<IOperation> operations = iOperations(filter);
+		Collections.sort(operations, comparator);
+		return operations;
+	}
+
+	
 	public IOperation getIOperationNamed(String operationName) {
 		for(IOperation iOperation: iOperations() ) {
 			if (iOperation.getName().equals(operationName)) {

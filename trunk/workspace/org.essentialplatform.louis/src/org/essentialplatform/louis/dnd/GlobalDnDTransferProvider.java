@@ -15,10 +15,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.Transfer;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
-import org.essentialplatform.louis.util.DomainRegistryUtil.Filter;
 import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
+import org.essentialplatform.core.domain.filters.NoopClassFilter;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.
@@ -102,7 +103,7 @@ public class GlobalDnDTransferProvider implements IDndTransferProvider {
 		return _allTransfers.values().toArray( new Transfer[0] );
 	}
 	
-	// causs providers to be instantiated for all common & domain classes
+	// causes providers to be instantiated for all common & domain classes
 	private void bootstrap() {
 		getTransfer( Boolean.class );
 		getTransfer( Byte.class );
@@ -117,10 +118,8 @@ public class GlobalDnDTransferProvider implements IDndTransferProvider {
 		getTransfer( BigDecimal.class );
 		
 		// domain classes
-		Iterator<IDomainClass> it =
-			DomainRegistryUtil.iterateAllClasses( Filter.ALL );
-		while ( it.hasNext() ) {
-			IDomainClass domainClass = it.next();
+		for(IDomainClass domainClass: DomainRegistryUtil.allClasses(
+											new NoopClassFilter())) {
 			Class javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
 			getTransfer(javaClass);
 		}

@@ -7,7 +7,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithAllAttributesPositioned;
 import org.essentialplatform.core.tests.AbstractTestCase;
-import org.essentialplatform.progmodel.essential.core.domain.RelativeOrderAttributeComparator;
+import org.essentialplatform.progmodel.essential.core.domain.comparators.RelativeOrderAttributeComparator;
 
 /**
  * Tests for the use of the <tt>@RelativeOrder</tt> annotation.

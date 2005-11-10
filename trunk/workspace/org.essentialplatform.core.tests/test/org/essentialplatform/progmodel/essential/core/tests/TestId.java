@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
+import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithCompositeId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithNoIdentifier;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleBigIntegerId;
@@ -28,7 +29,7 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
 import org.essentialplatform.core.tests.AbstractTestCase;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
-import org.essentialplatform.progmodel.essential.core.domain.IdAttributeComparator;
+import org.essentialplatform.progmodel.essential.core.domain.comparators.IdAttributeComparator;
 
 /**
  * Tests for the use of the <tt>@Id</tt> annotation.
@@ -42,7 +43,7 @@ public abstract class TestId extends AbstractTestCase {
 	public void testWhenNoIdentifiers() {
 		domainClass = lookupAny(CustomerWithNoIdentifier.class);
 		
-		List<IAttribute> idAttributes = domainClass.idIAttributes();
+		List<IAttribute> idAttributes = domainClass.iAttributes(new IdAttributeFilter());
 		assertEquals(0, idAttributes.size());
 	}
 
@@ -50,7 +51,7 @@ public abstract class TestId extends AbstractTestCase {
 	public void testRelativeOrderingOfSimpleIdentifier() {
 		domainClass = lookupAny(CustomerWithSimpleId.class);
 		
-		List<IAttribute> idAttributes = domainClass.idIAttributes();
+		List<IAttribute> idAttributes = domainClass.iAttributes(new IdAttributeFilter());
 		assertEquals(1, idAttributes.size());
 		assertEquals("id", idAttributes.get(0).getName());
 	}
@@ -58,7 +59,7 @@ public abstract class TestId extends AbstractTestCase {
 	public void testRelativeOrderingOfCompositeIdentifier() {
 		domainClass = lookupAny(CustomerWithCompositeId.class);
 		
-		List<IAttribute> idAttributes = domainClass.idIAttributes(new IdAttributeComparator());
+		List<IAttribute> idAttributes = domainClass.iAttributes(new IdAttributeFilter(), new IdAttributeComparator());
 		assertEquals(2, idAttributes.size());
 		assertEquals("lastName", idAttributes.get(0).getName());
 		assertEquals("firstName", idAttributes.get(1).getName());

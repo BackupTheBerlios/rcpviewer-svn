@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.emf.AbstractProgModelSemanticsEmfSerializer;
-import org.essentialplatform.core.domain.AbstractEAttributeComparator;
+import org.essentialplatform.core.domain.comparators.AbstractEAttributeComparator;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
