@@ -26,6 +26,7 @@ import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.Mask;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
 import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Optional;
 import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
@@ -112,6 +113,24 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ELEMENT, 
 				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY, 
 				"" + fieldLengthOf.value());
+	}
+
+	public MultiLine getMultiLine(EModelElement modelElement) {
+		Map<String,String> attributeDetails = 
+			_emfAnnotations.getAnnotationDetails(modelElement, EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ELEMENT);
+		String valueStr = attributeDetails.get(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ELEMENT_MULTI_LINE_KEY);
+		if (valueStr == null) {
+			return null;
+		}
+		final int value = Integer.parseInt(valueStr);
+		return MultiLine.Factory.create(value);
+	}
+	public void setMultiLine(EModelElement modelElement, MultiLine multiLine) {
+		if (multiLine == null) return;
+		_emfAnnotations.putAnnotationDetails(modelElement,
+				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ELEMENT, 
+				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ELEMENT_MULTI_LINE_KEY, 
+				"" + multiLine.value());
 	}
 
 	// class

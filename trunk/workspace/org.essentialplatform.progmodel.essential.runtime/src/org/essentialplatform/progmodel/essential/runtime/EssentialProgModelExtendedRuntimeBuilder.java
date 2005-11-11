@@ -25,6 +25,7 @@ import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.Mask;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
 import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Optional;
 import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
@@ -84,6 +85,7 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 				serializer.setMinLengthOf(eAttribute, attributeBinding.getAnnotation(MinLengthOf.class));
 				serializer.setMaxLengthOf(eAttribute, attributeBinding.getAnnotation(MaxLengthOf.class));
 				serializer.setFieldLengthOf(eAttribute, attributeBinding.getAnnotation(FieldLengthOf.class));
+				serializer.setMultiLine(eAttribute, attributeBinding.getAnnotation(MultiLine.class));
 			}
 		}
 
@@ -126,6 +128,10 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 						// FieldLengthOf
 						if (parameterAnnotation instanceof FieldLengthOf) {
 							serializer.setFieldLengthOf(parameter, (FieldLengthOf)parameterAnnotation);
+						}
+						// MultiLine
+						if (parameterAnnotation instanceof MultiLine) {
+							serializer.setMultiLine(parameter, (MultiLine)parameterAnnotation);
 						}
 					}
 				}

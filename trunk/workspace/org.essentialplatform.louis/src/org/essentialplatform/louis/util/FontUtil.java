@@ -21,7 +21,7 @@ public class FontUtil {
 	
 	public enum CharWidthType { AVERAGE, MAX, SAFE }
 	
-	private static final Map<Font,int[]> CACHED_WIDTHS
+	private static final Map<Font,int[]> CACHED_WIDTHS_AND_HEIGHTS
 		= new HashMap<Font,int[]>();
 	
 	private static final String LABEL_FONT_KEY
@@ -64,35 +64,57 @@ public class FontUtil {
     public static int getCharWidth( Composite composite, CharWidthType type ) {
     	if( composite == null ) throw new IllegalArgumentException();
     	if( type == null ) throw new IllegalArgumentException();
-    	int[] widths = CACHED_WIDTHS.get( composite.getFont() );
+    	int[] widthsAndHeights = computeWidthsAndHeights(composite);
+    	assert widthsAndHeights != null;
+    	assert widthsAndHeights.length == 4;
+    	switch( type ) {
+    		case AVERAGE:
+    			return widthsAndHeights[0];
+    		case MAX :
+    			return widthsAndHeights[1];
+    		case SAFE:
+    			return widthsAndHeights[2];
+    		default:
+    			assert false;
+    			return Integer.MIN_VALUE;
+    	}
+    }
+
+
+    /**
+     * Height of the font used in the composite.
+     * 
+     * @param composite
+     * @return
+     */
+    public static int getCharHeight( Composite composite ) {
+    	if( composite == null ) throw new IllegalArgumentException();
+    	int[] widthsAndHeights = computeWidthsAndHeights(composite);
+    	assert widthsAndHeights != null;
+    	assert widthsAndHeights.length == 4;
+    	return widthsAndHeights[3];
+    }
+
+    private static int[] computeWidthsAndHeights(Composite composite) {
+		int[] widths = CACHED_WIDTHS_AND_HEIGHTS.get( composite.getFont() );
     	if ( widths == null ) {
-    		widths = new int[3];
+    		widths = new int[4];
     		GC gc = null;
     		try {
     			gc = new GC( composite );
     			widths[0] = gc.getFontMetrics().getAverageCharWidth();
     			widths[1] = gc.getCharWidth( 'W' );
     			widths[2] = (int)( (2*widths[0] + widths[1])/3 );
+    			widths[3] = gc.getFontMetrics().getHeight();
     		}
     		finally {
     			gc.dispose();
     		}
-    		CACHED_WIDTHS.put( composite.getFont(), widths );
+    		CACHED_WIDTHS_AND_HEIGHTS.put( composite.getFont(), widths );
     	}
-    	assert widths != null;
-    	assert widths.length == 3;
-    	switch( type ) {
-    		case AVERAGE:
-    			return widths[0];
-    		case MAX :
-    			return widths[1];
-    		case SAFE:
-    			return widths[2];
-    		default:
-    			assert false;
-    			return Integer.MIN_VALUE;
-    	}
-    }
+		return widths;
+	}
+	
 	
 	
 

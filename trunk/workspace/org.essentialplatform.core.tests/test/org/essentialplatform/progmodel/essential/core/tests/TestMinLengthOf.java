@@ -34,7 +34,7 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 
 	
 	/**
-	 * Should return default of 0 if no {@link MinLengthOf}, even if there
+	 * Should return default of -1 if no {@link MinLengthOf}, even if there
 	 * is a {@link FieldLengthOf}
 	 *
 	 */
@@ -43,11 +43,11 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("middleName");
-		assertEquals(0, attrib.getMinLengthOf());
+		assertEquals(-1, attrib.getMinLengthOf());
 	}
 	
 	/**
-	 * Should return default of 0 if no {@link MinLengthOf}, even if there
+	 * Should return default of -1 if no {@link MinLengthOf}, even if there
 	 * is a {@link FieldLengthOf}
 	 *
 	 */
@@ -56,12 +56,12 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("updateMiddleName");
-		assertEquals(0, op.getMinLengthOf(0));
+		assertEquals(-1, op.getMinLengthOf(0));
 	}
 
 	
 	/**
-	 * Should return default of 0 if no {@link MinLengthOf}, even if there
+	 * Should return default of -1 if no {@link MinLengthOf}, even if there
 	 * is a {@link MaxLengthOf}
 	 *
 	 */
@@ -70,11 +70,11 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("lastName");
-		assertEquals(0, attrib.getMinLengthOf());
+		assertEquals(-1, attrib.getMinLengthOf());
 	}
 
 	/**
-	 * Should return default of 0 if no {@link MinLengthOf}, even if there
+	 * Should return default of -1 if no {@link MinLengthOf}, even if there
 	 * is a {@link MaxLengthOf}
 	 *
 	 */
@@ -83,13 +83,13 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("updateLastName");
-		assertEquals(0, op.getMinLengthOf(0));
+		assertEquals(-1, op.getMinLengthOf(0));
 	}
 
 	
 	/**
 	 * If {@link MinLengthOf} is invalid (< 0) and others are too then 
-	 * return default (0).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithMinLengthOfInvalidButFieldMaxLengthAlsoInvalidOnAttribute() {
@@ -97,13 +97,13 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("attributeWithNegativeLengths");
-		assertEquals(0, attrib.getMinLengthOf());
+		assertEquals(-1, attrib.getMinLengthOf());
 	}
 
 	
 	/**
 	 * If {@link MinLengthOf} is invalid (< 0) and others are too then 
-	 * return default (0).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithMinLengthOfInvalidButFieldMaxLengthAlsoInvalidOnOperationParameter() {
@@ -111,12 +111,12 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("operationToUpdateAttributeWithNegativeLengths");
-		assertEquals(0, op.getMinLengthOf(0));
+		assertEquals(-1, op.getMinLengthOf(0));
 	}
 
 	/**
 	 * If {@link MinLengthOf} not specified and neither are others then  
-	 * return default (0).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithAttributeWithNoMinLengthAnnotationsOrAnyOtherOnAttribute() {
@@ -124,13 +124,13 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("attributeWithNoAnnotations");
-		assertEquals(0, attrib.getMinLengthOf());
+		assertEquals(-1, attrib.getMinLengthOf());
 	}
 	
 
 	/**
 	 * If {@link MinLengthOf} not specified and neither are others then  
-	 * return default (0).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithAttributeWithNoMinLengthAnnotationsOrAnyOtherOnOperationParameter() {
@@ -138,13 +138,13 @@ public abstract class TestMinLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("operationToUpdateAttributeWithNoAnnotations");
-		assertEquals(0, op.getMinLengthOf(0));
+		assertEquals(-1, op.getMinLengthOf(0));
 	}
 
 
 	/**
 	 * If {@link MaxLengthOf} is specified on a non-string attribute then  
-	 * it should be ignored and return 0.
+	 * it should be ignored and return -1.
 	 *
 	 */
 	public void testDomainClassWithNonStringAttributeThatHasMinLengthAnnotationOnAttribute() {

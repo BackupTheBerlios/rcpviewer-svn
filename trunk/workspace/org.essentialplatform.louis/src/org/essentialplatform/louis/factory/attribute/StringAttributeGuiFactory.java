@@ -8,6 +8,8 @@ import static org.essentialplatform.louis.util.FontUtil.CharWidthType.SAFE;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -15,6 +17,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.util.FontUtil;
+import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
 
 
 /**
@@ -50,10 +53,22 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 			final IDomainClass.IAttribute model, 
 			final GuiHints hints) {
 		assert parent != null;
-		
-		final Text text = new Text( parent, SWT.WRAP );
+
+		GridData gridData = new GridData();
+
+		// multiline
+		int textStyle;
+		int multiLine = model.getMultiLine();
+		if (multiLine != -1) {
+			textStyle = SWT.MULTI + SWT.V_SCROLL;
+			gridData.heightHint = FontUtil.getCharHeight(parent) * multiLine; 
+		} else {
+			textStyle = SWT.WRAP;
+			gridData.grabExcessVerticalSpace = true;
+		}
+
+		final Text text = new Text( parent, textStyle );
 		text.setBackground( parent.getBackground() );
-		GridData gridData = new GridData( GridData.FILL_VERTICAL);
 
 		// field length
 		int fieldLength = model.getFieldLengthOf(); 
@@ -82,13 +97,18 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 			text.addModifyListener( new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
 					String enteredText = text.getText();
-					// validate (eg Regex)
-					// TODO: should really move to a TraverseEvent: don't want the field going yellow immediately...!
-					if (model.isValid(enteredText)) {
-						part.setValue( enteredText, false );
-						text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-					} else {
+					part.setValue( enteredText, false );
+				};
+			});
+			// traverse listener for validating (eg Regex)
+			text.addTraverseListener(new TraverseListener() {
+				public void keyTraversed(TraverseEvent e) {
+					String enteredText = text.getText();
+					if (!model.isValid(enteredText)) {
+						e.doit = false;
 						text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+					} else {
+						text.setBackground(parent.getBackground());
 					}
 				};
 			});

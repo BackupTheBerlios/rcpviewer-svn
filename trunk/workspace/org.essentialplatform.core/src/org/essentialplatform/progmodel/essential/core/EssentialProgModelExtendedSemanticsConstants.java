@@ -40,10 +40,6 @@ public final class EssentialProgModelExtendedSemanticsConstants {
 	 */
 	public static final String SUFFIX_OPERATION_DEFAULTS = "Defaults";
 
-	public final static int FIELD_LENGTH_OF_DEFAULT = 32;
-	public final static int MAX_LENGTH_OF_DEFAULT = 64;
-	public final static int MIN_LENGTH_OF_DEFAULT = 0;
-	
 	/**
 	 * Presence of an EAnnotation with this source on any EModelElement 
 	 * indicates additional information accessible from the details.
@@ -107,8 +103,8 @@ public final class EssentialProgModelExtendedSemanticsConstants {
 
 	/**
 	 * If present in the details of an EAnnotation with source of
-	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the minimum length
-	 * of this (string) attribute.
+	 * {@link #ANNOTATION_ELEMENT}, then indicates the minimum length
+	 * of this (string) attribute or operation parameter.
 	 * 
 	 * <p>
 	 * The value held is the length, as a string (use 
@@ -120,8 +116,8 @@ public final class EssentialProgModelExtendedSemanticsConstants {
 
 	/**
 	 * If present in the details of an EAnnotation with source of
-	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the maximum length
-	 * of this (string) attribute.
+	 * {@link #ANNOTATION_ELEMENT}, then indicates the maximum length
+	 * of this (string) attribute or operation parameter.
 	 * 
 	 * <p>
 	 * The value held is the length, as a string (use 
@@ -133,8 +129,8 @@ public final class EssentialProgModelExtendedSemanticsConstants {
 
 	/**
 	 * If present in the details of an EAnnotation with source of
-	 * {@link #ANNOTATION_ATTRIBUTE}, then indicates the field length
-	 * of this (string) attribute.
+	 * {@link #ANNOTATION_ELEMENT}, then indicates the field length
+	 * of this (string) attribute or operation parameter.
 	 * 
 	 * <p>
 	 * The value held is the length, as a string (use 
@@ -143,6 +139,19 @@ public final class EssentialProgModelExtendedSemanticsConstants {
 	 */
 	public static final String ANNOTATION_ELEMENT_FIELD_LENGTH_OF_KEY = 
 		"fieldLengthOf";
+
+
+	/**
+	 * If present in the details of an EAnnotation with source of
+	 * {@link #ANNOTATION_ELEMENT}, then indicates the number of lines to use
+	 * for a text area to render this (string) attribute or operation parameter.
+	 * 
+	 * <p>
+	 * The value held is the length, as a string (use 
+	 * {@link Integer#parseInt(java.lang.String)} to obtain).
+	 */
+	public static final String ANNOTATION_ELEMENT_MULTI_LINE_KEY = 
+		"multiLine";
 
 	/**
 	 * If present in the details of an EAnnotation with source of

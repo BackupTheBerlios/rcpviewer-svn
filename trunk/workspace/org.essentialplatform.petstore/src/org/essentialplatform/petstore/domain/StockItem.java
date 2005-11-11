@@ -17,6 +17,7 @@ import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.OppositeOf;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
@@ -193,6 +194,7 @@ public class StockItem {
     @RelativeOrder(3)
     @BusinessKey(name="product-description", pos=2)
 	@FieldLengthOf(50)
+    @MultiLine(5)
     @MaxLengthOf(255)
     @DescribedAs("Short description of this stock item.")
     public String getDescription() {

@@ -17,6 +17,7 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
 import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.OppositeOf;
 import org.essentialplatform.progmodel.essential.app.Optional;
@@ -161,6 +162,7 @@ public class Product {
      */
     @RelativeOrder(3)
     @Optional
+    @MultiLine(5)
     @FieldLengthOf(50)
     @MaxLengthOf(255)
     @DescribedAs("The description of this type of product.")

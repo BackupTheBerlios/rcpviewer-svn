@@ -12,6 +12,7 @@ import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Invisible;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Lookup;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
 import org.essentialplatform.progmodel.essential.app.Optional;
@@ -129,6 +130,7 @@ public class Category {
     @RelativeOrder(2)
     @FieldLengthOf(50)
     @MaxLengthOf(255)
+    @MultiLine(5)
     @DescribedAs("Description of this category.")
     public String getDescription() {
         return _description;

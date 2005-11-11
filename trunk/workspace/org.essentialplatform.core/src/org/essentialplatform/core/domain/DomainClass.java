@@ -46,6 +46,7 @@ import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.Mask;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
 import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
@@ -534,6 +535,19 @@ public final class DomainClass implements IDomainClass {
 		 */
 		public boolean isInvisible() {
 			return _extendedSerializer.getAttributeInvisible(_eAttribute) != null;
+		}
+		/*
+		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#getMultiLine()
+		 */
+		public int getMultiLine() {
+			if (!returnsString()) {
+				return -1;
+			}
+			MultiLine multiLine = _extendedSerializer.getMultiLine(_eAttribute);
+			if (multiLine == null) {
+				return -1;
+			}
+			return multiLine.value() > 0?multiLine.value():-1;
 		}
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#getFieldLengthOf()
@@ -1136,7 +1150,21 @@ public final class DomainClass implements IDomainClass {
 			}
 			return computeMinLengthOf(parameter);
 		}
-		
+
+		/*
+		 * @see org.essentialplatform.core.domain.IDomainClass.IOperation#getMultiLine()
+		 */
+		public int getMultiLine(final int parameterPosition) {
+			EParameter parameter = getParameter(parameterPosition);
+			if (!isString(parameter)) {
+				return -1;
+			}
+			MultiLine multiLine = _extendedSerializer.getMultiLine(parameter);
+			if (multiLine == null) {
+				return -1;
+			}
+			return multiLine.value() > 0?multiLine.value():-1;
+		}
 
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass#operationIdFor(org.eclipse.emf.ecore.EOperation)
@@ -1168,8 +1196,6 @@ public final class DomainClass implements IDomainClass {
 		public String toString() {
 			return "IOperation: " + _eOperation.getName();
 		}
-
-
 
 	}
 	
@@ -1350,9 +1376,9 @@ public final class DomainClass implements IDomainClass {
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf > 0) {
 			return minLengthOf;
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf <= 0) {
-			return EssentialProgModelExtendedSemanticsConstants.FIELD_LENGTH_OF_DEFAULT;
+			return -1;
 		}
-		return EssentialProgModelExtendedSemanticsConstants.FIELD_LENGTH_OF_DEFAULT;
+		return -1;
 	}
 
 	private int computeMaxLengthOf(final EModelElement modelElement) {
@@ -1377,9 +1403,9 @@ public final class DomainClass implements IDomainClass {
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf > 0) {
 			return minLengthOf;
 		} else if (fieldLengthOf <= 0 && maxLengthOf <= 0 && minLengthOf <= 0) {
-			return EssentialProgModelExtendedSemanticsConstants.MAX_LENGTH_OF_DEFAULT;
+			return -1;
 		}
-		return EssentialProgModelExtendedSemanticsConstants.MAX_LENGTH_OF_DEFAULT;
+		return -1;
 	}
 
 	private int computeMinLengthOf(final EModelElement modelElement) {
@@ -1397,9 +1423,9 @@ public final class DomainClass implements IDomainClass {
 		} else if (minLengthOf > 0 && maxLengthOf <= 0) {
 			return minLengthOf;
 		} else if (minLengthOf <= 0) {
-			return EssentialProgModelExtendedSemanticsConstants.MIN_LENGTH_OF_DEFAULT;
+			return -1;
 		}
-		return EssentialProgModelExtendedSemanticsConstants.MIN_LENGTH_OF_DEFAULT;
+		return -1;
 	}
 
 }

@@ -18,6 +18,7 @@ public class AllTests {
 		suite.addTestSuite(TestExtendedClassAdapter.class);
 		suite.addTestSuite(TestMinLengthOfAtRuntime.class);
 		suite.addTestSuite(TestMaxLengthOfAtRuntime.class);
+		suite.addTestSuite(TestMultiLineAtRuntime.class);
 		suite.addTestSuite(TestInvisibleAtRuntime.class);
 		suite.addTestSuite(TestRelativeOrderForAttributesAtRuntime.class);
 		suite.addTestSuite(TestIdAtRuntime.class);

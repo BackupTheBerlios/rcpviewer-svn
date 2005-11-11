@@ -114,7 +114,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 	
 	/**
 	 * If {@link MaxLengthOf} is invalid (<= 0) and others are too then 
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithMaxLengthOfInvalidButMinFieldLengthAlsoInvalidOnAttribute() {
@@ -122,13 +122,13 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("attributeWithNegativeLengths");
-		assertEquals(64, attrib.getMaxLengthOf());
+		assertEquals(-1, attrib.getMaxLengthOf());
 	}
 
 	
 	/**
 	 * If {@link MaxLengthOf} is invalid (<= 0) and others are too then 
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithMaxLengthOfInvalidButMinFieldLengthAlsoInvalidOnOperationParameter() {
@@ -136,12 +136,12 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("operationToUpdateAttributeWithNegativeLengths");
-		assertEquals(64, op.getMaxLengthOf(0));
+		assertEquals(-1, op.getMaxLengthOf(0));
 	}
 
 	/**
 	 * If {@link MaxLengthOf} not specified and neither are others then  
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithAttributeWithNoMaxLengthAnnotationsOrAnyOtherOnAttribute() {
@@ -149,12 +149,12 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("attributeWithNoAnnotations");
-		assertEquals(64, attrib.getMaxLengthOf());
+		assertEquals(-1, attrib.getMaxLengthOf());
 	}
 
 	/**
 	 * If {@link MaxLengthOf} not specified and neither are others then  
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithAttributeWithNoMaxLengthAnnotationsOrAnyOtherOnOperationParameter() {
@@ -162,13 +162,13 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("operationToUpdateAttributeWithNoAnnotations");
-		assertEquals(64, op.getMaxLengthOf(0));
+		assertEquals(-1, op.getMaxLengthOf(0));
 	}
 
 
 	/**
 	 * If {@link MaxLengthOf} is specified on a non-string attribute then  
-	 * it should be ignored and return 0.
+	 * it should be ignored and return -1.
 	 *
 	 */
 	public void testDomainClassWithNonStringAttributeThatHasMaxLengthAnnotationOnAttribute() {
@@ -182,7 +182,7 @@ public abstract class TestMaxLengthOf extends AbstractTestCase {
 
 	/**
 	 * If {@link MaxLengthOf} is specified on a non-string attribute then  
-	 * it should be ignored and return 0.
+	 * it should be ignored and return -1.
 	 *
 	 */
 	public void testDomainClassWithNonStringAttributeThatHasMaxLengthAnnotationOnOperationParameter() {

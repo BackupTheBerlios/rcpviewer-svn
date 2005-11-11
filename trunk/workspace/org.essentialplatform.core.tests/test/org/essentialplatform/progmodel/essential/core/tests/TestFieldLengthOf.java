@@ -114,7 +114,7 @@ public abstract class TestFieldLengthOf extends AbstractTestCase {
 
 	/**
 	 * If {@link FieldLengthOf} is invalid (<= 0) and others are too then 
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithFieldLengthOfInvalidButMinMaxLengthAlsoInvalidOnAttribute() {
@@ -122,14 +122,14 @@ public abstract class TestFieldLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("attributeWithNegativeLengths");
-		assertEquals(32, attrib.getFieldLengthOf());
+		assertEquals(-1, attrib.getFieldLengthOf());
 	}
 
 
 
 	/**
 	 * If {@link FieldLengthOf} is invalid (<= 0) and others are too then 
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithFieldLengthOfInvalidButMinMaxLengthAlsoInvalidOnOperationParameter() {
@@ -137,12 +137,12 @@ public abstract class TestFieldLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("operationToUpdateAttributeWithNegativeLengths");
-		assertEquals(32, op.getFieldLengthOf(0));
+		assertEquals(-1, op.getFieldLengthOf(0));
 	}
 
 	/**
 	 * If {@link FieldLengthOf} not specified and neither are others then  
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithAttributeWithNoFieldLengthAnnotationsOrAnyOtherOnAttribute() {
@@ -150,12 +150,12 @@ public abstract class TestFieldLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("attributeWithNoAnnotations");
-		assertEquals(32, attrib.getFieldLengthOf());
+		assertEquals(-1, attrib.getFieldLengthOf());
 	}
 
 	/**
 	 * If {@link FieldLengthOf} not specified and neither are others then  
-	 * return default (64).
+	 * return default (-1).
 	 *
 	 */
 	public void testDomainClassWithAttributeWithNoFieldLengthAnnotationsOrAnyOtherOnOperationParameter() {
@@ -163,7 +163,7 @@ public abstract class TestFieldLengthOf extends AbstractTestCase {
 		
 		IDomainClass.IOperation op = 
 			domainClass.getIOperationNamed("operationToUpdateAttributeWithNoAnnotations");
-		assertEquals(32, op.getFieldLengthOf(0));
+		assertEquals(-1, op.getFieldLengthOf(0));
 	}
 
 	/**

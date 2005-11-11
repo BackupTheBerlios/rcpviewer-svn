@@ -33,6 +33,7 @@ import org.essentialplatform.progmodel.essential.app.Invisible;
 import org.essentialplatform.progmodel.essential.app.Mask;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
 import org.essentialplatform.progmodel.essential.app.MinLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.Optional;
 import org.essentialplatform.progmodel.essential.app.Regex;
@@ -769,6 +770,22 @@ public interface IDomainClass {
 		public int getMinLengthOf();
 
 		/**
+		 * Returns the number of lines to use in a text area for a
+		 * (string) attribute.
+		 * 
+		 * <p>
+		 * The {@link MultiLine} annotation is used to indicate the field 
+		 * length of attributes.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public int getMultiLine();
+
+		/**
 		 * Whether this attribute can be edited for as long as the object has not
 		 * been persisted, but should be non-editable thereafter.
 		 * 
@@ -1241,6 +1258,22 @@ public interface IDomainClass {
 		 * @return
 		 */
 		public boolean isMandatory(int parameterPosition);
+
+		/**
+		 * Returns the number of lines to use in a text area for a
+		 * (string) operation parameter.
+		 * 
+		 * <p>
+		 * The {@link MultiLine} annotation is used to indicate the field 
+		 * length of operation parameters.
+		 * 
+		 * <p>
+		 * Extended semantics. 
+		 * 
+		 * @param attribute
+		 * @return
+		 */
+		public int getMultiLine(int parameterPosition);
 
 		/**
 		 * Returns the field length (as displayed in the UI) of the specified

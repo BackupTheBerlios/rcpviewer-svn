@@ -8,6 +8,7 @@ import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.MaxLengthOf;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 
@@ -53,6 +54,16 @@ public class EasyBean {
 	}
 
 
+	private String comments = null;
+	@MultiLine(5)
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	
 	private int field1 = 0;
 	public int getField1() {
 		return field1;
