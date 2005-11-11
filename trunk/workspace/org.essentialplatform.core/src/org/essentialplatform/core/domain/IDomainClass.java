@@ -21,6 +21,7 @@ import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.domain.filters.IFilter;
+import org.essentialplatform.core.domain.validators.IValidator;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.core.i18n.II18nData;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
@@ -800,37 +801,29 @@ public interface IDomainClass {
 		public String getMask();
 
 		/**
-		 * Whether the content of this (string) attribute must be formatted
-		 * according to a regex.
+		 * Whether the candidate value is valid for this attribute.
 		 * 
 		 * <p>
-		 * The {@link Mask} annotation is used to indicate the regex string;
-		 * returns null if none.
+		 * Used by the equivalent IDomainObject.IObjectAttribute#isValid() to 
+		 * determine if the value that it holds is valid.
 		 * 
 		 * <p>
 		 * Extended semantics. 
 		 * 
-		 * @param attribute
 		 * @return
 		 */
-		public String getRegex();
+		public boolean isValid(final String candidate);
+		
 
 		/**
-		 * Convenience method for determining whether the candidate value
-		 * is accepted by the regex associated with this attribute.
-		 * 
-		 * <p>
-		 * If no regex has been specified (using {@link Regex}) then
-		 * always returns true.
+		 * All validators installed for this attribute.
 		 * 
 		 * <p>
 		 * Extended semantics. 
 		 * 
-		 * @param attribute
-		 * @param candidateValue
 		 * @return
 		 */
-		public boolean regexMatches(String candidateValue);
+		public List<IValidator> validators();
 
 
 		/**

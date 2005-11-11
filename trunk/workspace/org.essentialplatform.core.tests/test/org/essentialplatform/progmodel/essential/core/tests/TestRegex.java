@@ -2,6 +2,7 @@ package org.essentialplatform.progmodel.essential.core.tests;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.core.domain.validators.RegexValidator;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerToTestRegex;
 import org.essentialplatform.core.tests.AbstractTestCase;
 
@@ -19,10 +20,11 @@ public abstract class TestRegex extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("lastName");
-		assertEquals("[A-Z].+", attrib.getRegex());
-		assertTrue(attrib.regexMatches("Abc"));
-		assertFalse(attrib.regexMatches("abc"));
-		assertFalse(attrib.regexMatches("A"));
+		RegexValidator validator = (RegexValidator)attrib.validators().get(0);
+		assertEquals("[A-Z].+", validator.getPattern());
+		assertTrue(attrib.isValid("Abc"));
+		assertFalse(attrib.isValid("abc"));
+		assertFalse(attrib.isValid("A"));
 	}
 
 	
@@ -31,7 +33,7 @@ public abstract class TestRegex extends AbstractTestCase {
 		
 		IDomainClass.IAttribute attrib = 
 			domainClass.getIAttributeNamed("firstName");
-		assertNull(attrib.getRegex());
-		assertTrue(attrib.regexMatches("nonsense"));
+		assertEquals(0, attrib.validators().size());
+		assertTrue(attrib.isValid("nonsense"));
 	}
 }

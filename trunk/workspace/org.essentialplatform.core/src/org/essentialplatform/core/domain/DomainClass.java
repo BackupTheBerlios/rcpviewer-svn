@@ -30,6 +30,8 @@ import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.filters.IFilter;
 import org.essentialplatform.core.domain.filters.IdAttributeFilter;
+import org.essentialplatform.core.domain.validators.IValidator;
+import org.essentialplatform.core.domain.validators.RegexValidator;
 import org.essentialplatform.core.emf.Emf;
 import org.essentialplatform.core.emf.EmfAnnotations;
 import org.essentialplatform.core.features.FeatureId;
@@ -415,6 +417,10 @@ public final class DomainClass implements IDomainClass {
 
 		private final EAttribute _eAttribute;
 		private IAttributeBinding _binding;
+		/**
+		 * built up first time ask for validators.
+		 */
+		private List<IValidator> _validators = null;
 		
 		public Attribute(EAttribute eAttribute) {
 			_eAttribute = eAttribute;
@@ -571,24 +577,6 @@ public final class DomainClass implements IDomainClass {
 			if (mask == null) return null;
 			return mask.value();
 		}
-		/*
-		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#getRegex()
-		 */
-		public String getRegex() {
-			Regex regex = _extendedSerializer.getAttributeRegex(_eAttribute);
-			if (regex == null) return null;
-			return regex.value();
-		}
-		/*
-		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#regexMatches(java.lang.String)
-		 */
-		public boolean regexMatches(final String candidateValue) {
-			String regex = getRegex();
-			if (regex == null) {
-				return true;
-			}
-			return candidateValue.matches(regex);
-		}
 
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#getBinding()
@@ -619,6 +607,35 @@ public final class DomainClass implements IDomainClass {
 			return instanceClassName != null && instanceClassName.equals("java.lang.String");
 		}
 
+		/*
+		 * @see org.essentialplatform.core.domain.IDomainClass.IAttribute#isValid(java.lang.String)
+		 */
+		public boolean isValid(String candidate) {
+			for(IValidator validator: validators()) {
+				if (!validator.isValid(candidate)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		/*
+		 * TODO: it would be nice to have the IValidators somehow injected into
+		 * the IAttribute, rather than it have to know how to recreate them.
+		 * 
+		 * @see org.essentialplatform.core.domain.IDomainClass.IAttribute#validators()
+		 */
+		public synchronized List<IValidator> validators() {
+			if (_validators == null) {
+				_validators = new ArrayList<IValidator>();
+				// regex
+				Regex regex = _extendedSerializer.getAttributeRegex(_eAttribute);
+				if (regex != null) {
+					_validators.add(new RegexValidator(regex));
+				}
+			}
+			return _validators;
+		}
 		
 	}
 

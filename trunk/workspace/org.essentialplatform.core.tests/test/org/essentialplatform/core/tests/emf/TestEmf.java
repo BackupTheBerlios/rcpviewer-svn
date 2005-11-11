@@ -1,20 +1,12 @@
 package org.essentialplatform.core.tests.emf;
-import org.essentialplatform.core.emf.Emf;
-import org.essentialplatform.core.emf.EmfAnnotations;
-import org.essentialplatform.core.fixture.emf.EmfFacadeDatePeriod;
-import org.essentialplatform.domain.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
-import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.essentialplatform.core.emf.Emf;
+import org.essentialplatform.core.fixture.emf.EmfFacadeDatePeriod;
 
 
 /**
