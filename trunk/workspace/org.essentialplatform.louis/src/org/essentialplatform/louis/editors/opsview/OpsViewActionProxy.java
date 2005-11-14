@@ -85,7 +85,9 @@ class OpsViewActionProxy extends RunOperationJob  {
 	/**
 	 * Whether the operation can be run.
 	 * <br>Currenly simply asks all parameters if they are valid.
-	 * <br>Later will add prerequisite checks.
+	 * 
+	 * <p>
+	 * TODO: need to add prerequisite checks.
 	 * @return
 	 */
 	boolean isValid() {

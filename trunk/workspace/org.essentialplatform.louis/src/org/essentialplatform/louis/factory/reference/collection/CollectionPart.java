@@ -25,13 +25,15 @@ import org.essentialplatform.runtime.session.ISession;
 
 class CollectionPart extends AbstractFormPart implements IConfigurable {
 
-	private final IDomainClass.IReference _model;
+	private IDomainObject.IObjectCollectionReference _model;
+	
+	private final IDomainClass.IReference _collectionReference;
 	private final IDomainObjectReferenceListener _domainListener;
 	private final ListenerForwarder _partListener;
 	private final List<ICollectionChildPart> _children;
 	
 	private Label _control;
-	private IDomainObject<?> _container = null;
+	private IDomainObject<?> _domainObject = null;
 	private List<IDomainObject<?>> _displayed = null;
 	private ICollectionChildPart _activePart;
 	
@@ -43,7 +45,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	CollectionPart( IDomainClass.IReference ref ) {
 		super();
 		assert ref != null;
-		_model = ref;
+		_collectionReference = ref;
 		_domainListener = new IDomainObjectReferenceListener(){
 			public void collectionAddedTo(DomainObjectReferenceEvent event) {
 				refresh();
@@ -80,16 +82,27 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	@Override
 	public boolean setFormInput(Object input) {
-		if ( _container != null ) {
-			_container.getCollectionReference( _model ).removeListener( _domainListener );
-			_container = null;
+		try {
+			if ( _model != null ) {
+				_model.removeListener( _domainListener );
+			}
+			if (input == null) {
+				_model = null;
+				return false;
+			} else {
+				// derive _model from input and our _collectionReference
+				if ( input instanceof IDomainObject<?> ) {
+					IDomainObject<?> domainObject = (IDomainObject<?>)input;
+					_model = domainObject.getCollectionReference( _collectionReference );
+					_model.addListener( _domainListener );
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} finally {
+			refresh();
 		}
-		if ( input instanceof IDomainObject<?> ) {
-			_container = (IDomainObject<?>)input;
-			_container.getCollectionReference( _model ).addListener( _domainListener );
-		}
-		refresh();
-		return true;
 	}
 	
 	/* (non-Javadoc)
@@ -109,20 +122,19 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 			assert _displayed != null;
 			
 			// compare displayed list with model
-			IObjectCollectionReference ref = _container.getCollectionReference( _model );
 			Collection<IDomainObject<?>> model = getCollectionDomainObjects();
 			
 			// in model, not displayed - remove
 			for ( IDomainObject<?> element : model ) {
 				if ( !_displayed.contains( element ) ) {
-					ref.removeFromCollection( element );
+					_model.removeFromCollection( element );
 				}
 			}
 			
 			// in display, not in model - add
 			for ( IDomainObject<?> element : _displayed ) {
 				if ( !model.contains( element ) ) {
-					ref.addToCollection( element );
+					_model.addToCollection( element );
 				}
 			}
 		}
@@ -145,8 +157,8 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	@Override
 	public void dispose() {
-		if ( _container != null ) {
-			_container.getCollectionReference( _model ).removeListener( _domainListener );
+		if ( _model != null ) {
+			_model.removeListener( _domainListener );
 		}
 		super.dispose();
 	}
@@ -247,11 +259,18 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	
 	/* private methods */
 	
-	// returns the domain objects for all the collection's pojo's
+	/**
+	 * Returns the domain objects for all the collection's pojo's.
+	 * 
+	 * <p>
+	 * The returned list is free to be modified with no side effects.
+	 */
 	private List<IDomainObject<?>> getCollectionDomainObjects() {
 		List<IDomainObject<?>> elements = new ArrayList<IDomainObject<?>>();
-		if ( _container == null ) return elements;
-		elements.addAll(_container.getCollectionReference( _model ).getCollection());
+		if ( _model == null ) {
+			return elements;
+		}
+		elements.addAll(_model.getCollection());
 		return elements;
 	}
 	

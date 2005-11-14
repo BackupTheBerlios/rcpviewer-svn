@@ -9,6 +9,7 @@ import java.util.List;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.essentialplatform.louis.configure.ConfigurableAdapter;
+import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
  * <br>Extends <code>IFormPart</code> by adding a heirarchy to the contract's

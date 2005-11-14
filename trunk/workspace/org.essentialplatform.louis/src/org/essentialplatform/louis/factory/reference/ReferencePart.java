@@ -14,18 +14,20 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectOneToOneReference;
 import org.essentialplatform.runtime.domain.event.DomainObjectReferenceEvent;
 import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectReferenceEvent;
 import org.essentialplatform.runtime.domain.event.IDomainObjectReferenceListener;
 
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 
-	private final IDomainClass.IReference _model;
+	private IDomainObject.IObjectOneToOneReference _model;
+	
+	private final IDomainClass.IReference _classReference;
 	private final IDomainObjectReferenceListener _listener;
 	private final IFormPart _detailsPart;
 	
 	private Text _control;
-	private IDomainObject<?> _container = null;
 	private IDomainObject<?> _refValue = null;
 	private List<IReferencePartDisplayListener> _listeners = null;
 	
@@ -38,7 +40,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		super();
 		assert ref != null;
 		assert detailsPart != null;
-		_model = ref;
+		_classReference = ref;
 		_detailsPart = detailsPart;
 		// add listener that updates display whenever domain object updated
 		// outside of this field
@@ -72,18 +74,26 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object input) {
-		// remove listening from old object if any
-		if ( _container != null ) {
-			_container.getOneToOneReference( _model ).removeListener( _listener );	
+		try {
+			// remove listening from old object if any
+			if ( _model != null ) {
+				_model.removeListener( _listener );	
+			}
+			// derive model from input and our _classReference
+			if (input == null) {
+				_model = null;
+				return false; // not revealed any output 
+			} else {
+				assert input instanceof IDomainObject<?>;
+				IDomainObject domainObject = (IDomainObject)input;
+				_model = domainObject.getOneToOneReference( _classReference );
+				// add listening to new object
+				_model.addListener( _listener );
+				return true;
+			}
+		} finally {
+			refresh();	
 		}
-		assert input instanceof IDomainObject<?>;
-		_container = (IDomainObject)input;
-		// add listening to new object
-		if ( _container != null ) {
-			_container.getOneToOneReference( _model ).addListener( _listener );
-		}
-		refresh();
-		return true;
 	}
 	
 	/* (non-Javadoc)
@@ -91,11 +101,13 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 */
 	public void refresh() {
 		IDomainObject<?> value = null;
-		if ( _container != null ) {
-			IPojo referencedPojo = _container.getOneToOneReference( _model ).get();
+		if ( _model != null ) {
+			IPojo referencedPojo = _model.get();
 			if (referencedPojo != null) {
 				value = referencedPojo.getDomainObject();
 			}
+		} else {
+			value = null;
 		}
 		setValue( value );
 		super.refresh();
@@ -106,7 +118,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 */
 	public void commit(boolean onSave) {
 		if ( onSave ) {
-			_container.getOneToOneReference( _model ).set( getValue() );
+			_model.set( getValue() );
 		}
 		super.commit(onSave);
 	}
@@ -214,5 +226,6 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		}
 		_listeners.add( listener );
 	}
+
 
 }

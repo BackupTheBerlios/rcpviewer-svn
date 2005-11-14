@@ -5,6 +5,7 @@ import org.eclipse.ui.forms.AbstractFormPart;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.util.NullUtil;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener;
@@ -19,12 +20,17 @@ import org.essentialplatform.runtime.domain.event.IDomainObjectAttributeListener
  */
 public abstract class AbstractAttributeFormPart<T1,T2 extends Control> 
 		extends AbstractFormPart {
-	
-	private final IDomainClass.IAttribute _model;
+
+	private final IDomainClass.IAttribute _classAttribute;
+
+	/**
+	 * Derived when {@link #setFormInput(Object) is called.
+	 */
+	private IDomainObject.IObjectAttribute _model;
+
 	private final IDomainObjectAttributeListener _listener;
 	
 	private T2 _control;
-	private IDomainObject<?> _input = null;
 	private T1 _value = null;
 	
 	/**
@@ -35,7 +41,7 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	protected AbstractAttributeFormPart( IDomainClass.IAttribute model ) {
 		super();
 		assert model != null;
-		_model = model;
+		_classAttribute = model;
 		// add listener that updates display whenever domain object updated
 		// outside of this field
 		_listener = new IDomainObjectAttributeListener(){
@@ -68,17 +74,26 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
 	public boolean setFormInput(Object input) {
-		// remove listening from old object if any
-		if ( _input != null ) {
-			_input.getAttribute( _model ).removeListener( _listener );	
+		try {
+			// remove listening from old object if any
+			if ( _model != null ) {
+				_model.removeListener( _listener );	
+			}
+			// derive _model from input and our _classAttribute.
+			if (input == null) {
+				_model = null;
+				return false;  // not revealed any output
+			} else {
+				assert input instanceof IDomainObject<?>;
+				IDomainObject domainObject = (IDomainObject)input;
+				_model = domainObject.getAttribute( _classAttribute );
+				// add listening to new object
+				_model.addListener( _listener );
+				return true;
+			}
+		} finally {
+			refresh();
 		}
-		_input = (IDomainObject)input;
-		// add listening to new object
-		if ( _input != null ) {
-			_input.getAttribute( _model ).addListener( _listener );
-		}
-		refresh();
-		return true;
 	}
 	
 	/* (non-Javadoc)
@@ -86,8 +101,8 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 */
 	public void refresh() {
 		Object value = null;
-		if ( _input != null ) {
-			value = _input.getAttribute( _model ).get();
+		if ( _model != null ) {
+			value = _model.get();
 		}
 		setValue( (T1)value, true );
 		super.refresh();
@@ -104,7 +119,9 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
 	public void commit(boolean onSave) {
-		if ( onSave ) _input.getAttribute( _model ).set( getValue() );
+		if ( onSave ) {
+			_model.set( getValue() );
+		}
 		super.commit(onSave);
 	}
 		

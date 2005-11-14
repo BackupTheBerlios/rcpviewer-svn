@@ -38,11 +38,11 @@ import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
 class CollectionTablePart extends ConfigurableAdapter 
 		implements ICollectionChildPart {
 	
-	private final IDomainClass.IReference _model;
+	private final IDomainClass.IReference _classReference;
 	private final TableViewer _viewer;
 	private final Map<IDomainClass.IAttribute,TableColumn> _attributes;
 	
-	private IDomainObject<?> _container = null;
+	private IDomainObject<?> _domainObject = null;
 	private List<IReferencePartDisplayListener> _listeners = null;
 	private CollectionPart _parent = null;
 	private IManagedForm _mForm = null;
@@ -52,12 +52,12 @@ class CollectionTablePart extends ConfigurableAdapter
 	
 	/**
 	 * Requires the reference and the created pages.
-	 * @param ref
+	 * @param classReference
 	 * @param pages
 	 */
-	CollectionTablePart( IDomainClass.IReference ref, TableViewer viewer ) {
-		assert ref != null;
-		_model = ref;
+	CollectionTablePart( IDomainClass.IReference classReference, TableViewer viewer ) {
+		assert classReference != null;
+		_classReference = classReference;
 		assert viewer != null;
 		_viewer = viewer;
 		_attributes = new LinkedHashMap<IDomainClass.IAttribute,TableColumn>();
