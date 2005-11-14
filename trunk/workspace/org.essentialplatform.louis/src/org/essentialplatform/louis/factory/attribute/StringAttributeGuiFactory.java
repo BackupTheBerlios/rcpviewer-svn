@@ -64,6 +64,7 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 			gridData.heightHint = FontUtil.getCharHeight(parent) * multiLine; 
 		} else {
 			textStyle = SWT.WRAP;
+			gridData.verticalAlignment = SWT.FILL;
 			gridData.grabExcessVerticalSpace = true;
 		}
 
@@ -75,15 +76,16 @@ public class StringAttributeGuiFactory extends AbstractAttributeGuiFactory<Strin
 		if (fieldLength != -1) {
 			gridData.widthHint = FontUtil.getCharWidth( parent, SAFE ) * fieldLength;
 		} else {
+			gridData.horizontalAlignment = SWT.FILL;
 			gridData.grabExcessHorizontalSpace = true;
 		}
-		
-		// min length (applies only if not grabbing excess horizontal space)
+
+		// min length (applies only if gridData.grabExcessHorizontalSpace = false)
 		int minLength = model.getMinLengthOf();
 		if (minLength != -1) {
 			gridData.minimumWidth = FontUtil.getCharWidth( parent, SAFE ) * minLength;
 		}
-		
+
 		text.setLayoutData( gridData );
 		
 		// editable behaviour
