@@ -69,5 +69,14 @@
          point="org.essentialplatform.louis.guifactory">
          <!-- <impl class="org.essentialplatform.louis.factory.DomainClassGuiFactory"/> -->
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Logging"
+            class="org.essentialplatform.louis.log.LogPreferencePage"
+            id="org.essentialplatform.louis.log.LogPreferencePage">
+      </page>
+   </extension>
 
 </plugin>

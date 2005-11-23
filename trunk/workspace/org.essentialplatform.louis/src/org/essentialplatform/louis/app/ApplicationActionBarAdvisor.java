@@ -160,6 +160,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 				"ApplicationActionBarAdvisor.ShowView" ); //$NON-NLS-1$
         menu.add( viewMenu );
         viewMenu.add( ContributionItemFactory.VIEWS_SHORTLIST.create( window ) );
+        menu.add( new Separator() );
+        menu.add( ActionFactory.PREFERENCES.create( window ) );
         return menu;
     }
 
@@ -168,15 +170,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
      */
     private void createClassItems(MenuManager newMenu) {
 		assert newMenu != null;
-		
-    	IWorkbenchWindow window
-			= getActionBarConfigurer().getWindowConfigurer().getWindow();
-		
+
 		// get all classes from domain(s)
     	RuntimePlugin runtimePlugin= RuntimePlugin.getDefault();
     	IDomainRegistry domainRegistry= runtimePlugin.getDomainRegistry();
     	Map<String, IDomain> domains= domainRegistry.getDomains();
-    	int count = 0;
 		for (IDomain domain: domains.values()) {
     		for (IDomainClass domainClass: domain.classes()) {
 				assert domainClass instanceof IDomainClass;

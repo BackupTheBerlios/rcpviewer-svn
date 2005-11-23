@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.net.SocketAppender;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
@@ -19,14 +17,14 @@ import org.essentialplatform.louis.dnd.IDndTransferProvider;
 import org.essentialplatform.louis.factory.GuiFactories;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.labelproviders.GlobalLabelProvider;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.PackageAdmin;
-
+import org.essentialplatform.louis.log.LogController;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.IDomainBootstrap;
 import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.packageadmin.PackageAdmin;
 
 
 /**
@@ -125,10 +123,11 @@ public class LouisPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		
-		SocketAppender socketAppender = new SocketAppender("localhost", 4445); //$NON-NLS-1$
-		socketAppender.setLocationInfo(true);
-		Logger.getRootLogger().addAppender(socketAppender);
+//		SocketAppender socketAppender = new SocketAppender("localhost", 4445); //$NON-NLS-1$
+//		socketAppender.setLocationInfo(true);
+//		Logger.getRootLogger().addAppender(socketAppender);
 //		Logger.getLogger(GuiPlugin.class).info( "Logging started" ); //$NON-NLS-1$
+		new LogController();
 		
 		// domain initialisation
 		IDomainBootstrap bootstrap = DomainBootstrapFactory.createBootstrap();

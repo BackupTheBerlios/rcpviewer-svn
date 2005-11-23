@@ -65,7 +65,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 		parent.setLayout( layout );
 		
 		// label
-		GridData labelData = new GridData();
+		GridData labelData = new GridData( GridData.VERTICAL_ALIGN_BEGINNING );
 		if ( hints.getColumnWidths().length == 3 
 					&& hints.getColumnWidths()[0] != 0 ) {
 			labelData.widthHint = hints.getColumnWidths()[0];
@@ -78,7 +78,7 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 		
 		// icon
 		Class pojoClass = model.getEAttribute().getEType().getInstanceClass() ;
-		GridData iconData = new GridData();
+		GridData iconData = new GridData( GridData.VERTICAL_ALIGN_BEGINNING );
 		if ( hints.getColumnWidths().length == 3 
 					&& hints.getColumnWidths()[1] != 0 ) {
 			iconData.widthHint = hints.getColumnWidths()[1];
