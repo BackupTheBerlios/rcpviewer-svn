@@ -7,6 +7,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.essentialplatform.louis.views.classbar.ClassBarView;
 import org.essentialplatform.louis.views.ops.OpsView;
 import org.essentialplatform.louis.views.sessiontree.SessionTreeView;
+import org.essentialplatform.louis.views.transactiontree.TransactionTreeView;
 
 
 /**
@@ -32,6 +33,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	 * <li>placeholder on the top right-hand side for views:
 	 *   <ul>
 	 *   <li>session tree
+	 *   <li>transaction tree
 	 *   </ul>
 	 * <li>placeholder on the bottom right-hand side for views:
 	 *   <ul>
@@ -67,6 +69,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
                 0.8f,
 				layout.getEditorArea() );
         topRight.addPlaceholder( SessionTreeView.ID );
+        topRight.addPlaceholder( TransactionTreeView.ID );
         
         // bottom right hand-side placeholder
         IPlaceholderFolderLayout bottomRight = layout.createPlaceholderFolder( 
@@ -88,6 +91,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		
 		// view shortcuts
         layout.addShowViewShortcut( SessionTreeView.ID );
+        layout.addShowViewShortcut( TransactionTreeView.ID );
         layout.addShowViewShortcut( OpsView.ID );
         layout.addShowViewShortcut( IConsoleConstants.ID_CONSOLE_VIEW );
 

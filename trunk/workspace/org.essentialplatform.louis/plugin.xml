@@ -63,6 +63,12 @@
             icon="icons/sample.gif"
             id="org.essentialplatform.louis.views.ops.OpsView"
             name="%plugin.opsViewName"/>     
+      <view
+            category="org.essentialplatform.louis"
+            class="org.essentialplatform.louis.views.transactiontree.TransactionTreeView"
+            icon="icons/sample.gif"
+            id="org.essentialplatform.louis.views.transactiontree.TransactionTreeView"
+            name="%plugin.transactionTreeViewName"/>     
    </extension>
    
    <extension
