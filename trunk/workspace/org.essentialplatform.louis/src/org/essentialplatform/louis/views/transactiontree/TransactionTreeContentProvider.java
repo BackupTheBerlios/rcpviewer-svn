@@ -3,14 +3,9 @@
  */
 package org.essentialplatform.louis.views.transactiontree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
-import org.essentialplatform.runtime.transaction.TransactionManager;
 
 /**
  * @author Mike
