@@ -618,19 +618,6 @@ public interface ITransaction {
 		ABORTED("ABORTED"),
 		;
 		
-		// REVIEW_CHANGE 
-		// Mike E. 25/11/05 - unnecessary surely due to default Enum static methods..?
-//		private final static State[] states = { 
-//			BUILDING_CHANGE, IN_PROGRESS, DISCARDED, COMMITTED, REVERSED, ABORTED  
-//		};
-//		public static State lookup(final String name) {
-//			for (int i = 0; i < states.length; i++) {
-//				if (states[i]._name.equals(name))
-//					return states[i];
-//			}
-//			return null;
-//		}
-		
 
 		private String _name;
 		private State(final String name) {
