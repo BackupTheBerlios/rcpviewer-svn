@@ -122,7 +122,7 @@ public abstract class TestId extends AbstractTestCase {
 	public void testIdImplicitAssignmentTypeForSimpleNonIntegralIdentifier() {
 		domainClass = lookupAny(CustomerWithSimpleStringId.class);
 		
-		assertSame(AssignmentType.OBJECT_STORE, domainClass.getIdAssignmentType());
+		assertSame(AssignmentType.APPLICATION, domainClass.getIdAssignmentType());
 	}
 	
 	public void testIdImplicitAssignmentTypeForCompositeIdentifier() {

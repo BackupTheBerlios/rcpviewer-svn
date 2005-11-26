@@ -15,6 +15,9 @@ public class CustomerWithSimpleLongIdAssignedByApplication {
 	public Long getId() {
 		return id;
 	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	String firstName;
 	public String getFirstName() {

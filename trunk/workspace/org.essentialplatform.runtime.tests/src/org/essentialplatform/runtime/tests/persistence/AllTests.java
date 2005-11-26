@@ -12,6 +12,7 @@ public class AllTests {
 		suite.addTestSuite(TestInMemoryObjectStore.class);
 		suite.addTestSuite(TestSequentialPersistenceIdAssigner.class);
 		suite.addTestSuite(TestCompositeIdPersistenceIdAssigner.class);
+		suite.addTestSuite(TestIdSemanticsPersistenceIdAssigner.class);
 		//$JUnit-END$
 		return suite;
 	}

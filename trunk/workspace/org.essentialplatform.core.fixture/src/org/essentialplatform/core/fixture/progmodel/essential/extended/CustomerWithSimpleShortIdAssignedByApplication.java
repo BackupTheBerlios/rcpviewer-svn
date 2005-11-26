@@ -15,6 +15,9 @@ public class CustomerWithSimpleShortIdAssignedByApplication {
 	public Short getId() {
 		return id;
 	}
+	public void setId(Short id) {
+		this.id = id;
+	}
 	
 	String firstName;
 	public String getFirstName() {

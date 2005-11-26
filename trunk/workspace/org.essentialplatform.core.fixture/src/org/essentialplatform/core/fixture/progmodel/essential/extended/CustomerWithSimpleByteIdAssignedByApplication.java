@@ -15,6 +15,9 @@ public class CustomerWithSimpleByteIdAssignedByApplication {
 	public Byte getId() {
 		return id;
 	}
+	public void setId(Byte id) {
+		this.id = id;
+	}
 	
 	String firstName;
 	public String getFirstName() {

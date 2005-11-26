@@ -17,6 +17,9 @@ public class CustomerWithSimpleBigIntegerIdAssignedByApplication {
 	public BigInteger getId() {
 		return id;
 	}
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
 	
 	String firstName;
 	public String getFirstName() {

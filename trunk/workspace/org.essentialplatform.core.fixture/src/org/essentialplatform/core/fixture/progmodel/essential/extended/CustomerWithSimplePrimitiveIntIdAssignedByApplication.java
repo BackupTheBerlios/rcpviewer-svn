@@ -15,6 +15,10 @@ public class CustomerWithSimplePrimitiveIntIdAssignedByApplication {
 	public int getId() {
 		return id;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	
 	String firstName;
 	public String getFirstName() {

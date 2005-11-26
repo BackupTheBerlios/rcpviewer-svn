@@ -238,7 +238,7 @@ public final class DomainClass implements IDomainClass {
 			}
 			EDataType attributeType = eAttr.getEAttributeType();
 			if (!_emf.isIntegralNumber(attributeType)) {
-				return AssignmentType.OBJECT_STORE;
+				return AssignmentType.APPLICATION;
 			}
 			AssignmentType assignedBy = id.assignedBy();
 			// is an integral type
