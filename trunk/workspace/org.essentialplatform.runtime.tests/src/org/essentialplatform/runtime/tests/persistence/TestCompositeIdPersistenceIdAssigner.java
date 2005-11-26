@@ -1,6 +1,7 @@
 package org.essentialplatform.runtime.tests.persistence;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithCompositeId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithNoIdentifier;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
@@ -37,7 +38,7 @@ public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeTestCas
 		super.tearDown();
 	}
 
-	public void xtestAssignedPersistenceIdHasCorrectJavaClass() {
+	public void testAssignedPersistenceIdHasCorrectJavaClass() {
 		domainClass = lookupAny(CustomerWithSimpleStringId.class);
 		assigner = new CompositeIdPersistenceIdAssigner(domainClass);
 		
@@ -47,7 +48,7 @@ public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeTestCas
 		assertEquals(CustomerWithSimpleStringId.class, persistenceId.getJavaClass());
 	}
 
-	public void xtestEachDomainObjectHasItsPersistenceIdAssigned() {
+	public void testEachDomainObjectHasItsPersistenceIdAssigned() {
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 		assigner = new CompositeIdPersistenceIdAssigner(domainClass);
 
@@ -58,7 +59,7 @@ public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeTestCas
 		assertSame(persistenceId, dobj.getPersistenceId());
 	}
 
-	public void xtestCompositeIfNoIdentifierFails() {
+	public void testCompositeIfNoIdentifierFails() {
 		domainClass = lookupAny(CustomerWithNoIdentifier.class);
 		assigner = new CompositeIdPersistenceIdAssigner(domainClass);
 		
@@ -87,6 +88,23 @@ public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeTestCas
 		componentValues = persistenceId.getComponentValues();
 		assertEquals(1, componentValues.length);
 		assertEquals("foobar", componentValues[0]);
+	}
+
+	public void testCompositeIfCompositeId() {
+		domainClass = lookupAny(CustomerWithCompositeId.class);
+		assigner = new CompositeIdPersistenceIdAssigner(domainClass);
+		
+		dobj = session.create(domainClass);
+		CustomerWithCompositeId pojo = ((CustomerWithCompositeId)dobj.getPojo());
+		pojo.setFirstName("foo");
+		pojo.setLastName("bar");
+
+		persistenceId = assigner.assignPersistenceIdFor(dobj);
+
+		componentValues = persistenceId.getComponentValues();
+		assertEquals(2, componentValues.length);
+		assertEquals("bar", componentValues[0]);
+		assertEquals("foo", componentValues[1]);
 	}
 
 }
