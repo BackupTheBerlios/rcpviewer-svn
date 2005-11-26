@@ -173,5 +173,26 @@ public interface ITransactionManager {
 	 */
 	public void reset();
 
+	/**
+	 * A bit of a hack, but suspends the creation of transactions.
+	 * 
+	 * <p>
+	 * Used while the bootstrapping of domain classes is being done.
+	 *
+	 * @see #resume()
+	 */
+	public void suspend();
+
+
+	/**
+	 * A bit of a hack, but resumes the creation of transactions following an
+	 * earlier call to {@link #suspend()}.
+	 * 
+	 * <p>
+	 * Used while the bootstrapping of domain classes is being done.
+	 *
+	 * @see #suspend()
+	 */
+	public void resume();
 
 }

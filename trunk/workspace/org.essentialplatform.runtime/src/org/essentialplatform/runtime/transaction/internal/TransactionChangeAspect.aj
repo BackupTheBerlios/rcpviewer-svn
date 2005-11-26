@@ -88,7 +88,11 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 			// ... if transaction == null && pojoTransaction == null
 			transaction = getTransactionManagerImpl().createTransaction();
 		}
-		transaction.checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
+		if (transaction != null) {
+			// a bit of a hack, but createTransaction won't return a transaction if the
+			// xact mgr has been suspended.
+			transaction.checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
+		}
 		return transaction;
 	}
 	

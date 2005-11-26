@@ -25,6 +25,19 @@ import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
 public final class TransactionManager implements ITransactionManager {
 
 	private final static ITransactionManager __instance = new TransactionManager();
+	
+	private enum State {
+		/**
+		 * creation of transactions is suspended.
+		 */
+		SUSPENDED,
+		/**
+		 * standard operations
+		 */
+		STANDARD_OPERATION
+	}
+	
+	private State _state = State.STANDARD_OPERATION;
 
 	/**
 	 * Pending the use of dependency injection, we expose a singleton.
@@ -103,6 +116,9 @@ public final class TransactionManager implements ITransactionManager {
 	 * @return
 	 */
 	public ITransaction createTransaction() {
+		if (isSuspended()) {
+			return null;
+		}
 		ITransaction transaction = new Transaction(this, getAppContainer());
 		_currentTransactions.add(transaction);
 		
@@ -446,6 +462,24 @@ public final class TransactionManager implements ITransactionManager {
 	// TODO: pending dependency injection.
 	public void setAppContainer(IAppContainer appContainer) {
 		_appContainer = appContainer;
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.ITransactionManager#suspend()
+	 */
+	public void suspend() {
+		_state = State.SUSPENDED;
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.ITransactionManager#resume()
+	 */
+	public void resume() {
+		_state = State.STANDARD_OPERATION;
+	}
+
+	private boolean isSuspended() {
+		return _state == State.SUSPENDED;
 	}
 
 

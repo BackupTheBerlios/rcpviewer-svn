@@ -7,6 +7,8 @@ import org.eclipse.core.runtime.Platform;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.runtime.IDomainBootstrap;
+import org.essentialplatform.runtime.transaction.ITransactionManager;
+import org.essentialplatform.runtime.transaction.TransactionManager;
 
 /**
  * Initialises the <code>Domain</code> by looking for implementors of 
@@ -33,7 +35,10 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
                   .getConfigurationElementsFor( DOMAIN_CLASS_EXTENSION_POINT );
 		int num = elems.length;
 		
+		ITransactionManager transactionManager = TransactionManager.instance();
+
 		// get classes (checking they can be instantiated)
+		transactionManager.suspend();
 		Class<?>[] classes = new Class[ num ];
 		for ( int i=0 ; i < num ; i++ ) {
 			// nb: this demands a no-arg constructor
@@ -48,6 +53,7 @@ class DefaultDomainBootstrap implements IDomainBootstrap {
 		for ( int i=0 ; i < num ; i++ ) {
 			Domain.instance().lookup( classes[i] );
 		}
+		transactionManager.resume();
 	}
 	
 
