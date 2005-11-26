@@ -5,18 +5,18 @@
          point="org.eclipse.search.searchPages">
       <page
             canSearchEnclosingProjects="false"
-            class="org.essentialplatform.persistence.inmemory.InMemorySearchPage"
+            class="org.essentialplatform.persistence.inmemory.ui.InMemorySearchPage"
             enabled="true"
-            id="org.essentialplatform.persistence.inmemory.InMemorySearchPage"
+            id="org.essentialplatform.persistence.inmemory.ui.InMemorySearchPage"
             label="In Memory Object Store Search"
             showScopeSection="false"/>
    </extension>
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
-            class="org.essentialplatform.persistence.inmemory.InMemorySearchResultPage"
-            id="org.essentialplatform.persistence.inmemory.InMemorySearchResultPage"
-            searchResultClass="org.essentialplatform.persistence.inmemory.InMemorySearchQuery"/>
+            class="org.essentialplatform.persistence.inmemory.ui.InMemorySearchResultPage"
+            id="org.essentialplatform.persistence.inmemory.ui.InMemorySearchResultPage"
+            searchResultClass="org.essentialplatform.persistence.inmemory.ui.InMemorySearchQuery"/>
    </extension>
 
 
