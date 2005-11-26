@@ -1,6 +1,7 @@
 package org.essentialplatform.runtime.persistence;
 
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.session.ISession;
 
 /**
@@ -42,4 +43,26 @@ public interface IObjectStore {
 	public <T> void update(IDomainObject<T> domainObject) 
 			throws ConcurrencyException, DuplicateObjectException;
 
+	/**
+	 * Convenience method that will save (initially persist) a still-transient
+	 * pojo, or will update an already persistent object.
+	 * 
+	 * <p>
+	 * Modelled after Hibernate.
+	 * 
+	 * @see #save(IDomainObject)
+	 * @see #update(IDomainObject)
+	 * 
+	 * @param domainObject
+	 */
+	public <T> void saveOrUpdate(IDomainObject<T> domainObject);
+
+	/**
+	 * Whether the supplied domain object has been persisted in this 
+	 * objectstore.
+	 * 
+	 * @param domainObject
+	 * @return
+	 */
+	public <T> boolean isPersistent(IDomainObject<T> domainObject);
 }

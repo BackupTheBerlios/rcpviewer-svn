@@ -9,14 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.essentialplatform.progmodel.essential.app.AppContainer;
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
-import org.essentialplatform.runtime.transaction.*;
 
 /**
  * Manages {@link ITransaction}s, stored local to thread.
@@ -202,6 +203,7 @@ public final class TransactionManager implements ITransactionManager {
 	 */
 	synchronized void committed(Transaction transaction) {
 		
+		persistChangesForEnlistedPojos(transaction);
 		unenlistPojosInTransactionAndRemoveTransaction(transaction);
 
 		// add xactn to the _committedTransactions hash
@@ -212,6 +214,45 @@ public final class TransactionManager implements ITransactionManager {
 		for(ITransactionManagerListener listener: _listeners) {
 			listener.committedTransaction(event);
 		}
+	}
+	
+
+	/**
+	 * Persists changes to the appropriate object store for all pojos 
+	 * enlisted in the supplied tranasction.
+	 *   
+	 * <p>
+	 * Each enlisted pojo is persisted to the object store for the session
+	 * to which it is bound.
+	 * 
+	 * <p>
+	 * TODO: there is a downcast to IPojo for ITransactable; need to figure out.
+	 * 
+	 * @param transaction
+	 */
+	private void persistChangesForEnlistedPojos(Transaction transaction) {
+		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
+		for(ITransactable enlistedPojo: enlistedPojos) {
+			IPojo pojo = (IPojo)enlistedPojo;
+			IDomainObject domainObject = pojo.getDomainObject();
+			IObjectStore objectStore = domainObject.getSession().getObjectStore();
+		    objectStore.saveOrUpdate(domainObject);
+		}
+	}
+
+	/**
+	 * Helper method that removes each transactable (enlisted pojo) from the
+	 * map of enlisted pojo -> transaction and then removes the transaction
+	 * itself.
+	 *  
+	 * @param transaction
+	 */
+	private void unenlistPojosInTransactionAndRemoveTransaction(Transaction transaction) {
+		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
+		for(ITransactable enlistedPojo: enlistedPojos) {
+			_currentTransactionByEnlistedPojo.remove(enlistedPojo);
+		}
+		_currentTransactions.remove(transaction);
 	}
 	
 
@@ -261,15 +302,6 @@ public final class TransactionManager implements ITransactionManager {
 		}
 	}
 	
-	private void unenlistPojosInTransactionAndRemoveTransaction(Transaction transaction) {
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
-		for(ITransactable transactable: enlistedPojos) {
-			_currentTransactionByEnlistedPojo.remove(transactable);
-		}
-		_currentTransactions.remove(transaction);
-	}
-	
-
 	/**
 	 * Used by {@link Transaction} to inform the manager that it has been
 	 * reversed.
@@ -406,6 +438,7 @@ public final class TransactionManager implements ITransactionManager {
 		_listeners.remove(listener);
 	}
 
+	
 	// TODO: pending dependency injection.
 	public IAppContainer getAppContainer() {
 		return _appContainer;

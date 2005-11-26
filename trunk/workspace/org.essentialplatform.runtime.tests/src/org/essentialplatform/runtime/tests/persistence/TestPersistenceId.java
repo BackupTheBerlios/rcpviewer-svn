@@ -6,11 +6,6 @@ import org.essentialplatform.runtime.persistence.PersistenceId;
 
 import junit.framework.TestCase;
 
-/**
- * Have copied down stuff from subclass; need to simplify.
- * 
- * @author Dan Haywood
- */
 public class TestPersistenceId extends TestCase {
 
 	private PersistenceId id1;
@@ -79,7 +74,7 @@ public class TestPersistenceId extends TestCase {
 
 	public void testGetType() {
 		PersistenceId id = new PersistenceId(Department.class);
-		assertSame(Department.class, id.getType());
+		assertSame(Department.class, id.getJavaClass());
 	}
 
 }

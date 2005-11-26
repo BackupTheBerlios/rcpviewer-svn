@@ -86,16 +86,16 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 * {@link EssentialProgModelRuntimeBuilder#done}, delegating back to 
 	 * {@link #wireUpOppositeReferences()}.
 	 */
-	public void init(DomainClass runtimeDomainClass) {
-		identifyClassSemantics(runtimeDomainClass);
-		identifyAccessors(runtimeDomainClass);
-		identifyMutators(runtimeDomainClass);
-		identifyUnSettableAttributes(runtimeDomainClass);
-		identifyOperations(runtimeDomainClass);
-		identifyReferences(runtimeDomainClass);
-		identifyOppositeReferences(runtimeDomainClass);
-		identifyAssociatorsAndDissociators(runtimeDomainClass);
-		runtimeDomainClass.oppRefState = OppRefState.onceMore;
+	public void init(DomainClass domainClass) {
+		identifyClassSemantics(domainClass);
+		identifyAccessors(domainClass);
+		identifyMutators(domainClass);
+		identifyUnSettableAttributes(domainClass);
+		identifyOperations(domainClass);
+		identifyReferences(domainClass);
+		identifyOppositeReferences(domainClass);
+		identifyAssociatorsAndDissociators(domainClass);
+		domainClass.oppRefState = OppRefState.onceMore;
 	}
 
 	
@@ -130,9 +130,10 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 * @param methods
 	 * @param attributesByName
 	 */
-	public void identifyAccessors(DomainClass runtimeDomainClass) {
+	public void identifyAccessors(DomainClass domainClass) {
 		
-		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		EClass eClass = domainClass.getEClass();
 		
 		Method[] methods = javaClass.getMethods();
 		// search for accessors of value types
@@ -150,7 +151,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 			eAttribute.setEType(eDataType);
 			String attributeName = getRuntimeStandardProgModelRules().deriveAttributeName(method);
 			eAttribute.setName(attributeName);
-			((List<? super EAttribute>)runtimeDomainClass.getEClass().getEStructuralFeatures()).add(eAttribute);
+			((List<? super EAttribute>)eClass.getEStructuralFeatures()).add(eAttribute);
 
 			serializer.setAttributeAccessorMethod(eAttribute, method);
 			

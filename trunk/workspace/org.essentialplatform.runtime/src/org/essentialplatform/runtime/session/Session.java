@@ -120,9 +120,9 @@ public class Session implements ISession, IObjectStoreAware {
 	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createTransient(final Session session, IDomainClass runtimeDomainClass) {
-		T pojo = ((RuntimeClassBinding<T>)runtimeDomainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.createTransient(runtimeDomainClass, pojo, session);
+	private <T> IDomainObject<T> createTransient(final Session session, IDomainClass domainClass) {
+		T pojo = ((RuntimeClassBinding<T>)domainClass.getBinding()).newInstance();
+		IDomainObject<T> domainObject = DomainObject.createTransient(domainClass, pojo, session);
 		return domainObject;
 	}
 
@@ -130,9 +130,9 @@ public class Session implements ISession, IObjectStoreAware {
 	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createPersistent(final Session session, IDomainClass runtimeDomainClass) {
-		T pojo = ((RuntimeClassBinding<T>)runtimeDomainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.createPersistent(runtimeDomainClass, pojo, session);
+	private <T> IDomainObject<T> createPersistent(final Session session, IDomainClass domainClass) {
+		T pojo = ((RuntimeClassBinding<T>)domainClass.getBinding()).newInstance();
+		IDomainObject<T> domainObject = DomainObject.createPersistent(domainClass, pojo, session);
 		return domainObject;
 	}
 

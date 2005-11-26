@@ -225,9 +225,8 @@ public final class DomainClass implements IDomainClass {
 	 * @see org.essentialplatform.progmodel.extended.IExtendedDomainClass#getAssignmentType()
 	 */
 	public AssignmentType getIdAssignmentType() {
-		AssignmentType defaultAssignmentType = AssignmentType.APPLICATION;
 		if (isCompositeId()) {
-			return defaultAssignmentType;
+			return AssignmentType.APPLICATION;
 		}
 		List<IAttribute> attributes = iAttributes();
 		for(Iterator<IAttribute> iter = attributes.iterator(); iter.hasNext(); ) {
@@ -239,7 +238,7 @@ public final class DomainClass implements IDomainClass {
 			}
 			EDataType attributeType = eAttr.getEAttributeType();
 			if (!_emf.isIntegralNumber(attributeType)) {
-				return defaultAssignmentType;
+				return AssignmentType.OBJECT_STORE;
 			}
 			AssignmentType assignedBy = id.assignedBy();
 			// is an integral type
@@ -248,7 +247,7 @@ public final class DomainClass implements IDomainClass {
 			}
 			return assignedBy;
 		}
-		return defaultAssignmentType;
+		return AssignmentType.OBJECT_STORE;
 	}
 
 	

@@ -71,7 +71,7 @@ public abstract class Deployment {
 	public abstract IDomainBinding bindingFor(IDomain domain);
 
 	// JAVA5_FIXME: return type
-	public abstract IClassBinding bindingFor(IDomainClass domainClass, Object classRepresentation);
+	public abstract IClassBinding bind(IDomainClass domainClass, Object classRepresentation);
 
 	// JAVA5_FIXME: return type
 	public abstract IAttributeBinding bindingFor(IAttribute attribute);
@@ -134,7 +134,6 @@ public abstract class Deployment {
 		public Object classRepresentationFor(EClass eClass);
 	}
 	public interface IClassBinding<T> {
-		public T newInstance();
 		
 		/**
 		 * Returns the specified annotation (if any) on the class.

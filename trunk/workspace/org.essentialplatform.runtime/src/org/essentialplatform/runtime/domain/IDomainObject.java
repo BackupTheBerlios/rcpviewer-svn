@@ -17,6 +17,8 @@ import org.essentialplatform.runtime.domain.event.IDomainObjectReferenceListener
 import org.essentialplatform.runtime.persistence.IPersistable;
 import org.essentialplatform.runtime.persistence.IResolvable;
 import org.essentialplatform.runtime.persistence.PersistenceId;
+import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
+import org.essentialplatform.runtime.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.session.ISession;
 
 /**
@@ -708,6 +710,21 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @return
 	 */
 	public PersistenceId getPersistenceId();
+	
+	/**
+	 * Allows the object store to assign a persistence Id.
+	 * 
+	 * <p>
+	 * Note that this is not configured using
+	 * {@link #init(IDomainClass, ISession, PersistState, ResolveState)}.
+	 * Instead, it will be derived from the values set directly by the
+	 * application (application-assigned), or it will be set by the object store
+	 * (objectstore-assigned).
+	 * 
+	 * @param persistenceId
+	 */
+	public void assignPersistenceId(PersistenceId persistenceId);
+
 	
 	/**
 	 * Whether this object has been persisted.

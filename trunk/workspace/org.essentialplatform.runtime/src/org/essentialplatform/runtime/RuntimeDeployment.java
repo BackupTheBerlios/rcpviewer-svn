@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -21,8 +22,11 @@ import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Deployment;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.core.progmodel.ProgrammingModelException;
+import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
@@ -30,6 +34,10 @@ import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExte
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
 import org.essentialplatform.runtime.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.persistence.IPersistenceIdAssigner;
+import org.essentialplatform.runtime.persistence.PersistenceId;
+import org.essentialplatform.runtime.persistence.SequentialPersistenceIdAssigner;
 import org.osgi.framework.Bundle;
 
 /**
@@ -105,14 +113,20 @@ public final class RuntimeDeployment extends Deployment {
 
 
 	private final IDomainBuilder _primaryBuilder;
+	private final IPersistenceIdAssigner _sequentialPersistenceIdAssigner; 
 	
 	/**
-	 * Sets the current binding to be RUNTIME.
+	 * Saves the primary builder, and sets up a sequential persistence Id assigner.
+	 *
+	 * <p>
+	 * TODO: at some point, anticipate that the IPersistenceIdAssigner will be 
+	 * injected.
 	 * 
 	 * @throws RuntimeException if a binding has already been set.
 	 */
 	public RuntimeDeployment(IDomainBuilder primaryBuilder) {
 		_primaryBuilder = primaryBuilder;
+		_sequentialPersistenceIdAssigner = new SequentialPersistenceIdAssigner();
 	}
 
 	@Override
@@ -143,11 +157,12 @@ public final class RuntimeDeployment extends Deployment {
 		return new RuntimeDomainBinding(domain);
 	}
 	@Override
-	public IClassBinding bindingFor(IDomainClass domainClass, Object classRepresentation) {
-		return bindingFor(domainClass, (Class<?>)classRepresentation);
+	public IClassBinding bind(IDomainClass domainClass, Object classRepresentation) {
+		IClassBinding binding = bind(domainClass, (Class<?>)classRepresentation);
+		return binding;
 	}
-	private <V> IClassBinding<V> bindingFor(IDomainClass domainClass, Class<V> javaClass) {
-		return new RuntimeClassBinding<V>(domainClass, javaClass);
+	private <V> IClassBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
+		return new RuntimeClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
 	}
 	
 	@Override
@@ -265,18 +280,28 @@ public final class RuntimeDeployment extends Deployment {
 
 	}
 	
-	public final static class RuntimeClassBinding<T> implements IClassBinding<T> {
+	public final static class RuntimeClassBinding<T> implements IClassBinding<T>, IPersistenceIdAssigner {
 
 		private final IDomainClass _domainClass;
 		private final Class<T> _javaClass;
-		private final EClass _eClass;
-		
-		public RuntimeClassBinding(IDomainClass domainClass, Class<T> javaClass) {
+		private final IPersistenceIdAssigner _persistenceIdAssigner; 
+
+		/**
+		 * Delegates either to a composite persistence Id assigner or a
+		 * sequential persistence Id assigner dependent on the semantics of the
+		 * <tt>AssignmentType</tt> of the domain class.
+		 * 
+		 * @param domainClass
+		 * @param javaClass
+		 * @param delegatePersistenceIdAssigner
+		 */
+		public RuntimeClassBinding(IDomainClass domainClass, Class<T> javaClass, IPersistenceIdAssigner delegatePersistenceIdAssigner) {
 			_domainClass = domainClass;
 			_javaClass = javaClass;
-			_eClass = domainClass.getEClass();
+			domainClass.setBinding(this);
+			_persistenceIdAssigner = new IdSemanticsPersistenceIdAssigner(domainClass, delegatePersistenceIdAssigner);
 		}
-		
+
 		public Class<T> getJavaClass() {
 			return _javaClass;
 		}
@@ -300,6 +325,21 @@ public final class RuntimeDeployment extends Deployment {
 		 */
 		public <Q extends Annotation> Q getAnnotation(Class<Q> annotationClass) {
 			return _javaClass.getAnnotation(annotationClass);
+		}
+
+		/**
+		 * Just delegates to {@link IdSemanticsPersistenceIdAssigner}.
+		 * 
+		 * @param <T>
+		 * @param domainObject
+		 * @return
+		 */
+		public <T> PersistenceId assignPersistenceIdFor(IDomainObject<T> domainObject) {
+			return _persistenceIdAssigner.assignPersistenceIdFor(domainObject);
+		}
+
+		public IPersistenceIdAssigner nextAssigner() {
+			return null;
 		}
 		
 	}

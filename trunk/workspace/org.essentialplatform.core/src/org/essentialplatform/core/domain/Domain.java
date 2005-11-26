@@ -84,12 +84,28 @@ public class Domain implements IDomain {
 	 * @return
 	 */
 	public static IDomainClass lookupAny(final Object classRepresentation) {
+		Domain domain = domainFor(classRepresentation);
+		if (domain == null) {
+			return null;
+		}
+		return domain.lookup(classRepresentation);
+	}
+
+	/**
+	 * Looks up the domain for the supplied (representation of a) class.
+	 * 
+	 * <p>
+	 * Delegates to the configured {@link Deployment} to actually do the work.
+	 * 
+	 * @param classRepresentation
+	 * @return
+	 */
+	public static Domain domainFor(final Object classRepresentation) {
 		InDomain inDomain = Deployment.getDeployment().getInDomainOf(classRepresentation);
 		if (inDomain == null) {
 			return null;
 		}
-		Domain domain = instance(inDomain.value());
-		return domain.lookup(classRepresentation);
+		return instance(inDomain.value());
 	}
 	
 	/**
@@ -302,7 +318,7 @@ public class Domain implements IDomain {
 		}
 
 		DomainClass concreteDomainClass = new DomainClass(this, eClass);
-		concreteDomainClass.setBinding(Deployment.getDeployment().bindingFor(concreteDomainClass, classRepresentation));
+		Deployment.getDeployment().bind(concreteDomainClass, classRepresentation);
 		domainClass = concreteDomainClass;
 
 		// ... but store the domain class itself in a local hash
@@ -317,7 +333,9 @@ public class Domain implements IDomain {
 	 * @see org.essentialplatform.domain.IDomain#lookupNoRegister(java.lang.Object)
 	 */
 	public final IDomainClass lookupNoRegister(final Object classRepresentation) {
-		if ( classRepresentation == null ) throw new IllegalArgumentException("Class representation is null");
+		if ( classRepresentation == null ) {
+			throw new IllegalArgumentException("Class representation is null");
+		}
 		getBinding().assertValid(classRepresentation);
 		 
 		// check class is in the EMF resource set for this domain ...
@@ -332,9 +350,20 @@ public class Domain implements IDomain {
 		    !(eClassifier instanceof EClass)) {
 			return null;
 		}
+		EClass eClass = (EClass)eClassifier;
 
 		// ... but just return from our local hash
-		return (IDomainClass)_domainClassesByClassRepresentation.get(classRepresentation);
+		IDomainClass domainClass = (IDomainClass)_domainClassesByClassRepresentation.get(classRepresentation);
+		if (domainClass == null) {
+			// this is a work-around since (at least in a test environment)
+			// we may be re-using EClasses.  Since they cannot be cleared from
+			// the EMF ResourceSet, we instead re-use them and wrap them in
+			// another DomainClass, bound to the current Deployment.
+			domainClass = new DomainClass(domainFor(classRepresentation), eClass);
+			Deployment.getDeployment().bind(domainClass, classRepresentation);
+			_domainClassesByClassRepresentation.put(classRepresentation, domainClass);
+		}
+		return domainClass;
 	}
 
 	

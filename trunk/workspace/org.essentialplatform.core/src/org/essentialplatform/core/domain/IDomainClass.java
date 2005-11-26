@@ -145,6 +145,14 @@ public interface IDomainClass {
 	 */
 	public IClassBinding getBinding();
 
+
+	/**
+	 * To be called by the platform only.
+	 * 
+	 * @return
+	 */
+	public void setBinding(IClassBinding binding);
+
 	/**
 	 * Whether this class overall is immutable, meaning that non of its
 	 * attributes may be edited.

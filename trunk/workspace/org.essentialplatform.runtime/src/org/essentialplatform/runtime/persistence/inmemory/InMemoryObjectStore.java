@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.RuntimeDeployment;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.persistence.DuplicateObjectException;
@@ -36,8 +38,14 @@ public final class InMemoryObjectStore implements IObjectStore {
 	 * @see org.essentialplatform.persistence.IObjectStore#save(org.essentialplatform.session.IDomainObject)
 	 */
 	public <T> void save(IDomainObject<T> domainObject) throws DuplicateObjectException {
-		// TODO:
-//		persist(domainObject.persistenceId(), domainObject.getPojo());
+		IDomainClass domainClass = domainObject.getDomainClass();
+
+		// get the runtime binding to assign an appropriate persistence Id.
+		RuntimeDeployment.RuntimeClassBinding<T> binding = 
+			(RuntimeDeployment.RuntimeClassBinding)domainClass.getBinding();
+		binding.assignPersistenceIdFor(domainObject);
+		
+		persist(domainObject.getPersistenceId(), domainObject.getPojo());
 	}
 
 	/*
@@ -53,8 +61,26 @@ public final class InMemoryObjectStore implements IObjectStore {
 		// nothing else to do, though.
 	}
 	
+
+	/*
+	 * @see org.essentialplatform.runtime.persistence.IObjectStore#saveOrUpdate(org.essentialplatform.session.IDomainObject)
+	 */
+	public <T> void saveOrUpdate(IDomainObject<T> pojo) {
+		if (!isPersistent(pojo)) {
+			save(pojo);
+		} else {
+			update(pojo);
+		}
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.persistence.IObjectStore#isPersistent(org.essentialplatform.runtime.domain.IDomainObject)
+	 */
+	public <T> boolean isPersistent(IDomainObject<T> domainObject) {
+		return false;
+	}
+
 	/**
-	 * 
 	 * 
 	 * @param title
 	 * @param pojo

@@ -195,19 +195,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return _persistenceId;
 	}
 
-	/**
-	 * Set the persistence Id.
-	 * 
-	 * <p>
-	 * Note that this is not configured using
-	 * {@link #init(IDomainClass, ISession, PersistState, ResolveState)}.
-	 * Instead, it will be derived from the values set directly by the
-	 * application (application-assigned), or it will be set by the object store
-	 * (objectstore-assigned).
-	 * 
-	 * @param persistenceId
-	 */
-	public void setPersistenceId(PersistenceId persistenceId) {
+	public void assignPersistenceId(PersistenceId persistenceId) {
 		_persistenceId = persistenceId;
 	}
 

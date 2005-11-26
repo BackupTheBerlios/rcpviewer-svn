@@ -7,15 +7,12 @@ import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain
-public class CustomerWithSimpleStringId {
+public class CustomerWithSimpleIdSecond {
 
-	private String id;
+	private Integer id;
 	@Id
-	public String getId() {
+	public Integer getId() {
 		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
 	}
 	
 	String firstName;

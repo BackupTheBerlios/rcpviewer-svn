@@ -16,15 +16,28 @@ import java.util.List;
  */
 public final class PersistenceId {
 
-	private Class _type;
+	private Class _javaClass;
 	private List<Object> _componentValues = new ArrayList<Object>();
 	
-	public PersistenceId(final Class type) {
-		_type = type;
+	public PersistenceId(final Class javaClass) {
+		_javaClass = javaClass;
+	}
+
+	/**
+	 * Convenience constructor for when the components of the Id are known.
+	 * 
+	 * @param javaClass
+	 * @param componentValues - the values of each of the components of this Id.
+	 */
+	public PersistenceId(final Class javaClass, final Object... componentValues) {
+		this(javaClass);
+		for(Object componentValue: componentValues) {
+			addComponentValue(componentValue);
+		}
 	}
 	
-	public Class getType() {
-		return _type;
+	public Class getJavaClass() {
+		return _javaClass;
 	}
 
 	/**
@@ -43,6 +56,20 @@ public final class PersistenceId {
 		_componentValues.add(componentValue);
 	}
 	
+	/**
+	 * Returns the list of component values as an array.
+	 * 
+	 * <p>
+	 * Primarily for testing purposes; use {@link #equals(Object)} to check
+	 * for equality of two Ids.
+	 * 
+	 * @return
+	 */
+	public Object[] getComponentValues() {
+		return _componentValues.toArray();
+	}
+	
+	
 	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof PersistenceId)) { return false; }
@@ -50,7 +77,7 @@ public final class PersistenceId {
 	}
 	
 	public boolean equals(final PersistenceId other) {
-		if (this._type != other._type) { return false; }
+		if (this._javaClass != other._javaClass) { return false; }
 		for(int i=0; i<_componentValues.size(); i++) {
 			if(!_componentValues.get(i).equals(other._componentValues.get(i))) {
 				return false;
@@ -67,4 +94,16 @@ public final class PersistenceId {
 		if (_componentValues.size() == 0) { return 0; }
 		return _componentValues.get(0).hashCode();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer("OID: ");
+		buf.append(_componentValues);
+		buf.append(" ");
+		buf.append("{")
+           .append(getJavaClass().getName())
+	       .append("}");
+		return buf.toString();
+	}
+	
 }
