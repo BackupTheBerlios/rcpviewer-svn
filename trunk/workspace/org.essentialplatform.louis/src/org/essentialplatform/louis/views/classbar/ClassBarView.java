@@ -24,7 +24,7 @@ import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.InstantiableClassFilter;

@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.Transfer;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.InstantiableClassFilter;

@@ -15,8 +15,8 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
-import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.core.deployment.Deployment.IDomainBinding;
+import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.Binding.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.domain.filters.IFilter;
 import org.essentialplatform.progmodel.essential.app.InDomain;
@@ -58,7 +58,7 @@ public class Domain implements IDomain {
 		Domain domain = (Domain) domainsByName.get(domainName);
 		if (domain == null) {
 			Domain concreteDomain = new Domain(domainName);
-			concreteDomain.setBinding(Deployment.getDeployment().bindingFor(concreteDomain));
+			concreteDomain.setBinding(Binding.getDeployment().bindingFor(concreteDomain));
 			domain = concreteDomain;
 			domainsByName.put(domainName, domain);
 		}
@@ -95,13 +95,13 @@ public class Domain implements IDomain {
 	 * Looks up the domain for the supplied (representation of a) class.
 	 * 
 	 * <p>
-	 * Delegates to the configured {@link Deployment} to actually do the work.
+	 * Delegates to the configured {@link Binding} to actually do the work.
 	 * 
 	 * @param classRepresentation
 	 * @return
 	 */
 	public static Domain domainFor(final Object classRepresentation) {
-		InDomain inDomain = Deployment.getDeployment().getInDomainOf(classRepresentation);
+		InDomain inDomain = Binding.getDeployment().getInDomainOf(classRepresentation);
 		if (inDomain == null) {
 			return null;
 		}
@@ -174,7 +174,7 @@ public class Domain implements IDomain {
 			throw new IllegalArgumentException("Domain named '" + name + "' already exists.");
 		}
 		this._name = name;
-		this._primaryBuilder = Deployment.getDeployment().getPrimaryBuilder();
+		this._primaryBuilder = Binding.getDeployment().getPrimaryBuilder();
 		_resourceSet = new ResourceSetImpl(); 
 	}
 	
@@ -271,7 +271,7 @@ public class Domain implements IDomain {
 	 * @return corresponding {@link DomainClass}
 	 */
 	public final IDomainClass lookup(final Object classRepresentation) {
-		InDomain domain = Deployment.getDeployment().getInDomainOf(classRepresentation);
+		InDomain domain = Binding.getDeployment().getInDomainOf(classRepresentation);
 		if (domain == null) {
 			return null;
 		}
@@ -318,7 +318,7 @@ public class Domain implements IDomain {
 		}
 
 		DomainClass concreteDomainClass = new DomainClass(this, eClass);
-		Deployment.getDeployment().bind(concreteDomainClass, classRepresentation);
+		Binding.getDeployment().bind(concreteDomainClass, classRepresentation);
 		domainClass = concreteDomainClass;
 
 		// ... but store the domain class itself in a local hash
@@ -358,9 +358,9 @@ public class Domain implements IDomain {
 			// this is a work-around since (at least in a test environment)
 			// we may be re-using EClasses.  Since they cannot be cleared from
 			// the EMF ResourceSet, we instead re-use them and wrap them in
-			// another DomainClass, bound to the current Deployment.
+			// another DomainClass, bound to the current Binding.
 			domainClass = new DomainClass(domainFor(classRepresentation), eClass);
-			Deployment.getDeployment().bind(domainClass, classRepresentation);
+			Binding.getDeployment().bind(domainClass, classRepresentation);
 			_domainClassesByClassRepresentation.put(classRepresentation, domainClass);
 		}
 		return domainClass;

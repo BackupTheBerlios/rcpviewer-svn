@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.tests.progmodel.standard.domainclass;
 
-import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassInstantiable;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
@@ -17,12 +17,13 @@ public class TestDomainClassInstantiableAtRuntime extends TestDomainClassInstant
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
+		Binding.setBinding(
+			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override
 	protected void tearDown() throws Exception {
-		Deployment.reset();
+		Binding.reset();
 		super.tearDown();
 	}
 

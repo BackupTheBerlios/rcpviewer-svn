@@ -2,7 +2,7 @@ package org.essentialplatform.core.tests;
 
 import junit.framework.TestCase;
 
-import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
@@ -46,7 +46,7 @@ public abstract class AbstractTestCase extends TestCase {
 	
 	protected void resetAll() {
 		Domain.resetAll();
-		Deployment.reset();
+		Binding.reset();
 	}
 	
 	protected void setUp() throws Exception {

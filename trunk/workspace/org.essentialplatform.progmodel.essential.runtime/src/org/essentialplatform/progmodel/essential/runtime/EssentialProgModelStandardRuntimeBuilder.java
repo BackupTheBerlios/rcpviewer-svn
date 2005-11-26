@@ -40,7 +40,7 @@ import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesI
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
 import org.essentialplatform.progmodel.essential.core.util.JavaRules;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 
 /**
  * Builds standard domain model.

@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.essentialplatform.core.deployment.Deployment.IClassBinding;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.core.deployment.Binding.IClassBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**

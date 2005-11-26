@@ -19,7 +19,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
@@ -45,9 +45,9 @@ import org.osgi.framework.Bundle;
  * 
  * @author Dan Haywood
  */
-public final class RuntimeDeployment extends Deployment {
+public final class RuntimeBinding extends Binding {
 	
-	private static Logger _logger = Logger.getLogger(RuntimeDeployment.class);
+	private static Logger _logger = Logger.getLogger(RuntimeBinding.class);
 
 	private static EssentialProgModelStandardSemanticsEmfSerializer __standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
 	private static EssentialProgModelExtendedSemanticsEmfSerializer __extendedSerializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
@@ -124,7 +124,7 @@ public final class RuntimeDeployment extends Deployment {
 	 * 
 	 * @throws RuntimeException if a binding has already been set.
 	 */
-	public RuntimeDeployment(IDomainBuilder primaryBuilder) {
+	public RuntimeBinding(IDomainBuilder primaryBuilder) {
 		_primaryBuilder = primaryBuilder;
 		_sequentialPersistenceIdAssigner = new SequentialPersistenceIdAssigner();
 	}
@@ -561,13 +561,13 @@ public final class RuntimeDeployment extends Deployment {
 		}
 
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canAssociate()
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canAssociate()
 		 */
 		public boolean canAssociate() {
 			return getAssociator() != null;
 		}
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeAssociator(final Object pojo, final Object referencedObject) {
 			if (getAssociator() == null) {
@@ -585,13 +585,13 @@ public final class RuntimeDeployment extends Deployment {
 			}
 		}
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canDissociate()
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canDissociate()
 		 */
 		public boolean canDissociate() {
 			return getDissociator() != null;
 		}
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeDissociator(final Object pojo, final Object referencedObject) {
 			if (getDissociator() == null) {
@@ -610,7 +610,7 @@ public final class RuntimeDeployment extends Deployment {
 		}
 
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IOneToOneReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object)
+		 * @see org.essentialplatform.core.deployment.Binding.IOneToOneReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object)
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue) {
 			Method mutatorPre = __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
@@ -661,13 +661,13 @@ public final class RuntimeDeployment extends Deployment {
 		}
 
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canAssociate()
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canAssociate()
 		 */
 		public boolean canAssociate() {
 			return getAssociator() != null;
 		}
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeAssociator(final Object pojo, final Object referencedObject) {
 			if (getAssociator() == null) {
@@ -685,13 +685,13 @@ public final class RuntimeDeployment extends Deployment {
 			}
 		}
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#canDissociate()
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canDissociate()
 		 */
 		public boolean canDissociate() {
 			return getDissociator() != null;
 		}
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
+		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeDissociator(final Object pojo, final Object referencedObject) {
 			if (getDissociator() == null) {
@@ -710,7 +710,7 @@ public final class RuntimeDeployment extends Deployment {
 		}
 
 		/*
-		 * @see org.essentialplatform.core.deployment.Deployment.ICollectionReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object, boolean)
+		 * @see org.essentialplatform.core.deployment.Binding.ICollectionReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object, boolean)
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue, final boolean beingAdded) {
 			Method mutatorPre = beingAdded 

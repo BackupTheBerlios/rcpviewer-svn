@@ -10,7 +10,7 @@ import java.util.WeakHashMap;
 
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 import org.essentialplatform.runtime.domain.DomainObject;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IObservedFeature;

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.persistence.DuplicateObjectException;
@@ -41,8 +41,8 @@ public final class InMemoryObjectStore implements IObjectStore {
 		IDomainClass domainClass = domainObject.getDomainClass();
 
 		// get the runtime binding to assign an appropriate persistence Id.
-		RuntimeDeployment.RuntimeClassBinding<T> binding = 
-			(RuntimeDeployment.RuntimeClassBinding)domainClass.getBinding();
+		RuntimeBinding.RuntimeClassBinding<T> binding = 
+			(RuntimeBinding.RuntimeClassBinding)domainClass.getBinding();
 		binding.assignPersistenceIdFor(domainObject);
 		
 		persist(domainObject.getPersistenceId(), domainObject.getPojo());

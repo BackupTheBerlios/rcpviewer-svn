@@ -32,26 +32,24 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
  * 
  * @author Dan Haywood
  */
-public abstract class Deployment {
+public abstract class Binding {
 	
 	/**
 	 * Sets the binding, as returned by {@link #getDeployment()}.
 	 * 
 	 * @throws RuntimeException if a binding has already been instantiated.
 	 */
-	protected Deployment() {
-		synchronized(Deployment.class) {
-			if (__deployment != null) {
-				throw new RuntimeException("Binding already defined.");
-			}
-			__deployment = this;
+	public synchronized static void setBinding(Binding binding) {
+		if (__binding != null) {
+			throw new RuntimeException("Binding already defined.");
 		}
+		__binding = binding;
 	}
 
 	/**
 	 * The current binding (if any).
 	 */
-	private static Deployment __deployment;
+	private static Binding __binding;
 	
 	/**
 	 * Returns the current binding.
@@ -60,11 +58,11 @@ public abstract class Deployment {
 	 * @return
 	 * @throws RuntimeException if no binding has been instantiated.
 	 */
-	public static Deployment getDeployment() {
-		if (__deployment == null) {
+	public static Binding getDeployment() {
+		if (__binding == null) {
 			throw new RuntimeException("No binding set.");
 		}
-		return __deployment;
+		return __binding;
 	}
 
 	// JAVA5_FIXME: return type
@@ -94,7 +92,7 @@ public abstract class Deployment {
 	 *
 	 */
 	public static void reset() {
-		__deployment = null;
+		__binding = null;
 	}
 
 	public abstract Bundle getBundle();

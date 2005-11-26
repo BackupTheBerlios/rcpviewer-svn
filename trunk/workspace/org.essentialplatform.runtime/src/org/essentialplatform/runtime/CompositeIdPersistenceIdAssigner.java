@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.progmodel.essential.core.domain.comparators.IdAttributeComparator;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeClassBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.AbstractPersistenceIdAssigner;
 import org.essentialplatform.runtime.persistence.IPersistenceIdAssigner;

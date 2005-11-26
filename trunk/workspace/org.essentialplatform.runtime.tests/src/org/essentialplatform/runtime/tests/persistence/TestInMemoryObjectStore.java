@@ -2,14 +2,14 @@ package org.essentialplatform.runtime.tests.persistence;
 
 import junit.framework.TestCase;
 
-import org.essentialplatform.core.deployment.Deployment;
+import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.session.SessionManager;
@@ -38,7 +38,8 @@ public class TestInMemoryObjectStore extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());
+		Binding.setBinding(
+			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		objectStore = new InMemoryObjectStore();
@@ -48,7 +49,7 @@ public class TestInMemoryObjectStore extends TestCase {
 
 	protected void tearDown() throws Exception {
 		resetAll();
-		Deployment.reset();
+		Binding.reset();
 		super.tearDown();
 	}
 

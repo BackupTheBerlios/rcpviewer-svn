@@ -12,11 +12,11 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.core.deployment.Deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.Deployment.IClassBinding;
-import org.essentialplatform.core.deployment.Deployment.IOperationBinding;
-import org.essentialplatform.core.deployment.Deployment.IReferenceBinding;
+import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.Binding.IAttributeBinding;
+import org.essentialplatform.core.deployment.Binding.IClassBinding;
+import org.essentialplatform.core.deployment.Binding.IOperationBinding;
+import org.essentialplatform.core.deployment.Binding.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
@@ -137,7 +137,7 @@ public interface IDomainClass {
 	public String getEClassName();
 
 	/**
-	 * Returns the binding of this class to {@link Deployment}.
+	 * Returns the binding of this class to {@link Binding}.
 	 * 
 	 * JAVA5_FIXME: fix return type.
 	 * 
@@ -852,7 +852,7 @@ public interface IDomainClass {
 
 
 		/**
-		 * Returns the binding of this attribute to parameterized {@link Deployment}.
+		 * Returns the binding of this attribute to parameterized {@link Binding}.
 		 * 
 		 * @return
 		 */
@@ -965,7 +965,7 @@ public interface IDomainClass {
 		public IDomainClass getReferencedDomainClass();
 
 		/**
-		 * Returns the binding of this attribute to parameterized {@link Deployment}.
+		 * Returns the binding of this attribute to parameterized {@link Binding}.
 		 * 
 		 * JAVA5_FIXME: fix return type.
 		 * 
@@ -1332,7 +1332,7 @@ public interface IDomainClass {
 		public int getMinLengthOf(final int parameterPosition);
 
 		/**
-		 * Returns the binding of this attribute to parameterized {@link Deployment}.
+		 * Returns the binding of this attribute to parameterized {@link Binding}.
 		 * 
 		 * @return
 		 */

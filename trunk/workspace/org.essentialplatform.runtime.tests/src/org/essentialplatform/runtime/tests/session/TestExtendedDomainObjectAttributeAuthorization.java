@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
-import org.essentialplatform.runtime.RuntimeDeployment.RuntimeDomainBinding;
+import org.essentialplatform.runtime.RuntimeBinding.RuntimeDomainBinding;
 import org.essentialplatform.runtime.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.fixture.session.OrderConstrained;

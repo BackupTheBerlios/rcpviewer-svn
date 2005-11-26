@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.louis.dnd.GlobalDnDTransferProvider;
 import org.essentialplatform.louis.dnd.IDndTransferProvider;
 import org.essentialplatform.louis.factory.GuiFactories;
@@ -20,7 +21,7 @@ import org.essentialplatform.louis.labelproviders.GlobalLabelProvider;
 import org.essentialplatform.louis.log.LogController;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.IDomainBootstrap;
-import org.essentialplatform.runtime.RuntimeDeployment;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -108,7 +109,8 @@ public class LouisPlugin extends AbstractUIPlugin {
 	 */
 	public LouisPlugin() {
 		super();
-		new RuntimeDeployment(new EssentialProgModelRuntimeBuilder());  // populates Deployment singleton.
+		Binding.setBinding(
+			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
 		__plugin = this;
 	}
 	

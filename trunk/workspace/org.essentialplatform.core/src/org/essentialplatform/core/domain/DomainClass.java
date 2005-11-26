@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.osgi.framework.Bundle;
 
-import org.essentialplatform.core.deployment.Deployment;
-import org.essentialplatform.core.deployment.Deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.Deployment.IClassBinding;
-import org.essentialplatform.core.deployment.Deployment.IOperationBinding;
-import org.essentialplatform.core.deployment.Deployment.IReferenceBinding;
+import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.Binding.IAttributeBinding;
+import org.essentialplatform.core.deployment.Binding.IClassBinding;
+import org.essentialplatform.core.deployment.Binding.IOperationBinding;
+import org.essentialplatform.core.deployment.Binding.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.filters.IFilter;
@@ -351,7 +351,7 @@ public final class DomainClass implements IDomainClass {
 		IAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
 			Attribute concreteAttribute = new Attribute(eAttribute);
-			concreteAttribute.setBinding(Deployment.getDeployment().bindingFor(concreteAttribute));
+			concreteAttribute.setBinding(Binding.getDeployment().bindingFor(concreteAttribute));
 			attribute = concreteAttribute;
 			_attributesByEAttribute.put(eAttribute, attribute);
 		}
@@ -752,11 +752,11 @@ public final class DomainClass implements IDomainClass {
 		if (reference == null) {
 			if (eReference.isMany()) {
 				CollectionReference concreteReference = new CollectionReference(eReference);
-				concreteReference.setBinding(Deployment.getDeployment().bindingFor(concreteReference));
+				concreteReference.setBinding(Binding.getDeployment().bindingFor(concreteReference));
 				reference = concreteReference;
 			} else {
 				OneToOneReference concreteReference = new OneToOneReference(eReference);
-				concreteReference.setBinding(Deployment.getDeployment().bindingFor(concreteReference));
+				concreteReference.setBinding(Binding.getDeployment().bindingFor(concreteReference));
 				reference = concreteReference;
 			}
 			_referencesByEReference.put(eReference, reference);
@@ -988,7 +988,7 @@ public final class DomainClass implements IDomainClass {
 		IOperation operation = _operationsByEOperation.get(eOperation);
 		if (operation == null) {
 			Operation concreteOperation = new Operation(eOperation);
-			concreteOperation.setBinding(Deployment.getDeployment().bindingFor(concreteOperation));
+			concreteOperation.setBinding(Binding.getDeployment().bindingFor(concreteOperation));
 			operation = concreteOperation;
 			_operationsByEOperation.put(eOperation, operation);
 		}
@@ -1262,7 +1262,7 @@ public final class DomainClass implements IDomainClass {
 	}
 	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException {
 
-		Bundle bundle = Deployment.getDeployment().getBundle();
+		Bundle bundle = Binding.getDeployment().getBundle();
 		try {
 			return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
 		} catch (ClassNotFoundException ex) {
