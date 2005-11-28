@@ -46,20 +46,6 @@ public abstract aspect PojoAspect {
 	 */
 	public IDomainObject IPojo.getDomainObject() {
 		return _domainObject;
-//		InDomain inDomain = this.getClass().getAnnotation(InDomain.class);
-//		String domainName = inDomain.value();
-//		AbstractDomain domain = AbstractDomain.instance(domainName);
-//		SessionManager sessionManager = SessionManager.instance(); 
-//		for(ISession session: sessionManager.getAllSessions()) {
-//			if (domain != session.getDomain()) {
-//				continue;
-//			}
-//			if (!session.hasDomainObjectFor(this)) {
-//				continue;
-//			}
-//			return session.getDomainObjectFor(this, this.getClass());
-//		}
-//		return null;
 	}
 
 	/**

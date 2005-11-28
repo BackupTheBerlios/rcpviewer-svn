@@ -14,17 +14,18 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	private final static Logger LOG = Logger.getLogger(TransactionAddToCollectionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	// as required by super-aspect
-	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo, Collection) &&
-		if(canBeEnlisted(pojo)) &&
-		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
-
+	// used in pointcut below.
 	private pointcut changingPojo(IPojo pojo, Collection collection): 
 		this(pojo) &&
 		target(collection) &&
 		addingToCollectionOnPojo(IPojo, Collection, Object) && 
 		!within(TransactionCollectionChangeAspect); 
+
+	// as required by super-aspect
+	protected pointcut transactionalChange(IPojo pojo): 
+		changingPojo(pojo, Collection) &&
+		if(canBeEnlisted(pojo)) &&
+		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 
 	/**
@@ -36,7 +37,7 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -73,12 +74,12 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	 * <p>
 	 * TODO: how pick up the collection name?
 	 */
-	Object around(IPojo pojo, Collection collection, Object addedObj): addingToCollectionOnPojo(pojo, collection, addedObj) {
+	Object around(IPojo pojo, Collection collection, Object addedObj): 
+			transactionalAddingToCollectionOnPojo(pojo, collection, addedObj) {
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new AddToCollectionChange(transaction, transactable, collection, "???", addedObj);
 		return change.execute();
 	}
-
 
 }

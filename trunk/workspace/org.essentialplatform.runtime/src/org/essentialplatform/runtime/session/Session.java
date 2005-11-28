@@ -163,6 +163,7 @@ public class Session implements ISession, IObjectStoreAware {
 	public <T> IDomainObject<T> recreate(IDomainClass domainClass) {
 		IDomainObject<T> domainObject = recreatePersistent(this, domainClass);
 		attach(domainObject);
+		recreatedPersistent((IPojo)domainObject.getPojo());
 		return domainObject;
 	}
 
@@ -172,6 +173,16 @@ public class Session implements ISession, IObjectStoreAware {
 		return domainObject;
 	}
 
+	/**
+	 * Does nothing, but exists as a hook for aspects.
+	 * 
+	 * <p>
+	 * The TransactionalInstantiationChangeAspect picks up on this.
+	 * 
+	 * @param pojo
+	 */
+	private void recreatedPersistent(final IPojo pojo) {
+	}
 
 	/*
 	 * Deletes the object.

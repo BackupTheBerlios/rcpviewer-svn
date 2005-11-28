@@ -16,10 +16,6 @@ import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
 /**
- * One change per modified attribute performed directly (ie not programmatically
- * from an invoked operation).
- * 
- * <p>
  * Note that this aspect does <i>not</i> use the instantiatingPojo pointcut
  * from PojoAspect since it is too broad; rather it picks up on the creating 
  * of a pojo by the ISession.
@@ -33,7 +29,21 @@ public aspect TransactionInstantiationChangeAspect extends TransactionChangeAspe
 	pointcut creatingPersistentPojo(IPojo pojo):
 		execution(private void ISession+.createdPersistent(IPojo+)) && args(pojo);
 	
-	protected pointcut changingPojo(IPojo pojo): creatingPersistentPojo(pojo);
+	pointcut creatingTransientPojo(IPojo pojo):
+		execution(private void ISession+.createdTransient(IPojo+)) && args(pojo);
+	
+	pointcut recreatingPersistentPojo(IPojo pojo):
+		execution(private void ISession+.createdTransient(IPojo+)) && args(pojo);
+	
+	pointcut creatingOrRecreatingPojo(IPojo pojo):
+		creatingPersistentPojo(IPojo) && args(pojo) ||
+		creatingTransientPojo(IPojo) && args(pojo) || 
+		recreatingPersistentPojo(IPojo) && args(pojo);
+	
+	// used in pointcut below.
+	private pointcut changingPojo(IPojo pojo): 
+		creatingOrRecreatingPojo(pojo);
+
 	protected pointcut transactionalChange(IPojo pojo): 
 		changingPojo(pojo) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
@@ -48,7 +58,7 @@ public aspect TransactionInstantiationChangeAspect extends TransactionChangeAspe
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -81,11 +91,13 @@ public aspect TransactionInstantiationChangeAspect extends TransactionChangeAspe
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around(IPojo pojo): creatingPersistentPojo(pojo) {
+	Object around(IPojo pojo): creatingOrRecreatingPojo(pojo) {
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new InstantiationChange(transaction, transactable);
 
+		// don't think this code (was commented out) is needed; the pointcut
+		// we have defined should do filtering for us.
 //		IDomainObject<?> domainObject = pojo.getDomainObject();
 //		// only if we have a domain object (ie fully instantiated) and
 //		// are attached to a session do we check.

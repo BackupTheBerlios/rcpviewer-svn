@@ -2,7 +2,6 @@ package org.essentialplatform.runtime.transaction.internal;
 
 import org.essentialplatform.runtime.domain.PojoAspect;
 import org.essentialplatform.runtime.transaction.*;
-import org.essentialplatform.runtime.transaction.changes.*;
 
 public abstract aspect TransactionAspect extends PojoAspect {
 	
@@ -36,5 +35,5 @@ public abstract aspect TransactionAspect extends PojoAspect {
 		}
 		_transactionManager = transactionManager;
 	}
-
+	
 }

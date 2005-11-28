@@ -21,17 +21,19 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	private final static Logger LOG = Logger.getLogger(TransactionRemoveFromCollectionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	// as required by super-aspect
-	protected pointcut transactionalChange(IPojo pojo):  
-		changingPojo(pojo, Collection) &&
-		if(canBeEnlisted(pojo)) &&
-		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
+	// used in pointcut below.
 	private pointcut changingPojo(IPojo pojo, Collection collection): 
 		this(pojo) &&  
 		target(collection) &&
 		removingFromCollectionOnPojo(IPojo, Collection, Object) && 
 		!within(TransactionCollectionChangeAspect);
+
+	// as required by super-aspect
+	protected pointcut transactionalChange(IPojo pojo):  
+		changingPojo(pojo, Collection) &&
+		if(canBeEnlisted(pojo)) &&
+		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 	
 	/**
@@ -43,7 +45,7 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -79,12 +81,15 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	 * <p>
 	 * TODO: how pick up the collection name?
 	 */
-	Object around(IPojo pojo, Collection collection, Object removedObj): removingFromCollectionOnPojo(pojo, collection, removedObj) {
+	Object around(IPojo pojo, Collection collection, Object removedObj): 
+			transactionalRemovingFromCollectionOnPojo(pojo, collection, removedObj) {
+		getLogger().debug("transactionalRemovingFromCollectionOnPojo(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		String collectionName = thisJoinPointStaticPart.getSignature().getName();
 		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, "???", removedObj);
 		
+		// don't think this is used; now in transactionalXxx methods.
 //		IDomainObject<?> domainObject = pojo.getDomainObject();
 //		// only if we have a domain object (ie fully instantiated) and
 //		// are attached to a session do we check.

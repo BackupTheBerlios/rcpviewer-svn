@@ -26,11 +26,12 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChange
 	private final static Logger LOG = Logger.getLogger(TransactionOneToOneReferenceChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	protected pointcut changingPojo(IPojo pojo): changingOneToOneReferenceOnPojo(pojo, Object); 
+	// used in pointcut below.
+	protected pointcut changingPojo(IPojo pojo): 
+		transactionalChangingOneToOneReferenceOnPojo(pojo, Object); 
 
 	protected pointcut transactionalChange(IPojo pojo): 
 		changingPojo(pojo) &&
-		if(canBeEnlisted(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 	/**
@@ -42,7 +43,7 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChange
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -75,7 +76,9 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChange
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around(IPojo pojo, IPojo referencedObjOrNull): changingOneToOneReferenceOnPojo(pojo, referencedObjOrNull) {
+	Object around(IPojo pojo, IPojo referencedObjOrNull): 
+			transactionalChangingOneToOneReferenceOnPojo(pojo, referencedObjOrNull) {
+		getLogger().debug("transactionalChangingOneToOneReferenceOnPojo(pojo=" + pojo+")");
 		Field field = getFieldFor(thisJoinPointStaticPart);
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);

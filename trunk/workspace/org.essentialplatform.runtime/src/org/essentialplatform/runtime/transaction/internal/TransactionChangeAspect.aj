@@ -12,6 +12,10 @@ import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
+/**
+ * Defines versions of the inherited pointcuts (transactionalXxx) that also 
+ * require that the pojo has been initialized.
+ */
 public abstract aspect TransactionChangeAspect extends TransactionAspect {
 
 	/**
@@ -135,4 +139,108 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 		       !domainObject.getPersistState().isUnknown();
 	}
 
+
+	//////////////////////////////////////////////////////////////////
+	// transactionalXxx versions of the pointcuts from PojoAspect that also check that the
+	// pojo is in a state whereby it can be enlisted.
+	//
+	// note that there is no transactionalXxx version for instantiatingPojo; 
+	// instead the TransactionInstantiationChange aspect defines its own
+	// pointcut based on the session.
+	//
+	
+	/**
+	 * Capture an attribute being changed on some pojo.
+	 * 
+	 * <p>
+	 * This is different from the invokeSetterForAttributeOnPojo pointcut 
+	 * because it fires however the attribute is modified (directly or not).
+	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
+	 * of a transaction already under way.
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 * 
+	 */
+	protected pointcut transactionalChangingAttributeOnPojo(IPojo pojo, Object postValue) :
+		changingAttributeOnPojo(pojo, postValue) &&
+		if(canBeEnlisted(pojo));  
+
+
+
+	/**
+	 * Capture a 1:1 reference being changed on some pojo.
+	 * 
+	 * <p>
+	 * This is different from the invoke{Setter/Associator/Dissociator}ForOneToOneReferenceOnPojo pointcuts 
+	 * because it fires however the reference is modified (directly or not).
+	 * One use is to allows changes to be aggregated, as part of a ChangeSet 
+	 * of a transaction already under way.
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 * 
+	 */
+	protected pointcut transactionalChangingOneToOneReferenceOnPojo(IPojo pojo, IPojo referencedObjectOrNull) :
+		changingOneToOneReferenceOnPojo(pojo, referencedObjectOrNull) &&
+		if(canBeEnlisted(pojo));  
+
+
+	/**
+	 * Capture a collection in a pojo has been added to.
+	 * 
+	 * <p>
+	 * This is different from the invokeAddToCollectionOnPojo pointcut 
+	 * because it fires however the collection is modified (directly or not).
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut transactionalAddingToCollectionOnPojo(IPojo pojo, java.util.Collection collection, Object addedObj): 
+		addingToCollectionOnPojo(pojo, collection, addedObj) &&
+		if(canBeEnlisted(pojo));  
+
+	/**
+	 * Capture a collection in a pojo has been removed from.
+	 * 
+	 * <p>
+	 * This is different from the invokeRemoveFromCollectionOnPojo pointcut 
+	 * because it fires however the collection is modified (directly or not).
+	 * 
+	 * <p>
+	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
+	 * PRECEDENCE. 
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut transactionalRemovingFromCollectionOnPojo(IPojo pojo, java.util.Collection collection, Object removedObj): 
+		removingFromCollectionOnPojo(pojo, collection, removedObj) &&
+		if(canBeEnlisted(pojo));  
+
+
+	/**
+	 * Capture a pojo being deleted.
+	 * 
+	 * <p>
+	 * Protected so that sub-aspects can use.
+	 */
+	protected pointcut transactionalDeletingPojoUsingDeleteMethod(IPojo pojo): 
+		deletingPojoUsingDeleteMethod(pojo) && 
+		if(canBeEnlisted(pojo));
+
+	///////////////////////////////////////////////////////////////////////
+	
 }

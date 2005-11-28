@@ -84,6 +84,11 @@ public abstract class AbstractChange implements IChange {
 	public final Object execute() throws PojoAlreadyEnlistedException {
 		IPojo pojo = (IPojo)_transactable;
 		IDomainObject<?> domainObject = pojo.getDomainObject();
+		
+		// there is a problem with the code below (commented out); if have any
+		// instance vars initialized before the constructor, then those changes
+		// are omitted since the dobj is not attached.
+		
 		// only if we have a domain object (ie fully instantiated) and
 		// are attached to a session do we check.
 		if (domainObject != null && domainObject.isAttached()) {
@@ -93,6 +98,24 @@ public abstract class AbstractChange implements IChange {
 				}
 			}
 		}
+
+		
+		// however, the code below doesn't work either, since it allows objects
+		// that are being recreated to create their own transactions.
+		// we need to distinguish create vs being recreated (latter shouldn't 
+		// have any change sets being added, former should).
+		
+		
+//		// only if we have a domain object (ie fully instantiated) and
+//		// are attached to a session do we check.
+//		if (domainObject != null) {
+//			if (_transaction.isInState(ITransaction.State.BUILDING_CHANGE, ITransaction.State.IN_PROGRESS)) {
+//				if (!_transaction.addingToInteractionChangeSet(this)) {
+//					throw new PojoAlreadyEnlistedException();			
+//				}
+//			}
+//		}
+		
 		return doExecute();
 	}
 	

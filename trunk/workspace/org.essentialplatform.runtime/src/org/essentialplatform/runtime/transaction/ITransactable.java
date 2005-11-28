@@ -1,5 +1,6 @@
 package org.essentialplatform.runtime.transaction;
 
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransaction;
 
 /**
@@ -7,6 +8,22 @@ import org.essentialplatform.runtime.transaction.ITransaction;
  */
 public interface ITransactable {
 	
+	public enum TransactionalState {
+		/**
+		 * Not yet been initialized.
+		 * 
+		 * <p>
+		 * This is the default state before {@link IDomainObject#init} has
+		 * been called.  Any changes picked up by aspects should be ignored.
+		 */
+		NOT_INITIALIZED,
+		/**
+		 * Has been created or recreated; any changes should be treated as
+		 * being transactional.
+		 */
+		INITIALIZED
+	}
+
 	/**
 	 * The {@link ITransaction} in which this object is enlisted.
 	 * 

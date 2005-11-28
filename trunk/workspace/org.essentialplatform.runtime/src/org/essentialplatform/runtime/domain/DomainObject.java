@@ -56,6 +56,17 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 	private IDomainClass _domainClass;
 
+	// think this is redundant
+//	/**
+//	 * Whether changes to the corresponding pojo are tracked as {@link ChangeSet}s
+//	 * within an {@link ITransaction}.
+//	 * 
+//	 *  <p>
+//	 * Initially set to {@link TransactionalState#NOT_INITIALIZED}; is initialized
+//	 * from {@link #init(IDomainClass, ISession, PersistState, ResolveState, TransactionalState)}.
+//	 */
+//	private TransactionalState _state = TransactionalState.NOT_INITIALIZED;
+	
 	private final T _pojo;
 
 	private Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
@@ -89,11 +100,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public static <V> DomainObject<V> createTransient(
 			final IDomainClass domainClass, final V pojo, final ISession session) {
-		// DomainObject domainObject = new DomainObject(pojo);
 		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
 				.getDomainObject();
-		domainObject.init(domainClass, session, PersistState.TRANSIENT,
-				ResolveState.RESOLVED);
+		domainObject.init(domainClass, session, 
+				PersistState.TRANSIENT, ResolveState.RESOLVED);
 		return domainObject;
 	}
 
@@ -113,7 +123,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		IPojo ipojo = (IPojo)pojo;
 		DomainObject<V> domainObject = (DomainObject<V>)ipojo.getDomainObject();
 		domainObject.init(
-				domainClass, session, PersistState.PERSISTED, ResolveState.RESOLVED);
+				domainClass, session, 
+				PersistState.PERSISTED, ResolveState.RESOLVED);
 		return domainObject;
 	}
 
@@ -133,8 +144,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		// DomainObject domainObject = new DomainObject(pojo);
 		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
 				.getDomainObject();
-		domainObject.init(domainClass, session, PersistState.PERSISTED,
-				ResolveState.UNRESOLVED);
+		domainObject.init(domainClass, session, 
+				PersistState.PERSISTED, ResolveState.UNRESOLVED);
 		return domainObject;
 	}
 
@@ -157,7 +168,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(final IDomainClass domainClass, final ISession session,
+	private void init(
+			final IDomainClass domainClass, final ISession session,
 			PersistState persistState, ResolveState resolveState) {
 		this._domainClass = domainClass;
 		this._session = session;
@@ -1148,6 +1160,17 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		synchronized (_domainObjectListeners) {
 			_domainObjectListeners.remove(listener);
 		}
+	}
+
+	// think this is redundant
+//	public TransactionalState getTransactionalState() {
+//		return _state;
+//	}
+//
+	
+	public boolean isInitialized() {
+		return _resolveState != null && !_resolveState.isUnknown() &&
+		       _persistState != null && !_persistState.isUnknown();
 	}
 
 }

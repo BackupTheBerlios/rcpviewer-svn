@@ -1,19 +1,11 @@
 package org.essentialplatform.runtime.transaction.internal;
 
-import java.lang.reflect.Field;
-
 import org.apache.log4j.Logger;
-
-import org.essentialplatform.progmodel.essential.app.InDomain;
-
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.domain.PojoAspect;
-import org.essentialplatform.runtime.domain.IObservedFeature;
 import org.essentialplatform.runtime.domain.IPojo;
-import org.essentialplatform.runtime.session.ISession;
-
-import org.essentialplatform.runtime.transaction.*;
-import org.essentialplatform.runtime.transaction.changes.*;
+import org.essentialplatform.runtime.transaction.ITransactable;
+import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.transaction.changes.DeletionChange;
+import org.essentialplatform.runtime.transaction.changes.IChange;
 
 /**
  * One change per modified attribute performed directly (ie not programmatically
@@ -24,7 +16,9 @@ public aspect TransactionDeletionChangeAspect extends TransactionChangeAspect {
 	private final static Logger LOG = Logger.getLogger(TransactionDeletionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	protected pointcut changingPojo(IPojo pojo): deletingPojoUsingDeleteMethod(pojo);
+	// used in pointcut below.
+	protected pointcut changingPojo(IPojo pojo): 
+		transactionalDeletingPojoUsingDeleteMethod(pojo);
 	
 	protected pointcut transactionalChange(IPojo pojo): 
 		changingPojo(pojo) &&
@@ -40,7 +34,7 @@ public aspect TransactionDeletionChangeAspect extends TransactionChangeAspect {
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -73,11 +67,14 @@ public aspect TransactionDeletionChangeAspect extends TransactionChangeAspect {
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around(IPojo pojo): deletingPojoUsingDeleteMethod(pojo) {
+	Object around(IPojo pojo): transactionalDeletingPojoUsingDeleteMethod(pojo) {
+		getLogger().debug("transactionalDeletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new DeletionChange(transaction, transactable);
 		
+		// not sure why this code is here (even commented out); the check it does
+		// should be part of the canBeEnlisted check which is within the pointcut.
 //		IDomainObject<?> domainObject = pojo.getDomainObject();
 //		// only if we have a domain object (ie fully instantiated) and
 //		// are attached to a session do we check.

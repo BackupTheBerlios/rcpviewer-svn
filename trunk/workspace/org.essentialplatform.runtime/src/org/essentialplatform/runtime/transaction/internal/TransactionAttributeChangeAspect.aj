@@ -19,7 +19,6 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 
-
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
@@ -30,7 +29,9 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 	private final static Logger LOG = Logger.getLogger(TransactionAttributeChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	protected pointcut changingPojo(IPojo pojo): changingAttributeOnPojo(pojo, Object); 
+	// used in pointcut below.
+	private pointcut changingPojo(IPojo pojo): 
+		transactionalChangingAttributeOnPojo(pojo, Object); 
 
 	protected pointcut transactionalChange(IPojo pojo): 
 		changingPojo(pojo) &&
@@ -80,7 +81,8 @@ public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around(IPojo pojo, Object postValue): changingAttributeOnPojo(pojo, postValue) {
+	Object around(IPojo pojo, Object postValue): 
+			transactionalChangingAttributeOnPojo(pojo, postValue) {
 		getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): start");
 		try {
 			Field field = getFieldFor(thisJoinPointStaticPart);

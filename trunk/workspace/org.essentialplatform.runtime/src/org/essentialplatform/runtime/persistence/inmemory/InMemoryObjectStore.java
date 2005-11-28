@@ -44,8 +44,11 @@ public final class InMemoryObjectStore implements IObjectStore {
 		RuntimeBinding.RuntimeClassBinding<T> binding = 
 			(RuntimeBinding.RuntimeClassBinding)domainClass.getBinding();
 		binding.assignPersistenceIdFor(domainObject);
+		Object pojo = domainObject.getPojo();
 		
-		persist(domainObject.getPersistenceId(), domainObject.getPojo());
+		Map<PersistenceId, Object> pojoByPersistenceId = 
+			pojoByPersistenceIdFor(pojo.getClass());
+		pojoByPersistenceId.put(domainObject.getPersistenceId(), pojo);
 	}
 
 	/*
@@ -78,15 +81,6 @@ public final class InMemoryObjectStore implements IObjectStore {
 	 */
 	public <T> boolean isPersistent(IDomainObject<T> domainObject) {
 		return false;
-	}
-
-	/**
-	 * 
-	 * @param title
-	 * @param pojo
-	 */
-	private void persist(PersistenceId persistenceId, Object pojo) {
-		pojoByPersistenceIdFor(pojo.getClass()).put(persistenceId, pojo);
 	}
 
 	/**

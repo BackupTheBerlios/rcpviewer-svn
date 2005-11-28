@@ -92,7 +92,7 @@ import org.essentialplatform.runtime.transaction.event.ITransactionListener;
  * the persistent object store.  Again though an attempt to reapply a reversed 
  * transaction may fail, moving the state to {@link ITransaction.State#ABORTED}.
  * If the transaction is reapplied then it moves back to 
- * {@link ITransation.State#COMMITTED}. 
+ * {@link ITransation.TransactionalState#COMMITTED}. 
  * 
  * <p>
  * Superficially the undo/redo of pending changes vs the reverse/reapply of 

@@ -34,7 +34,8 @@ public aspect TransactionInvokeOperationAspect extends TransactionChangeAspect {
 	declare precedence: TransactionInvokeOperationAspect, TransactionAddToCollectionChangeAspect; 
 	declare precedence: TransactionInvokeOperationAspect, TransactionRemoveFromCollectionChangeAspect; 
 	
-	protected pointcut changingPojo(IPojo pojo): invokeOperationOnPojo(pojo) ;
+	// used in pointcut below.
+	private pointcut changingPojo(IPojo pojo): invokeOperationOnPojo(pojo) ;
 
 	protected pointcut transactionalChange(IPojo pojo): 
 		changingPojo(pojo) &&
@@ -50,7 +51,7 @@ public aspect TransactionInvokeOperationAspect extends TransactionChangeAspect {
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().info("pojo=" + pojo);
+		getLogger().debug("transactionalChange(pojo=" + pojo+")");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);

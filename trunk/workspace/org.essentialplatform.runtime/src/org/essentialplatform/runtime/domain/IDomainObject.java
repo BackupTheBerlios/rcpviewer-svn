@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
@@ -17,9 +16,8 @@ import org.essentialplatform.runtime.domain.event.IDomainObjectReferenceListener
 import org.essentialplatform.runtime.persistence.IPersistable;
 import org.essentialplatform.runtime.persistence.IResolvable;
 import org.essentialplatform.runtime.persistence.PersistenceId;
-import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
-import org.essentialplatform.runtime.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.transaction.event.ITransactionListener;
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
@@ -47,7 +45,6 @@ import org.essentialplatform.runtime.session.ISession;
  * @author Dan Haywood
  */
 public interface IDomainObject<T> extends IResolvable, IPersistable {
-
 
 	//////////////////////////////////////////////////////////////////////////
 	// member
@@ -710,6 +707,21 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @return
 	 */
 	public PersistenceId getPersistenceId();
+
+	// think this is redundant
+//	/**
+//	 * The current state of this domain object.
+//	 * 
+//	 * @return
+//	 */
+//	public TransactionalState getTransactionalState();
+	
+	/**
+	 * Iff resolve state and persist state are both set and not to isUnknown.
+	 * 
+	 * @return
+	 */
+	public boolean isInitialized();
 	
 	/**
 	 * Allows the object store to assign a persistence Id.
