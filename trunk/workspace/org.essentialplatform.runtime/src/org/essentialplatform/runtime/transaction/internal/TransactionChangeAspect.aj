@@ -24,11 +24,6 @@ public abstract aspect TransactionChangeAspect extends TransactionAspect {
 	protected abstract Logger getLogger();
 	
 	/**
-	 * Subaspects specify what constitutes initiates a transactional change.
-	 */
-	abstract protected pointcut transactionalChange(IPojo pojo); 
-
-	/**
 	 * Keeps track of the current transaction for this thread (if any)
 	 */
 	private static ThreadLocal<ITransaction> __transactionByThread;

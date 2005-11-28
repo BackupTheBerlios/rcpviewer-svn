@@ -3,38 +3,29 @@ package org.essentialplatform.runtime.transaction.internal;
 import java.lang.reflect.Field;
 
 import org.apache.log4j.Logger;
-
-import org.essentialplatform.runtime.domain.*;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.transaction.*;
-import org.essentialplatform.runtime.transaction.changes.*;
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IObservedFeature;
+import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
-
-import org.aspectj.lang.Signature;
-import org.eclipse.emf.ecore.EAttribute;
-import org.aspectj.lang.JoinPoint;
-
-
-import java.util.Collection;
-import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.transaction.ITransactable;
+import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.transaction.changes.IChange;
 
 
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect 
-	/* percflow(transactionalChange(IPojo)) */ {
+public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect {
 
 	private final static Logger LOG = Logger.getLogger(TransactionAttributeChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	// used in pointcut below.
-	private pointcut changingPojo(IPojo pojo): 
-		transactionalChangingAttributeOnPojo(pojo, Object); 
-
 	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo) &&
+		transactionalChangingAttributeOnPojo(IPojo, Object) && 
+		this(pojo) && 
 		if(canBeEnlisted(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ;  // this is probably unnecessary since the invokeOperation aspect has precedence over this one...
 

@@ -40,12 +40,8 @@ public aspect TransactionInstantiationChangeAspect extends TransactionChangeAspe
 		creatingTransientPojo(IPojo) && args(pojo) || 
 		recreatingPersistentPojo(IPojo) && args(pojo);
 	
-	// used in pointcut below.
-	private pointcut changingPojo(IPojo pojo): 
-		creatingOrRecreatingPojo(pojo);
-
 	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo) &&
+		creatingOrRecreatingPojo(pojo) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 
@@ -96,17 +92,6 @@ public aspect TransactionInstantiationChangeAspect extends TransactionChangeAspe
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new InstantiationChange(transaction, transactable);
 
-		// don't think this code (was commented out) is needed; the pointcut
-		// we have defined should do filtering for us.
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null && domainObject.isAttached()) {
-//			if (!transaction.addingToInteractionChangeSet(change)) {
-//				throw new PojoAlreadyEnlistedException();			
-//			}
-//		}
-//		
 		return change.execute();
 	}
 	

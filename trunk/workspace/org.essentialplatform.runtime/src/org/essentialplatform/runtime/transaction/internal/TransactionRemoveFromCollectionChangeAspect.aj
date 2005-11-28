@@ -22,16 +22,10 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	protected Logger getLogger() { return LOG; }
 
 
-	// used in pointcut below.
-	private pointcut changingPojo(IPojo pojo, Collection collection): 
-		this(pojo) &&  
-		target(collection) &&
-		removingFromCollectionOnPojo(IPojo, Collection, Object) && 
-		!within(TransactionCollectionChangeAspect);
-
-	// as required by super-aspect
 	protected pointcut transactionalChange(IPojo pojo):  
-		changingPojo(pojo, Collection) &&
+		this(pojo) &&  
+		removingFromCollectionOnPojo(IPojo, Collection, Object) && 
+		!within(TransactionCollectionChangeAspect) &&
 		if(canBeEnlisted(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
@@ -89,16 +83,6 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 		String collectionName = thisJoinPointStaticPart.getSignature().getName();
 		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, "???", removedObj);
 		
-		// don't think this is used; now in transactionalXxx methods.
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null && domainObject.isAttached()) {
-//			if (!transaction.addingToInteractionChangeSet(change)) {
-//				throw new PojoAlreadyEnlistedException();			
-//			}
-//		}
-//
 		return change.execute();
 	}
 

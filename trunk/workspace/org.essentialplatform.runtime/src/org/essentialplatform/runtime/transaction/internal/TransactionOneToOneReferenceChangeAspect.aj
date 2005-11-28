@@ -26,12 +26,8 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChange
 	private final static Logger LOG = Logger.getLogger(TransactionOneToOneReferenceChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	// used in pointcut below.
-	protected pointcut changingPojo(IPojo pojo): 
-		transactionalChangingOneToOneReferenceOnPojo(pojo, Object); 
-
 	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo) &&
+		transactionalChangingOneToOneReferenceOnPojo(pojo, Object) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 	/**
@@ -84,15 +80,6 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChange
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new OneToOneReferenceChange(transaction, transactable, field, referencedObjOrNull);
 		
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null && domainObject.isAttached()) {
-//			if (!transaction.addingToInteractionChangeSet(change)) {
-//				throw new PojoAlreadyEnlistedException();			
-//			}
-//		}
-//
 		return change.execute();
 	}
 

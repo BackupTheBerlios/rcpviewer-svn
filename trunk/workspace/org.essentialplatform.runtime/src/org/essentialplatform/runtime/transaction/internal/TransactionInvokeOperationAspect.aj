@@ -1,19 +1,9 @@
 package org.essentialplatform.runtime.transaction.internal;
 
-import java.lang.reflect.Field;
-
-import org.apache.log4j.*;
-
-import org.essentialplatform.progmodel.essential.app.InDomain;
-
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.domain.PojoAspect;
-import org.essentialplatform.runtime.domain.IObservedFeature;
+import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.domain.IPojo;
-import org.essentialplatform.runtime.session.ISession;
-
-import org.essentialplatform.runtime.transaction.*;
-import org.essentialplatform.runtime.transaction.changes.*;
+import org.essentialplatform.runtime.transaction.ITransactable;
+import org.essentialplatform.runtime.transaction.ITransaction;
 
 /**
  * One change per invoked operation that hasn't been called from another
@@ -34,11 +24,8 @@ public aspect TransactionInvokeOperationAspect extends TransactionChangeAspect {
 	declare precedence: TransactionInvokeOperationAspect, TransactionAddToCollectionChangeAspect; 
 	declare precedence: TransactionInvokeOperationAspect, TransactionRemoveFromCollectionChangeAspect; 
 	
-	// used in pointcut below.
-	private pointcut changingPojo(IPojo pojo): invokeOperationOnPojo(pojo) ;
-
 	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo) &&
+		invokeOperationOnPojo(pojo) &&
 		if(canBeEnlisted(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 

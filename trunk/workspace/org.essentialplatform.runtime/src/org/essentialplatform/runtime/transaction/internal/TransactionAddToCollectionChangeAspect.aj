@@ -14,18 +14,15 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	private final static Logger LOG = Logger.getLogger(TransactionAddToCollectionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	// used in pointcut below.
-	private pointcut changingPojo(IPojo pojo, Collection collection): 
-		this(pojo) &&
-		target(collection) &&
-		addingToCollectionOnPojo(IPojo, Collection, Object) && 
-		!within(TransactionCollectionChangeAspect); 
-
 	// as required by super-aspect
 	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo, Collection) &&
+		this(pojo) &&
+		addingToCollectionOnPojo(IPojo, Collection, Object) && 
+		!within(TransactionCollectionChangeAspect) && 
 		if(canBeEnlisted(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
+
+
 
 
 	/**

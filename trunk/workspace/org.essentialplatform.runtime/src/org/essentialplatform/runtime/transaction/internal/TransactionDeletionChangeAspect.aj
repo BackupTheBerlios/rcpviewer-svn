@@ -16,12 +16,8 @@ public aspect TransactionDeletionChangeAspect extends TransactionChangeAspect {
 	private final static Logger LOG = Logger.getLogger(TransactionDeletionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
-	// used in pointcut below.
-	protected pointcut changingPojo(IPojo pojo): 
-		transactionalDeletingPojoUsingDeleteMethod(pojo);
-	
 	protected pointcut transactionalChange(IPojo pojo): 
-		changingPojo(pojo) &&
+		transactionalDeletingPojoUsingDeleteMethod(pojo) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 
@@ -73,17 +69,6 @@ public aspect TransactionDeletionChangeAspect extends TransactionChangeAspect {
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new DeletionChange(transaction, transactable);
 		
-		// not sure why this code is here (even commented out); the check it does
-		// should be part of the canBeEnlisted check which is within the pointcut.
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null && domainObject.isAttached()) {
-//			if (!transaction.addingToInteractionChangeSet(change)) {
-//				throw new PojoAlreadyEnlistedException();			
-//			}
-//		}
-//
 		return change.execute();
 	}
 	
