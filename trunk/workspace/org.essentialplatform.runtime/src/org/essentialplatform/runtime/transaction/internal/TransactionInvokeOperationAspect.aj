@@ -12,7 +12,7 @@ import org.essentialplatform.runtime.transaction.ITransaction;
  * <p>
  * TODO: this aspect may be wholly redundant?? 
  */
-public aspect TransactionInvokeOperationAspect extends TransactionChangeAspect {
+public aspect TransactionInvokeOperationAspect extends TransactionAspect {
 
 	private final static Logger LOG = Logger.getLogger(TransactionInvokeOperationAspect.class);
 	private static boolean ENABLED = true;

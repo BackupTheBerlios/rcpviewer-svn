@@ -27,7 +27,7 @@ import org.essentialplatform.runtime.transaction.ITransaction;
  * @author Mike
  *
  */
-class TransactionTreeConfigurator implements IConfigurable {
+class TransactionManagerViewConfigurator implements IConfigurable {
 	
 	private final TreeViewer _viewer;
 	
@@ -35,7 +35,7 @@ class TransactionTreeConfigurator implements IConfigurable {
 	 * Constructor requires viewer.
 	 * @param viewer
 	 */
-	TransactionTreeConfigurator( TreeViewer viewer ) {
+	TransactionManagerViewConfigurator( TreeViewer viewer ) {
 		assert viewer != null;
 		_viewer = viewer;
 	}
@@ -128,7 +128,7 @@ class TransactionTreeConfigurator implements IConfigurable {
 	private String getVisibilityKey( ITransaction.State state ) {
 		assert state != null;
 		StringBuffer key = new StringBuffer();
-		key.append( TransactionTreeConfigurator.class.getSimpleName() );
+		key.append( TransactionManagerViewConfigurator.class.getSimpleName() );
 		key.append( "." );
 		key.append( state.toString() );
 		key.append( ".Hide" );
@@ -138,7 +138,7 @@ class TransactionTreeConfigurator implements IConfigurable {
 	// as it says
 	private String getWithEnlistedPojosKey() {
 		StringBuffer key = new StringBuffer();
-		key.append( TransactionTreeConfigurator.class.getSimpleName() );
+		key.append( TransactionManagerViewConfigurator.class.getSimpleName() );
 		key.append( ".WithEnlistedPojos" );
 		return key.toString() ;
 	}

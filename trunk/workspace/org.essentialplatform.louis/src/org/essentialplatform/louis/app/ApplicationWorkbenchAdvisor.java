@@ -1,11 +1,15 @@
 package org.essentialplatform.louis.app;
 
+import java.io.CharArrayWriter;
+import java.io.PrintWriter;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.essentialplatform.louis.LouisPlugin;
+import org.essentialplatform.louis.jobs.ReportJob;
 
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
@@ -38,13 +42,16 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * @see org.eclipse.ui.application.WorkbenchAdvisor#eventLoopException(java.lang.Throwable)
 	 */
 	@Override
-	public void eventLoopException(Throwable exception) {
+	public void eventLoopException(Throwable ex) {
 		// TODO Auto-generated method stub
-		super.eventLoopException(exception);
+		super.eventLoopException(ex);
+		CharArrayWriter exStackTrace = new CharArrayWriter();
+		ex.printStackTrace(new PrintWriter(exStackTrace));
+		new ReportJob(ex.getMessage(), null, ex).runInUIThread(null);
 		MessageDialog.openError(
 				null,
 				LouisPlugin.getResourceString( 
 						"ApplicationWorkbenchAdvisor.UncaughtError"), //$NON-NLS-1$
-				exception.toString() );
+				ex.getMessage() );
 	}	
 }

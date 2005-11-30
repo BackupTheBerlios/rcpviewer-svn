@@ -40,6 +40,12 @@ public interface IChange {
 	public final static IChange IRREVERSIBLE = IrreversibleChange.__instance;
 
 	/**
+	 * The transaction in which this change was performed.
+	 * @return
+	 */
+	public ITransaction getTransaction();
+	
+	/**
 	 * Execute this atom of work.
 	 * 
 	 * <p>
@@ -137,6 +143,10 @@ public interface IChange {
 		private NullChange() {
 		}
 
+		public ITransaction getTransaction() {
+			return null;
+		}
+
 		/*
 		 * Does nothing.
 		 * 
@@ -199,10 +209,19 @@ public interface IChange {
 		/**
 		 * equal if it is a {@link NullChange}
 		 */
+		@Override
 		public boolean equals(Object other) {
 			if (!getClass().equals(other.getClass())) {
 				return false;
 			}
+			return true;
+		}
+
+		/*
+		 * 
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#doesNothing()
+		 */
+		public boolean doesNothing() {
 			return true;
 		}
 
@@ -248,6 +267,14 @@ public interface IChange {
 			throw new IrreversibleTransactionException();
 		}
 
+		/**
+		 * Rather non-intuitively, returns <code>false</code> so that this
+		 * sort of change will be added to transactions.
+		 */
+		public boolean doesNothing() {
+			return false;
+		}
+
 		/*
 		 * Can reverse (since does nothing).
 		 * 
@@ -288,15 +315,27 @@ public interface IChange {
 			return 0;
 		}
 
-		/**
-		 * equal if it is a {@link NullWorkAtom}
-		 */
 		public boolean equals(Object other) {
 			if (!getClass().equals(other.getClass())) {
 				return false;
 			}
 			return true;
 		}
+
+		/*
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getTransaction()
+		 */
+		public ITransaction getTransaction() {
+			return null;
+		}
 	}
+
+	/**
+	 * Indicates that this change in effect does nothing (eg pre- and post-
+	 * values are the same).
+	 * 
+	 * @return
+	 */
+	public boolean doesNothing();
 
 }

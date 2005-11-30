@@ -105,6 +105,24 @@ public class ReportJob extends AbstractUserJob {
 	}
 	
 	/**
+	 */
+	public ReportJob( String msg, Image image, Throwable ex ) {
+		super( ReportJob.class.getName() );
+		if ( msg == null ) throw new IllegalArgumentException();
+		_image = null;
+		_isError = true;
+		StringBuilder buf = new StringBuilder();
+		StackTraceElement[] elements = ex.getStackTrace(); 
+		for(int i=0; i<elements.length; i++ ) {
+			 buf.append(elements[i]);
+			 if (i != elements.length-1) {
+				 buf.append("\n           ");
+			 }
+		}
+		_msg = buf.toString();
+	}
+	
+	/**
 	 * @param msg to display - cannot be <code>null</code>
 	 * @param isError
 	 */

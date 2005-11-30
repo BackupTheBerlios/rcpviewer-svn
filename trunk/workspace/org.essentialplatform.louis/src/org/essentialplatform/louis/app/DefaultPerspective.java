@@ -7,7 +7,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.essentialplatform.louis.views.classbar.ClassBarView;
 import org.essentialplatform.louis.views.ops.OpsView;
 import org.essentialplatform.louis.views.sessiontree.SessionTreeView;
-import org.essentialplatform.louis.views.transactiontree.TransactionTreeView;
+import org.essentialplatform.louis.views.transactiontree.TransactionManagerView;
 
 
 /**
@@ -22,8 +22,9 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	 */
 	public static final String ID = DefaultPerspective.class.getName();
 	
-	private static final String TOP_RIGHT = "topright"; //$NON-NLS-1$
-	private static final String BOTTOM_RIGHT = "bottomright"; //$NON-NLS-1$
+	private static final String TOP_RIGHT = "topRight"; //$NON-NLS-1$
+	private static final String BOTTOM_RIGHT = "bottomRight"; //$NON-NLS-1$
+	private static final String BOTTOM_LEFT = "bottomLeft"; //$NON-NLS-1$
 	private static final String BOTTOM = "bottom"; //$NON-NLS-1$
 	
 	/**
@@ -33,11 +34,14 @@ public class DefaultPerspective implements IPerspectiveFactory {
 	 * <li>placeholder on the top right-hand side for views:
 	 *   <ul>
 	 *   <li>session tree
-	 *   <li>transaction tree
 	 *   </ul>
 	 * <li>placeholder on the bottom right-hand side for views:
 	 *   <ul>
 	 *   <li>actions view
+	 *   </ul>
+	 * <li>placeholder on the bottom left-hand side for views:
+	 *   <ul>
+	 *   <li>transaction view
 	 *   </ul>
 	 * <li>placeholder on bottom for views:
 	 *   <ul>
@@ -55,7 +59,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 				ClassBarView.ID,
 				false,
 				IPageLayout.LEFT,
-				0.1f,
+				0.15f,
 				layout.getEditorArea() );
 		layout.getViewLayout( ClassBarView.ID ).setCloseable( false );
 				
@@ -69,7 +73,15 @@ public class DefaultPerspective implements IPerspectiveFactory {
                 0.8f,
 				layout.getEditorArea() );
         topRight.addPlaceholder( SessionTreeView.ID );
-        topRight.addPlaceholder( TransactionTreeView.ID );
+
+		// bottom right hand-side placeholder
+        IPlaceholderFolderLayout bottomLeft = layout.createPlaceholderFolder( 
+                BOTTOM_LEFT, 
+                IPageLayout.BOTTOM, 
+                0.6f,
+				ClassBarView.ID );
+        bottomLeft.addPlaceholder( SessionTreeView.ID );
+        bottomLeft.addPlaceholder( TransactionManagerView.ID );
         
         // bottom right hand-side placeholder
         IPlaceholderFolderLayout bottomRight = layout.createPlaceholderFolder( 
@@ -91,7 +103,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		
 		// view shortcuts
         layout.addShowViewShortcut( SessionTreeView.ID );
-        layout.addShowViewShortcut( TransactionTreeView.ID );
+        layout.addShowViewShortcut( TransactionManagerView.ID );
         layout.addShowViewShortcut( OpsView.ID );
         layout.addShowViewShortcut( IConsoleConstants.ID_CONSOLE_VIEW );
 

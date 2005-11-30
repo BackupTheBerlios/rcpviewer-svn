@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.essentialplatform.runtime.transaction.ITransactable;
+import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.IrreversibleTransactionException;
 
 
@@ -17,6 +18,7 @@ import org.essentialplatform.runtime.transaction.IrreversibleTransactionExceptio
  */
 public final class ChangeSet implements IChange {
 
+	private final ITransaction _transaction;
 	private final IChange[] _changes;
 	private final String _asString;
 	private final String _description;
@@ -32,10 +34,11 @@ public final class ChangeSet implements IChange {
 	 *  
 	 * @param list
 	 */
-	public ChangeSet(final List<IChange> list) {
-		this(list.toArray(new IChange[]{}));
+	public ChangeSet(final ITransaction transaction, final List<IChange> list) {
+		this(transaction, list.toArray(new IChange[]{}));
 	}
-	public ChangeSet(final IChange[] changes) {
+	public ChangeSet(final ITransaction transaction, final IChange[] changes) {
+		_transaction = transaction;
 		_description = changes.length + " changes";
 		_extendedInfo = new Object[]{};
 		_irreversible = calculateIfIrreversible(changes);
@@ -47,6 +50,14 @@ public final class ChangeSet implements IChange {
 		// string
 		_asString = calculateAsString(changes);
 	}
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getTransaction()
+	 */
+	public ITransaction getTransaction() {
+		return _transaction;
+	}
+
 	private static boolean calculateIfIrreversible(final IChange[] changes) {
 		for (int i = 0; i < changes.length; i++) {
 			if (changes[i].isIrreversible()) {
@@ -144,12 +155,21 @@ public final class ChangeSet implements IChange {
 	 */
 	public Set<ITransactable> getModifiedPojos() {
 		Set<ITransactable> pojos = new HashSet<ITransactable>();
-		for (int i = 0; i < _changes.length; i++) {
-			pojos.addAll(_changes[i].getModifiedPojos());
+		for (IChange change: _changes) {
+			pojos.addAll(change.getModifiedPojos());
 		}
 		return Collections.unmodifiableSet(pojos);
 	}
 
+	/**
+	 * True iff all changes in the change set return true.
+	 */
+	public boolean doesNothing() {
+		for (IChange change: _changes) {
+			if (!change.doesNothing()) return false;
+		}
+		return true;
+	}
 
 	/*
 	 * @see java.lang.Object#toString()

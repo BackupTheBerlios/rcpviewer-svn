@@ -7,7 +7,7 @@ import org.essentialplatform.runtime.transaction.changes.*;
 /**
  * Makes {@link IPojo}s implement {@link ITransactable}.
  */
-public aspect TransactionTransactableAspect extends TransactionAspect {
+public aspect TransactionTransactableAspect {
 
 	declare parents: IPojo implements ITransactable;
 
@@ -22,14 +22,14 @@ public aspect TransactionTransactableAspect extends TransactionAspect {
 	 * Introduce implementation of {@link ITransactable#getTransaction()}.
 	 */
 	public ITransaction ITransactable.getTransaction() {
-		return TransactionTransactableAspect.aspectOf().getTransactionManager().getCurrentTransactionFor(this);
+		return TransactionManager.instance().getCurrentTransactionFor(this);
 	}
 	
 	/**
 	 * Introduce implementation of {@link ITransactable#getTransaction(boolean)}.
 	 */
 	public ITransaction ITransactable.getTransaction(final boolean autoEnlist) {
-		return TransactionTransactableAspect.aspectOf().getTransactionManager().getCurrentTransactionFor(this, autoEnlist);
+		return TransactionManager.instance().getCurrentTransactionFor(this, autoEnlist);
 	}
 	
 }

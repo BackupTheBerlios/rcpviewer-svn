@@ -387,7 +387,7 @@ public final class RuntimeBinding extends Binding {
 			} catch (IllegalAccessException e) {
 				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
 			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
+				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "', (" + e.getTargetException().getMessage() + ")", e.getTargetException());
 			}
 		}
 
@@ -406,7 +406,7 @@ public final class RuntimeBinding extends Binding {
 			} catch (IllegalAccessException e) {
 				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
 			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e.getTargetException());
+				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "', (" + e.getTargetException().getMessage() + ")", e.getTargetException());
 			}
 		}
 		

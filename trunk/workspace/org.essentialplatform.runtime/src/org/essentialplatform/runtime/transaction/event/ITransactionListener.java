@@ -12,6 +12,20 @@ import org.essentialplatform.runtime.transaction.changes.IChange;
  */
 public interface ITransactionListener {
 
+
+	/**
+	 * Just started to add changes to the {@link ITransaction} as a result of
+	 * an interaction.
+	 * 
+	 * <p>
+	 * This event is triggered by {@link ITransaction#startingInteraction()};
+	 * the transaction remains in this state for a short period of time.
+	 *
+	 * <p>
+	 * The change set of the event will be null.
+	 */
+	public void buildingChanges(TransactionEvent event);
+
 	/**
 	 * An {@link IChange} has been added to the {@link ITransaction} as the
 	 * result of an interaction.

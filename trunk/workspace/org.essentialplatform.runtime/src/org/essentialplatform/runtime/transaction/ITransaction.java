@@ -208,8 +208,8 @@ public interface ITransaction {
 	 * <li> any pojos affected by the change are enlisted into the transaction.
 	 * </ul>
 	 * 
-	 * @param workAtom
-	 * @return <code>true</code> if the change can be added to the transaction,
+	 * @param change
+	 * @return <code>true</code> if the change can be added to the transaction, or is insignificant (no actual change in values);
 	 *         <code>false</code> otherwise (ie if would enlist a pojo already
 	 *         enlisted in some other current transaction).
 	 */

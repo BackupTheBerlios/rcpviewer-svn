@@ -12,7 +12,7 @@ import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
-public abstract aspect TransactionCollectionChangeAspect extends TransactionChangeAspect {
+public abstract aspect TransactionCollectionChangeAspect extends TransactionAspect {
 	
 	/**
 	 * Locates the field called _xxx or xxx for a method called addToXxx.

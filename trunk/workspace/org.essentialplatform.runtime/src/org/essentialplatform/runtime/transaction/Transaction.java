@@ -2,9 +2,11 @@ package org.essentialplatform.runtime.transaction;
 
 
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,8 +84,18 @@ public final class Transaction implements ITransaction {
 		this._transactionManager   = transactionManager;
 		this._appContainer = appContainer;
 		this._state = ITransaction.State.IN_PROGRESS;
+		this._startedAt = new Date();
 	}
 
+	/**
+	 * Whent this transaction was started (instantiated).
+	 */
+	private final Date _startedAt;
+	/**
+	 * When this transaction was completed (may be null if still in progress).
+	 */
+	private Date _endedAt;
+	
 	/**
 	 * Listeners of this transaction.
 	 */
@@ -109,19 +121,28 @@ public final class Transaction implements ITransaction {
 			return false;
 		} else {
 			this._state = ITransaction.State.BUILDING_CHANGE;
+			TransactionEvent event = new TransactionEvent(this);
+			for(ITransactionListener listener: _listeners) {
+				listener.buildingChanges(event);
+			}
 			return true;
 		}
 	}
 
 	/*
+	 * Note that the listeners are <i>not</i> notified since this is merely
+	 * one change in a potentially larger set of changes.
+	 * 
+	 * <p>
 	 * @see org.essentialplatform.transaction.ITransaction#addingToInteractionChangeSet(org.essentialplatform.transaction.IChange)
 	 */
 	public boolean addingToInteractionChangeSet(final IChange change) {
 		checkCurrentTransactionOfTransactionManager();
+
 		// will be BUILDING_CHANGE if originally executing, but
 		// will be IN_PROGRESS if redoing.  
-		// TODO: This whole BUILDING_CHANGE thing is probably more effort than it is worth.
 		checkInState(ITransaction.State.BUILDING_CHANGE, Transaction.State.IN_PROGRESS);
+		
 		if (change.equals(IChange.NULL)) {
 			LOG.debug("addingToInteractionChangeSet: ignoring since NULL change");
 			return true;
@@ -132,7 +153,12 @@ public final class Transaction implements ITransaction {
 			LOG.info("addingToInteractionChangeSet: pojo(s) already enlisted in another xactn");
 			return false;
 		}
+		
 		_changesInCurrentChange.add(change);
+		
+		// listeners are NOT notified here; instead they are notified when
+		// the interaction completes.
+		
 		return true;
 	}
 
@@ -146,15 +172,21 @@ public final class Transaction implements ITransaction {
 	public ITransaction completingInteraction() {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.BUILDING_CHANGE);
-		ChangeSet changeSet = new ChangeSet(_changesInCurrentChange);
+		
+		// copy current set of changes, add to the list of all changes in 
+		// this transaction.
+		ChangeSet changeSet = new ChangeSet(this, _changesInCurrentChange);
 		_changes.push(changeSet);
 		LOG.debug("pushing new ChangeSet of " + _changesInCurrentChange.size() + " changes onto undo stack");
+		
 		_changesInCurrentChange.clear();
+		this._state = ITransaction.State.IN_PROGRESS;
+		
+		// notify listeners.
 		TransactionEvent event = new TransactionEvent(this, changeSet);
 		for(ITransactionListener listener: _listeners) {
 			listener.addedChange(event);
 		}
-		this._state = ITransaction.State.IN_PROGRESS;
 		
 		return this;
 	}
@@ -178,8 +210,8 @@ public final class Transaction implements ITransaction {
      */
 	public ITransaction commit() {
 		checkCurrentTransactionOfTransactionManager();
-		checkInState(ITransaction.State.IN_PROGRESS);
-		_committedChanges = new ChangeSet(_changes.toArray(new ChangeSet[]{}));
+		checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
+		_committedChanges = new ChangeSet(this, _changes.toArray(new ChangeSet[]{}));
 		LOG.debug("committing xactn of " + _changes.size() + " separate ChangeSets");
 		
 		// we notify the transaction manager before we clear _changes because
@@ -190,6 +222,8 @@ public final class Transaction implements ITransaction {
 		// okay, now we can tidy up.
 		_changes.clear();
 		_state = ITransaction.State.COMMITTED;
+		
+		// notify listeners
 		TransactionEvent event = new TransactionEvent(this);
 		for(ITransactionListener listener: _listeners) {
 			listener.committed(event);
@@ -220,12 +254,14 @@ public final class Transaction implements ITransaction {
 	public ITransaction reapply() {
 		checkInState(ITransaction.State.REVERSED);
 		_committedChanges.execute();
+		_transactionManager.reapplied(this);
 		_state = ITransaction.State.COMMITTED;
+		
+		// notify listeners
 		TransactionEvent event = new TransactionEvent(this);
 		for(ITransactionListener listener: _listeners) {
 			listener.reapplied(event);
 		}
-		_transactionManager.reapplied(this);
 		
 		return this;
 	}
@@ -253,13 +289,15 @@ public final class Transaction implements ITransaction {
 		change.undo();
 		_undoneChanges.push(change);
 
+		// allow the TM to recompute the pojos that should be enlisted.
+		_transactionManager.undonePendingChange(this, change);
+		
+		// notify listeners
 		TransactionEvent event = new TransactionEvent(this, change);
 		for(ITransactionListener listener: _listeners) {
 			listener.undonePendingChange(event);
 		}
-		// allow the TM to recompute the pojos that should be enlisted.
-		_transactionManager.undonePendingChange(this, change);
-		
+
 		return this;
 	}
 	
@@ -268,12 +306,15 @@ public final class Transaction implements ITransaction {
 	 */
 	public ITransaction redoPendingChange() throws IllegalStateException {
 		IChange redoneChange = redoPendingChangeNoNotifyListeners();
+
+		// no need to ask TM to check which pojos are enlisted; they will have 
+		// automatically enlisted themselves as necessary
+
+		// notify listeners
 		TransactionEvent event = new TransactionEvent(this, redoneChange);
 		for(ITransactionListener listener: _listeners) {
 			listener.redonePendingChange(event);
 		}
-		// no need to ask TM to check which pojos are enlisted; they will have 
-		// automatically enlisted themselves as necessary
 		
 		return this;
 	}
@@ -317,20 +358,30 @@ public final class Transaction implements ITransaction {
 	}
 
 	/*
+	 * Previously checked:
+	 * <ul>
+	 * <li> was in state of IN_PROGRESS, 
+	 * <li> was current transaction.
+	 * </ul>
+	 * No longer does this since may be called through TransactionManager view.
+	 * 
 	 * @see org.essentialplatform.transaction.ITransaction#getUndoableChanges()
 	 */
 	public List<ChangeSet> getUndoableChanges() {
-		checkCurrentTransactionOfTransactionManager();
-		checkInState(ITransaction.State.IN_PROGRESS);
 		return Collections.unmodifiableList(_changes);
 	}
 
 	/*
+	 * Previously checked:
+	 * <ul>
+	 * <li> was in state of IN_PROGRESS, 
+	 * <li> was current transaction.
+	 * </ul>
+	 * No longer does this since may be called through TransactionManager view.
+	 * 
 	 * @see org.essentialplatform.transaction.ITransaction#getRedoableChanges()
 	 */
 	public List<ChangeSet> getRedoableChanges() {
-		checkCurrentTransactionOfTransactionManager();
-		checkInState(ITransaction.State.IN_PROGRESS);
 		return Collections.unmodifiableList(_undoneChanges);
 	}
 
@@ -424,11 +475,19 @@ public final class Transaction implements ITransaction {
      */
 	@Override
     public String toString() {
+    	StringBuffer buf = new StringBuffer();
+    	buf.append(TranMgmtConstants.TRANSACTION_START_END_FORMAT.format(_startedAt));
+    	if (_endedAt != null) {
+    		buf.append("->")
+    		   .append(TranMgmtConstants.TRANSACTION_START_END_FORMAT.format(_endedAt));
+    	} 
+    	buf.append(" ").append(_state.name().toLowerCase()).append(" ");
     	Set<ITransactable> enlistedPojos = getEnlistedPojosInternal();
-    	return "xactn@" + System.identityHashCode(this) + ": " 
-	    	+ _state.name() + ", " + enlistedPojos.size() + " pojos "
-	    	+ (enlistedPojos.size() > 0?enlistedPojos:"") 
-	    	+ ", " + _changes.size() + " atoms: " + _changes;
+    	if (enlistedPojos.size() > 0) {
+	    	buf.append(enlistedPojos.size()).append(" objects, ")
+	    	   .append(_changes.size() + " changes");
+    	}
+    	return buf.toString();
     }
 
 

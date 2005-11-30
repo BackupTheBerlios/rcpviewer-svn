@@ -62,7 +62,9 @@ public class DefaultEditorInput<T> implements IEditorInput {
 	}
 
 	/**
-	 * Takes name from label provider for domain object.
+	 * Takes name from label provider for domain object, which in turn just
+	 * invokes toString() on it.
+	 * 
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	public String getName() {

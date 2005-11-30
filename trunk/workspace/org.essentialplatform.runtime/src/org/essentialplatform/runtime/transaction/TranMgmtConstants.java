@@ -22,4 +22,10 @@ public final class TranMgmtConstants {
 	 */
 	public static final DateFormat TRANSACTION_ID_FORMAT = new SimpleDateFormat("dd MMM, KK:mm.ss a");
 
+	/**
+	 * For displaying when transaction started or ended.
+	 */
+	public final static DateFormat TRANSACTION_START_END_FORMAT = new SimpleDateFormat("KK:MM:ss");
+	
+
 }

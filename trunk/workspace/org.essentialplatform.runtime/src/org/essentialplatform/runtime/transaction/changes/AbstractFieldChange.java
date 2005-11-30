@@ -123,6 +123,18 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	}
 
 	/*
+	 * Default implementation returns <code>false</code> indicating that the
+	 * change DOES do something.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#doesNothing()
+	 */
+	public boolean doesNothing() {
+		return getPreValue() == null && getPostValue() == null ||
+		       getPreValue().equals(getPostValue());
+	}
+
+
+	/*
 	 * Sets the value of the field to its post value.
 	 * 
 	 * @see org.essentialplatform.transaction.IChange#doExecute()

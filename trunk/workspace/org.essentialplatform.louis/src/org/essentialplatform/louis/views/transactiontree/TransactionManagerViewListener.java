@@ -13,7 +13,7 @@ import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
  * uases passed viewer to react to changes to current transactions.
  * @author Mike
  */
-class TransactionTreeListener implements ITransactionManagerListener {
+class TransactionManagerViewListener implements ITransactionManagerListener {
 	
 	private final TreeViewer _viewer;
 	private final TransactionListener _internalListener;
@@ -22,7 +22,7 @@ class TransactionTreeListener implements ITransactionManagerListener {
 	 * Constrcutor requires parent tree.
 	 * @param viewer
 	 */
-	TransactionTreeListener( TreeViewer viewer ) {
+	TransactionManagerViewListener( TreeViewer viewer ) {
 		_viewer = viewer;
 		_internalListener = new TransactionListener();
 	}
@@ -67,6 +67,13 @@ class TransactionTreeListener implements ITransactionManagerListener {
 	
 	// for listening on individual transactions
 	private class TransactionListener implements ITransactionListener {
+
+		/*
+		 * @see org.essentialplatform.runtime.transaction.event.ITransactionListener#buildingChanges(org.essentialplatform.runtime.transaction.event.TransactionEvent)
+		 */
+		public void buildingChanges(TransactionEvent event) {
+			update(event);
+		}
 
 		/* (non-Javadoc)
 		 * @see org.essentialplatform.runtime.transaction.event.ITransactionListener#addedChange(org.essentialplatform.runtime.transaction.event.TransactionEvent)
@@ -132,10 +139,12 @@ class TransactionTreeListener implements ITransactionManagerListener {
 			
 		}
 		
+
 		private void update( TransactionEvent event ) {
 			assert event != null;
 			_viewer.refresh( event.getTransaction() );
 		}
+
 	}
 
 }

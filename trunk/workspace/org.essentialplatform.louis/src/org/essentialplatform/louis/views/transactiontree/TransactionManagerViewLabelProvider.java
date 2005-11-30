@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.LabelProvider;
  * Label provider for transaction tree.
  * @author Mike
  */
-class TransactionTreeLabelProvider extends LabelProvider {
+class TransactionManagerViewLabelProvider extends LabelProvider {
 
 
 }

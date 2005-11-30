@@ -49,11 +49,16 @@ public final class AttributeChange extends AbstractFieldChange {
 	}
 
 	public final boolean equals(final AttributeChange other) {
-		return
-		    _transactable.equals(other._transactable) &&
-			getField().equals(other.getField()) &&
-			getPreValue().equals(other.getPreValue()) &&
+		if (other == null) return false;
+		if (!_transactable.equals(other._transactable)) return false;
+		if (!getField().equals(other.getField())) return false;
+		boolean preValuesMatch = 
+			getPreValue() == null && other.getPreValue() == null ||
+			getPreValue().equals(other.getPreValue());
+		boolean postValuesMatch = 
+			getPostValue() == null && other.getPostValue() == null ||
 			getPostValue().equals(other.getPostValue());
+		return preValuesMatch && postValuesMatch;
 	}
 
 	/*

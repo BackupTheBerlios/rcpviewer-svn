@@ -21,7 +21,7 @@ import org.essentialplatform.runtime.transaction.changes.*;
  * of a pojo by the ISession.
  * 
  */
-public aspect TransactionInstantiationChangeAspect extends TransactionChangeAspect {
+public aspect TransactionInstantiationChangeAspect extends TransactionAspect {
 
 	private final static Logger LOG = Logger.getLogger(TransactionInstantiationChangeAspect.class);
 	protected Logger getLogger() { return LOG; }

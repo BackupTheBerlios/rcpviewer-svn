@@ -17,9 +17,9 @@ import org.essentialplatform.runtime.transaction.event.ITransactionManagerListen
  * Displays all current transactions.
  * @author Mike
  */
-public class TransactionTreeView extends ViewPart {
+public class TransactionManagerView extends ViewPart {
 
-	public static final String ID = TransactionTreeView.class.getName();
+	public static final String ID = TransactionManagerView.class.getName();
 
 	private TreeViewer _viewer = null;
 
@@ -52,17 +52,17 @@ public class TransactionTreeView extends ViewPart {
 		
 		// viewer
 		_viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
-		_viewer.setLabelProvider( new TransactionTreeLabelProvider() );
-		_viewer.setContentProvider( new TransactionTreeContentProvider() );
+		_viewer.setLabelProvider( new TransactionManagerViewLabelProvider() );
+		_viewer.setContentProvider( new TransactionManagerViewContentProvider() );
 		_viewer.setInput( mgr );
 
 		// tie viewer to transaction manager
-		_listener = new TransactionTreeListener( _viewer );
+		_listener = new TransactionManagerViewListener( _viewer );
 		mgr.addTransactionManagerListener( _listener );
 		
 		// apply filters
-		TransactionTreeConfigurator config
-			= new TransactionTreeConfigurator( _viewer );
+		TransactionManagerViewConfigurator config
+			= new TransactionManagerViewConfigurator( _viewer );
 		config.applyFilters();
 		
 		// now have viewer can add toolbar actions

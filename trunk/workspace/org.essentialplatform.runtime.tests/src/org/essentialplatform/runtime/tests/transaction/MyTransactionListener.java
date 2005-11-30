@@ -9,16 +9,22 @@ import org.essentialplatform.runtime.transaction.event.TransactionEvent;
 public final class MyTransactionListener implements
 		ITransactionListener {
 
+	TransactionEvent buildingChangeEvent = null;
 	TransactionEvent addedChangeEvent = null;
-	List<TransactionEvent> undonePendingChangeEventList = new ArrayList<TransactionEvent>();
-	TransactionEvent undonePendingChangeEvent = null;
-	List<TransactionEvent> redonePendingChangeEventList = new ArrayList<TransactionEvent>();
 	TransactionEvent redonePendingChangeEvent = null;
 	TransactionEvent redonePendingChangesEvent = null;
 	TransactionEvent discardedEvent = null;
 	TransactionEvent committedEvent = null;
 	TransactionEvent reversedEvent = null;
 	TransactionEvent reappliedEvent = null;
+
+	List<TransactionEvent> undonePendingChangeEventList = new ArrayList<TransactionEvent>();
+	TransactionEvent undonePendingChangeEvent = null;
+	List<TransactionEvent> redonePendingChangeEventList = new ArrayList<TransactionEvent>();
+
+	public void buildingChanges(TransactionEvent event) {
+		this.buildingChangeEvent = event;
+	}
 
 	public void addedChange(TransactionEvent event) {
 		this.addedChangeEvent = event;
@@ -53,5 +59,6 @@ public final class MyTransactionListener implements
 	public void reapplied(TransactionEvent event) {
 		this.reappliedEvent = event;
 	}
+
 
 }

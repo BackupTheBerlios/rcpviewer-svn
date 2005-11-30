@@ -37,6 +37,13 @@ public abstract class AbstractChange implements IChange {
 		modifies(_transactable); // the transactable is always in the modifiedPojos set.
 	}
 	
+	/*
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getTransaction()
+	 */
+	public ITransaction getTransaction() {
+		return _transaction;
+	}
+	
 	/**
 	 * The provided {@link ITransactable} will be included in the set returned
 	 * by {@link #getModifiedPojos()}.
@@ -85,10 +92,6 @@ public abstract class AbstractChange implements IChange {
 		IPojo pojo = (IPojo)_transactable;
 		IDomainObject<?> domainObject = pojo.getDomainObject();
 		
-		// there is a problem with the code below (commented out); if have any
-		// instance vars initialized before the constructor, then those changes
-		// are omitted since the dobj is not attached.
-		
 		// only if we have a domain object (ie fully instantiated) and
 		// are attached to a session do we check.
 		if (domainObject != null && domainObject.isAttached()) {
@@ -98,23 +101,6 @@ public abstract class AbstractChange implements IChange {
 				}
 			}
 		}
-
-		
-		// however, the code below doesn't work either, since it allows objects
-		// that are being recreated to create their own transactions.
-		// we need to distinguish create vs being recreated (latter shouldn't 
-		// have any change sets being added, former should).
-		
-		
-//		// only if we have a domain object (ie fully instantiated) and
-//		// are attached to a session do we check.
-//		if (domainObject != null) {
-//			if (_transaction.isInState(ITransaction.State.BUILDING_CHANGE, ITransaction.State.IN_PROGRESS)) {
-//				if (!_transaction.addingToInteractionChangeSet(this)) {
-//					throw new PojoAlreadyEnlistedException();			
-//				}
-//			}
-//		}
 		
 		return doExecute();
 	}
@@ -143,4 +129,14 @@ public abstract class AbstractChange implements IChange {
 	}
 
 
+	/*
+	 * Default implementation returns <code>false</code> indicating that the
+	 * change DOES do something.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#doesNothing()
+	 */
+	public boolean doesNothing() {
+		return false;
+	}
+	
 }

@@ -18,7 +18,7 @@ import org.essentialplatform.runtime.transaction.changes.IChange;
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionAttributeChangeAspect extends TransactionChangeAspect {
+public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 
 	private final static Logger LOG = Logger.getLogger(TransactionAttributeChangeAspect.class);
 	protected Logger getLogger() { return LOG; }

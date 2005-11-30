@@ -1,5 +1,7 @@
 package org.essentialplatform.louis.factory.attribute;
 
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.essentialplatform.core.domain.IDomainClass;
@@ -60,6 +62,16 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	public void setControl( T2 control ) {
 		if ( control == null ) throw new IllegalArgumentException();
 		_control = control;
+		_control.addFocusListener(new FocusListener() {
+
+			public void focusGained(FocusEvent e) {
+				// does nowt.
+			}
+
+			public void focusLost(FocusEvent e) {
+				_model.set(getValue());
+			}
+		});
 	}
 	
 	/**

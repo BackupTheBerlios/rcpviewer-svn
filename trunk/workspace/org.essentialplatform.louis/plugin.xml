@@ -65,9 +65,9 @@
             name="%plugin.opsViewName"/>     
       <view
             category="org.essentialplatform.louis"
-            class="org.essentialplatform.louis.views.transactiontree.TransactionTreeView"
+            class="org.essentialplatform.louis.views.transactiontree.TransactionManagerView"
             icon="icons/sample.gif"
-            id="org.essentialplatform.louis.views.transactiontree.TransactionTreeView"
+            id="org.essentialplatform.louis.views.transactiontree.TransactionManagerView"
             name="%plugin.transactionTreeViewName"/>     
    </extension>
    

@@ -21,7 +21,7 @@ import org.essentialplatform.runtime.transaction.changes.*;
  * One change per modified 1:1 reference performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionOneToOneReferenceChangeAspect extends TransactionChangeAspect {
+public aspect TransactionOneToOneReferenceChangeAspect extends TransactionAspect {
 	
 	private final static Logger LOG = Logger.getLogger(TransactionOneToOneReferenceChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
