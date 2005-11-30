@@ -770,8 +770,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			_runtimeBinding = (IOneToOneReferenceBinding) _oneToOneReference.getBinding();
 		}
 
-		public <Q> Q get() {
-			return (Q) _runtimeBinding.invokeAccessor(getDomainObject().getPojo());
+		public <Q> IDomainObject<Q> get() {
+			Object referencedObject = _runtimeBinding.invokeAccessor(getDomainObject().getPojo());
+			if (referencedObject == null) return null;
+			if (!(referencedObject instanceof IPojo)) return null;
+			IPojo referencedPojo = (IPojo)referencedObject;
+			return referencedPojo.getDomainObject();
 		}
 
 		/*

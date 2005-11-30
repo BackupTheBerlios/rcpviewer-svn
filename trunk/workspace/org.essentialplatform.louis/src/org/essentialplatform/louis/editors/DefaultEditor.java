@@ -57,16 +57,6 @@ public final class DefaultEditor extends EditorPart {
 	private OpsViewPage _opsView = null;
 	private IDomainObjectAttributeListener _titleListener = null;
 
-	/**
-	 * Whether this editor itself is dirty.
-	 * 
-	 * <p>
-	 * The editor is manually marked as dirty if the pojo that it represents
-	 * has just been instantiated, for example.  Otherwise, the dirty state is
-	 * picked up from the managed form that this editor references.
-	 */
-	private boolean _dirty;
-	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
 	 */

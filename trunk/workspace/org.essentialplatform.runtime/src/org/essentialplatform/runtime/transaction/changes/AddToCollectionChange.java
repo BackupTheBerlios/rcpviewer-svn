@@ -66,10 +66,13 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 	}
 
 	public final boolean equals(final AddToCollectionChange<V> other) {
-		return
-		    _transactable.equals(other._transactable) &&
-			getCollection().equals(other.getCollection()) &&
+		if (other == null) return false;
+		if (!_transactable.equals(other._transactable)) return false;
+		if (!getCollection().equals(other.getCollection())) return false;
+		boolean referencedObjectMatch = 
+			getReferencedObject() == null && other.getReferencedObject() == null ||
 			getReferencedObject().equals(other.getReferencedObject());
+		return referencedObjectMatch;
 	}
 
 	/*

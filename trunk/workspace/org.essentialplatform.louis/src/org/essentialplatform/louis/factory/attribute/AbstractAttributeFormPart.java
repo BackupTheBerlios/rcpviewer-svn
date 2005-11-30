@@ -68,8 +68,17 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 				// does nowt.
 			}
 
+			/**
+			 * Only apply changes if the value held in the UI is different
+			 * from the current value held in the model.
+			 */
 			public void focusLost(FocusEvent e) {
-				_model.set(getValue());
+				Object modelValue = _model.get();
+				Object uiValue = getValue();
+				if (modelValue == null && uiValue != null ||
+					modelValue != null && !modelValue.equals(uiValue)) {
+					_model.set(getValue());
+				}
 			}
 		});
 	}

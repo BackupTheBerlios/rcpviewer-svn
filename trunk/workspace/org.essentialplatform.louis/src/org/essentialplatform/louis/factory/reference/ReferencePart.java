@@ -28,7 +28,6 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	private final IFormPart _detailsPart;
 	
 	private Text _control;
-	private IDomainObject<?> _refValue = null;
 	private List<IReferencePartDisplayListener> _listeners = null;
 	
 	/**
@@ -102,10 +101,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	public void refresh() {
 		IDomainObject<?> value = null;
 		if ( _model != null ) {
-			IPojo referencedPojo = _model.get();
-			if (referencedPojo != null) {
-				value = referencedPojo.getDomainObject();
-			}
+			value = _model.get();
 		} else {
 			value = null;
 		}
@@ -117,9 +113,6 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
 	public void commit(boolean onSave) {
-		if ( onSave ) {
-			_model.set( getValue() );
-		}
 		super.commit(onSave);
 	}
 
@@ -184,7 +177,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * Accessor to value.
 	 */
 	IDomainObject<?> getValue() {
-		return _refValue;
+		return _model.get();
 	}
 	
 	/**
@@ -192,21 +185,40 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * @param value
 	 */
 	void setValue( IDomainObject<?> value  ) {
-		_refValue = value;
+
+		boolean valueChanged = false;
+		IDomainObject<?> modelDobj = _model.get();
+		if (value != null) {
+			Object uiPojo = value.getPojo();
+			if (modelDobj == null ||
+				uiPojo != modelDobj.getPojo()) {
+				valueChanged = true;
+			}
+		} else {
+			if (modelDobj != null) {
+				valueChanged = true;
+			}
+		}
+		if (!valueChanged) {
+			return;
+		}
+		
+		_model.set(value);
+
 		if ( _control != null ) {
-			if ( _refValue == null ) {
+			if ( value == null ) {
 				_control.setText( "" ); //$NON-NLS-1$
 			}
 			else {
 				boolean reflow = _control.getText().length() == 0;
-				_control.setText( LouisPlugin.getText( _refValue ) );
+				_control.setText( LouisPlugin.getText( value ) );
 				if ( reflow ) {
 					Section s = SWTUtil.getParent( _control, Section.class );
 					if ( s != null ) s.layout();
 				}
 			}
 		}
-		_detailsPart.setFormInput( _refValue );
+		_detailsPart.setFormInput( value );
 		markDirty();
 		if ( _listeners != null ) {
 			for ( IReferencePartDisplayListener listener : _listeners ) {

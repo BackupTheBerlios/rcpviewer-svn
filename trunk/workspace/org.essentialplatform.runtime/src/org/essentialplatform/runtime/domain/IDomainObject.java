@@ -346,7 +346,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 * Returns the domain object for this representation of a 1:1 reference
 		 * of the domain object. 
 		 */
-		public <Q> Q get();
+		public <Q> IDomainObject<Q> get();
 
 		
 		/**

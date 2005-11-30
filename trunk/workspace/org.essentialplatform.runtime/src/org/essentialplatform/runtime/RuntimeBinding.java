@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -22,11 +21,8 @@ import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.core.progmodel.ProgrammingModelException;
-import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
@@ -376,38 +372,15 @@ public final class RuntimeBinding extends Binding {
 		}
 
 		public Object invokeAccessor(final Object pojo) {
-			if (getAccessor() == null) {
-				throw new UnsupportedOperationException("Accesor method '" + getAccessor() + "' not accessible / could not be found");
-			}
-			String accessorMethodName = getAccessor().getName();
-			try {
-				return getAccessor().invoke(pojo);
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "', (" + e.getTargetException().getMessage() + ")", e.getTargetException());
-			}
+			return invokeInvoker(getAccessor(), pojo, new Object[]{}, "accessor");
 		}
 
+		/**
+		 * There is no need to call to notifyAttributeListeners(newValue);
+		 * the NotifyListeners aspect will do our bidding for us.
+		 */
 		public void invokeMutator(final Object pojo, final Object newValue) {
-			if (getMutator() == null) {
-				throw new UnsupportedOperationException("Mutator method '" + getMutator() + "' not accessible / could not be found");
-			}
-			String mutatorMethodName = getMutator().getName();
-			try {
-				getMutator().invoke(pojo, newValue);
-				// previously there was a call to notifyAttributeListeners(newValue) here;
-				// however this is superfluous since the NotifyListeners aspect will do
-				// our bidding for us.
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Mutator method '" + mutatorMethodName + "' not accessible");
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke mutator method '" + mutatorMethodName + "', (" + e.getTargetException().getMessage() + ")", e.getTargetException());
-			}
+			invokeInvoker(getMutator(), pojo, new Object[]{newValue}, "mutator");
 		}
 		
 		/**
@@ -429,44 +402,12 @@ public final class RuntimeBinding extends Binding {
 		}
 
 		public IPrerequisites accessorPrerequisitesFor(final Object pojo)  {
-			Method accessorPre = __extendedSerializer.getAttributeAccessorPreMethod(_eAttribute);
-			if (accessorPre == null) {
-				return Prerequisites.none();
-			}
-			try {
-				return (IPrerequisites)accessorPre.invoke(pojo, new Object[]{});
-			} catch (IllegalArgumentException ex) {
-				_logger.error("Problem obtaining accessor prerequisites for '" + _eAttribute + "'", ex);
-				return Prerequisites.invisible();
-			} catch (IllegalAccessException ex) {
-				_logger.error("Problem obtaining accessor prerequisites for '" + _eAttribute + "'", ex);
-				return Prerequisites.invisible();
-			} catch (InvocationTargetException ex) {
-				_logger.error("Problem obtaining accessor prerequisites for '" + _eAttribute + "'", ex);
-				return Prerequisites.invisible();
-			}
+			return invokePrerequisites(getAccessorPre(), pojo, new Object[]{}, "accessor");
 		}
 
 		public IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue) {
-			Method mutatorPre = __extendedSerializer.getAttributeMutatorPreMethod(_eAttribute);;
-			if (mutatorPre == null) {
-				return Prerequisites.none();
-			}
-			try {
-				return (IPrerequisites)mutatorPre.invoke(pojo, new Object[]{candidateValue});
-			} catch (IllegalArgumentException ex) {
-				_logger.error("Problem obtaining mutator prerequisites for '" + _eAttribute + "'", ex);
-				return Prerequisites.invisible();
-			} catch (IllegalAccessException ex) {
-				_logger.error("Problem obtaining mutator prerequisites for '" + _eAttribute + "'", ex);
-				return Prerequisites.invisible();
-			} catch (InvocationTargetException ex) {
-				_logger.error("Problem obtaining mutator prerequisites for '" + _eAttribute + "'", ex);
-				return Prerequisites.invisible();
-			}
+			return invokePrerequisites(getMutatorPre(), pojo, new Object[]{candidateValue}, "mutator");
 		}
-
-		
 	}
 
 	/**
@@ -490,21 +431,9 @@ public final class RuntimeBinding extends Binding {
 		Method getMutator() {
 			return __standardSerializer.getReferenceMutator(_eReference);
 		}
-
+		
 		public Object invokeAccessor(final Object pojo) {
-			if (getAccessor() == null) {
-				throw new UnsupportedOperationException("No accessor method");
-			}
-			String accessorMethodName = getAccessor().getName();
-			try {
-				return getAccessor().invoke(pojo);
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Accessor method '" + accessorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke accessor method '" + accessorMethodName + "'", e);
-			}
+			return invokeInvoker(getAccessor(), pojo, new Object[]{}, "accessor");
 		}
 
 		public IPrerequisites authorizationPrerequisites() {
@@ -515,19 +444,7 @@ public final class RuntimeBinding extends Binding {
 
 		public IPrerequisites accessorPrerequisitesFor(final Object pojo) {
 			Method accessorPre = __extendedSerializer.getReferenceAccessorPreMethod(_eReference); 
-			if (accessorPre == null) {
-				return Prerequisites.none();
-			}
-			try {
-				return (IPrerequisites)accessorPre.invoke(pojo, new Object[]{});
-			} catch (IllegalArgumentException ex) {
-				// TODO log?
-			} catch (IllegalAccessException ex) {
-				// TODO Auto-generated catch block
-			} catch (InvocationTargetException ex) {
-				// TODO Auto-generated catch block
-			}
-			return Prerequisites.none();
+			return invokePrerequisites(accessorPre, pojo, new Object[]{}, "accessor");
 		}
 
 
@@ -553,10 +470,7 @@ public final class RuntimeBinding extends Binding {
 		private Method getDissociator() {
 			return __standardSerializer.getReferenceOneToOneDissociator(_eReference);
 		}
-		private Method getAssociatorPre() {
-			return __extendedSerializer.getReferenceAccessorPreMethod(_eReference);
-		}
-		private Method getDissociatorPre() {
+		private Method getMutatorPre() {
 			return __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
 		}
 
@@ -570,19 +484,7 @@ public final class RuntimeBinding extends Binding {
 		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeAssociator(final Object pojo, final Object referencedObject) {
-			if (getAssociator() == null) {
-				throw new UnsupportedOperationException("No associator method");
-			}
-			String associatorMethodName = getAssociator().getName();
-			try {
-				getAssociator().invoke(pojo, new Object[]{referencedObject});
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Associator method '" + associatorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke associator method '" + associatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke associator method '" + associatorMethodName + "'", e);
-			}
+			invokeInvoker(getAssociator(), pojo, new Object[]{referencedObject}, "associator");
 		}
 		/*
 		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canDissociate()
@@ -594,41 +496,14 @@ public final class RuntimeBinding extends Binding {
 		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeDissociator(final Object pojo, final Object referencedObject) {
-			if (getDissociator() == null) {
-				throw new UnsupportedOperationException("No dissociator method");
-			}
-			String dissociatorMethodName = getDissociator().getName();
-			try {
-				getDissociator().invoke(pojo, new Object[]{referencedObject});
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Dissociator method '" + dissociatorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
-			}
+			invokeInvoker(getDissociator(), pojo, new Object[]{referencedObject}, "dissociator");
 		}
 
 		/*
 		 * @see org.essentialplatform.core.deployment.Binding.IOneToOneReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object)
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue) {
-			Method mutatorPre = __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
-			if (mutatorPre == null) {
-				return Prerequisites.none();
-			}
-			try {
-				return (IPrerequisites) mutatorPre.invoke(pojo, new Object[] { candidateValue });
-			} catch (IllegalArgumentException ex) {
-				_logger.error("Problem obtaining mutator prerequisites for '" + _eReference + "'", ex);
-				return Prerequisites.invisible();
-			} catch (IllegalAccessException ex) {
-				_logger.error("Problem obtaining mutator prerequisites for '" + _eReference + "'", ex);
-				return Prerequisites.invisible();
-			} catch (InvocationTargetException ex) {
-				_logger.error("Problem obtaining mutator prerequisites for '" + _eReference + "'", ex);
-				return Prerequisites.invisible();
-			}
+			return invokePrerequisites(getMutatorPre(), pojo, new Object[]{}, "mutator");
 		}
 		
 	}
@@ -653,10 +528,11 @@ public final class RuntimeBinding extends Binding {
 		private Method getDissociator() {
 			return __standardSerializer.getReferenceCollectionDissociator(_eReference);
 		}
-		private Method getAssociatorPre() {
+
+		private Method getAddToPre() {
 			return __extendedSerializer.getReferenceAddToPreMethod(_eReference);
 		}
-		private Method getDissociatorPre() {
+		private Method getRemoveFromPre() {
 			return __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
 		}
 
@@ -670,19 +546,7 @@ public final class RuntimeBinding extends Binding {
 		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeAssociator(final Object pojo, final Object referencedObject) {
-			if (getAssociator() == null) {
-				throw new UnsupportedOperationException("No associator method");
-			}
-			String associatorMethodName = getAssociator().getName();
-			try {
-				getAssociator().invoke(pojo, new Object[]{referencedObject});
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Associator method '" + associatorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke associator method '" + associatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke associator method '" + associatorMethodName + "'", e);
-			}
+			invokeInvoker(getAssociator(), pojo, new Object[]{referencedObject}, "associator");
 		}
 		/*
 		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canDissociate()
@@ -694,41 +558,15 @@ public final class RuntimeBinding extends Binding {
 		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
 		 */
 		public void invokeDissociator(final Object pojo, final Object referencedObject) {
-			if (getDissociator() == null) {
-				throw new UnsupportedOperationException("No dissociator method");
-			}
-			String dissociatorMethodName = getDissociator().getName();
-			try {
-				getDissociator().invoke(pojo, new Object[]{referencedObject});
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Dissociator method '" + dissociatorMethodName + "' not accessible", e);
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
-			} catch (InvocationTargetException e) {
-				throw new UnsupportedOperationException("Could not invoke dissociator method '" + dissociatorMethodName + "'", e);
-			}
+			invokeInvoker(getDissociator(), pojo, new Object[]{referencedObject}, "dissociator");
 		}
 
 		/*
 		 * @see org.essentialplatform.core.deployment.Binding.ICollectionReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object, boolean)
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue, final boolean beingAdded) {
-			Method mutatorPre = beingAdded 
-									? __extendedSerializer.getReferenceAddToPreMethod(_eReference)
-									: __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
-			if (mutatorPre == null) {
-				return Prerequisites.none();
-			}
-			try {
-				return (IPrerequisites) mutatorPre.invoke(pojo, new Object[] { candidateValue });
-			} catch (IllegalArgumentException ex) {
-				// TODO log?
-			} catch (IllegalAccessException ex) {
-				// TODO Auto-generated catch block
-			} catch (InvocationTargetException ex) {
-				// TODO Auto-generated catch block
-			}
-			return Prerequisites.none();
+			Method mutatorPre = beingAdded ? getAddToPre() : getRemoveFromPre();
+			return invokePrerequisites(mutatorPre, pojo, new Object[]{candidateValue}, "mutator");
 		}
 
 	}
@@ -782,19 +620,7 @@ public final class RuntimeBinding extends Binding {
 		}
 
 		public Object invokeOperation(final Object pojo, final Object[] args) {
-			if (getOperationInvoker() == null) {
-				throw new UnsupportedOperationException("No operation invoker method.");
-			}
-			String operationInvokerMethodName = getOperationInvoker().getName();
-			try {
-				return getOperationInvoker().invoke(pojo, args);
-			} catch (SecurityException e) {
-				throw new UnsupportedOperationException("Operation invoker method '" + operationInvokerMethodName + "' not accessible");
-			} catch (IllegalAccessException e) {
-				throw new UnsupportedOperationException("Operation invoker method '" + operationInvokerMethodName + "' not accessible");
-			} catch (InvocationTargetException e) {
-				throw new RuntimeException("Operation method threw an exception '" + operationInvokerMethodName + "'", e.getCause());
-			}
+			return invokeInvoker(getOperationInvoker(), pojo, args, "operation");
 		}
 
 		public IPrerequisites authorizationPrerequisites() {
@@ -804,21 +630,8 @@ public final class RuntimeBinding extends Binding {
 		}
 
 		public IPrerequisites prerequisitesFor(final Object pojo, Object[] args) {
-
 			Method invokePre = __extendedSerializer.getOperationPreMethod(_eOperation);
-			if (invokePre == null) {
-				return Prerequisites.none();
-			}
-
-			try {
-				return (IPrerequisites) invokePre.invoke(pojo, args);
-			} catch (IllegalArgumentException ex) {
-				return Prerequisites.unusable(ex.getLocalizedMessage());
-			} catch (IllegalAccessException ex) {
-				return Prerequisites.unusable(ex.getLocalizedMessage());
-			} catch (InvocationTargetException ex) {
-				return Prerequisites.unusable(ex.getLocalizedMessage());
-			}
+			return invokePrerequisites(invokePre, pojo, args, "operation");
 		}
 
 		
@@ -944,6 +757,88 @@ public final class RuntimeBinding extends Binding {
 		
 	}
 
+	/**
+	 * Invokes accessor, mutator etc (so-called "invoker" method to distinguish
+	 * from "prerequisites" method).
+	 * 
+	 * @param method
+	 * @param pojo
+	 * @param args
+	 * @param contextDescription
+	 * @return
+	 */
+	private static Object invokeInvoker(Method method, Object pojo, Object[] args, String contextDescription) {
+		if (method==null) {
+			String formattedMessage = buildErrorMessage(null, contextDescription, "invoker", method);
+			_logger.error(formattedMessage);
+			throw new UnsupportedOperationException(formattedMessage);
+		}
+		try {
+			return method.invoke(pojo, args);
+		} catch (IllegalArgumentException ex) {
+			String formattedMessage = buildErrorMessage(ex, contextDescription, "invoker", method);
+			_logger.error(formattedMessage, ex);
+			throw ex;
+		} catch (IllegalAccessException ex) {
+			String formattedMessage = buildErrorMessage(ex, contextDescription, "invoker", method);
+			_logger.error(formattedMessage, ex);
+			throw new UnsupportedOperationException(formattedMessage);
+		} catch (InvocationTargetException ex) {
+			String formattedMessage = buildErrorMessage(ex.getTargetException(), contextDescription, "invoker", method);
+			_logger.error(formattedMessage, ex);
+			throw new UnsupportedOperationException(formattedMessage);
+		}
+	}
+
+	/**
+	 * Invokes method to obtain {@link IPrerequisites} and does necessary error 
+	 * handling on failure.
+	 * 
+	 * <p>
+	 * Static so can be invoked from instances of the nested static classes.
+	 * 
+	 * @param m
+	 * @param pojo
+	 * @param args
+	 * @return the prerequisites applicable.
+	 */
+	private static IPrerequisites invokePrerequisites(Method method, Object pojo, Object[] args, String contextDescription) {
+		if (method==null) {
+			return Prerequisites.none();
+		}
+		try {
+			return (IPrerequisites)method.invoke(pojo, args);
+		} catch (IllegalArgumentException ex) {
+			String formattedMessage = buildErrorMessage(ex, contextDescription, "prerequisites", method);
+			_logger.error(formattedMessage, ex);
+			throw ex;
+		} catch (IllegalAccessException ex) {
+			String formattedMessage = buildErrorMessage(ex, contextDescription, "prerequisites", method);
+			_logger.error(formattedMessage, ex);
+			throw new UnsupportedOperationException(formattedMessage);
+		} catch (InvocationTargetException ex) {
+			String formattedMessage = buildErrorMessage(ex.getTargetException(), contextDescription, "prerequisites", method);
+			_logger.error(formattedMessage, ex);
+			throw new UnsupportedOperationException(formattedMessage);
+		}
+	}
+	/**
+	 * Static so can be invoked from instances of the nested static classes.
+	 * 
+	 * @param ex
+	 * @param contextDescription1
+	 * @param contextDescription2
+	 * @param method
+	 * @return
+	 */
+	private static String buildErrorMessage(
+			Throwable ex, 
+			String contextDescription1, String contextDescription2, 
+			Method method) {
+		return String.format(
+				"Problem invoking %s %s method '%s' (ex=%s)", 
+				new Object[]{contextDescription1, contextDescription2, method.getName(), ex.getMessage()});
+	}
 
 
 }
