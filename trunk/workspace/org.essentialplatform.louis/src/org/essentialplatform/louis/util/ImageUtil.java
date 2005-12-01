@@ -7,6 +7,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.essentialplatform.louis.LouisPlugin;
+import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.osgi.framework.Bundle;
 
 import org.essentialplatform.core.domain.IDomainClass;
@@ -66,9 +68,9 @@ public class ImageUtil {
 	 * Creates an image for the passed <code>IDomainClass.
 	 * <br>The image is discovered using the following logic:
 	 * <ol>
-	 * <li>looks for default image file in default location - that is a 
+	 * <li>looks for image according to annotation 'ImageUrlAt'
+	 * <li>if none found, looks for default image file in default location - that is a 
 	 * .png file in an 'icons' subdirectory of the class's parent plugin
-	 * <li>if none found, looks for annotation 'XXX' TODO
 	 * <li>if none found, uses the Eclipse standard 'missing image'
 	 * </ol>
 	 * <br>This image is added to the <code>GUIPlugin</code>'s repository
@@ -79,24 +81,23 @@ public class ImageUtil {
 	public static final Image getImage( IDomainClass clazz ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		
-		Image image = LouisPlugin.getDefault().getImageRegistry().get( clazz.getName() );
+		RuntimeBinding.RuntimeClassBinding<?> binding = 
+			(RuntimeBinding.RuntimeClassBinding<?>)clazz.getBinding();
+		Class javaClass = binding.getJavaClass();
+		
+		Image image = LouisPlugin.getDefault().getImageRegistry().get( javaClass.getSimpleName() );
 		if ( image == null ) {
 			ImageDescriptor desc = null;
 			
+			// use annotation value if available
+			// (this ain't been tested, y'know...)
+			LouisDomainClass louisDC = clazz.getAdapter(LouisDomainClass.class);
+			desc = louisDC.imageDescriptor();
+			
 			// look for default image - require parent bundle and relative path
-			Bundle parentBundle = LouisPlugin.getDefault().getPackageAdmin().getBundle( 
-					clazz.getEClass().getInstanceClass() );
-			StringBuffer relativePath = new StringBuffer();
-			relativePath.append( "/icons/" ); //$NON-NLS-1$
-			relativePath.append( clazz.getName() );
-			relativePath.append( ".png" ); //$NON-NLS-1$
-			
-			desc = AbstractUIPlugin.imageDescriptorFromPlugin(
-						parentBundle.getSymbolicName(),
-						relativePath.toString() );
-			
-			// use annotation value...
-			// TODO
+			if (desc == null) {
+				desc = getImageDescriptor(javaClass, "png"); //$NON-NLS-1$
+			}
 			
 			// last resort - missing image
 			if ( desc == null ) {
@@ -104,10 +105,39 @@ public class ImageUtil {
 			}
 			
 			image = desc.createImage();
-			LouisPlugin.getDefault().getImageRegistry().put( clazz.getName(), image );
+			LouisPlugin.getDefault().getImageRegistry().put( javaClass.getSimpleName(), image );
 		}
 		assert image != null;
 		return image;
+	}
+
+	public static ImageDescriptor getImageDescriptor(Class javaClass, String format) {
+		return getImageDescriptor(javaClass, 0, format);
+	}
+	/**
+	 * <tt>icons/ClassName-xx.yyy</tt> where -xx is the file size, yyy is the format.
+	 * 
+	 * @param javaClass
+	 * @param size if 0, then "-xx" is omitted.
+	 * @param format
+	 * @return
+	 */
+	public static ImageDescriptor getImageDescriptor(Class javaClass, int size, String format) {
+		ImageDescriptor desc;
+		Bundle parentBundle = LouisPlugin.getDefault().getPackageAdmin().getBundle(javaClass );
+		StringBuffer buf = new StringBuffer();
+		buf.append( "/icons/" ) //$NON-NLS-1$
+	       .append( javaClass.getSimpleName() );
+		if (size != 0) {
+			buf.append("-")   //$NON-NLS-1$
+			   .append(size);
+		}
+		buf.append(".").append( format ); //$NON-NLS-1$
+		
+		desc = AbstractUIPlugin.imageDescriptorFromPlugin(
+					parentBundle.getSymbolicName(),
+					buf.toString() );
+		return desc;
 	}
 	
 	/**

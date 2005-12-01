@@ -1,6 +1,7 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +155,7 @@ class CollectionTablePart extends ConfigurableAdapter
 	/* (non-Javadoc)
 	 * @see org.essentialplatform.louis.factory.reference.collection.ICollectionChildPart#display(java.util.List)
 	 */
-	public void display(List<IDomainObject<?>> display) {
+	public <V> void display(Collection<IDomainObject<V>> display) {
 		_viewer.setInput( display );
 	}
 	
@@ -204,11 +205,11 @@ class CollectionTablePart extends ConfigurableAdapter
 	}
 	
 	/**
-	 * What the viewer is displaying currentlu.
+	 * What the viewer is displaying currently.
 	 * @return
 	 */
-	List getDisplayedValues() {
-		return (List)_viewer.getInput();
+	Collection getDisplayedValues() {
+		return (Collection)_viewer.getInput();
 	}
 
 	/**

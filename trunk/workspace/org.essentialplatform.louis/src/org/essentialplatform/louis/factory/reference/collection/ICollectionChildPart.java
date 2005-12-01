@@ -1,5 +1,6 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.ui.forms.IFormPart;
@@ -26,7 +27,7 @@ interface ICollectionChildPart extends IFormPart, IConfigurable {
 	 * Display the passed list of domain objects.
 	 * @param display
 	 */
-	void display( List<IDomainObject<?>> display ) ;
+	<V> void display( Collection<IDomainObject<V>> display ) ;
 	
 	/**
 	 * Listens in on selected elemnt of collection 

@@ -1,5 +1,6 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.ui.forms.IManagedForm;
@@ -91,7 +92,7 @@ class CollectionMasterChildPart implements ICollectionChildPart, IConfigurable {
 	/**
 	 * @param display
 	 */
-	public void display(List<IDomainObject<?>> display) {
+	public <V> void display(Collection<IDomainObject<V>> display) {
 		_masterPart.display( display );
 	}
 	

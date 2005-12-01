@@ -34,7 +34,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	
 	private Label _control;
 	private IDomainObject<?> _domainObject = null;
-	private List<IDomainObject<?>> _displayed = null;
+	//private List<IDomainObject<?>> _displayed = null;
 	private ICollectionChildPart _activePart;
 	
 	/**
@@ -118,26 +118,28 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	@Override
 	public void commit(boolean onSave) {
-		if ( onSave ) {
-			assert _displayed != null;
-			
-			// compare displayed list with model
-			Collection<IDomainObject<?>> model = getCollectionDomainObjects();
-			
-			// in model, not displayed - remove
-			for ( IDomainObject<?> element : model ) {
-				if ( !_displayed.contains( element ) ) {
-					_model.removeFromCollection( element );
-				}
-			}
-			
-			// in display, not in model - add
-			for ( IDomainObject<?> element : _displayed ) {
-				if ( !model.contains( element ) ) {
-					_model.addToCollection( element );
-				}
-			}
-		}
+		
+//		 these lines commented out - apply the change immediately.
+//		if ( onSave ) {
+//			assert _displayed != null;
+//			
+//			// compare displayed list with model
+//			Collection<IDomainObject<?>> model = getCollectionDomainObjects();
+//			
+//			// in model, not displayed - remove
+//			for ( IDomainObject<?> element : model ) {
+//				if ( !_displayed.contains( element ) ) {
+//					_model.removeFromCollection( element );
+//				}
+//			}
+//			
+//			// in display, not in model - add
+//			for ( IDomainObject<?> element : _displayed ) {
+//				if ( !model.contains( element ) ) {
+//					_model.addToCollection( element );
+//				}
+//			}
+//		}
 		super.commit( onSave );
 	}
 	
@@ -146,8 +148,10 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	@Override
 	public void refresh() {
-		_displayed = getCollectionDomainObjects();
-		setDisplay( _displayed );
+//		_displayed = getCollectionDomainObjects();
+//		setDisplay( _displayed );
+		setDisplay(_model.getCollection());
+		
 		super.refresh();
 	}
 	
@@ -230,9 +234,12 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	void addToCollection( IDomainObject<?> dObj ) {
 		assert dObj != null;
-		assert _displayed != null;
-		_displayed.add( dObj );
-		setDisplay( _displayed );
+		//	these lines commented out - apply the change immediately.
+		//assert _displayed != null;
+		//_displayed.add( dObj );
+		//setDisplay( _displayed );
+		_model.addToCollection(dObj);
+		setDisplay(_model.getCollection());
 	}
 	
 	/**
@@ -240,10 +247,13 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	void removeFromCollection( IDomainObject<?> dObj ) {
 		assert dObj != null;
-		assert _displayed != null;
-		assert _displayed.contains( dObj );
-		_displayed.remove( dObj );
-		setDisplay( _displayed );
+		// these lines commented out - apply the change immediately.
+//		assert _displayed != null;
+//		assert _displayed.contains( dObj );
+//		_displayed.remove( dObj );
+//		setDisplay( _displayed );
+		_model.removeFromCollection(dObj);
+		setDisplay(_model.getCollection());
 	}
 	
 	/**
@@ -275,7 +285,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	}
 	
 	// sets display on all children
-	private void setDisplay(  List<IDomainObject<?>> display ) {
+	private <V> void setDisplay(  Collection<IDomainObject<V>> display ) {
 		for ( ICollectionChildPart child :_children ) {
 			child.display( display );
 		}

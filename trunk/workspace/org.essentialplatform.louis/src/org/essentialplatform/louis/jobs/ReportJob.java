@@ -111,12 +111,13 @@ public class ReportJob extends AbstractUserJob {
 		if ( msg == null ) throw new IllegalArgumentException();
 		_image = null;
 		_isError = true;
-		StringBuilder buf = new StringBuilder();
+		StringBuilder buf = new StringBuilder(ex.getMessage());
 		StackTraceElement[] elements = ex.getStackTrace(); 
 		for(int i=0; i<elements.length; i++ ) {
-			 buf.append(elements[i]);
+			 buf.append("           ")
+			    .append(elements[i]);
 			 if (i != elements.length-1) {
-				 buf.append("\n           ");
+				 buf.append("\n");
 			 }
 		}
 		_msg = buf.toString();

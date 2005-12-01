@@ -6,9 +6,30 @@ import static org.essentialplatform.louis.util.FontUtil.CharWidthType.AVERAGE;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolder2Listener;
+import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabFolderListener;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.ole.win32.COM;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.ole.win32.OLE;
+import org.eclipse.swt.ole.win32.OleAutomation;
+import org.eclipse.swt.ole.win32.OleControlSite;
+import org.eclipse.swt.ole.win32.OleFrame;
+import org.eclipse.swt.ole.win32.Variant;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -16,6 +37,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.ManagedForm;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.EditorPart;
 
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
@@ -51,11 +74,31 @@ public final class DefaultEditor extends EditorPart {
 	
 	public static final String ID = DefaultEditor.class.getName();
 	
-	private static final String FORM_TITLE_PREFIX = "  "; //$NON-NLS-1$
+	/**
+	 * Space for the icon.
+	 */
+	private static final String FORM_TITLE_PREFIX = "      "; //$NON-NLS-1$
 	
 	private ManagedForm _form = null;
 	private OpsViewPage _opsView = null;
 	private IDomainObjectAttributeListener _titleListener = null;
+
+	/**
+	 * Composite residing on the editor tab holding default editor
+	 */
+	private Composite _editorComposite;
+	/**
+	 * Composite residing on the shell tab
+	 */
+	private Composite _shellComposite;
+	/**
+	 * Composite residing on the help tab
+	 */
+	private Composite _helpComposite;
+	/**
+	 * Composite residing on the automation tab
+	 */
+	private Composite _automationComposite;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
@@ -81,7 +124,7 @@ public final class DefaultEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		
+
 		// main form
 		_form = new ManagedForm( parent ) {
 			public void dirtyStateChanged() {
@@ -89,34 +132,56 @@ public final class DefaultEditor extends EditorPart {
 				firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 		};
-		
+		ScrolledForm scrolledForm = _form.getForm();
+		scrolledForm.setBackground(parent.getBackground());
+
 		// set title on both window and form, and add icon to form
-		resetTitle();
-		int width = FORM_TITLE_PREFIX.length() * FontUtil.getCharWidth( 
-				_form.getForm(), AVERAGE );
-		Image image = ImageUtil.resize(
-				((DefaultEditorInput)getEditorInput() ).getImage(),
-				new Point( width, width ) );
-		_form.getForm().setBackgroundImage( image  );
+		DefaultEditorInput<?> editorInput = (DefaultEditorInput)getEditorInput();
+		String title = editorInput.getName();
+		setPartName( title );
+		scrolledForm.setText( FORM_TITLE_PREFIX + title );
 		
-		// main gui creation
+		// REVIEW_CHANGE: Dan hacking: wanted a bigger icon on the editor.  Please do it right, though.
+		//int width = FORM_TITLE_PREFIX.length() * FontUtil.getCharWidth(scrolledForm, AVERAGE );
+		int width = 32;
+		Image image = ImageUtil.resize(
+				editorInput.getImage(),
+				new Point( width, width ) );
+		scrolledForm.setBackgroundImage( image  );
+
+		FormToolkit formToolkit = _form.getToolkit();
+		Composite formBody = scrolledForm.getBody();
+		formBody.setBackground( parent.getBackground() );
+		formBody.setLayout(new GridLayout());
+		
+		CTabFolder tabFolder = new CTabFolder(formBody, SWT.FLAT|SWT.BOTTOM);
+		formToolkit.adapt(tabFolder, true, true);
+		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		_editorComposite = createTab(formToolkit, tabFolder, "Object"); 
+		_shellComposite = createTab(formToolkit, tabFolder, "Shell");
+		_helpComposite = createTab(formToolkit, tabFolder, "Help");
+		_automationComposite = createTab(formToolkit, tabFolder, "Automation");
+		
+		tabFolder.setSelection(3);
+		
+		// main gui creation (on the editor tab)
 		IGuiFactory factory = LouisPlugin.getDefault().getGuiFactory(
 				getDomainObject().getDomainClass(), null );
 		IFormPart part = factory.createGui(
 				getDomainObject().getDomainClass(),
-				_form.getToolkit(),
-				_form.getForm().getBody(),
+				formToolkit,
+				_editorComposite,
 				GuiHints.DUMMY );
 		_form.addPart( part );
 		
 		// add configuration option...
 		if ( part instanceof IConfigurable ) {
-			IToolBarManager mgr = _form.getForm().getToolBarManager();
+			IToolBarManager mgr = scrolledForm.getToolBarManager();
 			mgr.add( ConfigureWidgetFactory.createAction( (IConfigurable)part ) );
 			mgr.update( true );
 			
 		}
-		
 
 		// listen in on attribute changes in case they affect the name
 		_titleListener = new IDomainObjectAttributeListener(){
@@ -143,6 +208,46 @@ public final class DefaultEditor extends EditorPart {
 			// don't commit the form; there is a transaction for this domain object.
 		}
 		
+		
+		///////////////////////////////////////////////////
+		// automation experiment
+		// ... isn't working, though.
+		OleFrame oleFrame = new OleFrame(_automationComposite, SWT.NONE);
+		oleFrame.setLayout(new GridLayout());
+		oleFrame.setLayoutData(new GridData(GridData.FILL_BOTH));
+		OleControlSite controlSite = new OleControlSite(oleFrame, SWT.NONE, "Shell.Explorer"); //$NON-NLS-1$
+		OleAutomation automation = new OleAutomation(controlSite);
+		
+		controlSite.doVerb(OLE.OLEIVERB_SHOW);
+		//controlSite.doVerb(OLE.OLEIVERB_INPLACEACTIVATE);  // not necessry if using OleAutomation???
+
+		navigateTo(automation, "http://www.haywood-associates.co.uk/rcpviewer/space/start");
+		
+		
+	}
+	
+	public void navigateTo(OleAutomation automation, String url) {
+		// dispid=104, type=METHOD, name="Navigate"
+		int[] rgdispid = automation.getIDsOfNames(
+				new String[]{"Navigate", "URL"});
+		int dispIdMember = rgdispid[0];
+	
+		Variant[] rgvarg = new Variant[1];
+		rgvarg[0] = new Variant(url);
+		int[] rgdispidNamedArgs = new int[1];
+		rgdispidNamedArgs[0] = rgdispid[1]; // identifier of argument
+		automation.invoke(dispIdMember, rgvarg, rgdispidNamedArgs);
+	}
+
+
+	private Composite createTab(FormToolkit formToolkit, CTabFolder tabFolder, String tabName) {
+		Composite composite = new Composite(tabFolder, SWT.NULL);
+		formToolkit.adapt(composite, true, true);
+		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
+		tabItem.setControl(composite);
+		tabItem.setText(tabName);
+		return composite;
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()

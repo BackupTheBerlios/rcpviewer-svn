@@ -75,7 +75,6 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 		
 		if ( hints.styleMatches( GuiHints.INCLUDE_ATTRIBUTES ) ) {
 			// loop through all attributes
-			// TODO: was calling EmfUtil here...
 			for ( IDomainClass.IAttribute iAttribute : model.iAttributes() ) {
 	
 				// composite 

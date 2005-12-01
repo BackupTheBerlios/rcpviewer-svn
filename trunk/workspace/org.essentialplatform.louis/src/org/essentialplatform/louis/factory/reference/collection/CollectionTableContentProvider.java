@@ -1,5 +1,6 @@
 package org.essentialplatform.louis.factory.reference.collection;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -48,8 +49,14 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 	 */
 	public Object[] getElements(Object obj) {
 		if ( obj == null ) return new Object[0];
-		assert obj instanceof List;
-		return ((List)obj).toArray();
+		assert obj instanceof Collection;
+		Collection elementsAsList = (Collection)obj;
+		Object[] elementsAsArray = new Object[elementsAsList.size()];
+		int i = 0;
+		for(Object element: elementsAsList) {
+			elementsAsArray[i++] = element;
+		}
+		return elementsAsArray;
 	}
 	
 	/* (non-Javadoc)

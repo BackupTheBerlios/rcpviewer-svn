@@ -60,7 +60,7 @@ public class GlobalLabelProvider extends LabelProvider implements ILabelProvider
 			String s = provider.getText( element );
 			if ( s != null ) return s;
 		}
-		// should bnever get here as last in array is default label provider
+		// should never get here as last in array is default label provider
 		assert false;
 		return null;
 	}
@@ -73,7 +73,7 @@ public class GlobalLabelProvider extends LabelProvider implements ILabelProvider
 			Image i = provider.getImage( element );
 			if ( i != null ) return i;
 		}
-		// should bnever get here as last in array is default label provider
+		// should never get here as last in array is default label provider
 		assert false;
 		return null;
 	}
