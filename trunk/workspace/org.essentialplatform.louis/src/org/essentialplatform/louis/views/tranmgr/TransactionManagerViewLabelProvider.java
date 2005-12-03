@@ -1,4 +1,4 @@
-package org.essentialplatform.louis.views.transactiontree;
+package org.essentialplatform.louis.views.tranmgr;
 
 import org.eclipse.jface.viewers.LabelProvider;
 

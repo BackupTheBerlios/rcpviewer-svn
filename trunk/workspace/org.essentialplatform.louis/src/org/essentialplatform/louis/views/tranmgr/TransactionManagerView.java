@@ -1,14 +1,19 @@
-package org.essentialplatform.louis.views.transactiontree;
+package org.essentialplatform.louis.views.tranmgr;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
+import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
 import org.essentialplatform.runtime.transaction.TransactionManager;
 import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
@@ -65,10 +70,18 @@ public class TransactionManagerView extends ViewPart {
 			= new TransactionManagerViewConfigurator( _viewer );
 		config.applyFilters();
 		
-		// now have viewer can add toolbar actions
 		IAction configure = ConfigureWidgetFactory.createAction( config );
-		getViewSite().getActionBars().getToolBarManager().add( configure );
-		getViewSite().getActionBars().updateActionBars();
+		
+		IActionBars actionBars = getViewSite().getActionBars();
+		actionBars.getToolBarManager().add( configure );
+		actionBars.updateActionBars();
+	}
+	private void setupLabelAndImage(IAction action, String text, String image) {
+		action.setImageDescriptor(
+				ImageUtil.getImageDescriptor( 
+						LouisPlugin.getDefault(), 
+						image ) );
+		action.setToolTipText( LouisPlugin.getResourceString( text ) );
 	}
 
 	/*

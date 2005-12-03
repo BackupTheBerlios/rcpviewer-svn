@@ -44,13 +44,13 @@
          point="org.eclipse.ui.views">
       <category
             id="org.essentialplatform.louis"
-            name="Rcp Views"/>
+            name="Essential"/>
       <view
             category="org.essentialplatform.louis"
             class="org.essentialplatform.louis.views.classbar.ClassBarView"
             icon="icons/sample.gif"
             id="org.essentialplatform.louis.views.classbar.ClassBarView"
-            name=" "/>
+            name=" %plugin.classBarViewName"/>
       <view
             category="org.essentialplatform.louis"
             class="org.essentialplatform.louis.views.sessiontree.SessionTreeView"
@@ -65,10 +65,16 @@
             name="%plugin.opsViewName"/>     
       <view
             category="org.essentialplatform.louis"
-            class="org.essentialplatform.louis.views.transactiontree.TransactionManagerView"
+            class="org.essentialplatform.louis.views.tranmgr.TransactionManagerView"
             icon="icons/sample.gif"
-            id="org.essentialplatform.louis.views.transactiontree.TransactionManagerView"
-            name="%plugin.transactionTreeViewName"/>     
+            id="org.essentialplatform.louis.views.tranmgr.TransactionManagerView"
+            name="%plugin.tranMgrViewName"/>     
+      <view
+            category="org.essentialplatform.louis"
+            class="org.essentialplatform.louis.views.currtran.CurrentTransactionView"
+            icon="icons/sample.gif"
+            id="org.essentialplatform.louis.views.currtran.CurrentTransactionView"
+            name="%plugin.currTranViewName"/>     
    </extension>
    
    <extension

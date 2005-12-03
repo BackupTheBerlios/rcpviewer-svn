@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.essentialplatform.louis.views.transactiontree;
+package org.essentialplatform.louis.views.tranmgr;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -162,7 +162,7 @@ class TransactionManagerViewConfigurator implements IConfigurable {
 		public int open() {
 			// title
 			getForm().setText( LouisPlugin.getResourceString( 
-				"TransactionTreeConfigurator.FilterDialog.Title" ) ); //$NON-NLS-1$
+				"TransactionManagerViewConfigurator.FilterDialog.Title" ) ); //$NON-NLS-1$
 			
 			// main gui
 			Composite body = getForm().getBody();
@@ -175,7 +175,7 @@ class TransactionManagerViewConfigurator implements IConfigurable {
 			stateGroup.setLayout( new GridLayout() );
 			stateGroup.setBackground( body.getBackground() );
 			stateGroup.setText( LouisPlugin.getResourceString( 
-				"TransactionTreeConfigurator.StateGroup" ) ); //$NON-NLS-1$
+				"TransactionManagerViewConfigurator.StateGroup" ) ); //$NON-NLS-1$
 			for ( ITransaction.State state : ITransaction.State.values() ) {
 				addStateCheckBox( stateGroup, state );
 			}
@@ -187,7 +187,7 @@ class TransactionManagerViewConfigurator implements IConfigurable {
 			otherGroup.setLayout( new GridLayout() );
 			otherGroup.setBackground( body.getBackground() );
 			otherGroup.setText( LouisPlugin.getResourceString( 
-				"TransactionTreeConfigurator.OtherGroup" ) ); //$NON-NLS-1$
+				"TransactionManagerViewConfigurator.OtherGroup" ) ); //$NON-NLS-1$
 			addWithEnlistedPojosCheckBox( otherGroup );
 			
 			// buttons
@@ -222,7 +222,7 @@ class TransactionManagerViewConfigurator implements IConfigurable {
 			final Button button = getFormToolkit().createButton(
 					parent,
 					LouisPlugin.getResourceString( 
-						"TransactionTreeConfigurator.WithEnlistedPojos"), //$NON-NLS-1$
+						"TransactionManagerViewConfigurator.WithEnlistedPojos"), //$NON-NLS-1$
 					SWT.CHECK );
 			button.setLayoutData( new GridData() );
 			button.setSelection( 

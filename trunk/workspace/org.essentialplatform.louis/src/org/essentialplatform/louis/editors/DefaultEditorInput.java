@@ -11,7 +11,11 @@ import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.runtime.domain.IDomainObject;
 
 /**
- * Input for the <code>DefaultEditor</code>
+ * Input for the <code>DefaultEditor</code>.
+ * 
+ * <p>
+ * Basically just wraps an {@link IDomainObject}.
+ * 
  * @author Mike
  * @see org.essentialplatform.louis.editors.DefaultEditor
  */
@@ -68,7 +72,7 @@ public class DefaultEditorInput<T> implements IEditorInput {
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	public String getName() {
-		return LouisPlugin.getText( _domainObject );
+		return _domainObject.toString();
 
 	}
 
@@ -132,7 +136,6 @@ public class DefaultEditorInput<T> implements IEditorInput {
 	public int hashCode() {
 		return 17 + 19*_domainObject.hashCode();
 	}
-
 
 
 }

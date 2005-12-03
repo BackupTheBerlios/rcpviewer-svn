@@ -3,6 +3,10 @@ package org.essentialplatform.louis.editors;
 
 import static org.essentialplatform.louis.util.FontUtil.CharWidthType.AVERAGE;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IToolBarManager;
@@ -23,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.ole.win32.OLE;
 import org.eclipse.swt.ole.win32.OleAutomation;
+import org.eclipse.swt.ole.win32.OleClientSite;
 import org.eclipse.swt.ole.win32.OleControlSite;
 import org.eclipse.swt.ole.win32.OleFrame;
 import org.eclipse.swt.ole.win32.Variant;
@@ -30,9 +35,11 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.IFormPart;
@@ -95,10 +102,6 @@ public final class DefaultEditor extends EditorPart {
 	 * Composite residing on the help tab
 	 */
 	private Composite _helpComposite;
-	/**
-	 * Composite residing on the automation tab
-	 */
-	private Composite _automationComposite;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
@@ -136,7 +139,7 @@ public final class DefaultEditor extends EditorPart {
 		scrolledForm.setBackground(parent.getBackground());
 
 		// set title on both window and form, and add icon to form
-		DefaultEditorInput<?> editorInput = (DefaultEditorInput)getEditorInput();
+		DefaultEditorInput<?> editorInput = getDefaultEditorInput();
 		String title = editorInput.getName();
 		setPartName( title );
 		scrolledForm.setText( FORM_TITLE_PREFIX + title );
@@ -161,9 +164,8 @@ public final class DefaultEditor extends EditorPart {
 		_editorComposite = createTab(formToolkit, tabFolder, "Object"); 
 		_shellComposite = createTab(formToolkit, tabFolder, "Shell");
 		_helpComposite = createTab(formToolkit, tabFolder, "Help");
-		_automationComposite = createTab(formToolkit, tabFolder, "Automation");
 		
-		tabFolder.setSelection(3);
+		tabFolder.setSelection(0);
 		
 		// main gui creation (on the editor tab)
 		IGuiFactory factory = LouisPlugin.getDefault().getGuiFactory(
@@ -208,35 +210,6 @@ public final class DefaultEditor extends EditorPart {
 			// don't commit the form; there is a transaction for this domain object.
 		}
 		
-		
-		///////////////////////////////////////////////////
-		// automation experiment
-		// ... isn't working, though.
-		OleFrame oleFrame = new OleFrame(_automationComposite, SWT.NONE);
-		oleFrame.setLayout(new GridLayout());
-		oleFrame.setLayoutData(new GridData(GridData.FILL_BOTH));
-		OleControlSite controlSite = new OleControlSite(oleFrame, SWT.NONE, "Shell.Explorer"); //$NON-NLS-1$
-		OleAutomation automation = new OleAutomation(controlSite);
-		
-		controlSite.doVerb(OLE.OLEIVERB_SHOW);
-		//controlSite.doVerb(OLE.OLEIVERB_INPLACEACTIVATE);  // not necessry if using OleAutomation???
-
-		navigateTo(automation, "http://www.haywood-associates.co.uk/rcpviewer/space/start");
-		
-		
-	}
-	
-	public void navigateTo(OleAutomation automation, String url) {
-		// dispid=104, type=METHOD, name="Navigate"
-		int[] rgdispid = automation.getIDsOfNames(
-				new String[]{"Navigate", "URL"});
-		int dispIdMember = rgdispid[0];
-	
-		Variant[] rgvarg = new Variant[1];
-		rgvarg[0] = new Variant(url);
-		int[] rgdispidNamedArgs = new int[1];
-		rgdispidNamedArgs[0] = rgdispid[1]; // identifier of argument
-		automation.invoke(dispIdMember, rgvarg, rgdispidNamedArgs);
 	}
 
 
@@ -368,7 +341,15 @@ public final class DefaultEditor extends EditorPart {
 	}
 	
 	/* Non-platform public methods */
-	
+
+	/**
+	 * Provide access eg to CurrentTransactionView when determining what 
+	 * domain object's editor has been selected.
+	 */
+	public DefaultEditorInput getDefaultEditorInput() {
+		return (DefaultEditorInput)getEditorInput();
+	}
+
 	/**
 	 * Refreshes the display if any.
 	 */
@@ -380,7 +361,7 @@ public final class DefaultEditor extends EditorPart {
 	
 	// sets the title on both window and form
 	private void resetTitle() {
-		String title = ((DefaultEditorInput)getEditorInput()).getName();
+		String title = getDefaultEditorInput().getName();
 		setPartName( title );
 		_form.getForm().setText( FORM_TITLE_PREFIX + title );
 	}
@@ -390,6 +371,7 @@ public final class DefaultEditor extends EditorPart {
 	private IDomainObject<?> getDomainObject() {
 		assert getEditorInput() != null;
 		assert getEditorInput() instanceof DefaultEditorInput;
-		return ((DefaultEditorInput)getEditorInput()).getDomainObject();
+		return getDefaultEditorInput().getDomainObject();
 	}
+
 }

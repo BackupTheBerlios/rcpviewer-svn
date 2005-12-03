@@ -5,9 +5,10 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.essentialplatform.louis.views.classbar.ClassBarView;
+import org.essentialplatform.louis.views.currtran.CurrentTransactionView;
 import org.essentialplatform.louis.views.ops.OpsView;
 import org.essentialplatform.louis.views.sessiontree.SessionTreeView;
-import org.essentialplatform.louis.views.transactiontree.TransactionManagerView;
+import org.essentialplatform.louis.views.tranmgr.TransactionManagerView;
 
 
 /**
@@ -80,8 +81,8 @@ public class DefaultPerspective implements IPerspectiveFactory {
                 IPageLayout.BOTTOM, 
                 0.6f,
 				ClassBarView.ID );
-        bottomLeft.addPlaceholder( SessionTreeView.ID );
         bottomLeft.addPlaceholder( TransactionManagerView.ID );
+        bottomLeft.addPlaceholder( CurrentTransactionView.ID );
         
         // bottom right hand-side placeholder
         IPlaceholderFolderLayout bottomRight = layout.createPlaceholderFolder( 
@@ -103,9 +104,11 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		
 		// view shortcuts
         layout.addShowViewShortcut( SessionTreeView.ID );
-        layout.addShowViewShortcut( TransactionManagerView.ID );
         layout.addShowViewShortcut( OpsView.ID );
+        layout.addShowViewShortcut( TransactionManagerView.ID );
+        layout.addShowViewShortcut( CurrentTransactionView.ID );
         layout.addShowViewShortcut( IConsoleConstants.ID_CONSOLE_VIEW );
+        layout.addShowViewShortcut( "org.eclipse.search.SearchResultView" );
 
 	}
 }
