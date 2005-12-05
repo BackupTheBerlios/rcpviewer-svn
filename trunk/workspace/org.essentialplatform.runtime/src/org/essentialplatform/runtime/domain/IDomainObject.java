@@ -947,4 +947,5 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	public IObjectOperation getOperation(IDomainClass.IOperation iOperation);
 
 	
+	public void externalStateChanged();
 }

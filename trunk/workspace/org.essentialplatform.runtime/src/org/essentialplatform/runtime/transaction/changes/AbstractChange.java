@@ -26,11 +26,17 @@ public abstract class AbstractChange implements IChange {
 	private final Object[] _extendedInfo;
 	private final boolean _irreversible;
 
+	/**
+	 * Provided as a convenience...
+	 */
+	protected final IDomainObject<?> _domainObject;
+
 	private final Set<ITransactable> _transactableAsSet = new HashSet<ITransactable>();
 
 	protected AbstractChange(final ITransaction transaction, final ITransactable transactable, final String description, final Object[] extendedInfo, final boolean irreversible) {
 		_transaction = transaction;
 		_transactable = transactable;
+		_domainObject = ((IPojo)_transactable).getDomainObject();
 		_description = description;
 		_extendedInfo = extendedInfo == null? __EMPTY_OBJECT_ARRAY: extendedInfo;
 		_irreversible = irreversible;
@@ -89,23 +95,38 @@ public abstract class AbstractChange implements IChange {
 	 * @see org.essentialplatform.transaction.IChange#execute()
 	 */
 	public final Object execute() throws PojoAlreadyEnlistedException {
-		IPojo pojo = (IPojo)_transactable;
-		IDomainObject<?> domainObject = pojo.getDomainObject();
-		
 		// only if we have a domain object (ie fully instantiated) and
 		// are attached to a session do we check.
-		if (domainObject != null && domainObject.isAttached()) {
+		if (_domainObject != null && _domainObject.isAttached()) {
 			if (_transaction.isInState(ITransaction.State.BUILDING_CHANGE, ITransaction.State.IN_PROGRESS)) {
 				if (!_transaction.addingToInteractionChangeSet(this)) {
 					throw new PojoAlreadyEnlistedException();			
 				}
 			}
 		}
-		
-		return doExecute();
+		Object retval = doExecute();
+
+		notifyListeners(true);
+		_domainObject.externalStateChanged();
+
+		return retval; 
 	}
 	
 	protected abstract Object doExecute();
+	protected void notifyListeners(boolean execute) {}
+
+	/*
+	 * Removes the referenced object from the collection.
+	 * 
+	 * @see org.essentialplatform.transaction.IChange#undo()
+	 */
+	public final void undo() {
+		doUndo();
+		notifyListeners(false);
+		_domainObject.externalStateChanged();
+	}
+	
+	protected abstract void doUndo();
 
 
 	/*

@@ -15,7 +15,6 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.widgets.Composite;
 import org.essentialplatform.louis.views.currtran.CurrentTransactionViewContentProvider.Mode;
 import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.louis.views.currtran.CurrentTransactionViewPartListener;
 
@@ -211,7 +210,7 @@ public class CurrentTransactionViewControl extends SashForm implements ISelectio
 		_enlistedPojosTableViewer.setInput(domainObject);
 	}
 
-	void refresh(ITransactable transactable) {
+	void refresh() {
 		_undoableChangesTableViewer.refresh();
 		_redoableChangesTableViewer.refresh();
 		_enlistedPojosTableViewer.refresh();

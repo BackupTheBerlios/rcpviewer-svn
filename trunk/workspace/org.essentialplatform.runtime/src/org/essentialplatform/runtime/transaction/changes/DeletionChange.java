@@ -55,7 +55,7 @@ public final class DeletionChange extends AbstractChange {
 	 * 
 	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
-	public void undo() {
+	public void doUndo() {
 		IPojo pojo = (IPojo)_transactable;
 		IDomainObject<?> domainObject = pojo.getDomainObject();
 		if (domainObject != null) {

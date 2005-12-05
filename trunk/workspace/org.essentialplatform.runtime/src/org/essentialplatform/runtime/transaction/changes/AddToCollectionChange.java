@@ -44,12 +44,13 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 		return null;
 	}
 
+
+
 	/*
 	 * Removes the referenced object from the collection.
 	 * 
-	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
-	public void undo() {
+	public final void doUndo() {
 		getCollection().remove(getReferencedObject());
 	}
 

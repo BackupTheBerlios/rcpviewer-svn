@@ -7,8 +7,10 @@ import java.util.Set;
 import java.util.List;
 
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
+import org.omg.CORBA._PolicyStub;
 
 
 /**
@@ -22,6 +24,8 @@ import org.essentialplatform.runtime.transaction.ITransaction;
  */
 public final class AttributeChange extends AbstractFieldChange {
 
+	private IObjectAttribute _attribute;
+
 	/**
 	 * CAptures the current value of the attribute as the 
 	 * {@link #getPreValue()}.
@@ -33,8 +37,16 @@ public final class AttributeChange extends AbstractFieldChange {
 			final ITransaction transaction,
 			final ITransactable transactable,
 			final Field field,
-			final Object postValue) {
+			final Object postValue, 
+			final IDomainObject.IObjectAttribute attribute) {
 		super(transaction, transactable, field, postValue);
+		_attribute = attribute;
+	}
+
+	protected void notifyListeners(boolean execute) {
+		if (_attribute != null) {
+			_attribute.notifyListeners(execute?getPostValue():getPreValue());
+		}
 	}
 
 	/*

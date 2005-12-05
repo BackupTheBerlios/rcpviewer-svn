@@ -1177,4 +1177,14 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		       _persistState != null && !_persistState.isUnknown();
 	}
 
+	/**
+	 * Factored out to allow impact to be called when undo/redo changes.
+	 */
+	public void externalStateChanged() {
+		ISession session = this.getSession();
+		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
+			observedFeature.externalStateChanged();
+		}
+	}
+
 }

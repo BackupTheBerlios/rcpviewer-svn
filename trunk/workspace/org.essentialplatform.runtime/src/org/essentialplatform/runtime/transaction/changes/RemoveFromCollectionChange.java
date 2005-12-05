@@ -48,7 +48,7 @@ public final class RemoveFromCollectionChange<V> extends AbstractCollectionChang
 	 * 
 	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
-	public void undo() {
+	public void doUndo() {
 		getCollection().add(getReferencedObject());
 	}
 

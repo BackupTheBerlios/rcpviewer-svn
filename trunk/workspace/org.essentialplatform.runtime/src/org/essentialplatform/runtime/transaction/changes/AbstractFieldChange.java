@@ -156,7 +156,7 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	 * 
 	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
-	public void undo() {
+	public void doUndo() {
 		try {
 			_field.set(_transactable, _preValue);
 		} catch (IllegalArgumentException e) {

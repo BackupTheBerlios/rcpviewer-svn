@@ -68,6 +68,21 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 	 * to the current transaction.
 	 *  
 	 * <p>
+	 * In addition, passes the IDomainObject's IAttribute to the change so that
+	 * it can notify listeners as it is executed/undone.  
+	 *  
+	 * <p>
+	 * The change also notifies all {@link IObservedFeature}s of the session.  
+	 * That's because a prerequisite of an operation or an attribute might 
+	 * become satisfied (or no longer satisfied) as a result of this change.
+	 * 
+	 * <p>
+	 * <n>Implementation notes</n>: informing all observed features seems rather
+	 * crude.  An alternative design and possibly preferable approach would be 
+	 * to wait until the current "workgroup" (as defined by the transaction 
+	 * aspect) has completed.
+	 *    
+	 * <p>
 	 * This code must appear after the transactionChange() advice above 
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
@@ -77,55 +92,31 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 		getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): start");
 		try {
 			Field field = getFieldFor(thisJoinPointStaticPart);
+			
 			ITransactable transactable = (ITransactable)pojo;
 			ITransaction transaction = currentTransaction(transactable);
-			IChange change = new AttributeChange(transaction, transactable, field, postValue);
-			return change.execute();
+			
+			IDomainObject domainObject = pojo.getDomainObject();
+			IDomainObject.IObjectAttribute attribute = null;
+			if (domainObject.getPersistState() != PersistState.UNKNOWN) {
+				attribute = getAttributeFor(domainObject, thisJoinPointStaticPart);
+			}
+			IChange change = new AttributeChange(transaction, transactable, field, postValue, attribute);
+			
+			Object retval = change.execute();
+			
+			return retval;
 		} finally {
 			getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): end");
 		}
 
 	}
-
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	// TEMPORARILY MOVED FROM NOTIFYLISTENERS, SINCE FOR SOME REASON NOT BEING APPLIED...
 	////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * If we are able to locate the {@link org.essentialplatform.session.IDomainObject}
-	 * wrapper for this pojo then get it to notify any listeners it has for
-	 * this attribute.
-	 * 
-	 * <p>
-	 * In addition, notify all {@link IObservedFeature}s of the session.  That's because
-	 * a prerequisite of an operation or an attribute might become satisfied
-	 * (or no longer satisfied) as a result of this change.
-	 * 
-	 * <p>
-	 * <n>Implementation notes</n>: informing all observed features seems rather
-	 * crude.  An alternative design and possibly preferable approach would be 
-	 * to wait until the current "workgroup" (as defined by the transaction 
-	 * aspect) has completed.   
-	 */
-	after(IPojo pojo, Object newValue): changingAttributeOnPojo(pojo, newValue) { 
-		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject == null || domainObject.getPersistState() == PersistState.UNKNOWN) {
-			return;
-		}
-		
-		IDomainObject.IObjectAttribute attribute = getAttributeFor(domainObject, thisJoinPointStaticPart);
-		if (attribute != null) {
-			attribute.notifyListeners(newValue);
-		}
-		
-		// rather crude, see comments above.
-		ISession session = domainObject.getSession();
-		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
-			observedFeature.externalStateChanged();
-		}
-
-	}
 
 
 	/**
@@ -156,10 +147,9 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 		}
 		
 		// rather crude, see comments above.
-		ISession session = domainObject.getSession();
-		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
-			observedFeature.externalStateChanged();
-		}
+		
+		// temporarily moved up into transactionalChangingAttributeOnPojo...
+//		domainObject.externalStateChanged();
 	}
 
 
@@ -183,10 +173,9 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 		}
 		
 		// rather crude, see comments above.
-		ISession session = domainObject.getSession();
-		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
-			observedFeature.externalStateChanged();
-		}
+		
+		// temporarily moved up into transactionalChangingAttributeOnPojo...
+//		domainObject.externalStateChanged();
 	}
 
 
@@ -210,10 +199,9 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 		}
 		
 		// rather crude, see comments above.
-		ISession session = domainObject.getSession();
-		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
-			observedFeature.externalStateChanged();
-		}
+		
+		// temporarily moved up into transactionalChangingAttributeOnPojo...
+//		domainObject.externalStateChanged();
 	}
 
 

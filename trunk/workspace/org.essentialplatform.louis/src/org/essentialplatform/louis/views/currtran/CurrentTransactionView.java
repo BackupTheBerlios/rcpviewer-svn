@@ -3,6 +3,7 @@ package org.essentialplatform.louis.views.currtran;
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -89,6 +90,10 @@ public class CurrentTransactionView extends ViewPart {
 
 	private CurrentTransactionViewControl _control;
 	private CurrentTransactionViewPartListener _viewPartListener;
+
+	private UndoAction _undoAction;
+
+	private RedoAction _redoAction;
 	
 	/**
 	 * Adds actions to the view
@@ -112,28 +117,33 @@ public class CurrentTransactionView extends ViewPart {
 			throw new IllegalArgumentException();
 		parent.setLayout(new FillLayout());
 
-		// wraps the three table viewers that make up the view.
+		// build the control; wraps the three table viewers that make up the 
+		// view and also acts as an ISelectionProvider so that we can pick up
+		// new editors
 		_control = new CurrentTransactionViewControl(parent); 
+		getSite().setSelectionProvider(_control);
 		
-		// tie viewer to transaction manager; it will notify the control
-		// if anything interesting happens
-		_listener = new CurrentTransactionViewListener(_control);
+		// track the currently selected editor (using the control as our
+		// ISelectionProvider)
+		_viewPartListener = new CurrentTransactionViewPartListener(this, _control);
+		ISelectionService service = getSite().getWorkbenchWindow().getSelectionService();
+		service.addPostSelectionListener(_viewPartListener);
+		getSite().getPage().addPartListener(_viewPartListener);
+		
+		// add toolbar actions
+		IActionBars actionBars = getViewSite().getActionBars();
+		IToolBarManager toolBarManager = actionBars.getToolBarManager();
+		_undoAction = new UndoAction(toolBarManager);
+		_redoAction = new RedoAction(toolBarManager);
+		actionBars.updateActionBars();
+
+		// listener to listen on transaction manager and transactions; will 
+		// notify the control and also the actions if anything interesting happens
+		_listener = new CurrentTransactionViewListener(_control, _undoAction, _redoAction);
 
 		// initialize for the current editor
 		// (we do this also whenever the selection changes).
 		setupViewInputs(EditorUtil.getActiveEditor());
-		
-		// add toolbar actions
-		setupActionBar();
-
-		getSite().setSelectionProvider(_control);
-		
-		_viewPartListener = new CurrentTransactionViewPartListener(this, _control);
-		
-		// track the currently selected editor.
-		ISelectionService service = getSite().getWorkbenchWindow().getSelectionService();
-		service.addPostSelectionListener(_viewPartListener);
-		getSite().getPage().addPartListener(_viewPartListener);
 
 	}
 	
@@ -182,38 +192,54 @@ public class CurrentTransactionView extends ViewPart {
 
 	//////////////////////////////////////////////////////////////////////
 	
-	private void setupActionBar() {
-		IAction undoAction = new Action() {
-			@Override
-			public void run() {
-				ITransaction transaction = _control.getCurrentTransaction();
-				if (transaction == null) {return;}
-				if (transaction.hasUndoableChanges()) {
-					transaction.undoPendingChange();
-				}
-			}
-		};
-		ActionUtil.setupLabelAndImage(undoAction,
-				"Undo", "icons/org.eclipse.ui/full/etool16/undo_edit.gif"); //$NON-NLS-1$
+	static abstract class AbstractCurrentTransactionViewAction extends Action {
+		AbstractCurrentTransactionViewAction(IToolBarManager toolBarManager, String label, String icon) {
+			toolBarManager.add(this);
+			ActionUtil.setupLabelAndImage(this,
+				label, "icons/org.eclipse.ui/full/etool16/" + icon); //$NON-NLS-1$
+		}
 
-		IAction redoAction = new Action() {
-			@Override
-			public void run() {
-				ITransaction transaction = _control.getCurrentTransaction();
-				if (transaction == null) {return;}
-				if (transaction.hasRedoableChanges()) {
-					transaction.undoPendingChange();
-				}
-			}
-		};
-		ActionUtil.setupLabelAndImage(redoAction,
-				"Redo", "icons/org.eclipse.ui/full/etool16/redo_edit.gif"); //$NON-NLS-1$ 
+		ITransaction _transaction;
+		void setTransaction(ITransaction transaction) {
+			_transaction = transaction;
+		}
 
-		IActionBars actionBars = getViewSite().getActionBars();
-		actionBars.getToolBarManager().add(undoAction);
-		actionBars.getToolBarManager().add(redoAction);
-		actionBars.updateActionBars();
+		abstract void refresh();
 	}
 
-
+	private static class UndoAction extends AbstractCurrentTransactionViewAction {
+		UndoAction(IToolBarManager toolBarManager) {
+			super(toolBarManager, "Undo", "undo_edit.gif");
+		}
+		@Override
+		public void run() {
+			if (_transaction == null) {return;}
+			if (_transaction.hasUndoableChanges()) {
+				_transaction.undoPendingChange();
+			}
+		}
+		@Override
+		void refresh() {
+			if (_transaction == null) { return; }
+			this.setEnabled(_transaction.hasUndoableChanges());
+		}
+	}
+	
+	private static class RedoAction extends AbstractCurrentTransactionViewAction {
+		RedoAction(IToolBarManager toolBarManager) {
+			super(toolBarManager, "Redo", "redo_edit.gif");
+		}
+		@Override
+		public void run() {
+			if (_transaction == null) {return;}
+			if (_transaction.hasRedoableChanges()) {
+				_transaction.redoPendingChange();
+			}
+		}
+		@Override
+		void refresh() {
+			if (_transaction == null) { return; }
+			this.setEnabled(_transaction.hasRedoableChanges());
+		}
+	}
 }

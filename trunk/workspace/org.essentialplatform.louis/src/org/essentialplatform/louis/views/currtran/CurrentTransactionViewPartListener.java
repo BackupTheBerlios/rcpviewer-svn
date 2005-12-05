@@ -7,6 +7,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.essentialplatform.louis.views.currtran.CurrentTransactionView.AbstractCurrentTransactionViewAction;
 
 /**
  * Keeps track of which parts (views and more importantly editors) are being
@@ -25,7 +26,8 @@ public final class CurrentTransactionViewPartListener implements IPartListener2,
 	private CurrentTransactionView _view;
 	private ISelectionProvider _selectionProvider;
 
-	public CurrentTransactionViewPartListener(CurrentTransactionView view, ISelectionProvider selectionProvider) {
+	public CurrentTransactionViewPartListener(
+			CurrentTransactionView view, ISelectionProvider selectionProvider) {
 		_view = view;
 		_selectionProvider = selectionProvider;
 		

@@ -60,11 +60,9 @@ public final class InstantiationChange extends AbstractChange {
 	 * 
 	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
-	public void undo() {
-		IPojo pojo = (IPojo)_transactable;
-		IDomainObject<?> domainObject = pojo.getDomainObject();
-		if (domainObject != null) {
-			domainObject.nowTransient();
+	public void doUndo() {
+		if (_domainObject != null) {
+			_domainObject.nowTransient();
 		}
 	}
 

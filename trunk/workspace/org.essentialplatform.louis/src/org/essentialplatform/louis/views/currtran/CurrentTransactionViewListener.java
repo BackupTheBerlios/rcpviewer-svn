@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
 import org.essentialplatform.louis.jobs.SaveJob;
+import org.essentialplatform.louis.views.currtran.CurrentTransactionView.AbstractCurrentTransactionViewAction;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.transaction.ITransactable;
@@ -30,7 +31,8 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	private final CurrentTransactionViewControl _control;
 	
 	private ITransaction _transaction;
-	
+	private AbstractCurrentTransactionViewAction[] _actions;
+
 	
 	/**
 	 * Installs itself as a listener on the transaction manager
@@ -39,8 +41,10 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	 *  
 	 * @param viewer
 	 */
-	public CurrentTransactionViewListener(CurrentTransactionViewControl control) {
+	public CurrentTransactionViewListener(CurrentTransactionViewControl control, AbstractCurrentTransactionViewAction... actions) {
 		_control = control;
+		_actions = actions;
+
 		TransactionManager.instance().addTransactionManagerListener(this);
 	}
 
@@ -51,6 +55,9 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 		_transaction = transactable.getTransaction(false);
 		if (_transaction != null) {
 			_transaction.addTransactionListener(this);
+		}
+		for(AbstractCurrentTransactionViewAction action: _actions) {
+			action.setTransaction(_transaction);
 		}
 	}
 
@@ -127,8 +134,12 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	 * Refresh the viewer.
 	 */
 	private void refreshViewers() {
-		_control.refresh(getTransactable());
+		_control.refresh();
+		for(AbstractCurrentTransactionViewAction action: _actions) {
+			action.refresh();
+		}
 	}
+	
 
 
 	///////////////////////////////////////////////////////////////////
