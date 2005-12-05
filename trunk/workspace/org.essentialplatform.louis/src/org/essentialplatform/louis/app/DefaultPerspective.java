@@ -82,7 +82,6 @@ public class DefaultPerspective implements IPerspectiveFactory {
                 0.6f,
 				ClassBarView.ID );
         bottomLeft.addPlaceholder( TransactionManagerView.ID );
-        bottomLeft.addPlaceholder( CurrentTransactionView.ID );
         
         // bottom right hand-side placeholder
         IPlaceholderFolderLayout bottomRight = layout.createPlaceholderFolder( 
@@ -101,6 +100,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		bottom.addPlaceholder( "org.eclipse.search.ui.views.SearchView" ); //$NON-NLS-1$
 		bottom.addPlaceholder( "org.eclipse.search.SearchResultView" ); //$NON-NLS-1$
 		bottom.addPlaceholder( IConsoleConstants.ID_CONSOLE_VIEW );
+        bottom.addPlaceholder( CurrentTransactionView.ID );
 		
 		// view shortcuts
         layout.addShowViewShortcut( SessionTreeView.ID );

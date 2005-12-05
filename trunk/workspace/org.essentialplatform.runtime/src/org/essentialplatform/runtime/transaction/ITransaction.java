@@ -508,6 +508,13 @@ public interface ITransaction {
 	public List<ChangeSet> getUndoableChanges();
 	
 	/**
+	 * True iff {@link #getUndoableChanges()} has non-zero size.
+	 * 
+	 * @return
+	 */
+	public boolean hasUndoableChanges();
+
+	/**
 	 * Exposes all changes that have been undone but that may potentially be
 	 * redone by the user.
 	 * 
@@ -518,6 +525,13 @@ public interface ITransaction {
 	 * @return
 	 */
 	public List<ChangeSet> getRedoableChanges();
+
+	/**
+	 * True iff {@link #getRedoableChanges()} has non-zero size.
+	 * 
+	 * @return
+	 */
+	public boolean hasRedoableChanges();
 
 	/**
 	 * Exposes all changes that have been commited in this transaction. 

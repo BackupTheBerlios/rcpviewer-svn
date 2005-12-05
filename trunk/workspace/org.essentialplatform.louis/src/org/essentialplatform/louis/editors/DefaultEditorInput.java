@@ -72,7 +72,7 @@ public class DefaultEditorInput<T> implements IEditorInput {
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
 	public String getName() {
-		return _domainObject.toString();
+		return _domainObject.getPojo().toString();
 
 	}
 

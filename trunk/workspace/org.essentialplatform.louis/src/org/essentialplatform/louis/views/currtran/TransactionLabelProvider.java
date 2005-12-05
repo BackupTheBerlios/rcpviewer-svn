@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.LabelProvider;
  * 
  * @author Dan Haywood
  */
-class CurrentTransactionViewLabelProvider extends LabelProvider {
+class TransactionLabelProvider extends LabelProvider {
 
 
 }

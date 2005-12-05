@@ -364,9 +364,78 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 		
 		// the following would throw an exception since the transaction is
 		// no longer current:
+		assertFalse(transaction.hasUndoableChanges());
 //		assertEquals(0, transaction.getUndoableChanges().size());
 		
 		assertSame(ITransaction.State.DISCARDED, transaction.getState());
+	}
+	
+
+	public void testHasAndGetUndoableChangesAndHasAndGetRedoableChanges() {
+		
+		// do operation #1, and get xactn 
+		calculator.computeFactorial(5);
+		assertEquals(120, calculator.getResult());
+		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
+		assertNotNull(transaction);
+		
+		assertEquals(1, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(0, transaction.getRedoableChanges().size());
+		assertFalse(transaction.hasRedoableChanges());
+
+		// set attribute #2
+		calculator.setInitialResult(20);
+		assertEquals(20, calculator.getResult());
+		
+		assertEquals(2, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(0, transaction.getRedoableChanges().size());
+		assertFalse(transaction.hasRedoableChanges());
+
+		// do operation #3
+		calculator.computeFactorial(6);
+		assertEquals(720, calculator.getResult());
+
+		assertEquals(3, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(0, transaction.getRedoableChanges().size());
+		assertFalse(transaction.hasRedoableChanges());
+
+		// undo last change
+		transaction.undoPendingChange();
+		
+		assertEquals(2, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(1, transaction.getRedoableChanges().size());
+		assertTrue(transaction.hasRedoableChanges());
+
+		// undo last change
+		transaction.undoPendingChange();
+		
+		assertEquals(1, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(2, transaction.getRedoableChanges().size());
+		assertTrue(transaction.hasRedoableChanges());
+
+		// (can't undo all, otherwise xactn will be discarded)
+		
+		// redo last change 
+		transaction.redoPendingChange();
+		
+		assertEquals(2, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(1, transaction.getRedoableChanges().size());
+		assertTrue(transaction.hasRedoableChanges());
+
+		// redo change
+		transaction.redoPendingChange();
+		
+		assertEquals(3, transaction.getUndoableChanges().size());
+		assertTrue(transaction.hasUndoableChanges());
+		assertEquals(0, transaction.getRedoableChanges().size());
+		assertFalse(transaction.hasRedoableChanges());
+
 	}
 	
 
@@ -421,11 +490,13 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 		
 		// 2 undone changes that could be redone.
 		assertEquals(2, transaction.getRedoableChanges().size());
+		assertTrue(transaction.hasRedoableChanges());
 		
 		calculator.setInitialResult(20);
 		
 		// undone changes are now gone.
 		assertEquals(0, transaction.getRedoableChanges().size());
+		assertFalse(transaction.hasRedoableChanges());
 	}
 
 

@@ -371,6 +371,14 @@ public final class Transaction implements ITransaction {
 		return Collections.unmodifiableList(_changes);
 	}
 
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.ITransaction#hasUndoableChanges()
+	 */
+	public boolean hasUndoableChanges() {
+		return _changes.size() > 0;
+	}
+
 	/*
 	 * Previously checked:
 	 * <ul>
@@ -383,6 +391,13 @@ public final class Transaction implements ITransaction {
 	 */
 	public List<ChangeSet> getRedoableChanges() {
 		return Collections.unmodifiableList(_undoneChanges);
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.ITransaction#hasRedoableChanges()
+	 */
+	public boolean hasRedoableChanges() {
+		return _undoneChanges.size() > 0;
 	}
 
 
