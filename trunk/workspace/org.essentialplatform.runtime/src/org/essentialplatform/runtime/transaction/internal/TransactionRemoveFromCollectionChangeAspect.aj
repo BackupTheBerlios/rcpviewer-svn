@@ -14,6 +14,8 @@ import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
+import org.essentialplatform.runtime.persistence.IPersistable;
+import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 
 
 public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCollectionChangeAspect {
@@ -63,6 +65,34 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 		}
 	}
 
+
+	
+	/**
+	 * If we are able to locate the {@link org.essentialplatform.session.IDomainObject}
+	 * wrapper for this pojo then get it to notify any listeners it has for
+	 * this collection.
+	 * 
+	 * <p>
+	 * In addition, notify all {@link IObservedFeature}s of the session.    
+	 */
+	Object around(IPojo pojo, Object removedObject): invokeRemoveFromCollectionOnPojo(pojo, removedObject) { 
+		IDomainObject domainObject = pojo.getDomainObject();
+		if (domainObject.getPersistState() == PersistState.UNKNOWN) {
+			return proceed(pojo, removedObject);
+		} else {
+			IDomainObject.IObjectCollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
+			
+			setCollectionReferenceForThread(reference);
+			try {
+				return proceed(pojo, removedObject);
+			} finally {
+				clearCollectionReferenceForThread();
+			}
+		}
+		
+	}
+
+	
 	/**
 	 * Creates a RemoveFromCollectionChange to wrap a change to the attribute, adding it
 	 * to the current transaction.
@@ -81,9 +111,11 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		String collectionName = thisJoinPointStaticPart.getSignature().getName();
-		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, "???", removedObj);
-		
+		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, removedObj, getCollectionReferenceForThreadIfAny());
 		return change.execute();
 	}
+
+	
+
 
 }

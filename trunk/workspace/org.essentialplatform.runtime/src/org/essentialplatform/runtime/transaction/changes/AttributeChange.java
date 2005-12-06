@@ -43,6 +43,7 @@ public final class AttributeChange extends AbstractFieldChange {
 		_attribute = attribute;
 	}
 
+	@Override
 	protected void notifyListeners(boolean execute) {
 		if (_attribute != null) {
 			_attribute.notifyListeners(execute?getPostValue():getPreValue());

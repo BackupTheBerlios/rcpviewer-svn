@@ -23,32 +23,32 @@ public class Beans {
 	
 	@TypeOf( EasyBean.class )
 	public Set<EasyBean> getEasyBeans() {
-		return easybeans;
+		return easyBeans;
 	}
-	public void addToEasyBeans( EasyBean bean ) {
-		if ( bean == null ) throw new IllegalArgumentException();
-		easybeans.add( bean );
-		numBeans = easybeans.size();
+	public void addToEasyBeans( EasyBean easyBean ) {
+		if ( easyBean == null ) throw new IllegalArgumentException();
+		easyBeans.add( easyBean );
+		numBeans = easyBeans.size();
 	}
-	public void removeFromEasyBeans( EasyBean bean ) {
-		if ( bean == null ) throw new IllegalArgumentException();
-		easybeans.remove( bean );
-		numBeans = easybeans.size();
+	public void removeFromEasyBeans( EasyBean easyBean ) {
+		if ( easyBean == null ) throw new IllegalArgumentException();
+		easyBeans.remove( easyBean );
+		numBeans = easyBeans.size();
 	}
-	private final Set<EasyBean> easybeans = new HashSet<EasyBean>();
+	private final Set<EasyBean> easyBeans = new HashSet<EasyBean>();
 	
 
 	/**
 	 * @return Returns the easybean.
 	 */
 	public EasyBean getEasyBean() {
-		return easybean;
+		return easyBean;
 	}
 	/**
-	 * @param easybean The easybean to set.
+	 * @param easyBean The easybean to set.
 	 */
-	public void setEasyBean(EasyBean easybean) {
-		this.easybean = easybean;
+	public void setEasyBean(EasyBean easyBean) {
+		this.easyBean = easyBean;
 	}
 	// can add
 	public void associateEasyBean(EasyBean easyBean) {
@@ -58,6 +58,6 @@ public class Beans {
 	public void dissociateEasyBean(EasyBean easyBean) {
 		setEasyBean(null);
 	}
-	private EasyBean easybean = null;
+	private EasyBean easyBean = null;
 	
 }

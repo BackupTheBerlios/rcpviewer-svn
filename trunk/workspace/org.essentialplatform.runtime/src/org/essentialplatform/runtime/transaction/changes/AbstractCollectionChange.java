@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.List;
 
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectCollectionReference;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 
@@ -46,8 +47,14 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 	 * The value of the {@link #getField()} after it was modified, accessed
 	 * through {@link #getReferencedObject()}.
 	 */
-	private final V _referencedObject;
+	protected final V _referencedObject;
 
+	protected final IObjectCollectionReference _reference;
+
+
+	private static String nameOf(IDomainObject.IObjectCollectionReference reference) {
+		return reference != null? reference.toString(): "???";
+	}
 	
 	/**
 	 * 
@@ -58,9 +65,9 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 			final ITransaction transaction,
 			final ITransactable transactable,
 			final Collection<V> collection,
-			final String collectionName,
-			final V referencedObject) {
-		super(transaction, transactable, collectionName, extendedInfo(transactable, referencedObject), false);
+			final V referencedObject, 
+			final IDomainObject.IObjectCollectionReference reference) {
+		super(transaction, transactable, nameOf(reference), extendedInfo(transactable, referencedObject), false);
 		_collection = collection;
 		if (collection == null) {
 			throw new RuntimeException("No collection!");
@@ -69,6 +76,7 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 			modifies((ITransactable)referencedObject);
 		}
 		_referencedObject = referencedObject;
+		_reference = reference;
 	}
 
 	/**

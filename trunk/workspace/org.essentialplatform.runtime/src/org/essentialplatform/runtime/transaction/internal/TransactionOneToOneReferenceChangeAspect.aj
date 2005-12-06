@@ -15,6 +15,8 @@ import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
+import org.essentialplatform.runtime.persistence.IPersistable;
+import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 
 
 /**
@@ -78,7 +80,13 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionAspect
 		Field field = getFieldFor(thisJoinPointStaticPart);
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new OneToOneReferenceChange(transaction, transactable, field, referencedObjOrNull);
+
+		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject.IObjectOneToOneReference reference = null;
+		if (domainObject.getPersistState() != PersistState.UNKNOWN) {
+			reference = getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
+		}
+		IChange change = new OneToOneReferenceChange(transaction, transactable, field, referencedObjOrNull, reference);
 		
 		return change.execute();
 	}

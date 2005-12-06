@@ -2,6 +2,8 @@ package org.essentialplatform.runtime.transaction.changes;
 
 import java.lang.reflect.Field;
 
+import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectOneToOneReference;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
@@ -18,14 +20,24 @@ import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
  */
 public final class OneToOneReferenceChange extends AbstractFieldChange {
 
+	private final IObjectOneToOneReference _reference;
 	private ITransactable _referencedObjOrNull;
 	
 	public OneToOneReferenceChange(
 			final ITransaction transaction,
 			final ITransactable transactable,
 			final Field field,
-			final Object referencedObjOrNull) {
+			final Object referencedObjOrNull,
+			final IObjectOneToOneReference reference) {
 		super(transaction, transactable, field, referencedObjOrNull);
+		_reference = reference;
+	}
+
+	@Override
+	protected void notifyListeners(boolean execute) {
+		if (_reference!= null) {
+			_reference.notifyListeners(execute?getPostValue():getPreValue());
+		}
 	}
 
 	/*

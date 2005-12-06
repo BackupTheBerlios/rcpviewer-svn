@@ -8,6 +8,8 @@ import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
+import org.essentialplatform.runtime.persistence.IPersistable;
+import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 
 public aspect TransactionAddToCollectionChangeAspect extends TransactionCollectionChangeAspect {
 	
@@ -21,8 +23,6 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 		!within(TransactionCollectionChangeAspect) && 
 		if(canBeEnlisted(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
-
-
 
 
 	/**
@@ -59,6 +59,34 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	}
 
 
+
+	/**
+	 * If we are able to locate the {@link org.essentialplatform.session.IDomainObject}
+	 * wrapper for this pojo then get it to notify any listeners it has for
+	 * this collection.
+	 * 
+	 * <p>
+	 * In addition, notify all {@link IObservedFeature}s of the session.
+	 */
+	Object around(IPojo pojo, IPojo addedObject): invokeAddToCollectionOnPojo(pojo, addedObject) {
+		IDomainObject domainObject = pojo.getDomainObject();
+		if (domainObject.getPersistState() == PersistState.UNKNOWN) {
+			return proceed(pojo, addedObject);
+		} else {
+			IDomainObject.IObjectCollectionReference reference = 
+				getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
+			
+			setCollectionReferenceForThread(reference);
+			try {
+				return proceed(pojo, addedObject);
+			} finally {
+				clearCollectionReferenceForThread();
+			}
+		}
+	}
+
+	
+	
 	/**
 	 * Creates an AddToCollectionChange to wrap a change to the attribute, adding it
 	 * to the current transaction.
@@ -75,8 +103,22 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 			transactionalAddingToCollectionOnPojo(pojo, collection, addedObj) {
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AddToCollectionChange(transaction, transactable, collection, "???", addedObj);
+		IChange change = new AddToCollectionChange(transaction, transactable, collection, addedObj, getCollectionReferenceForThreadIfAny());
 		return change.execute();
 	}
+
+	
+	/**
+	 * Keeps track of the current transaction for this thread (if any)
+	 */
+	private static ThreadLocal<ITransaction> __transactionByThread;
+	static {
+		__transactionByThread = new ThreadLocal<ITransaction>() {
+	        protected synchronized ITransaction initialValue() {
+	            return null;
+	        }
+		};
+	}
+	
 
 }

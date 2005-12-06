@@ -12,6 +12,8 @@ import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectCollectionReference;
+
 public abstract aspect TransactionCollectionChangeAspect extends TransactionAspect {
 	
 	/**
@@ -88,5 +90,45 @@ public abstract aspect TransactionCollectionChangeAspect extends TransactionAspe
 		}
 		return null;
 	}
+
+
+	/////////////////////////////////////////////////////////////////////
+	// bind the CollectionReference being modified to the thread, so that
+	// the transaction pointcut can pick it up.
+	//
+	// (yes, a bit of a hack)
+	
+	/**
+	 * Keeps track of the current collection reference for this thread (if any)
+	 */
+	private static ThreadLocal<IObjectCollectionReference> __collectionReferenceByThread;
+	
+	static {
+		__collectionReferenceByThread = new ThreadLocal<IObjectCollectionReference>() {
+	        protected synchronized IObjectCollectionReference initialValue() {
+	            return null;
+	        }
+		};
+	}
+
+	/**
+	 * Whether there is already a CollectionReference for this thread.
+	 */
+	protected boolean hasCollectionReferenceForThread() {
+		return getTransactionForThreadIfAny() != null;
+	}
+
+	protected void clearCollectionReferenceForThread() {
+		__collectionReferenceByThread.set(null);
+	}
+
+	protected void setCollectionReferenceForThread(final IObjectCollectionReference collectionReference) {
+		__collectionReferenceByThread.set(collectionReference);
+	}
+
+	protected IObjectCollectionReference getCollectionReferenceForThreadIfAny() {
+		return __collectionReferenceByThread.get();
+	}
+
 
 }

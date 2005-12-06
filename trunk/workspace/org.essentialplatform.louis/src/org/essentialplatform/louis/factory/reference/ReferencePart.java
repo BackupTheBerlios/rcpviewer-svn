@@ -11,6 +11,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.IConfigurable;
+import org.essentialplatform.louis.util.NullUtil;
 import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
@@ -185,6 +186,14 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * @param value
 	 */
 	void setValue( IDomainObject<?> value  ) {
+
+//		// do nowt if no change to model value
+//		if ( NullUtil.nullSafeEquals( value, getValue() ) ) return;
+//		_value = (T1)value;
+//		markDirty();
+//		if ( _control != null && updateDisplay ) {
+//			displayValue( _value, _control );
+//		}
 
 		boolean valueChanged = false;
 		IDomainObject<?> modelDobj = _model.get();

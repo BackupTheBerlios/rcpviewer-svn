@@ -28,9 +28,9 @@ public final class RemoveFromCollectionChange<V> extends AbstractCollectionChang
 			final ITransaction transaction,
 			final ITransactable transactable,
 			final Collection<V> collection,
-			final String collectionName,
-			final V addedValue) {
-		super(transaction, transactable, collection, collectionName, addedValue);
+			final V addedValue, 
+			final IDomainObject.IObjectCollectionReference reference) {
+		super(transaction, transactable, collection, addedValue, reference);
 	}
 
 	/*
@@ -41,6 +41,13 @@ public final class RemoveFromCollectionChange<V> extends AbstractCollectionChang
 	public final Object doExecute() {
 		getCollection().remove(getReferencedObject());
 		return null;
+	}
+
+	protected void notifyListeners(final boolean execute) {
+		boolean beingAdded = !execute;
+		if (_reference != null) {
+			_reference.notifyListeners((Object)_referencedObject, beingAdded);
+		}
 	}
 
 	/*

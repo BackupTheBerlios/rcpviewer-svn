@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.List;
 
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.domain.IDomainObject.IObjectCollectionReference;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
@@ -28,9 +29,9 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 			final ITransaction transaction,
 			final ITransactable transactable,
 			final Collection<V> collection,
-			final String collectionName,
-			final V addedValue) {
-		super(transaction, transactable, collection, collectionName, addedValue);
+			final V addedValue, 
+			final IDomainObject.IObjectCollectionReference reference) {
+		super(transaction, transactable, collection, addedValue, reference);
 	}
 
 	/*
@@ -42,6 +43,13 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 	public final Object doExecute() {
 		getCollection().add(getReferencedObject());
 		return null;
+	}
+	
+	protected void notifyListeners(final boolean execute) {
+		boolean beingAdded = execute;
+		if (_reference != null) {
+			_reference.notifyListeners((Object)_referencedObject, beingAdded);
+		}
 	}
 
 
