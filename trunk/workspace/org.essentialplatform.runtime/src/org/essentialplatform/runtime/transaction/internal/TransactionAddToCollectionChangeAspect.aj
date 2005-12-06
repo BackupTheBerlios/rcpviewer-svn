@@ -11,11 +11,17 @@ import org.essentialplatform.runtime.transaction.changes.*;
 import org.essentialplatform.runtime.persistence.IPersistable;
 import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 
-public aspect TransactionAddToCollectionChangeAspect extends TransactionCollectionChangeAspect {
+import java.util.concurrent.Callable;
+
+public aspect TransactionAddToCollectionChangeAspect extends TransactionAspect {
 	
 	private final static Logger LOG = Logger.getLogger(TransactionAddToCollectionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
+	
+	private TransactionAddToCollectionChangeAspectAdvice advice = 
+		new TransactionAddToCollectionChangeAspectAdvice();
 
+	
 	// as required by super-aspect
 	protected pointcut transactionalChange(IPojo pojo): 
 		this(pojo) &&
@@ -33,29 +39,14 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		boolean transactionOnThread = hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
-		if (!transactionOnThread) {
-			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-			setTransactionForThread(transaction);
-		} else {
-			getLogger().debug("(xactn for thread already present)");
-		}
-		boolean startedInteraction = transaction.startingInteraction();
-		try {
-			return proceed(pojo);
-		} finally {
-			if (startedInteraction) {
-				transaction.completingInteraction();
-			}
-			if (!transactionOnThread) {
-				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-				clearTransactionForThread();
-			}
-		}
+	Object around(final IPojo pojo): transactionalChange(pojo) {
+		return advice.around$transactionalChange(
+				pojo, 
+				new Callable() { 
+					public Object call() {
+						return proceed(pojo);
+					}
+				});
 	}
 
 
@@ -68,21 +59,14 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	 * <p>
 	 * In addition, notify all {@link IObservedFeature}s of the session.
 	 */
-	Object around(IPojo pojo, IPojo addedObject): invokeAddToCollectionOnPojo(pojo, addedObject) {
-		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject.getPersistState() == PersistState.UNKNOWN) {
-			return proceed(pojo, addedObject);
-		} else {
-			IDomainObject.IObjectCollectionReference reference = 
-				getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
-			
-			setCollectionReferenceForThread(reference);
-			try {
-				return proceed(pojo, addedObject);
-			} finally {
-				clearCollectionReferenceForThread();
-			}
-		}
+	Object around(final IPojo pojo, final IPojo addedObject): invokeAddToCollectionOnPojo(pojo, addedObject) {
+		return advice.around$invokeAddToCollectionOnPojo(
+				pojo, addedObject, thisJoinPointStaticPart, 
+				new Callable() {
+					public Object call() {
+						return proceed(pojo, addedObject);
+					}
+				});
 	}
 
 	
@@ -96,29 +80,10 @@ public aspect TransactionAddToCollectionChangeAspect extends TransactionCollecti
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied.
 	 *  
-	 * <p>
-	 * TODO: how pick up the collection name?
 	 */
 	Object around(IPojo pojo, Collection collection, Object addedObj): 
 			transactionalAddingToCollectionOnPojo(pojo, collection, addedObj) {
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AddToCollectionChange(transaction, transactable, collection, addedObj, getCollectionReferenceForThreadIfAny());
-		return change.execute();
+		return advice.around$transactionalAddingToCollectionOnPojo(pojo, collection, addedObj);
 	}
-
-	
-	/**
-	 * Keeps track of the current transaction for this thread (if any)
-	 */
-	private static ThreadLocal<ITransaction> __transactionByThread;
-	static {
-		__transactionByThread = new ThreadLocal<ITransaction>() {
-	        protected synchronized ITransaction initialValue() {
-	            return null;
-	        }
-		};
-	}
-	
 
 }

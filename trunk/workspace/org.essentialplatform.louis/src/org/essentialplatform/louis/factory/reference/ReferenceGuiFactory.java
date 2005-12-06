@@ -249,10 +249,10 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 		dragSource.setTransfer( new Transfer[]{ transfer } );
 		dragSource.addDragListener (new DragSourceListener () {
 			public void dragStart(DragSourceEvent event) {
-				event.doit = ( part.getValue() != null );
+				event.doit = ( part.getUiValue() != null );
 			}
 			public void dragSetData (DragSourceEvent event) {
-				event.data = part.getValue();
+				event.data = part.getUiValue();
 			}
 			public void dragFinished(DragSourceEvent event) {
 				// does nowt

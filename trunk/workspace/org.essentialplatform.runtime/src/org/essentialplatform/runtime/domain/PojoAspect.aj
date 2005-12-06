@@ -25,7 +25,7 @@ import org.essentialplatform.runtime.domain.DomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
 
 import org.essentialplatform.runtime.session.ISession;
-
+import org.essentialplatform.runtime.util.*;
 
 public abstract aspect PojoAspect {
 	
@@ -361,11 +361,7 @@ public abstract aspect PojoAspect {
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
 	protected Field getFieldFor(JoinPoint.StaticPart joinPointStaticPart) {
-		FieldSignature signature = (FieldSignature)joinPointStaticPart.getSignature();
-		// workaround to force signature to be able to pick up fields (soft references)
-		Field[] fields = signature.getDeclaringType().getFields();
-		Field field = signature.getField();
-		return field;
+		return AspectsUtil.getFieldFor(joinPointStaticPart);
 	}
 
 
@@ -377,10 +373,7 @@ public abstract aspect PojoAspect {
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
 	protected Method getMethodFor(JoinPoint.StaticPart joinPointStaticPart) {
-		MethodSignature signature = (MethodSignature)joinPointStaticPart.getSignature();
-		// workaround to force signature to be able to pick up methods (soft references)
-		Method[] methods = signature.getDeclaringType().getMethods();
-		return signature.getMethod();
+		return AspectsUtil.getMethodFor(joinPointStaticPart);
 	}
 
 	
@@ -392,10 +385,7 @@ public abstract aspect PojoAspect {
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
 	protected Constructor getConstructorFor(JoinPoint.StaticPart joinPointStaticPart) {
-		ConstructorSignature signature = (ConstructorSignature)joinPointStaticPart.getSignature();
-		// workaround to force signature to be able to pick up constructors (soft references)
-		Constructor[] constructors = signature.getDeclaringType().getConstructors();
-		return signature.getConstructor();
+		return AspectsUtil.getConstructorFor(joinPointStaticPart);
 	}
 
 	
@@ -407,9 +397,7 @@ public abstract aspect PojoAspect {
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
 	protected IDomainClass.IAttribute getIAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		Signature signature = joinPointStaticPart.getSignature();
-		String name = signature.getName();
-		return domainObject.getDomainClass().getIAttributeNamed(name);
+		return AspectsUtil.getIAttributeFor(domainObject, joinPointStaticPart);
 	}
 
 
@@ -424,14 +412,7 @@ public abstract aspect PojoAspect {
 	 * @param joinPoint representing either an addTo or a removeFrom operation.
 	 */
 	protected IDomainClass.IReference getIReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		Signature signature = joinPointStaticPart.getSignature();
-		String name = signature.getName();
-		if (name.startsWith("addTo")) {
-			name = camelCase(name.substring("addTo".length()));
-		} else if (name.startsWith("removeFrom")) {
-			name = camelCase(name.substring("removeFrom".length()));
-		}
-		return domainObject.getDomainClass().getIReferenceNamed(name);
+		return AspectsUtil.getIReferenceFor(domainObject, joinPointStaticPart);
 	}
 	
 	private String camelCase(final String str) {
@@ -450,9 +431,7 @@ public abstract aspect PojoAspect {
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
 	protected IDomainClass.IOperation getIOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		Signature signature = joinPointStaticPart.getSignature();
-		String name = signature.getName();
-		return domainObject.getDomainClass().getIOperationNamed(name);
+		return AspectsUtil.getIOperationFor(domainObject, joinPointStaticPart);
 	}
 
 
@@ -466,11 +445,7 @@ public abstract aspect PojoAspect {
 	 * @return attribute or null
 	 */
 	protected IDomainObject.IObjectAttribute getAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		IDomainClass.IAttribute iAttribute = getIAttributeFor(domainObject, joinPointStaticPart);
-		if (iAttribute == null) {
-			return null;
-		}
-		return domainObject.getAttribute(iAttribute);
+		return AspectsUtil.getAttributeFor(domainObject, joinPointStaticPart);
 	}
 
 
@@ -484,11 +459,7 @@ public abstract aspect PojoAspect {
 	 * @return reference or null
 	 */
 	protected IDomainObject.IObjectOneToOneReference getOneToOneReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		IDomainClass.IReference iReference = getIReferenceFor(domainObject, joinPointStaticPart);
-		if (iReference == null) {
-			return null;
-		}
-		return domainObject.getOneToOneReference(iReference);
+		return AspectsUtil.getOneToOneReferenceFor(domainObject, joinPointStaticPart);
 	}
 
 
@@ -504,11 +475,7 @@ public abstract aspect PojoAspect {
 	 * @return reference or null
 	 */
 	protected IDomainObject.IObjectCollectionReference getCollectionReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		IDomainClass.IReference iReference = getIReferenceFor(domainObject, joinPointStaticPart);
-		if (iReference == null) {
-			return null;
-		}
-		return domainObject.getCollectionReference(iReference);
+		return AspectsUtil.getCollectionReferenceFor(domainObject, joinPointStaticPart);
 	}
 
 	
@@ -520,11 +487,7 @@ public abstract aspect PojoAspect {
 	 * This is a helper method provided for the convenience of subaspects.
 	 */
 	protected IDomainObject.IObjectOperation getOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		IDomainClass.IOperation iOperation = getIOperationFor(domainObject, joinPointStaticPart);
-		if (iOperation == null) {
-			return null;
-		}
-		return domainObject.getOperation(iOperation);
+		return AspectsUtil.getOperationFor(domainObject, joinPointStaticPart);
 	}
 
 	

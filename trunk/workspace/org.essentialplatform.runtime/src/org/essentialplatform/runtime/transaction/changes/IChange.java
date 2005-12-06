@@ -225,6 +225,10 @@ public interface IChange {
 			return true;
 		}
 
+		public IChange getParent() {
+			return null;
+		}
+
 	}
 
 	/**
@@ -328,6 +332,10 @@ public interface IChange {
 		public ITransaction getTransaction() {
 			return null;
 		}
+
+		public IChange getParent() {
+			return null;
+		}
 	}
 
 	/**
@@ -337,5 +345,16 @@ public interface IChange {
 	 * @return
 	 */
 	public boolean doesNothing();
+
+	/**
+	 * The parent change within which this change was performed.
+	 * 
+	 * <p>
+	 * May be null if the change was initiated "directly" (ie by an explicit
+	 * user gesture such as typing in a field in the UI).
+	 * 
+	 * @return
+	 */
+	public IChange getParent();
 
 }

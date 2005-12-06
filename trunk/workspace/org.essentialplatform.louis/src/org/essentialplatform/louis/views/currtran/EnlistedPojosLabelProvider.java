@@ -5,12 +5,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 /**
  * Label provider for current transaction view.
  * 
- * <p>
- * Adapted from Mike's transaction manager view.
- * 
  * @author Dan Haywood
  */
-class EnlistedPojoLabelProvider extends LabelProvider {
+class EnlistedPojosLabelProvider extends LabelProvider {
 
 
 }

@@ -153,10 +153,7 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertSame(AddToCollectionChange.class, change0.getClass());
 		AddToCollectionChange addToCollectionChange = (AddToCollectionChange)change0;
 		assertEquals(order, addToCollectionChange.getReferencedObject());
-		// the change doesn't actually know the variable name of the object;
-		// compare this to the notifyListener aspect where we use a different
-		// pointcut and so can figure out the name.
-		assertEquals("???", addToCollectionChange.getDescription());
+		assertEquals("orders", addToCollectionChange.getDescription());
 	}
 
 	public void testRemovingFromCollectionReferenceForTransactionNotifiesListenersOfAddingChange() {
@@ -184,10 +181,7 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertSame(RemoveFromCollectionChange.class, change0.getClass());
 		RemoveFromCollectionChange removeFromCollectionChange = (RemoveFromCollectionChange)change0;
 		assertEquals(order, removeFromCollectionChange.getReferencedObject());
-		// the change doesn't actually know the variable name of the object;
-		// compare this to the notifyListener aspect where we use a different
-		// pointcut and so can figure out the name.
-		assertEquals("???", removeFromCollectionChange.getDescription());
+		assertEquals("orders", removeFromCollectionChange.getDescription());
 	}
 
 	/**

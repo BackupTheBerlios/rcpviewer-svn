@@ -27,7 +27,9 @@ public abstract aspect TransactionAspect extends PojoAspect {
 	/**
 	 * Sub-aspects implement to control where logging goes.
 	 */
-	protected abstract Logger getLogger();
+	protected Logger getLogger() {
+		return Logger.getLogger(TransactionAspect.class);
+	}
 	
 
 	/**
@@ -63,38 +65,6 @@ public abstract aspect TransactionAspect extends PojoAspect {
 	
 	///////////////////////////////////////////////////////////////////////
 
-	/**
-	 * Keeps track of the current transaction for this thread (if any)
-	 */
-	private static ThreadLocal<ITransaction> __transactionByThread;
-	static {
-		__transactionByThread = new ThreadLocal<ITransaction>() {
-	        protected synchronized ITransaction initialValue() {
-	            return null;
-	        }
-		};
-	}
-	
-	/**
-	 * Whether there is already a transaction for this thread.
-	 */
-	protected boolean hasTransactionForThread() {
-		return getTransactionForThreadIfAny() != null;
-	}
-
-	protected void clearTransactionForThread() {
-		__transactionByThread.set(null);
-	}
-
-	protected void setTransactionForThread(final ITransaction transaction) {
-		__transactionByThread.set(transaction);
-	}
-
-	protected ITransaction getTransactionForThreadIfAny() {
-		return __transactionByThread.get();
-	}
-
-	///////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Intent is for this to be called when a change (work group) has been completed.
@@ -129,7 +99,7 @@ public abstract aspect TransactionAspect extends PojoAspect {
 	 * either in progress or building state.
 	 */
 	protected ITransaction currentTransaction(ITransactable transactable) throws RuntimeException {
-		ITransaction transaction = getTransactionForThreadIfAny();
+		ITransaction transaction = ThreadLocals.getTransactionForThreadIfAny();
 		ITransaction pojoTransaction = transactable.getTransaction(false);
 		if (transaction != null && 
 		    pojoTransaction != null) {

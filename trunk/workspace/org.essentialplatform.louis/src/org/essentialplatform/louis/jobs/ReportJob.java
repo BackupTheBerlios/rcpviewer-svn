@@ -108,7 +108,7 @@ public class ReportJob extends AbstractUserJob {
 	 */
 	public ReportJob( String msg, Image image, Throwable ex ) {
 		super( ReportJob.class.getName() );
-		if ( msg == null ) throw new IllegalArgumentException();
+		if ( msg == null ) msg = "(null message)";
 		_image = null;
 		_isError = true;
 		StringBuilder buf = new StringBuilder(ex.getMessage());

@@ -5,6 +5,8 @@ import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 
+import java.util.concurrent.*;
+
 /**
  * One change per invoked operation that hasn't been called from another
  * invoked operation.
@@ -14,6 +16,9 @@ import org.essentialplatform.runtime.transaction.ITransaction;
  */
 public aspect TransactionInvokeOperationAspect extends TransactionAspect {
 
+	private TransactionInvokeOperationAspectAdvice advice = 
+		new TransactionInvokeOperationAspectAdvice();
+	
 	private final static Logger LOG = Logger.getLogger(TransactionInvokeOperationAspect.class);
 	private static boolean ENABLED = true;
 	protected Logger getLogger() { return LOG; }
@@ -37,29 +42,14 @@ public aspect TransactionInvokeOperationAspect extends TransactionAspect {
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+")");
-		ITransactable transactable = (ITransactable)pojo;
-		boolean transactionOnThread = hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
-		if (!transactionOnThread) {
-			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-			setTransactionForThread(transaction);
-		} else {
-			getLogger().debug("(xactn for thread already present)");
-		}
-		boolean startedInteraction = transaction.startingInteraction();
-		try {
-			return proceed(pojo);
-		} finally {
-			if (startedInteraction) {
-				transaction.completingInteraction();
-			}
-			if (!transactionOnThread) {
-				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-				clearTransactionForThread();
-			}
-		}
+	Object around(final IPojo pojo): transactionalChange(pojo) {
+		return advice.around$transactionalChange(
+				pojo, 
+				new Callable() {
+					public Object call() {
+						return proceed(pojo);
+					}
+				});
 	}
 
 

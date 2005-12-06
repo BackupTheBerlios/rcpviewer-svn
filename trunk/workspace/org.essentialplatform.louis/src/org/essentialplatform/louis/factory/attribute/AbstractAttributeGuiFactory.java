@@ -127,10 +127,10 @@ public abstract class AbstractAttributeGuiFactory<T1,T2 extends Control>
 		source.setTransfer(types);
 		source.addDragListener (new DragSourceListener () {
 			public void dragStart(DragSourceEvent event) {
-				event.doit = ( part.getValue() != null );
+				event.doit = ( part.getUiValue() != null );
 			}
 			public void dragSetData (DragSourceEvent event) {
-				event.data = part.getValue();
+				event.data = part.getUiValue();
 			}
 			public void dragFinished(DragSourceEvent event) {
 				// does nowt

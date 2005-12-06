@@ -32,6 +32,8 @@ public abstract class AbstractChange implements IChange {
 	protected final IDomainObject<?> _domainObject;
 
 	private final Set<ITransactable> _transactableAsSet = new HashSet<ITransactable>();
+	
+	private IChange _parent;
 
 	protected AbstractChange(final ITransaction transaction, final ITransactable transactable, final String description, final Object[] extendedInfo, final boolean irreversible) {
 		_transaction = transaction;
@@ -86,6 +88,22 @@ public abstract class AbstractChange implements IChange {
 	 */
 	public final boolean isIrreversible() {
 		return _irreversible;
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getParent()
+	 */
+	public final IChange getParent() {
+		return _parent;
+	}
+	/**
+	 * Sets (or unsets if pass in null) the parent for this change.
+	 * 
+	 * @see #getParent()
+	 * @param parent
+	 */
+	public final void setParent(IChange parent) {
+		_parent = parent;
 	}
 
 	/*

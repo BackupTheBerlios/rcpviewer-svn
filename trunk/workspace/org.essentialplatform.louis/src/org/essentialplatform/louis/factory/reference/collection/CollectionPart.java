@@ -34,7 +34,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	
 	private Label _control;
 	private IDomainObject<?> _domainObject = null;
-	//private List<IDomainObject<?>> _displayed = null;
+	private List<IDomainObject<?>> _displayed = null;
 	private ICollectionChildPart _activePart;
 	
 	/**
@@ -143,14 +143,12 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 		super.commit( onSave );
 	}
 	
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	@Override
 	public void refresh() {
-//		_displayed = getCollectionDomainObjects();
-//		setDisplay( _displayed );
-		setDisplay(_model.getCollection());
+		setValue(_model.getCollection());
 		
 		super.refresh();
 	}
@@ -239,7 +237,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 		//_displayed.add( dObj );
 		//setDisplay( _displayed );
 		_model.addToCollection(dObj);
-		setDisplay(_model.getCollection());
+		setValue(_model.getCollection());
 	}
 	
 	/**
@@ -253,7 +251,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 //		_displayed.remove( dObj );
 //		setDisplay( _displayed );
 		_model.removeFromCollection(dObj);
-		setDisplay(_model.getCollection());
+		setValue(_model.getCollection());
 	}
 	
 	/**
@@ -285,7 +283,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	}
 	
 	// sets display on all children
-	private <V> void setDisplay(  Collection<IDomainObject<V>> display ) {
+	private <V> void setValue(  Collection<IDomainObject<V>> display ) {
 		for ( ICollectionChildPart child :_children ) {
 			child.display( display );
 		}

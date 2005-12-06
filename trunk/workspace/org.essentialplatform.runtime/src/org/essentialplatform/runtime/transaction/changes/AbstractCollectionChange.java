@@ -53,7 +53,7 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 
 
 	private static String nameOf(IDomainObject.IObjectCollectionReference reference) {
-		return reference != null? reference.toString(): "???";
+		return reference != null? reference.getReference().getName(): "???";
 	}
 	
 	/**

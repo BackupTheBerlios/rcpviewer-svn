@@ -16,13 +16,15 @@ import org.essentialplatform.runtime.transaction.changes.*;
 
 import org.essentialplatform.runtime.persistence.IPersistable;
 import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
+import java.util.concurrent.Callable;
 
-
-public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCollectionChangeAspect {
+public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionAspect {
 	
 	private final static Logger LOG = Logger.getLogger(TransactionRemoveFromCollectionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
+	private TransactionRemoveFromCollectionChangeAspectAdvice advice = 
+		new TransactionRemoveFromCollectionChangeAspectAdvice();
 
 	protected pointcut transactionalChange(IPojo pojo):  
 		this(pojo) &&  
@@ -40,29 +42,14 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		boolean transactionOnThread = hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
-		if (!transactionOnThread) {
-			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-			setTransactionForThread(transaction);
-		} else {
-			getLogger().debug("(xactn for thread already present)");
-		}
-		boolean startedInteraction = transaction.startingInteraction();
-		try {
-			return proceed(pojo);
-		} finally {
-			if (startedInteraction) {
-				transaction.completingInteraction();
-			}
-			if (!transactionOnThread) {
-				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-				clearTransactionForThread();
-			}
-		}
+	Object around(final IPojo pojo): transactionalChange(pojo) {
+		return advice.around$transactionalChange(
+				pojo, 
+				new Callable() { 
+					public Object call() {
+						return proceed(pojo);
+					}
+				});
 	}
 
 
@@ -75,21 +62,14 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	 * <p>
 	 * In addition, notify all {@link IObservedFeature}s of the session.    
 	 */
-	Object around(IPojo pojo, Object removedObject): invokeRemoveFromCollectionOnPojo(pojo, removedObject) { 
-		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject.getPersistState() == PersistState.UNKNOWN) {
-			return proceed(pojo, removedObject);
-		} else {
-			IDomainObject.IObjectCollectionReference reference = getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
-			
-			setCollectionReferenceForThread(reference);
-			try {
-				return proceed(pojo, removedObject);
-			} finally {
-				clearCollectionReferenceForThread();
-			}
-		}
-		
+	Object around(final IPojo pojo, final Object removedObject): invokeRemoveFromCollectionOnPojo(pojo, removedObject) {
+		return advice.around$invokeRemoveFromCollectionOnPojo(
+				pojo, removedObject, thisJoinPointStaticPart,
+				new Callable() { 
+					public Object call() {
+						return proceed(pojo, removedObject);
+					}
+				});
 	}
 
 	
@@ -107,12 +87,7 @@ public aspect TransactionRemoveFromCollectionChangeAspect extends TransactionCol
 	 */
 	Object around(IPojo pojo, Collection collection, Object removedObj): 
 			transactionalRemovingFromCollectionOnPojo(pojo, collection, removedObj) {
-		getLogger().debug("transactionalRemovingFromCollectionOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		String collectionName = thisJoinPointStaticPart.getSignature().getName();
-		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, removedObj, getCollectionReferenceForThreadIfAny());
-		return change.execute();
+		return advice.around$transactionalRemovingFromCollectionOnPojo(pojo, collection, removedObj);
 	}
 
 	

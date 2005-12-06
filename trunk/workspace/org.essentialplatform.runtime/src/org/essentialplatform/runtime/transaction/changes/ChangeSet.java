@@ -24,6 +24,7 @@ public final class ChangeSet implements IChange {
 	private final String _description;
 	private final Object[] _extendedInfo;
 	private final boolean _irreversible;
+	private IChange _parent;
 	
 	/**
 	 * Construct the chain from a list of {@link IChange}s.
@@ -127,7 +128,7 @@ public final class ChangeSet implements IChange {
 
 
 	/**
-	 * The number of atoms in this chain.
+	 * The number of atoms in this change set.
 	 * 
 	 * @return
 	 */
@@ -136,7 +137,21 @@ public final class ChangeSet implements IChange {
 	}
 	
 	/**
-	 * Obtain the nth atom.
+	 * Returns a (copy of) the changes referenced by this change set.
+	 * 
+	 * <p>
+	 * Callers are free to modify the returned array as they see fit; it will
+	 * have no impact on the change set itself.
+	 * @return
+	 */
+	public IChange[] getChanges() {
+		IChange[] changes = new IChange[_changes.length];
+		System.arraycopy(_changes, 0, changes, 0, changes.length);
+		return _changes;
+	}
+
+	/**
+	 * Obtain the nth change.
 	 * 
 	 * @param i, 0-based.
 	 * @return
@@ -169,6 +184,16 @@ public final class ChangeSet implements IChange {
 			if (!change.doesNothing()) return false;
 		}
 		return true;
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getParent()
+	 */
+	public IChange getParent() {
+		return _parent;
+	}
+	public void setParent(IChange parent) {
+		_parent = parent;
 	}
 
 	/*

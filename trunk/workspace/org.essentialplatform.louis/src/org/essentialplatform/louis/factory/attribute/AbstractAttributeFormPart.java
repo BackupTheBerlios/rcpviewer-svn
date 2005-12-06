@@ -33,7 +33,14 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	private final IDomainObjectAttributeListener _listener;
 	
 	private T2 _control;
-	private T1 _value = null;
+	/**
+	 * The value as displayed in the UI.
+	 * 
+	 * <p>
+	 * This is maintained separately from the value in the backing model so
+	 * that we know if there have been changes.
+	 */
+	private T1 _uiValue = null;
 	
 	/**
 	 * Constructor requires attribute and text field used to display the value
@@ -74,10 +81,10 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 			 */
 			public void focusLost(FocusEvent e) {
 				Object modelValue = _model.get();
-				Object uiValue = getValue();
+				Object uiValue = getUiValue();
 				if (modelValue == null && uiValue != null ||
 					modelValue != null && !modelValue.equals(uiValue)) {
-					_model.set(getValue());
+					_model.set(getUiValue());
 				}
 			}
 		});
@@ -91,6 +98,10 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 		return _control;
 	}
 	
+	////////////////////////////////////////////////////////////////
+	// IFormPart contract 
+	////////////////////////////////////////////////////////////////
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
@@ -117,47 +128,68 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 		}
 	}
 	
-	/* (non-Javadoc)
+	/*
+	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
+	 */
+	public void commit(boolean onSave) {
+		super.commit(onSave);
+	}
+		
+	/*
+	 * @see org.eclipse.ui.forms.IFormPart#setFocus()
+	 */
+	public void setFocus() {
+		if ( _control != null ) {
+			_control.setFocus();
+		}
+	}
+
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
 	public void refresh() {
 		Object value = null;
 		if ( _model != null ) {
 			value = _model.get();
+		} else {
+			value = null;
 		}
 		setValue( (T1)value, true );
 		super.refresh();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.forms.IFormPart#setFocus()
-	 */
-	public void setFocus() {
-		if ( _control != null ) _control.setFocus();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
-	 */
-	public void commit(boolean onSave) {
-		if ( onSave ) {
-			_model.set( getValue() );
-		}
-		super.commit(onSave);
-	}
-		
 	/**
-	 * Sets the value, marking the field as dirty.
+	 * Sets the value, marking the part in the UI as dirty.
+	 * 
+	 * <p>
+	 * TODO: if the value is being reset because of an undo, then we shouldn't
+	 * necessarily be set as dirty.  Indeed, if the xactn is being undone
+	 * completely, then the part in the UI should no longer be marked as
+	 * dirty.
+	 * 
 	 * @param value - new value
-	 * @param update - whether to update the display or not
+	 * @param update - whether to update the display and model
 	 */
-	public void setValue( T1 value, boolean updateDisplay ) {
+	public void setValue( T1 value, boolean update ) {
 		// do nowt if no change to model value
-		if ( NullUtil.nullSafeEquals( value, getValue() ) ) return;
-		_value = (T1)value;
+		if ( NullUtil.nullSafeEquals( value, getUiValue() ) ) {
+			return;
+		}
+		_uiValue = (T1)value;
 		markDirty();
-		if ( _control != null && updateDisplay ) {
-			displayValue( _value, _control );
+		if (update) {
+			setModelValue(value);
+			if ( _control != null) {
+				displayValue( _uiValue, _control );
+			}
+		}
+	}
+
+	private void setModelValue(T1 value) {
+		if (_model != null) {
+			if(!NullUtil.nullSafeEquals( value, _model.get())) {
+				_model.set(value);
+			}
 		}
 	}
 	
@@ -165,8 +197,8 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 * Returns the displayed value, converting blank Strings to <code>null</code>
 	 * @return
 	 */
-	public T1 getValue() {
-		return _value;
+	public T1 getUiValue() {
+		return _uiValue;
 	}
 
 	

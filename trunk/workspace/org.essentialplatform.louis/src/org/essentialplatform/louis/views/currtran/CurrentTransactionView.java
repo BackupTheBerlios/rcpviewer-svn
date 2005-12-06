@@ -2,39 +2,21 @@ package org.essentialplatform.louis.views.currtran;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Sash;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
-import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
 import org.essentialplatform.louis.editors.DefaultEditor;
 import org.essentialplatform.louis.util.ActionUtil;
-import org.essentialplatform.louis.util.DialogUtil;
 import org.essentialplatform.louis.util.EditorUtil;
-import org.essentialplatform.louis.views.currtran.CurrentTransactionViewContentProvider.Mode;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.TransactionManager;
-import org.eclipse.jface.viewers.TableViewer;
 /**
  * Displays the current transaction (if any) for the selected pojo.
  * 

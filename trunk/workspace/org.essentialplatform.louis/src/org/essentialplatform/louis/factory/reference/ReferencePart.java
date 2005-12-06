@@ -32,6 +32,16 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	private List<IReferencePartDisplayListener> _listeners = null;
 	
 	/**
+	 * The value as displayed in the UI.
+	 * 
+	 * <p>
+	 * This is maintained separately from the value in the backing model so
+	 * that we know if there have been changes.
+	 */
+	private IDomainObject<?> _uiValue = null;
+
+	
+	/**
 	 * Requires the reference
 	 * @param ref
 	 * @param pages
@@ -60,19 +70,23 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		};
 	}
 	
-	/* IFormPart contract */
+	////////////////////////////////////////////////////////////////
+	// IFormPart contract 
+	////////////////////////////////////////////////////////////////
 	
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
 	 */
+	@Override
 	public void initialize(IManagedForm form) {
 		super.initialize( form );
 		_detailsPart.initialize( form );
 	}
 	
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
 	 */
+	@Override
 	public boolean setFormInput(Object input) {
 		try {
 			// remove listening from old object if any
@@ -96,9 +110,10 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		}
 	}
 	
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#refresh()
 	 */
+	@Override
 	public void refresh() {
 		IDomainObject<?> value = null;
 		if ( _model != null ) {
@@ -110,30 +125,38 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		super.refresh();
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
 	 */
+	@Override
 	public void commit(boolean onSave) {
 		super.commit(onSave);
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
-		if ( _control != null ) _control.setFocus();
+		if ( _control != null ) {
+			_control.setFocus();
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.ui.forms.IFormPart#dispose()
 	 */
+	@Override
 	public void dispose() {
 		_detailsPart.dispose();
 	}
 	
-	/* IConfigurable contract - delegate to details */
+
+	////////////////////////////////////////////////////////////////
+	// IConfigurable contract - delegate to details
+	////////////////////////////////////////////////////////////////
 	
-	/* (non-Javadoc)
+	/*
 	 * @see org.essentialplatform.gui.factory.IConfigurable#run()
 	 */
 	public void run() {
@@ -142,7 +165,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.essentialplatform.gui.factory.IConfigurable#addListener(org.essentialplatform.gui.factory.IConfigurable.IConfigurableListener)
 	 */
 	public boolean addConfigurableListener(IConfigurableListener listener) {
@@ -152,7 +175,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.essentialplatform.gui.factory.IConfigurable#removeListener(org.essentialplatform.gui.factory.IConfigurable.IConfigurableListener)
 	 */
 	public boolean removeConfigurableListener(IConfigurableListener listener) {
@@ -163,7 +186,9 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	}
 	
 	
-	/* package private methods */
+	////////////////////////////////////////////////////////////////
+	// package private methods
+	////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Sets the primary control for this part.
@@ -177,42 +202,28 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	/**
 	 * Accessor to value.
 	 */
-	IDomainObject<?> getValue() {
-		return _model.get();
+	IDomainObject<?> getUiValue() {
+		return _uiValue;
 	}
 	
 	/**
-	 * Sets the value.
+	 * Sets the value, marking the part in the UI as dirty.
+	 * 
+	 * <p>
+	 * TODO: if the value is being reset because of an undo, then we shouldn't
+	 * necessarily be set as dirty.  Indeed, if the xactn is being undone
+	 * completely, then the part in the UI should no longer be marked as
+	 * dirty.
+	 * 
 	 * @param value
 	 */
 	void setValue( IDomainObject<?> value  ) {
 
-//		// do nowt if no change to model value
-//		if ( NullUtil.nullSafeEquals( value, getValue() ) ) return;
-//		_value = (T1)value;
-//		markDirty();
-//		if ( _control != null && updateDisplay ) {
-//			displayValue( _value, _control );
-//		}
-
-		boolean valueChanged = false;
-		IDomainObject<?> modelDobj = _model.get();
-		if (value != null) {
-			Object uiPojo = value.getPojo();
-			if (modelDobj == null ||
-				uiPojo != modelDobj.getPojo()) {
-				valueChanged = true;
-			}
-		} else {
-			if (modelDobj != null) {
-				valueChanged = true;
-			}
-		}
-		if (!valueChanged) {
+		// do nowt if no change to model value
+		if ( NullUtil.nullSafeEquals( value, getUiValue() ) ) {
 			return;
 		}
-		
-		_model.set(value);
+		_uiValue = value;
 
 		if ( _control != null ) {
 			if ( value == null ) {
@@ -227,11 +238,20 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 				}
 			}
 		}
-		_detailsPart.setFormInput( value );
 		markDirty();
+		setModelValue(value);
+		_detailsPart.setFormInput( value );
 		if ( _listeners != null ) {
 			for ( IReferencePartDisplayListener listener : _listeners ) {
 				listener.displayValueChanged( value );
+			}
+		}
+	}
+
+	private void setModelValue(IDomainObject<?> value) {
+		if (_model != null) {
+			if(!NullUtil.nullSafeEquals( value, _model.get())) {
+				_model.set(value);
 			}
 		}
 	}
@@ -247,6 +267,5 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 		}
 		_listeners.add( listener );
 	}
-
 
 }

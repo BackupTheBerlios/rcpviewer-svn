@@ -93,8 +93,8 @@ public class DateAttributeGuiFactory extends AbstractAttributeGuiFactory<Date,Te
                         part.setValue( calendarEvent.getCalendar().getTime(), true );
                     }
                 });
-                if ( part.getValue() != null ) {
-                	cal.setDate( part.getValue() );
+                if ( part.getUiValue() != null ) {
+                	cal.setDate( part.getUiValue() );
                 }
                 cal.open();
             }

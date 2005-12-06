@@ -7,12 +7,17 @@ import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 
+import java.util.concurrent.*;
+
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
 public aspect TransactionDeletionChangeAspect extends TransactionAspect {
 
+	private TransactionDeletionChangeAspectAdvice advice = 
+		new TransactionDeletionChangeAspectAdvice();
+	
 	private final static Logger LOG = Logger.getLogger(TransactionDeletionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
 
@@ -29,29 +34,14 @@ public aspect TransactionDeletionChangeAspect extends TransactionAspect {
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		boolean transactionOnThread = hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
-		if (!transactionOnThread) {
-			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-			setTransactionForThread(transaction);
-		} else {
-			getLogger().debug("(xactn for thread already present)");
-		}
-		boolean startedInteraction = transaction.startingInteraction();
-		try {
-			return proceed(pojo);
-		} finally {
-			if (startedInteraction) {
-				transaction.completingInteraction();
-			}
-			if (!transactionOnThread) {
-				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-				clearTransactionForThread();
-			}
-		}
+	Object around(final IPojo pojo): transactionalChange(pojo) {
+		return advice.around$transactionalChange(
+				pojo, 
+				new Callable() {
+					public Object call() {
+						return proceed(pojo);			
+					}
+				});
 	}
 
 	/**
@@ -64,12 +54,7 @@ public aspect TransactionDeletionChangeAspect extends TransactionAspect {
 	 * advices are applied. 
 	 */
 	Object around(IPojo pojo): transactionalDeletingPojoUsingDeleteMethod(pojo) {
-		getLogger().debug("transactionalDeletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new DeletionChange(transaction, transactable);
-		
-		return change.execute();
+		return advice.around$transactionalDeletingPojoUsingDeleteMethod(pojo);
 	}
 	
 

@@ -1,6 +1,7 @@
 package org.essentialplatform.runtime.transaction.internal;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.domain.IDomainObject;
@@ -20,9 +21,9 @@ import org.essentialplatform.runtime.transaction.changes.IChange;
  */
 public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 
-	private final static Logger LOG = Logger.getLogger(TransactionAttributeChangeAspect.class);
-	protected Logger getLogger() { return LOG; }
-
+	private TransactionAttributeChangeAspectAdvice advice = 
+		new TransactionAttributeChangeAspectAdvice();
+	
 	protected pointcut transactionalChange(IPojo pojo): 
 		transactionalChangingAttributeOnPojo(IPojo, Object) && 
 		this(pojo) && 
@@ -37,30 +38,13 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	Object around(IPojo pojo): transactionalChange(pojo) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		boolean transactionOnThread = hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
-		if (!transactionOnThread) {
-			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-			setTransactionForThread(transaction);
-		} else {
-			getLogger().debug("(xactn for thread already present)");
-		}
-		boolean startedInteraction = transaction.startingInteraction();
-		try {
-			return proceed(pojo);
-		} finally {
-			if (startedInteraction) {
-				transaction.completingInteraction();
+	Object around(final IPojo pojo): transactionalChange(pojo) {
+		return advice.around$transactionalChange(
+			pojo, 
+			new Callable() {
+				public Object call() { return proceed(pojo); }
 			}
-			if (!transactionOnThread) {
-				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-				clearTransactionForThread();
-			}
-			getLogger().debug("transactionalChange(pojo=" + pojo+"): end");
-		}
+		);
 	}
 
 	/**
@@ -89,26 +73,7 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 	 */
 	Object around(IPojo pojo, Object postValue): 
 			transactionalChangingAttributeOnPojo(pojo, postValue) {
-		getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): start");
-		try {
-			Field field = getFieldFor(thisJoinPointStaticPart);
-			
-			ITransactable transactable = (ITransactable)pojo;
-			ITransaction transaction = currentTransaction(transactable);
-			
-			IDomainObject domainObject = pojo.getDomainObject();
-			IDomainObject.IObjectAttribute attribute = null;
-			if (domainObject.getPersistState() != PersistState.UNKNOWN) {
-				attribute = getAttributeFor(domainObject, thisJoinPointStaticPart);
-			}
-			IChange change = new AttributeChange(transaction, transactable, field, postValue, attribute);
-			
-			return change.execute();
-		} finally {
-			getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): end");
-		}
-
+		return advice.around$transactionalChangingAttributeOnPojo(pojo, postValue, thisJoinPointStaticPart);
 	}
-	
 
 }
