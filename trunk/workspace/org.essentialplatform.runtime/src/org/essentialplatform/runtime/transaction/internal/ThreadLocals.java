@@ -43,7 +43,45 @@ public final class ThreadLocals {
 		return __transactionByThread.get();
 	}
 
+// COMMENTED OUT, doing this hack a different way so this is probably
+// not required after all...
+//	////////////////////////////////////////////////////////////////////////
+//	// TranCountByThread
+//	//
+//	// a hack: analogous to @@trancount in SQL Server / Sybase ASE
+//	//
+//	////////////////////////////////////////////////////////////////////////
+//	
+//	/**
+//	 * Keeps track of the current transaction for this thread (if any)
+//	 */
+//	static ThreadLocal<int[]> __tranCountByThread;
+//	static {
+//		__tranCountByThread = new ThreadLocal<int[]>() {
+//	        protected synchronized int[] initialValue() {
+//	            return new int[]{0};
+//	        }
+//		};
+//	}
+//	/**
+//	 * Whether there is already a transaction count for this thread.
+//	 */
+//	public static boolean hasTranCountForThread() {
+//		return getTranCountForThreadIfAny() != null;
+//	}
+//	public static void clearTranCountForThread() {
+//		__tranCountByThread.set(null);
+//	}
+//	public static void setTranCountForThread(final int[] tranCount) {
+//		__tranCountByThread.set(tranCount);
+//	}
+//	public static int[] getTranCountForThreadIfAny() {
+//		return __tranCountByThread.get();
+//	}
 
+
+
+	
 	////////////////////////////////////////////////////////////////////////
 	// CollectionReferenceByThread
 	//

@@ -13,7 +13,7 @@ import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
-import org.essentialplatform.runtime.util.AspectsUtil;
+import org.essentialplatform.runtime.util.JoinPointUtil;
 
 class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 
@@ -25,8 +25,8 @@ class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	<V> V around$transactionalChange(IPojo pojo, Callable<V> proceed) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
+	<V> V around$invokeSetterForAttributeOnPojo(IPojo pojo, Object postValue, Callable<V> proceed) {
+		getLogger().debug("invokeSetterForAttributeOnPojo(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -47,15 +47,15 @@ class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
 				ThreadLocals.clearTransactionForThread();
 			}
-			getLogger().debug("transactionalChange(pojo=" + pojo+"): end");
+			getLogger().debug("invokeSetterForAttributeOnPojo(pojo=" + pojo+"): end");
 		}
 	}
 
 
-	Object around$transactionalChangingAttributeOnPojo(IPojo pojo, Object postValue, JoinPoint.StaticPart thisJoinPointStaticPart) { 
+	Object around$changingAttributeOnPojo(IPojo pojo, Object postValue, JoinPoint.StaticPart thisJoinPointStaticPart) { 
 		getLogger().debug("changingAttributeOnPojo(pojo=" + pojo+", postValue='" + postValue + "'): start");
 		try {
-			Field field = AspectsUtil.getFieldFor(thisJoinPointStaticPart);
+			Field field = JoinPointUtil.getFieldFor(thisJoinPointStaticPart);
 			
 			ITransactable transactable = (ITransactable)pojo;
 			ITransaction transaction = currentTransaction(transactable);
@@ -63,7 +63,7 @@ class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 			IDomainObject domainObject = pojo.getDomainObject();
 			IDomainObject.IObjectAttribute attribute = null;
 			if (domainObject.getPersistState() != PersistState.UNKNOWN) {
-				attribute = AspectsUtil.getAttributeFor(domainObject, thisJoinPointStaticPart);
+				attribute = JoinPointUtil.getAttributeFor(domainObject, thisJoinPointStaticPart);
 			}
 			IChange change = new AttributeChange(transaction, transactable, field, postValue, attribute);
 			

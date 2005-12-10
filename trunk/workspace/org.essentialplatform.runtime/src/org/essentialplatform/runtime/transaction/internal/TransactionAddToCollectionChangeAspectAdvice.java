@@ -15,24 +15,27 @@ import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.changes.AddToCollectionChange;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
-import org.essentialplatform.runtime.util.AspectsUtil;
+import org.essentialplatform.runtime.util.JoinPointUtil;
 
 class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvice {
 
 
+
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
+	 * Defines the boundaries of the interaction.
 	 * 
 	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * In addition, binds the name of the collection (derived from the
+	 * method name) to a ThreadLocal so that the actual change to the
+	 * collection (within {@link #around$addingToCollectionOnPojo(IPojo, Collection, Object)})
+	 * can provide the collection name.
 	 */
-	Object around$transactionalChange(IPojo pojo, Callable proceed ) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
+	Object around$invokeAddToCollectionOnPojo(
+			IPojo pojo, IPojo addedObject, JoinPoint.StaticPart thisJoinPointStaticPart, Callable proceed) {
+
+		getLogger().debug("invokeAddToCollectionOnPojo(pojo=" + pojo+"): start");
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -40,8 +43,25 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 			getLogger().debug("(xactn for thread already present)");
 		}
 		boolean startedInteraction = transaction.startingInteraction();
+
 		try {
-			return call(proceed);
+			IDomainObject domainObject = pojo.getDomainObject();
+			
+			
+			//if (domainObject.getPersistState() == PersistState.UNKNOWN) {
+			//	return call(proceed);
+			//} else {
+				IDomainObject.IObjectCollectionReference reference = 
+					JoinPointUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
+				
+				ThreadLocals.setCollectionReferenceForThread(reference);
+				try {
+					return call(proceed);
+				} finally {
+					ThreadLocals.clearCollectionReferenceForThread();
+				}
+			//}
+
 		} finally {
 			if (startedInteraction) {
 				transaction.completingInteraction();
@@ -50,34 +70,7 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
 				ThreadLocals.clearTransactionForThread();
 			}
-		}
-	}
-
-
-
-	/**
-	 * If we are able to locate the {@link org.essentialplatform.session.IDomainObject}
-	 * wrapper for this pojo then get it to notify any listeners it has for
-	 * this collection.
-	 * 
-	 * <p>
-	 * In addition, notify all {@link IObservedFeature}s of the session.
-	 */
-	Object around$invokeAddToCollectionOnPojo(
-			IPojo pojo, IPojo addedObject, JoinPoint.StaticPart thisJoinPointStaticPart, Callable proceed) {
-		IDomainObject domainObject = pojo.getDomainObject();
-		if (domainObject.getPersistState() == PersistState.UNKNOWN) {
-			return call(proceed);
-		} else {
-			IDomainObject.IObjectCollectionReference reference = 
-				AspectsUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
-			
-			ThreadLocals.setCollectionReferenceForThread(reference);
-			try {
-				return call(proceed);
-			} finally {
-				ThreadLocals.clearCollectionReferenceForThread();
-			}
+			getLogger().debug("invokeAddToCollectionOnPojo(pojo=" + pojo+"): end");
 		}
 	}
 
@@ -95,7 +88,7 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 	 * <p>
 	 * Note the trick for picking up the collection name: from ThreadLocals.
 	 */
-	Object around$transactionalAddingToCollectionOnPojo(
+	Object around$addingToCollectionOnPojo(
 			IPojo pojo, Collection collection, Object addedObj) {
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);

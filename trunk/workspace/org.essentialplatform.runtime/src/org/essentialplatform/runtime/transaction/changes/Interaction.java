@@ -11,12 +11,13 @@ import org.essentialplatform.runtime.transaction.IrreversibleTransactionExceptio
 
 
 /**
- * An immutable chain or sequence of {@link IChange}s.
+ * An immutable chain or sequence of {@link IChange}s representing a discrete
+ * interaction by the user with the application.
  * 
  * <p>
  * Composite pattern, with value type semantics.
  */
-public final class ChangeSet implements IChange {
+public final class Interaction implements IChange {
 
 	private final ITransaction _transaction;
 	private final IChange[] _changes;
@@ -35,10 +36,10 @@ public final class ChangeSet implements IChange {
 	 *  
 	 * @param list
 	 */
-	public ChangeSet(final ITransaction transaction, final List<IChange> list) {
+	public Interaction(final ITransaction transaction, final List<IChange> list) {
 		this(transaction, list.toArray(new IChange[]{}));
 	}
-	public ChangeSet(final ITransaction transaction, final IChange[] changes) {
+	public Interaction(final ITransaction transaction, final IChange[] changes) {
 		_transaction = transaction;
 		_description = changes.length + " changes";
 		_extendedInfo = new Object[]{};
@@ -46,6 +47,10 @@ public final class ChangeSet implements IChange {
 		
 		// changes
 		_changes = new IChange[changes.length];
+		for(int i=0; i<changes.length; i++) {
+			_changes[i] = changes[i];
+			_changes[i].setParent(this);
+		}
 		System.arraycopy(changes, 0, _changes, 0, changes.length);
 		
 		// string
@@ -69,11 +74,18 @@ public final class ChangeSet implements IChange {
 	}
 	private static String calculateAsString(final IChange[] changes) {
 		StringBuffer buf = new StringBuffer();
+		buf.append(changes.length).append(" changes");
+		if (changes.length > 0) {
+			buf.append(" (");
+		}
 		for (int i = 0; i < changes.length; i++) {
-			buf.append(changes[i].toString());
-			if (i != changes.length-1) {
+			buf.append(changes[i].getDescription());
+			if (i < changes.length-1) {
 				buf.append(", ");
 			}
+		}
+		if (changes.length > 0) {
+			buf.append(")");
 		}
 		return buf.toString();
 	}
@@ -208,7 +220,7 @@ public final class ChangeSet implements IChange {
 	 * Implementation of {@link #equals(Object)} for value type semantics.
 	 */
 	public boolean equals(Object other) {
-		return sameClass(other) && equals((ChangeSet)other);
+		return sameClass(other) && equals((Interaction)other);
 	}
 
 	private final boolean sameClass(final Object other) {
@@ -216,14 +228,14 @@ public final class ChangeSet implements IChange {
 	}
 
 	/**
-	 * Equal iff the other object is a {@link ChangeSet} with a collection of
+	 * Equal iff the other object is a {@link Interaction} with a collection of
 	 * {@link IChange}s that are respectively equal according to value 
 	 * semantics.
 	 * 
 	 * @param other
 	 * @return
 	 */
-	public boolean equals(final ChangeSet other) {
+	public boolean equals(final Interaction other) {
 		if (_changes.length != other._changes.length) {
 			return false;
 		}

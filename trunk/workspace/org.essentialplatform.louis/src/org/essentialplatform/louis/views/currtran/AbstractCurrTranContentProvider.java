@@ -13,7 +13,7 @@ import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.TransactionManager;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 
 /**
  * Base class for the three different content providers.
@@ -98,7 +98,7 @@ abstract class AbstractCurrTranContentProvider implements IStructuredContentProv
 	 */
 	protected final ITransaction currentTransactionIfAny() {
 		return TransactionManager.instance().getCurrentTransactionFor(
-			(ITransactable)_input.getPojo());
+			(ITransactable)_input.getPojo(), false);
 	}
 
 	protected final Object[] copyAsArray(Collection<?> objectList) {

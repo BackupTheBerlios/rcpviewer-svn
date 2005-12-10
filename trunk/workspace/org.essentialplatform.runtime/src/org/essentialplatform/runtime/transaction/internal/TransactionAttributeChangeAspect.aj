@@ -13,22 +13,17 @@ import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
-
+import org.essentialplatform.runtime.domain.PojoAspect;
 
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionAttributeChangeAspect extends TransactionAspect {
+public aspect TransactionAttributeChangeAspect extends PojoAspect {
 
 	private TransactionAttributeChangeAspectAdvice advice = 
 		new TransactionAttributeChangeAspectAdvice();
 	
-	protected pointcut transactionalChange(IPojo pojo): 
-		transactionalChangingAttributeOnPojo(IPojo, Object) && 
-		this(pojo) && 
-		if(canBeEnlisted(pojo)) &&
-		!cflowbelow(invokeOperationOnPojo(IPojo)) ;  // this is probably unnecessary since the invokeOperation aspect has precedence over this one...
 
 	/**
 	 * Obtains transaction from either the thread or from the pojo (checking
@@ -38,11 +33,12 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 	 * This code is identical in all subaspects of TransactionChange, however
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
-	Object around(final IPojo pojo): transactionalChange(pojo) {
-		return advice.around$transactionalChange(
+	Object around(final IPojo pojo, final Object postValue): invokeSetterForAttributeOnPojo(pojo, postValue) {
+		return advice.around$invokeSetterForAttributeOnPojo(
 			pojo, 
+			postValue, 
 			new Callable() {
-				public Object call() { return proceed(pojo); }
+				public Object call() { return proceed(pojo, postValue); }
 			}
 		);
 	}
@@ -72,8 +68,8 @@ public aspect TransactionAttributeChangeAspect extends TransactionAspect {
 	 * advices are applied. 
 	 */
 	Object around(IPojo pojo, Object postValue): 
-			transactionalChangingAttributeOnPojo(pojo, postValue) {
-		return advice.around$transactionalChangingAttributeOnPojo(pojo, postValue, thisJoinPointStaticPart);
+			changingAttributeOnPojo(pojo, postValue) {
+		return advice.around$changingAttributeOnPojo(pojo, postValue, thisJoinPointStaticPart);
 	}
 
 }

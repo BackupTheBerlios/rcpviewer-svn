@@ -17,7 +17,7 @@ import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.changes.OneToOneReferenceChange;
 import org.essentialplatform.runtime.transaction.changes.RemoveFromCollectionChange;
-import org.essentialplatform.runtime.util.AspectsUtil;
+import org.essentialplatform.runtime.util.JoinPointUtil;
 import org.essentialplatform.runtime.util.ReflectUtil;
 
 class TransactionInvokeOperationAspectAdvice extends TransactionAspectAdvice {

@@ -225,8 +225,12 @@ public interface IChange {
 			return true;
 		}
 
+		private IChange _parent;
 		public IChange getParent() {
-			return null;
+			return _parent;
+		}
+		public void setParent(final IChange parent) {
+			this._parent = parent;
 		}
 
 	}
@@ -333,8 +337,12 @@ public interface IChange {
 			return null;
 		}
 
+		private IChange _parent;
 		public IChange getParent() {
-			return null;
+			return _parent;
+		}
+		public void setParent(final IChange parent) {
+			this._parent = parent;
 		}
 	}
 
@@ -356,5 +364,11 @@ public interface IChange {
 	 * @return
 	 */
 	public IChange getParent();
+
+	/**
+	 * Sets the owning parent of this change.
+	 * @param set
+	 */
+	public void setParent(IChange change);
 
 }

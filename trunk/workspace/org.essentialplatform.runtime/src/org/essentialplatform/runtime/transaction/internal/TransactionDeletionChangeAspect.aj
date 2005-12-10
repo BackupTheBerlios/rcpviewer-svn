@@ -8,12 +8,12 @@ import org.essentialplatform.runtime.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 
 import java.util.concurrent.*;
-
+import org.essentialplatform.runtime.domain.PojoAspect;
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionDeletionChangeAspect extends TransactionAspect {
+public aspect TransactionDeletionChangeAspect extends PojoAspect {
 
 	private TransactionDeletionChangeAspectAdvice advice = 
 		new TransactionDeletionChangeAspectAdvice();
@@ -22,7 +22,7 @@ public aspect TransactionDeletionChangeAspect extends TransactionAspect {
 	protected Logger getLogger() { return LOG; }
 
 	protected pointcut transactionalChange(IPojo pojo): 
-		transactionalDeletingPojoUsingDeleteMethod(pojo) &&
+		deletingPojoUsingDeleteMethod(pojo) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 
@@ -53,8 +53,8 @@ public aspect TransactionDeletionChangeAspect extends TransactionAspect {
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around(IPojo pojo): transactionalDeletingPojoUsingDeleteMethod(pojo) {
-		return advice.around$transactionalDeletingPojoUsingDeleteMethod(pojo);
+	Object around(IPojo pojo): deletingPojoUsingDeleteMethod(pojo) {
+		return advice.around$deletingPojoUsingDeleteMethod(pojo);
 	}
 	
 

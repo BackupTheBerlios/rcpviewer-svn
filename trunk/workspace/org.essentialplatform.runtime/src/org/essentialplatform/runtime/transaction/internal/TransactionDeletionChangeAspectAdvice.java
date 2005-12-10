@@ -19,7 +19,7 @@ import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.transaction.changes.OneToOneReferenceChange;
 import org.essentialplatform.runtime.transaction.changes.RemoveFromCollectionChange;
-import org.essentialplatform.runtime.util.AspectsUtil;
+import org.essentialplatform.runtime.util.JoinPointUtil;
 import org.essentialplatform.runtime.util.ReflectUtil;
 
 class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
@@ -66,7 +66,7 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around$transactionalDeletingPojoUsingDeleteMethod(IPojo pojo) {
+	Object around$deletingPojoUsingDeleteMethod(IPojo pojo) {
 		getLogger().debug("transactionalDeletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);

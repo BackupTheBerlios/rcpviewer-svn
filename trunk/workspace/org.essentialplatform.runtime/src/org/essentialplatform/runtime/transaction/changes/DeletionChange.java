@@ -25,7 +25,9 @@ import java.util.Set;
 public final class DeletionChange extends AbstractChange {
 
 	private static String description(final ITransactable transactable) {
-		return transactable.toString();
+		IPojo pojo = (IPojo)transactable;
+		IDomainObject domainObject = pojo.getDomainObject();
+		return "deleted " + domainObject.getDomainClass().getName();
 	}
 	
 	private static Object[] extendedInfo(final ITransactable transactable) {

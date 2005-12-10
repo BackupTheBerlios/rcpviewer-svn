@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 
 public class TestTransactionManagerChangeSets extends AbstractTransactionManagerTestCase {
 
@@ -20,9 +20,9 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(calculator);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(calculator);
 	}
 
 
@@ -32,9 +32,9 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(calculator);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(calculator);
 	}
 
 	public void testSettingAOneToOneReferenceAddsChangeSet() {
@@ -43,10 +43,10 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer, false);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(customer);
-		changeSets.get(0).getModifiedPojos().contains(emailAddress);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(customer);
+		interactions.get(0).getModifiedPojos().contains(emailAddress);
 	}
 
 	public void testAddingToACollectionReferenceAddsChangeSet() {
@@ -55,10 +55,10 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer, false);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(customer);
-		changeSets.get(0).getModifiedPojos().contains(emailAddress);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(customer);
+		interactions.get(0).getModifiedPojos().contains(emailAddress);
 	}
 
 	public void testRemovingFromACollectionReferenceAddsChangeSet() {
@@ -72,10 +72,10 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer, false);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(customer);
-		changeSets.get(0).getModifiedPojos().contains(emailAddress);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(customer);
+		interactions.get(0).getModifiedPojos().contains(emailAddress);
 	}
 
 	/**
@@ -93,10 +93,10 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer, false);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(customer);
-		changeSets.get(0).getModifiedPojos().contains(emailAddress);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(customer);
+		interactions.get(0).getModifiedPojos().contains(emailAddress);
 	}
 
 	public void testDeletingAnObjectAddsChangeSet() {
@@ -105,9 +105,9 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 
-		List<ChangeSet> changeSets = transaction.getUndoableChanges();
-		assertEquals(1, changeSets.size());
-		changeSets.get(0).getModifiedPojos().contains(calculator);
+		List<Interaction> interactions = transaction.getUndoableChanges();
+		assertEquals(1, interactions.size());
+		interactions.get(0).getModifiedPojos().contains(calculator);
 	}	
 
 	/**

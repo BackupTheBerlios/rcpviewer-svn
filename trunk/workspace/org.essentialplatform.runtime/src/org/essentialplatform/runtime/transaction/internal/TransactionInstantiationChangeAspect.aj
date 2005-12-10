@@ -9,14 +9,14 @@ import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.*;
 
 import java.util.concurrent.*;
-
+import org.essentialplatform.runtime.domain.PojoAspect;
 /**
  * Note that this aspect does <i>not</i> use the instantiatingPojo pointcut
  * from PojoAspect since it is too broad; rather it picks up on the creating 
  * of a pojo by the ISession.
  * 
  */
-public aspect TransactionInstantiationChangeAspect extends TransactionAspect {
+public aspect TransactionInstantiationChangeAspect extends PojoAspect {
 
 	private final static Logger LOG = Logger.getLogger(TransactionInstantiationChangeAspect.class);
 	protected Logger getLogger() { return LOG; }

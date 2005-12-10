@@ -6,7 +6,7 @@ import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 
 import java.util.concurrent.*;
-
+import org.essentialplatform.runtime.domain.PojoAspect;
 /**
  * One change per invoked operation that hasn't been called from another
  * invoked operation.
@@ -14,7 +14,7 @@ import java.util.concurrent.*;
  * <p>
  * TODO: this aspect may be wholly redundant?? 
  */
-public aspect TransactionInvokeOperationAspect extends TransactionAspect {
+public aspect TransactionInvokeOperationAspect extends PojoAspect {
 
 	private TransactionInvokeOperationAspectAdvice advice = 
 		new TransactionInvokeOperationAspectAdvice();

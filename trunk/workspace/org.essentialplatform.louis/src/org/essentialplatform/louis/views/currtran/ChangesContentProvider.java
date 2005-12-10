@@ -4,7 +4,7 @@
 package org.essentialplatform.louis.views.currtran;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 
 /**
@@ -77,9 +77,9 @@ class ChangesContentProvider extends AbstractCurrTranContentProvider
 		if (parentElement == getInput()) {
 			return getElements(parentElement);
 		}
-		if (parentElement instanceof ChangeSet) {
-			ChangeSet changeSet = (ChangeSet)parentElement;
-			return changeSet.getChanges();
+		if (parentElement instanceof Interaction) {
+			Interaction interaction = (Interaction)parentElement;
+			return interaction.getChanges();
 		}
 		// regular IChange
 		return null;
@@ -89,9 +89,9 @@ class ChangesContentProvider extends AbstractCurrTranContentProvider
 		if (element == getInput()) {
 			return true;
 		}
-		if (element instanceof ChangeSet) {
-			ChangeSet changeSet = (ChangeSet)element;
-			return changeSet.size() > 0;
+		if (element instanceof Interaction) {
+			Interaction interaction = (Interaction)element;
+			return interaction.size() > 0;
 		}
 		// regular IChange
 		return false;

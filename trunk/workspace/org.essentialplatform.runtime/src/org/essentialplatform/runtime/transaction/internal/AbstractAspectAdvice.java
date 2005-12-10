@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.SoftException;
 import org.essentialplatform.runtime.domain.IPojo;
+import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
 
 /**
  * Base class for defining advice executed by aspects.
@@ -59,6 +60,8 @@ public abstract class AbstractAspectAdvice {
 	protected final <V> V call(Callable<V> proceed) {
 		try {
 			return proceed.call();
+		} catch (RuntimeException ex) {
+			throw ex;
 		} catch (Exception ex) {
 			throw new SoftException(ex);
 		}

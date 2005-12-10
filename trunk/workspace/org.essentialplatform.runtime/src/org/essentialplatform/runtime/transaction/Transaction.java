@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
 import org.essentialplatform.runtime.transaction.*;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.event.ITransactionListener;
 import org.essentialplatform.runtime.transaction.event.TransactionEvent;
@@ -43,20 +43,20 @@ public final class Transaction implements ITransaction {
 	 */
 	private List<IChange> _changesInCurrentChange = new ArrayList<IChange>();
 	/**
-	 * List of all changes ({@link ChangeSet}s) that have been 
+	 * List of all changes ({@link Interaction}s) that have been 
 	 * performed in the context of this transaction.
 	 * 
 	 * <p>
 	 * This stack is available to be undone.
 	 */
-	private Stack<ChangeSet> _changes = new Stack<ChangeSet>();
+	private Stack<Interaction> _changes = new Stack<Interaction>();
 	/**
 	 * Stack of all changes ({@link IWorkChain}s) that have been undone.
 	 * 
 	 * <p>
 	 * This stack is available to be redone.
 	 */
-	private Stack<ChangeSet> _undoneChanges = new Stack<ChangeSet>();
+	private Stack<Interaction> _undoneChanges = new Stack<Interaction>();
 	/**
 	 * The {@link #_changes} is converted into an immutable work chain 
 	 * when the transaction is {@link #commit()}ted.
@@ -65,7 +65,7 @@ public final class Transaction implements ITransaction {
 	 * Will be set to <code>null</code> until the transaction has been
 	 * committed.
 	 */
-	private ChangeSet _committedChanges;
+	private Interaction _committedChanges;
 
 	/**
 	 * The current state of this transaction.
@@ -175,15 +175,15 @@ public final class Transaction implements ITransaction {
 		
 		// copy current set of changes, add to the list of all changes in 
 		// this transaction.
-		ChangeSet changeSet = new ChangeSet(this, _changesInCurrentChange);
-		_changes.push(changeSet);
+		Interaction interaction = new Interaction(this, _changesInCurrentChange);
+		_changes.push(interaction);
 		LOG.debug("pushing new ChangeSet of " + _changesInCurrentChange.size() + " changes onto undo stack");
 		
 		_changesInCurrentChange.clear();
 		this._state = ITransaction.State.IN_PROGRESS;
 		
 		// notify listeners.
-		TransactionEvent event = new TransactionEvent(this, changeSet);
+		TransactionEvent event = new TransactionEvent(this, interaction);
 		for(ITransactionListener listener: _listeners) {
 			listener.addedChange(event);
 		}
@@ -211,7 +211,7 @@ public final class Transaction implements ITransaction {
 	public ITransaction commit() {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
-		_committedChanges = new ChangeSet(this, _changes.toArray(new ChangeSet[]{}));
+		_committedChanges = new Interaction(this, _changes.toArray(new Interaction[]{}));
 		LOG.debug("committing xactn of " + _changes.size() + " separate ChangeSets");
 		
 		// we notify the transaction manager before we clear _changes because
@@ -269,7 +269,7 @@ public final class Transaction implements ITransaction {
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#getWorkChain()
 	 */
-	public ChangeSet getCommittedChanges() throws IllegalStateException {
+	public Interaction getCommittedChanges() throws IllegalStateException {
 		checkInState(ITransaction.State.COMMITTED);
 		return _committedChanges;
 	}
@@ -285,7 +285,7 @@ public final class Transaction implements ITransaction {
 			LOG.error("No pending changes to undo (_changes undo stack is empty)");
 			throw new IllegalStateException("No pending changes to undo.");
 		}
-		ChangeSet change = _changes.pop();
+		Interaction change = _changes.pop();
 		change.undo();
 		_undoneChanges.push(change);
 
@@ -344,14 +344,14 @@ public final class Transaction implements ITransaction {
 	 * 
 	 * @throws IllegalStateException
 	 */
-	private ChangeSet redoPendingChangeNoNotifyListeners() throws IllegalStateException {
+	private Interaction redoPendingChangeNoNotifyListeners() throws IllegalStateException {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS);
 		if(_undoneChanges.isEmpty()) {
 			LOG.error("No pending changes to redo (_undoChanges redo stack is empty)");
 			throw new IllegalStateException("No undone changes to redo.");
 		}
-		ChangeSet change = _undoneChanges.pop();
+		Interaction change = _undoneChanges.pop();
 		change.execute();
 		_changes.push(change);
 		return change;
@@ -367,7 +367,7 @@ public final class Transaction implements ITransaction {
 	 * 
 	 * @see org.essentialplatform.transaction.ITransaction#getUndoableChanges()
 	 */
-	public List<ChangeSet> getUndoableChanges() {
+	public List<Interaction> getUndoableChanges() {
 		return Collections.unmodifiableList(_changes);
 	}
 
@@ -389,7 +389,7 @@ public final class Transaction implements ITransaction {
 	 * 
 	 * @see org.essentialplatform.transaction.ITransaction#getRedoableChanges()
 	 */
-	public List<ChangeSet> getRedoableChanges() {
+	public List<Interaction> getRedoableChanges() {
 		return Collections.unmodifiableList(_undoneChanges);
 	}
 
@@ -412,8 +412,8 @@ public final class Transaction implements ITransaction {
 
 	private Set<ITransactable> getEnlistedPojosInternal() {
 		Set<ITransactable> enlistedPojos = new LinkedHashSet<ITransactable>();
-		for(ChangeSet changeSet: _changes) {
-			enlistedPojos.addAll(changeSet.getModifiedPojos());
+		for(Interaction interaction: _changes) {
+			enlistedPojos.addAll(interaction.getModifiedPojos());
 		}
 		return enlistedPojos;
 	}

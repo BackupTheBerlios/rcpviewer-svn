@@ -13,7 +13,7 @@ import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.TransactionManager;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 
 /**
  * Returns either undoable or redoable changes of an in-progress transaction, 

@@ -3,7 +3,7 @@ package org.essentialplatform.runtime.tests.transaction;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.changes.AddToCollectionChange;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.changes.OneToOneReferenceChange;
@@ -63,9 +63,9 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		IChange change = event.getChange();
 		assertNotNull(change);
 		assertEquals(0, change.getModifiedPojos().size());
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(0, changeSet.size());
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(0, interaction.size());
 	}
 
 	public void testSettingAttributeForTransactionNotifiesListenersOfAddingChange() {
@@ -79,10 +79,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertNotNull(change);
 		assertEquals(1, change.getModifiedPojos().size());
 		assertTrue(change.getModifiedPojos().contains(calculator));
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size());
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size());
+		IChange change0 = interaction.get(0);
 		assertSame(AttributeChange.class, change0.getClass());
 		AttributeChange attributeChange = (AttributeChange)change0;
 		assertEquals(new Integer(20), attributeChange.getPreValue());
@@ -102,10 +102,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertTrue(change.getModifiedPojos().contains(customer));
 		assertTrue(change.getModifiedPojos().contains(emailAddress));
 		
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size());
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size());
+		IChange change0 = interaction.get(0);
 		assertSame(OneToOneReferenceChange.class, change0.getClass());
 		OneToOneReferenceChange oneToOneChange = (OneToOneReferenceChange)change0;
 		assertEquals(null, oneToOneChange.getPreValue());
@@ -124,10 +124,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertEquals(1, change.getModifiedPojos().size());
 		assertTrue(change.getModifiedPojos().contains(customer));
 		
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size());
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size());
+		IChange change0 = interaction.get(0);
 		assertSame(OneToOneReferenceChange.class, change0.getClass());
 		OneToOneReferenceChange oneToOneChange = (OneToOneReferenceChange)change0;
 		assertEquals(null, oneToOneChange.getPostValue());
@@ -146,10 +146,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertTrue(change.getModifiedPojos().contains(customer));
 		assertTrue(change.getModifiedPojos().contains(order));
 		
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size());
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size());
+		IChange change0 = interaction.get(0);
 		assertSame(AddToCollectionChange.class, change0.getClass());
 		AddToCollectionChange addToCollectionChange = (AddToCollectionChange)change0;
 		assertEquals(order, addToCollectionChange.getReferencedObject());
@@ -174,10 +174,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertTrue(change.getModifiedPojos().contains(customer));
 		assertTrue(change.getModifiedPojos().contains(order));
 		
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size());
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size());
+		IChange change0 = interaction.get(0);
 		assertSame(RemoveFromCollectionChange.class, change0.getClass());
 		RemoveFromCollectionChange removeFromCollectionChange = (RemoveFromCollectionChange)change0;
 		assertEquals(order, removeFromCollectionChange.getReferencedObject());
@@ -203,10 +203,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertEquals(1, change.getModifiedPojos().size());
 		assertTrue(change.getModifiedPojos().contains(calculator));
 		
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size());
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size());
+		IChange change0 = interaction.get(0);
 		assertSame(DeletionChange.class, change0.getClass());
 		DeletionChange deletionChange = (DeletionChange)change0;
 		// nothing additional to assert here.
@@ -234,9 +234,9 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		
 		IChange change = event.getChange();
 		assertNotNull(change);
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(0, changeSet.size()); // for the noop()
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(0, interaction.size()); // for the noop()
 	}
 
 	public void testDiscardingTransactionImplicitlyNotifiesTransactionListeners() {
@@ -256,10 +256,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		
 		IChange change = undonePendingChangeEvent.getChange();
 		assertNotNull(change);
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size()); // for the setInitialResult in the fixture
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size()); // for the setInitialResult in the fixture
+		IChange change0 = interaction.get(0);
 		assertSame(AttributeChange.class, change0.getClass());
 		AttributeChange attributeChange = (AttributeChange)change0;
 		assertEquals(new Integer(0), attributeChange.getPreValue());
@@ -296,10 +296,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		
 		IChange change = event.getChange();
 		assertNotNull(change);
-		assertSame(ChangeSet.class, change.getClass());
-		ChangeSet changeSet = (ChangeSet)change;
-		assertEquals(1, changeSet.size()); // for the setInitialResult
-		IChange change0 = changeSet.get(0);
+		assertSame(Interaction.class, change.getClass());
+		Interaction interaction = (Interaction)change;
+		assertEquals(1, interaction.size()); // for the setInitialResult
+		IChange change0 = interaction.get(0);
 		assertSame(AttributeChange.class, change0.getClass());
 		AttributeChange attributeChange = (AttributeChange)change0;
 		assertEquals(new Integer(20), attributeChange.getPreValue());
@@ -345,10 +345,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertSame(calculatorTransaction, event1.getTransaction());
 		IChange change1 = event1.getChange();
 		assertNotNull(change1);
-		assertSame(ChangeSet.class, change1.getClass());
-		ChangeSet changeSet1 = (ChangeSet)change1;
-		assertEquals(1, changeSet1.size()); // for the setInitialResult
-		IChange change1_0 = changeSet1.get(0);
+		assertSame(Interaction.class, change1.getClass());
+		Interaction interaction1 = (Interaction)change1;
+		assertEquals(1, interaction1.size()); // for the setInitialResult
+		IChange change1_0 = interaction1.get(0);
 		assertSame(AttributeChange.class, change1_0.getClass());
 		AttributeChange attributeChange1_0 = (AttributeChange)change1_0;
 		assertEquals(new Integer(20), attributeChange1_0.getPreValue());
@@ -359,10 +359,10 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		assertSame(calculatorTransaction, event2.getTransaction());
 		IChange change2 = event2.getChange();
 		assertNotNull(change2);
-		assertSame(ChangeSet.class, change2.getClass());
-		ChangeSet changeSet2 = (ChangeSet)change2;
-		assertEquals(1, changeSet2.size()); // for the setInitialResult
-		IChange change2_0 = changeSet2.get(0);
+		assertSame(Interaction.class, change2.getClass());
+		Interaction interaction2 = (Interaction)change2;
+		assertEquals(1, interaction2.size()); // for the setInitialResult
+		IChange change2_0 = interaction2.get(0);
 		assertSame(AttributeChange.class, change2_0.getClass());
 		AttributeChange attributeChange2_0 = (AttributeChange)change2_0;
 		assertEquals(new Integer(40), attributeChange2_0.getPreValue());

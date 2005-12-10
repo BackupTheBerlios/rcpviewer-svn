@@ -19,12 +19,12 @@ import org.essentialplatform.runtime.persistence.IPersistable;
 import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 
 import java.util.concurrent.*;
-
+import org.essentialplatform.runtime.domain.PojoAspect;
 /**
  * One change per modified 1:1 reference performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionOneToOneReferenceChangeAspect extends TransactionAspect {
+public aspect TransactionOneToOneReferenceChangeAspect extends PojoAspect {
 	
 	private final static Logger LOG = Logger.getLogger(TransactionOneToOneReferenceChangeAspect.class);
 	protected Logger getLogger() { return LOG; }
@@ -32,7 +32,7 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionAspect
 		new TransactionOneToOneReferenceChangeAspectAdvice();
 	
 	protected pointcut transactionalChange(IPojo pojo): 
-		transactionalChangingOneToOneReferenceOnPojo(pojo, Object) &&
+		changingOneToOneReferenceOnPojo(pojo, Object) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 	/**
@@ -63,8 +63,8 @@ public aspect TransactionOneToOneReferenceChangeAspect extends TransactionAspect
 	 * advices are applied. 
 	 */
 	Object around(IPojo pojo, IPojo referencedObjOrNull): 
-			transactionalChangingOneToOneReferenceOnPojo(pojo, referencedObjOrNull) {
-		return advice.around$transactionalChangingOneToOneReferenceOnPojo(
+			changingOneToOneReferenceOnPojo(pojo, referencedObjOrNull) {
+		return advice.around$changingOneToOneReferenceOnPojo(
 				pojo, referencedObjOrNull, thisJoinPointStaticPart);
 	}
 

@@ -17,7 +17,7 @@ import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.changes.OneToOneReferenceChange;
 import org.essentialplatform.runtime.transaction.changes.RemoveFromCollectionChange;
-import org.essentialplatform.runtime.util.AspectsUtil;
+import org.essentialplatform.runtime.util.JoinPointUtil;
 import org.essentialplatform.runtime.util.ReflectUtil;
 
 class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAdvice {
@@ -64,17 +64,17 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around$transactionalChangingOneToOneReferenceOnPojo(
+	Object around$changingOneToOneReferenceOnPojo(
 			final IPojo pojo, final IPojo referencedObjOrNull, JoinPoint.StaticPart thisJoinPointStaticPart) {
-		getLogger().debug("transactionalChangingOneToOneReferenceOnPojo(pojo=" + pojo+")");
-		Field field = AspectsUtil.getFieldFor(thisJoinPointStaticPart);
+		getLogger().debug("changingOneToOneReferenceOnPojo(pojo=" + pojo+")");
+		Field field = JoinPointUtil.getFieldFor(thisJoinPointStaticPart);
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 
 		IDomainObject domainObject = pojo.getDomainObject();
 		IDomainObject.IObjectOneToOneReference reference = null;
 		if (domainObject.getPersistState() != PersistState.UNKNOWN) {
-			reference = AspectsUtil.getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
+			reference = JoinPointUtil.getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
 		}
 		IChange change = new OneToOneReferenceChange(transaction, transactable, field, referencedObjOrNull, reference);
 		

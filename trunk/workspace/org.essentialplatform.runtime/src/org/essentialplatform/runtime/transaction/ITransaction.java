@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.essentialplatform.runtime.transaction.ITransactionManager;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.event.ITransactionListener;
 
@@ -49,12 +49,12 @@ import org.essentialplatform.runtime.transaction.event.ITransactionListener;
  *  
  * <p>
  * Each user's interaction or change is internally represented as a
- * {@link ChangeSet}.  This in turn is a collection of {@link IChange}s.  If
- * the user simply edits a attribute, then the {@link ChangeSet} will consist
+ * {@link Interaction}.  This in turn is a collection of {@link IChange}s.  If
+ * the user simply edits a attribute, then the {@link Interaction} will consist
  * of a single work atom - a {@link AttributeChange} in fact.  
  * On the other hand, if the user has invoked an operation then several 
  * attributes in potentially different pojos might have been modified; in 
- * this case the {@link ChangeSet} will contain several {@link IChange}s.
+ * this case the {@link Interaction} will contain several {@link IChange}s.
  * 
  * <p>
  * The user's view of a transaction is as this set of changes, and it's important
@@ -166,7 +166,7 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#BUILDING_CHANGE}.
-	 * <li> internally, a new {@link IChange} (in fact, a {@link ChangeSet} 
+	 * <li> internally, a new {@link IChange} (in fact, a {@link Interaction} 
 	 *      to hold a collection of atoms) is added to the current stack.
 	 * <li> any changes that had been undone and were ready to be redone
 	 *      (using {@link #redoPendingChange()}) will be cleared from the
@@ -204,7 +204,7 @@ public interface ITransaction {
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#BUILDING_CHANGE}.
 	 * <li> internally, the {@link IChange} is added in the current change
-	 *      ({@link ChangeSet})
+	 *      ({@link Interaction})
 	 * <li> any pojos affected by the change are enlisted into the transaction.
 	 * </ul>
 	 * 
@@ -267,7 +267,7 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-	 * <li> the change undone (a {@link ChangeSet} is removed from the undo
+	 * <li> the change undone (a {@link Interaction} is removed from the undo
 	 *      stack and added to the redo stack such that it may be redone using
 	 *      {@link #redoPendingChange()} 
 	 * <li> any pojos are un-enlisted
@@ -302,7 +302,7 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-	 * <li> the change redone (a {@link ChangeSet} is removed from the redo
+	 * <li> the change redone (a {@link Interaction} is removed from the redo
 	 *      stack and added to a undo stack such that it may be undone using
 	 *      {@link #undoPendingChange()} 
 	 * <li> any pojos are re-enlisted
@@ -352,7 +352,7 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#DISCARDED}.
-	 * <li> all changes are undone (a {@link ChangeSet} and removed from the undo
+	 * <li> all changes are undone (a {@link Interaction} and removed from the undo
 	 *      stack
 	 * <li> any pojos are un-enlisted
 	 * <li> the {@link ITransactionManager} discards the transaction. 
@@ -393,7 +393,7 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-	 * <li> the changes redone (a {@link ChangeSet} are removed from the redo
+	 * <li> the changes redone (a {@link Interaction} are removed from the redo
 	 *      stack and added to the undo stack such that they may be undone using
 	 *      {@link #undoPendingChange()} 
 	 * </ul>
@@ -505,7 +505,7 @@ public interface ITransaction {
 	 * @throws IllegalStateException if called when not in state of IN_PROGRESS.
 	 * @return
 	 */
-	public List<ChangeSet> getUndoableChanges();
+	public List<Interaction> getUndoableChanges();
 	
 	/**
 	 * True iff {@link #getUndoableChanges()} has non-zero size.
@@ -524,7 +524,7 @@ public interface ITransaction {
 	 * @throws IllegalStateException if called when not in state of IN_PROGRESS.
 	 * @return
 	 */
-	public List<ChangeSet> getRedoableChanges();
+	public List<Interaction> getRedoableChanges();
 
 	/**
 	 * True iff {@link #getRedoableChanges()} has non-zero size.
@@ -537,12 +537,12 @@ public interface ITransaction {
 	 * Exposes all changes that have been commited in this transaction. 
 	 * 
 	 * <p>
-	 * The changes are aggregated into a single immutable {@link ChangeSet}.
+	 * The changes are aggregated into a single immutable {@link Interaction}.
 	 * 
 	 * @throws IllegalStateException if called when not in state of COMMITTED or REVERSED
 	 * @return
 	 */
-	public ChangeSet getCommittedChanges() throws IllegalStateException;
+	public Interaction getCommittedChanges() throws IllegalStateException;
 	
 
 		

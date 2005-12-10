@@ -29,13 +29,13 @@ import org.essentialplatform.runtime.domain.IPojo;
 
 import org.essentialplatform.runtime.session.ISession;
 
-public final class AspectsUtil {
+public final class JoinPointUtil {
 
 	/**
 	 * Cannot be instantiated.
 	 *
 	 */
-	private AspectsUtil() {	}
+	private JoinPointUtil() {	}
 
 	
 	/**

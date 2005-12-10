@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 
 /**
  * @author Mike
@@ -30,7 +30,7 @@ class TransactionManagerViewContentProvider implements ITreeContentProvider {
 		// transactions
 		if (element instanceof ITransaction) {
 			ITransaction transaction = (ITransaction)element;
-			return transaction.getUndoableChanges().toArray();
+			return transaction.getEnlistedPojos().toArray();
 		}
 		// change sets (have no children)
 		return null;
@@ -49,9 +49,9 @@ class TransactionManagerViewContentProvider implements ITreeContentProvider {
 			return _currentInput;
 		}
 		// change sets
-		if (element instanceof ChangeSet) {
-			ChangeSet changeSet = (ChangeSet)element;
-			return changeSet.getTransaction();
+		if (element instanceof Interaction) {
+			Interaction interaction = (Interaction)element;
+			return interaction.getTransaction();
 		}
 		return null;
 	}
@@ -66,7 +66,7 @@ class TransactionManagerViewContentProvider implements ITreeContentProvider {
 		}
 		if (element instanceof ITransaction) {
 			ITransaction transaction = (ITransaction)element;
-			return !transaction.getUndoableChanges().isEmpty();
+			return !transaction.getEnlistedPojos().isEmpty();
 		}
 		return false;
 	}

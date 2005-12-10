@@ -69,7 +69,37 @@ public abstract aspect PojoAspect {
 		!invokeAddToCollectionOnPojo(IPojo, IPojo) &&
 		!invokeRemoveFromCollectionOnPojo(IPojo, IPojo) &&
 		!within(PojoAspect);
+
+	/////////////////////////////////////////////////////////////////////
+
 	
+	/**
+	 * Whether the pojo can be enlisted in a transaction.
+	 * 
+	 * <p>
+	 * Has been moved up from (the now-defunct) TransactionAspect since isn't 
+	 * really to do with transactions and saves us having to have a 
+	 * transactionalXxx version of each of the pointcuts defined in PojoAspect. 
+	 * 
+	 * <p>
+	 * We mustn't attempt to enlist a pojo that is being constructed.  The
+	 * implementation of {@link DomainObject} is such we only set up its 
+	 * persistence state and its resolve state at the end of its constructor.
+	 * We will ignore objects whose state is not yet fully specified.
+	 */
+	protected static boolean canBeEnlisted(final IPojo pojo) {
+		IDomainObject domainObject = pojo.getDomainObject();
+		if (domainObject == null) {
+			return false;
+		}
+		return domainObject.getResolveState() != null &&
+		       !domainObject.getResolveState().isUnknown() &&
+		       domainObject.getPersistState() != null &&
+		       !domainObject.getPersistState().isUnknown();
+	}
+
+
+
 	/////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -87,6 +117,7 @@ public abstract aspect PojoAspect {
 	protected pointcut invokeGetterForAttributeOnPojo(IPojo pojo): 
 		execution(public !void IPojo+.get*()) && this(pojo);
 	
+	
 	/**
 	 * Captures the invocation of any mutator (setter) of an attribute on a 
 	 * pojo.
@@ -100,7 +131,10 @@ public abstract aspect PojoAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeSetterForAttributeOnPojo(IPojo pojo, Object postValue): 
-		execution(public void IPojo+.set*(*)) && this(pojo) && args(postValue);
+		execution(public void IPojo+.set*(*)) && 
+		this(pojo) && 
+		args(postValue);
+	
 	
 	/**
 	 * Captures the invocation of any accessor (getter) of an 1:1 reference on a 
@@ -135,8 +169,11 @@ public abstract aspect PojoAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeSetterForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObjectOrNull): 
-		execution(public void IPojo+.set*(IPojo+)) && this(pojo) && args(newReferencedObjectOrNull);
+		execution(public void IPojo+.set*(IPojo+)) && 
+		this(pojo) && 
+		args(newReferencedObjectOrNull);
 
+	
 	/**
 	 * Captures the invocation of any associator (associate method) of a 
 	 * 1:1 reference on a pojo.
@@ -151,6 +188,7 @@ public abstract aspect PojoAspect {
 	 */
 	protected pointcut invokeAssociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObject): 
 		execution(public void IPojo+.associate*(IPojo+)) && this(pojo) && args(newReferencedObject);
+	
 	
 	/**
 	 * Captures the invocation of any dissociator (dissociate method) of a 
@@ -186,6 +224,7 @@ public abstract aspect PojoAspect {
 	protected pointcut invokeAddToCollectionOnPojo(IPojo pojo, IPojo addedObj): 
 		execution(void IPojo+.addTo*(IPojo+)) && this(pojo) && args(addedObj);
 	
+	
 	/**
 	 * Captures the invocation of any removeFrom method for removing objects 
 	 * from a collection on a pojo. 
@@ -200,6 +239,7 @@ public abstract aspect PojoAspect {
 	protected pointcut invokeRemoveFromCollectionOnPojo(IPojo pojo, IPojo removedObj): 
 		execution(void IPojo+.removeFrom*(IPojo+)) && this(pojo) && args(removedObj);
 	
+
 	/**
 	 * Captures the invokation of any public method on a pojo, excluding 
 	 * prerequisites methods and also excluding those methods inherited from 
@@ -227,16 +267,20 @@ public abstract aspect PojoAspect {
 	 * of a transaction already under way.
 	 * 
 	 * <p>
-	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
-	 * PRECEDENCE. 
+	 * ANY ADVICE SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS TO
+	 * ENSURE LOWER PRECEDENCE. 
 	 * 
 	 * <p>
 	 * Protected so that sub-aspects can use.
 	 * 
 	 */
 	protected pointcut changingAttributeOnPojo(IPojo pojo, Object postValue) :
-		args(postValue) && this(pojo) && set((!IPojo+ && !java.util.Collection+) IPojo+.*);
+		set((!IPojo+ && !java.util.Collection+) IPojo+.*)  &&
+		args(postValue) && 
+		this(pojo) && 
+		if(canBeEnlisted(pojo));
 
+	
 
 	/**
 	 * Capture a 1:1 reference being changed on some pojo.
@@ -248,15 +292,20 @@ public abstract aspect PojoAspect {
 	 * of a transaction already under way.
 	 * 
 	 * <p>
-	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
-	 * PRECEDENCE. 
+	 * ANY ADVICE SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS TO
+	 * ENSURE LOWER PRECEDENCE. 
 	 * 
 	 * <p>
 	 * Protected so that sub-aspects can use.
 	 * 
 	 */
 	protected pointcut changingOneToOneReferenceOnPojo(IPojo pojo, IPojo referencedObjectOrNull) :
-		set(IPojo+ IPojo+.*) && this(pojo) && args(referencedObjectOrNull);
+		set(IPojo+ IPojo+.*) && 
+		this(pojo) && 
+		args(referencedObjectOrNull) &&
+		if(canBeEnlisted(pojo));
+
+	
 
 
 	/**
@@ -267,8 +316,8 @@ public abstract aspect PojoAspect {
 	 * because it fires however the collection is modified (directly or not).
 	 * 
 	 * <p>
-	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
-	 * PRECEDENCE. 
+	 * ANY ADVICE SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS TO
+	 * ENSURE LOWER PRECEDENCE. 
 	 * 
 	 * <p>
 	 * Protected so that sub-aspects can use.
@@ -278,7 +327,10 @@ public abstract aspect PojoAspect {
 		args(addedObj) && 
 		this(pojo)  && 
 		target(collection)  && 
-		!within(java.util..*) ;
+		!within(java.util..*)  &&
+		if(canBeEnlisted(pojo));
+
+
 
 	/**
 	 * Capture a collection in a pojo has been removed from.
@@ -288,8 +340,8 @@ public abstract aspect PojoAspect {
 	 * because it fires however the collection is modified (directly or not).
 	 * 
 	 * <p>
-	 * SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS SINCE HAS LOWER
-	 * PRECEDENCE. 
+	 * ANY ADVICE SHOULD APPEAR LEXICALLY BELOW THE invoke... POINTCUTS TO
+	 * ENSURE LOWER PRECEDENCE. 
 	 * 
 	 * <p>
 	 * Protected so that sub-aspects can use.
@@ -299,38 +351,9 @@ public abstract aspect PojoAspect {
 		args(removedObj) && 
 		this(pojo) && 
 		target(collection) && 
-		!within(java.util..*) ;
+		!within(java.util..*) &&
+		if(canBeEnlisted(pojo));
 
-
-	declare error: 
-		call(public boolean java.util.Collection+.add(Object+)) &&
-		withincode(* IPojo+.*(..)) &&
-		!withincode(void IPojo+.addTo*(..)):
-			"can only add to collection from within an addto method"; 
-
-	declare error: 
-		call(public boolean java.util.Collection+.remove(Object+)) &&
-		withincode(* IPojo+.*(..)) &&
-		!withincode(void IPojo+.removeFrom*(..)):
-			"can remove from collection from within an addto method"; 
-
-		// the idea here is to ensure we only do add or remove from collections
-	// from within addTo or removeFrom methods.  However
-
-//	private pointcut addingToCollectionOutsideAnAddToMethod(): 
-//		call(public boolean java.util.Collection+.add(Object+)) &&
-//		!cflowbelow(execution(void IPojo+.addTo*(IPojo+))); 
-//		
-//	private pointcut removingFromCollectionOutsideARemoveFromMethod(): 
-//		call(public boolean java.util.Collection+.remove(Object+)) &&
-//		!cflowbelow(execution(void IPojo+.removeFrom*(IPojo+)));
-
-//	before(): addingToCollectionOutsideAnAddToMethod() {
-//		throw new RuntimeException("Programmer error: cannot add to collection outside an addTo method");
-//	}
-//	before(): removingFromCollectionOutsideARemoveFromMethod() { 
-//		throw new RuntimeException("Programmer error: cannot remove from collection outside a removeFrom method");
-//	}
 
 	/**
 	 * Capture a pojo being instantiated.
@@ -349,146 +372,8 @@ public abstract aspect PojoAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut deletingPojoUsingDeleteMethod(IPojo pojo): 
-		execution(public void IPojo+.delete()) && this(pojo);
+		execution(public void IPojo+.delete()) && 
+		this(pojo) && 
+		if(canBeEnlisted(pojo));
 
-	////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Looks up the {@link Field} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected Field getFieldFor(JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getFieldFor(joinPointStaticPart);
-	}
-
-
-	/**
-	 * Looks up the {@link Method} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected Method getMethodFor(JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getMethodFor(joinPointStaticPart);
-	}
-
-	
-	/**
-	 * Looks up the {@link Constructor} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected Constructor getConstructorFor(JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getConstructorFor(joinPointStaticPart);
-	}
-
-	
-	/**
-	 * Looks up the {@link EAttribute} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected IDomainClass.IAttribute getIAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getIAttributeFor(domainObject, joinPointStaticPart);
-	}
-
-
-	/**
-	 * Looks up the {@link EReference} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 * 
-	 * @param domainObject
-	 * @param joinPoint representing either an addTo or a removeFrom operation.
-	 */
-	protected IDomainClass.IReference getIReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getIReferenceFor(domainObject, joinPointStaticPart);
-	}
-	
-	private String camelCase(final String str) {
-		if (str == null || str.length() == 0) {
-			return str;
-		}
-		return Character.toLowerCase(str.charAt(0)) + str.substring(1);
-	}
-
-
-	/**
-	 * Looks up the {@link EOperation} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected IDomainClass.IOperation getIOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getIOperationFor(domainObject, joinPointStaticPart);
-	}
-
-
-	/**
-	 * Looks up the {@link IDomainObject.IAttribute} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 * 
-	 * @return attribute or null
-	 */
-	protected IDomainObject.IObjectAttribute getAttributeFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getAttributeFor(domainObject, joinPointStaticPart);
-	}
-
-
-	/**
-	 * Looks up the {@link IDomainObject.IOneToOneReference} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 * 
-	 * @return reference or null
-	 */
-	protected IDomainObject.IObjectOneToOneReference getOneToOneReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getOneToOneReferenceFor(domainObject, joinPointStaticPart);
-	}
-
-
-	/**
-	 * Looks up the {@link IDomainObject.ICollectionReference} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 * 
-	 * @param domainObject
-	 * @param joinPoint representing either an addTo or a removeFrom operation.
-	 * @return reference or null
-	 */
-	protected IDomainObject.IObjectCollectionReference getCollectionReferenceFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getCollectionReferenceFor(domainObject, joinPointStaticPart);
-	}
-
-	
-	/**
-	 * Looks up the {@link IDomainObject.IAttribute} that corresponds to the
-	 * signature represented by the supplied {@link JoinPoint.StaticPart}.
-	 * 
-	 * <p>
-	 * This is a helper method provided for the convenience of subaspects.
-	 */
-	protected IDomainObject.IObjectOperation getOperationFor(final IDomainObject domainObject, JoinPoint.StaticPart joinPointStaticPart) {
-		return AspectsUtil.getOperationFor(domainObject, joinPointStaticPart);
-	}
-
-	
 }

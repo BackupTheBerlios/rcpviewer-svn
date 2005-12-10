@@ -15,7 +15,7 @@ import org.essentialplatform.progmodel.essential.app.IAppContainer;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.transaction.changes.ChangeSet;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
 
@@ -283,7 +283,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * @param transaction
 	 * @param change
 	 */
-	void undonePendingChange(Transaction transaction, ChangeSet change) {
+	void undonePendingChange(Transaction transaction, Interaction change) {
 		// need to unenlist pojos, though potentially not all of them (since some
 		// pojos may have been changed as the result of a change still in a "done" state.
 		Set<ITransactable> pojosToUnenlist = new HashSet<ITransactable>(change.getModifiedPojos());
@@ -413,8 +413,8 @@ public final class TransactionManager implements ITransactionManager {
 				// already enlisted elsewhere.
 				
 				// REVIEW_CHANGE MikeE 20051014 
-				// throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
-				return false;
+				throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
+				// return false;
 			}
 		}
 		
