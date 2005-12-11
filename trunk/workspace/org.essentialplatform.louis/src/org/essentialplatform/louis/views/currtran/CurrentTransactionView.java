@@ -137,7 +137,7 @@ public class CurrentTransactionView extends ViewPart {
 	 * Any other part will be ignored.
 	 */
 	void setupViewInputs(IWorkbenchPart part) {
-		LOG.debug("setupViewPart: " + part);
+		LOG.debug("setupViewInputs: " + part);
 
 		if (!(part instanceof DefaultEditor)) {
 			return;

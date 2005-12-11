@@ -48,6 +48,11 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 		TransactionManager.instance().addTransactionManagerListener(this);
 	}
 
+	/**
+	 * Also refreshes all actions so that they are in the correct initial state.
+	 * 
+	 * @param domainObject
+	 */
 	void startListeningOnTransactionFor(IDomainObject domainObject) {
 		_control.setInput(domainObject);
 
@@ -58,6 +63,9 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 		}
 		for(AbstractCurrentTransactionViewAction action: _actions) {
 			action.setTransaction(_transaction);
+		}
+		for(AbstractCurrentTransactionViewAction action: _actions) {
+			action.refresh();
 		}
 	}
 
