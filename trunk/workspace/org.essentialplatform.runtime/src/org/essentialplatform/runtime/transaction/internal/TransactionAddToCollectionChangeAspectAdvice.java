@@ -47,20 +47,15 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 		try {
 			IDomainObject domainObject = pojo.getDomainObject();
 			
+			IDomainObject.IObjectCollectionReference reference = 
+				JoinPointUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
 			
-			//if (domainObject.getPersistState() == PersistState.UNKNOWN) {
-			//	return call(proceed);
-			//} else {
-				IDomainObject.IObjectCollectionReference reference = 
-					JoinPointUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
-				
-				ThreadLocals.setCollectionReferenceForThread(reference);
-				try {
-					return call(proceed);
-				} finally {
-					ThreadLocals.clearCollectionReferenceForThread();
-				}
-			//}
+			ThreadLocals.setCollectionReferenceForThread(reference);
+			try {
+				return call(proceed);
+			} finally {
+				ThreadLocals.clearCollectionReferenceForThread();
+			}
 
 		} finally {
 			if (startedInteraction) {
@@ -90,10 +85,15 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 	 */
 	Object around$addingToCollectionOnPojo(
 			IPojo pojo, Collection collection, Object addedObj) {
+		getLogger().debug("addingToCollectionOnPojo(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new AddToCollectionChange(transaction, transactable, collection, addedObj, ThreadLocals.getCollectionReferenceForThreadIfAny());
-		return change.execute();
+		try {
+			return change.execute();
+		} finally {
+			getLogger().debug("addingToCollectionOnPojo(pojo=" + pojo+"): end");
+		}
 	}
 
 	@Override

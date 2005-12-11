@@ -20,39 +20,8 @@ import java.util.concurrent.Callable;
 import org.essentialplatform.runtime.domain.PojoAspect;
 public aspect TransactionRemoveFromCollectionChangeAspect extends PojoAspect {
 	
-	private final static Logger LOG = Logger.getLogger(TransactionRemoveFromCollectionChangeAspect.class);
-	protected Logger getLogger() { return LOG; }
-
 	private TransactionRemoveFromCollectionChangeAspectAdvice advice = 
 		new TransactionRemoveFromCollectionChangeAspectAdvice();
-
-//	protected pointcut transactionalChange(IPojo pojo):  
-//		this(pojo) &&  
-//		removingFromCollectionOnPojo(IPojo, Collection, Object) && 
-//		!within(TransactionCollectionChangeAspect) &&
-//		if(canBeEnlisted(pojo)) &&
-//		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
-//
-//	
-//	/**
-//	 * Obtains transaction from either the thread or from the pojo (checking
-//	 * that they don't conflict).
-//	 * 
-//	 * <p>
-//	 * This code is identical in all subaspects of TransactionChange, however
-//	 * moving it up and declaring a precedence doesn't seem to do the trick.
-//	 */
-//	Object around(final IPojo pojo): transactionalChange(pojo) {
-//		return advice.around$transactionalChange(
-//				pojo, 
-//				new Callable() { 
-//					public Object call() {
-//						return proceed(pojo);
-//					}
-//				});
-//	}
-
-
 
 	/**
 	 * @see org.essentialplatform.runtime.transaction.internal.TransactionRemoveFromCollectionChangeAspectAdvice#around$invokeRemoveFromCollectionOnPojo(IPojo, Object, JoinPoint.StaticPart, Callable)

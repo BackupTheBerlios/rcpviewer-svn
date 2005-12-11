@@ -22,16 +22,12 @@ import org.essentialplatform.runtime.util.ReflectUtil;
 
 class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAdvice {
 
+	
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
-	 * 
-	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * Defines interaction boundary.
 	 */
-	Object around$transactionalChange(final IPojo pojo, Callable proceed) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
+	Object around$invokeAssociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObject, Callable proceed) {
+		getLogger().debug("invokeAssociatorForOneToOneReferenceOnPojo(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -52,12 +48,44 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
 				ThreadLocals.clearTransactionForThread();
 			}
+			getLogger().debug("invokeAssociatorForOneToOneReferenceOnPojo(pojo=" + pojo+"): end");
 		}
 	}
 
+
 	/**
-	 * Creates an OneToOneReferenceChange to wrap a change to the attribute, adding it
-	 * to the current transaction.
+	 * Defines interaction boundary.
+	 */
+	Object around$invokeDissociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo existingReferencedObject, Callable proceed) {
+		getLogger().debug("invokeDissociatorForOneToOneReferenceOnPojo(pojo=" + pojo+"): start");
+		ITransactable transactable = (ITransactable)pojo;
+		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
+		ITransaction transaction = currentTransaction(transactable);
+		if (!transactionOnThread) {
+			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
+			ThreadLocals.setTransactionForThread(transaction);
+		} else {
+			getLogger().debug("(xactn for thread already present)");
+		}
+		boolean startedInteraction = transaction.startingInteraction();
+		try {
+			return call(proceed);
+		} finally {
+			if (startedInteraction) {
+				transaction.completingInteraction();
+			}
+			if (!transactionOnThread) {
+				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
+				ThreadLocals.clearTransactionForThread();
+			}
+			getLogger().debug("invokeDissociatorForOneToOneReferenceOnPojo(pojo=" + pojo+"): end");
+		}
+	}
+
+
+	/**
+	 * Creates an OneToOneReferenceChange to wrap a change to the reference, 
+	 * adding it to the current transaction.
 	 *  
 	 * <p>
 	 * This code must appear after the transactionChange() advice above 
@@ -66,7 +94,7 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 	 */
 	Object around$changingOneToOneReferenceOnPojo(
 			final IPojo pojo, final IPojo referencedObjOrNull, JoinPoint.StaticPart thisJoinPointStaticPart) {
-		getLogger().debug("changingOneToOneReferenceOnPojo(pojo=" + pojo+")");
+		getLogger().debug("changingOneToOneReferenceOnPojo(pojo=" + pojo+"): start");
 		Field field = JoinPointUtil.getFieldFor(thisJoinPointStaticPart);
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
@@ -77,8 +105,11 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 			reference = JoinPointUtil.getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
 		}
 		IChange change = new OneToOneReferenceChange(transaction, transactable, field, referencedObjOrNull, reference);
-		
-		return change.execute();
+		try {
+			return change.execute();
+		} finally {
+			getLogger().debug("changingOneToOneReferenceOnPojo(pojo=" + pojo+"): end");
+		}
 	}
 
 

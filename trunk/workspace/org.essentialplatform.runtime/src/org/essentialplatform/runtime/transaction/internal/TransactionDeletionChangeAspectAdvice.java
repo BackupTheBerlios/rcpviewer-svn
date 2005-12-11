@@ -25,12 +25,7 @@ import org.essentialplatform.runtime.util.ReflectUtil;
 class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
-	 * 
-	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * Defines interaction boundary.
 	 */
 	Object around$transactionalChange(IPojo pojo, Callable proceed) {
 		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
@@ -54,6 +49,7 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
 				ThreadLocals.clearTransactionForThread();
 			}
+			getLogger().debug("transactionalChange(pojo=" + pojo+"): end");
 		}
 	}
 
@@ -67,11 +63,15 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 	 * advices are applied. 
 	 */
 	Object around$deletingPojoUsingDeleteMethod(IPojo pojo) {
-		getLogger().debug("transactionalDeletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
+		getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new DeletionChange(transaction, transactable);
-		return change.execute();
+		try {
+			return change.execute();
+		} finally {
+			getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): end");
+		}
 	}
 
 	

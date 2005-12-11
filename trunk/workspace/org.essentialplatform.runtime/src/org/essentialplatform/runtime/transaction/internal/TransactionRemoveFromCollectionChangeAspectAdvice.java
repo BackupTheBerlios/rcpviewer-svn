@@ -21,41 +21,6 @@ import org.essentialplatform.runtime.util.ReflectUtil;
 
 class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspectAdvice {
 
-
-//	/**
-//	 * Obtains transaction from either the thread or from the pojo (checking
-//	 * that they don't conflict).
-//	 * 
-//	 * <p>
-//	 * This code is identical in all subaspects of TransactionChange, however
-//	 * moving it up and declaring a precedence doesn't seem to do the trick.
-//	 */
-//	Object around$transactionalChange(IPojo pojo, Callable proceed) {
-//		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-//		ITransactable transactable = (ITransactable)pojo;
-//		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-//		ITransaction transaction = currentTransaction(transactable);
-//		if (!transactionOnThread) {
-//			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
-//			ThreadLocals.setTransactionForThread(transaction);
-//		} else {
-//			getLogger().debug("(xactn for thread already present)");
-//		}
-//		boolean startedInteraction = transaction.startingInteraction();
-//		try {
-//			return call(proceed);
-//		} finally {
-//			if (startedInteraction) {
-//				transaction.completingInteraction();
-//			}
-//			if (!transactionOnThread) {
-//				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
-//				ThreadLocals.clearTransactionForThread();
-//			}
-//		}
-//	}
-
-
 	
 	/**
 	 * Defines the boundaries of the interaction.
@@ -82,17 +47,13 @@ class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspec
 		try {
 			IDomainObject domainObject = pojo.getDomainObject();
 			
-//			if (domainObject.getPersistState() == PersistState.UNKNOWN) {
-//				return call(proceed);
-//			} else {
-				IDomainObject.IObjectCollectionReference reference = JoinPointUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
-				ThreadLocals.setCollectionReferenceForThread(reference);
-				try {
-					return call(proceed);
-				} finally {
-					ThreadLocals.clearCollectionReferenceForThread();
-				}
-//			}
+			IDomainObject.IObjectCollectionReference reference = JoinPointUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
+			ThreadLocals.setCollectionReferenceForThread(reference);
+			try {
+				return call(proceed);
+			} finally {
+				ThreadLocals.clearCollectionReferenceForThread();
+			}
 
 		} finally {
 			if (startedInteraction) {
@@ -104,8 +65,6 @@ class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspec
 			}
 			getLogger().debug("invokeRemoveFromCollectionOnPojo(pojo=" + pojo+"): end");
 		}
-
-		
 		
 	}
 
@@ -127,7 +86,11 @@ class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspec
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, removedObj, ThreadLocals.getCollectionReferenceForThreadIfAny());
-		return change.execute();
+		try {
+			return change.execute();
+		} finally {
+			getLogger().debug("removingFromCollectionOnPojo(pojo=" + pojo+"): end");
+		}
 	}
 
 	

@@ -18,9 +18,6 @@ import org.essentialplatform.runtime.domain.PojoAspect;
  */
 public aspect TransactionInstantiationChangeAspect extends PojoAspect {
 
-	private final static Logger LOG = Logger.getLogger(TransactionInstantiationChangeAspect.class);
-	protected Logger getLogger() { return LOG; }
-	
 	private TransactionInstantiationChangeAspectAdvice advice = 
 		new TransactionInstantiationChangeAspectAdvice();
 
@@ -44,12 +41,7 @@ public aspect TransactionInstantiationChangeAspect extends PojoAspect {
 
 
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
-	 * 
-	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * @see org.essentialplatform.runtime.transaction.internal.TransactionInstantiationChangeAspectAdvice#around$transactionalChange(IPojo, Callable)
 	 */
 	Object around(final IPojo pojo): transactionalChange(pojo) {
 		return advice.around$transactionalChange(
@@ -62,13 +54,7 @@ public aspect TransactionInstantiationChangeAspect extends PojoAspect {
 	}
 
 	/**
-	 * Creates an InstantiationChange to wrap a change to the attribute, adding it
-	 * to the current transaction.
-	 *  
-	 * <p>
-	 * This code must appear after the transactionChange() advice above 
-	 * because lexical ordering is used to determine the order in which
-	 * advices are applied. 
+	 * @see org.essentialplatform.runtime.transaction.internal.TransactionInstantiationChangeAspectAdvice#around$creatingOrRecreatingPojo(IPojo)
 	 */
 	Object around(final IPojo pojo): creatingOrRecreatingPojo(pojo) {
 		return advice.around$creatingOrRecreatingPojo(pojo);

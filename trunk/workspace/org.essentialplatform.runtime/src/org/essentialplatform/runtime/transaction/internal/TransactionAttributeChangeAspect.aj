@@ -26,12 +26,7 @@ public aspect TransactionAttributeChangeAspect extends PojoAspect {
 	
 
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
-	 * 
-	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * @see org.essentialplatform.runtime.transaction.internal.TransactionOneToOneReferenceChangeAspectAdvice#
 	 */
 	Object around(final IPojo pojo, final Object postValue): invokeSetterForAttributeOnPojo(pojo, postValue) {
 		return advice.around$invokeSetterForAttributeOnPojo(
@@ -44,28 +39,7 @@ public aspect TransactionAttributeChangeAspect extends PojoAspect {
 	}
 
 	/**
-	 * Creates an AttributeChange to wrap a change to the attribute, adding it
-	 * to the current transaction.
-	 *  
-	 * <p>
-	 * In addition, passes the IDomainObject's IAttribute to the change so that
-	 * it can notify listeners as it is executed/undone.  
-	 *  
-	 * <p>
-	 * The change also notifies all {@link IObservedFeature}s of the session.  
-	 * That's because a prerequisite of an operation or an attribute might 
-	 * become satisfied (or no longer satisfied) as a result of this change.
-	 * 
-	 * <p>
-	 * <n>Implementation notes</n>: informing all observed features seems rather
-	 * crude.  An alternative design and possibly preferable approach would be 
-	 * to wait until the current "workgroup" (as defined by the transaction 
-	 * aspect) has completed.
-	 *    
-	 * <p>
-	 * This code must appear after the transactionChange() advice above 
-	 * because lexical ordering is used to determine the order in which
-	 * advices are applied. 
+	 * @see TransactionAttributeChangeAspectAdvice#around$changingAttributeOnPojo(IPojo, Object, JoinPoint.StaticPart)
 	 */
 	Object around(IPojo pojo, Object postValue): 
 			changingAttributeOnPojo(pojo, postValue) {

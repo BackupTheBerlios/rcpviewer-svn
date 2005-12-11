@@ -35,12 +35,7 @@ public aspect TransactionInvokeOperationAspect extends PojoAspect {
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 	/**
-	 * Obtains transaction from either the thread or from the pojo (checking
-	 * that they don't conflict).
-	 * 
-	 * <p>
-	 * This code is identical in all subaspects of TransactionChange, however
-	 * moving it up and declaring a precedence doesn't seem to do the trick.
+	 * @see org.essentialplatform.runtime.transaction.internal.TransactionInvokeOperationAspectAdvice#around$transactionalChange(IPojo, Callable)
 	 */
 	Object around(final IPojo pojo): transactionalChange(pojo) {
 		return advice.around$transactionalChange(

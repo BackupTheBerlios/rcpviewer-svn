@@ -31,7 +31,7 @@ class TransactionInvokeOperationAspectAdvice extends TransactionAspectAdvice {
 	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around$transactionalChange(IPojo pojo, Callable proceed) {
-		getLogger().debug("transactionalChange(pojo=" + pojo+")");
+		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
 		ITransaction transaction = currentTransaction(transactable);
@@ -52,6 +52,7 @@ class TransactionInvokeOperationAspectAdvice extends TransactionAspectAdvice {
 				getLogger().debug("clearing xactn on thread; xactn=" + transaction);
 				ThreadLocals.clearTransactionForThread();
 			}
+			getLogger().debug("transactionalChange(pojo=" + pojo+"): end");
 		}
 	}
 
