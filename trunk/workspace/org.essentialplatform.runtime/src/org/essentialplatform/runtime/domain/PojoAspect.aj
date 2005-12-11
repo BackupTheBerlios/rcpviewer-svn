@@ -1,31 +1,11 @@
 package org.essentialplatform.runtime.domain;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-import java.util.Collection;
-
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.reflect.FieldSignature;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.aspectj.lang.reflect.ConstructorSignature;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EOperation;
-
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-
-import org.essentialplatform.core.domain.IDomainClass;
 
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.DomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
-
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.util.*;
 
 public abstract aspect PojoAspect {
 	
@@ -34,17 +14,23 @@ public abstract aspect PojoAspect {
 	 * annotation should implement {@link org.essentialplatform.session.IPojo}. 
 	 */
 	declare parents: (@InDomain *) implements IPojo;
-	private IDomainObject IPojo._domainObject = new DomainObject(this);
+	/**
+	 * Marked as <tt>transient</tt> so that it is not de-serialized.
+	 */
+	private transient IDomainObject IPojo._domainObject;
 
 	/**
-	 * Introduces the implementation of obtaining the {@link IDomainObject}
-	 * that wraps this {@link IPojo} in some {@link ISession}.
+	 * Lazily creates the {@link IDomainObject} wrapper for a given
+	 * {@link IPojo}.
 	 * 
 	 * <p>
-	 * TODO: is this right, that we only have an IDomainObject wrapper when the
-	 * pojo is attached to a session?
+	 * The wrapper is created lazily because the field itself is not
+	 * transmitted across the wire.
 	 */
-	public IDomainObject IPojo.getDomainObject() {
+	public synchronized IDomainObject IPojo.getDomainObject() {
+		if (_domainObject == null) {
+			_domainObject = new DomainObject(this);
+		}
 		return _domainObject;
 	}
 
@@ -88,7 +74,7 @@ public abstract aspect PojoAspect {
 	 * We will ignore objects whose state is not yet fully specified.
 	 */
 	protected static boolean canBeEnlisted(final IPojo pojo) {
-		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject domainObject = pojo._domainObject;
 		if (domainObject == null) {
 			return false;
 		}
@@ -278,7 +264,7 @@ public abstract aspect PojoAspect {
 		set((!IPojo+ && !java.util.Collection+) IPojo+.*)  &&
 		args(postValue) && 
 		this(pojo) && 
-		if(canBeEnlisted(pojo));
+		if(canBeEnlisted(pojo)); 
 
 	
 

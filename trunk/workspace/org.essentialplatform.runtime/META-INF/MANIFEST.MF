@@ -13,10 +13,12 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.progmodel.louis.core;visibility:=reexport,
  org.essentialplatform.progmodel.essential.app;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport,
- org.essentialplatform.progmodel.essential.core
+ org.essentialplatform.progmodel.essential.core,
+ net.sf.plugins.xstream
 Eclipse-AutoStart: true
-Export-Package:  org.essentialplatform.runtime,
+Export-Package: org.essentialplatform.runtime,
  org.essentialplatform.runtime.authorization,
+ org.essentialplatform.runtime.distribution,
  org.essentialplatform.runtime.domain,
  org.essentialplatform.runtime.domain.adapters,
  org.essentialplatform.runtime.domain.event,
@@ -28,5 +30,6 @@ Export-Package:  org.essentialplatform.runtime,
  org.essentialplatform.runtime.transaction,
  org.essentialplatform.runtime.transaction.changes,
  org.essentialplatform.runtime.transaction.event,
- org.essentialplatform.runtime.transaction.internal
+ org.essentialplatform.runtime.transaction.internal,
+ org.essentialplatform.runtime.util
 Plugin-Class: org.essentialplatform.runtime.RuntimePlugin
