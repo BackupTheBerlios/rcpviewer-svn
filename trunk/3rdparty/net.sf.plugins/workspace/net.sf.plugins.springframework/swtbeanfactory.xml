@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+	Helper beans for RCP applications
+-->
+<beans>
+
+	
+	<!-- *****************
+		 *
+		 * UI
+		 *
+		 ***************** 	-->
+	<bean id="org.eclipse.swt.widgets.display" class="net.sf.plugins.springframework.DisplayFactoryBean" >
+	</bean>
+	
+
+</beans>

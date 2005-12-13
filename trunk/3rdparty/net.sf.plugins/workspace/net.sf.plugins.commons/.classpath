@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="commons-dbcp-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-validator.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-beanutils-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-collections.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-daemon.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-digester.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-discovery_0.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-fileupload-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-httpclient.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-httpclient-webdavlib.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-lang.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-logging_1.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-modeler.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-pool-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-resources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jakarta-oro.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
