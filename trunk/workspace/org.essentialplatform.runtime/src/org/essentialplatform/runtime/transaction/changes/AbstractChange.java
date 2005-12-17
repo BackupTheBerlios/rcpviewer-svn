@@ -20,25 +20,39 @@ public abstract class AbstractChange implements IChange {
 
 	private static final Object[] __EMPTY_OBJECT_ARRAY = new Object[]{};
 	
-	protected final ITransaction _transaction;
-	protected final ITransactable _transactable;
 	private final String _description;
 	private final Object[] _extendedInfo;
 	private final boolean _irreversible;
 
 	/**
-	 * Provided as a convenience...
+	 * <tt>transient</tt> for serialization.
 	 */
-	protected final IDomainObject<?> _domainObject;
+	protected transient final ITransaction _transaction;
 
-	private final Set<ITransactable> _transactableAsSet = new HashSet<ITransactable>();
-	
-	private IChange _parent;
+	/**
+	 * <tt>transient</tt> for serialization.
+	 */
+	private transient IChange _parent;
+
+	protected ITransactable _transactable;
+
+	/**
+	 * Provided as a convenience...
+	 * 
+	 * <p>
+	 * <tt>transient</tt> for serialization.
+	 */
+	protected transient final IDomainObject<?> _domainObject;
+
+	/**
+	 * <tt>transient</tt> for serialization.
+	 */
+	private transient Set<ITransactable> _transactableAsSet = new HashSet<ITransactable>();
 
 	protected AbstractChange(final ITransaction transaction, final ITransactable transactable, final String description, final Object[] extendedInfo, final boolean irreversible) {
 		_transaction = transaction;
 		_transactable = transactable;
-		_domainObject = ((IPojo)_transactable).getDomainObject();
+		_domainObject = ((IPojo)_transactable).domainObject();
 		_description = description;
 		_extendedInfo = extendedInfo == null? __EMPTY_OBJECT_ARRAY: extendedInfo;
 		_irreversible = irreversible;

@@ -14,10 +14,8 @@ public abstract aspect PojoAspect {
 	 * annotation should implement {@link org.essentialplatform.session.IPojo}. 
 	 */
 	declare parents: (@InDomain *) implements IPojo;
-	/**
-	 * Marked as <tt>transient</tt> so that it is not de-serialized.
-	 */
-	private transient IDomainObject IPojo._domainObject;
+
+	private IDomainObject IPojo._domainObject;
 
 	/**
 	 * Lazily creates the {@link IDomainObject} wrapper for a given
@@ -27,7 +25,7 @@ public abstract aspect PojoAspect {
 	 * The wrapper is created lazily because the field itself is not
 	 * transmitted across the wire.
 	 */
-	public synchronized IDomainObject IPojo.getDomainObject() {
+	public synchronized IDomainObject IPojo.domainObject() {
 		if (_domainObject == null) {
 			_domainObject = new DomainObject(this);
 		}

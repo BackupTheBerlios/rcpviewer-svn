@@ -26,7 +26,7 @@ public final class InstantiationChange extends AbstractChange {
 
 	private static String description(final ITransactable transactable) {
 		IPojo pojo = (IPojo)transactable;
-		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject domainObject = pojo.domainObject();
 		return "instantiated " + domainObject.getDomainClass().getName();
 	}
 	
@@ -46,16 +46,7 @@ public final class InstantiationChange extends AbstractChange {
 	 */
 	@Override
 	public final Object doExecute() {
-		IPojo pojo = (IPojo)_transactable;
-		// unlike the DeletionChange, the following isn't necessary since the
-		// DomainObject is created initially with a state of PERSISTED, and moreover
-		// there will be no DomainObject when this is called since not yet
-		// attached to any session.
-//		IDomainObject<?> domainObject = pojo.getDomainObject();
-//		if (domainObject != null) {
-//			domainObject.nowPersisted();
-//		}
-		return pojo;
+		return _transactable;
 	}
 
 	/*
@@ -63,6 +54,7 @@ public final class InstantiationChange extends AbstractChange {
 	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
 	public void doUndo() {
+		// TODO: is this required - think more is needed (eg detach from session...)
 		if (_domainObject != null) {
 			_domainObject.nowTransient();
 		}

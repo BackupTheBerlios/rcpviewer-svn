@@ -34,7 +34,7 @@ abstract class TransactionAspectAdvice extends AbstractAspectAdvice {
 	 */
 	protected ITransaction currentTransaction(ITransactable transactable) throws RuntimeException {
 		ITransaction transaction = ThreadLocals.getTransactionForThreadIfAny();
-		ITransaction pojoTransaction = transactable.getTransaction(false);
+		ITransaction pojoTransaction = transactable.currentTransaction(false);
 		if (transaction != null && 
 		    pojoTransaction != null) {
 			if (transaction != pojoTransaction) {
@@ -74,7 +74,7 @@ abstract class TransactionAspectAdvice extends AbstractAspectAdvice {
 	 * We will ignore objects whose state is not yet fully specified.
 	 */
 	protected boolean canBeEnlisted(final IPojo pojo) {
-		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject domainObject = pojo.domainObject();
 		if (domainObject == null) {
 			return false;
 		}

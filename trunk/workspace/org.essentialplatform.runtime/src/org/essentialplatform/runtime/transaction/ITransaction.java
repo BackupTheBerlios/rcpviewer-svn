@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.essentialplatform.runtime.transaction.ITransactionManager;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.event.ITransactionListener;
@@ -542,7 +543,7 @@ public interface ITransaction {
 	 * @throws IllegalStateException if called when not in state of COMMITTED or REVERSED
 	 * @return
 	 */
-	public Interaction getCommittedChanges() throws IllegalStateException;
+	public List<IChange> getCommittedChanges() throws IllegalStateException;
 	
 
 		

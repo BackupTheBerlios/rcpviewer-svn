@@ -32,6 +32,25 @@ import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
  */
 public abstract class AbstractFieldChange extends AbstractChange {
 
+	/**
+	 * The attribute that is being modified, accessed through 
+	 * {@link #getAttribute()}.
+	 * 
+	 * <tt>transient</tt> since not required to be distributed.
+	 */
+	private transient Field _field;
+	/**
+	 * The value of the {@link #getField()} before it was modified, accessed
+	 * through {@link #getPreValue()}.
+	 */
+	private final Object _preValue;
+	/**
+	 * The value of the {@link #getField()} after it was modified, accessed
+	 * through {@link #getPostValue()}.
+	 */
+	private final Object _postValue;
+
+
 	protected static String description(final Field field) {
 		return field.getName();
 	}
@@ -49,22 +68,6 @@ public abstract class AbstractFieldChange extends AbstractChange {
 		String postValueStr = "post: '" + postValue; 
 		return new Object[]{preValueStr, postValueStr};
 	}
-	/**
-	 * The attribute that is being modified, accessed through 
-	 * {@link #getAttribute()}.
-	 */
-	private final Field _field;
-	/**
-	 * The value of the {@link #getField()} before it was modified, accessed
-	 * through {@link #getPreValue()}.
-	 */
-	private final Object _preValue;
-	/**
-	 * The value of the {@link #getField()} after it was modified, accessed
-	 * through {@link #getPostValue()}.
-	 */
-	private final Object _postValue;
-
 	/**
 	 * Captures the current value of the attribute as the 
 	 * {@link #getPreValue()}.

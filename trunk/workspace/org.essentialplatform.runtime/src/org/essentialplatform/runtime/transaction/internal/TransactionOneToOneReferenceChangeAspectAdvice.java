@@ -99,7 +99,7 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
 
-		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject domainObject = pojo.domainObject();
 		IDomainObject.IObjectOneToOneReference reference = null;
 		if (domainObject.getPersistState() != PersistState.UNKNOWN) {
 			reference = JoinPointUtil.getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);

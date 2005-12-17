@@ -79,7 +79,7 @@ class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 			ITransactable transactable = (ITransactable)pojo;
 			ITransaction transaction = currentTransaction(transactable);
 			
-			IDomainObject domainObject = pojo.getDomainObject();
+			IDomainObject domainObject = pojo.domainObject();
 			IDomainObject.IObjectAttribute attribute = null;
 			if (domainObject.getPersistState() != PersistState.UNKNOWN) {
 				attribute = JoinPointUtil.getAttributeFor(domainObject, thisJoinPointStaticPart);

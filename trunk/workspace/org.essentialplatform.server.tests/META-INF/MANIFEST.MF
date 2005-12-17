@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests Plug-in
+Bundle-SymbolicName: org.essentialplatform.server.tests
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Eclipse-RegisterBuddy: net.sf.plugins.hibernate
+Require-Bundle: net.sf.plugins.hsqldb,
+ org.junit,
+ net.sf.plugins.hibernate;visibility:=reexport,
+ demo,
+ org.essentialplatform.runtime.tests

@@ -19,16 +19,17 @@ public aspect TransactionTransactableAspect {
 	declare precedence: TransactionTransactableAspect, org.essentialplatform.runtime.domain.NotifyListenersAspect;
 
 	/**
-	 * Introduce implementation of {@link ITransactable#getTransaction()}.
+	 * Introduce implementation of {@link ITransactable#currentTransaction()}.
+	 * 
 	 */
-	public ITransaction ITransactable.getTransaction() {
+	public ITransaction ITransactable.currentTransaction() {
 		return TransactionManager.instance().getCurrentTransactionFor(this);
 	}
 	
 	/**
-	 * Introduce implementation of {@link ITransactable#getTransaction(boolean)}.
+	 * Introduce implementation of {@link ITransactable#currentTransaction(boolean)}.
 	 */
-	public ITransaction ITransactable.getTransaction(final boolean autoEnlist) {
+	public ITransaction ITransactable.currentTransaction(final boolean autoEnlist) {
 		return TransactionManager.instance().getCurrentTransactionFor(this, autoEnlist);
 	}
 	

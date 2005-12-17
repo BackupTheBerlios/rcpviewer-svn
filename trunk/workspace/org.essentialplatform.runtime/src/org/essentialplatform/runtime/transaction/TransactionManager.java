@@ -250,7 +250,7 @@ public final class TransactionManager implements ITransactionManager {
 		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
 		for(ITransactable enlistedPojo: enlistedPojos) {
 			IPojo pojo = (IPojo)enlistedPojo;
-			IDomainObject domainObject = pojo.getDomainObject();
+			IDomainObject domainObject = pojo.domainObject();
 			IObjectStore objectStore = domainObject.getSession().getObjectStore();
 		    objectStore.saveOrUpdate(domainObject);
 		}

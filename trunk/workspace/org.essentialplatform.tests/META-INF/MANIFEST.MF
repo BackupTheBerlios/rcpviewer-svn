@@ -9,8 +9,8 @@ Bundle-Activator: org.essentialplatform.tests.TestsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.junit;visibility:=reexport,
- org.essentialplatform.domain.runtime.tests;visibility:=reexport,
  org.essentialplatform.domain.tests;visibility:=reexport,
+ org.essentialplatform.runtime.tests;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.essentialplatform.core.fixture;visibility:=reexport,
  org.essentialplatform.runtime;visibility:=reexport,

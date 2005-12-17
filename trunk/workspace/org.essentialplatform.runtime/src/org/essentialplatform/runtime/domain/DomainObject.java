@@ -17,6 +17,7 @@ import org.essentialplatform.core.deployment.Binding.ICollectionReferenceBinding
 import org.essentialplatform.core.deployment.Binding.IOneToOneReferenceBinding;
 import org.essentialplatform.core.deployment.Binding.IOperationBinding;
 import org.essentialplatform.core.deployment.Binding.IReferenceBinding;
+import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
@@ -54,32 +55,47 @@ import org.essentialplatform.runtime.session.ISession;
  */
 public final class DomainObject<T> implements IDomainObject<T> {
 
-	private IDomainClass _domainClass;
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient IDomainClass _domainClass;
 
-	// think this is redundant
-//	/**
-//	 * Whether changes to the corresponding pojo are tracked as {@link ChangeSet}s
-//	 * within an {@link ITransaction}.
-//	 * 
-//	 *  <p>
-//	 * Initially set to {@link TransactionalState#NOT_INITIALIZED}; is initialized
-//	 * from {@link #init(IDomainClass, ISession, PersistState, ResolveState, TransactionalState)}.
-//	 */
-//	private TransactionalState _state = TransactionalState.NOT_INITIALIZED;
-	
 	private final T _pojo;
 
-	private Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient Map<Class, Object> _adaptersByClass = new HashMap<Class, Object>();
 
-	private List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
 
-	private ISession _session;
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient ISession _session;
+	
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient String sessionId;
 
-	private WeakHashMap<EAttribute, IObjectAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IObjectAttribute>();
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient WeakHashMap<EAttribute, IObjectAttribute> _attributesByEAttribute = new WeakHashMap<EAttribute, IObjectAttribute>();
 
-	private WeakHashMap<EReference, IObjectReference> _referencesByEReference = new WeakHashMap<EReference, IObjectReference>();
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient WeakHashMap<EReference, IObjectReference> _referencesByEReference = new WeakHashMap<EReference, IObjectReference>();
 
-	private WeakHashMap<EOperation, IObjectOperation> _operationsByEOperation = new WeakHashMap<EOperation, IObjectOperation>();
+	/**
+	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 */
+	private transient WeakHashMap<EOperation, IObjectOperation> _operationsByEOperation = new WeakHashMap<EOperation, IObjectOperation>();
 
 	private PersistenceId _persistenceId = null;
 
@@ -98,12 +114,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject<V> createTransient(
-			final IDomainClass domainClass, final V pojo, final ISession session) {
-		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
-				.getDomainObject();
-		domainObject.init(domainClass, session, 
-				PersistState.TRANSIENT, ResolveState.RESOLVED);
+	public static <V> DomainObject<V> createTransient(final V pojo, final ISession session) {
+		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
+		domainObject.init(session, PersistState.TRANSIENT, 
+				ResolveState.RESOLVED);
 		return domainObject;
 	}
 
@@ -118,13 +132,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject<V> createPersistent(
-			final IDomainClass domainClass, final V pojo, final ISession session) {
-		IPojo ipojo = (IPojo)pojo;
-		DomainObject<V> domainObject = (DomainObject<V>)ipojo.getDomainObject();
+	public static <V> DomainObject<V> createPersistent(final V pojo, final ISession session) {
+		DomainObject<V> domainObject = (DomainObject<V>)((IPojo) pojo).domainObject();
 		domainObject.init(
-				domainClass, session, 
-				PersistState.PERSISTED, ResolveState.RESOLVED);
+				session, PersistState.PERSISTED, 
+				ResolveState.RESOLVED);
 		return domainObject;
 	}
 
@@ -139,13 +151,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject recreatePersistent(
-			final IDomainClass domainClass, final V pojo, final ISession session) {
-		// DomainObject domainObject = new DomainObject(pojo);
-		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo)
-				.getDomainObject();
-		domainObject.init(domainClass, session, 
-				PersistState.PERSISTED, ResolveState.UNRESOLVED);
+	public static <V> DomainObject recreatePersistent(final V pojo, final ISession session) {
+		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
+		domainObject.init(session, PersistState.PERSISTED, 
+				ResolveState.UNRESOLVED);
 		return domainObject;
 	}
 
@@ -164,23 +173,24 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 	/**
 	 * Initializes the domain object.
-	 * 
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(
-			final IDomainClass domainClass, final ISession session,
-			PersistState persistState, ResolveState resolveState) {
-		this._domainClass = domainClass;
+	private void init(final ISession session, PersistState persistState, ResolveState resolveState) {
 		this._session = session;
 		this._persistState = persistState;
 		this._resolveState = resolveState;
 	}
 
 	/*
+	 * Lazily looks up domain class if necessary.
+	 * 
 	 * @see org.essentialplatform.session.IDomainObject#getDomainClass()
 	 */
-	public IDomainClass getDomainClass() {
+	public synchronized IDomainClass getDomainClass() {
+		if (_domainClass == null) {
+			_domainClass = lookupDomainClass(_pojo);
+		}
 		return _domainClass;
 	}
 
@@ -190,7 +200,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @return
 	 */
 	DomainClass getDomainClassImpl() {
-		return (DomainClass) _domainClass;
+		return (DomainClass) getDomainClass();
 	}
 
 	/*
@@ -217,13 +227,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public <V> V getAdapter(Class<V> objectAdapterClass) {
 		Object adapter = _adaptersByClass.get(objectAdapterClass);
 		if (adapter == null) {
-			List<IDomainClassAdapter> classAdapters = getDomainClass()
-					.getAdapters();
+			List<IDomainClassAdapter> classAdapters = getDomainClass().getAdapters();
 			for (IDomainClassAdapter classAdapter : classAdapters) {
 				// JAVA5_FIXME: should be using covariance of getAdapters()
 				IRuntimeDomainClassAdapter runtimeClassAdapter = (IRuntimeDomainClassAdapter) classAdapter;
-				adapter = runtimeClassAdapter.getObjectAdapterFor(this,
-						objectAdapterClass);
+				adapter = runtimeClassAdapter.getObjectAdapterFor(this, objectAdapterClass);
 				if (adapter != null) {
 					_adaptersByClass.put(adapter.getClass(), adapter);
 					break;
@@ -239,29 +247,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public boolean isPersistent() {
 		return _persistState.isPersistent();
 	}
-
-	// in process of removing; performed instead through transactions.
-	// public void persist() {
-	// if (isPersistent()) {
-	// throw new IllegalStateException("Already persisted.");
-	// }
-	// if (getSession() == null) {
-	// throw new IllegalStateException("Not attached to a _session");
-	// }
-	// getSession().persist(this);
-	// _persistent = true;
-	// }
-
-	// in process of removing; performed instead through transactions.
-	// public void save() {
-	// if (!isPersistent()) {
-	// throw new IllegalStateException("Not yet persisted.");
-	// }
-	// if (getSession() == null) {
-	// throw new IllegalStateException("Not attached to a session");
-	// }
-	// getSession().save(this);
-	// }
 
 	/*
 	 * For the title we just return the POJO's <code>toString()</code>.
@@ -330,8 +315,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	public boolean isAttached() {
 		return _session != null;
 	}
-
-	private String sessionId;
 
 	/**
 	 * The identifier of the {@link ISession} that originally managed this
@@ -775,7 +758,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			if (referencedObject == null) return null;
 			if (!(referencedObject instanceof IPojo)) return null;
 			IPojo referencedPojo = (IPojo)referencedObject;
-			return referencedPojo.getDomainObject();
+			return referencedPojo.domainObject();
 		}
 
 		/*
@@ -861,7 +844,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 				(Collection<IPojo>) _runtimeBinding.invokeAccessor(getPojo());
 			Collection<IDomainObject<V>> collection = new ArrayList<IDomainObject<V>>();
 			for(IPojo pojo: pojoCollection) {
-				collection.add(pojo.getDomainObject());
+				collection.add(pojo.domainObject());
 			}
 			return Collections.unmodifiableCollection(collection);
 		}
@@ -1166,12 +1149,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 	}
 
-	// think this is redundant
-//	public TransactionalState getTransactionalState() {
-//		return _state;
-//	}
-//
-	
 	public boolean isInitialized() {
 		return _resolveState != null && !_resolveState.isUnknown() &&
 		       _persistState != null && !_persistState.isUnknown();
@@ -1186,5 +1163,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			observedFeature.externalStateChanged();
 		}
 	}
+
+	private static <V> IDomainClass lookupDomainClass(final V pojo) {
+		Class<?> javaClass = pojo.getClass();
+		IDomainClass domainClass = Domain.domainFor(javaClass).lookup(javaClass);
+		return domainClass;
+	}
+
 
 }

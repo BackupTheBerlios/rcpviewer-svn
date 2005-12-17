@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
 import org.essentialplatform.runtime.transaction.*;
+import org.essentialplatform.runtime.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.event.ITransactionListener;
@@ -31,6 +32,30 @@ public final class Transaction implements ITransaction {
 	private final static Logger LOG = Logger.getLogger(Transaction.class);
 
 	/**
+	 * When this transaction was started (instantiated).
+	 */
+	private Date _startedAt;
+	/**
+	 * When this transaction was completed (may be null if still in progress).
+	 */
+	private Date _endedAt;
+	
+	/**
+	 * The current state of this transaction.
+	 */
+	private State _state;
+
+	/**
+	 * The {@link #_changes} is converted into an immutable work chain 
+	 * when the transaction is {@link #commit()}ted.
+	 * 
+	 * <p>
+	 * Will be set to <code>null</code> until the transaction has been
+	 * committed.
+	 */
+	private List<IChange> _committedChanges;
+
+	/**
 	 * All {@link IChange}s in the current change.
 	 * 
 	 * <p>
@@ -40,67 +65,75 @@ public final class Transaction implements ITransaction {
 	 * <p>
 	 * Implementation note: using ArrayList rather than LinkedList since 
 	 * easier to inspect in variables view :-)
+	 * 
+	 * <p>
+	 * Marked as <tt>transient</tt> for serialization.
 	 */
-	private List<IChange> _changesInCurrentChange = new ArrayList<IChange>();
+	private transient List<IChange> _changesInCurrentChange = new ArrayList<IChange>();
 	/**
 	 * List of all changes ({@link Interaction}s) that have been 
 	 * performed in the context of this transaction.
 	 * 
 	 * <p>
 	 * This stack is available to be undone.
+	 * 
+	 * <p>
+	 * Marked as <tt>transient</tt> for serialization.
 	 */
-	private Stack<Interaction> _changes = new Stack<Interaction>();
+	private transient Stack<Interaction> _changes = new Stack<Interaction>();
 	/**
 	 * Stack of all changes ({@link IWorkChain}s) that have been undone.
 	 * 
 	 * <p>
 	 * This stack is available to be redone.
-	 */
-	private Stack<Interaction> _undoneChanges = new Stack<Interaction>();
-	/**
-	 * The {@link #_changes} is converted into an immutable work chain 
-	 * when the transaction is {@link #commit()}ted.
 	 * 
 	 * <p>
-	 * Will be set to <code>null</code> until the transaction has been
-	 * committed.
+	 * Marked as <tt>transient</tt> for serialization.
 	 */
-	private Interaction _committedChanges;
-
-	/**
-	 * The current state of this transaction.
-	 */
-	private State _state;
+	private transient Stack<Interaction> _undoneChanges = new Stack<Interaction>();
 
 	/**
 	 * needs reference to actual implementation to get a hold
 	 * of {@link TransactionManager#committed(Transaction)}.
+	 * 
+	 * <p>
+	 * Marked as <tt>transient</tt> for serialization.
 	 */
-	private final TransactionManager _transactionManager;
-	
-	private final IAppContainer _appContainer;
-	
-	Transaction(final TransactionManager transactionManager, final IAppContainer appContainer) {
-		this._transactionManager   = transactionManager;
-		this._appContainer = appContainer;
-		this._state = ITransaction.State.IN_PROGRESS;
-		this._startedAt = new Date();
-	}
+	private transient TransactionManager _transactionManager;
 
 	/**
-	 * Whent this transaction was started (instantiated).
+	 * Marked as <tt>transient</tt> for serialization.
 	 */
-	private final Date _startedAt;
-	/**
-	 * When this transaction was completed (may be null if still in progress).
-	 */
-	private Date _endedAt;
+	private transient IAppContainer _appContainer;
 	
 	/**
 	 * Listeners of this transaction.
+	 * 
+	 * <p>
+	 * Marked as <tt>transient</tt> for serialization.
 	 */
-    private final List<ITransactionListener> _listeners = new ArrayList<ITransactionListener>();
+    private transient List<ITransactionListener> _listeners = new ArrayList<ITransactionListener>();
     
+
+	Transaction(final TransactionManager transactionManager, final IAppContainer appContainer) {
+		init(transactionManager, appContainer, ITransaction.State.IN_PROGRESS, new Date());
+	}
+
+	/**
+	 * Separated out from constructor to allow for re-initialization during
+	 * serialization.
+	 * 
+	 * @param transactionManager
+	 * @param appContainer
+	 * @param state
+	 * @param startedAt
+	 */
+	private void init(final TransactionManager transactionManager, final IAppContainer appContainer, final ITransaction.State state, final Date startedAt) {
+		this._transactionManager   = transactionManager;
+		this._appContainer = appContainer;
+		this._state = state;
+		this._startedAt = startedAt;
+	}
 
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#getState()
@@ -211,9 +244,11 @@ public final class Transaction implements ITransaction {
 	public ITransaction commit() {
 		checkCurrentTransactionOfTransactionManager();
 		checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
-		_committedChanges = new Interaction(this, _changes.toArray(new Interaction[]{}));
+		_committedChanges = Collections.unmodifiableList(new ArrayList(_changes));
 		LOG.debug("committing xactn of " + _changes.size() + " separate ChangeSets");
 		
+		_enlistedPojos = Collections.unmodifiableSet(getEnlistedPojosInternal());
+
 		// we notify the transaction manager before we clear _changes because
 		// the transaction manager is going to ask this transaction which pojos
 		// it had enlisted in order that it can mark them as clean.
@@ -237,7 +272,9 @@ public final class Transaction implements ITransaction {
 	 */
 	public ITransaction reverse() {
 		checkInState(ITransaction.State.COMMITTED);
-		_committedChanges.undo(); // will throw exception if irreversible.
+		for(IChange eachChange: _committedChanges) {
+			eachChange.undo(); // will throw exception if irreversible.
+		}
 		_state = ITransaction.State.REVERSED;
 		TransactionEvent event = new TransactionEvent(this);
 		for(ITransactionListener listener: _listeners) {
@@ -253,7 +290,9 @@ public final class Transaction implements ITransaction {
 	 */
 	public ITransaction reapply() {
 		checkInState(ITransaction.State.REVERSED);
-		_committedChanges.execute();
+		for(IChange eachChange: _committedChanges) {
+			eachChange.execute();
+		}
 		_transactionManager.reapplied(this);
 		_state = ITransaction.State.COMMITTED;
 		
@@ -267,9 +306,9 @@ public final class Transaction implements ITransaction {
 	}
 
 	/*
-	 * @see org.essentialplatform.transaction.ITransaction#getWorkChain()
+	 * @see org.essentialplatform.transaction.ITransaction#getCommittedChanges()
 	 */
-	public Interaction getCommittedChanges() throws IllegalStateException {
+	public List<IChange> getCommittedChanges() throws IllegalStateException {
 		checkInState(ITransaction.State.COMMITTED);
 		return _committedChanges;
 	}
@@ -401,13 +440,25 @@ public final class Transaction implements ITransaction {
 	}
 
 
+	/**
+	 * Only populated when the transaction is committed. 
+	 * 
+	 * <p>
+	 * Useful for serialization.
+	 */
+	private Set<ITransactable> _enlistedPojos;
+
 	/*
 	 * Derived from the modified pojos of each changeset.
 	 *  
 	 * @see org.essentialplatform.transaction.ITransaction#getEnlistedPojos()
 	 */
 	public Set<ITransactable> getEnlistedPojos() {
-		return Collections.unmodifiableSet(getEnlistedPojosInternal());
+		if (_enlistedPojos != null) {
+			return _enlistedPojos;
+		} else {
+			return Collections.unmodifiableSet(getEnlistedPojosInternal());
+		}
 	}
 
 	private Set<ITransactable> getEnlistedPojosInternal() {

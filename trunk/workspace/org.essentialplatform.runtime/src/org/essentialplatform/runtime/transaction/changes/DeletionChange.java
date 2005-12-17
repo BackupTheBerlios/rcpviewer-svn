@@ -26,7 +26,7 @@ public final class DeletionChange extends AbstractChange {
 
 	private static String description(final ITransactable transactable) {
 		IPojo pojo = (IPojo)transactable;
-		IDomainObject domainObject = pojo.getDomainObject();
+		IDomainObject domainObject = pojo.domainObject();
 		return "deleted " + domainObject.getDomainClass().getName();
 	}
 	
@@ -46,7 +46,7 @@ public final class DeletionChange extends AbstractChange {
 	@Override
 	public final Object doExecute() {
 		IPojo pojo = (IPojo)_transactable;
-		IDomainObject<?> domainObject = pojo.getDomainObject();
+		IDomainObject<?> domainObject = pojo.domainObject();
 		if (domainObject != null) {
 			domainObject.nowTransient();
 		}
@@ -59,7 +59,7 @@ public final class DeletionChange extends AbstractChange {
 	 */
 	public void doUndo() {
 		IPojo pojo = (IPojo)_transactable;
-		IDomainObject<?> domainObject = pojo.getDomainObject();
+		IDomainObject<?> domainObject = pojo.domainObject();
 		if (domainObject != null) {
 			domainObject.nowPersisted();
 		}

@@ -45,7 +45,7 @@ class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspec
 		}
 		boolean startedInteraction = transaction.startingInteraction();
 		try {
-			IDomainObject domainObject = pojo.getDomainObject();
+			IDomainObject domainObject = pojo.domainObject();
 			
 			IDomainObject.IObjectCollectionReference reference = JoinPointUtil.getCollectionReferenceFor(domainObject, thisJoinPointStaticPart);
 			ThreadLocals.setCollectionReferenceForThread(reference);

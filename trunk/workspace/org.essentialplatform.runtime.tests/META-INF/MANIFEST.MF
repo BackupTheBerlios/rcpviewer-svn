@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Essential Platform Runtime-Deployment Tests
-Bundle-SymbolicName: org.essentialplatform.domain.runtime.tests
+Bundle-SymbolicName: org.essentialplatform.runtime.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/,
@@ -17,7 +17,9 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.app;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
- org.essentialplatform.progmodel.louis.runtime;visibility:=reexport
+ org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
+ net.sf.plugins.utils,
+ net.sf.plugins.commons
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform.runtime.tests,

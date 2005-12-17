@@ -7,14 +7,14 @@ import java.io.OutputStreamWriter;
 
 import com.thoughtworks.xstream.XStream;
 
-public final class XStreamMarshaller implements IMarshaller, IUnmarshaller {
+public final class XStreamDistribution implements IDistribution {
 
 	/**
 	 * Threadsafe.
 	 */
 	private final XStream xstream;
 	
-	public XStreamMarshaller() {
+	public XStreamDistribution() {
 		super();
 		xstream = new XStream();
 	}
@@ -33,5 +33,6 @@ public final class XStreamMarshaller implements IMarshaller, IUnmarshaller {
 	public Object unmarshalFrom(InputStream is) {
 		return xstream.fromXML(new InputStreamReader(is));
 	}
+
 
 }

@@ -24,7 +24,10 @@ import org.omg.CORBA._PolicyStub;
  */
 public final class AttributeChange extends AbstractFieldChange {
 
-	private IObjectAttribute _attribute;
+	/**
+	 * <tt>transient</tt> for serialization.
+	 */
+	private transient IObjectAttribute _attribute;
 
 	/**
 	 * CAptures the current value of the attribute as the 

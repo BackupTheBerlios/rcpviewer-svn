@@ -41,7 +41,7 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 	/**
 	 * This change's reference to the collection object being changed.
 	 */
-	private final Collection<V> _collection;
+	private transient Collection<V> _collection;
 	
 	/**
 	 * The value of the {@link #getField()} after it was modified, accessed
@@ -49,7 +49,10 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 	 */
 	protected final V _referencedObject;
 
-	protected final IObjectCollectionReference _reference;
+	/**
+	 * <tt>transient</tt> for serialization.
+	 */
+	protected transient IObjectCollectionReference _reference;
 
 
 	private static String nameOf(IDomainObject.IObjectCollectionReference reference) {

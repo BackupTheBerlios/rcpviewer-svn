@@ -57,7 +57,7 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 		_control.setInput(domainObject);
 
 		ITransactable transactable = (ITransactable)domainObject.getPojo();
-		_transaction = transactable.getTransaction(false);
+		_transaction = transactable.currentTransaction(false);
 		if (_transaction != null) {
 			_transaction.addTransactionListener(this);
 		}

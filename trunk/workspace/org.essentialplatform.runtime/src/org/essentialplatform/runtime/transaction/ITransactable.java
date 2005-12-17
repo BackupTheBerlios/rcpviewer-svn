@@ -32,9 +32,16 @@ public interface ITransactable {
 	 * {@link ITransaction.State#IN_PROGRESS}) and this object will be enlisted
 	 * within it.
 	 * 
+	 * <p>
+	 * Implementation note: previously this method was called <tt>getTransaction()</tt>.
+	 * It was renamed so that Hibernate would not pick it up as a property.  (An
+	 * alternative would have been to use the <tt>@javax.persistence.Transient</tt>
+	 * annotation, however since the field is introduced by an aspect this area is
+	 * still (Dec 2005) somewhat unstable).
+	 * 
 	 * @return
 	 */
-	public ITransaction getTransaction();
+	public ITransaction currentTransaction();
 
 	/**
 	 * The {@link ITransaction} in which this object is enlisted.
@@ -46,7 +53,7 @@ public interface ITransactable {
 	 * 
 	 * @return
 	 */
-	public ITransaction getTransaction(final boolean autoEnlist);
+	public ITransaction currentTransaction(final boolean autoEnlist);
 
 }
 

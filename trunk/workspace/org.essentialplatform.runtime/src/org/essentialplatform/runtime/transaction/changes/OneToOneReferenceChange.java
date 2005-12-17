@@ -20,7 +20,10 @@ import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
  */
 public final class OneToOneReferenceChange extends AbstractFieldChange {
 
-	private final IObjectOneToOneReference _reference;
+	/**
+	 * <tt>transient</tt> for serialization.
+	 */
+	private transient IObjectOneToOneReference _reference;
 	private ITransactable _referencedObjOrNull;
 	
 	public OneToOneReferenceChange(
