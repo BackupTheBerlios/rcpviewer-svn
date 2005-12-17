@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="antlr-2.7.6rc1.jar"/>
+	<classpathentry kind="lib" path="asm.jar"/>
+	<classpathentry kind="lib" path="asm-attrs.jar"/>
+	<classpathentry exported="true" kind="lib" path="cglib-2.1.3.jar"/>
+	<classpathentry kind="lib" path="commons-collections-2.1.1.jar"/>
+	<classpathentry kind="lib" path="commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="jaxen-1.1-beta-7.jar"/>
+	<classpathentry kind="lib" path="jdbc2_0-stdext.jar"/>
+	<classpathentry kind="lib" path="jta.jar"/>
+	<classpathentry kind="lib" path="xml-apis.jar"/>
+	<classpathentry exported="true" sourcepath="hibernate-3.1-src.jar" kind="lib" path="hibernate-3.1.jar">
+		<attributes>
+			<attribute value="jar:file:/D:/dkhaywood/svn/svn.berlios.de/trunk/3rdparty/net.sf.plugins.hibernate/hibernate-3.1-api.jar!/" name="javadoc_location"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="ejb3-persistence-PublicDraft.jar"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-annotations-3.1beta7.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
