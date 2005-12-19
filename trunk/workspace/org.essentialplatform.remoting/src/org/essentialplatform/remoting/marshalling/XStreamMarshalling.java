@@ -7,14 +7,14 @@ import java.io.OutputStreamWriter;
 
 import com.thoughtworks.xstream.XStream;
 
-public final class XStreamRemoting implements IRemoting {
+public final class XStreamMarshalling implements IMarshalling {
 
 	/**
 	 * Threadsafe.
 	 */
 	private final XStream xstream;
 	
-	public XStreamRemoting() {
+	public XStreamMarshalling() {
 		super();
 		xstream = new XStream();
 	}

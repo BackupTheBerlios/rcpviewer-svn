@@ -1,5 +1,22 @@
 package org.essentialplatform.remoting;
 
-public interface IRemoting extends IMarshaller, IUnmarshaller {
+import org.essentialplatform.remoting.marshalling.IMarshalling;
+import org.essentialplatform.remoting.transport.ITransport;
 
+public interface IRemoting  {
+	
+	/**
+	 * Returns the configured marshalling service.
+	 * 
+	 * @return
+	 */
+	IMarshalling getMarshalling();
+	
+
+	/**
+	 * Returns the configured transport.
+	 * 
+	 * @return
+	 */
+	ITransport getTransport();
 }
