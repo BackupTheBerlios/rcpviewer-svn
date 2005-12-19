@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ActiveMQ 3.2.1
+Bundle-GlobalName: net.sf.plugins.activemq
+Bundle-SymbolicName: net.sf.plugins.activemq
+Bundle-Version: 3.2.1
+Bundle-Vendor: Codehaus
+Bundle-Localization: plugin
+Bundle-ClassPath: 
+ activemq-3.2.1.jar
+Export-Package: org.codehaus.activemq
