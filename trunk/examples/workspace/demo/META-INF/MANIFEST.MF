@@ -8,7 +8,9 @@ Require-Bundle: org.aspectj.runtime,
  org.essentialplatform.progmodel.louis.app,
  org.essentialplatform.progmodel.essential.app,
  org.essentialplatform.core,
- org.essentialplatform.runtime
+ org.essentialplatform.runtime,
+ net.sf.plugins.hibernate
 Eclipse-AutoStart: true
+Eclipse-RegisterBuddy: net.sf.plugins.hibernate
 Export-Package: demo
 Bundle-Vendor: Essential Platform Development Team
