@@ -10,11 +10,11 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.RuntimeBinding;
-import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.session.SessionManager;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
 import org.essentialplatform.runtime.transaction.TransactionManager;
+import org.essentialplatform.server.persistence.inmemory.InMemoryObjectStore;
 
 /**
  * Have copied down stuff from subclass; need to simplify.

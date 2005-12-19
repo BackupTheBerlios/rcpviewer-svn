@@ -29,9 +29,9 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.runtime.CompositeIdPersistenceIdAssigner;
 import org.essentialplatform.runtime.IdSemanticsPersistenceIdAssigner;
 import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.persistence.PersistenceId;
-import org.essentialplatform.runtime.persistence.SequentialPersistenceIdAssigner;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.server.persistence.PersistenceId;
+import org.essentialplatform.server.persistence.SequentialPersistenceIdAssigner;
 
 public class TestIdSemanticsPersistenceIdAssigner extends AbstractRuntimeTestCase {
 
