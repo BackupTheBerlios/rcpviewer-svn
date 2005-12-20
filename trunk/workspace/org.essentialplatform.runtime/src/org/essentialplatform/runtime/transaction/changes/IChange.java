@@ -64,6 +64,19 @@ public interface IChange {
 	public void undo();
 
 	/**
+	 * Visitor pattern; implementations should either call 
+	 * {@link IVisitor#visit(IChange)} passing themselves or, if a 
+	 * composite, should ensure that all contained changes accept the
+	 * visitor in turn.
+	 * 
+	 * <p>
+	 * Containers should invoke accept for themselves before iterating over
+	 * their contained changes.
+	 */
+	public void accept(IVisitor visitor);
+
+	
+	/**
 	 * Whether this atom of work can irreversible (cannot be automatically
 	 * undone once committed).
 	 * 
@@ -74,6 +87,19 @@ public interface IChange {
 	 * @return
 	 */
 	public boolean isIrreversible();
+
+
+	/**
+	 * The pojo (if any) on which this change was initially performed.
+	 * 
+	 * <p>
+	 * May return <tt>null</tt> if a class (<tt>static</tt>) action was 
+	 * performed rather than an instance action.
+	 *  
+	 * @return
+	 */
+	public ITransactable getInitiatingPojo();
+
 
 	/**
 	 * The pojo or pojos that are modified as a result of this work atom.
@@ -196,26 +222,13 @@ public interface IChange {
 			return Collections.EMPTY_SET;
 		}
 
-		/**
-		 * Always returns 0.
-		 * 
-		 * <p>
-		 * Well, it is the Null object.
+		/*
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
 		 */
-		public int hashCode() {
-			return 0;
+		public ITransactable getInitiatingPojo() {
+			return null;
 		}
 
-		/**
-		 * equal if it is a {@link NullChange}
-		 */
-		@Override
-		public boolean equals(Object other) {
-			if (!getClass().equals(other.getClass())) {
-				return false;
-			}
-			return true;
-		}
 
 		/*
 		 * 
@@ -231,6 +244,39 @@ public interface IChange {
 		}
 		public void setParent(final IChange parent) {
 			this._parent = parent;
+		}
+
+		/*
+		 * Invokes {@link IVisitor#visit(IChange)}, as per the general contract.
+		 * 
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#accept(org.essentialplatform.runtime.transaction.changes.IChange.IVisitor)
+		 */
+		public void accept(IVisitor visitor) {
+			visitor.visit(this);
+		}
+
+		/**
+		 * Always returns 0.
+		 * 
+		 * <p>
+		 * <p>
+		 * Good enough because there should only be a single instance of
+		 * this type.
+		 */
+		@Override
+		public int hashCode() {
+			return 0;
+		}
+
+		/**
+		 * equal if it is a {@link NullChange}
+		 */
+		@Override
+		public boolean equals(Object other) {
+			if (!getClass().equals(other.getClass())) {
+				return false;
+			}
+			return true;
 		}
 
 	}
@@ -283,6 +329,7 @@ public interface IChange {
 			return false;
 		}
 
+		
 		/*
 		 * Can reverse (since does nothing).
 		 * 
@@ -300,6 +347,14 @@ public interface IChange {
 		}
 
 		/*
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
+		 */
+		public ITransactable getInitiatingPojo() {
+			return null;
+		}
+
+
+		/*
 		 * @see org.essentialplatform.transaction.IChange#getDescription()
 		 */
 		public String getDescription() {
@@ -311,23 +366,6 @@ public interface IChange {
 		 */
 		public Object[] getExtendedInfo() {
 			return __extendedInfo;
-		}
-
-		/**
-		 * Always returns 0.
-		 * 
-		 * <p>
-		 * Well, it is the Null object.
-		 */
-		public int hashCode() {
-			return 0;
-		}
-
-		public boolean equals(Object other) {
-			if (!getClass().equals(other.getClass())) {
-				return false;
-			}
-			return true;
 		}
 
 		/*
@@ -344,6 +382,40 @@ public interface IChange {
 		public void setParent(final IChange parent) {
 			this._parent = parent;
 		}
+		
+		/*
+		 * Invokes {@link IVisitor#visit(IChange)}, as per the general contract.
+		 * 
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#accept(org.essentialplatform.runtime.transaction.changes.IChange.IVisitor)
+		 */
+		public void accept(IVisitor visitor) {
+			visitor.visit(this);
+		}
+
+		/**
+		 * Always returns 0.
+		 * 
+		 * <p>
+		 * Good enough because there should only be a single instance of
+		 * this type.
+		 */
+		@Override
+		public int hashCode() {
+			return 0;
+		}
+
+		
+		/**
+		 * equal if it is a {@link NullChange}
+		 */
+		@Override
+		public boolean equals(Object other) {
+			if (!getClass().equals(other.getClass())) {
+				return false;
+			}
+			return true;
+		}
+
 	}
 
 	/**
@@ -371,4 +443,17 @@ public interface IChange {
 	 */
 	public void setParent(IChange change);
 
+	/**
+	 * Support visiting all changes in a (hierarchical) graph of changes.
+	 * 
+	 * <p>
+	 * See {@link IChange#accept(IVisitor)}
+	 * 
+	 * @author Dan Haywood
+	 */
+	public interface IVisitor {
+		
+		public void visit(IChange change);
+
+	}
 }

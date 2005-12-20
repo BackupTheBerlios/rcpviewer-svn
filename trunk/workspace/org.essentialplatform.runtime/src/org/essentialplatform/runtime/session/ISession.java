@@ -9,8 +9,6 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IObservedFeature;
 import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.IPersistable;
-import org.essentialplatform.runtime.persistence.IResolvable;
 import org.essentialplatform.runtime.session.event.ISessionListener;
 
 /**

@@ -58,6 +58,13 @@ public interface IObjectStore {
 	public <T> void saveOrUpdate(IDomainObject<T> domainObject);
 
 	/**
+	 * Delete the object represented by the domain object.
+	 * 
+	 * @param domainObject
+	 */
+	public void delete(IDomainObject<?> domainObject);
+
+	/**
 	 * Whether the supplied domain object has been persisted in this 
 	 * objectstore.
 	 * 
@@ -65,4 +72,5 @@ public interface IObjectStore {
 	 * @return
 	 */
 	public <T> boolean isPersistent(IDomainObject<T> domainObject);
+
 }

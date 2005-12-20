@@ -5,3 +5,16 @@ Bundle-SymbolicName: org.essentialplatform.remoting.tests
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
+Require-Bundle: org.essentialplatform.remoting,
+ org.junit,
+ org.aspectj.runtime,
+ org.essentialplatform.progmodel.louis.app,
+ org.essentialplatform.progmodel.essential.app,
+ org.essentialplatform.core,
+ org.essentialplatform.runtime,
+ net.sf.plugins.hibernate,
+ net.sf.plugins.commons,
+ org.essentialplatform.runtime.tests,
+ net.sf.plugins.xstream
+Export-Package: org.essentialplatform.remoting.tests
+Eclipse-RegisterBuddy: net.sf.plugins.xstream

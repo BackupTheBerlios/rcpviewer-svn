@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.remoting.persistence.IObjectStore;
 import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.server.persistence.ConcurrencyException;
-import org.essentialplatform.server.persistence.DuplicateObjectException;
-import org.essentialplatform.server.persistence.PersistenceId;
+import org.essentialplatform.runtime.persistence.ConcurrencyException;
+import org.essentialplatform.runtime.persistence.DuplicateObjectException;
+import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.persistence.PersistenceId;
 
 /**
  * 

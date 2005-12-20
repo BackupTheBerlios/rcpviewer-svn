@@ -30,7 +30,7 @@ import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
  * don't insist that an object changing its own state must do so by using its own
  * mutators).
  */
-public abstract class AbstractFieldChange extends AbstractChange {
+public abstract class AbstractFieldChange extends AbstractChange implements IModificationChange {
 
 	/**
 	 * The attribute that is being modified, accessed through 
@@ -52,7 +52,7 @@ public abstract class AbstractFieldChange extends AbstractChange {
 
 
 	protected static String description(final Field field) {
-		return field.getName();
+		return "changed " + field.getName();
 	}
 	
 	protected static Object[] extendedInfo(final ITransactable transactable, final Field field, final Object postValue) {
@@ -68,6 +68,14 @@ public abstract class AbstractFieldChange extends AbstractChange {
 		String postValueStr = "post: '" + postValue; 
 		return new Object[]{preValueStr, postValueStr};
 	}
+
+	/**
+	 * Provided only for comparator testing.
+	 */
+	public AbstractFieldChange() {
+		_preValue = _postValue = null;
+	}
+
 	/**
 	 * Captures the current value of the attribute as the 
 	 * {@link #getPreValue()}.
@@ -145,7 +153,7 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	@Override
 	public final Object doExecute()  {
 		try {
-			_field.set(_transactable, _postValue);
+			_field.set(getInitiatingPojo(), _postValue);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -161,7 +169,7 @@ public abstract class AbstractFieldChange extends AbstractChange {
 	 */
 	public void doUndo() {
 		try {
-			_field.set(_transactable, _preValue);
+			_field.set(getInitiatingPojo(), _preValue);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {

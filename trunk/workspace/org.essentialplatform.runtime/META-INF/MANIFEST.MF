@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.progmodel.essential.core,
  net.sf.plugins.xstream,
  net.sf.plugins.commons,
- net.sf.plugins.hibernate
+ org.essentialplatform.remoting
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime,
  org.essentialplatform.runtime.authorization,
@@ -25,7 +25,6 @@ Export-Package: org.essentialplatform.runtime,
  org.essentialplatform.runtime.domain.adapters,
  org.essentialplatform.runtime.domain.event,
  org.essentialplatform.runtime.persistence,
- org.essentialplatform.runtime.persistence.inmemory,
  org.essentialplatform.runtime.session,
  org.essentialplatform.runtime.session.event,
  org.essentialplatform.runtime.tracing,
@@ -35,3 +34,4 @@ Export-Package: org.essentialplatform.runtime,
  org.essentialplatform.runtime.transaction.internal,
  org.essentialplatform.runtime.util
 Plugin-Class: org.essentialplatform.runtime.RuntimePlugin
+Eclipse-RegisterBuddy: net.sf.plugins.xstream

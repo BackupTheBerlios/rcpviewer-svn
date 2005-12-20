@@ -1,12 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests Plug-in
+Bundle-Name: Server Tests
 Bundle-SymbolicName: org.essentialplatform.server.tests
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
-Eclipse-RegisterBuddy: net.sf.plugins.hibernate
+Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
+ net.sf.plugins.xstream
 Require-Bundle: net.sf.plugins.hsqldb,
  org.junit,
  net.sf.plugins.hibernate;visibility:=reexport,
  demo,
+ org.essentialplatform.server,
  org.essentialplatform.runtime.tests
+Bundle-Vendor: Essential Platform Development Team
+Export-Package: org.essentialplatform.server.tests

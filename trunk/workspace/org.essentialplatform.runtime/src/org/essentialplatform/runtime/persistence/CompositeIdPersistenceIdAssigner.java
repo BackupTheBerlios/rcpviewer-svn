@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime;
+package org.essentialplatform.runtime.persistence;
 
 import java.util.List;
 
@@ -6,11 +6,9 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.progmodel.essential.core.domain.comparators.IdAttributeComparator;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
 import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.persistence.AbstractPersistenceIdAssigner;
-import org.essentialplatform.runtime.persistence.IPersistenceIdAssigner;
-import org.essentialplatform.runtime.persistence.PersistenceId;
 
 public final class CompositeIdPersistenceIdAssigner extends AbstractPersistenceIdAssigner {
 

@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.tests.distribution;
+package org.essentialplatform.remoting.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -7,30 +7,31 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.CopyUtils;
+import junit.framework.TestCase;
+
 import org.apache.commons.io.IOUtils;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.distribution.IDistribution;
-import org.essentialplatform.runtime.distribution.IMarshaller;
-import org.essentialplatform.runtime.distribution.XStreamDistribution;
+import org.essentialplatform.remoting.IRemoting;
+import org.essentialplatform.remoting.marshalling.IMarshalling;
+import org.essentialplatform.remoting.marshalling.XStreamMarshalling;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.runtime.transaction.ITransaction;
 
-public class TestXStreamDistribution extends AbstractRuntimeTestCase {
+public class TestXStreamMarshalling extends AbstractRuntimeTestCase {
 
 	private IDomainClass domainClass;
 	
-	private IDistribution distribution;
+	private IMarshalling remoting;
 
-	public TestXStreamDistribution() {
+	public TestXStreamMarshalling() {
 		super(null);
 	}
 	
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		distribution = new XStreamDistribution();
+		remoting = new XStreamMarshalling();
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class TestXStreamDistribution extends AbstractRuntimeTestCase {
 
 		ByteArrayOutputStream baos;
 		baos = new ByteArrayOutputStream();
-		distribution.marshalTo(dobj.getPojo(), baos);
+		remoting.marshalTo(dobj.getPojo(), baos);
 	}
 
 	public void testMarshallTransactionWithAttributeChange() {
@@ -83,7 +84,6 @@ public class TestXStreamDistribution extends AbstractRuntimeTestCase {
 	 */
 	public void testMarshallTransactionWithTransientGraphCombinationOfChanges() {
 		IDomainClass departmentDC = lookupAny(Department.class);
-		IDomainClass employeeDC = lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDO = session.create(departmentDC);
 		Department departmentPojo = departmentDO.getPojo();
@@ -98,18 +98,17 @@ public class TestXStreamDistribution extends AbstractRuntimeTestCase {
 
 		ByteArrayOutputStream baos;
 		baos = new ByteArrayOutputStream();
-		distribution.marshalTo(xactn, baos);
+		remoting.marshalTo(xactn, baos);
 		
 		// debugging only...
-		dumpTo(baos.toByteArray(), "test2.xml");
+		// dumpTo(baos.toByteArray(), "test2.xml");
 
-		Object obj = distribution.unmarshalFrom(new ByteArrayInputStream(baos.toByteArray()));
+		Object obj = remoting.unmarshalFrom(new ByteArrayInputStream(baos.toByteArray()));
 		
 		assertTrue(obj instanceof ITransaction);
 		ITransaction unmarshalledXactn = (ITransaction)obj;
-		assertEquals(xactn.getEnlistedPojos().size(), unmarshalledXactn.getEnlistedPojos().size());
+		assertEquals(xactn.getInstantiatedPojos().size(), unmarshalledXactn.getInstantiatedPojos().size());
 		assertEquals(xactn.getCommittedChanges(), xactn.getCommittedChanges()); // value semantics for changes.
-		
 	}
 	
 	private void dumpTo(byte[] bytes, String filename) {

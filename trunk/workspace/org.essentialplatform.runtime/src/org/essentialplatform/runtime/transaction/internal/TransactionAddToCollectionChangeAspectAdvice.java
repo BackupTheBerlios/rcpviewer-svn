@@ -1,19 +1,15 @@
 package org.essentialplatform.runtime.transaction.internal;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import org.aspectj.lang.*;
-
 import org.apache.log4j.Logger;
+import org.aspectj.lang.JoinPoint;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
-import org.essentialplatform.runtime.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.changes.AddToCollectionChange;
-import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.util.JoinPointUtil;
 

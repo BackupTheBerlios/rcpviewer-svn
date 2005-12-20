@@ -32,8 +32,8 @@ import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmf
 import org.essentialplatform.runtime.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.IPersistenceIdAssigner;
+import org.essentialplatform.runtime.persistence.IdSemanticsPersistenceIdAssigner;
 import org.essentialplatform.runtime.persistence.PersistenceId;
-import org.essentialplatform.runtime.persistence.SequentialPersistenceIdAssigner;
 import org.osgi.framework.Bundle;
 
 /**
@@ -109,7 +109,10 @@ public final class RuntimeBinding extends Binding {
 
 
 	private final IDomainBuilder _primaryBuilder;
-	private final IPersistenceIdAssigner _sequentialPersistenceIdAssigner; 
+	/**
+	 * Injected in server-side.
+	 */
+	private IPersistenceIdAssigner _sequentialPersistenceIdAssigner; 
 	
 	/**
 	 * Saves the primary builder, and sets up a sequential persistence Id assigner.
@@ -122,9 +125,17 @@ public final class RuntimeBinding extends Binding {
 	 */
 	public RuntimeBinding(IDomainBuilder primaryBuilder) {
 		_primaryBuilder = primaryBuilder;
-		_sequentialPersistenceIdAssigner = new SequentialPersistenceIdAssigner();
 	}
 
+	/**
+	 * Injected.
+	 * 
+	 * @param assigner
+	 */
+	public void setPersistenceIdAssigner(IPersistenceIdAssigner assigner) {
+		_sequentialPersistenceIdAssigner = assigner;
+	}
+	
 	@Override
 	public Bundle getBundle() {
 		return Platform.getBundle("org.essentialplatform.domain.runtime");

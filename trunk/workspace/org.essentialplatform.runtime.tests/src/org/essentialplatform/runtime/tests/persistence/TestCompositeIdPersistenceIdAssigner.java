@@ -1,14 +1,14 @@
-package org.essentialplatform.server.tests.persistence;
+package org.essentialplatform.runtime.tests.persistence;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithCompositeId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithNoIdentifier;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
-import org.essentialplatform.runtime.CompositeIdPersistenceIdAssigner;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.persistence.CompositeIdPersistenceIdAssigner;
+import org.essentialplatform.runtime.persistence.PersistenceId;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.server.persistence.PersistenceId;
 
 public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeTestCase {
 

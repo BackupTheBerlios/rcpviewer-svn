@@ -1,28 +1,23 @@
 package org.essentialplatform.runtime.transaction;
 
-
-
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
-
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
-import org.essentialplatform.runtime.transaction.*;
 import org.essentialplatform.runtime.transaction.changes.ChangeSet;
-import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.changes.IChange;
+import org.essentialplatform.runtime.transaction.changes.InstantiationChange;
+import org.essentialplatform.runtime.transaction.changes.Interaction;
+import org.essentialplatform.runtime.transaction.changes.IChange.IVisitor;
 import org.essentialplatform.runtime.transaction.event.ITransactionListener;
 import org.essentialplatform.runtime.transaction.event.TransactionEvent;
-
 
 /**
  * Implementation of {@link Transaction} as used by {@link org.essentialplatform.transaction.TransactionManager}
@@ -45,6 +40,21 @@ public final class Transaction implements ITransaction {
 	 */
 	private State _state;
 
+
+	/**
+	 * Only populated when the transaction is committed. 
+	 * 
+	 * <p>
+	 * Required for serialization; populated on commit.
+	 * 
+	 * <p>
+	 * Implementation note: this appears lexically before <tt>_committedChanges</tt>
+	 * so that XStream serialization lists all the pojos and then the
+	 * changes just reference them.  There is no functional difference, but it
+	 * is easier to review the serialized form with pojos dumped out first.
+	 */
+	private Set<ITransactable> _instantiatedPojos;
+
 	/**
 	 * The {@link #_changes} is converted into an immutable work chain 
 	 * when the transaction is {@link #commit()}ted.
@@ -53,7 +63,7 @@ public final class Transaction implements ITransaction {
 	 * Will be set to <code>null</code> until the transaction has been
 	 * committed.
 	 */
-	private List<IChange> _committedChanges;
+	private List<Interaction> _committedChanges;
 
 	/**
 	 * All {@link IChange}s in the current change.
@@ -247,7 +257,8 @@ public final class Transaction implements ITransaction {
 		_committedChanges = Collections.unmodifiableList(new ArrayList(_changes));
 		LOG.debug("committing xactn of " + _changes.size() + " separate ChangeSets");
 		
-		_enlistedPojos = Collections.unmodifiableSet(getEnlistedPojosInternal());
+		// populate for serialization.
+		_instantiatedPojos = Collections.unmodifiableSet(getInstantiatedPojos());
 
 		// we notify the transaction manager before we clear _changes because
 		// the transaction manager is going to ask this transaction which pojos
@@ -308,11 +319,30 @@ public final class Transaction implements ITransaction {
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#getCommittedChanges()
 	 */
-	public List<IChange> getCommittedChanges() throws IllegalStateException {
+	public List<Interaction> getCommittedChanges() throws IllegalStateException {
 		checkInState(ITransaction.State.COMMITTED);
 		return _committedChanges;
 	}
  
+	
+
+	/*
+	 * @see org.essentialplatform.runtime.transaction.ITransaction#flattenedCommittedChanges()
+	 */
+	public List<IChange> flattenedCommittedChanges() {
+		final List<IChange> flattenedChanges = new ArrayList<IChange>();
+		IChange.IVisitor flatteningVisitor = new IChange.IVisitor() {
+			/**
+			 * Ignore ChangeSets, but add otherwise.
+			 */
+			public void visit(IChange change) {
+				if (change instanceof ChangeSet) return;
+				flattenedChanges.add(change);
+			}
+		};
+		return flattenedChanges;
+	}
+
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#undoPendingChange()
 	 */
@@ -440,34 +470,48 @@ public final class Transaction implements ITransaction {
 	}
 
 
-	/**
-	 * Only populated when the transaction is committed. 
-	 * 
-	 * <p>
-	 * Useful for serialization.
-	 */
-	private Set<ITransactable> _enlistedPojos;
-
 	/*
 	 * Derived from the modified pojos of each changeset.
 	 *  
 	 * @see org.essentialplatform.transaction.ITransaction#getEnlistedPojos()
 	 */
 	public Set<ITransactable> getEnlistedPojos() {
-		if (_enlistedPojos != null) {
-			return _enlistedPojos;
-		} else {
-			return Collections.unmodifiableSet(getEnlistedPojosInternal());
-		}
-	}
-
-	private Set<ITransactable> getEnlistedPojosInternal() {
 		Set<ITransactable> enlistedPojos = new LinkedHashSet<ITransactable>();
 		for(Interaction interaction: _changes) {
 			enlistedPojos.addAll(interaction.getModifiedPojos());
 		}
 		return enlistedPojos;
 	}
+
+
+	/*
+	 * If the transaction has not been serialized, then this method determines 
+	 * the set of pojos on the fly (from the <tt>_changes</tt> collection.
+	 * But if the transaction HAS been serialized, then <tt>_changes</tt> will
+	 * be empty, and so the method just returns the 
+	 * <tt>_instantiatedPojos<tt> collection, populated when the 
+	 * transaction is committed.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.ITransaction#getInstantiatedPojos()
+	 */
+	public Set<ITransactable> getInstantiatedPojos() {
+		if (_changes == null) {
+			return _instantiatedPojos;
+		}
+		final Set<ITransactable> instantiatedPojos = new LinkedHashSet<ITransactable>();
+		IChange.IVisitor changeVisitor = new IChange.IVisitor(){
+			public void visit(IChange change) {
+				if (!(change instanceof InstantiationChange)) {
+					return;
+				}
+				instantiatedPojos.addAll(change.getModifiedPojos());
+			}};
+		for(Interaction interaction: _committedChanges) {
+			interaction.accept(changeVisitor);
+		}
+		return instantiatedPojos; 
+	}
+
 
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#checkInState(org.essentialplatform.transaction.ITransaction.State[])
@@ -548,13 +592,15 @@ public final class Transaction implements ITransaction {
     		   .append(TranMgmtConstants.TRANSACTION_START_END_FORMAT.format(_endedAt));
     	} 
     	buf.append(" ").append(_state.name().toLowerCase()).append(" ");
-    	Set<ITransactable> enlistedPojos = getEnlistedPojosInternal();
+    	Set<ITransactable> enlistedPojos = getEnlistedPojos();
     	if (enlistedPojos.size() > 0) {
 	    	buf.append(enlistedPojos.size()).append(" objects, ")
 	    	   .append(_changes.size() + " changes");
     	}
     	return buf.toString();
     }
+
+
 
 
 }

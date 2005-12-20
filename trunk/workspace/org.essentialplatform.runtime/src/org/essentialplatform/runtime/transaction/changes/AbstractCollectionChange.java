@@ -31,7 +31,7 @@ import org.essentialplatform.runtime.transaction.ITransaction;
  * don't insist that an object changing its own state must do so by using its own
  * mutators).
  */
-public abstract class AbstractCollectionChange<V> extends AbstractChange {
+public abstract class AbstractCollectionChange<V> extends AbstractChange implements IModificationChange {
 
 	protected static Object[] extendedInfo(final ITransactable transactable, final Object referencedObject) {
 		String referencedObj = "obj: '" + referencedObject; 
@@ -82,6 +82,14 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange {
 		_reference = reference;
 	}
 
+	/**
+	 * For testing of comparators only 
+	 */
+	protected AbstractCollectionChange() {
+		_referencedObject = null;
+	}
+
+	
 	/**
 	 * The collection of this particular pojo that is referenced by the field. 
 	 * @return

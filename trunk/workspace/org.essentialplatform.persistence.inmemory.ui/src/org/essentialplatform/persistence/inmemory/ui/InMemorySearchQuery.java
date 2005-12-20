@@ -25,13 +25,12 @@ import org.eclipse.swt.graphics.Image;
 import org.essentialplatform.runtime.RuntimePlugin;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
 import org.essentialplatform.runtime.session.ISession;
 
 public final class InMemorySearchQuery
 implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentProvider
 {
-	Map<InMemoryObjectStore, ISession> _sessionByObjectStore= new HashMap<InMemoryObjectStore, ISession>(); 
+	Map<IObjectStore, ISession> _sessionByObjectStore= new HashMap<IObjectStore, ISession>(); 
 	Collection<IDomainObject> _allObjects= new ArrayList<IDomainObject>();
 	HashSet<ISearchResultListener> _searchListeners= new HashSet<ISearchResultListener>();
 
@@ -61,13 +60,13 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 			
 			for (ISession session: RuntimePlugin.getDefault().getSessionManager().getAllSessions()) {
 				IObjectStore objectStore= session.getObjectStore();
-				if (objectStore instanceof InMemoryObjectStore) {
-					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
-					for (Object pojo: memoryObjectStore.allInstances()) {
-						IDomainObject<?> domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
-						_allObjects.add(domainObject);
-					}
-				}
+//				if (objectStore instanceof InMemoryObjectStore) {
+//					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
+//					for (Object pojo: memoryObjectStore.allInstances()) {
+//						IDomainObject<?> domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
+//						_allObjects.add(domainObject);
+//					}
+//				}
 			}
 			
 			for (ISearchResultListener listener: _searchListeners)

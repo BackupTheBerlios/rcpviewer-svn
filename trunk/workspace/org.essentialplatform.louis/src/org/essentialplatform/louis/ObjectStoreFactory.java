@@ -1,7 +1,8 @@
 package org.essentialplatform.louis;
 
 import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
+import org.essentialplatform.runtime.persistence.NoopObjectStore;
+
 
 /**
  * Creates <code>IObjectStore</code>.
@@ -14,7 +15,7 @@ class ObjectStoreFactory {
 	 * @return
 	 */
 	static IObjectStore createObjectStore() {
-		return new InMemoryObjectStore();
+		return new NoopObjectStore();
 	}
 	
 	/**

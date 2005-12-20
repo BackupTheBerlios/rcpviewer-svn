@@ -1,10 +1,10 @@
-package org.essentialplatform.server.tests.persistence;
+package org.essentialplatform.runtime.tests.persistence;
+
+import junit.framework.TestCase;
 
 import org.essentialplatform.runtime.fixture.persistence.Department;
 import org.essentialplatform.runtime.fixture.persistence.Employee;
-import org.essentialplatform.server.persistence.PersistenceId;
-
-import junit.framework.TestCase;
+import org.essentialplatform.runtime.persistence.PersistenceId;
 
 public class TestPersistenceId extends TestCase {
 

@@ -543,17 +543,49 @@ public interface ITransaction {
 	 * @throws IllegalStateException if called when not in state of COMMITTED or REVERSED
 	 * @return
 	 */
-	public List<IChange> getCommittedChanges() throws IllegalStateException;
+	public List<Interaction> getCommittedChanges() throws IllegalStateException;
 	
+	/**
+	 * The set of committed interactions, as per {@link #getCommittedChanges()}, 
+	 * flattened to a single list of {@link IChange}s.
+	 * 
+	 * @return
+	 */
+	public List<IChange> flattenedCommittedChanges();
 
-		
+
+	
 	/**
 	 * The collection of pojos that have been modified by any of the 
-	 * {@link IChange}s that have been added to this transaction.
+	 * {@link IChange}s that have been performed within this transaction.
+	 * 
+	 * <p>
+	 * The returned collection is a copy of the state held by the transaction,
+	 * so may be modified freely by the caller. 
 	 * 
 	 * @return
 	 */
 	public Set<ITransactable> getEnlistedPojos();
+
+	
+	/**
+	 * The collection of pojos that have been instantiated by any of the 
+	 * {@link IChange}s (specifically, {@link InstantiationChange}s) that have 
+	 * been performed within this transaction.
+	 * 
+	 * <p>
+	 * The set of pojos will be a subset of those returned by
+	 * {@link #getEnlistedPojos()}.
+	 * 
+	 * <p>
+	 * The implementation must provide a backing instance variable that 
+	 * holds the set, and this must not be declared <tt>transient</tt>.  (In
+	 * other words, this information will be serializable.
+	 * 
+	 * @return
+	 */
+	public Set<ITransactable> getInstantiatedPojos();
+	
 	
 	/**
 	 * Asserts that the transaction is in one of the supplied states.

@@ -34,6 +34,12 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 		super(transaction, transactable, collection, addedValue, reference);
 	}
 
+	/**
+	 * For testing of comparators only
+	 */
+	public AddToCollectionChange() {
+	}
+
 	/*
 	 * Adds the referenced object to the collection.
 	 * 
@@ -76,7 +82,7 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 
 	public final boolean equals(final AddToCollectionChange<V> other) {
 		if (other == null) return false;
-		if (!_transactable.equals(other._transactable)) return false;
+		if (!getInitiatingPojo().equals(other.getInitiatingPojo())) return false;
 		if (!getCollection().equals(other.getCollection())) return false;
 		boolean referencedObjectMatch = 
 			getReferencedObject() == null && other.getReferencedObject() == null ||

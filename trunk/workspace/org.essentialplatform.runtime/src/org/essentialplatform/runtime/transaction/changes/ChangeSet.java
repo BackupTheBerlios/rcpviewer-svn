@@ -8,6 +8,7 @@ import java.util.Set;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.IrreversibleTransactionException;
+import org.essentialplatform.runtime.transaction.changes.IChange.IVisitor;
 
 
 /**
@@ -43,7 +44,7 @@ public class ChangeSet implements IChange {
 	}
 	public ChangeSet(final ITransaction transaction, final IChange[] changes) {
 		_transaction = transaction;
-		_description = changes.length + " changes";
+		_description = changes.length + " change" + (changes.length != 1? "s":""); 
 		_extendedInfo = new Object[]{};
 		_irreversible = calculateIfIrreversible(changes);
 		
@@ -76,7 +77,10 @@ public class ChangeSet implements IChange {
 	}
 	private static String calculateAsString(final IChange[] changes) {
 		StringBuffer buf = new StringBuffer();
-		buf.append(changes.length).append(" changes");
+		buf.append(changes.length).append(" change");
+		if (changes.length != 1) {
+			buf.append("s");
+		}
 		if (changes.length > 0) {
 			buf.append(" (");
 		}
@@ -141,6 +145,24 @@ public class ChangeSet implements IChange {
 	}
 
 
+	/*
+	 * Invokes {@link IVisitor#visit(IChange)}, as per the general contract.
+	 *
+	 * <p>
+	 * Sunclasses that are composites should override this to ensure that all
+	 * contained components instead accept the visitor.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#accept(org.essentialplatform.runtime.transaction.changes.IChange.IVisitor)
+	 */
+	public void accept(IVisitor visitor) {
+		visitor.visit(this);
+		for (int i = 0; i < _changes.length; i++) {
+			_changes[_changes.length-i-1].accept(visitor);
+		}
+	}
+
+
+	
 	/**
 	 * The number of atoms in this change set.
 	 * 
@@ -189,6 +211,16 @@ public class ChangeSet implements IChange {
 		}
 		return Collections.unmodifiableSet(pojos);
 	}
+
+	/*
+	 * Just returns <tt>null</tt>.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
+	 */
+	public ITransactable getInitiatingPojo() {
+		return null;
+	}
+
 
 	/**
 	 * True iff all changes in the change set return true.

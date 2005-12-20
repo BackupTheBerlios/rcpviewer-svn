@@ -19,4 +19,11 @@ public interface IRemoting  {
 	 * @return
 	 */
 	ITransport getTransport();
+
+
+	/**
+	 * 
+	 * @param object
+	 */
+	void send(Object object);
 }

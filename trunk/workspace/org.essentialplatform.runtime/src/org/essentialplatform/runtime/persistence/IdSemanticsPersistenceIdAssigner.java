@@ -1,13 +1,9 @@
-package org.essentialplatform.runtime;
+package org.essentialplatform.runtime.persistence;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.persistence.AbstractPersistenceIdAssigner;
-import org.essentialplatform.runtime.persistence.IPersistenceIdAssigner;
-import org.essentialplatform.runtime.persistence.PersistenceId;
 
-import org.essentialplatform.runtime.CompositeIdPersistenceIdAssigner;
 import org.essentialplatform.runtime.persistence.IPersistenceIdAssigner;
 
 /**

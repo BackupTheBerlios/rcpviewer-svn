@@ -1,4 +1,4 @@
-package org.essentialplatform.server.tests.persistence;
+package org.essentialplatform.runtime.tests.persistence;
 
 import java.math.BigInteger;
 
@@ -9,7 +9,6 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleBigIntegerIdAssignedByApplication;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleByteId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleByteIdAssignedByApplication;
-import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIntegerId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIntegerIdAssignedByApplication;
@@ -26,12 +25,11 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleShortId;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleShortIdAssignedByApplication;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
-import org.essentialplatform.runtime.CompositeIdPersistenceIdAssigner;
-import org.essentialplatform.runtime.IdSemanticsPersistenceIdAssigner;
 import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.persistence.IdSemanticsPersistenceIdAssigner;
+import org.essentialplatform.runtime.persistence.PersistenceId;
+import org.essentialplatform.runtime.persistence.SequentialPersistenceIdAssigner;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
-import org.essentialplatform.server.persistence.PersistenceId;
-import org.essentialplatform.server.persistence.SequentialPersistenceIdAssigner;
 
 public class TestIdSemanticsPersistenceIdAssigner extends AbstractRuntimeTestCase {
 

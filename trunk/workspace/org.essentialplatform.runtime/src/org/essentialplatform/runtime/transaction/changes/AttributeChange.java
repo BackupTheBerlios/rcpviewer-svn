@@ -46,6 +46,12 @@ public final class AttributeChange extends AbstractFieldChange {
 		_attribute = attribute;
 	}
 
+	/**
+	 * For testing of comparators only
+	 */
+	public AttributeChange() {
+	}
+
 	@Override
 	protected void notifyListeners(boolean execute) {
 		if (_attribute != null) {
@@ -66,7 +72,7 @@ public final class AttributeChange extends AbstractFieldChange {
 
 	public final boolean equals(final AttributeChange other) {
 		if (other == null) return false;
-		if (!_transactable.equals(other._transactable)) return false;
+		if (!getInitiatingPojo().equals(other.getInitiatingPojo())) return false;
 		if (!getField().equals(other.getField())) return false;
 		boolean preValuesMatch = 
 			getPreValue() == null && other.getPreValue() == null ||

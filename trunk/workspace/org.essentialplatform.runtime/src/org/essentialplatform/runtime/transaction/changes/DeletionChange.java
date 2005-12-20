@@ -38,6 +38,12 @@ public final class DeletionChange extends AbstractChange {
 		super(transaction, transactable, description(transactable), extendedInfo(transactable), false);
 	}
 	
+	/**
+	 * For testing of comparators only
+	 */
+	public DeletionChange() {
+	}
+
 	/*
 	 * Instructs the pojo's wrapping domain object that it is now transient.
 	 *  
@@ -45,7 +51,7 @@ public final class DeletionChange extends AbstractChange {
 	 */
 	@Override
 	public final Object doExecute() {
-		IPojo pojo = (IPojo)_transactable;
+		IPojo pojo = (IPojo)getInitiatingPojo();
 		IDomainObject<?> domainObject = pojo.domainObject();
 		if (domainObject != null) {
 			domainObject.nowTransient();
@@ -58,7 +64,7 @@ public final class DeletionChange extends AbstractChange {
 	 * @see org.essentialplatform.transaction.IChange#undo()
 	 */
 	public void doUndo() {
-		IPojo pojo = (IPojo)_transactable;
+		IPojo pojo = (IPojo)getInitiatingPojo();
 		IDomainObject<?> domainObject = pojo.domainObject();
 		if (domainObject != null) {
 			domainObject.nowPersisted();
@@ -91,7 +97,7 @@ public final class DeletionChange extends AbstractChange {
 	 * @return
 	 */
 	public boolean equals(final DeletionChange other) {
-		return _transactable.equals(other._transactable);
+		return getInitiatingPojo().equals(other.getInitiatingPojo());
 	}
 
 	/*

@@ -10,9 +10,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class InMemorySearchPage
-extends DialogPage
-implements ISearchPage {
+public class InMemorySearchPage extends DialogPage implements ISearchPage {
 	
 	ISearchPageContainer _searchPageContainer;
 	

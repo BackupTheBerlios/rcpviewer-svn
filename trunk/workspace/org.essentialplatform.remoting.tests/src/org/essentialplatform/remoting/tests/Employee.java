@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.tests.distribution;
+package org.essentialplatform.remoting.tests;
 
 import org.essentialplatform.progmodel.essential.app.InDomain;
 @InDomain

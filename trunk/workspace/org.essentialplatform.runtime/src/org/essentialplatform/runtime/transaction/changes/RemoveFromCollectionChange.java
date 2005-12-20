@@ -33,6 +33,12 @@ public final class RemoveFromCollectionChange<V> extends AbstractCollectionChang
 		super(transaction, transactable, collection, addedValue, reference);
 	}
 
+	/**
+	 * For testing of comparators only
+	 */
+	public RemoveFromCollectionChange() {
+	}
+
 	/*
 	 * Remove from the collection.
 	 * 
@@ -73,7 +79,7 @@ public final class RemoveFromCollectionChange<V> extends AbstractCollectionChang
 
 	public final boolean equals(final RemoveFromCollectionChange<V> other) {
 		if (other == null) return false;
-		if (!_transactable.equals(other._transactable)) return false;
+		if (!getInitiatingPojo().equals(other.getInitiatingPojo())) return false;
 		if (!getCollection().equals(other.getCollection())) return false;
 		boolean referencedObjectMatch = 
 			getReferencedObject() == null && other.getReferencedObject() == null ||

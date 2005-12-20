@@ -8,5 +8,9 @@ Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.essentialplatform.runtime
+ org.essentialplatform.runtime,
+ org.essentialplatform.remoting
 Eclipse-AutoStart: true
+Export-Package: org.essentialplatform.server,
+ org.essentialplatform.server.persistence,
+ org.essentialplatform.server.persistence.inmemory

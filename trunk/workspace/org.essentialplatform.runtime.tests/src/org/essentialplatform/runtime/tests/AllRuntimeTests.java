@@ -8,7 +8,6 @@ public class AllRuntimeTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for org.essentialplatform");
 		//$JUnit-BEGIN$
-		suite.addTest(org.essentialplatform.runtime.tests.persistence.AllTests.suite());
 
 		suite.addTest(org.essentialplatform.runtime.tests.progmodel.standard.AllTests.suite());
 		suite.addTest(org.essentialplatform.runtime.tests.progmodel.standard.attribute.AllTests.suite());

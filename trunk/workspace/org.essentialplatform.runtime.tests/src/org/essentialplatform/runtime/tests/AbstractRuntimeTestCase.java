@@ -8,7 +8,7 @@ import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.inmemory.InMemoryObjectStore;
+import org.essentialplatform.runtime.persistence.NoopObjectStore;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.session.Session;
 import org.essentialplatform.runtime.session.SessionManager;
@@ -18,7 +18,7 @@ import org.essentialplatform.runtime.transaction.TransactionManager;
 /**
  * Sets up a default {@link Domain}, {@link SessionManager}, 
  * {@link SessionFactory} (for this domain and with an 
- * {@link InMemoryObjectStore} and a {@link Session} for this.
+ * {@link NoopObjectStore} and a {@link Session} for this.
  * 
  * @author Dan Haywood
  *
@@ -50,7 +50,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
-		objectStore = new InMemoryObjectStore();
+		objectStore = new NoopObjectStore();
 		session = sessionManager.createSession(domain, objectStore);
 		transactionManager = TransactionManager.instance();
 	}
@@ -60,7 +60,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		sessionManager = null;
 		session.reset();
 		session = null;
-		((InMemoryObjectStore)objectStore).reset();
+		((NoopObjectStore)objectStore).reset();
 		objectStore = null;
 		Domain.resetAll();
 		SessionManager.instance().reset();

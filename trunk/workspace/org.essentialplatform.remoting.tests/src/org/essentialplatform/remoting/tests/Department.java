@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.tests.distribution;
+package org.essentialplatform.remoting.tests;
 
 import java.util.HashSet;
 import java.util.Set;

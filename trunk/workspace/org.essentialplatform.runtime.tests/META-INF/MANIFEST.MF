@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
  net.sf.plugins.utils,
- net.sf.plugins.commons
+ net.sf.plugins.commons,
+ net.sf.plugins.xstream
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform.runtime.tests,

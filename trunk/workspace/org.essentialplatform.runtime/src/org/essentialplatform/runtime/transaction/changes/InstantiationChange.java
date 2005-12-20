@@ -34,10 +34,22 @@ public final class InstantiationChange extends AbstractChange {
 		return new Object[]{};
 	}
 
+	/**
+	 * Stored so that the transactable object will be serialized.
+	 */
+	private ITransactable _transactable;
+
 	public InstantiationChange(final ITransaction transaction, final ITransactable transactable) {
-		super(transaction ,transactable, description(transactable), extendedInfo(transactable), false);
+		super(transaction, transactable, description(transactable), extendedInfo(transactable), false);
+		_transactable = transactable;
 	}
 	
+	/**
+	 * For testing of comparators only
+	 */
+	public InstantiationChange() {
+	}
+
 	/*
 	 * Instructs the pojo's wrapping {@link IDomainObject} that it is now
 	 * persisted.

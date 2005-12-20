@@ -36,6 +36,12 @@ public final class OneToOneReferenceChange extends AbstractFieldChange {
 		_reference = reference;
 	}
 
+	/**
+	 * For testing of comparators only
+	 */
+	public OneToOneReferenceChange() {
+	}
+
 	@Override
 	protected void notifyListeners(boolean execute) {
 		if (_reference!= null) {
@@ -56,7 +62,7 @@ public final class OneToOneReferenceChange extends AbstractFieldChange {
 
 	public final boolean equals(final OneToOneReferenceChange other) {
 		if (other == null) return false;
-		if (!_transactable.equals(other._transactable)) return false;
+		if (!getInitiatingPojo().equals(other.getInitiatingPojo())) return false;
 		if (!getField().equals(other.getField())) return false;
 		boolean preValuesMatch = 
 			getPreValue() == null && other.getPreValue() == null ||

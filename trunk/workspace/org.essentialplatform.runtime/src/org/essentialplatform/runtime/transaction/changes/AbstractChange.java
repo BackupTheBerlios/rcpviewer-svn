@@ -11,10 +11,12 @@ import org.essentialplatform.runtime.domain.IPojo;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.PojoAlreadyEnlistedException;
+import org.essentialplatform.runtime.transaction.changes.IChange.IVisitor;
 
 
 /**
  * Convenience adapter to simplify the implementation of {@link IChange}s.
+ * 
  */
 public abstract class AbstractChange implements IChange {
 
@@ -34,7 +36,30 @@ public abstract class AbstractChange implements IChange {
 	 */
 	private transient IChange _parent;
 
-	protected ITransactable _transactable;
+	/**
+	 * <tt>transient</tt> for serialization.
+	 * 
+	 * <p>
+	 * If a subclass change requires the transactable object to be serialized 
+	 * (specifically, {@link InstantiationChange}), then it should store a 
+	 * reference itself. 
+	 */
+	private transient ITransactable _transactable;
+	/**
+	 * The object on which the change was initiated.
+	 * 
+	 * <p>
+	 * The backing field reference for this is transient so that it is not
+	 * included in any serialization.   If a subclass change requires the 
+	 * transactable object to be serialized (specifically, 
+	 * {@link InstantiationChange}), then it should store a reference to the
+	 * transactable itself.
+	 *  
+	 * @return
+	 */
+	public ITransactable getInitiatingPojo() {
+		return _transactable;
+	}
 
 	/**
 	 * Provided as a convenience...
@@ -49,6 +74,14 @@ public abstract class AbstractChange implements IChange {
 	 */
 	private transient Set<ITransactable> _transactableAsSet = new HashSet<ITransactable>();
 
+	/**
+	 * 
+	 * @param transaction
+	 * @param transactable - the object on which the change was initiated.
+	 * @param description
+	 * @param extendedInfo
+	 * @param irreversible
+	 */
 	protected AbstractChange(final ITransaction transaction, final ITransactable transactable, final String description, final Object[] extendedInfo, final boolean irreversible) {
 		_transaction = transaction;
 		_transactable = transactable;
@@ -56,7 +89,19 @@ public abstract class AbstractChange implements IChange {
 		_description = description;
 		_extendedInfo = extendedInfo == null? __EMPTY_OBJECT_ARRAY: extendedInfo;
 		_irreversible = irreversible;
-		modifies(_transactable); // the transactable is always in the modifiedPojos set.
+		modifies(transactable); // the transactable is always in the modifiedPojos set.
+	}
+	
+	/**
+	 * For testing of comparators only.
+	 *
+	 */
+	protected AbstractChange() {
+		_description = null;
+		_extendedInfo = null;
+		_irreversible = false;
+		_domainObject = null;
+		_transaction = null;
 	}
 	
 	/*
@@ -161,6 +206,33 @@ public abstract class AbstractChange implements IChange {
 	protected abstract void doUndo();
 
 
+	
+	/*
+	 * Invokes {@link IVisitor#visit(IChange)}, as per the general contract.
+	 *
+	 * <p>
+	 * Subclasses that are composites should override this to additionally
+	 * ensure that all contained components accept the visitor, as well as
+	 * having the visitor accept themselves.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#accept(org.essentialplatform.runtime.transaction.changes.IChange.IVisitor)
+	 */
+	public void accept(IVisitor visitor) {
+		visitor.visit(this);
+	}
+
+
+	/*
+	 * Default implementation returns <code>false</code> indicating that the
+	 * change DOES do something.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#doesNothing()
+	 */
+	public boolean doesNothing() {
+		return false;
+	}
+
+	
 	/*
 	 * force subclasses to implement
 	 * 
@@ -179,17 +251,6 @@ public abstract class AbstractChange implements IChange {
 	
 	protected final boolean sameClass(final Object other) {
 		return getClass().equals(other.getClass());
-	}
-
-
-	/*
-	 * Default implementation returns <code>false</code> indicating that the
-	 * change DOES do something.
-	 * 
-	 * @see org.essentialplatform.runtime.transaction.changes.IChange#doesNothing()
-	 */
-	public boolean doesNothing() {
-		return false;
 	}
 	
 }

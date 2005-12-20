@@ -1,20 +1,14 @@
 package org.essentialplatform.server.tests.persistence;
 
-import org.essentialplatform.server.tests.persistence.inmemory.TestInMemoryObjectStore;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class AllTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.essentialplatform.runtime.persistence");
+		TestSuite suite = new TestSuite("Test for org.essentialplatform.server.persistence");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestPersistenceId.class);
-		suite.addTestSuite(TestInMemoryObjectStore.class);
-		suite.addTestSuite(TestSequentialPersistenceIdAssigner.class);
-		suite.addTestSuite(TestCompositeIdPersistenceIdAssigner.class);
-		suite.addTestSuite(TestIdSemanticsPersistenceIdAssigner.class);
+		suite.addTestSuite(TestApplyingChangesComparator.class);
 		//$JUnit-END$
 		return suite;
 	}

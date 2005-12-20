@@ -1,6 +1,8 @@
 package org.essentialplatform.runtime.transaction;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +12,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.essentialplatform.progmodel.essential.app.AppContainer;
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
+import org.essentialplatform.remoting.IRemoting;
+import org.essentialplatform.remoting.client.ClientRemoting;
+import org.essentialplatform.remoting.server.ServerRemoting;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
-import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.transaction.changes.DeletionChange;
+import org.essentialplatform.runtime.transaction.changes.IChange;
+import org.essentialplatform.runtime.transaction.changes.IModificationChange;
+import org.essentialplatform.runtime.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.transaction.changes.Interaction;
 import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
@@ -23,6 +32,11 @@ import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
  * Manages {@link ITransaction}s, stored local to thread.
  */
 public final class TransactionManager implements ITransactionManager {
+
+	private Logger getLogger() {
+		return Logger.getLogger(TransactionManager.class);
+	}
+
 
 	private final static ITransactionManager __instance = new TransactionManager();
 	
@@ -46,7 +60,19 @@ public final class TransactionManager implements ITransactionManager {
 	 * This is used by the TransactionAspect.
 	 */
 	public final static ITransactionManager instance() { return __instance; }
+
 	
+	private IRemoting _remoting = new ClientRemoting();
+	public IRemoting getRemoting() { 
+		return _remoting;
+	}
+	/**
+	 * TODO: this should be injected.
+	 */
+	public void setRemoting(org.essentialplatform.remoting.IRemoting distribution) {
+		_remoting = distribution;
+	}
+
 	
 	/**
 	 * {@link ITransaction}s that are in-progress.
@@ -219,7 +245,7 @@ public final class TransactionManager implements ITransactionManager {
 	 */
 	synchronized void committed(Transaction transaction) {
 		
-		persistChangesForEnlistedPojos(transaction);
+		sendTransactionToServer(transaction);
 		unenlistPojosInTransactionAndRemoveTransaction(transaction);
 
 		// add xactn to the _committedTransactions hash
@@ -234,26 +260,18 @@ public final class TransactionManager implements ITransactionManager {
 	
 
 	/**
-	 * Persists changes to the appropriate object store for all pojos 
-	 * enlisted in the supplied tranasction.
+	 * Sends the transaction via the configured remoting mechanism such 
+	 * that all enlisted pojos will be persisted (saved/updated) in the 
+	 * appropriate object store. 
 	 *   
 	 * <p>
 	 * Each enlisted pojo is persisted to the object store for the session
 	 * to which it is bound.
 	 * 
-	 * <p>
-	 * TODO: there is a downcast to IPojo for ITransactable; need to figure out.
-	 * 
 	 * @param transaction
 	 */
-	private void persistChangesForEnlistedPojos(Transaction transaction) {
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
-		for(ITransactable enlistedPojo: enlistedPojos) {
-			IPojo pojo = (IPojo)enlistedPojo;
-			IDomainObject domainObject = pojo.domainObject();
-			IObjectStore objectStore = domainObject.getSession().getObjectStore();
-		    objectStore.saveOrUpdate(domainObject);
-		}
+	private void sendTransactionToServer(Transaction transaction) {
+		_remoting.send(transaction);
 	}
 
 	/**
