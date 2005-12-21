@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.List;
 
+import org.essentialplatform.remoting.IRemoting;
 import org.essentialplatform.remoting.server.ServerRemoting;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IPojo;
@@ -14,6 +15,8 @@ import org.essentialplatform.runtime.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.transaction.changes.IChange;
 import org.essentialplatform.runtime.transaction.changes.IModificationChange;
 import org.essentialplatform.runtime.transaction.changes.InstantiationChange;
+import org.essentialplatform.server.database.IDatabaseServer;
+import org.essentialplatform.server.database.hsqldb.HsqlDatabaseServer;
 import org.essentialplatform.server.persistence.ApplyingChangesComparator;
 
 /**
@@ -24,25 +27,58 @@ import org.essentialplatform.server.persistence.ApplyingChangesComparator;
  */
 public class StandaloneServer {
 
+	private IRemoting _remoting;
+	private IDatabaseServer _databaseServer;
+
+	public StandaloneServer() {
+		_databaseServer = new HsqlDatabaseServer();
+		_remoting = new ServerRemoting();
+	}
+	
 	/**
-	 * This will get moved to the server at some stage.
+	 * Starts the database server and the remoting.
+	 *
+	 */
+	public void start() {
+		_databaseServer.start();
+		_remoting.start();
+	}
+	
+
+	// just a sketch
+	public void consume(byte[] bytes) {
+		
+		Object obj = _remoting.getMarshalling().unmarshalFrom(new ByteArrayInputStream(bytes));
+		
+		ITransaction unmarshalledXactn = (ITransaction)obj;
+
+		apply(unmarshalledXactn);
+	}
+	
+
+	public IRemoting getRemoting() {
+		return _remoting;
+	}
+	/**
+	 * Dependency injection.
 	 * 
-	 * <p>
-	 * TODO: there is a downcast to IPojo for ITransactable; need to figure out.
+	 * @param remoting
+	 */
+	public void setRemoting(IRemoting remoting) {
+		_remoting = remoting;
+	}
+	
+
+
+	/**
 	 * 
 	 * @param transaction
 	 * @param distribution
 	 * @param baos
 	 */
-	private void serverApplyTransaction(ByteArrayOutputStream baos) {
+	public void apply(ITransaction transaction) {
 
-		org.essentialplatform.remoting.IRemoting serverRemoting = new ServerRemoting();
-
-		Object obj = serverRemoting.getMarshalling().unmarshalFrom(new ByteArrayInputStream(baos.toByteArray()));
-		
-		ITransaction unmarshalledXactn = (ITransaction)obj;
-
-		List<IChange> committedChanges = unmarshalledXactn.flattenedCommittedChanges();
+		List<IChange> committedChanges = transaction.flattenedCommittedChanges();
 		Collections.sort(committedChanges, new ApplyingChangesComparator());
 
 		for(IChange change: committedChanges) {

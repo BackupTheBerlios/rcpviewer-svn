@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.remoting.AbstractRemoting;
-import org.essentialplatform.remoting.marshalling.XStreamMarshalling;
+import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
 
 public final class ClientRemoting extends AbstractRemoting {
 
@@ -15,6 +15,18 @@ public final class ClientRemoting extends AbstractRemoting {
 
 	public ClientRemoting() {
 		setMarshalling(new XStreamMarshalling());
+	}
+
+
+	public void start() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void stop() {
+		// TODO Auto-generated method stub
+		
 	}
 
 

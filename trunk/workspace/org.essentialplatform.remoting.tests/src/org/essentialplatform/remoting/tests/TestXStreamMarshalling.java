@@ -13,7 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.remoting.IRemoting;
 import org.essentialplatform.remoting.marshalling.IMarshalling;
-import org.essentialplatform.remoting.marshalling.XStreamMarshalling;
+import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.runtime.transaction.ITransaction;

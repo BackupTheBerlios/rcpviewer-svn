@@ -8,7 +8,8 @@ Bundle-Vendor: Codehaus
 Bundle-Localization: plugin
 Bundle-ClassPath: 
  activemq-3.2.1.jar
-Export-Package: org.activeio,
+Export-Package: javax.jms,
+ org.activeio,
  org.activeio.adapter,
  org.activeio.filter,
  org.activeio.journal,

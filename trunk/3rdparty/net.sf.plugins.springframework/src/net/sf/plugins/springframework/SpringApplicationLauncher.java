@@ -10,8 +10,7 @@ import org.springframework.context.ApplicationContext;
  * @author ted stockwell
  *
  */
-public class SpringApplicationLauncher 
-implements IPlatformRunnable
+public class SpringApplicationLauncher implements IPlatformRunnable
 {
 	public Object run(Object pArgs) throws Exception {
 		

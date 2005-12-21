@@ -22,8 +22,22 @@ public interface IRemoting  {
 
 
 	/**
+	 * Starts the remoting service.
+	 *
+	 */
+	void start();
+
+	
+	/**
+	 * Stops (shuts down) the remoting service. 
+	 *
+	 */
+	void stop();
+	
+	/**
 	 * 
 	 * @param object
 	 */
 	void send(Object object);
+
 }

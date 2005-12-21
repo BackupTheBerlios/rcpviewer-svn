@@ -9,8 +9,13 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.essentialplatform.runtime,
- org.essentialplatform.remoting
+ org.essentialplatform.remoting,
+ net.sf.plugins.hsqldb,
+ net.sf.plugins.hibernate
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.server,
+ org.essentialplatform.server.database,
+ org.essentialplatform.server.database.hsqldb,
  org.essentialplatform.server.persistence,
+ org.essentialplatform.server.persistence.hibernate,
  org.essentialplatform.server.persistence.inmemory

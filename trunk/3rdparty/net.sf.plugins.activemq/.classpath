@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry sourcepath="activemq-3.2.1-src.zip" kind="lib" path="activemq-3.2.1.jar"/>
+	<classpathentry exported="true" sourcepath="activemq-3.2.1-src.zip" kind="lib" path="activemq-3.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="geronimo-spec-jms-1.1-rc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
