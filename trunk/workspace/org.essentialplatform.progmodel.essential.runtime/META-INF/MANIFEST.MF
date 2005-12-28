@@ -7,5 +7,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.essentialplatform.core;visibility:=reexport,
  org.essentialplatform.progmodel.essential.app;visibility:=reexport,
  org.essentialplatform.progmodel.essential.core;visibility:=reexport,
- org.essentialplatform.runtime.shared;visibility:=reexport
+ org.essentialplatform.runtime.shared;visibility:=reexport,
+ org.essentialplatform.runtime.client
 Export-Package: org.essentialplatform.progmodel.essential.runtime

@@ -5,3 +5,6 @@ Bundle-SymbolicName: org.essentialplatform.runtime.client.tests
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
+Require-Bundle: org.aspectj.runtime,
+ org.essentialplatform.runtime.client,
+ org.essentialplatform.runtime.shared
