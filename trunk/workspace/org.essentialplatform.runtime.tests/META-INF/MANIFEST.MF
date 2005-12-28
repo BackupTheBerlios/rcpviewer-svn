@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Essential Platform Runtime-Deployment Tests
-Bundle-SymbolicName: org.essentialplatform.runtime.tests
+Bundle-SymbolicName: org.essentialplatform.runtime.shared.tests
 Bundle-Version: 0.0.1
 Bundle-ClassPath: tests.jar,
  bin/,
@@ -10,7 +10,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.core.fixture;visibility:=reexport,
  org.essentialplatform.domain.tests;visibility:=reexport,
- org.essentialplatform.runtime;visibility:=reexport,
+ org.essentialplatform.runtime.shared;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.junit;visibility:=reexport,
  net.sf.plugins.easymock;visibility:=reexport,
@@ -23,15 +23,20 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  net.sf.plugins.xstream
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
-Export-Package: org.essentialplatform.runtime.tests,
- org.essentialplatform.runtime.tests.domain,
- org.essentialplatform.runtime.tests.progmodel.extended,
- org.essentialplatform.runtime.tests.progmodel.rcpviewer,
- org.essentialplatform.runtime.tests.progmodel.standard.attribute,
- org.essentialplatform.runtime.tests.progmodel.standard.domainclass,
- org.essentialplatform.runtime.tests.progmodel.standard.i18n,
- org.essentialplatform.runtime.tests.progmodel.standard.namesanddesc,
- org.essentialplatform.runtime.tests.progmodel.standard.operation,
- org.essentialplatform.runtime.tests.progmodel.standard.reference,
- org.essentialplatform.runtime.tests.session,
- org.essentialplatform.runtime.tests.transaction
+Export-Package: org.essentialplatform.runtime.shared.tests,
+ org.essentialplatform.runtime.shared.tests.domain,
+ org.essentialplatform.runtime.shared.tests.persistence,
+ org.essentialplatform.runtime.shared.tests.persistence.fixture,
+ org.essentialplatform.runtime.shared.tests.progmodel.extended,
+ org.essentialplatform.runtime.shared.tests.progmodel.rcpviewer,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard.attribute,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard.domainclass,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard.i18n,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard.namesanddesc,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard.operation,
+ org.essentialplatform.runtime.shared.tests.progmodel.standard.reference,
+ org.essentialplatform.runtime.shared.tests.session,
+ org.essentialplatform.runtime.shared.tests.session.fixture,
+ org.essentialplatform.runtime.shared.tests.transaction,
+ org.essentialplatform.runtime.shared.tests.transaction.fixture

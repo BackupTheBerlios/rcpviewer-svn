@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.RuntimeBinding;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.persistence.ConcurrencyException;
-import org.essentialplatform.runtime.persistence.DuplicateObjectException;
-import org.essentialplatform.runtime.persistence.AbstractObjectStore;
-import org.essentialplatform.runtime.persistence.PersistenceId;
+import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.persistence.AbstractObjectStore;
+import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
+import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
+import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 
 /**
  * 
@@ -107,7 +107,7 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 
 
 	/*
-	 * @see org.essentialplatform.runtime.persistence.IObjectStore#isPersistent(org.essentialplatform.runtime.domain.IDomainObject)
+	 * @see org.essentialplatform.runtime.persistence.IObjectStore#isPersistent(org.essentialplatform.runtime.shared.domain.IDomainObject)
 	 */
 	public <T> boolean isPersistent(IDomainObject<T> domainObject) {
 		return false;

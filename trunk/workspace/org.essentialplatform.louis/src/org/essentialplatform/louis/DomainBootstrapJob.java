@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Status;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.IDomainBootstrap;
+import org.essentialplatform.runtime.shared.IDomainBootstrap;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.

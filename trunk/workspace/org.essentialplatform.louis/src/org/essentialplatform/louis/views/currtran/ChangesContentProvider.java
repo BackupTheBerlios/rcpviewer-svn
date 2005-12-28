@@ -4,8 +4,8 @@
 package org.essentialplatform.louis.views.currtran;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.essentialplatform.runtime.transaction.changes.Interaction;
-import org.essentialplatform.runtime.transaction.changes.IChange;
+import org.essentialplatform.runtime.shared.transaction.changes.IChange;
+import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
 
 /**
  * Returns either undoable or redoable changes of an in-progress transaction, 

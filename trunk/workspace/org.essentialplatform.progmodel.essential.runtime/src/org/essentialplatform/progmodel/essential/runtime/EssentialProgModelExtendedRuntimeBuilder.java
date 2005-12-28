@@ -33,8 +33,8 @@ import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtended
 import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesIdentifier;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.runtime.RuntimeBinding.RuntimeAttributeBinding;
-import org.essentialplatform.runtime.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeAttributeBinding;
+import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
 
 /**
  * Analyzes annotations specific to the extended programming model.

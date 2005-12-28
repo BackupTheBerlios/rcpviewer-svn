@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Link;
 import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.util.MethodNameHelper;
 import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Helper class (package local) that encapsulates the various naming 

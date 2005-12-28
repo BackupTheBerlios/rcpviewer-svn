@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Image;
 import org.essentialplatform.louis.LouisPlugin;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * @author Mike

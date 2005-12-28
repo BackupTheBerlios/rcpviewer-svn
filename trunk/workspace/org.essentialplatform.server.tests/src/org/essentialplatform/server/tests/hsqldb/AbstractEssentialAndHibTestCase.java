@@ -1,6 +1,6 @@
 package org.essentialplatform.server.tests.hsqldb;
 
-import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

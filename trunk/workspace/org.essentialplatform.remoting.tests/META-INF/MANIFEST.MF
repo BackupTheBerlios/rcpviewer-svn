@@ -11,10 +11,10 @@ Require-Bundle: org.essentialplatform.remoting,
  org.essentialplatform.progmodel.louis.app,
  org.essentialplatform.progmodel.essential.app,
  org.essentialplatform.core,
- org.essentialplatform.runtime,
+ org.essentialplatform.runtime.shared,
  net.sf.plugins.hibernate,
  net.sf.plugins.commons,
- org.essentialplatform.runtime.tests,
+ org.essentialplatform.runtime.shared.tests,
  net.sf.plugins.xstream
 Export-Package: org.essentialplatform.remoting.tests
 Eclipse-RegisterBuddy: net.sf.plugins.xstream

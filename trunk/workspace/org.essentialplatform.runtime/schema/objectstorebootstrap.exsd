@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="de.berlios.rcpviewer.domain.runtime">
+<schema targetNamespace="org.essentialplatform.runtime.shared">
 <annotation>
       <appInfo>
-         <meta.schema plugin="de.berlios.rcpviewer.domain.runtime" id="objectstorebootstrap" name="ObjectStore Bootstrap"/>
+         <meta.schema plugin="org.essentialplatform.runtime.shared.persistence" id="objectstorebootstrap" name="ObjectStore Bootstrap"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -67,7 +67,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         0.0.1
       </documentation>
    </annotation>
 
@@ -76,7 +76,7 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         (none)
       </documentation>
    </annotation>
 

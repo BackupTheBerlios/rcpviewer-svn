@@ -9,7 +9,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EParameter;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.louis.jobs.RunOperationJob;
 
 /**

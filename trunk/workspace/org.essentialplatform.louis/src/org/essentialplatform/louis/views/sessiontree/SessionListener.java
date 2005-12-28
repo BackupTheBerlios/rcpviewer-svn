@@ -9,13 +9,13 @@ import org.eclipse.ui.PartInitException;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.PlatformUtil;
 
-import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.ISessionManager;
-import org.essentialplatform.runtime.session.event.ISessionListener;
-import org.essentialplatform.runtime.session.event.ISessionManagerListener;
-import org.essentialplatform.runtime.session.event.SessionManagerEvent;
-import org.essentialplatform.runtime.session.event.SessionObjectEvent;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.event.ISessionListener;
+import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
+import org.essentialplatform.runtime.shared.session.event.SessionObjectEvent;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * Implements both <code>ISessionListener</code> and 
@@ -27,7 +27,8 @@ import org.essentialplatform.runtime.session.event.SessionObjectEvent;
  */
 class SessionListener implements ISessionListener, ISessionManagerListener {
 	
-	private final String _sessionId;
+	private final ISessionManager _sessionManager;
+	private final ISession _session;
 	private final TreeViewer _viewer;
 	
 	/**
@@ -36,13 +37,15 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 * session idenetified by the passed id.
 	 * @param session
 	 */
-	SessionListener( ISessionManager mgr, String sessionId, TreeViewer viewer ) {
-		assert sessionId != null;
+	SessionListener( ISessionManager sessionManager, ISession session, TreeViewer viewer ) {
+		assert sessionManager != null;
+		assert session != null;
 		assert viewer != null;
-		_sessionId= sessionId;
+		_sessionManager = sessionManager;
+		_session = session;
 		_viewer = viewer;
-		mgr.addSessionManagerListener( this );
-		mgr.get( sessionId ).addSessionListener( this );
+		_sessionManager.addSessionManagerListener( this );
+		_session.addSessionListener( this );
 	}
 	
 	/* ISessionListener contract */
@@ -52,7 +55,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 */
 	public void domainObjectAttached(SessionObjectEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();
-		if ( _sessionId.equals( event.getSession().getId() ) ) {
+		if ( _session == event.getSession() ) {
 			_viewer.refresh();
 		}
 	}
@@ -62,7 +65,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 */
 	public void domainObjectDetached(SessionObjectEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();
-		if ( _sessionId.equals( event.getSession().getId() ) ) {
+		if ( _session == event.getSession() ) {
 			_viewer.refresh();
 		}
 	}
@@ -71,7 +74,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Null method
-	 * @see org.essentialplatform.runtime.session.event.ISessionManagerListener#sessionCreated(org.essentialplatform.runtime.session.event.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.shared.session.event.ISessionManagerListener#sessionCreated(org.essentialplatform.runtime.shared.session.event.SessionManagerEvent)
 	 */
 	public void sessionCreated(SessionManagerEvent event) {
 		// null method
@@ -79,7 +82,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Brings this view to the fore
-	 * @see org.essentialplatform.runtime.session.event.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.runtime.session.event.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.shared.session.event.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.runtime.shared.session.event.SessionManagerEvent)
 	 */
 	public void sessionNowCurrent(SessionManagerEvent event) {
 		try {
@@ -96,11 +99,11 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	/**
 	 * Dispose this and the session listener of the removed session is the
 	 * parent session.
-	 * @see org.essentialplatform.runtime.session.event.ISessionManagerListener#sessionRemoved(org.essentialplatform.runtime.session.event.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.shared.session.event.ISessionManagerListener#sessionRemoved(org.essentialplatform.runtime.shared.session.event.SessionManagerEvent)
 	 */
 	public void sessionRemoved(SessionManagerEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();
-		if ( _sessionId.equals( event.getSession().getId() ) ) {
+		if ( _session == event.getSession() ) {
 			dispose();
 		}
 	}
@@ -109,15 +112,8 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 * Dereferences everything
 	 */
 	void dispose() {
-		try {
-			ISessionManager mgr = RuntimePlugin.getDefault().getSessionManager();
-			ISession session =  mgr.get( _sessionId );
-			mgr.removeSessionManagerListener( this );
-			session.removeSessionListener( this );
-		}
-		catch ( CoreException ce ) {
-			LouisPlugin.getDefault().getLog().log( ce.getStatus() );
-		}
+		_sessionManager.removeSessionManagerListener(this);
+		_session.removeSessionListener(this);
 	}
 	
 
@@ -126,7 +122,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 * @return
 	 */
 	String getSessionId() {
-		return _sessionId ;
+		return _session.getId() ;
 	}
 
 }

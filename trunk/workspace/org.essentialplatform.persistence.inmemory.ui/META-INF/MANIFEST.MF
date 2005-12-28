@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.essentialplatform.core,
  org.eclipse.ui,
  org.eclipse.search,
- org.essentialplatform.runtime,
+ org.essentialplatform.runtime.shared,
  net.sf.plugins.utils,
  org.aspectj.runtime,
  org.essentialplatform.louis

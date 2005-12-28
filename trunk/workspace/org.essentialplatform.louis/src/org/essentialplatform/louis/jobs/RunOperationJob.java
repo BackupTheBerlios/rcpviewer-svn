@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Status;
 import org.essentialplatform.louis.LouisPlugin;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Runs the passed operation on the passed object with the passed arguements.

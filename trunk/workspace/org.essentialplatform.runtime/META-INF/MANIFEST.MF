@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Essential Platform Runtime Model
-Bundle-SymbolicName: org.essentialplatform.runtime; singleton:=true
+Bundle-SymbolicName: org.essentialplatform.runtime.shared; singleton:=true
 Bundle-Version: 0.0.1
 Bundle-ClassPath: runtime.jar
-Bundle-Activator: org.essentialplatform.runtime.RuntimePlugin
+Bundle-Activator: org.essentialplatform.runtime.shared.RuntimePlugin
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
@@ -18,19 +18,19 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  net.sf.plugins.commons,
  org.essentialplatform.remoting
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.runtime,
- org.essentialplatform.runtime.authorization,
- org.essentialplatform.runtime.domain,
- org.essentialplatform.runtime.domain.adapters,
- org.essentialplatform.runtime.domain.event,
- org.essentialplatform.runtime.persistence,
- org.essentialplatform.runtime.session,
- org.essentialplatform.runtime.session.event,
- org.essentialplatform.runtime.tracing,
- org.essentialplatform.runtime.transaction,
- org.essentialplatform.runtime.transaction.changes,
- org.essentialplatform.runtime.transaction.event,
- org.essentialplatform.runtime.transaction.internal,
- org.essentialplatform.runtime.util
-Plugin-Class: org.essentialplatform.runtime.RuntimePlugin
+Export-Package: org.essentialplatform.runtime.shared,
+ org.essentialplatform.runtime.shared.authorization,
+ org.essentialplatform.runtime.shared.domain,
+ org.essentialplatform.runtime.shared.domain.adapters,
+ org.essentialplatform.runtime.shared.domain.event,
+ org.essentialplatform.runtime.shared.persistence,
+ org.essentialplatform.runtime.shared.session,
+ org.essentialplatform.runtime.shared.session.event,
+ org.essentialplatform.runtime.shared.tracing,
+ org.essentialplatform.runtime.shared.transaction,
+ org.essentialplatform.runtime.shared.transaction.changes,
+ org.essentialplatform.runtime.shared.transaction.event,
+ org.essentialplatform.runtime.shared.transaction.internal,
+ org.essentialplatform.runtime.shared.util
+Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin
 Eclipse-RegisterBuddy: net.sf.plugins.xstream

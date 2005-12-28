@@ -6,11 +6,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.domain.adapters.IDomainRegistry;
-import org.essentialplatform.runtime.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.session.ISessionManager;
-import org.essentialplatform.runtime.session.SessionBinding;
+import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
+import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
+import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * Starts a new session on a domain
@@ -50,8 +50,7 @@ class SessionBootstrapJob extends AbstractBootstrapJob {
 			// FIXME In the future there will be a better way to set sessions
 			ISessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
 			IDomainRegistry domainRegistry = RuntimePlugin.getDefault().getDomainRegistry();
-			IDomain domain = domainRegistry.getDomain(_sessionBinding.getDomainName());
-			sessionManager.defineSession(domain, _sessionBinding.getObjectStoreId());
+			sessionManager.defineSession(_sessionBinding);
 		} catch (CoreException ce) {
 			return ce.getStatus();
 		}

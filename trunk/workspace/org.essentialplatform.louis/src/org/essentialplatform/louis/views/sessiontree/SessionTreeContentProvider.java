@@ -16,16 +16,16 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
-import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * @author Mike
  */
 class SessionTreeContentProvider implements ITreeContentProvider {
 	
-	private String _sessionId = null;
+	private ISession _session;
 	
 	/**
 	 * No-arg constructor
@@ -39,22 +39,11 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
 	public Object[] getChildren(Object element) {
-		if ( element instanceof IDomainClass ) {
-			assert _sessionId != null;
-			try {
-				ISession session = RuntimePlugin.getDefault()
-												.getSessionManager()
-												.get( _sessionId );
-				return session.footprintFor( (IDomainClass)element ).toArray(); 
-			}
-			catch ( CoreException ce ) {
-				LouisPlugin.getDefault().getLog().log( ce.getStatus() );
-				return new Object[] { new ErrorInput() } ;
-			}
+		if ( !(element instanceof IDomainClass)) {
+			throw new IllegalArgumentException("Not an instance of IDomainClass");
 		}
-		else {
-			throw new IllegalArgumentException();
-		}
+		assert _session != null;
+		return _session.footprintFor( (IDomainClass)element ).toArray(); 
 	}
 
 	/* (non-Javadoc)
@@ -101,12 +90,11 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 			return new Object[]{ inputElement };
 		}
 		else if ( inputElement instanceof ISession ) {
-			ISession session = (ISession)inputElement;
-			_sessionId = session.getId();
+			_session = (ISession)inputElement;
 			List<IDomainClass> populatedClasses = new ArrayList<IDomainClass>();
 
 			for(IDomainClass domainClass: DomainRegistryUtil.allClasses(new InstantiableClassFilter())) {
-				if ( !session.footprintFor( domainClass ).isEmpty() ) { 
+				if ( !_session.footprintFor( domainClass ).isEmpty() ) { 
 					populatedClasses.add( domainClass );
 				}
 			}

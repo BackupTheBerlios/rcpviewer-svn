@@ -1,7 +1,7 @@
 package org.essentialplatform.core.fixture.progmodel.essential.extended;
 
-import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Named;
 
 @InDomain

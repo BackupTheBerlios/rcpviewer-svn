@@ -8,7 +8,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.ImageUtil;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Input for the <code>DefaultEditor</code>.

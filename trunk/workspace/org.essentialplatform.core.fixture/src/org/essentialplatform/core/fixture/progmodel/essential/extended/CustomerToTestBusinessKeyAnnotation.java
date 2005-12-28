@@ -1,7 +1,6 @@
 package org.essentialplatform.core.fixture.progmodel.essential.extended;
 
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
-import org.essentialplatform.progmodel.essential.app.DescribedAs;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 
 @InDomain

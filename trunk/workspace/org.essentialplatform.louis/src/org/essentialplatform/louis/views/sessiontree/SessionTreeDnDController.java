@@ -12,7 +12,7 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.essentialplatform.louis.LouisPlugin;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Wraps a <code>DragSource</code> dynamically modifying this so that DnD

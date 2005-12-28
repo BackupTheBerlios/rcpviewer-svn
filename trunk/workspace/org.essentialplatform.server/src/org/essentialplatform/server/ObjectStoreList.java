@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 
 /**
  * cf SessionList on the client-side.

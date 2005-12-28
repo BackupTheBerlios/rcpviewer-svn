@@ -9,10 +9,10 @@ import org.essentialplatform.louis.LouisPlugin;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.ISessionManager;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * Creates a new instance of the passed domain class and opens the default editor.

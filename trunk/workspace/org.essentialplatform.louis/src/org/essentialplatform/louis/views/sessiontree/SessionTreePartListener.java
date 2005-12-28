@@ -14,7 +14,7 @@ import org.essentialplatform.louis.editors.DefaultEditor;
 import org.essentialplatform.louis.editors.DefaultEditorInput;
 import org.essentialplatform.louis.util.PlatformUtil;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Highlights in viewer the input of the activated editor.

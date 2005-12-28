@@ -4,10 +4,10 @@
 package org.essentialplatform.louis.views.tranmgr;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.essentialplatform.runtime.transaction.event.ITransactionListener;
-import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
-import org.essentialplatform.runtime.transaction.event.TransactionEvent;
-import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
+import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
+import org.essentialplatform.runtime.shared.transaction.event.ITransactionManagerListener;
+import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
+import org.essentialplatform.runtime.shared.transaction.event.TransactionManagerEvent;
 
 /**
  * uases passed viewer to react to changes to current transactions.

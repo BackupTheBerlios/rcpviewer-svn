@@ -14,9 +14,9 @@ import org.essentialplatform.progmodel.essential.app.Invisible;
 import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.SessionManager;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.SessionManager;
 
 @Lifecycle(instantiable=true)
 @InDomain

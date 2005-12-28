@@ -26,7 +26,7 @@ import org.essentialplatform.louis.jobs.AbstractUserJob;
 import org.essentialplatform.louis.util.SWTUtil;
 import org.essentialplatform.louis.views.ops.IOpsViewPage;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Page supplied by <code>DefaultEditor.getAdapter(IOpsViewPage.class)</code>

@@ -1,8 +1,8 @@
 package org.essentialplatform.louis;
 
-import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.NoopObjectStore;
-import org.essentialplatform.runtime.persistence.PersistenceConstants;
+import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.shared.persistence.NoopObjectStore;
+import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 
 
 /**

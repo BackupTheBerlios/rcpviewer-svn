@@ -11,15 +11,15 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
 import org.essentialplatform.louis.jobs.SaveJob;
 import org.essentialplatform.louis.views.currtran.CurrentTransactionView.AbstractCurrentTransactionViewAction;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.domain.IPojo;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.TransactionManager;
-import org.essentialplatform.runtime.transaction.event.ITransactionListener;
-import org.essentialplatform.runtime.transaction.event.ITransactionManagerListener;
-import org.essentialplatform.runtime.transaction.event.TransactionEvent;
-import org.essentialplatform.runtime.transaction.event.TransactionManagerEvent;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.shared.transaction.ITransactable;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.transaction.TransactionManager;
+import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
+import org.essentialplatform.runtime.shared.transaction.event.ITransactionManagerListener;
+import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
+import org.essentialplatform.runtime.shared.transaction.event.TransactionManagerEvent;
 
 /**
  * Listens for new transactions, and on a current transaction.

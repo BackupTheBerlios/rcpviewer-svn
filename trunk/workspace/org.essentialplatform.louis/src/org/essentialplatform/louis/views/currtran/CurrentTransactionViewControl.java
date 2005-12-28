@@ -15,8 +15,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.louis.views.currtran.CurrentTransactionViewPartListener;
 import org.essentialplatform.louis.views.currtran.ChangesContentProvider.Mode;
 

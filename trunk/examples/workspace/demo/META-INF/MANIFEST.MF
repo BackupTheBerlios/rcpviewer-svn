@@ -8,7 +8,7 @@ Require-Bundle: org.aspectj.runtime,
  org.essentialplatform.progmodel.louis.app,
  org.essentialplatform.progmodel.essential.app,
  org.essentialplatform.core,
- org.essentialplatform.runtime,
+ org.essentialplatform.runtime.shared,
  net.sf.plugins.hibernate
 Eclipse-AutoStart: true
 Eclipse-RegisterBuddy: net.sf.plugins.hibernate,

@@ -3,7 +3,7 @@ package org.essentialplatform.server.remoting.xactnprocessor.enqueue;
 import java.util.concurrent.SynchronousQueue;
 
 import org.apache.log4j.Logger;
-import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.server.remoting.xactnprocessor.AbstractTransactionProcessor;
 
 /**

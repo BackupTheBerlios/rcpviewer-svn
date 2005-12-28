@@ -1,10 +1,10 @@
 package org.essentialplatform.server.persistence.hibernate;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.persistence.AbstractObjectStore;
-import org.essentialplatform.runtime.persistence.ConcurrencyException;
-import org.essentialplatform.runtime.persistence.DuplicateObjectException;
-import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.persistence.AbstractObjectStore;
+import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
+import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
+import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 
 public final class HibernateObjectStore extends AbstractObjectStore {
 

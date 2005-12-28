@@ -13,7 +13,7 @@ import org.essentialplatform.louis.factory.DomainClassPart;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 public class CollectionMasterChildGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 	

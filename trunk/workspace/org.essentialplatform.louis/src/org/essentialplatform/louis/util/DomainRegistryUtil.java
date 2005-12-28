@@ -9,8 +9,8 @@ import java.util.Map;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.IFilter;
-import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.domain.adapters.IDomainRegistry;
+import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * Static helper methods domain registry functions.

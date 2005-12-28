@@ -9,11 +9,11 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.RuntimeBinding;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.SessionManager;
-import org.essentialplatform.runtime.transaction.ITransactionManager;
-import org.essentialplatform.runtime.transaction.TransactionManager;
+import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
+import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 import org.essentialplatform.server.persistence.inmemory.InMemoryObjectStore;
 
 /**

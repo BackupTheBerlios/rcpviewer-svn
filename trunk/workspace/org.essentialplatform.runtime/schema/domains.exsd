@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="de.berlios.rcpviewer.rcp">
+<schema targetNamespace="org.essentialplatform.runtime.shared">
 <annotation>
       <appInfo>
-         <meta.schema plugin="de.berlios.rcpviewer.rcp" id="domains" name="RCPViewer Domains"/>
+         <meta.schema plugin="org.essentialplatform.runtime.shared.domain" id="domains" name="Essential Platform Domains"/>
       </appInfo>
       <documentation>
          Used to register object sessions with the system.  Object sessions provide access to object domains.
@@ -47,7 +47,7 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  The name of a class that implements the de.berlios.rcpviewer.domain.IDomain interface.
+                  The name of a class that implements the org.essentialplatform.runtime.shared.domain.IDomain interface.
                </documentation>
             </annotation>
          </attribute>
@@ -66,7 +66,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         0.0.1
       </documentation>
    </annotation>
 
@@ -93,7 +93,7 @@
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         (none)
       </documentation>
    </annotation>
 

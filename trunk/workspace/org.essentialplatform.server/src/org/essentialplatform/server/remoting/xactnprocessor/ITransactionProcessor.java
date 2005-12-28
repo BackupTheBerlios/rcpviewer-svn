@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.server.ObjectStoreList;
 
 public interface ITransactionProcessor {

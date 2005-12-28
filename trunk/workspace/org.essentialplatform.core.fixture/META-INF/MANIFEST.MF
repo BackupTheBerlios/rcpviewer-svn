@@ -7,7 +7,7 @@ Bundle-ClassPath: fixture.jar,
  bin/
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- org.essentialplatform.runtime;visibility:=reexport,
+ org.essentialplatform.runtime.shared;visibility:=reexport,
  org.essentialplatform.progmodel.essential.app;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport
 Eclipse-AutoStart: true
@@ -22,8 +22,5 @@ Export-Package: org.essentialplatform.core.fixture.domain,
  org.essentialplatform.core.fixture.progmodel.essential.standard.namingconventions,
  org.essentialplatform.core.fixture.progmodel.essential.standard.operation,
  org.essentialplatform.core.fixture.progmodel.essential.standard.reference,
- org.essentialplatform.core.fixture.progmodel.louis,
- org.essentialplatform.runtime.fixture.persistence,
- org.essentialplatform.runtime.fixture.session,
- org.essentialplatform.runtime.fixture.transaction
+ org.essentialplatform.core.fixture.progmodel.louis
 Bundle-Vendor: Essential Platform Development Team

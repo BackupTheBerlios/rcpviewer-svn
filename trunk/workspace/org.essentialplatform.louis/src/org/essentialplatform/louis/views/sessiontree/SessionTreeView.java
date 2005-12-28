@@ -22,9 +22,10 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.runtime.RuntimePlugin;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.session.ISessionManager;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * Displays all objects attached to the session started by
@@ -65,11 +66,11 @@ public class SessionTreeView extends ViewPart {
 		
 		// tie viewer to current session
 		try {
-			ISessionManager mgr = RuntimePlugin.getDefault().getSessionManager();
+			ISessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
 			// TODO: hard-coded to default domain only.
-			String sessionId = mgr.getCurrentSession(Domain.instance()).getId();
-			_sessionListener = new SessionListener(mgr, sessionId, _viewer);
-			_viewer.setInput(mgr.get(sessionId));
+			ISession session = sessionManager.getCurrentSession(Domain.instance());
+			_sessionListener = new SessionListener(sessionManager, session, _viewer);
+			_viewer.setInput(session);
 		} catch (CoreException ce) {
 			LouisPlugin.getDefault().getLog().log(ce.getStatus());
 			_viewer.setInput(new ErrorInput());

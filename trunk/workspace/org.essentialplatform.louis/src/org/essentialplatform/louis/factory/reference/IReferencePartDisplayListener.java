@@ -3,7 +3,7 @@
  */
 package org.essentialplatform.louis.factory.reference;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Alerted whenever the display value for the part is changed.

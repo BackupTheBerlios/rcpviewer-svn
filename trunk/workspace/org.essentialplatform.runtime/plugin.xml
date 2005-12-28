@@ -6,7 +6,7 @@
    <extension-point id="objectstorebootstrap" name="ObjectStore BootStrap" schema="schema/objectstorebootstrap.exsd"/>
 
    <extension
-         point="org.essentialplatform.runtime.objectstorebootstrap">
-         <impl class="org.essentialplatform.runtime.NoopObjectStoreBootStrap"/>
+         point="org.essentialplatform.runtime.shared.objectstorebootstrap">
+         <impl class="org.essentialplatform.runtime.shared.persistence.NoopObjectStoreBootStrap"/>
    </extension>
 </plugin>

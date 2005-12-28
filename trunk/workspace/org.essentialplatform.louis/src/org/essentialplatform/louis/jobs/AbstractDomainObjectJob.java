@@ -3,7 +3,7 @@
  */
 package org.essentialplatform.louis.jobs;
 
-import org.essentialplatform.runtime.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Super class for all GUI jobs associated with a specific 

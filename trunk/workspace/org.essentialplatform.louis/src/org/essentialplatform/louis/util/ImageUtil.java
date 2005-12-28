@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
-import org.essentialplatform.runtime.RuntimeBinding;
+import org.essentialplatform.runtime.shared.RuntimeBinding;
 import org.osgi.framework.Bundle;
 
 import org.essentialplatform.core.domain.IDomainClass;

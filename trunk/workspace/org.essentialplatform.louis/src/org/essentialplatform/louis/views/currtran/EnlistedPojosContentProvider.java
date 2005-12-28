@@ -9,11 +9,11 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.TransactionManager;
-import org.essentialplatform.runtime.transaction.changes.Interaction;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.transaction.ITransactable;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.transaction.TransactionManager;
+import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
 
 /**
  * Returns either undoable or redoable changes of an in-progress transaction, 

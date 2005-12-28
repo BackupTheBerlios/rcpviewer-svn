@@ -2,13 +2,13 @@ package org.essentialplatform.server.persistence;
 
 import java.util.Comparator;
 
-import org.essentialplatform.runtime.transaction.changes.AddToCollectionChange;
-import org.essentialplatform.runtime.transaction.changes.AttributeChange;
-import org.essentialplatform.runtime.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.transaction.changes.IChange;
-import org.essentialplatform.runtime.transaction.changes.InstantiationChange;
-import org.essentialplatform.runtime.transaction.changes.OneToOneReferenceChange;
-import org.essentialplatform.runtime.transaction.changes.RemoveFromCollectionChange;
+import org.essentialplatform.runtime.shared.transaction.changes.AddToCollectionChange;
+import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
+import org.essentialplatform.runtime.shared.transaction.changes.IChange;
+import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
+import org.essentialplatform.runtime.shared.transaction.changes.OneToOneReferenceChange;
+import org.essentialplatform.runtime.shared.transaction.changes.RemoveFromCollectionChange;
 
 /**
  * Sorts a list of changes such that they may be applied to the persistent

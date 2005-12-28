@@ -17,11 +17,11 @@ import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.session.ISession;
-import org.essentialplatform.runtime.session.SessionManager;
-import org.essentialplatform.runtime.transaction.ITransactable;
-import org.essentialplatform.runtime.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.transaction.ITransactable;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 @Lifecycle(instantiable=true)
 @InDomain
