@@ -1,22 +1,15 @@
 package org.essentialplatform.server.remoting.activemq;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
-
 import javax.jms.JMSException;
 
 import org.activemq.ActiveMQConnection;
 import org.apache.log4j.Logger;
 import org.essentialplatform.remoting.marshalling.IMarshalling;
+import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.server.AbstractService;
 import org.essentialplatform.server.remoting.IRemotingServer;
 import org.essentialplatform.server.remoting.xactnprocessor.ITransactionProcessor;
 import org.essentialplatform.server.remoting.xactnprocessor.noop.NoopTransactionProcessor;
-import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
-import org.essentialplatform.runtime.transaction.ITransaction;
 
 public class ActiveMqRemotingServer extends AbstractService implements IRemotingServer {
 
@@ -35,7 +28,13 @@ public class ActiveMqRemotingServer extends AbstractService implements IRemoting
 	
     ////////////////////////////////////////////////////////////
 	
-	public ActiveMqRemotingServer() {}
+	/**
+	 * The system property <tt>activemq.store.dir</tt> is set to the value of
+	 * <tt>java.io.tmpdir</tt>.
+	 */
+	public ActiveMqRemotingServer() {
+		System.setProperty("activemq.store.dir", System.getProperty("java.io.tmpdir"));
+	}
 
     ////////////////////////////////////////////////////////////
     
