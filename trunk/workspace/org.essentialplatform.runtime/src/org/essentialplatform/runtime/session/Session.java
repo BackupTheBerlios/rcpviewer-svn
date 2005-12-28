@@ -15,65 +15,28 @@ import org.essentialplatform.runtime.domain.DomainObject;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.domain.IObservedFeature;
 import org.essentialplatform.runtime.domain.IPojo;
-import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.IObjectStoreAware;
 import org.essentialplatform.runtime.session.event.ISessionListener;
 import org.essentialplatform.runtime.session.event.SessionObjectEvent;
 
-public class Session implements ISession, IObjectStoreAware {
-	
-	private String _id;
-	private IDomain _domain;
-	/**
-	 * Mapping of pojo by its wrapping {@link IDomainObject}.
-	 * 
-	 * <p> 
-	 * An alternative implementation would be a perthis association between a
-	 * pojo and an IDomainObject (indeed this was the initial design).
-	 * 
-	 * <p>
-	 * Reciprocal of {@link #_domainObjectByPojo}
-	 *  
-	 * @see #_domainObjectByPojo
-	 */
-	private Map<IDomainObject<?>, Object> _pojoByDomainObject = 
-		new HashMap<IDomainObject<?>, Object>();
+/**
+ * @see ISession
+ * @author Dan Haywood
+ */
+public final class Session implements ISession {
 
-	/**
-	 * Mapping of {@link IDomainObject} by the pojo that it wraps.
-	 * 
-	 * <p>
-	 * Reciprocal of {@link #_pojoByDomainObject} 
-	 * 
-	 * @see #_pojoByDomainObject
-	 */
-	private Map<Object, IDomainObject<?>> _domainObjectByPojo = 
-		new HashMap<Object, IDomainObject<?>>();
 
-	/**
-	 * Partitioned hash of objects by their class.
-	 */
-	private Map<IDomainClass, List<IDomainObject<?>>> 
-		domainObjectsByDomainClass = new HashMap<IDomainClass, List<IDomainObject<?>>>();
-
-	private List<ISessionListener> _listeners = new ArrayList<ISessionListener>();
-	
-	/**
-	 * All {@link IObservedFeature}s that are currently being referenced
-	 * (elsewhere).
-	 * 
-	 * <p>
-	 * Although a map is being used, the value is always null (if a WeakHashSet
-	 * existed, we would be using it...).  
-	 */
-	private WeakHashMap<IObservedFeature, Object> _observedFeatures = new WeakHashMap<IObservedFeature, Object>();
-
-	Session(String id, IDomain domain, IObjectStore objectStore) {
+	Session(String id, IDomain domain, String objectStoreId) {
 		this._id = id;
 		this._domain = domain;
-		this.objectStore = objectStore;
+		this._sessionBinding = new SessionBinding(_domain.getName(), objectStoreId);
 	}
 
+
+	////////////////////////////////////////////////////////////////
+	// Id, Domain, SessionBinding
+	////////////////////////////////////////////////////////////////
+
+	private String _id;
 	/*
 	 * @see org.essentialplatform.session.ISession#getId()
 	 */
@@ -81,15 +44,31 @@ public class Session implements ISession, IObjectStoreAware {
 		return _id;
 	}
 
+
+
+	private IDomain _domain;
 	/*
-	 * 
 	 * @see org.essentialplatform.session.ISession#getDomain()
 	 */
 	public IDomain getDomain() {
 		return _domain;
 	}
 
-	// POJO LIFECYCLE (CREATE/DELETE) //
+
+	private final SessionBinding _sessionBinding;
+	/*
+	 * @see org.essentialplatform.runtime.session.ISession#getSessionBinding()
+	 */
+	public SessionBinding getSessionBinding() {
+		return _sessionBinding;
+	}
+
+
+	
+	////////////////////////////////////////////////////////////////
+	// POJO LIFECYCLE (CREATE/DELETE)
+	// + hooks
+	////////////////////////////////////////////////////////////////
 
 	/*
 	 * The TransactionInstantionChangeAspect picks up on this method, and adds
@@ -215,7 +194,9 @@ public class Session implements ISession, IObjectStoreAware {
 		delete(getDomainObjectFor(pojo, pojo.getClass()));
 	}
 
-	// ATTACH/DETACH //
+	////////////////////////////////////////////////////////////////
+	// ATTACH/DETACH 
+	////////////////////////////////////////////////////////////////
 
 	/*
 	 * @see org.essentialplatform.session.ISession#attach(org.essentialplatform.session.IDomainObject)
@@ -308,7 +289,36 @@ public class Session implements ISession, IObjectStoreAware {
 		return _domainObjectByPojo.get(pojo) != null;
 	}
 
-	// DOMAIN OBJECT HASHES //
+	
+	////////////////////////////////////////////////////////////////
+	// DOMAIN OBJECT HASHES
+	////////////////////////////////////////////////////////////////
+
+	/**
+	 * Mapping of pojo by its wrapping {@link IDomainObject}.
+	 * 
+	 * <p> 
+	 * An alternative implementation would be a perthis association between a
+	 * pojo and an IDomainObject (indeed this was the initial design).
+	 * 
+	 * <p>
+	 * Reciprocal of {@link #_domainObjectByPojo}
+	 *  
+	 * @see #_domainObjectByPojo
+	 */
+	private Map<IDomainObject<?>, Object> _pojoByDomainObject = 
+		new HashMap<IDomainObject<?>, Object>();
+
+	/**
+	 * Mapping of {@link IDomainObject} by the pojo that it wraps.
+	 * 
+	 * <p>
+	 * Reciprocal of {@link #_pojoByDomainObject} 
+	 * 
+	 * @see #_pojoByDomainObject
+	 */
+	private Map<Object, IDomainObject<?>> _domainObjectByPojo = 
+		new HashMap<Object, IDomainObject<?>>();
 
 	/*
 	 * @see org.essentialplatform.session.ISession#footprintFor(org.essentialplatform.domain.IDomainClass)
@@ -345,6 +355,12 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 
+	/**
+	 * Partitioned hash of objects by their class.
+	 */
+	private Map<IDomainClass, List<IDomainObject<?>>> 
+		domainObjectsByDomainClass = new HashMap<IDomainClass, List<IDomainObject<?>>>();
+
 	private synchronized List<IDomainObject<?>> getDomainObjectsFor(IDomainClass domainClass) {
 		List<IDomainObject<?>> domainObjects = 
 			domainObjectsByDomainClass.get(domainClass);
@@ -360,7 +376,19 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 	
-	// OBSERVED FEATURES //
+	////////////////////////////////////////////////////////////////
+	// OBSERVED FEATURES
+	////////////////////////////////////////////////////////////////
+
+	/**
+	 * All {@link IObservedFeature}s that are currently being referenced
+	 * (elsewhere).
+	 * 
+	 * <p>
+	 * Although a map is being used, the value is always null (if a WeakHashSet
+	 * existed, we would be using it...).  
+	 */
+	private WeakHashMap<IObservedFeature, Object> _observedFeatures = new WeakHashMap<IObservedFeature, Object>();
 
 	/*
 	 * @see org.essentialplatform.session.ISession#getObservedFeatures()
@@ -378,8 +406,12 @@ public class Session implements ISession, IObjectStoreAware {
 	}
 
 
-	// SESSION LISTENERS //
+	////////////////////////////////////////////////////////////////
+	// SESSION LISTENERS 
+	////////////////////////////////////////////////////////////////
 
+	private List<ISessionListener> _listeners = new ArrayList<ISessionListener>();
+	
 	/*
 	 * @see org.essentialplatform.session.ISession#addSessionListener(null)
 	 */
@@ -399,18 +431,6 @@ public class Session implements ISession, IObjectStoreAware {
 			_listeners.remove(listener);
 		}
 	}
-
-
-	// DEPENDENCY INJECTION START //
-
-	private IObjectStore objectStore;
-	public IObjectStore getObjectStore() {
-		return objectStore;
-	}
-	public void setObjectStore(IObjectStore objectStore) {
-		this.objectStore = objectStore;
-	}
-	// DEPENDENCY INJECTION END //
 
 
 }

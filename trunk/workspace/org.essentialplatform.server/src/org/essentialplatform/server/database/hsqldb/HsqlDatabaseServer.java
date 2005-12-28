@@ -1,15 +1,14 @@
 package org.essentialplatform.server.database.hsqldb;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+import org.essentialplatform.server.AbstractService;
 import org.essentialplatform.server.database.IDatabaseServer;
+import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
 import org.hsqldb.Server;
 import org.hsqldb.ServerConstants;
 
@@ -31,14 +30,18 @@ import org.hsqldb.ServerConstants;
  * 
  * @author Dan Haywood
  */
-public class HsqlDatabaseServer implements IDatabaseServer {
+public class HsqlDatabaseServer extends AbstractService implements IDatabaseServer {
+
+	@Override
+	protected Logger getLogger() {
+		return Logger.getLogger(HsqlDatabaseServer.class);
+	}
 
 	public final static String JDBC_DRIVER_CLASSNAME = "org.hsqldb.jdbcDriver";
 	public final static String URL_PREFIX_LOCALHOST = "jdbc:hsqldb:hsql://localhost:";
 
 	private Properties _properties;
 	private int _port;
-	private boolean _started;
 
 	/**
 	 * Ensures that the HSQL properties file exists and contains the correct
@@ -104,19 +107,25 @@ public class HsqlDatabaseServer implements IDatabaseServer {
 		return null;
 	}
 
-	public void shutdown() {
-		assertStarted();
+
+	@Override
+	protected boolean doStart() {
+		String[] args = propertiesAsMainArgs();
+		Server.main(args);
+		return true;
+	}
+
+	@Override
+	protected boolean doShutdown() {
 		Connection conn = null;
 		try {
 			conn = connect();
 			conn.createStatement().executeUpdate("SHUTDOWN");
-			_started = false;
+			return true;
 		} catch (ClassNotFoundException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			return false;
 		} catch (SQLException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			return false;
 		} finally {
 			if (conn!=null) {
 				try {
@@ -139,16 +148,6 @@ public class HsqlDatabaseServer implements IDatabaseServer {
 	}
 
 
-	/*
-	 * @see org.essentialplatform.server.database.IDatabaseServer#start()
-	 */
-	public void start() {
-		assertNotStarted();
-		String[] args = propertiesAsMainArgs();
-		Server.main(args);
-		_started = true;
-	}
-
 	@Override
 	public String toString() {
 		return getUrl();
@@ -165,23 +164,6 @@ public class HsqlDatabaseServer implements IDatabaseServer {
 		return args;
 	}
 
-	/*
-	 * @see org.essentialplatform.server.database.IDatabaseServer#isStarted()
-	 */
-	public boolean isStarted() {
-		return _started;
-	}
-
-	private void assertStarted() {
-		if (!isStarted()) {
-			throw new IllegalStateException("Not started");
-		}
-	}
-	private void assertNotStarted() {
-		if (isStarted()) {
-			throw new IllegalStateException("Already started");
-		}
-	}
 	private static Properties overridingProperties(int port, String database, boolean silent, boolean noSystemExitOnShutdown) {
 		Properties props = new Properties();
 		props.put(ServerConstants.SC_KEY_PORT, ""+port);

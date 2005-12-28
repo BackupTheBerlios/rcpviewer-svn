@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.transaction;
 import java.util.List;
 import java.util.Set;
 
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransactionManager;
 import org.essentialplatform.runtime.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.transaction.changes.ChangeSet;
@@ -214,7 +215,7 @@ public interface ITransaction {
 	 *         <code>false</code> otherwise (ie if would enlist a pojo already
 	 *         enlisted in some other current transaction).
 	 */
-	public boolean addingToInteractionChangeSet(IChange change) throws IllegalStateException;
+	public boolean addingToInteraction(IChange change) throws IllegalStateException;
 
 
 	/**
@@ -235,7 +236,7 @@ public interface ITransaction {
 	 * Postconditions
 	 * <ul>
 	 * <li> state of {@link ITransaction.State#IN_PROGRESS}.
-	 * <li> current changes (added through {@link #addingToInteractionChangeSet(IChange)} 
+	 * <li> current changes (added through {@link #addingToInteraction(IChange)} 
 	 *      popped to stack as a new change set.
 	 * <li> listeners notified through {@link ITransactionListener#addedChange(TransactionEvent)}
 	 * <li> current change set reset.
@@ -540,6 +541,10 @@ public interface ITransaction {
 	 * <p>
 	 * The changes are aggregated into a single immutable {@link Interaction}.
 	 * 
+	 * <p>
+	 * The implementation must ensure that the information in this field
+	 * survives being serialized and deserialized.
+	 * 
 	 * @throws IllegalStateException if called when not in state of COMMITTED or REVERSED
 	 * @return
 	 */
@@ -563,9 +568,40 @@ public interface ITransaction {
 	 * The returned collection is a copy of the state held by the transaction,
 	 * so may be modified freely by the caller. 
 	 * 
+	 * <p>
+	 * The implementation <i>need not</i> preserve the information in this
+	 * collection during serialization and deserialization.  (To do so would
+	 * cause potentially very large graphs of pojos from being sent back and
+	 * forth across the wire). 
+	 *
+	 * @see #getEnlistedPojoDOs()
 	 * @return
 	 */
 	public Set<ITransactable> getEnlistedPojos();
+
+	
+	
+	/**
+	 * The {@link IDomainObject}s that wrap each of the pojos in the
+	 * {@link #getEnlistedPojos} collection.
+	 * 
+	 * <p>
+	 * NOT SURE IF THIS IS NEEDED AFTER ALL BECAUSE (DUH!) EVERY ICHANGE WILL
+	 * ALWAYS REFERENCE THE INSTANTIATINGPOJO....
+	 * 
+	 * <p>
+	 * Is only required to be populated once the transaction has been committed. 
+	 * 
+	 * <p>
+	 * Unlike the {@link #getEnlistedPojos()} collection, the implementation 
+	 * must ensure that the information in this field survives being serialized 
+	 * and deserialized.  Note that this also means that these DomainObjects are
+	 * orphaned: there is no corresponding pojo for them until such time that
+	 * the association is recreated.
+	 *  
+	 * @return
+	 */
+	public Set<IDomainObject> getEnlistedPojoDOs();
 
 	
 	/**
@@ -578,9 +614,18 @@ public interface ITransaction {
 	 * {@link #getEnlistedPojos()}.
 	 * 
 	 * <p>
-	 * The implementation must provide a backing instance variable that 
-	 * holds the set, and this must not be declared <tt>transient</tt>.  (In
-	 * other words, this information will be serializable.
+	 * The implementation must ensure that the information in this field
+	 * survives being serialized and deserialized.
+	 * 
+	 * <h3>Design alternatives</h3>
+	 * <p>
+	 * Ensuring this field is serializable <i>does</i> open up the possibility 
+	 * of sending large object graphs across the wire, something that we hoped
+	 * to not do by allowing {@link #getEnlistedPojos()} to be a <tt>transient</tt>
+	 * collection.  An alternative would be for this collection also to be
+	 * transient (indeed, it could probably be removed), but then to append it
+	 * with a number of (artificially created) {@link AttributeChange}s etc to 
+	 * capture the state of the pojo as it is required to be.
 	 * 
 	 * @return
 	 */

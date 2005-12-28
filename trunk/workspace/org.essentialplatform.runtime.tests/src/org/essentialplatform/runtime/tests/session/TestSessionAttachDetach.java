@@ -4,6 +4,7 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.fixture.session.Department;
+import org.essentialplatform.runtime.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.tests.AbstractRuntimeTestCase;
 
@@ -92,7 +93,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
 		
-		ISession session2 = sessionManager.createSession(session.getDomain(), session.getObjectStore());
+		ISession session2 = sessionManager.defineSession(session.getDomain(), "OBJECTSTORE#2");
 		assertFalse(session.getId() == session2.getId());
 		
 		try {
@@ -141,7 +142,8 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		session.detach(domainObject);
 		domainObject.clearSessionId();
 		
-		ISession session2 = sessionManager.createSession(session.getDomain(), session.getObjectStore());
+		ISession session2 = 
+			sessionManager.defineSession(session.getDomain(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID + "_2");
 		String session2Id = session2.getId();
 		
 		session2.attach(domainObject);
@@ -158,7 +160,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		
 		Domain marketingDomain = Domain.instance("marketing");
 		
-		ISession sessionForMarketingDomain = sessionManager.createSession(marketingDomain, null);
+		ISession sessionForMarketingDomain = sessionManager.defineSession(marketingDomain, "MarketingObjectStore");
 		
 		// create domain object from default domain
 		IDomainClass departmentDomainClass = lookupAny(Department.class);

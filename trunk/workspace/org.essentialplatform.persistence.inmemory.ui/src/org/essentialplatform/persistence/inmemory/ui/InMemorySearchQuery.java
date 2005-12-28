@@ -59,7 +59,7 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 		try {
 			
 			for (ISession session: RuntimePlugin.getDefault().getSessionManager().getAllSessions()) {
-				IObjectStore objectStore= session.getObjectStore();
+//				IObjectStore objectStore= session.getObjectStore();
 //				if (objectStore instanceof InMemoryObjectStore) {
 //					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
 //					for (Object pojo: memoryObjectStore.allInstances()) {

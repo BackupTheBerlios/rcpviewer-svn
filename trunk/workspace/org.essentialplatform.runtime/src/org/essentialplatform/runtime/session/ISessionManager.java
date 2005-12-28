@@ -8,41 +8,35 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.session.SessionBinding;
 
 /**
- * A singleton that, with the co-operation of {@link ISessionFactory}, keeps 
- * track of all {@link ISession}s that have been instantiated.
+ * A (client-side) singleton that keeps track of all {@link ISession}s that 
+ * have been instantiated, tracking the current session for each {@link IDomain}.
  * 
  * <p>
- * Typically there will be precisely one {@link ISessionManager}, one
- * {@link ISessionFactory} and one {@link ISession}.  The 
- * {@link ISessionFactory} refers to a specific {@link Domain} and a specific
- * (compatible) {@link IObjectStore} and passes these onto the {@link ISession}
- * that it creates.  The {@link ISession}'s identifier is also passed to it by 
- * the @link ISessionFactory}, but the factory obtains the identifier from
- * the session manager (that is, an instance of this interface).
- * 
+ * A {@link ISession} is a binding between an {@link IDomain} and an
+ * {@link IObjectStore} that is capable of storing objects from that domain.
+ * Since {@link IObjectStore}s are server-side, the session actually binds 
+ * the {@link IDomain} object and the Id of the {@link IObjectStore}.  This binding
+ * is encapsulated in the (serializable) {@link SessionBinding} that allows
+ * the server-side equivalent of {@link ISessionManager} to recreate the
+ * binding, but this time to the actual {@link IObjectStore} instance.
+ *  
  * <p>
- * However, the design of a manager, a factory and sessions allows for more 
- * involved setups.  For example, we could have two {@link ISession}s built
- * from the same {@link ISessionFactory} (therefore relating to the same
- * {@link Domain}), but with different {@link IObjectStore}s.  The  
- * {@link IDomainObject}s of each {@link ISession} would be distinct (eg a
- * development vs a production environment, or London vs Hong Kong).
- * 
- * <p>
- * Alternatively, there might be two {@link ISessionFactory}s, each configured
- * with a different {@link Domain}.  Each would be used to create instances of
- * {@link IDomainObject}s referring to {@link IDomainClass}es of their
- * corresponding {@link Domain}s.  For example, one domain might be the 
- * <i>default</i>  domain (holding classes modelling an order management
- * system, for example), and one domain might be an <i>email</i> domain 
- * (holding classes that represent emails and contacts), with an 
- * {@link IObjectStore} that persists to the underlying mail system.
- * 
+ * Typically there will be just one {@link ISession} per {@link IDomain} (and
+ * even, just one {@link IDomain}), meaning that there is never any ambiguity
+ * into which {@link IObjectStore} a given newly created domain object should
+ * be persisted into.  However, the architecture does allow for multiple
+ * {@link ISession}s for a given {@link IDomain}.  For example, the client
+ * application might have instantiated objects from the <tt>Shop</tt> domain
+ * for several retail outlets each with their own dedicated object store 
+ * (Edinburgh, London, Oxford etc).  It is the responsibility of <t>this</i>
+ * object to keep track of which is the current session for any given
+ * domain.
+ *  
  *  
  * @author Dan Haywood
- *
  */
 public interface ISessionManager {
 	
@@ -65,29 +59,32 @@ public interface ISessionManager {
 	public ISession get(String id);
 
 	/**
-	 * Set the system's current session
+	 * Set the current session for the {@link IDomain} referenced by the 
+	 * {@link ISession} corresponding to the supplied sessionId.
 	 */
-	public void switchSessionTo(String id);
+	public void switchSessionTo(String sessionId);
 	
 	
 	/**
-	 * @return The ID of the current session.  May return null if there is no current session.
+	 * @return The current session for the specified domain.  
+	 *         May return <tt>null</tt> if there is no current session.
 	 */
-	public String getCurrentSessionId();
+	public ISession getCurrentSession(final IDomain domain);
 	
 	
 	/**
 	 * Creates an {@link ISession} that effectively binds the specified 
-	 * {@link IDomain} with the specified {@link IObjectStore}.
+	 * {@link IDomain} with the specified {@link IObjectStore} (through the
+	 * latter's own Id)
 	 * 
 	 * <p>
 	 * A unique session Id is automatically allocated, and the created session 
 	 * is added to the collection of sessions maintained by this session manager
-	 * and is moreover made the current session.
+	 * and is moreover made the current session for the domain.
 	 * 
 	 * @return The newly created {@link ISession} 
 	 */
-	public ISession createSession(final IDomain domain, final IObjectStore objectStore);
+	public ISession defineSession(final IDomain domain, final String objectStoreId);
 	
 	/**
 	 * Add a listener that will be notified of session manager changes

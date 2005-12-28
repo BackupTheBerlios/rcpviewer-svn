@@ -22,24 +22,23 @@ public final class XStreamMarshalling implements IMarshalling {
 	private final XStream xstream;
 	
 	public XStreamMarshalling() {
-		super();
 		xstream = new XStream();
-	}
-
-	/*
-	 * @see org.essentialplatform.runtime.distribution.IMarshaller#marshalTo(java.lang.Object, java.io.OutputStream)
-	 */
-	public void marshalTo(Object pojo, OutputStream os) {
-		getLogger().debug(os);
-		xstream.toXML(pojo, new OutputStreamWriter(os));
 	}
 
 	
 	/*
-	 * @see org.essentialplatform.runtime.distribution.IUnmarshaller#unmarshalFrom(java.io.InputStream)
+	 * @see org.essentialplatform.remoting.marshalling.IMarshaller#marshal(java.lang.Object)
 	 */
-	public Object unmarshalFrom(InputStream is) {
-		return xstream.fromXML(new InputStreamReader(is));
+	public String marshal(Object pojo) {
+		return xstream.toXML(pojo);
+	}
+
+
+	/*
+	 * @see org.essentialplatform.remoting.marshalling.IUnmarshaller#unmarshal(java.lang.String)
+	 */
+	public Object unmarshal(String marshalledObject) {
+		return xstream.fromXML(marshalledObject);
 	}
 
 

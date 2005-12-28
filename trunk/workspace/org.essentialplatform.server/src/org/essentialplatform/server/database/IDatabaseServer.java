@@ -3,7 +3,9 @@ package org.essentialplatform.server.database;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface IDatabaseServer {
+import org.essentialplatform.server.IService;
+
+public interface IDatabaseServer extends IService {
 
 	
 	public String getDriverClassName();
@@ -11,11 +13,6 @@ public interface IDatabaseServer {
 	public String getUser();
 	public String getPassword();
 
-	public boolean isStarted();
-	
-	public void start()  throws IllegalStateException;
-	public void shutdown() throws IllegalStateException;
-	
 	/**
 	 * Convenience function, eg where connection pooling is not in use.
 	 * 

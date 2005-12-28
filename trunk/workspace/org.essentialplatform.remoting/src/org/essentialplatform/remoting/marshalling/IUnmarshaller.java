@@ -1,10 +1,15 @@
 package org.essentialplatform.remoting.marshalling;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public interface IUnmarshaller {
-	
-	public Object unmarshalFrom(InputStream is);
+
+	/**
+	 * Unmarshalls an object represented as a string.
+	 * 
+	 * @param marshalledObject, represented as a string
+	 * @return the unmarshalled object
+	 * 
+	 */
+	public Object unmarshal(String marshalledObject);
 
 }

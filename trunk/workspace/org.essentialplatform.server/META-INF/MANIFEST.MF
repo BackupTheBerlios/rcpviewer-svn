@@ -11,11 +11,17 @@ Require-Bundle: org.eclipse.ui,
  org.essentialplatform.runtime,
  org.essentialplatform.remoting,
  net.sf.plugins.hsqldb,
- net.sf.plugins.hibernate
+ net.sf.plugins.hibernate,
+ org.essentialplatform.progmodel.essential.runtime
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.server,
  org.essentialplatform.server.database,
  org.essentialplatform.server.database.hsqldb,
  org.essentialplatform.server.persistence,
  org.essentialplatform.server.persistence.hibernate,
- org.essentialplatform.server.persistence.inmemory
+ org.essentialplatform.server.persistence.inmemory,
+ org.essentialplatform.server.remoting,
+ org.essentialplatform.server.remoting.activemq,
+ org.essentialplatform.server.remoting.xactnprocessor,
+ org.essentialplatform.server.remoting.xactnprocessor.enqueue,
+ org.essentialplatform.server.remoting.xactnprocessor.noop

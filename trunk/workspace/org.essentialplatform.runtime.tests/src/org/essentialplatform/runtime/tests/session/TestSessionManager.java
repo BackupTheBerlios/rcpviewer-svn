@@ -1,8 +1,7 @@
 package org.essentialplatform.runtime.tests.session;
 
 import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.persistence.NoopObjectStore;
+import org.essentialplatform.runtime.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.session.event.SessionManagerEvent;
@@ -24,18 +23,17 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 
 	public void testCreatingSessionAllocatesId() {
 		Domain domain = Domain.instance();
-		IObjectStore objectStore = new NoopObjectStore();
-		ISession session = sessionManager.createSession(domain, objectStore);
+		ISession session = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		assertNotNull(session.getId());
 	}
 
 	public void testEachSessionGetsADifferentId() {
 		Domain domain = Domain.instance();
-		ISession session1 = sessionManager.createSession(domain, new NoopObjectStore());
-		ISession session2 = sessionManager.createSession(domain, new NoopObjectStore());
-		ISession session3 = sessionManager.createSession(domain, new NoopObjectStore());
-		ISession session4 = sessionManager.createSession(domain, new NoopObjectStore());
-		ISession session5 = sessionManager.createSession(domain, new NoopObjectStore());
+		ISession session1 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		ISession session2 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		ISession session3 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		ISession session4 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		ISession session5 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		
 		assertNotSame(session1.getId(), session2.getId());
 		assertNotSame(session1.getId(), session3.getId());
@@ -63,7 +61,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		Domain domain = Domain.instance();
 		ISession[] sessions = new ISession[5];
 		for(int i=0; i<sessions.length; i++) {
-			sessions[i] = sessionManager.createSession(domain, new NoopObjectStore());
+			sessions[i] = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		}
 		assertEquals(6, sessionManager.getAllSessions().size()); // 1 added in fixture
 		sessionManager.getAllSessions().contains(session); // in the fixture
@@ -74,13 +72,13 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 
 	public void testCanSwitchCurrentSession() {
 		Domain domain = Domain.instance();
-		ISession session1 = sessionManager.createSession(domain, new NoopObjectStore());
-		assertEquals(session1.getId(), sessionManager.getCurrentSessionId());
-		ISession session2 = sessionManager.createSession(domain, new NoopObjectStore());
-		assertEquals(session2.getId(), sessionManager.getCurrentSessionId());
+		ISession session1 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		assertSame(session1, sessionManager.getCurrentSession(domain));
+		ISession session2 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		assertSame(session2, sessionManager.getCurrentSession(domain));
 		
 		sessionManager.switchSessionTo(session1.getId());
-		assertEquals(session1.getId(), sessionManager.getCurrentSessionId());
+		assertSame(session1, sessionManager.getCurrentSession(domain));
 	}
 	
 	private static class MySessionManagerListener implements ISessionManagerListener {
@@ -110,7 +108,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		Domain domain = Domain.instance();
 		assertFalse(sml.sessionCreated);
 		assertNull(sml.session);
-		ISession session1 = sessionManager.createSession(domain, new NoopObjectStore());
+		ISession session1 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		assertTrue(sml.sessionCreated);
 		assertSame(session1, sml.session);
 	}
@@ -119,7 +117,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		MySessionManagerListener sml = new MySessionManagerListener();
 		sessionManager.addSessionManagerListener(sml);
 		Domain domain = Domain.instance();
-		ISession session1 = sessionManager.createSession(domain, new NoopObjectStore());
+		ISession session1 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 
 		sml.session = null; // reset since creating session would have populated
 		assertFalse(sml.sessionRemoved);
@@ -137,7 +135,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		assertFalse(sml.sessionNowCurrent);
 		assertNull(sml.session);
 		// create session; as a byproduct, will get a switch session
-		ISession session1 = sessionManager.createSession(domain, new NoopObjectStore());
+		ISession session1 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		assertTrue(sml.sessionNowCurrent);
 		assertSame(session1, sml.session);
 
@@ -145,7 +143,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		sml.session = null;
 		assertFalse(sml.sessionNowCurrent);
 		assertNull(sml.session);
-		ISession session2 = sessionManager.createSession(domain, new NoopObjectStore());
+		ISession session2 = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		assertTrue(sml.sessionNowCurrent);
 		assertSame(session2, sml.session);
 		

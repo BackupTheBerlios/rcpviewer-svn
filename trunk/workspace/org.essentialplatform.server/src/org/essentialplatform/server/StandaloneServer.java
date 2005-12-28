@@ -1,107 +1,186 @@
 package org.essentialplatform.server;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.essentialplatform.remoting.IRemoting;
-import org.essentialplatform.remoting.server.ServerRemoting;
-import org.essentialplatform.runtime.domain.IDomainObject;
-import org.essentialplatform.runtime.domain.IPojo;
+import org.apache.log4j.Logger;
+import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.core.domain.DomainConstants;
+import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
+import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.persistence.IObjectStore;
-import org.essentialplatform.runtime.transaction.ITransaction;
-import org.essentialplatform.runtime.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.transaction.changes.IChange;
-import org.essentialplatform.runtime.transaction.changes.IModificationChange;
-import org.essentialplatform.runtime.transaction.changes.InstantiationChange;
+import org.essentialplatform.runtime.persistence.PersistenceConstants;
+import org.essentialplatform.runtime.transaction.ITransactionManager;
+import org.essentialplatform.runtime.transaction.TransactionManager;
 import org.essentialplatform.server.database.IDatabaseServer;
 import org.essentialplatform.server.database.hsqldb.HsqlDatabaseServer;
-import org.essentialplatform.server.persistence.ApplyingChangesComparator;
+import org.essentialplatform.server.persistence.hibernate.HibernateObjectStore;
+import org.essentialplatform.server.remoting.IRemotingServer;
+import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
+import org.essentialplatform.server.remoting.xactnprocessor.ITransactionProcessor;
+import org.essentialplatform.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor;
 
 /**
  * Standalone server.
  * 
+ * <p>
+ * Configures the components that make up the server, (eg database server, 
+ * JMS broker, transaction processor).
+ * 
  * @author Dan Haywood
- *
  */
-public class StandaloneServer {
+public class StandaloneServer extends AbstractService {
 
-	private IRemoting _remoting;
-	private IDatabaseServer _databaseServer;
+	@Override
+	protected Logger getLogger() {
+		return Logger.getLogger(StandaloneServer.class);
+	}
 
+	private ITransactionManager _transactionManager;
+	
+	////////////////////////////////////////////////////////////
+
+	private Map<IDomain, ObjectStoreList> objectStoreListByDomain = new HashMap<IDomain, ObjectStoreList>();
+	
 	public StandaloneServer() {
-		_databaseServer = new HsqlDatabaseServer();
-		_remoting = new ServerRemoting();
-	}
-	
-	/**
-	 * Starts the database server and the remoting.
-	 *
-	 */
-	public void start() {
-		_databaseServer.start();
-		_remoting.start();
-	}
-	
 
-	// just a sketch
-	public void consume(byte[] bytes) {
+		//
+		// YIKES.  THE EssentialProgModelRuntimeBuilder will populate the
+		// Domain singleton with a hash of (name,IDomain) tuples.  But I then
+		// need to say, for each of those Domains, what the list of
+		// ObjectStores are.  Each (domainName, objectStore) then corresponds
+		// to a SessionBinding.
+		//
+		//
+		// ALSO: rename ISessionManager to IClientSessionManager, etc
+		// and consider introducing a new plugin for client-side only stuff 
+		// (now that I've finally identified some stuff that I do want to
+		// use only on the client.
+		//
+
+		// First, build our Domain(s)
+		// for now, only supporting "default".
+		Binding.setBinding(
+			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+
 		
-		Object obj = _remoting.getMarshalling().unmarshalFrom(new ByteArrayInputStream(bytes));
+		// build the objectStoreListByDomain.
+		//
+		// for now, hard-coded to bind "default" domain to "default" objectstore,
+		// implemented using Hibernate.
+		//
+		// in the future, intend to pick up the names of domains and map to the
+		// Ids (and possibly implementations) of corresponding lists of objectstores.
+		bind(
+			Domain.instance(DomainConstants.DEFAULT_NAME), 
+			new HibernateObjectStore(PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
 		
-		ITransaction unmarshalledXactn = (ITransaction)obj;
+		// tell the transaction processor a
+		// for each SessionBinding tuple.
+	    _transactionProcessor.init(objectStoreListByDomain);
 
-		apply(unmarshalledXactn);
-	}
-	
+	    // is a xactnMgr needed?
+		_transactionManager = TransactionManager.instance();
 
-	public IRemoting getRemoting() {
-		return _remoting;
 	}
+
 	/**
-	 * Dependency injection.
+	 * Associates a name with an object store that is capable of supporting
+	 * objects from that domain.
 	 * 
+	 * @param domain
+	 * @param objectStore
+	 */
+	private void bind(Domain domain, IObjectStore objectStore) {
+		ObjectStoreList objectStoreList = objectStoreListByDomain.get(domain);
+		if (objectStoreList == null) {
+			objectStoreList = new ObjectStoreList();
+		}
+		objectStoreList.add(objectStore);
+	}
+
+    ////////////////////////////////////////////////////////////
+
+	private IRemotingServer _remotingServer = new ActiveMqRemotingServer();
+	public IRemotingServer getRemotingServer() {
+		return _remotingServer;
+	}
+	/**
+	 * Optionally specify the {@link IRemotingServer} to use, eg by dependency injection.
+	 * 
+	 * <p>
+	 * If not specified will default to {@link ActiveMqRemotingServer}.
 	 * @param remoting
 	 */
-	public void setRemoting(IRemoting remoting) {
-		_remoting = remoting;
+	public void setRemoting(IRemotingServer remotingServer) {
+		_remotingServer = remotingServer;
+	}
+
+
+    ////////////////////////////////////////////////////////////
+	
+	private IDatabaseServer _databaseServer = new HsqlDatabaseServer();
+	public IDatabaseServer getDatabaseServer() {
+		return _databaseServer;
+	}
+	/**
+	 * Optionally specify the {@link IDatabaseServer} to use, eg by dependency injection.
+	 * 
+	 * <p>
+	 * If not specified then will default to {@link HsqlDatabaseServer}.
+	 * 
+	 * @param databaseServer
+	 */
+	public void setDatabaseServer(IDatabaseServer databaseServer) {
+		_databaseServer = databaseServer;
 	}
 	
-
-
+    ////////////////////////////////////////////////////////////
+	
+	private ITransactionProcessor _transactionProcessor = new HibernateTransactionProcessor();
+	public ITransactionProcessor getTransactionProcessor() {
+		return _transactionProcessor;
+	}
 	/**
+	 * Optionally specify the {@link ITransactionProcessor} to use, eg by 
+	 * dependency injection.
 	 * 
-	 * @param transaction
-	 * @param distribution
-	 * @param baos
+	 * <p>
+	 * If not specified will default to {@link HibernateTransactionProcessor}.
+	 * @param remoting
 	 */
-	public void apply(ITransaction transaction) {
+	public void setTransactionProcessor(
+			ITransactionProcessor transactionProcessor) {
+		_transactionProcessor = transactionProcessor;
+	}
+	
+    ////////////////////////////////////////////////////////////
 
-		List<IChange> committedChanges = transaction.flattenedCommittedChanges();
-		Collections.sort(committedChanges, new ApplyingChangesComparator());
-
-		for(IChange change: committedChanges) {
-			if (change instanceof InstantiationChange) {
-				IPojo pojo = (IPojo)change.getInitiatingPojo();
-				IDomainObject<?> domainObject = pojo.domainObject();
-				IObjectStore objectStore = domainObject.getSession().getObjectStore();
-				objectStore.save(domainObject);
-			}
-			if (change instanceof IModificationChange) {
-				IPojo pojo = (IPojo)change.getInitiatingPojo();
-				IDomainObject<?> domainObject = pojo.domainObject();
-				IObjectStore objectStore = domainObject.getSession().getObjectStore();
-				objectStore.update(domainObject);
-			}
-			if (change instanceof DeletionChange) {
-				IPojo pojo = (IPojo)change.getInitiatingPojo();
-				IDomainObject<?> domainObject = pojo.domainObject();
-				IObjectStore objectStore = domainObject.getSession().getObjectStore();
-				objectStore.delete(domainObject);
-			}
-		}
+	
+	/**
+	 * Starts the database server and the remoting server.
+	 */
+	protected boolean doStart() {
+		_databaseServer.start();
+		_remotingServer.setTransactionProcessor(_transactionProcessor);
+		_remotingServer.start();
+		return true;
 	}
 
+	
+	protected boolean doShutdown()  {
+		_remotingServer.shutdown();
+		_databaseServer.shutdown();
+		return true;
+	}
 
+    ////////////////////////////////////////////////////////////
+
+	public static void main(String[] args) {
+		StandaloneServer server = new StandaloneServer();
+		server.start();
+	}
+	
 }

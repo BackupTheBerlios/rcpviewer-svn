@@ -12,15 +12,72 @@ import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.session.event.ISessionListener;
 
 /**
- * Holds the collection of pojos (wrapped in {@link IDomainObject}s known to
- * the current user, cf a Hibernate Session.
+ * Binds a {@link IDomain} with an {@link IObjectStore}.
  * 
  * <p>
+ * Put another way, it is the client-side equivalent of an object store 
+ * with respect to a particular {@link IDomain}.
  * 
  * <p>
- * Notes: the intention is that this object will be long-lived in a two-tier
- * (client/server) deployment, but short-lived in a three-tier (app server)
- * deployment.
+ * Note the similarity of the SessionManager's map of domain->SessionList with
+ * the StandaloneServer's map of domain->ObjectStoreList.
+ * 
+ * <p>
+ * Some scenarios:
+ * 
+ * <h3>Scenario #1: single centralized system</h3>
+ * <p>
+ * <table>
+ * <tr><th>Domain</th><th>ObjectStore</th></tr>
+ * <tr><td>HR</td><td>London</td></tr>
+ * </table>
+ * 
+ * <h3>Scenario #2: same domain deployed to multiple locations</h3>
+ * <p>
+ * <table>
+ * <tr><th>Domain</th><th>ObjectStore</th></tr>
+ * <tr><td>Shop</td><td>Edinburgh</td></tr>
+ * <tr><td>Shop</td><td>London</td></tr>
+ * <tr><td>Shop</td><td>Oxford</td></tr>
+ * </table>
+ * 
+ * <h3>Scenario #3: multiple domains</h3>
+ * <p>
+ * <table>
+ * <tr><th>Defects</th><th>ChildBenefit</th></tr>
+ * <tr><td>SourceCode</td><td>CB_SVNRepos</td></tr>
+ * </table>
+ * 
+ * <p>
+ * Each (domain, objectstore) tuple is a Session.  As such, it represents a 
+ * connected space of pojos (each wrapped in a {@link IDomainObject}) known to 
+ * the current user.   This is, basically, the same semantics as Hibernate.
+ * 
+ * <p>
+ * For convenience, on the client, each session has a unique identifier.  This
+ * identifier is <i>not</i> used in the server-side however: it is the
+ * (domainName, objectStoreName) information that is needed.  (Otherwise, if
+ * the server did keep track of session Ids, there would be distributed GC
+ * issues to contend with).
+ * 
+ * <p>
+ * If there is only ever one session per domain, then there is never any 
+ * ambiguity with respect to which object store to put a new domain object 
+ * into.  However, if there is >1 session per domain, then a mechanism is 
+ * required - namely the "current session" (per domain).  For example:
+ * 
+ * <table>
+ * <tr><th>SessId</th><th>Domain</th><th>ObjectStore</th><th>Current?</th></tr>
+ * <tr><td>1</td><td>Shop</td><td>Edinburgh</td><td>N</td></tr>
+ * <tr><td>2</td><td>Shop</td><td>London</td><td>N</td></tr>
+ * <tr><td>3</td><td>Shop</td><td>Oxford</td><td>Y</td></tr>
+ * <tr><td>4</td><td>Defects</td><td>ChildBenefit</td><td>Y</td></tr>
+ * <tr><td>5</td><td>Defects</td><td>Pensions</td><td>N</td></tr>
+ * </table>
+ * <p>
+ * Any new domain objects in the <tt>Shop</tt> domain would go into 
+ * session #3 = Oxford, and new domain objects in the <tt>Defects</tt> domain 
+ * woiuld go into session #4 = ChildBenefit
  * 
  * @author Dan Haywood
  */
@@ -32,9 +89,6 @@ public interface ISession {
 	 * <p>
 	 * Typically there will be precisely one session per {@link IDomain}.
 	 * However, the design allows multiple such sessions. 
-	 * 
-	 * <p>
-	 * TODO: should make this a guid.
 	 * 
 	 * @return
 	 */
@@ -50,12 +104,18 @@ public interface ISession {
 	IDomain getDomain();
 	
 	/**
-	 * The objectstore to which all {@link IDomainObject}s managed by this
-	 * session will be persisted.
+	 * Stores the (domainName, objectStoreId) tuple.
+	 * 
+	 * <p>
+	 * The {@link SessionBinding} (which is serializable) is copied down into 
+	 * each managed {@link IDomainObject} so that the session context can be
+	 * serialized across the wire as required.
 	 * 
 	 * @return
 	 */
-	IObjectStore getObjectStore();
+	SessionBinding getSessionBinding();
+
+	
 	
 	/**
 	 * Creates a new pojo wrapped in an {@link IDomainObject}, attaches to the 

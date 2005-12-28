@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.IrreversibleTransactionException;
@@ -218,6 +219,15 @@ public class ChangeSet implements IChange {
 	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
 	 */
 	public ITransactable getInitiatingPojo() {
+		return null;
+	}
+
+	/*
+	 * Just returns <tt>null</tt>.
+	 * 
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojoDO()
+	 */
+	public IDomainObject getInitiatingPojoDO() {
 		return null;
 	}
 

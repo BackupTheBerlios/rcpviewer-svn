@@ -9,6 +9,8 @@ Bundle-Localization: plugin
 Bundle-ClassPath: 
  activemq-3.2.1.jar
 Export-Package: javax.jms,
+ javax.management.j2ee,
+ javax.management.j2ee.statistics,
  org.activeio,
  org.activeio.adapter,
  org.activeio.filter,

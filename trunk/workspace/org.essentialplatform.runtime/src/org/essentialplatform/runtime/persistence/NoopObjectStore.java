@@ -12,7 +12,11 @@ import org.essentialplatform.runtime.domain.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public final class NoopObjectStore implements IObjectStore {
+public final class NoopObjectStore extends AbstractObjectStore {
+
+	public NoopObjectStore(String id) {
+		super(id);
+	}
 
 	/*
 	 * @see org.essentialplatform.runtime.persistence.IObjectStore#save(org.essentialplatform.runtime.domain.IDomainObject)

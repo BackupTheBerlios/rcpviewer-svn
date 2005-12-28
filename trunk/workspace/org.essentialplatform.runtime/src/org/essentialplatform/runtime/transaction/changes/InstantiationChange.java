@@ -67,8 +67,8 @@ public final class InstantiationChange extends AbstractChange {
 	 */
 	public void doUndo() {
 		// TODO: is this required - think more is needed (eg detach from session...)
-		if (_domainObject != null) {
-			_domainObject.nowTransient();
+		if (getInitiatingPojoDO() != null) {
+			getInitiatingPojoDO().nowTransient();
 		}
 	}
 

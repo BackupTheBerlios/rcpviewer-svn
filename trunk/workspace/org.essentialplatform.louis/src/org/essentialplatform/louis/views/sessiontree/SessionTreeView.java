@@ -21,6 +21,7 @@ import org.essentialplatform.louis.jobs.SearchJob;
 import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.runtime.RuntimePlugin;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.session.ISessionManager;
@@ -65,7 +66,8 @@ public class SessionTreeView extends ViewPart {
 		// tie viewer to current session
 		try {
 			ISessionManager mgr = RuntimePlugin.getDefault().getSessionManager();
-			String sessionId = mgr.getCurrentSessionId();
+			// TODO: hard-coded to default domain only.
+			String sessionId = mgr.getCurrentSession(Domain.instance()).getId();
 			_sessionListener = new SessionListener(mgr, sessionId, _viewer);
 			_viewer.setInput(mgr.get(sessionId));
 		} catch (CoreException ce) {

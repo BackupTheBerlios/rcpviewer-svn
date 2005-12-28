@@ -20,6 +20,17 @@ import org.essentialplatform.runtime.session.ISession;
 public interface IObjectStore {
 
 	/**
+	 * Unique identifier for this deployment of the object store.
+	 * 
+	 * <p>
+	 * For example, <i>London</i> or <i>Prod-Env</i>.
+	 * 
+	 * @return
+	 */
+	public String getId();
+	
+	
+	/**
 	 * Persist this (currently transient) object.
 	 * 
 	 * @param domainObject 

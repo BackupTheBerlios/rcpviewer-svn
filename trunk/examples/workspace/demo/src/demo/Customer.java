@@ -126,7 +126,7 @@ public class Customer {
 	public static Customer create() {
 		// following instantiates an Customer
 		// yes, it's horrible, but will be replaced by a simple pointcut on {@InDomain).new
-		ISession session = SessionManager.instance().get(SessionManager.instance().getCurrentSessionId());
+		ISession session = SessionManager.instance().getCurrentSession(Domain.domainFor(Customer.class));
 		IDomainObject<Customer> customerDo = session.create(Domain.lookupAny(Customer.class));
 		Customer customer = customerDo.getPojo();
 		return customer;

@@ -17,6 +17,7 @@ import org.essentialplatform.runtime.persistence.IPersistable;
 import org.essentialplatform.runtime.persistence.IResolvable;
 import org.essentialplatform.runtime.persistence.PersistenceId;
 import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.session.SessionBinding;
 import org.essentialplatform.runtime.transaction.event.ITransactionListener;
 
 /**
@@ -48,6 +49,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 
 	//////////////////////////////////////////////////////////////////////////
 	// member
+	//////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Relevant to all handles to members of an instantiated object.
@@ -872,10 +874,25 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	/**
 	 * The {@link ISession} to which this domain object is currently attached.
 	 * 
+	 * <p>
+	 * The implementation is not required to serialize this information.
+	 * 
 	 * @return
 	 */
 	public ISession getSession();
 	
+	/**
+	 * Denormalized from the {@link ISession}.
+	 * 
+	 * <p>
+	 * Unlike {@link #getSession()}, this must be serialized by the 
+	 * implementation. 
+	 * 
+	 * @return
+	 */
+	public SessionBinding getSessionBinding();
+
+
 	/**
 	 * Returns an adapter for this object with respect to the adapter of some
 	 * programming model.
@@ -948,4 +965,5 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 
 	
 	public void externalStateChanged();
+
 }

@@ -6,6 +6,11 @@ import java.io.OutputStream;
 
 public interface IMarshaller {
 	
-	public void marshalTo(Object pojo, OutputStream os);
+	/**
+	 * 
+	 * @param pojo - the object to be marshalled.
+	 * @return the object marshalled to a string (eg XML)
+	 */
+	public String marshal(Object pojo);
 
 }

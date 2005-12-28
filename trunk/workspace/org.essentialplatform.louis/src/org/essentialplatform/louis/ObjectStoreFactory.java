@@ -2,6 +2,7 @@ package org.essentialplatform.louis;
 
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.NoopObjectStore;
+import org.essentialplatform.runtime.persistence.PersistenceConstants;
 
 
 /**
@@ -15,7 +16,7 @@ class ObjectStoreFactory {
 	 * @return
 	 */
 	static IObjectStore createObjectStore() {
-		return new NoopObjectStore();
+		return new NoopObjectStore(PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 	}
 	
 	/**

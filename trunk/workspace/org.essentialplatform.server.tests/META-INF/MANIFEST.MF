@@ -6,11 +6,15 @@ Bundle-Version: 1.0.0
 Bundle-Localization: plugin
 Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
  net.sf.plugins.xstream
-Require-Bundle: net.sf.plugins.hsqldb,
+Require-Bundle: org.essentialplatform.server,
  org.junit,
- net.sf.plugins.hibernate;visibility:=reexport,
  demo,
- org.essentialplatform.server,
- org.essentialplatform.runtime.tests
+ net.sf.plugins.hsqldb,
+ net.sf.plugins.hibernate,
+ net.sf.plugins.commons,
+ net.sf.plugins.xstream,
+ net.sf.plugins.activemq,
+ org.essentialplatform.runtime.tests,
+ org.essentialplatform.remoting
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform.server.tests

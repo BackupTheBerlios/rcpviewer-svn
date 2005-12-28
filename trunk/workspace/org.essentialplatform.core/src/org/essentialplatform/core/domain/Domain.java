@@ -25,25 +25,24 @@ import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 
 
 /**
- * Mostly complete implementation of {@link IDomain}.
+ * A complete implementation of {@link IDomain}, extensible for the
+ * run-time or compile-time environment through bindings (see {@link #getBinding()}).
  * 
  * <p>
- * Concrete implementations need to nominate their primary 
- * {@link IDomainBuilder} used to actually build the domain's meta-model.
- * For example, the runtime (RCP) implementation uses an analyzer that uses
- * Java reflection, whereas the compile-time (IDE) implementation uses an
- * analyzer that uses Eclipse's Java AST API.
+ * Bindings are used to nominate a primary {@link IDomainBuilder} used to 
+ * actually build the domain's meta-model. for example, the runtime (RCP) 
+ * binding uses a builder that uses Java reflection, whereas the compile-time 
+ * (IDE) binding uses a builder that uses Eclipse's Java AST API.
  *
  * <p>
- * Since all implementations of {@link IDomain} are expected to provide a
- * mechanism to obtain (as a singleton) all instances of instantiated 
- * {@link IDomain}s keyed by their domain name, this class provides some of
- * this functionality.
+ * {@link IDomain}s, once built, are obtained from a static lookup method
+ * ({@link #instance(String)}) keyed on the domain name.
  * 
  * @author Dan Haywood
  */
 public class Domain implements IDomain {
 
+	
 	protected static Map<String,IDomain> domainsByName = new HashMap<String,IDomain>();
 
 	

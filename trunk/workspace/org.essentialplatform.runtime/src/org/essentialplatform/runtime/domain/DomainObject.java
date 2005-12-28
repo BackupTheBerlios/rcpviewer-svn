@@ -39,6 +39,7 @@ import org.essentialplatform.runtime.domain.event.IDomainObjectOperationListener
 import org.essentialplatform.runtime.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.persistence.PersistenceId;
 import org.essentialplatform.runtime.session.ISession;
+import org.essentialplatform.runtime.session.SessionBinding;
 
 /**
  * Wrapper for a POJO that implements the choreography between the rest of the
@@ -78,9 +79,15 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private transient ISession _session;
 	
 	/**
-	 * Marked as <tt>transient</tt> so that it is not distributed.
+	 * The identifier to the session within which this domain object
+	 * resides.
+	 * 
+	 * <p>
+	 * Note that this field is <i>not</i> marked as <tt>transient</tt>, in 
+	 * other words it is distributed up to the server.  This is safe because
+	 * session identifiers are globally unique (thanks to {@link java.util.GUID}).
 	 */
-	private transient String sessionId;
+	private String sessionId;
 
 	/**
 	 * Marked as <tt>transient</tt> so that it is not distributed.
@@ -177,9 +184,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param _pojo
 	 */
 	private void init(final ISession session, PersistState persistState, ResolveState resolveState) {
-		this._session = session;
-		this._persistState = persistState;
-		this._resolveState = resolveState;
+		_session = session;
+		_sessionBinding = session.getSessionBinding();
+		_persistState = persistState;
+		_resolveState = resolveState;
 	}
 
 	/*
@@ -283,6 +291,17 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public ISession getSession() {
 		return _session;
+	}
+
+	/**
+	 * Required to be serialized, so not <tt>transient</tt>.
+	 */
+	private SessionBinding _sessionBinding;
+	/*
+	 * @see org.essentialplatform.runtime.domain.IDomainObject#getSessionBinding()
+	 */
+	public SessionBinding getSessionBinding() {
+		return _sessionBinding;
 	}
 
 	/**
@@ -1169,6 +1188,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		IDomainClass domainClass = Domain.domainFor(javaClass).lookup(javaClass);
 		return domainClass;
 	}
+
 
 
 }

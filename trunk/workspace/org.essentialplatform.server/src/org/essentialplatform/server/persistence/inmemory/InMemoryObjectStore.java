@@ -11,7 +11,7 @@ import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.persistence.DuplicateObjectException;
-import org.essentialplatform.runtime.persistence.IObjectStore;
+import org.essentialplatform.runtime.persistence.AbstractObjectStore;
 import org.essentialplatform.runtime.persistence.PersistenceId;
 
 /**
@@ -20,8 +20,12 @@ import org.essentialplatform.runtime.persistence.PersistenceId;
  * 
  * @author Dan Haywood
  */
-public final class InMemoryObjectStore implements IObjectStore {
+public final class InMemoryObjectStore extends AbstractObjectStore {
 	
+	public InMemoryObjectStore(String id) {
+		super(id);
+	}
+
 	private Map<Class<?>, Map<PersistenceId, Object>> _pojoByPersistenceIdByType = 
 		new HashMap<Class<?>, Map<PersistenceId, Object>>();
 	

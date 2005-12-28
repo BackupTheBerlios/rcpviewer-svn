@@ -37,37 +37,33 @@ public abstract class AbstractChange implements IChange {
 	private transient IChange _parent;
 
 	/**
-	 * <tt>transient</tt> for serialization.
-	 * 
-	 * <p>
-	 * If a subclass change requires the transactable object to be serialized 
-	 * (specifically, {@link InstantiationChange}), then it should store a 
-	 * reference itself. 
+	 * The object on which this change was initiated (ie as returned by
+	 * {@link #getInitiatingPojo()}).
 	 */
-	private transient ITransactable _transactable;
+	private transient ITransactable _initiatingPojo;
 	/**
 	 * The object on which the change was initiated.
 	 * 
 	 * <p>
-	 * The backing field reference for this is transient so that it is not
-	 * included in any serialization.   If a subclass change requires the 
-	 * transactable object to be serialized (specifically, 
+	 * The backing field reference for this is <tt>transient</tt> so that it 
+	 * is not included in any serialization.   If a subclass change requires 
+	 * the transactable object to be serialized (specifically, we mean  
 	 * {@link InstantiationChange}), then it should store a reference to the
 	 * transactable itself.
 	 *  
 	 * @return
 	 */
 	public ITransactable getInitiatingPojo() {
-		return _transactable;
+		return _initiatingPojo;
 	}
 
-	/**
-	 * Provided as a convenience...
-	 * 
-	 * <p>
-	 * <tt>transient</tt> for serialization.
+	private IDomainObject<?> _initiatingPojoDO;
+	/*
+	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojoDO()
 	 */
-	protected transient final IDomainObject<?> _domainObject;
+	public IDomainObject<?> getInitiatingPojoDO() {
+		return _initiatingPojoDO;
+	}
 
 	/**
 	 * <tt>transient</tt> for serialization.
@@ -84,8 +80,8 @@ public abstract class AbstractChange implements IChange {
 	 */
 	protected AbstractChange(final ITransaction transaction, final ITransactable transactable, final String description, final Object[] extendedInfo, final boolean irreversible) {
 		_transaction = transaction;
-		_transactable = transactable;
-		_domainObject = ((IPojo)_transactable).domainObject();
+		_initiatingPojo = transactable;
+		_initiatingPojoDO = ((IPojo)_initiatingPojo).domainObject();
 		_description = description;
 		_extendedInfo = extendedInfo == null? __EMPTY_OBJECT_ARRAY: extendedInfo;
 		_irreversible = irreversible;
@@ -100,7 +96,7 @@ public abstract class AbstractChange implements IChange {
 		_description = null;
 		_extendedInfo = null;
 		_irreversible = false;
-		_domainObject = null;
+		_initiatingPojoDO = null;
 		_transaction = null;
 	}
 	
@@ -174,9 +170,9 @@ public abstract class AbstractChange implements IChange {
 	public final Object execute() throws PojoAlreadyEnlistedException {
 		// only if we have a domain object (ie fully instantiated) and
 		// are attached to a session do we check.
-		if (_domainObject != null && _domainObject.isAttached()) {
+		if (_initiatingPojoDO != null && _initiatingPojoDO.isAttached()) {
 			if (_transaction.isInState(ITransaction.State.BUILDING_CHANGE, ITransaction.State.IN_PROGRESS)) {
-				if (!_transaction.addingToInteractionChangeSet(this)) {
+				if (!_transaction.addingToInteraction(this)) {
 					throw new PojoAlreadyEnlistedException();			
 				}
 			}
@@ -184,7 +180,7 @@ public abstract class AbstractChange implements IChange {
 		Object retval = doExecute();
 
 		notifyListeners(true);
-		_domainObject.externalStateChanged();
+		_initiatingPojoDO.externalStateChanged();
 
 		return retval; 
 	}
@@ -200,7 +196,7 @@ public abstract class AbstractChange implements IChange {
 	public final void undo() {
 		doUndo();
 		notifyListeners(false);
-		_domainObject.externalStateChanged();
+		_initiatingPojoDO.externalStateChanged();
 	}
 	
 	protected abstract void doUndo();

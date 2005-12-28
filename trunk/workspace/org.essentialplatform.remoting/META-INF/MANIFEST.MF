@@ -12,6 +12,8 @@ Require-Bundle: net.sf.plugins.xstream,
 Export-Package: org.essentialplatform.remoting,
  org.essentialplatform.remoting.client,
  org.essentialplatform.remoting.marshalling,
+ org.essentialplatform.remoting.marshalling.xstream,
  org.essentialplatform.remoting.persistence,
  org.essentialplatform.remoting.server,
+ org.essentialplatform.remoting.server.transport,
  org.essentialplatform.remoting.transport

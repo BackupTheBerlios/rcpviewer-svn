@@ -9,6 +9,7 @@ import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRunti
 import org.essentialplatform.runtime.RuntimeBinding;
 import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.essentialplatform.runtime.persistence.NoopObjectStore;
+import org.essentialplatform.runtime.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.session.ISession;
 import org.essentialplatform.runtime.session.Session;
 import org.essentialplatform.runtime.session.SessionManager;
@@ -40,7 +41,6 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 	protected Domain domain;
 	protected SessionManager sessionManager;
 	protected ISession session;
-	protected IObjectStore objectStore;
 	protected ITransactionManager transactionManager;
 	
 
@@ -50,8 +50,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
-		objectStore = new NoopObjectStore();
-		session = sessionManager.createSession(domain, objectStore);
+		session = sessionManager.defineSession(domain, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		transactionManager = TransactionManager.instance();
 	}
 
@@ -60,8 +59,6 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		sessionManager = null;
 		session.reset();
 		session = null;
-		((NoopObjectStore)objectStore).reset();
-		objectStore = null;
 		Domain.resetAll();
 		SessionManager.instance().reset();
 		transactionManager.reset();

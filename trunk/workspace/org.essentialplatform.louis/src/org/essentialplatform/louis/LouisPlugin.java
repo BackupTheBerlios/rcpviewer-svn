@@ -22,7 +22,6 @@ import org.essentialplatform.louis.log.LogController;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.IDomainBootstrap;
 import org.essentialplatform.runtime.RuntimeBinding;
-import org.essentialplatform.runtime.persistence.IObjectStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -136,13 +135,8 @@ public class LouisPlugin extends AbstractUIPlugin {
 		DomainBootstrapJob domainJob = new DomainBootstrapJob( bootstrap );
 		domainJob.schedule();
 
-		// object store initialisation
-		IObjectStore store = ObjectStoreFactory.createObjectStore();
-		ObjectStoreBootstrapJob storeJob = new ObjectStoreBootstrapJob( store );
-//		storeJob.schedule();
-
 		// session initialisation (default domain & store for now )
-		SessionBootstrapJob sessionJob = new SessionBootstrapJob( store );
+		SessionBootstrapJob sessionJob = new SessionBootstrapJob();
 		sessionJob.schedule();
 
 		// instantiate fields

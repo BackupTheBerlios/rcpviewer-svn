@@ -31,7 +31,7 @@ public class Department  {
 	
 	
 	public void addEmployee(final String firstName, final String surname) {
-		ISession session = SessionManager.instance().get(SessionManager.instance().getCurrentSessionId());
+		ISession session = SessionManager.instance().getCurrentSession(Domain.domainFor(this.getClass()));
 		IDomainObject<Employee> employeeDO = session.create(Domain.lookupAny(Employee.class));
 		Employee employee = employeeDO.getPojo();
 		employee.setFirstName(firstName);

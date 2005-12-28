@@ -1,9 +1,9 @@
 package org.essentialplatform.runtime.transaction.changes;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
+import org.essentialplatform.runtime.domain.IDomainObject;
 import org.essentialplatform.runtime.transaction.ITransactable;
 import org.essentialplatform.runtime.transaction.ITransaction;
 import org.essentialplatform.runtime.transaction.IrreversibleTransactionException;
@@ -90,16 +90,38 @@ public interface IChange {
 
 
 	/**
-	 * The pojo (if any) on which this change was initially performed.
+	 * The pojo on which this change was initially performed.
 	 * 
 	 * <p>
-	 * May return <tt>null</tt> if a class (<tt>static</tt>) action was 
-	 * performed rather than an instance action.
-	 *  
+	 * Implementations are not required to serialize this information (to 
+	 * insist otherwise would potentially result in large object graphs being
+	 * sent across the wire).  
+	 * 
+	 * <p>
+	 * May be <tt>null</tt>, but only for special cases like {@link NullChange}.
+	 * 
 	 * @return
 	 */
 	public ITransactable getInitiatingPojo();
 
+	
+	/**
+	 * The {@link IDomainObject} that wraps the {@link #getInitiatingPojo()}.
+	 * 
+	 * <p>
+	 * Is only required to be populated once the transaction has been committed. 
+	 * 
+	 * <p>
+	 * Implementations <i>are</i> required to serialize this information (in
+	 * contrast to {@link #getInitiatingPojo()}.
+	 *  
+	 * <p>
+	 * May be <tt>null</tt>, but only for special cases like {@link NullChange}.
+	 * 
+	 * @return
+	 */
+	public IDomainObject getInitiatingPojoDO();
+	
 
 	/**
 	 * The pojo or pojos that are modified as a result of this work atom.
@@ -108,10 +130,17 @@ public interface IChange {
 	 * When added to a {@link ITransaction}, these pojos are effectively
 	 * enlisted into it.
 	 * 
+	 * <p>
+	 * Note that the backing field for this collection is permitted to be 
+	 * marked as <tt>transient</tt>, which is to say that this information will
+	 * not necessarily be available if the change has been serialized and then
+	 * deserialized. 
+	 * 
 	 * @return
 	 */
 	public Set<ITransactable> getModifiedPojos();
-
+	
+	
 	/**
 	 * A human-readable description of this atom of work.
 	 * 
@@ -226,6 +255,13 @@ public interface IChange {
 		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
 		 */
 		public ITransactable getInitiatingPojo() {
+			return null;
+		}
+
+		/*
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojoDO()
+		 */
+		public IDomainObject getInitiatingPojoDO() {
 			return null;
 		}
 
@@ -352,6 +388,13 @@ public interface IChange {
 		public ITransactable getInitiatingPojo() {
 			return null;
 		}
+		/*
+		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojoDO()
+		 */
+		public IDomainObject getInitiatingPojoDO() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 
 		/*
@@ -415,6 +458,7 @@ public interface IChange {
 			}
 			return true;
 		}
+
 
 	}
 

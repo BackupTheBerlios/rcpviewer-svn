@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.essentialplatform.louis.LouisPlugin;
 
+import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.RuntimePlugin;
 import org.essentialplatform.runtime.domain.IDomainObject;
@@ -41,7 +42,8 @@ public class NewDomainObjectJob extends AbstractUserJob {
 		String name = null;
 		try {
 			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
-			ISession session= sessionManager.get(sessionManager.getCurrentSessionId());
+			// TODO: hardcoded for the default domain, needs to be switchable.
+			ISession session= sessionManager.getCurrentSession(Domain.instance());
 			
 			IDomainObject<?> domainObject = session.create( _clazz );
 //			IDomainObject<?> domainObject = session.recreate( _clazz );

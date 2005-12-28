@@ -95,7 +95,7 @@ public class TestTransactionManagerReverseReapply extends AbstractTransactionMan
 		transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		transaction.startingInteraction();
-		transaction.addingToInteractionChangeSet(IChange.IRREVERSIBLE);
+		transaction.addingToInteraction(IChange.IRREVERSIBLE);
 		transaction.completingInteraction();
 		transactionId = transaction.id();
 		
@@ -117,7 +117,7 @@ public class TestTransactionManagerReverseReapply extends AbstractTransactionMan
 		transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		transaction.startingInteraction();
-		transaction.addingToInteractionChangeSet(IChange.IRREVERSIBLE);
+		transaction.addingToInteraction(IChange.IRREVERSIBLE);
 		transaction.completingInteraction();
 		
 		// do the commit; should be added to committed xactns as per usual
@@ -137,7 +137,7 @@ public class TestTransactionManagerReverseReapply extends AbstractTransactionMan
 		transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		transaction.startingInteraction();
-		transaction.addingToInteractionChangeSet(IChange.IRREVERSIBLE);
+		transaction.addingToInteraction(IChange.IRREVERSIBLE);
 		transaction.completingInteraction();
 		transactionId = transaction.id();
 		

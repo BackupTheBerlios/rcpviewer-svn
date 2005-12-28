@@ -11,6 +11,9 @@ public class AllServerTests {
 		//$JUnit-BEGIN$
 		suite.addTest(org.essentialplatform.server.tests.persistence.AllTests.suite());
 		suite.addTest(org.essentialplatform.server.tests.persistence.inmemory.AllTests.suite());
+		suite.addTest(org.essentialplatform.server.tests.database.hsqldb.AllTests.suite());
+		suite.addTest(org.essentialplatform.server.tests.hsqldb.AllTests.suite());
+		suite.addTest(org.essentialplatform.server.tests.remoting.activemq.AllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

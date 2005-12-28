@@ -42,8 +42,8 @@ public class TestInMemoryObjectStore extends TestCase {
 			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
-		objectStore = new InMemoryObjectStore();
-		session = sessionManager.createSession(domain, objectStore);
+		//objectStore = new InMemoryObjectStore();
+		//session = sessionManager.defineSession(domain, objectStore);
 		transactionManager = TransactionManager.instance();
 	}
 
