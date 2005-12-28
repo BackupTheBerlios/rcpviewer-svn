@@ -8,7 +8,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.runtime.shared.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectOperationListener;
