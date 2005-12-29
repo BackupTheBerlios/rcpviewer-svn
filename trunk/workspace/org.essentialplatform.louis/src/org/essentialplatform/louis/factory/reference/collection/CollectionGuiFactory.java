@@ -19,6 +19,8 @@ import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.PageBook;
+import org.essentialplatform.core.deployment.IReferenceBinding;
+import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
@@ -216,7 +218,9 @@ public class CollectionGuiFactory implements IGuiFactory<IDomainClass.IReference
 		final IDomainClass dClass = model.getReferencedDomainClass();
 		
 		// add button
-		if ( model.getBinding().canAssociate() ) {
+		final IReferenceClientBinding referenceBinding = 
+			(IReferenceClientBinding)model.getBinding();
+		if ( referenceBinding.canAssociate() ) {
 			numColumns++;
 			Button add = toolkit.createButton( toolbar, "", SWT.PUSH ); //$NON-NLS-1$
 			add.setImage( 
@@ -239,7 +243,7 @@ public class CollectionGuiFactory implements IGuiFactory<IDomainClass.IReference
 		}
 		
 		// remove button
-		if ( model.getBinding().canDissociate() ) {
+		if ( referenceBinding.canDissociate() ) {
 			numColumns++;
 			final Button remove = toolkit.createButton( toolbar, "", SWT.PUSH ); //$NON-NLS-1$
 			remove.setImage( 

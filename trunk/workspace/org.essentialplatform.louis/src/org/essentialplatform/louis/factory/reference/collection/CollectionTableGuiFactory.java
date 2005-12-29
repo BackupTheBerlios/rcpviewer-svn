@@ -14,6 +14,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.essentialplatform.core.deployment.IReferenceBinding;
+import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.factory.GuiHints;
@@ -126,7 +128,9 @@ public class CollectionTableGuiFactory implements IGuiFactory<IDomainClass.IRefe
 				new CollectionTableDragSourceListener( viewer ) );
 
 		// drag target if can add:
-		if ( model.getBinding().canAssociate() ) {
+		final IReferenceClientBinding referenceBinding = 
+			(IReferenceClientBinding)model.getBinding();
+		if ( referenceBinding.canAssociate() ) {
 			final DropTarget target = new DropTarget( 
 					table, 
 					DND.DROP_MOVE | DND.DROP_COPY );

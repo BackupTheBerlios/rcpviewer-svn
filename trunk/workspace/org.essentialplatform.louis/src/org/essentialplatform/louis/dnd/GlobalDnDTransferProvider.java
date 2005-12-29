@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,13 +12,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.Transfer;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.filters.NoopClassFilter;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
-
-import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
-import org.essentialplatform.core.domain.filters.NoopClassFilter;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.

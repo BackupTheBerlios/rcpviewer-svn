@@ -24,6 +24,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.essentialplatform.core.deployment.IReferenceBinding;
+import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
@@ -161,8 +163,10 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 		fieldData.heightHint = PART_ICON_SIZE.y;
 		field.setLayoutData( fieldData );
 		
-		// add buttton
-		if ( model.getBinding().canAssociate() ) {
+		// add button
+		final IReferenceClientBinding referenceBinding = 
+			(IReferenceClientBinding)model.getBinding();
+		if ( referenceBinding.canAssociate() ) {
 			numColumns++;
 			Button add = toolkit.createButton( parent, "", SWT.PUSH ); //$NON-NLS-1$
 			add.setImage( 
@@ -184,7 +188,7 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 			});
 		}
 		
-		if ( model.getBinding().canDissociate() ) {
+		if ( referenceBinding.canDissociate() ) {
 			numColumns++;
 			final Button remove = toolkit.createButton( 
 					parent, "", SWT.PUSH ); //$NON-NLS-1$
@@ -226,11 +230,11 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 	}
 	
 	private Text createField( 
-			IDomainClass.IReference ref,
+			IDomainClass.IReference reference,
 			Composite parent, 
 			FormToolkit toolkit,
 			final ReferencePart part ){
-		assert ref != null;
+		assert reference != null;
 		assert parent != null;
 		assert toolkit != null;
 		assert part != null;
@@ -245,7 +249,7 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 				field, 
 				DND.DROP_MOVE | DND.DROP_COPY );
 		Transfer transfer = LouisPlugin.getTransfer( 
-				ref.getReferencedDomainClass().getEClass().getInstanceClass() );
+				reference.getReferencedDomainClass().getEClass().getInstanceClass() );
 		dragSource.setTransfer( new Transfer[]{ transfer } );
 		dragSource.addDragListener (new DragSourceListener () {
 			public void dragStart(DragSourceEvent event) {
@@ -260,7 +264,9 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 		});
 		
 		// DnD - drop target?
-		if ( ref.getBinding().canAssociate() ) {
+		final IReferenceClientBinding referenceBinding = 
+			(IReferenceClientBinding)reference.getBinding();
+		if ( referenceBinding.canAssociate() ) {
 			final DropTarget target = new DropTarget( 
 					field, 
 					DND.DROP_MOVE | DND.DROP_COPY );

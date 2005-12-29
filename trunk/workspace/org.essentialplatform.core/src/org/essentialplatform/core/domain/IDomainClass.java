@@ -13,9 +13,12 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.IAttributeClientBinding;
+import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.IClassBinding;
 import org.essentialplatform.core.deployment.IClassClientBinding;
+import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.IOperationClientBinding;
+import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
@@ -143,7 +146,7 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public IClassClientBinding getBinding();
+	public <V extends IClassBinding> V getBinding();
 
 
 	/**
@@ -151,7 +154,7 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public void setBinding(IClassClientBinding binding);
+	public <V extends IClassBinding> void setBinding( V binding);
 
 	/**
 	 * Whether this class overall is immutable, meaning that non of its
@@ -856,7 +859,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public IAttributeClientBinding getBinding();
+		public <V extends IAttributeBinding> V getBinding();
 
 	}
 
@@ -971,7 +974,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public <T extends IReferenceClientBinding> T getBinding();
+		public <V extends IReferenceBinding> V getBinding();
 		
 	}
 
@@ -1336,8 +1339,7 @@ public interface IDomainClass {
 		 * 
 		 * @return
 		 */
-		public IOperationClientBinding getBinding();
-
+		public <V extends IOperationBinding> V getBinding();
 	}
 
 	

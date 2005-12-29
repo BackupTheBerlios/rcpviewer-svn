@@ -1,23 +1,18 @@
 package org.essentialplatform.progmodel.essential.runtime;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.app.ImmutableOncePersisted;
 import org.essentialplatform.progmodel.essential.app.Invisible;
@@ -29,8 +24,6 @@ import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Optional;
 import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
-import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
-import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesIdentifier;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientAttributeBinding;

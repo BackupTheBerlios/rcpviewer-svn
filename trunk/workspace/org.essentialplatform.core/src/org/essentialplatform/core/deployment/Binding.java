@@ -62,15 +62,15 @@ public abstract class Binding {
 	// JAVA5_FIXME: return type
 	public abstract IClassClientBinding bind(IDomainClass domainClass, Object classRepresentation);
 
-	public abstract IAttributeClientBinding bindingFor(IAttribute attribute);
+	public abstract <V extends IAttributeBinding> V bindingFor(IAttribute attribute);
 
 	// JAVA5_FIXME: return type
-	public abstract IOneToOneReferenceClientBinding bindingFor(IOneToOneReference oneToOneReference);
+	public abstract <V extends IOneToOneReferenceBinding> V bindingFor(IOneToOneReference oneToOneReference);
 
 	// JAVA5_FIXME: return type
-	public abstract ICollectionReferenceClientBinding bindingFor(ICollectionReference collectionReference);
+	public abstract <V extends ICollectionReferenceBinding> V bindingFor(ICollectionReference collectionReference);
 
-	public abstract IOperationClientBinding bindingFor(IOperation operation);
+	public abstract <V extends IOperationBinding> V bindingFor(IOperation operation);
 	
 	public abstract IDomainBuilder getPrimaryBuilder();
 

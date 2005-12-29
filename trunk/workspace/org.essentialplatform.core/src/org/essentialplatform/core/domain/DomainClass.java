@@ -22,9 +22,12 @@ import org.eclipse.emf.ecore.EReference;
 import org.osgi.framework.Bundle;
 
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.IAttributeClientBinding;
+import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.IClassBinding;
 import org.essentialplatform.core.deployment.IClassClientBinding;
+import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.IOperationClientBinding;
+import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
@@ -93,11 +96,12 @@ public final class DomainClass implements IDomainClass {
 		this._eClass = eClass;
 	}
 
-	private IClassClientBinding _binding;
-	public IClassClientBinding getBinding() {
-		return _binding;
+	private IClassBinding _binding;
+	// JAVA5_FIXME
+	public <V extends IClassBinding> V getBinding() {
+		return (V)_binding;
 	}
-	public void setBinding(IClassClientBinding binding) {
+	public <V extends IClassBinding> void setBinding(V binding) {
 		_binding = binding;
 	}
 
@@ -416,7 +420,7 @@ public final class DomainClass implements IDomainClass {
 	private final class Attribute extends Member implements IDomainClass.IAttribute {
 
 		private final EAttribute _eAttribute;
-		private IAttributeClientBinding _binding;
+		private IAttributeBinding _binding;
 		/**
 		 * built up first time ask for validators.
 		 */
@@ -440,7 +444,7 @@ public final class DomainClass implements IDomainClass {
 			return _eAttribute;
 		}
 		
-		void setBinding(IAttributeClientBinding binding) {
+		<V extends IAttributeBinding> void setBinding(V binding) {
 			_binding = binding;
 		}
 		
@@ -594,8 +598,8 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#getBinding()
 		 */
-		public IAttributeClientBinding getBinding() {
-			return _binding; // JAVA5_FIXME
+		public <V extends IAttributeBinding> V getBinding() {
+			return (V)_binding; // JAVA5_FIXME
 		}
 
 		/*
@@ -767,7 +771,7 @@ public final class DomainClass implements IDomainClass {
 	private abstract class Reference extends Member implements IDomainClass.IReference {
 		
 		final EReference _eReference;
-		private IReferenceClientBinding _binding;
+		private IReferenceBinding _binding;
 		
 		Reference(EReference eReference) {
 			_eReference = eReference;
@@ -791,10 +795,10 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IReference#getBinding()
 		 */
-		public IReferenceClientBinding getBinding() {
-			return _binding; // JAVA5_FIXME
+		public <V extends IReferenceBinding> V getBinding() {
+			return (V)_binding; // JAVA5_FIXME
 		}
-		void setBinding(IReferenceClientBinding binding) {
+		<V extends IReferenceBinding> void setBinding(V binding) {
 			_binding = binding;
 		}
 		
@@ -1002,7 +1006,7 @@ public final class DomainClass implements IDomainClass {
 	private final class Operation extends Member implements IDomainClass.IOperation {
 		
 		private final EOperation _eOperation;
-		private IOperationClientBinding _binding;
+		private IOperationBinding _binding;
 		
 		public Operation(EOperation eOperation) {
 			_eOperation = eOperation;
@@ -1026,10 +1030,10 @@ public final class DomainClass implements IDomainClass {
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IOperation#getBinding()
 		 */
-		public IOperationClientBinding getBinding() {
-			return _binding;
+		public <V extends IOperationBinding> V getBinding() {
+			return (V)_binding; // JAVA5_FIXME
 		}
-		void setBinding(IOperationClientBinding binding) {
+		<V extends IOperationBinding> void setBinding(V binding) {
 			_binding = binding;
 		}
 

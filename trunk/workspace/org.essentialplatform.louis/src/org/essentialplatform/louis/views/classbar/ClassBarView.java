@@ -1,7 +1,5 @@
 package org.essentialplatform.louis.views.classbar;
 
-import java.util.Iterator;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
@@ -15,6 +13,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.jobs.JobAction;
 import org.essentialplatform.louis.jobs.NewDomainObjectJob;
@@ -24,11 +24,6 @@ import org.essentialplatform.louis.util.DomainRegistryUtil;
 import org.essentialplatform.louis.util.FontUtil;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
-
-import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
-import org.essentialplatform.core.domain.filters.NoopClassFilter;
 
 /**
  * Outlook-style bar for each class in Domain.
