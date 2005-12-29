@@ -60,17 +60,17 @@ public abstract class Binding {
 	public abstract IDomainBinding bindingFor(IDomain domain);
 
 	// JAVA5_FIXME: return type
-	public abstract IClassBinding bind(IDomainClass domainClass, Object classRepresentation);
+	public abstract IClassClientBinding bind(IDomainClass domainClass, Object classRepresentation);
 
-	public abstract IAttributeBinding bindingFor(IAttribute attribute);
-
-	// JAVA5_FIXME: return type
-	public abstract IOneToOneReferenceBinding bindingFor(IOneToOneReference oneToOneReference);
+	public abstract IAttributeClientBinding bindingFor(IAttribute attribute);
 
 	// JAVA5_FIXME: return type
-	public abstract ICollectionReferenceBinding bindingFor(ICollectionReference collectionReference);
+	public abstract IOneToOneReferenceClientBinding bindingFor(IOneToOneReference oneToOneReference);
 
-	public abstract IOperationBinding bindingFor(IOperation operation);
+	// JAVA5_FIXME: return type
+	public abstract ICollectionReferenceClientBinding bindingFor(ICollectionReference collectionReference);
+
+	public abstract IOperationClientBinding bindingFor(IOperation operation);
 	
 	public abstract IDomainBuilder getPrimaryBuilder();
 

@@ -19,12 +19,12 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.IClassBinding;
-import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
+import org.essentialplatform.core.deployment.IAttributeClientBinding;
+import org.essentialplatform.core.deployment.IClassClientBinding;
+import org.essentialplatform.core.deployment.ICollectionReferenceClientBinding;
 import org.essentialplatform.core.deployment.IDomainBinding;
-import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
-import org.essentialplatform.core.deployment.IOperationBinding;
+import org.essentialplatform.core.deployment.IOneToOneReferenceClientBinding;
+import org.essentialplatform.core.deployment.IOperationClientBinding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
@@ -170,28 +170,28 @@ public final class RuntimeClientBinding extends Binding {
 		return new RuntimeClientDomainBinding(domain);
 	}
 	@Override
-	public IClassBinding bind(IDomainClass domainClass, Object classRepresentation) {
-		IClassBinding binding = bind(domainClass, (Class<?>)classRepresentation);
+	public IClassClientBinding bind(IDomainClass domainClass, Object classRepresentation) {
+		IClassClientBinding binding = bind(domainClass, (Class<?>)classRepresentation);
 		return binding;
 	}
-	private <V> IClassBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
+	private <V> IClassClientBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
 		return new RuntimeClientClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
 	}
 	
 	@Override
-	public IAttributeBinding bindingFor(IDomainClass.IAttribute attribute) {
+	public IAttributeClientBinding bindingFor(IDomainClass.IAttribute attribute) {
 		return new RuntimeClientAttributeBinding(attribute);
 	}
 	@Override
-	public IOneToOneReferenceBinding bindingFor(IDomainClass.IOneToOneReference oneToOneReference) {
+	public IOneToOneReferenceClientBinding bindingFor(IDomainClass.IOneToOneReference oneToOneReference) {
 		return new RuntimeClientOneToOneReferenceBinding(oneToOneReference);
 	}
 	@Override
-	public ICollectionReferenceBinding bindingFor(IDomainClass.ICollectionReference collectionReference) {
+	public ICollectionReferenceClientBinding bindingFor(IDomainClass.ICollectionReference collectionReference) {
 		return new RuntimeClientCollectionReferenceBinding(collectionReference);
 	}
 	@Override
-	public IOperationBinding bindingFor(IDomainClass.IOperation operation) {
+	public IOperationClientBinding bindingFor(IDomainClass.IOperation operation) {
 		return new RuntimeClientOperationBinding(operation);
 	}
 
@@ -293,7 +293,7 @@ public final class RuntimeClientBinding extends Binding {
 
 	}
 	
-	public final static class RuntimeClientClassBinding<T> implements IClassBinding<T>, IPersistenceIdAssigner {
+	public final static class RuntimeClientClassBinding<T> implements IClassClientBinding<T>, IPersistenceIdAssigner {
 
 		private final IDomainClass _domainClass;
 		private final Class<T> _javaClass;
@@ -362,7 +362,7 @@ public final class RuntimeClientBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientAttributeBinding implements IAttributeBinding {
+	public final static class RuntimeClientAttributeBinding implements IAttributeClientBinding {
 
 		private final IDomainClass.IAttribute _attribute;
 		private final EAttribute _eAttribute;
@@ -472,7 +472,7 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientOneToOneReferenceBinding extends AbstractRuntimeClientReferenceBinding implements IOneToOneReferenceBinding {
+	public final static class RuntimeClientOneToOneReferenceBinding extends AbstractRuntimeClientReferenceBinding implements IOneToOneReferenceClientBinding {
 
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
 
@@ -530,7 +530,7 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientCollectionReferenceBinding extends AbstractRuntimeClientReferenceBinding implements ICollectionReferenceBinding {
+	public final static class RuntimeClientCollectionReferenceBinding extends AbstractRuntimeClientReferenceBinding implements ICollectionReferenceClientBinding {
 
 		private final IDomainClass.ICollectionReference _collectionReference;
 
@@ -593,7 +593,7 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientOperationBinding implements IOperationBinding {
+	public final static class RuntimeClientOperationBinding implements IOperationClientBinding {
 
 		private final IDomainClass.IOperation _operation;
 		private final EOperation _eOperation;

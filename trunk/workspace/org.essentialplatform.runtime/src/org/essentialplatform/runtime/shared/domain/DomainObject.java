@@ -12,11 +12,11 @@ import java.util.WeakHashMap;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
-import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
-import org.essentialplatform.core.deployment.IOperationBinding;
-import org.essentialplatform.core.deployment.IReferenceBinding;
+import org.essentialplatform.core.deployment.IAttributeClientBinding;
+import org.essentialplatform.core.deployment.ICollectionReferenceClientBinding;
+import org.essentialplatform.core.deployment.IOneToOneReferenceClientBinding;
+import org.essentialplatform.core.deployment.IOperationClientBinding;
+import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
@@ -466,7 +466,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		private final IDomainClass.IAttribute _attribute;
 
-		private final IAttributeBinding _runtimeBinding;
+		private final IAttributeClientBinding _runtimeBinding;
 		
 		/**
 		 * Holds onto the current accessor prerequisites, if known.
@@ -492,7 +492,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private ObjectAttribute(final EAttribute eAttribute) {
 			_eAttribute = eAttribute;
 			_attribute = getDomainClass().getIAttribute(eAttribute);
-			_runtimeBinding = (IAttributeBinding) _attribute.getBinding(); // JAVA5_FIXME
+			_runtimeBinding = (IAttributeClientBinding) _attribute.getBinding(); // JAVA5_FIXME
 		}
 
 		/*
@@ -650,7 +650,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		ResolveState _resolveState = ResolveState.UNRESOLVED;
 
-		final IReferenceBinding _runtimeBinding;
+		final IReferenceClientBinding _runtimeBinding;
 
 		final List<IDomainObjectReferenceListener> _listeners = new ArrayList<IDomainObjectReferenceListener>();
 
@@ -663,7 +663,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private ObjectReference(final EReference eReference) {
 			this._eReference = eReference;
 			this._reference = getDomainClass().getIReference(eReference);
-			this._runtimeBinding = (IReferenceBinding) _reference.getBinding(); // JAVA5_FIXME
+			this._runtimeBinding = (IReferenceClientBinding) _reference.getBinding(); // JAVA5_FIXME
 		}
 
 		/*
@@ -765,13 +765,13 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
 
-		private final IOneToOneReferenceBinding _runtimeBinding;
+		private final IOneToOneReferenceClientBinding _runtimeBinding;
 
 		private ObjectOneToOneReference(final EReference eReference) {
 			super(eReference);
 			assert !_reference.isMultiple();
 			_oneToOneReference = (IDomainClass.IOneToOneReference) _reference;
-			_runtimeBinding = (IOneToOneReferenceBinding) _oneToOneReference.getBinding();
+			_runtimeBinding = (IOneToOneReferenceClientBinding) _oneToOneReference.getBinding();
 		}
 
 		public <Q> IDomainObject<Q> get() {
@@ -851,13 +851,13 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			IDomainObject.IObjectCollectionReference {
 
 		private final IDomainClass.ICollectionReference _collectionReference;
-		private final ICollectionReferenceBinding _runtimeBinding;
+		private final ICollectionReferenceClientBinding _runtimeBinding;
 
 		private ObjectCollectionReference(final EReference eReference) {
 			super(eReference);
 			assert _reference.isMultiple();
 			_collectionReference = (IDomainClass.ICollectionReference) _reference;
-			_runtimeBinding = (ICollectionReferenceBinding) _collectionReference.getBinding();
+			_runtimeBinding = (ICollectionReferenceClientBinding) _collectionReference.getBinding();
 		}
 
 		public <V> Collection<IDomainObject<V>> getCollection() {
@@ -943,7 +943,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 		private final EOperation _eOperation;
 		private final IDomainClass.IOperation _operation;
-		private final IOperationBinding _runtimeBinding;
+		private final IOperationClientBinding _runtimeBinding;
 		private final List<IDomainObjectOperationListener> _listeners = new ArrayList<IDomainObjectOperationListener>();
 
 		/*

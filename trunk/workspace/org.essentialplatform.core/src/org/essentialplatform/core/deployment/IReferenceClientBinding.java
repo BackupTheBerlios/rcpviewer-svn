@@ -5,7 +5,7 @@ package org.essentialplatform.core.deployment;
 
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IReferenceBinding {
+public interface IReferenceClientBinding {
 	/**
 	 * Returns the pojo for a 1:1 reference, or a collection of pojos for
 	 * a collection reference.

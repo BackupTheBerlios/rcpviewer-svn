@@ -5,7 +5,7 @@ package org.essentialplatform.core.deployment;
 
 import java.lang.annotation.Annotation;
 
-public interface IClassBinding<T> {
+public interface IClassClientBinding<T> {
 	
 	/**
 	 * Returns the specified annotation (if any) on the class.

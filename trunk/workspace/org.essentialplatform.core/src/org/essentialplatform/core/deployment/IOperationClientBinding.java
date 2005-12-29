@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IOperationBinding {
+public interface IOperationClientBinding {
 
 	Object invokeOperation(Object pojo, Object[] args);
 
