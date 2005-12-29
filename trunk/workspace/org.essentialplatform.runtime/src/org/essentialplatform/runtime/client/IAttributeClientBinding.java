@@ -1,8 +1,9 @@
 /**
  * 
  */
-package org.essentialplatform.core.deployment;
+package org.essentialplatform.runtime.client;
 
+import org.essentialplatform.core.deployment.IAttributeBinding;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
 public interface IAttributeClientBinding extends IAttributeBinding {

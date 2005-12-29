@@ -15,11 +15,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.essentialplatform.core.deployment.IReferenceBinding;
-import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
+import org.essentialplatform.runtime.client.IReferenceClientBinding;
 
 public class CollectionTableGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 

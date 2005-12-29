@@ -1,10 +1,11 @@
 /**
  * 
  */
-package org.essentialplatform.core.deployment;
+package org.essentialplatform.runtime.client;
 
 import java.util.Map;
 
+import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
 public interface IOperationClientBinding extends IOperationBinding {

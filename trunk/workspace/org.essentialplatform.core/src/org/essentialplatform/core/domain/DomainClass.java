@@ -19,16 +19,11 @@ import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
-import org.osgi.framework.Bundle;
-
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IAttributeBinding;
 import org.essentialplatform.core.deployment.IClassBinding;
-import org.essentialplatform.core.deployment.IClassClientBinding;
 import org.essentialplatform.core.deployment.IOperationBinding;
-import org.essentialplatform.core.deployment.IOperationClientBinding;
 import org.essentialplatform.core.deployment.IReferenceBinding;
-import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.filters.IFilter;
@@ -52,10 +47,10 @@ import org.essentialplatform.progmodel.essential.app.MinLengthOf;
 import org.essentialplatform.progmodel.essential.app.MultiLine;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.Regex;
-import org.essentialplatform.progmodel.essential.core.EssentialProgModelExtendedSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.EssentialProgModelStandardSemanticsConstants;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
+import org.osgi.framework.Bundle;
 
 public final class DomainClass implements IDomainClass {
 

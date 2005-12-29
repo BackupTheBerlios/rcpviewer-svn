@@ -20,7 +20,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.PageBook;
 import org.essentialplatform.core.deployment.IReferenceBinding;
-import org.essentialplatform.core.deployment.IReferenceClientBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
@@ -32,6 +31,7 @@ import org.essentialplatform.louis.jobs.SearchJob;
 import org.essentialplatform.louis.util.ImageUtil;
 import org.essentialplatform.louis.util.StringUtil;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
+import org.essentialplatform.runtime.client.IReferenceClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
