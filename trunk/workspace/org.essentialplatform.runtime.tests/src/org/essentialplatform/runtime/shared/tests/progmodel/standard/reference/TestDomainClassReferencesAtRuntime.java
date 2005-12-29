@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.tests.progmodel.standard.reference;
 
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassReferences;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
@@ -18,7 +18,7 @@ public class TestDomainClassReferencesAtRuntime extends TestDomainClassReference
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

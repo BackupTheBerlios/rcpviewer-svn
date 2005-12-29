@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.Binding.IDomainBinding;
+import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.domain.filters.IFilter;
 import org.essentialplatform.progmodel.essential.app.InDomain;

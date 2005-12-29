@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.Binding.IDomainBinding;
+import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.domain.filters.IFilter;
 

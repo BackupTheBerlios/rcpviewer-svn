@@ -11,7 +11,7 @@ import java.util.WeakHashMap;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IObservedFeature;
@@ -106,7 +106,7 @@ public final class Session implements ISession {
 	 * @return
 	 */
 	private <T> IDomainObject<T> createTransient(final Session session, IDomainClass domainClass) {
-		T pojo = ((RuntimeClassBinding<T>)domainClass.getBinding()).newInstance();
+		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.createTransient(pojo, session);
 		return domainObject;
 	}
@@ -116,7 +116,7 @@ public final class Session implements ISession {
 	 * @return
 	 */
 	private <T> IDomainObject<T> createPersistent(final Session session, IDomainClass domainClass) {
-		T pojo = ((RuntimeClassBinding<T>)domainClass.getBinding()).newInstance();
+		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.createPersistent(pojo, session);
 		return domainObject;
 	}
@@ -153,7 +153,7 @@ public final class Session implements ISession {
 	}
 
 	private <T> IDomainObject<T> recreatePersistent(ISession session, IDomainClass domainClass) {
-		T pojo = ((RuntimeClassBinding<T>)domainClass.getBinding()).newInstance();
+		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.recreatePersistent(pojo, session);
 		return domainObject;
 	}

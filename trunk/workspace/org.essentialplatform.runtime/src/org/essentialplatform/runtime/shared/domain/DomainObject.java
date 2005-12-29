@@ -12,11 +12,11 @@ import java.util.WeakHashMap;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.deployment.Binding.IAttributeBinding;
-import org.essentialplatform.core.deployment.Binding.ICollectionReferenceBinding;
-import org.essentialplatform.core.deployment.Binding.IOneToOneReferenceBinding;
-import org.essentialplatform.core.deployment.Binding.IOperationBinding;
-import org.essentialplatform.core.deployment.Binding.IReferenceBinding;
+import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
+import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
+import org.essentialplatform.core.deployment.IOperationBinding;
+import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.DomainClass;
 import org.essentialplatform.core.domain.IDomainClass;
@@ -25,8 +25,8 @@ import org.essentialplatform.core.domain.IDomainClass.IOperation;
 import org.essentialplatform.core.domain.IDomainClass.IReference;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeAttributeBinding;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeOperationBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientAttributeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientOperationBinding;
 import org.essentialplatform.runtime.shared.domain.adapters.IRuntimeDomainClassAdapter;
 import org.essentialplatform.runtime.shared.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.shared.domain.event.DomainObjectReferenceEvent;
@@ -555,7 +555,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		public IPrerequisites authorizationPrerequisitesFor() {
 			IDomainClass rdc = getDomainClass();
 			IDomainClass.IAttribute attribute = rdc.getIAttribute(_eAttribute);
-			RuntimeAttributeBinding binding = (RuntimeAttributeBinding) attribute
+			RuntimeClientAttributeBinding binding = (RuntimeClientAttributeBinding) attribute
 					.getBinding();
 			return binding.authorizationPrerequisites();
 		}
@@ -970,7 +970,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		ObjectOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
 			this._operation = getDomainClass().getIOperation(eOperation);
-			_runtimeBinding = (RuntimeOperationBinding) _operation.getBinding();
+			_runtimeBinding = (RuntimeClientOperationBinding) _operation.getBinding();
 			
 			reset();
 		}
@@ -994,7 +994,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		public IPrerequisites authorizationPrerequisitesFor() {
 			IDomainClass dc = getDomainClass();
 			IDomainClass.IOperation operation = dc.getIOperation(_eOperation);
-			RuntimeOperationBinding binding = (RuntimeOperationBinding) operation.getBinding();
+			RuntimeClientOperationBinding binding = (RuntimeClientOperationBinding) operation.getBinding();
 			return binding.authorizationPrerequisites();
 		}
 

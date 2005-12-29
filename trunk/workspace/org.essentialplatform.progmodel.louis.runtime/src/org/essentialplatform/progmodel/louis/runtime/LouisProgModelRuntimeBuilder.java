@@ -7,7 +7,7 @@ import org.essentialplatform.progmodel.louis.app.ImageUrlAt;
 import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
 import org.essentialplatform.progmodel.louis.core.domain.adapters.LouisProgModelAdapterFactory;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 
 /**
  * Adds annotations specific to the RCPViewer.
@@ -29,7 +29,7 @@ public class LouisProgModelRuntimeBuilder implements IDomainBuilder {
 	 * TODO: use parameters to downcast?
 	 */
 	public void build(IDomainClass domainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 		EClass eClass = domainClass.getEClass();
 		
 		// Install adapter object 

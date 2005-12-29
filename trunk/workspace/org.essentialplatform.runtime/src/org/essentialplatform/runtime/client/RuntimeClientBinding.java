@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared;
+package org.essentialplatform.runtime.client;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -19,6 +19,12 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.IClassBinding;
+import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
+import org.essentialplatform.core.deployment.IDomainBinding;
+import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
+import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
@@ -41,13 +47,13 @@ import org.osgi.framework.Bundle;
  * 
  * @author Dan Haywood
  */
-public final class RuntimeBinding extends Binding {
+public final class RuntimeClientBinding extends Binding {
 	
-	private static Logger _logger = Logger.getLogger(RuntimeBinding.class);
+	private static Logger _logger = Logger.getLogger(RuntimeClientBinding.class);
 
 	private static EssentialProgModelStandardSemanticsEmfSerializer __standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
 	private static EssentialProgModelExtendedSemanticsEmfSerializer __extendedSerializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
-	private static LouisProgModelSemanticsEmfSerializer __rcpViewerSerializer = new LouisProgModelSemanticsEmfSerializer();
+	private static LouisProgModelSemanticsEmfSerializer __louisSerializer = new LouisProgModelSemanticsEmfSerializer();
 
 	private static Map<Class<?>, Object> __defaultValueByPrimitiveType = new HashMap<Class<?>, Object>();
 	private static Map<Class<?>, Class<?>> __wrapperTypeByPrimitiveType = new HashMap<Class<?>, Class<?>>();
@@ -123,7 +129,7 @@ public final class RuntimeBinding extends Binding {
 	 * 
 	 * @throws RuntimeException if a binding has already been set.
 	 */
-	public RuntimeBinding(IDomainBuilder primaryBuilder) {
+	public RuntimeClientBinding(IDomainBuilder primaryBuilder) {
 		_primaryBuilder = primaryBuilder;
 	}
 
@@ -161,7 +167,7 @@ public final class RuntimeBinding extends Binding {
 
 	@Override
 	public IDomainBinding bindingFor(IDomain domain) {
-		return new RuntimeDomainBinding(domain);
+		return new RuntimeClientDomainBinding(domain);
 	}
 	@Override
 	public IClassBinding bind(IDomainClass domainClass, Object classRepresentation) {
@@ -169,29 +175,29 @@ public final class RuntimeBinding extends Binding {
 		return binding;
 	}
 	private <V> IClassBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
-		return new RuntimeClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
+		return new RuntimeClientClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
 	}
 	
 	@Override
 	public IAttributeBinding bindingFor(IDomainClass.IAttribute attribute) {
-		return new RuntimeAttributeBinding(attribute);
+		return new RuntimeClientAttributeBinding(attribute);
 	}
 	@Override
 	public IOneToOneReferenceBinding bindingFor(IDomainClass.IOneToOneReference oneToOneReference) {
-		return new RuntimeOneToOneReferenceBinding(oneToOneReference);
+		return new RuntimeClientOneToOneReferenceBinding(oneToOneReference);
 	}
 	@Override
 	public ICollectionReferenceBinding bindingFor(IDomainClass.ICollectionReference collectionReference) {
-		return new RuntimeCollectionReferenceBinding(collectionReference);
+		return new RuntimeClientCollectionReferenceBinding(collectionReference);
 	}
 	@Override
 	public IOperationBinding bindingFor(IDomainClass.IOperation operation) {
-		return new RuntimeOperationBinding(operation);
+		return new RuntimeClientOperationBinding(operation);
 	}
 
 	//////////////////////////////////////////////////////////////////////
 	
-	public final static class RuntimeDomainBinding implements IDomainBinding {
+	public final static class RuntimeClientDomainBinding implements IDomainBinding {
 		private final IDomain _domain;
 
 		/**
@@ -200,7 +206,7 @@ public final class RuntimeBinding extends Binding {
 		 */
 		private IAuthorizationManager _authorizationManager = IAuthorizationManager.NOOP;
 		
-		public RuntimeDomainBinding(IDomain domain) {
+		public RuntimeClientDomainBinding(IDomain domain) {
 			_domain = domain;
 		}
 		public IDomain getDomain() {
@@ -287,7 +293,7 @@ public final class RuntimeBinding extends Binding {
 
 	}
 	
-	public final static class RuntimeClassBinding<T> implements IClassBinding<T>, IPersistenceIdAssigner {
+	public final static class RuntimeClientClassBinding<T> implements IClassBinding<T>, IPersistenceIdAssigner {
 
 		private final IDomainClass _domainClass;
 		private final Class<T> _javaClass;
@@ -302,7 +308,7 @@ public final class RuntimeBinding extends Binding {
 		 * @param javaClass
 		 * @param delegatePersistenceIdAssigner
 		 */
-		public RuntimeClassBinding(IDomainClass domainClass, Class<T> javaClass, IPersistenceIdAssigner delegatePersistenceIdAssigner) {
+		public RuntimeClientClassBinding(IDomainClass domainClass, Class<T> javaClass, IPersistenceIdAssigner delegatePersistenceIdAssigner) {
 			_domainClass = domainClass;
 			_javaClass = javaClass;
 			domainClass.setBinding(this);
@@ -356,12 +362,12 @@ public final class RuntimeBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeAttributeBinding implements IAttributeBinding {
+	public final static class RuntimeClientAttributeBinding implements IAttributeBinding {
 
 		private final IDomainClass.IAttribute _attribute;
 		private final EAttribute _eAttribute;
 		
-		public RuntimeAttributeBinding(IDomainClass.IAttribute attribute) {
+		public RuntimeClientAttributeBinding(IDomainClass.IAttribute attribute) {
 			_attribute = attribute;
 			_eAttribute = _attribute.getEAttribute();
 		}
@@ -408,7 +414,7 @@ public final class RuntimeBinding extends Binding {
 
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _attribute.getDomainClass().getDomain();
-			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
+			RuntimeClientDomainBinding domainBinding = (RuntimeClientDomainBinding)domain.getBinding();
 			return domainBinding.getAuthorizationManager().preconditionsFor(_attribute.getFeatureId());
 		}
 
@@ -426,12 +432,12 @@ public final class RuntimeBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public static abstract class AbstractRuntimeReferenceBinding {
+public static abstract class AbstractRuntimeClientReferenceBinding {
 		
 		final IDomainClass.IReference _reference;
 		final EReference _eReference;
 
-		public AbstractRuntimeReferenceBinding(IDomainClass.IReference reference) {
+		public AbstractRuntimeClientReferenceBinding(IDomainClass.IReference reference) {
 			_reference = reference;
 			_eReference = reference.getEReference();
 		}
@@ -449,7 +455,7 @@ public final class RuntimeBinding extends Binding {
 
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _reference.getDomainClass().getDomain();
-			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
+			RuntimeClientDomainBinding domainBinding = (RuntimeClientDomainBinding)domain.getBinding();
 			return domainBinding.getAuthorizationManager().preconditionsFor(_reference.getFeatureId());
 		}
 
@@ -466,11 +472,11 @@ public final class RuntimeBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeOneToOneReferenceBinding extends AbstractRuntimeReferenceBinding implements IOneToOneReferenceBinding {
+	public final static class RuntimeClientOneToOneReferenceBinding extends AbstractRuntimeClientReferenceBinding implements IOneToOneReferenceBinding {
 
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
 
-		public RuntimeOneToOneReferenceBinding(IDomainClass.IOneToOneReference oneToOneReference) {
+		public RuntimeClientOneToOneReferenceBinding(IDomainClass.IOneToOneReference oneToOneReference) {
 			super(oneToOneReference);
 			_oneToOneReference = oneToOneReference; // downcast
 		}
@@ -524,11 +530,11 @@ public final class RuntimeBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeCollectionReferenceBinding extends AbstractRuntimeReferenceBinding implements ICollectionReferenceBinding {
+	public final static class RuntimeClientCollectionReferenceBinding extends AbstractRuntimeClientReferenceBinding implements ICollectionReferenceBinding {
 
 		private final IDomainClass.ICollectionReference _collectionReference;
 
-		public RuntimeCollectionReferenceBinding(IDomainClass.ICollectionReference collectionReference) {
+		public RuntimeClientCollectionReferenceBinding(IDomainClass.ICollectionReference collectionReference) {
 			super(collectionReference);
 			_collectionReference = collectionReference; // downcast
 		}
@@ -587,7 +593,7 @@ public final class RuntimeBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeOperationBinding implements IOperationBinding {
+	public final static class RuntimeClientOperationBinding implements IOperationBinding {
 
 		private final IDomainClass.IOperation _operation;
 		private final EOperation _eOperation;
@@ -598,7 +604,7 @@ public final class RuntimeBinding extends Binding {
 		private final Class<?>[] _parameterTypes;
 
 
-		public RuntimeOperationBinding(IDomainClass.IOperation operation) {
+		public RuntimeClientOperationBinding(IDomainClass.IOperation operation) {
 			_operation = operation;
 			_eOperation = _operation.getEOperation();
 			
@@ -636,7 +642,7 @@ public final class RuntimeBinding extends Binding {
 
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _operation.getDomainClass().getDomain();
-			RuntimeDomainBinding domainBinding = (RuntimeDomainBinding)domain.getBinding();
+			RuntimeClientDomainBinding domainBinding = (RuntimeClientDomainBinding)domain.getBinding();
 			return domainBinding.getAuthorizationManager().preconditionsFor(_operation.getFeatureId());
 		}
 

@@ -22,10 +22,10 @@ import org.eclipse.emf.ecore.EReference;
 import org.osgi.framework.Bundle;
 
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.Binding.IAttributeBinding;
-import org.essentialplatform.core.deployment.Binding.IClassBinding;
-import org.essentialplatform.core.deployment.Binding.IOperationBinding;
-import org.essentialplatform.core.deployment.Binding.IReferenceBinding;
+import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.IClassBinding;
+import org.essentialplatform.core.deployment.IOperationBinding;
+import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
 import org.essentialplatform.core.domain.filters.IFilter;

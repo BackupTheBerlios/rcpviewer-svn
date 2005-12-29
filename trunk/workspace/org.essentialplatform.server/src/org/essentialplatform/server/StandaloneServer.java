@@ -9,7 +9,7 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
@@ -63,7 +63,7 @@ public class StandaloneServer extends AbstractService {
 		// First, build our Domain(s)
 		// for now, only supporting "default".
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 
 		
 		// build the objectStoreListByDomain.

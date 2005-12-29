@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeDomainBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientDomainBinding;
 import org.essentialplatform.runtime.shared.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
@@ -39,7 +39,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		IDomain domain = getDomainInstance();
-		RuntimeDomainBinding binding = (RuntimeDomainBinding)domain.getBinding();
+		RuntimeClientDomainBinding binding = (RuntimeClientDomainBinding)domain.getBinding();
 		binding.setAuthorizationManager(authorizationManager);
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
@@ -68,7 +68,7 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		IDomain domain = getDomainInstance(); 
-		RuntimeDomainBinding binding = (RuntimeDomainBinding)domain.getBinding();
+		RuntimeClientDomainBinding binding = (RuntimeClientDomainBinding)domain.getBinding();
 		binding.setAuthorizationManager(authorizationManager);
 		
 		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);

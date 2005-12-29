@@ -6,8 +6,8 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.progmodel.essential.core.domain.comparators.IdAttributeComparator;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 public final class CompositeIdPersistenceIdAssigner extends AbstractPersistenceIdAssigner {
@@ -28,7 +28,7 @@ public final class CompositeIdPersistenceIdAssigner extends AbstractPersistenceI
 	public CompositeIdPersistenceIdAssigner(IDomainClass domainClass, IPersistenceIdAssigner nextAssigner) {
 		super(nextAssigner);
 		_domainClass = domainClass;
-		_javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		_javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 	}
 
 	/*

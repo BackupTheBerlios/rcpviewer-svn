@@ -9,7 +9,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.session.ISession;
 import org.essentialplatform.runtime.shared.session.SessionManager;
 import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
@@ -39,7 +39,7 @@ public class TestInMemoryObjectStore extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		//objectStore = new InMemoryObjectStore();

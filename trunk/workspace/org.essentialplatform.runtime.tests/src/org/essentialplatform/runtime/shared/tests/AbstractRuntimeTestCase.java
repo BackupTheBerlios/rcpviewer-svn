@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.tests.AbstractTestCase;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.persistence.NoopObjectStore;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
@@ -48,7 +48,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = SessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		session = sessionManager.defineSession(

@@ -4,8 +4,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.attribute.CustomerWithWriteOnlyAttribute;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeAttributeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientAttributeBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassAttributes;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
@@ -20,7 +20,7 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class TestDomainClassAttributesAtRuntime extends TestDomainClassAttribute
 		// assertNotNull(domainClass.getAccessorOrMutatorFor(eAttribute));
 		
 		
-		RuntimeAttributeBinding binding = (RuntimeAttributeBinding)iAttribute.getBinding();
+		RuntimeClientAttributeBinding binding = (RuntimeClientAttributeBinding)iAttribute.getBinding();
 		// we can't assert anything here really (except perhaps demonstrate 
 		// can invoke a mutator but no accessor)?
 		

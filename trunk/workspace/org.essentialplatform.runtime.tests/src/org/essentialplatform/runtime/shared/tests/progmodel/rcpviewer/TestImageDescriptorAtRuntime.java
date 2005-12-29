@@ -4,7 +4,7 @@ import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.progmodel.louis.core.tests.TestImageDescriptor;
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
 
 
 /**
@@ -23,7 +23,7 @@ public class TestImageDescriptorAtRuntime extends TestImageDescriptor {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

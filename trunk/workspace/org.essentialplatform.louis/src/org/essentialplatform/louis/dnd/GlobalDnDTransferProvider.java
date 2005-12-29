@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.Transfer;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
@@ -120,7 +120,7 @@ public class GlobalDnDTransferProvider implements IDndTransferProvider {
 		// domain classes
 		for(IDomainClass domainClass: DomainRegistryUtil.allClasses(
 											new NoopClassFilter())) {
-			Class javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+			Class javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 			getTransfer(javaClass);
 		}
 		

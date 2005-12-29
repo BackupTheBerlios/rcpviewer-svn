@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.osgi.framework.Bundle;
 
 import org.essentialplatform.core.domain.IDomainClass;
@@ -81,8 +81,8 @@ public class ImageUtil {
 	public static final Image getImage( IDomainClass clazz ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		
-		RuntimeBinding.RuntimeClassBinding<?> binding = 
-			(RuntimeBinding.RuntimeClassBinding<?>)clazz.getBinding();
+		RuntimeClientBinding.RuntimeClientClassBinding<?> binding = 
+			(RuntimeClientBinding.RuntimeClientClassBinding<?>)clazz.getBinding();
 		Class javaClass = binding.getJavaClass();
 		
 		Image image = LouisPlugin.getDefault().getImageRegistry().get( javaClass.getSimpleName() );

@@ -3,8 +3,7 @@ package org.essentialplatform.runtime.shared.persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.essentialplatform.core.deployment.Binding.IClassBinding;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
@@ -41,7 +40,7 @@ public final class SequentialPersistenceIdAssigner extends
 	 */
 	@Override
 	protected <T> PersistenceId doGeneratePersistenceIdFor(IDomainObject<T> domainObject) {
-		RuntimeClassBinding binding = (RuntimeClassBinding)domainObject.getDomainClass().getBinding();
+		RuntimeClientClassBinding binding = (RuntimeClientClassBinding)domainObject.getDomainClass().getBinding();
 		Class<?> objectClass = binding.getJavaClass();
 		int[] lastNumber = null;
 		synchronized(_lastNumberByClass) {

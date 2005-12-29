@@ -1,6 +1,5 @@
 package org.essentialplatform.runtime.shared.persistence;
 
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 public abstract class AbstractObjectStore implements IObjectStore {
 	

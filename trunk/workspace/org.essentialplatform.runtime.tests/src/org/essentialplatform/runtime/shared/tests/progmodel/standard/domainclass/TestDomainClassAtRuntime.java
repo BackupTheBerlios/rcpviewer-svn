@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.shared.tests.progmodel.standard.domainclas
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithNoAttributes;
-import org.essentialplatform.runtime.shared.RuntimeBinding;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
@@ -21,7 +21,7 @@ public class TestDomainClassAtRuntime extends TestDomainClass {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class TestDomainClassAtRuntime extends TestDomainClass {
 	public void testGetJavaClass() {
 		IDomainClass domainClass = lookupAny(CustomerWithNoAttributes.class);
 		
-		RuntimeClassBinding binding = (RuntimeClassBinding)domainClass.getBinding();
+		RuntimeClientClassBinding binding = (RuntimeClientClassBinding)domainClass.getBinding();
 		Class<CustomerWithNoAttributes> javaClass = binding.getJavaClass();
 		assertSame(CustomerWithNoAttributes.class, javaClass);
 	}

@@ -40,7 +40,7 @@ import org.essentialplatform.progmodel.essential.core.domain.OppositeReferencesI
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
 import org.essentialplatform.progmodel.essential.core.util.JavaRules;
-import org.essentialplatform.runtime.shared.RuntimeBinding.RuntimeClassBinding;
+import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 
 /**
  * Builds standard domain model.
@@ -108,7 +108,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 * JAVA5_FIXME: downcasts for getAnnotation should not be needed...
 	 */
 	private void identifyClassSemantics(DomainClass runtimeDomainClass) {
-		RuntimeClassBinding binding = (RuntimeClassBinding)runtimeDomainClass.getBinding();
+		RuntimeClientClassBinding binding = (RuntimeClientClassBinding)runtimeDomainClass.getBinding();
 
 		EClass eClass = runtimeDomainClass.getEClass();
 		InDomain domainAnnotation = (InDomain)binding.getAnnotation(InDomain.class);
@@ -132,7 +132,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 */
 	public void identifyAccessors(DomainClass domainClass) {
 		
-		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 		EClass eClass = domainClass.getEClass();
 		
 		Method[] methods = javaClass.getMethods();
@@ -210,7 +210,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 */
 	public void identifyMutators(DomainClass domainClass) {
 
-		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 
 		for(int i=0; i<methods.length; i++) {
@@ -248,7 +248,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 *  
 	 */
 	public void identifyUnSettableAttributes(DomainClass domainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 		Method isUnsetMethod = null;
 		Method unsetMethod = null;
@@ -280,7 +280,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	}
 	
 	public void identifyReferences(DomainClass domainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)domainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 		for(int i=0; i<methods.length; i++) {
 			final Method method = methods[i];
@@ -381,7 +381,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	
 	
 	public void identifyAssociatorsAndDissociators(DomainClass runtimeDomainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 		for(IDomainClass.IReference iReference: runtimeDomainClass.iReferences()) {
 			EReference eReference = iReference.getEReference();
@@ -438,7 +438,7 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 	 * not yet exposing them (what would they mean?)
 	 */
 	public void identifyOperations(DomainClass runtimeDomainClass) {
-		Class<?> javaClass = ((RuntimeClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((RuntimeClientClassBinding)runtimeDomainClass.getBinding()).getJavaClass();
 		Method[] methods = javaClass.getMethods();
 
 		eachMethod: 
