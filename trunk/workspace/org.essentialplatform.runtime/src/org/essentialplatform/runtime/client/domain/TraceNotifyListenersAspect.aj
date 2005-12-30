@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.domain;
+package org.essentialplatform.runtime.client.domain;
 
 import org.apache.log4j.Logger;
 
