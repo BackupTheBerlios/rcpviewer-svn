@@ -2,9 +2,9 @@ package org.essentialplatform.runtime.shared.tests.session;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;

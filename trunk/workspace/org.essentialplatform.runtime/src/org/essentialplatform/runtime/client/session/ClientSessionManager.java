@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.session;
+package org.essentialplatform.runtime.client.session;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
+import org.essentialplatform.runtime.shared.session.SessionList;
 import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
 

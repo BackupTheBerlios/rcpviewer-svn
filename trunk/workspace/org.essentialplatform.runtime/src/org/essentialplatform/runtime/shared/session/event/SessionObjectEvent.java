@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.session.event;
 
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.IClientSession;
 
 
 /**

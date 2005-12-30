@@ -9,8 +9,8 @@ import org.eclipse.ui.PartInitException;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.PlatformUtil;
 
-import org.essentialplatform.runtime.shared.session.IClientSession;
-import org.essentialplatform.runtime.shared.session.IClientSessionManager;
+import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.client.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.session.event.ISessionListener;
 import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;

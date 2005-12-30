@@ -2,8 +2,8 @@ package org.essentialplatform.runtime.shared.session.event;
 
 import java.util.EventObject;
 
-import org.essentialplatform.runtime.shared.session.IClientSession;
-import org.essentialplatform.runtime.shared.session.IClientSessionManager;
+import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.client.session.IClientSessionManager;
 
 /**
  * Event object for session manager events.

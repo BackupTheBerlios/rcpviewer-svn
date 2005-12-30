@@ -27,6 +27,7 @@ import org.essentialplatform.runtime.client.IOperationClientBinding;
 import org.essentialplatform.runtime.client.IReferenceClientBinding;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientAttributeBinding;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientOperationBinding;
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.adapters.IRuntimeDomainClassAdapter;
 import org.essentialplatform.runtime.shared.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.shared.domain.event.DomainObjectReferenceEvent;
@@ -38,7 +39,6 @@ import org.essentialplatform.runtime.shared.domain.event.IDomainObjectListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectOperationListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
-import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**

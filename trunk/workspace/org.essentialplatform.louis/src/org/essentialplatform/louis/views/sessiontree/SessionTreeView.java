@@ -22,9 +22,9 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.client.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.IClientSession;
-import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**

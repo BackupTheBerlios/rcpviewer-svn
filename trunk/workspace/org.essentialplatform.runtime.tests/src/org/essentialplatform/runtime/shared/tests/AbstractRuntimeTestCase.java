@@ -7,13 +7,13 @@ import org.essentialplatform.core.tests.AbstractTestCase;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.session.ClientSession;
+import org.essentialplatform.runtime.client.session.ClientSessionManager;
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.persistence.NoopObjectStore;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.IClientSession;
-import org.essentialplatform.runtime.shared.session.ClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 

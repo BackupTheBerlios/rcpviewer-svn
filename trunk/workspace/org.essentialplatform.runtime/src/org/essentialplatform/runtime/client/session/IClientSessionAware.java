@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.session;
+package org.essentialplatform.runtime.client.session;
 
 
 /**

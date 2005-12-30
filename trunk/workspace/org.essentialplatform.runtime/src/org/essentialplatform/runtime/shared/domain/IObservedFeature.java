@@ -1,6 +1,6 @@
 package org.essentialplatform.runtime.shared.domain;
 
-import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
 /**

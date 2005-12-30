@@ -1,18 +1,16 @@
 package org.essentialplatform.runtime.shared.transaction.internal;
 
-import org.apache.log4j.Logger;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.transaction.*;
-import org.essentialplatform.runtime.shared.transaction.changes.*;
 import org.essentialplatform.runtime.shared.domain.PojoAspect;
+
 
 /**
  * Note that this aspect does <i>not</i> use the instantiatingPojo pointcut
  * from PojoAspect since it is too broad; rather it picks up on the creating 
- * of a pojo by the ISession.
+ * of a pojo by the IClientSession.
  * 
  */
 public aspect TransactionInstantiationChangeAspect extends PojoAspect {
@@ -21,13 +19,13 @@ public aspect TransactionInstantiationChangeAspect extends PojoAspect {
 		new TransactionInstantiationChangeAspectAdvice();
 
 	pointcut creatingPersistentPojo(IPojo pojo):
-		execution(private void ISession+.createdPersistent(IPojo+)) && args(pojo);
+		execution(private void IClientSession+.createdPersistent(IPojo+)) && args(pojo);
 	
 	pointcut creatingTransientPojo(IPojo pojo):
-		execution(private void ISession+.createdTransient(IPojo+)) && args(pojo);
+		execution(private void IClientSession+.createdTransient(IPojo+)) && args(pojo);
 	
 	pointcut recreatingPersistentPojo(IPojo pojo):
-		execution(private void ISession+.createdTransient(IPojo+)) && args(pojo);
+		execution(private void IClientSession+.createdTransient(IPojo+)) && args(pojo);
 	
 	pointcut creatingOrRecreatingPojo(IPojo pojo):
 		creatingPersistentPojo(IPojo) && args(pojo) ||

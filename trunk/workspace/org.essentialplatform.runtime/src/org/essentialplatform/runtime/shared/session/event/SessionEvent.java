@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.shared.session.event;
 
 import java.util.EventObject;
 
-import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.client.session.IClientSession;
 
 /**
  * Event object for events that impact an {@link IClientSession}.

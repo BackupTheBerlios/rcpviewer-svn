@@ -9,6 +9,7 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectOperationListener;
@@ -16,7 +17,6 @@ import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceL
 import org.essentialplatform.runtime.shared.persistence.IPersistable;
 import org.essentialplatform.runtime.shared.persistence.IResolvable;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
-import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
 

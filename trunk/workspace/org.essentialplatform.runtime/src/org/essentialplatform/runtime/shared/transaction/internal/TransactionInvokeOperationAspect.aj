@@ -1,10 +1,9 @@
 package org.essentialplatform.runtime.shared.transaction.internal;
 
+import java.util.concurrent.Callable;
+
 import org.apache.log4j.Logger;
-import java.util.concurrent.*;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.PojoAspect;
 
 /**

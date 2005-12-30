@@ -6,9 +6,9 @@ import java.util.Set;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
+import org.essentialplatform.runtime.client.session.ClientSessionManager;
+import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.IClientSession;
-import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 
 
 @InDomain

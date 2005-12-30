@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.session;
+package org.essentialplatform.runtime.client.session;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +16,7 @@ import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IObservedFeature;
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.session.event.ISessionListener;
 import org.essentialplatform.runtime.shared.session.event.SessionObjectEvent;
 

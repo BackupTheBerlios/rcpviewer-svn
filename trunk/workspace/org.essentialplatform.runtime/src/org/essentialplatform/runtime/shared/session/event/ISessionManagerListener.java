@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.session.event;
 
-import org.essentialplatform.runtime.shared.session.IClientSession;
-import org.essentialplatform.runtime.shared.session.IClientSessionManager;
+import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.client.session.IClientSessionManager;
 
 /**
  * Listeners will be notified of any changes to an {@link IClientSessionManager}.
@@ -11,7 +11,7 @@ import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 public interface ISessionManagerListener {
 
 	/**
-	 * A {@link org.essentialplatform.runtime.shared.session.IClientSession} has been 
+	 * A {@link org.essentialplatform.runtime.client.session.IClientSession} has been 
 	 * created (and added) to the manager.
 	 * 
 	 * <p>
@@ -25,14 +25,14 @@ public interface ISessionManagerListener {
 	public void sessionCreated(SessionManagerEvent event);
 
 	/**
-	 * The current {@link org.essentialplatform.runtime.shared.session.IClientSession} has been 
+	 * The current {@link org.essentialplatform.runtime.client.session.IClientSession} has been 
 	 * changed.
 	 * 
 	 */
 	public void sessionNowCurrent(SessionManagerEvent event);
 
 	/**
-	 * An {@link org.essentialplatform.runtime.shared.session.IClientSession} has been 
+	 * An {@link org.essentialplatform.runtime.client.session.IClientSession} has been 
 	 * removed from the manager.
 	 * 
 	 */

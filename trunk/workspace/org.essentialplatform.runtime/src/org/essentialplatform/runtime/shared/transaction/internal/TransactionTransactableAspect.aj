@@ -1,8 +1,10 @@
 package org.essentialplatform.runtime.shared.transaction.internal;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.*;
-import org.essentialplatform.runtime.shared.transaction.changes.*;
+import org.essentialplatform.runtime.shared.transaction.ITransactable;
+import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.transaction.TransactionManager;
+import org.essentialplatform.runtime.shared.domain.PojoAspect;
 
 /**
  * Makes {@link IPojo}s implement {@link ITransactable}.
@@ -16,7 +18,6 @@ public aspect TransactionTransactableAspect {
 	declare precedence: TransactionTransactableAspect, TransactionOneToOneReferenceChangeAspect;
 	declare precedence: TransactionTransactableAspect, TransactionAddToCollectionChangeAspect;
 	declare precedence: TransactionTransactableAspect, TransactionRemoveFromCollectionChangeAspect;
-	declare precedence: TransactionTransactableAspect, org.essentialplatform.runtime.domain.NotifyListenersAspect;
 
 	/**
 	 * Introduce implementation of {@link ITransactable#currentTransaction()}.

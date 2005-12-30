@@ -3,6 +3,8 @@ package org.essentialplatform.runtime.shared.session;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.essentialplatform.runtime.client.session.IClientSession;
+
 /**
  * Maintains a set of sessions, and the current session, all for a given domain.
  * 
@@ -10,7 +12,7 @@ import java.util.Map;
  * 
  * @author Dan Haywood
  */
-final class SessionList {
+public final class SessionList {
 	
 	private Map<String,IClientSession> _sessionById = new HashMap<String,IClientSession>();
 	
@@ -18,7 +20,7 @@ final class SessionList {
 	 * Adds a session and makes it the default.
 	 * @param session
 	 */
-	void add(IClientSession session) {
+	public void add(IClientSession session) {
 		_sessionById.put(session.getId(), session);
 		_current = session;
 	}
@@ -30,7 +32,7 @@ final class SessionList {
 	 * @param session
 	 * @return <tt> iff the session was contained in the list.
 	 */
-	boolean remove(IClientSession session) {
+	public boolean remove(IClientSession session) {
 		if (_current == session) {
 			_current = null;
 		}
@@ -38,11 +40,11 @@ final class SessionList {
 	}
 	
 	private IClientSession _current = null;
-	IClientSession getCurrent() {
+	public IClientSession getCurrent() {
 		return _current;
 	}
 
-	IClientSession setCurrent(String id) {
+	public IClientSession setCurrent(String id) {
 		IClientSession session = _sessionById.get(id); 
 		if (session == null) {
 			throw new IllegalStateException("Could not locate session '" + session + "'");

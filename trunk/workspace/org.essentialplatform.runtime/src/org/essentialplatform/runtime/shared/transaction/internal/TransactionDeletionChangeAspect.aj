@@ -1,14 +1,10 @@
 package org.essentialplatform.runtime.shared.transaction.internal;
 
-import org.apache.log4j.Logger;
-import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
+import java.util.concurrent.Callable;
 
-import java.util.concurrent.*;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.PojoAspect;
+
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).

@@ -1,21 +1,11 @@
 package org.essentialplatform.runtime.shared.transaction.internal;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
 import org.aspectj.lang.JoinPoint;
-
-import org.apache.log4j.Logger;
-
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.PojoAspect;
-import org.essentialplatform.runtime.shared.transaction.*;
-import org.essentialplatform.runtime.shared.transaction.changes.*;
-import org.essentialplatform.runtime.shared.persistence.IPersistable;
-import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 
 public aspect TransactionRemoveFromCollectionChangeAspect extends PojoAspect {
 	
