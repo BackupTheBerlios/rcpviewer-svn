@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.authorization;
+package org.essentialplatform.runtime.client.authorization;
 
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;

@@ -30,7 +30,7 @@ import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.runtime.shared.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.IPersistenceIdAssigner;
 import org.essentialplatform.runtime.shared.persistence.IdSemanticsPersistenceIdAssigner;
