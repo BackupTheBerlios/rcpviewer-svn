@@ -16,7 +16,7 @@ import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceL
 import org.essentialplatform.runtime.shared.persistence.IPersistable;
 import org.essentialplatform.runtime.shared.persistence.IResolvable;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
 
@@ -730,7 +730,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * 
 	 * <p>
 	 * Note that this is not configured using
-	 * {@link #init(IDomainClass, ISession, PersistState, ResolveState)}.
+	 * {@link #init(IDomainClass, IClientSession, PersistState, ResolveState)}.
 	 * Instead, it will be derived from the values set directly by the
 	 * application (application-assigned), or it will be set by the object store
 	 * (objectstore-assigned).
@@ -828,7 +828,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 
 	
 	/**
-	 * The id of the {@link ISession} that initially managed this session
+	 * The id of the {@link IClientSession} that initially managed this session
 	 * (if any).
 	 * 
 	 * <p>
@@ -844,7 +844,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 *
 	 * <p>
 	 * Normally the session identifier of a domain object is never changed, 
-	 * representing the id of the {@link ISession} that originally managed
+	 * representing the id of the {@link IClientSession} that originally managed
 	 * the domain object.  Even if a domain object is detached from that 
 	 * session, the session identifier is retained so that - under normal
 	 * circumstances - the domain object may only be re-attached to the same
@@ -853,7 +853,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * <p>
 	 * However, if an object has been detached from a session then it is 
 	 * possible using this method to clear this session id, thereby allowing
-	 * the domain object to be attached to some other {@link ISession}, 
+	 * the domain object to be attached to some other {@link IClientSession}, 
 	 * providing that this new session references to the same {@link Domain}.
 	 * This capability may be useful for "what-if" analysis and the like.
 	 * 
@@ -862,7 +862,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	public void clearSessionId();
 
 	/**
-	 * Whether this domain object is currently attached to a {@link ISession}.
+	 * Whether this domain object is currently attached to a {@link IClientSession}.
 	 * 
 	 * <p>
 	 * If so, then {#getSession()} will return a non-null result.
@@ -872,17 +872,17 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	public boolean isAttached();
 
 	/**
-	 * The {@link ISession} to which this domain object is currently attached.
+	 * The {@link IClientSession} to which this domain object is currently attached.
 	 * 
 	 * <p>
 	 * The implementation is not required to serialize this information.
 	 * 
 	 * @return
 	 */
-	public ISession getSession();
+	public IClientSession getSession();
 	
 	/**
-	 * Denormalized from the {@link ISession}.
+	 * Denormalized from the {@link IClientSession}.
 	 * 
 	 * <p>
 	 * Unlike {@link #getSession()}, this must be serialized by the 

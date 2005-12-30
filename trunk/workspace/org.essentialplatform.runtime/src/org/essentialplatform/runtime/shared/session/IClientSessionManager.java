@@ -11,24 +11,24 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
 
 /**
- * A (client-side) singleton that keeps track of all {@link ISession}s that 
+ * A (client-side) singleton that keeps track of all {@link IClientSession}s that 
  * have been instantiated, tracking the current session for each {@link IDomain}.
  * 
  * <p>
- * A {@link ISession} is a binding between an {@link IDomain} and an
+ * A {@link IClientSession} is a binding between an {@link IDomain} and an
  * {@link IObjectStore} that is capable of storing objects from that domain.
  * Since {@link IObjectStore}s are server-side, the session actually binds 
  * the {@link IDomain} object and the Id of the {@link IObjectStore}.  This binding
  * is encapsulated in the (serializable) {@link SessionBinding} that allows
- * the server-side equivalent of {@link ISessionManager} to recreate the
+ * the server-side equivalent of {@link IClientSessionManager} to recreate the
  * binding, but this time to the actual {@link IObjectStore} instance.
  *  
  * <p>
- * Typically there will be just one {@link ISession} per {@link IDomain} (and
+ * Typically there will be just one {@link IClientSession} per {@link IDomain} (and
  * even, just one {@link IDomain}), meaning that there is never any ambiguity
  * into which {@link IObjectStore} a given newly created domain object should
  * be persisted into.  However, the architecture does allow for multiple
- * {@link ISession}s for a given {@link IDomain}.  For example, the client
+ * {@link IClientSession}s for a given {@link IDomain}.  For example, the client
  * application might have instantiated objects from the <tt>Shop</tt> domain
  * for several retail outlets each with their own dedicated object store 
  * (Edinburgh, London, Oxford etc).  It is the responsibility of <t>this</i>
@@ -38,24 +38,24 @@ import org.essentialplatform.runtime.shared.session.event.ISessionManagerListene
  *  
  * @author Dan Haywood
  */
-public interface ISessionManager {
+public interface IClientSessionManager {
 
 	/**
 	 * Set the current session to that represented by the {@link IDomain} and
 	 * the supplied object store Id. 
 	 */
-	public ISession switchSessionTo(final Domain domain, String objectStoreId);
+	public IClientSession switchSessionTo(final Domain domain, String objectStoreId);
 	
 	
 	/**
 	 * @return The current session for the specified domain.  
 	 *         May return <tt>null</tt> if there is no current session.
 	 */
-	public ISession getCurrentSession(final IDomain domain);
+	public IClientSession getCurrentSession(final IDomain domain);
 	
 	
 	/**
-	 * Creates an {@link ISession} that effectively binds the specified 
+	 * Creates an {@link IClientSession} that effectively binds the specified 
 	 * {@link IDomain} with the specified {@link IObjectStore} (through the
 	 * latter's own Id)
 	 * 
@@ -64,9 +64,9 @@ public interface ISessionManager {
 	 * is added to the collection of sessions maintained by this session manager
 	 * and is moreover made the current session for the domain.
 	 * 
-	 * @return The newly created {@link ISession} 
+	 * @return The newly created {@link IClientSession} 
 	 */
-	public ISession defineSession(final SessionBinding sessionBinding);
+	public IClientSession defineSession(final SessionBinding sessionBinding);
 	
 	/**
 	 * Add a listener that will be notified of session manager changes
@@ -88,6 +88,6 @@ public interface ISessionManager {
 	 * 
 	 * @return
 	 */
-	public Collection<ISession> getAllSessions();
+	public Collection<IClientSession> getAllSessions();
 	
 }

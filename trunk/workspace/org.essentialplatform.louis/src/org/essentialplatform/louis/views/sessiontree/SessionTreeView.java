@@ -23,8 +23,8 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
@@ -66,9 +66,9 @@ public class SessionTreeView extends ViewPart {
 		
 		// tie viewer to current session
 		try {
-			ISessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
+			IClientSessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
 			// TODO: hard-coded to default domain only.
-			ISession session = sessionManager.getCurrentSession(Domain.instance());
+			IClientSession session = sessionManager.getCurrentSession(Domain.instance());
 			_sessionListener = new SessionListener(sessionManager, session, _viewer);
 			_viewer.setInput(session);
 		} catch (CoreException ce) {

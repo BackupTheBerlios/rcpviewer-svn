@@ -12,15 +12,15 @@ import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
 
-public final class SessionManager implements ISessionManager {
+public final class ClientSessionManager implements IClientSessionManager {
 
-	private static SessionManager __instance = new SessionManager();
+	private static ClientSessionManager __instance = new ClientSessionManager();
 	/**
 	 * Singleton access.
 	 * 
 	 * @return
 	 */
-	public static SessionManager instance() {
+	public static ClientSessionManager instance() {
 		return __instance;
 	}
 
@@ -32,7 +32,7 @@ public final class SessionManager implements ISessionManager {
 	/**
 	 * Private visibility so can only be instantiated as a singleton.
 	 */
-	private SessionManager() {
+	private ClientSessionManager() {
 		// do nothing
 	}
 
@@ -43,14 +43,14 @@ public final class SessionManager implements ISessionManager {
 	// the client?
 	///////////////////////////////////////////////////////////////////
 	
-	private Map<String, ISession> _sessionsById = new HashMap<String, ISession>();
+	private Map<String, IClientSession> _sessionsById = new HashMap<String, IClientSession>();
 	
 	/*
 	 * @see org.essentialplatform.runtime.session.ISessionManager#defineSession(org.essentialplatform.core.domain.IDomain, java.lang.String)
 	 */
-	public ISession defineSession(SessionBinding sessionBinding) {
+	public IClientSession defineSession(SessionBinding sessionBinding) {
 		Domain domain = Domain.instance(sessionBinding.getDomainName());
-		Session session = new Session(sessionBinding);
+		ClientSession session = new ClientSession(sessionBinding);
 		_sessionsById.put(session.getId(), session);
 		SessionList sessionList = _sessionListByDomain.get(domain);
 		if (sessionList == null) {
@@ -71,7 +71,7 @@ public final class SessionManager implements ISessionManager {
 	/*
 	 * @see org.essentialplatform.runtime.session.ISessionManager#getCurrentSession(org.essentialplatform.core.domain.IDomain)
 	 */
-	public ISession getCurrentSession(final IDomain domain) {
+	public IClientSession getCurrentSession(final IDomain domain) {
 		SessionList sessionList = _sessionListByDomain.get(domain);
 		if (sessionList == null) {
 			return null;
@@ -82,7 +82,7 @@ public final class SessionManager implements ISessionManager {
 	/*
 	 * @see org.essentialplatform.runtime.shared.session.ISessionManager#switchSessionTo(org.essentialplatform.core.domain.Domain, java.lang.String)
 	 */
-	public ISession switchSessionTo(Domain domain, String objectStoreId) {
+	public IClientSession switchSessionTo(Domain domain, String objectStoreId) {
 		SessionList sessionList = _sessionListByDomain.get(domain);
 		return sessionList.setCurrent(objectStoreId);
 	}
@@ -94,7 +94,7 @@ public final class SessionManager implements ISessionManager {
 	 */
 	public void switchSessionTo(final String currentSessionId) {
 		
-		ISession session = _sessionsById.get(currentSessionId);
+		IClientSession session = _sessionsById.get(currentSessionId);
 		if (session == null) {
 			throw new IllegalArgumentException("No such session id:"+currentSessionId);
 		}
@@ -115,19 +115,19 @@ public final class SessionManager implements ISessionManager {
 	//
 	///////////////////////////////////////////////////////////////////
 	
-	public Collection<ISession> getAllSessions() {
-		return new ArrayList<ISession>(_sessionsById.values());
+	public Collection<IClientSession> getAllSessions() {
+		return new ArrayList<IClientSession>(_sessionsById.values());
 	}
 
 
 	/**
 	 * Primarily for testing purposes; resets all sessions (using
-	 * {@link ISession#reset()}) and then clears hash of sessions held by the
+	 * {@link IClientSession#reset()}) and then clears hash of sessions held by the
 	 * manager itself.
 	 * 
 	 */
 	public void reset() {
-		for(ISession session: _sessionsById.values()) {
+		for(IClientSession session: _sessionsById.values()) {
 			session.reset();
 		}
 		this._sessionsById.clear();
@@ -145,7 +145,7 @@ public final class SessionManager implements ISessionManager {
 	}
 
 	public void removeSession(String sessionId) {
-		ISession session = _sessionsById.get(sessionId);
+		IClientSession session = _sessionsById.get(sessionId);
 		_sessionsById.remove(session);		
 		SessionManagerEvent event = new SessionManagerEvent(this, session);
 		for(ISessionManagerListener listener: _listeners) {

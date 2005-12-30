@@ -10,8 +10,8 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
@@ -41,9 +41,9 @@ public class NewDomainObjectJob extends AbstractUserJob {
 		IStatus status;
 		String name = null;
 		try {
-			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
+			IClientSessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			// TODO: hardcoded for the default domain, needs to be switchable.
-			ISession session= sessionManager.getCurrentSession(Domain.instance());
+			IClientSession session= sessionManager.getCurrentSession(Domain.instance());
 			
 			IDomainObject<?> domainObject = session.create( _clazz );
 //			IDomainObject<?> domainObject = session.recreate( _clazz );

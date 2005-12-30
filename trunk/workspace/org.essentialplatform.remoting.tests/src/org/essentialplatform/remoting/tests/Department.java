@@ -7,8 +7,8 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 
 
 @InDomain
@@ -31,7 +31,7 @@ public class Department  {
 	
 	
 	public void addEmployee(final String firstName, final String surname) {
-		ISession session = SessionManager.instance().getCurrentSession(Domain.domainFor(this.getClass()));
+		IClientSession session = ClientSessionManager.instance().getCurrentSession(Domain.domainFor(this.getClass()));
 		IDomainObject<Employee> employeeDO = session.create(Domain.lookupAny(Employee.class));
 		Employee employee = employeeDO.getPojo();
 		employee.setFirstName(firstName);

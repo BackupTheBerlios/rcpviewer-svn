@@ -9,8 +9,8 @@ import org.eclipse.ui.PartInitException;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.util.PlatformUtil;
 
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.session.event.ISessionListener;
 import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
@@ -27,8 +27,8 @@ import org.essentialplatform.runtime.shared.RuntimePlugin;
  */
 class SessionListener implements ISessionListener, ISessionManagerListener {
 	
-	private final ISessionManager _sessionManager;
-	private final ISession _session;
+	private final IClientSessionManager _sessionManager;
+	private final IClientSession _session;
 	private final TreeViewer _viewer;
 	
 	/**
@@ -37,7 +37,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 * session idenetified by the passed id.
 	 * @param session
 	 */
-	SessionListener( ISessionManager sessionManager, ISession session, TreeViewer viewer ) {
+	SessionListener( IClientSessionManager sessionManager, IClientSession session, TreeViewer viewer ) {
 		assert sessionManager != null;
 		assert session != null;
 		assert viewer != null;

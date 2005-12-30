@@ -2,10 +2,10 @@ package org.essentialplatform.runtime.shared.session.event;
 
 import java.util.EventObject;
 
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 
 /**
- * Event object for events that impact an {@link ISession}.
+ * Event object for events that impact an {@link IClientSession}.
  * 
  * @author Dan Haywood
  */
@@ -22,7 +22,7 @@ public class SessionEvent extends EventObject {
 	 * 
 	 * @param source
 	 */
-	public SessionEvent(final ISession source) {
+	public SessionEvent(final IClientSession source) {
 		super(source);
 	}
 	
@@ -31,8 +31,8 @@ public class SessionEvent extends EventObject {
 	 * 
 	 * @return the session that raised the event.
 	 */
-	public ISession getSession() {
-		return (ISession)this.getSource();
+	public IClientSession getSession() {
+		return (IClientSession)this.getSource();
 	}
 
 }

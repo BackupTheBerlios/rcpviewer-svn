@@ -18,8 +18,8 @@ import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
@@ -126,7 +126,7 @@ public class Customer {
 	public static Customer create() {
 		// following instantiates an Customer
 		// yes, it's horrible, but will be replaced by a simple pointcut on {@InDomain).new
-		ISession session = SessionManager.instance().getCurrentSession(Domain.domainFor(Customer.class));
+		IClientSession session = ClientSessionManager.instance().getCurrentSession(Domain.domainFor(Customer.class));
 		IDomainObject<Customer> customerDo = session.create(Domain.lookupAny(Customer.class));
 		Customer customer = customerDo.getPojo();
 		return customer;

@@ -2,8 +2,8 @@ package org.essentialplatform.runtime.shared.session.event;
 
 import java.util.EventObject;
 
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 
 /**
  * Event object for session manager events.
@@ -14,12 +14,12 @@ public class SessionManagerEvent extends EventObject {
 
 	private static final long serialVersionUID = 1L;
 	
-	private ISession _session;
+	private IClientSession _session;
 
 	/**
 	 * @param source
 	 */
-	public SessionManagerEvent(final ISessionManager source, ISession session) {
+	public SessionManagerEvent(final IClientSessionManager source, IClientSession session) {
 		super(source);
 		_session= session;
 	}
@@ -29,11 +29,11 @@ public class SessionManagerEvent extends EventObject {
 	 * 
 	 * @return the session manager that raised the event.
 	 */
-	public ISessionManager getSessionManager() {
-		return (ISessionManager)this.getSource();
+	public IClientSessionManager getSessionManager() {
+		return (IClientSessionManager)this.getSource();
 	}
 	
-	public ISession getSession() {
+	public IClientSession getSession() {
 		return _session;
 	}
 

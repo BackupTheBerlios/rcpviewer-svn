@@ -8,7 +8,7 @@ import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.ISessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
@@ -48,7 +48,7 @@ class SessionBootstrapJob extends AbstractBootstrapJob {
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
 			// FIXME In the future there will be a better way to set sessions
-			ISessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
+			IClientSessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
 			IDomainRegistry domainRegistry = RuntimePlugin.getDefault().getDomainRegistry();
 			sessionManager.defineSession(_sessionBinding);
 		} catch (CoreException ce) {

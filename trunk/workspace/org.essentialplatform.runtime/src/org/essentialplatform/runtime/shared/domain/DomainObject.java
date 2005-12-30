@@ -38,7 +38,7 @@ import org.essentialplatform.runtime.shared.domain.event.IDomainObjectListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectOperationListener;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
@@ -46,7 +46,7 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
  * platform and the pojo itself.
  * 
  * <p>
- * Additionally, knows its {@link IDomainClass} and also {@link ISession} (if
+ * Additionally, knows its {@link IDomainClass} and also {@link IClientSession} (if
  * any) to which it is currently attached.
  * 
  * <p>
@@ -76,7 +76,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/**
 	 * Marked as <tt>transient</tt> so that it is not distributed.
 	 */
-	private transient ISession _session;
+	private transient IClientSession _session;
 	
 	/**
 	 * The identifier to the session within which this domain object
@@ -121,7 +121,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject<V> createTransient(final V pojo, final ISession session) {
+	public static <V> DomainObject<V> createTransient(final V pojo, final IClientSession session) {
 		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
 		domainObject.init(session, PersistState.TRANSIENT, 
 				ResolveState.RESOLVED);
@@ -139,7 +139,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject<V> createPersistent(final V pojo, final ISession session) {
+	public static <V> DomainObject<V> createPersistent(final V pojo, final IClientSession session) {
 		IPojo iPojo = (IPojo)pojo;
 	
 		DomainObject<V> domainObject = (DomainObject<V>)iPojo.domainObject();
@@ -160,7 +160,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject recreatePersistent(final V pojo, final ISession session) {
+	public static <V> DomainObject recreatePersistent(final V pojo, final IClientSession session) {
 		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
 		domainObject.init(session, PersistState.PERSISTED, 
 				ResolveState.UNRESOLVED);
@@ -185,7 +185,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(final ISession session, PersistState persistState, ResolveState resolveState) {
+	private void init(final IClientSession session, PersistState persistState, ResolveState resolveState) {
 		_session = session;
 		_sessionBinding = session.getSessionBinding();
 		_persistState = persistState;
@@ -291,7 +291,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/*
 	 * @see org.essentialplatform.session.IDomainObject#getSession()
 	 */
-	public ISession getSession() {
+	public IClientSession getSession() {
 		return _session;
 	}
 
@@ -309,7 +309,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	/**
 	 * Ensures that the _session id is compatible.
 	 */
-	public void attached(ISession session) {
+	public void attached(IClientSession session) {
 		if (session == null) {
 			throw new IllegalArgumentException("Session is null");
 		}
@@ -338,7 +338,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	/**
-	 * The identifier of the {@link ISession} that originally managed this
+	 * The identifier of the {@link IClientSession} that originally managed this
 	 * domain object.
 	 * 
 	 * <p>
@@ -1179,7 +1179,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * Factored out to allow impact to be called when undo/redo changes.
 	 */
 	public void externalStateChanged() {
-		ISession session = this.getSession();
+		IClientSession session = this.getSession();
 		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
 			observedFeature.externalStateChanged();
 		}

@@ -24,13 +24,13 @@ import org.eclipse.swt.graphics.Image;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.IObjectStore;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 public final class InMemorySearchQuery
 implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentProvider
 {
-	Map<IObjectStore, ISession> _sessionByObjectStore= new HashMap<IObjectStore, ISession>(); 
+	Map<IObjectStore, IClientSession> _sessionByObjectStore= new HashMap<IObjectStore, IClientSession>(); 
 	Collection<IDomainObject> _allObjects= new ArrayList<IDomainObject>();
 	HashSet<ISearchResultListener> _searchListeners= new HashSet<ISearchResultListener>();
 
@@ -58,7 +58,7 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 	public IStatus run(IProgressMonitor pMonitor) throws OperationCanceledException {
 		try {
 			
-			for (ISession session: RuntimePlugin.getDefault().getSessionManager().getAllSessions()) {
+			for (IClientSession session: RuntimePlugin.getDefault().getSessionManager().getAllSessions()) {
 //				IObjectStore objectStore= session.getObjectStore();
 //				if (objectStore instanceof InMemoryObjectStore) {
 //					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;

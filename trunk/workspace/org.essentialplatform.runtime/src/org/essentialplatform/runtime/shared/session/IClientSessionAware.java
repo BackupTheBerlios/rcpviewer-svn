@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.shared.session;
 
 
 /**
- * Objects that require an {@link ISession} should implement this interface;
+ * Objects that require an {@link IClientSession} should implement this interface;
  * dependency injection will take care of the rest.
  *
  * <p>
@@ -11,7 +11,7 @@ package org.essentialplatform.runtime.shared.session;
  * @author Dan Haywood
  */
 
-public interface ISessionAware {
+public interface IClientSessionAware {
 
-	void setSession(ISession session);
+	void setSession(IClientSession session);
 }

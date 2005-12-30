@@ -15,8 +15,8 @@ import org.essentialplatform.progmodel.essential.app.Lifecycle;
 import org.essentialplatform.progmodel.essential.app.Named;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 
 @Lifecycle(instantiable=true)
 @InDomain
@@ -108,7 +108,7 @@ public class Order {
 	static Order create(final Customer customer, final String description) {
 		// following instantiates an Order
 		// yes, it's horrible, but will be replaced by a simple pointcut on {@InDomain).new
-		ISession session = SessionManager.instance().getCurrentSession(Domain.domainFor(Order.class));
+		IClientSession session = ClientSessionManager.instance().getCurrentSession(Domain.domainFor(Order.class));
 		IDomainObject<Order> orderDo = session.create(Domain.lookupAny(Order.class));
 		Order order = orderDo.getPojo();
 		order.customer = customer;

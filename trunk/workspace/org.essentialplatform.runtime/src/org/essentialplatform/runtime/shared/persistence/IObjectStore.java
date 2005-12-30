@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.shared.persistence;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 
 /**
  * Abstracts out mechanics of persisting, saving and deleting domain objects.

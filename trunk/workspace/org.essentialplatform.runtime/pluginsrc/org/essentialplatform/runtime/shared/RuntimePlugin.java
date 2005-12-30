@@ -9,8 +9,8 @@ import org.osgi.framework.BundleContext;
 
 import org.essentialplatform.runtime.shared.DomainRegistry;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
-import org.essentialplatform.runtime.shared.session.ISessionManager;
-import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSessionManager;
+import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -22,7 +22,7 @@ public class RuntimePlugin extends Plugin {
 	private ResourceBundle resourceBundle;
 	
 	private IDomainRegistry _domainRegistry;
-	private ISessionManager _sessionManager;
+	private IClientSessionManager _sessionManager;
 	
 	/**
 	 * The constructor.
@@ -94,7 +94,7 @@ public class RuntimePlugin extends Plugin {
 		}
 	}
 
-	public synchronized ISessionManager getSessionManager() throws CoreException {
-		return SessionManager.instance();
+	public synchronized IClientSessionManager getSessionManager() throws CoreException {
+		return ClientSessionManager.instance();
 	}
 }

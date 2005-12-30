@@ -7,7 +7,7 @@ import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientDomainBinding;
-import org.essentialplatform.runtime.shared.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.OrderConstrained;

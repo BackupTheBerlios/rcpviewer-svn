@@ -4,7 +4,7 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
@@ -94,7 +94,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		assertEquals(session.getId(), domainObject.getSessionId());
 		session.attach(domainObject);
 		
-		ISession session2 = sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), "OBJECTSTORE#2"));
+		IClientSession session2 = sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), "OBJECTSTORE#2"));
 		assertFalse(session.getId() == session2.getId());
 		
 		try {
@@ -143,7 +143,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		session.detach(domainObject);
 		domainObject.clearSessionId();
 		
-		ISession session2 = 
+		IClientSession session2 = 
 			sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID + "_2"));
 		String session2Id = session2.getId();
 		
@@ -156,12 +156,12 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 	public void testDomainObjectCannotBeAttachedToSessionForDifferentDomain() {
 		
 		// set up sessions
-		ISession sessionForDefaultDomain = session;
+		IClientSession sessionForDefaultDomain = session;
 		assertEquals("default", sessionForDefaultDomain.getDomain().getName());
 		
 		Domain marketingDomain = Domain.instance("marketing");
 		
-		ISession sessionForMarketingDomain = sessionManager.defineSession(new SessionBinding(marketingDomain.getName(), "MarketingObjectStore"));
+		IClientSession sessionForMarketingDomain = sessionManager.defineSession(new SessionBinding(marketingDomain.getName(), "MarketingObjectStore"));
 		
 		// create domain object from default domain
 		IDomainClass departmentDomainClass = lookupAny(Department.class);

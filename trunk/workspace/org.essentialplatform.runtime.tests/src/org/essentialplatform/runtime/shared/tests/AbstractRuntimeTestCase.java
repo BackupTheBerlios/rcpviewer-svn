@@ -10,17 +10,17 @@ import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.persistence.NoopObjectStore;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.Session;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.ClientSession;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 
 /**
- * Sets up a default {@link Domain}, {@link SessionManager}, 
+ * Sets up a default {@link Domain}, {@link ClientSessionManager}, 
  * {@link SessionFactory} (for this domain and with an 
- * {@link NoopObjectStore} and a {@link Session} for this.
+ * {@link NoopObjectStore} and a {@link ClientSession} for this.
  * 
  * @author Dan Haywood
  *
@@ -40,8 +40,8 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 	}
 
 	protected Domain domain;
-	protected SessionManager sessionManager;
-	protected ISession session;
+	protected ClientSessionManager sessionManager;
+	protected IClientSession session;
 	protected ITransactionManager transactionManager;
 	
 
@@ -49,7 +49,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		super.setUp();
 		Binding.setBinding(
 			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
-		sessionManager = SessionManager.instance();
+		sessionManager = ClientSessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		session = sessionManager.defineSession(
 				new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
@@ -62,7 +62,7 @@ public abstract class AbstractRuntimeTestCase extends AbstractTestCase {
 		session.reset();
 		session = null;
 		Domain.resetAll();
-		SessionManager.instance().reset();
+		ClientSessionManager.instance().reset();
 		transactionManager.reset();
 		transactionManager = null;
 		Binding.reset();

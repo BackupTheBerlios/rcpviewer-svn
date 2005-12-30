@@ -10,8 +10,8 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.client.RuntimeClientBinding;
-import org.essentialplatform.runtime.shared.session.ISession;
-import org.essentialplatform.runtime.shared.session.SessionManager;
+import org.essentialplatform.runtime.shared.session.IClientSession;
+import org.essentialplatform.runtime.shared.session.ClientSessionManager;
 import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 import org.essentialplatform.server.persistence.inmemory.InMemoryObjectStore;
@@ -30,8 +30,8 @@ public class TestInMemoryObjectStore extends TestCase {
 	private final IDomainBuilder domainBuilder = null;
 
 	protected Domain domain;
-	protected SessionManager sessionManager;
-	protected ISession session;
+	protected ClientSessionManager sessionManager;
+	protected IClientSession session;
 	protected InMemoryObjectStore objectStore;
 	protected ITransactionManager transactionManager;
 
@@ -40,7 +40,7 @@ public class TestInMemoryObjectStore extends TestCase {
 		super.setUp();
 		Binding.setBinding(
 			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
-		sessionManager = SessionManager.instance();
+		sessionManager = ClientSessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		//objectStore = new InMemoryObjectStore();
 		//session = sessionManager.defineSession(domain, objectStore);

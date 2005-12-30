@@ -17,7 +17,7 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.InstantiableClassFilter;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
@@ -25,7 +25,7 @@ import org.essentialplatform.runtime.shared.RuntimePlugin;
  */
 class SessionTreeContentProvider implements ITreeContentProvider {
 	
-	private ISession _session;
+	private IClientSession _session;
 	
 	/**
 	 * No-arg constructor
@@ -89,8 +89,8 @@ class SessionTreeContentProvider implements ITreeContentProvider {
 		if ( inputElement instanceof ErrorInput ) {
 			return new Object[]{ inputElement };
 		}
-		else if ( inputElement instanceof ISession ) {
-			_session = (ISession)inputElement;
+		else if ( inputElement instanceof IClientSession ) {
+			_session = (IClientSession)inputElement;
 			List<IDomainClass> populatedClasses = new ArrayList<IDomainClass>();
 
 			for(IDomainClass domainClass: DomainRegistryUtil.allClasses(new InstantiableClassFilter())) {

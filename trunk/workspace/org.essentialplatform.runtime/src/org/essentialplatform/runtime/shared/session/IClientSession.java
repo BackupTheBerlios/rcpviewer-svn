@@ -81,7 +81,7 @@ import org.essentialplatform.runtime.shared.session.event.ISessionListener;
  * 
  * @author Dan Haywood
  */
-public interface ISession {
+public interface IClientSession {
 
 	/**
 	 * The id of the object store into which the domain objects managed by this 

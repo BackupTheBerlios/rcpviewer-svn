@@ -1,6 +1,6 @@
 package org.essentialplatform.runtime.shared.domain;
 
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
 /**
@@ -8,7 +8,7 @@ import org.essentialplatform.progmodel.essential.app.IPrerequisites;
  * currently being observed in the UI.
  * 
  * <p>
- * The {@link ISession} holds a weak hash map of all observed features so that
+ * The {@link IClientSession} holds a weak hash map of all observed features so that
  * if there is a state change to some domain object (either by this user or
  * perhaps if notified of a change by some other user through the distribution
  * mechanism) then all {@link IPrerequisites} can be recomputed.  If there is

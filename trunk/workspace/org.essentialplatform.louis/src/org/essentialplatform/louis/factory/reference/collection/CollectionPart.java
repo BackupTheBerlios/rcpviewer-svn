@@ -20,7 +20,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollecti
 import org.essentialplatform.runtime.shared.domain.event.DomainObjectReferenceEvent;
 import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectReferenceEvent;
 import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceListener;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 class CollectionPart extends AbstractFormPart implements IConfigurable {

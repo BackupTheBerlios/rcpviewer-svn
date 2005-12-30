@@ -25,13 +25,13 @@ import org.essentialplatform.runtime.shared.session.event.SessionObjectEvent;
  * references from {@link IDomainObject} are marked as transient); therefore 
  * whether the fields of this implementation are transient or not is moot.
  * 
- * @see ISession
+ * @see IClientSession
  * @author Dan Haywood
  */
-public final class Session implements ISession {
+public final class ClientSession implements IClientSession {
 
 
-	Session(SessionBinding sessionBinding) {
+	ClientSession(SessionBinding sessionBinding) {
 		this._domain = Domain.instance(sessionBinding.getDomainName());
 		this._sessionBinding = sessionBinding;
 	}
@@ -93,7 +93,7 @@ public final class Session implements ISession {
 		return domainObject;
 	}
 	
-	private <T> IDomainObject<T> create(final Session session, IDomainClass domainClass) {
+	private <T> IDomainObject<T> create(final ClientSession session, IDomainClass domainClass) {
 		if (domainClass.isTransientOnly()) {
 			return session.createTransient(session, domainClass);
 		} else {
@@ -105,7 +105,7 @@ public final class Session implements ISession {
 	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createTransient(final Session session, IDomainClass domainClass) {
+	private <T> IDomainObject<T> createTransient(final ClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.createTransient(pojo, session);
 		return domainObject;
@@ -115,7 +115,7 @@ public final class Session implements ISession {
 	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createPersistent(final Session session, IDomainClass domainClass) {
+	private <T> IDomainObject<T> createPersistent(final ClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.createPersistent(pojo, session);
 		return domainObject;
@@ -152,7 +152,7 @@ public final class Session implements ISession {
 		return domainObject;
 	}
 
-	private <T> IDomainObject<T> recreatePersistent(ISession session, IDomainClass domainClass) {
+	private <T> IDomainObject<T> recreatePersistent(IClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.recreatePersistent(pojo, session);
 		return domainObject;

@@ -1,10 +1,10 @@
 package org.essentialplatform.runtime.shared.session.event;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.session.ISession;
+import org.essentialplatform.runtime.shared.session.IClientSession;
 
 /**
- * Listeners will be notified of any changes to an {@link ISession}.
+ * Listeners will be notified of any changes to an {@link IClientSession}.
  * 
  * @author Dan Haywood
  */

@@ -12,13 +12,13 @@ import java.util.Map;
  */
 final class SessionList {
 	
-	private Map<String,ISession> _sessionById = new HashMap<String,ISession>();
+	private Map<String,IClientSession> _sessionById = new HashMap<String,IClientSession>();
 	
 	/**
 	 * Adds a session and makes it the default.
 	 * @param session
 	 */
-	void add(ISession session) {
+	void add(IClientSession session) {
 		_sessionById.put(session.getId(), session);
 		_current = session;
 	}
@@ -30,20 +30,20 @@ final class SessionList {
 	 * @param session
 	 * @return <tt> iff the session was contained in the list.
 	 */
-	boolean remove(ISession session) {
+	boolean remove(IClientSession session) {
 		if (_current == session) {
 			_current = null;
 		}
 		return _sessionById.remove(session.getId()) != null;
 	}
 	
-	private ISession _current = null;
-	ISession getCurrent() {
+	private IClientSession _current = null;
+	IClientSession getCurrent() {
 		return _current;
 	}
 
-	ISession setCurrent(String id) {
-		ISession session = _sessionById.get(id); 
+	IClientSession setCurrent(String id) {
+		IClientSession session = _sessionById.get(id); 
 		if (session == null) {
 			throw new IllegalStateException("Could not locate session '" + session + "'");
 		}
