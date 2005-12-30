@@ -1,10 +1,9 @@
-package org.essentialplatform.runtime.shared.transaction.internal;
+package org.essentialplatform.runtime.shared.transaction;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.TransactionManager;
-import org.essentialplatform.runtime.shared.domain.PojoAspect;
 
 /**
  * Makes {@link IPojo}s implement {@link ITransactable}.

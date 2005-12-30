@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.transaction.internal;
+package org.essentialplatform.runtime.client.transaction;
 
 import java.util.concurrent.Callable;
 

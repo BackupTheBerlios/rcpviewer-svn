@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.transaction;
+package org.essentialplatform.runtime.transaction.tracing;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.tracing.TracingAspect;

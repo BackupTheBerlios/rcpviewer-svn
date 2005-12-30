@@ -21,6 +21,7 @@ Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.client,
  org.essentialplatform.runtime.client.authorization,
  org.essentialplatform.runtime.client.session,
+ org.essentialplatform.runtime.client.transaction,
  org.essentialplatform.runtime.shared,
  org.essentialplatform.runtime.shared.domain,
  org.essentialplatform.runtime.shared.domain.adapters,
@@ -32,7 +33,6 @@ Export-Package: org.essentialplatform.runtime.client,
  org.essentialplatform.runtime.shared.transaction,
  org.essentialplatform.runtime.shared.transaction.changes,
  org.essentialplatform.runtime.shared.transaction.event,
- org.essentialplatform.runtime.shared.transaction.internal,
  org.essentialplatform.runtime.shared.util
 Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin
 Eclipse-RegisterBuddy: net.sf.plugins.xstream

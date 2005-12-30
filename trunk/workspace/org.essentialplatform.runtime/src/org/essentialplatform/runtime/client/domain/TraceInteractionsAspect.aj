@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 
 import org.essentialplatform.runtime.shared.domain.PojoAspect;
 
+import org.essentialplatform.runtime.shared.domain.IPojo;
+
 public aspect TraceInteractionsAspect extends PojoAspect {
 
 	private final static boolean ENABLED = false;

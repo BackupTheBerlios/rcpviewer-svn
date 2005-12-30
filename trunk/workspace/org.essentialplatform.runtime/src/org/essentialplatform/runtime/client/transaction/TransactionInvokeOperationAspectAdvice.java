@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.transaction.internal;
+package org.essentialplatform.runtime.client.transaction;
 
 import java.util.concurrent.Callable;
 
@@ -6,13 +6,16 @@ import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
 
-class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
+class TransactionInvokeOperationAspectAdvice extends TransactionAspectAdvice {
 
 	/**
-	 * Defines interaction boundary.
+	 * Obtains transaction from either the thread or from the pojo (checking
+	 * that they don't conflict).
+	 * 
+	 * <p>
+	 * This code is identical in all subaspects of TransactionChange, however
+	 * moving it up and declaring a precedence doesn't seem to do the trick.
 	 */
 	Object around$transactionalChange(IPojo pojo, Callable proceed) {
 		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
@@ -40,33 +43,11 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 		}
 	}
 
-	/**
-	 * Creates an AttributeChange to wrap a change to the attribute, adding it
-	 * to the current transaction.
-	 *  
-	 * <p>
-	 * This code must appear after the transactionChange() advice above 
-	 * because lexical ordering is used to determine the order in which
-	 * advices are applied. 
-	 */
-	Object around$deletingPojoUsingDeleteMethod(IPojo pojo) {
-		getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new DeletionChange(transaction, transactable);
-		try {
-			return change.execute();
-		} finally {
-			getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): end");
-		}
-	}
 
 	
 	@Override
 	protected Logger getLogger() {
-		return Logger.getLogger(TransactionDeletionChangeAspectAdvice.class);
+		return Logger.getLogger(TransactionInvokeOperationAspectAdvice.class);
 	}
 
 }
-
-

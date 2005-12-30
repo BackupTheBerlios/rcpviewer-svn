@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.transaction.internal;
+package org.essentialplatform.runtime.client.transaction;
 
 import java.util.concurrent.Callable;
 
@@ -6,10 +6,10 @@ import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 
-class TransactionInstantiationChangeAspectAdvice extends TransactionAspectAdvice {
+class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 
 	/**
 	 * Defines interaction boundary.
@@ -41,7 +41,7 @@ class TransactionInstantiationChangeAspectAdvice extends TransactionAspectAdvice
 	}
 
 	/**
-	 * Creates an InstantiationChange to wrap a change to the attribute, adding it
+	 * Creates an AttributeChange to wrap a change to the attribute, adding it
 	 * to the current transaction.
 	 *  
 	 * <p>
@@ -49,22 +49,22 @@ class TransactionInstantiationChangeAspectAdvice extends TransactionAspectAdvice
 	 * because lexical ordering is used to determine the order in which
 	 * advices are applied. 
 	 */
-	Object around$creatingOrRecreatingPojo(IPojo pojo) {
-		getLogger().debug("creatingOrRecreatingPojo(pojo=" + pojo+"): start");
+	Object around$deletingPojoUsingDeleteMethod(IPojo pojo) {
+		getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
 		ITransactable transactable = (ITransactable)pojo;
 		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new InstantiationChange(transaction, transactable);
+		IChange change = new DeletionChange(transaction, transactable);
 		try {
 			return change.execute();
 		} finally {
-			getLogger().debug("creatingOrRecreatingPojo(pojo=" + pojo+"): end");
+			getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): end");
 		}
 	}
 
 	
 	@Override
 	protected Logger getLogger() {
-		return Logger.getLogger(TransactionInstantiationChangeAspectAdvice.class);
+		return Logger.getLogger(TransactionDeletionChangeAspectAdvice.class);
 	}
 
 }
