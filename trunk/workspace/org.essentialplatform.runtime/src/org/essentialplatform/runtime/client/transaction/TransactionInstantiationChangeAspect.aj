@@ -4,16 +4,16 @@ import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 
 /**
  * Note that this aspect does <i>not</i> use the instantiatingPojo pointcut
- * from PojoAspect since it is too broad; rather it picks up on the creating 
- * of a pojo by the IClientSession.
+ * from InteractionsAspect since it is too broad; rather it picks up on the 
+ * creating of a pojo by the {@link IClientSession}.
  * 
  */
-public aspect TransactionInstantiationChangeAspect extends PojoAspect {
+public aspect TransactionInstantiationChangeAspect extends InteractionsAspect {
 
 	private TransactionInstantiationChangeAspectAdvice advice = 
 		new TransactionInstantiationChangeAspectAdvice();

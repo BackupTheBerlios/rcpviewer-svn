@@ -3,13 +3,13 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 /**
  * One change per modified 1:1 reference performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionOneToOneReferenceChangeAspect extends PojoAspect {
+public aspect TransactionOneToOneReferenceChangeAspect extends InteractionsAspect {
 	
 	private TransactionOneToOneReferenceChangeAspectAdvice advice = 
 		new TransactionOneToOneReferenceChangeAspectAdvice();

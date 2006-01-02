@@ -3,13 +3,13 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 /**
  * One change per modified attribute performed directly (ie not programmatically
  * from an invoked operation).
  */
-public aspect TransactionAttributeChangeAspect extends PojoAspect {
+public aspect TransactionAttributeChangeAspect extends InteractionsAspect {
 
 	private TransactionAttributeChangeAspectAdvice advice = 
 		new TransactionAttributeChangeAspectAdvice();

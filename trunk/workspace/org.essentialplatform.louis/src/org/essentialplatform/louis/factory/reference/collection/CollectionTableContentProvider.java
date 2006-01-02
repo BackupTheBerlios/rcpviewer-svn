@@ -7,10 +7,10 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.event.DomainObjectAttributeEvent;
-import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.runtime.shared.domain.event.IDomainObjectAttributeListener;
 
 /**
  * Extracts pojo collection contents and wraps in IDomainObjects 

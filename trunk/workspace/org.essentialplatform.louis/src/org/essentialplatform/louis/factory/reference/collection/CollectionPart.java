@@ -15,12 +15,12 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.util.StringUtil;
 
+import org.essentialplatform.runtime.client.domain.event.DomainObjectReferenceEvent;
+import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectReferenceEvent;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
-import org.essentialplatform.runtime.shared.domain.event.DomainObjectReferenceEvent;
-import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectReferenceEvent;
-import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 class CollectionPart extends AbstractFormPart implements IConfigurable {

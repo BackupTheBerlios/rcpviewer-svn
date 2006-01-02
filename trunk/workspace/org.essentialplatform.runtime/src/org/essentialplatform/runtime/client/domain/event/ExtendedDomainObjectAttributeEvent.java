@@ -1,10 +1,10 @@
-package org.essentialplatform.runtime.shared.domain.event;
+package org.essentialplatform.runtime.client.domain.event;
 
 import java.util.EventObject;
 
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 
 
 /**
@@ -12,7 +12,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperatio
  * 
  * @author Dan Haywood
  */
-public final class ExtendedDomainObjectOperationEvent extends EventObject {
+public final class ExtendedDomainObjectAttributeEvent extends EventObject  {
 
 	/**
 	 * 
@@ -24,8 +24,8 @@ public final class ExtendedDomainObjectOperationEvent extends EventObject {
 	 * 
 	 * @param source
 	 */
-	public ExtendedDomainObjectOperationEvent(
-			final IDomainObject.IObjectOperation source, // workaround 
+	public ExtendedDomainObjectAttributeEvent(
+			final IDomainObject.IObjectAttribute source, // TODO: workaround ? 
 			final IPrerequisites newPrerequisites) {
 		super(source);
 		this.newPrerequisites = newPrerequisites;
@@ -36,13 +36,13 @@ public final class ExtendedDomainObjectOperationEvent extends EventObject {
 	 * 
 	 * @return the attribute that raised this event.
 	 */
-	public IDomainObject.IObjectOperation getOperation() {
-		return (IDomainObject.IObjectOperation)getSource();
+	public IDomainObject.IObjectAttribute getAttribute() {
+		return (IDomainObject.IObjectAttribute)getSource();
 	}
-
 
 	private final IPrerequisites newPrerequisites;
 	public IPrerequisites getNewPrerequisites() {
 		return newPrerequisites;
 	}
+	
 }

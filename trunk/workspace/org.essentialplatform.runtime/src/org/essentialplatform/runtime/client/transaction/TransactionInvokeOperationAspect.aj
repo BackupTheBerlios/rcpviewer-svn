@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 /**
  * One change per invoked operation that hasn't been called from another
@@ -13,7 +13,7 @@ import org.essentialplatform.runtime.shared.domain.PojoAspect;
  * <p>
  * TODO: this aspect may be wholly redundant?? 
  */
-public aspect TransactionInvokeOperationAspect extends PojoAspect {
+public aspect TransactionInvokeOperationAspect extends InteractionsAspect {
 
 	private TransactionInvokeOperationAspectAdvice advice = 
 		new TransactionInvokeOperationAspectAdvice();

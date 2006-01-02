@@ -13,12 +13,12 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.util.NullUtil;
 import org.essentialplatform.louis.util.SWTUtil;
+import org.essentialplatform.runtime.client.domain.event.DomainObjectReferenceEvent;
+import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectReferenceEvent;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
-import org.essentialplatform.runtime.shared.domain.event.DomainObjectReferenceEvent;
-import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectReferenceEvent;
-import org.essentialplatform.runtime.shared.domain.event.IDomainObjectReferenceListener;
 
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 

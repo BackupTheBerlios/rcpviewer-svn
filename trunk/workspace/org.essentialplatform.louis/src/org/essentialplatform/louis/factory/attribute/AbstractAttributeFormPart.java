@@ -6,11 +6,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.util.NullUtil;
+import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
-import org.essentialplatform.runtime.shared.domain.event.DomainObjectAttributeEvent;
-import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.runtime.shared.domain.event.IDomainObjectAttributeListener;
 
 
 /**

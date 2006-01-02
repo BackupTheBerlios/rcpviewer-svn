@@ -1,20 +1,14 @@
 package org.essentialplatform.runtime.client.transaction;
 
 import java.util.Collection;
-
-import org.apache.log4j.Logger;
-
-import org.essentialplatform.runtime.shared.domain.PojoAspect;
-import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.transaction.*;
-import org.essentialplatform.runtime.shared.transaction.changes.*;
-import org.essentialplatform.runtime.shared.persistence.IPersistable;
-import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
-
 import java.util.concurrent.Callable;
 
-public aspect TransactionAddToCollectionChangeAspect extends PojoAspect {
+import org.apache.log4j.Logger;
+import org.aspectj.lang.JoinPoint;
+import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.client.domain.InteractionsAspect;
+
+public aspect TransactionAddToCollectionChangeAspect extends InteractionsAspect {
 	
 	private final static Logger LOG = Logger.getLogger(TransactionAddToCollectionChangeAspect.class);
 	protected Logger getLogger() { return LOG; }

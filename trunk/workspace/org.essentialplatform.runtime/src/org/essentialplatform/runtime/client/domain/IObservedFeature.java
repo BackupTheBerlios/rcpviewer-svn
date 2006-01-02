@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.domain;
+package org.essentialplatform.runtime.client.domain;
 
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;

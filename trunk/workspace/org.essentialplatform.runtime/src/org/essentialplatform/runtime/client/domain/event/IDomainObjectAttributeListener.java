@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.domain.event;
+package org.essentialplatform.runtime.client.domain.event;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;

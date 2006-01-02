@@ -3,9 +3,9 @@
  */
 package org.essentialplatform.runtime.shared.tests.session;
 
-import org.essentialplatform.runtime.shared.domain.event.DomainObjectOperationEvent;
-import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectOperationEvent;
-import org.essentialplatform.runtime.shared.domain.event.IDomainObjectOperationListener;
+import org.essentialplatform.runtime.client.domain.event.DomainObjectOperationEvent;
+import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectOperationEvent;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectOperationListener;
 
 class MyDomainObjectOperationListener implements IDomainObjectOperationListener {
 	

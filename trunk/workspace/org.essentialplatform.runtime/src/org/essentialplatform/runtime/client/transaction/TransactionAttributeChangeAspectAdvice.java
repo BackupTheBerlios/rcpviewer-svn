@@ -5,8 +5,8 @@ import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
+import org.essentialplatform.runtime.client.domain.IObservedFeature;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IObservedFeature;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;

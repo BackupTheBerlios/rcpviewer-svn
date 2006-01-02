@@ -3,9 +3,9 @@
  */
 package org.essentialplatform.runtime.shared.tests.session;
 
-import org.essentialplatform.runtime.shared.domain.event.DomainObjectAttributeEvent;
-import org.essentialplatform.runtime.shared.domain.event.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.runtime.shared.domain.event.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
+import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
 
 class MyDomainObjectAttributeListener implements IDomainObjectAttributeListener {
 	
