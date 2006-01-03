@@ -9,10 +9,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.forms.IManagedForm;
 import org.essentialplatform.louis.LouisPlugin;
 
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 
 /**
  * 

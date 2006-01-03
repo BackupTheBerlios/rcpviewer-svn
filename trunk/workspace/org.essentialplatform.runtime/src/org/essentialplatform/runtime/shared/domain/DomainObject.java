@@ -315,11 +315,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			throw new IllegalArgumentException("Session is null");
 		}
 		if (this.getSessionId() == null) {
-			this.sessionId = session.getId();
+			this.sessionId = session.getObjectStoreId();
 		} else {
-			if (!session.getId().equals(this.getSessionId())) {
+			if (!session.getObjectStoreId().equals(this.getSessionId())) {
 				throw new IllegalArgumentException("Session id does not match "
-						+ "(_session.id = '" + session.getId() + "', "
+						+ "(_session.id = '" + session.getObjectStoreId() + "', "
 						+ "this.sessionId = '" + this.getSessionId() + "')");
 			}
 		}

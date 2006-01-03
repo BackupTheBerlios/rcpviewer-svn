@@ -5,9 +5,9 @@ import org.essentialplatform.core.fixture.progmodel.essential.standard.operation
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.CustomerOperationReturningVoid;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Order;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestDomainObjectOperation extends AbstractRuntimeTestCase {
+public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
 
 	public void testCanInvokeOperationReturningVoid() {
 		IDomainClass domainClass = lookupAny(CustomerOperationReturningVoid.class);

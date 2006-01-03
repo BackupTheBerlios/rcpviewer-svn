@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.shared.transaction;
 import java.util.List;
 import java.util.Set;
 
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.shared.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;

@@ -6,17 +6,17 @@ import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 
-public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
+public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 
 	public void testCanAttachToSessionIfIdMatches() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
-		assertEquals(session.getId(), domainObject.getSessionId());
+		assertEquals(session.getObjectStoreId(), domainObject.getSessionId());
 		session.attach(domainObject);
 	}
 
@@ -91,11 +91,11 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
-		assertEquals(session.getId(), domainObject.getSessionId());
+		assertEquals(session.getObjectStoreId(), domainObject.getSessionId());
 		session.attach(domainObject);
 		
 		IClientSession session2 = sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), "OBJECTSTORE#2"));
-		assertFalse(session.getId() == session2.getId());
+		assertFalse(session.getObjectStoreId() == session2.getObjectStoreId());
 		
 		try {
 			session2.attach(domainObject);
@@ -145,7 +145,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeTestCase  {
 		
 		IClientSession session2 = 
 			sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID + "_2"));
-		String session2Id = session2.getId();
+		String session2Id = session2.getObjectStoreId();
 		
 		session2.attach(domainObject);
 		

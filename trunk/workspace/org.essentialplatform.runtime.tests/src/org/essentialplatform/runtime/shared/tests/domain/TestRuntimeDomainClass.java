@@ -7,9 +7,9 @@ import org.essentialplatform.core.progmodel.ProgrammingModelException;
 import org.essentialplatform.core.fixture.domain.Department;
 import org.essentialplatform.core.fixture.domain.DepartmentWithoutNoArgConstructor;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestRuntimeDomainClass extends AbstractRuntimeTestCase  {
+public class TestRuntimeDomainClass extends AbstractRuntimeClientTestCase  {
 
 	public void testCreateTransientCreatesUnderlyingPojo() {
 		IDomainClass domainClass = lookupAny(Department.class);

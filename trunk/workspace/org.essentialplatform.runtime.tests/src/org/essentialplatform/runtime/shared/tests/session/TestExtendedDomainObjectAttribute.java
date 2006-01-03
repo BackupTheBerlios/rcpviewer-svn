@@ -4,12 +4,12 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.OrderConstrained;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Ping;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Pong;
 
-public class TestExtendedDomainObjectAttribute extends AbstractRuntimeTestCase  {
+public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 
 	public void testCanSetAttributeIfAccessorPrerequisitesAllow() {
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);

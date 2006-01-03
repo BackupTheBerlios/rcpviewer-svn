@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.shared.tests.progmodel.extended;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 
 /**
@@ -12,7 +12,7 @@ import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
  * @author Dan Haywood
  *
  */
-public class TestExtendedClassAdapter extends AbstractRuntimeTestCase  {
+public class TestExtendedClassAdapter extends AbstractRuntimeClientTestCase  {
 
 	public void testDummy() {}
 	

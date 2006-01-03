@@ -7,9 +7,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 
 /**
  * Mirroring capabilities of TransactionAspect super-aspect.

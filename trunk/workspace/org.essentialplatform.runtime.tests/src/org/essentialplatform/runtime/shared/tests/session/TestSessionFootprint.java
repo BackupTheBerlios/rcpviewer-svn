@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Employee;
 
-public class TestSessionFootprint extends AbstractRuntimeTestCase  {
+public class TestSessionFootprint extends AbstractRuntimeClientTestCase  {
 
 	public TestSessionFootprint() {
 		super(null);

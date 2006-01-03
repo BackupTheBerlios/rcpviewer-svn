@@ -5,12 +5,12 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithNoIdentifier;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
+import org.essentialplatform.runtime.server.persistence.CompositeIdPersistenceIdAssigner;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.CompositeIdPersistenceIdAssigner;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeTestCase {
+public class TestCompositeIdPersistenceIdAssigner extends AbstractRuntimeClientTestCase {
 
 	private CompositeIdPersistenceIdAssigner assigner;
 

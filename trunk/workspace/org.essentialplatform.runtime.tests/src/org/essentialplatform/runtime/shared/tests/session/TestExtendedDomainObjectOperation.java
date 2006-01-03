@@ -7,9 +7,9 @@ import org.essentialplatform.core.fixture.progmodel.essential.standard.operation
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Product;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestExtendedDomainObjectOperation extends AbstractRuntimeTestCase {
+public class TestExtendedDomainObjectOperation extends AbstractRuntimeClientTestCase {
 
 	public void testOperationNoArgWithPre() {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithPre.class);

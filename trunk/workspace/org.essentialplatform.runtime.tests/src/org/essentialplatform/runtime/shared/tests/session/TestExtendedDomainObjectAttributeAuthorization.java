@@ -9,10 +9,10 @@ import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientDomainBinding;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.OrderConstrained;
 
-public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRuntimeTestCase  {
+public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRuntimeClientTestCase  {
 
 	public void testCanSetAttributeIfDefaultAuthorizationManagerConfigured() {
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);

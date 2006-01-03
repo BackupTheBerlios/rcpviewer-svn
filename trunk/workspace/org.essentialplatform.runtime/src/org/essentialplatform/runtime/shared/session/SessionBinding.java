@@ -1,16 +1,13 @@
 package org.essentialplatform.runtime.shared.session;
 
-import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 
 /**
  * Representing a (domain, objectstore) binding, with value object semantics.
  * 
  * <p>
  * Holds the <i>name</i> of the {@link IDomain} and the <i>Id</i> of the 
- * {@link IObjectStore}, rather than references to the actual objects 
+ * an ObjectStore, rather than references to the actual objects 
  * themselves.   This allows the object to be serialized across the wire, 
  * (eg, so that the server-side code can locate the appropriate persistence
  * context for an IObjectStore implementation). 

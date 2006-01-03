@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
 import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.IDomainBootstrap;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 
 /**
  * Initialises the <code>Domain</code> by looking for implementors of 

@@ -2,13 +2,13 @@ package org.essentialplatform.runtime.shared.tests.session;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.client.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.client.session.event.SessionManagerEvent;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
-import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestSessionManager extends AbstractRuntimeTestCase  {
+public class TestSessionManager extends AbstractRuntimeClientTestCase  {
 
 	public TestSessionManager() {
 		super(null);
@@ -25,7 +25,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 	public void testCreatingSessionAllocatesId() {
 		Domain domain = Domain.instance();
 		IClientSession session = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
-		assertNotNull(session.getId());
+		assertNotNull(session.getObjectStoreId());
 	}
 
 	public void testEachSessionGetsADifferentId() {
@@ -36,26 +36,26 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		IClientSession session4 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_4"));
 		IClientSession session5 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_5"));
 		
-		assertNotSame(session1.getId(), session2.getId());
-		assertNotSame(session1.getId(), session3.getId());
-		assertNotSame(session1.getId(), session4.getId());
-		assertNotSame(session1.getId(), session5.getId());
-		assertNotSame(session2.getId(), session1.getId());
-		assertNotSame(session2.getId(), session3.getId());
-		assertNotSame(session2.getId(), session4.getId());
-		assertNotSame(session2.getId(), session5.getId());
-		assertNotSame(session3.getId(), session1.getId());
-		assertNotSame(session3.getId(), session2.getId());
-		assertNotSame(session3.getId(), session4.getId());
-		assertNotSame(session3.getId(), session5.getId());
-		assertNotSame(session4.getId(), session1.getId());
-		assertNotSame(session4.getId(), session2.getId());
-		assertNotSame(session4.getId(), session3.getId());
-		assertNotSame(session4.getId(), session5.getId());
-		assertNotSame(session5.getId(), session1.getId());
-		assertNotSame(session5.getId(), session2.getId());
-		assertNotSame(session5.getId(), session3.getId());
-		assertNotSame(session5.getId(), session4.getId());
+		assertNotSame(session1.getObjectStoreId(), session2.getObjectStoreId());
+		assertNotSame(session1.getObjectStoreId(), session3.getObjectStoreId());
+		assertNotSame(session1.getObjectStoreId(), session4.getObjectStoreId());
+		assertNotSame(session1.getObjectStoreId(), session5.getObjectStoreId());
+		assertNotSame(session2.getObjectStoreId(), session1.getObjectStoreId());
+		assertNotSame(session2.getObjectStoreId(), session3.getObjectStoreId());
+		assertNotSame(session2.getObjectStoreId(), session4.getObjectStoreId());
+		assertNotSame(session2.getObjectStoreId(), session5.getObjectStoreId());
+		assertNotSame(session3.getObjectStoreId(), session1.getObjectStoreId());
+		assertNotSame(session3.getObjectStoreId(), session2.getObjectStoreId());
+		assertNotSame(session3.getObjectStoreId(), session4.getObjectStoreId());
+		assertNotSame(session3.getObjectStoreId(), session5.getObjectStoreId());
+		assertNotSame(session4.getObjectStoreId(), session1.getObjectStoreId());
+		assertNotSame(session4.getObjectStoreId(), session2.getObjectStoreId());
+		assertNotSame(session4.getObjectStoreId(), session3.getObjectStoreId());
+		assertNotSame(session4.getObjectStoreId(), session5.getObjectStoreId());
+		assertNotSame(session5.getObjectStoreId(), session1.getObjectStoreId());
+		assertNotSame(session5.getObjectStoreId(), session2.getObjectStoreId());
+		assertNotSame(session5.getObjectStoreId(), session3.getObjectStoreId());
+		assertNotSame(session5.getObjectStoreId(), session4.getObjectStoreId());
 	}
 
 	public void testGetAllSessions() {
@@ -78,7 +78,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		IClientSession session2 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
 		assertSame(session2, sessionManager.getCurrentSession(domain));
 		
-		sessionManager.switchSessionTo(session1.getId());
+		sessionManager.switchSessionTo(domain, session1.getObjectStoreId());
 		assertSame(session1, sessionManager.getCurrentSession(domain));
 	}
 	
@@ -123,7 +123,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		sml.session = null; // reset since creating session would have populated
 		assertFalse(sml.sessionRemoved);
 		assertNull(sml.session);
-		sessionManager.removeSession(session1.getId());
+		sessionManager.removeSession(domain, session1.getObjectStoreId());
 		assertTrue(sml.sessionRemoved);
 		assertSame(session1, sml.session);
 	}
@@ -150,7 +150,7 @@ public class TestSessionManager extends AbstractRuntimeTestCase  {
 		
 		sml.sessionNowCurrent = false;
 		assertFalse(sml.sessionNowCurrent);
-		sessionManager.switchSessionTo(session1.getId());
+		sessionManager.switchSessionTo(domain, session1.getObjectStoreId());
 		assertTrue(sml.sessionNowCurrent);
 		assertSame(session1, sml.session);
 	}

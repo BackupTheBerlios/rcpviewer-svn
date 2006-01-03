@@ -1,40 +1,23 @@
 package org.essentialplatform.runtime.client;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
-import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.core.progmodel.ProgrammingModelException;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
-import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.IPersistenceIdAssigner;
-import org.essentialplatform.runtime.shared.persistence.IdSemanticsPersistenceIdAssigner;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
+import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
 import org.osgi.framework.Bundle;
 
 /**
@@ -42,79 +25,23 @@ import org.osgi.framework.Bundle;
  * 
  * @author Dan Haywood
  */
-public final class RuntimeClientBinding extends Binding {
+public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 	
 	private static Logger _logger = Logger.getLogger(RuntimeClientBinding.class);
-
-	private static EssentialProgModelStandardSemanticsEmfSerializer __standardSerializer = new EssentialProgModelStandardSemanticsEmfSerializer();
-	private static EssentialProgModelExtendedSemanticsEmfSerializer __extendedSerializer = new EssentialProgModelExtendedSemanticsEmfSerializer();
-	private static LouisProgModelSemanticsEmfSerializer __louisSerializer = new LouisProgModelSemanticsEmfSerializer();
-
-	private static Map<Class<?>, Object> __defaultValueByPrimitiveType = new HashMap<Class<?>, Object>();
-	private static Map<Class<?>, Class<?>> __wrapperTypeByPrimitiveType = new HashMap<Class<?>, Class<?>>();
-
-	static {
-		__defaultValueByPrimitiveType.put(byte.class, 0);
-		__defaultValueByPrimitiveType.put(short.class, 0);
-		__defaultValueByPrimitiveType.put(int.class, 0);
-		__defaultValueByPrimitiveType.put(long.class, 0);
-		__defaultValueByPrimitiveType.put(char.class, 0);
-		__defaultValueByPrimitiveType.put(float.class, 0);
-		__defaultValueByPrimitiveType.put(double.class, 0);
-		__defaultValueByPrimitiveType.put(boolean.class, false);
-		__defaultValueByPrimitiveType.put(String.class, null); // rather than
-																// ""
-		__defaultValueByPrimitiveType.put(Byte.class, 0);
-		__defaultValueByPrimitiveType.put(Short.class, 0);
-		__defaultValueByPrimitiveType.put(Integer.class, 0);
-		__defaultValueByPrimitiveType.put(Long.class, 0);
-		__defaultValueByPrimitiveType.put(Character.class, 0);
-		__defaultValueByPrimitiveType.put(Float.class, 0);
-		__defaultValueByPrimitiveType.put(Double.class, 0);
-		__defaultValueByPrimitiveType.put(Boolean.class, false);
-		__defaultValueByPrimitiveType
-				.put(BigInteger.class, new BigInteger("0"));
-		__defaultValueByPrimitiveType.put(BigDecimal.class, new BigDecimal(
-				"0.0"));
-
-		__wrapperTypeByPrimitiveType.put(byte.class, Byte.class);
-		__wrapperTypeByPrimitiveType.put(short.class, Short.class);
-		__wrapperTypeByPrimitiveType.put(int.class, Integer.class);
-		__wrapperTypeByPrimitiveType.put(long.class, Long.class);
-		__wrapperTypeByPrimitiveType.put(char.class, Character.class);
-		__wrapperTypeByPrimitiveType.put(float.class, Float.class);
-		__wrapperTypeByPrimitiveType.put(double.class, Double.class);
-		__wrapperTypeByPrimitiveType.put(boolean.class, Boolean.class);
-
+	protected Logger getLogger() {
+		return _logger;
 	}
 
-	/**
-	 * Converts primitive types into corresponding wrapped types, or leaves
-	 * alone if not a primitive type.
-	 * 
-	 * @param type
-	 * @return
-	 */
-	private Class<?> wrapperTypeIfRequired(Class<?> type) {
-		Class<?> wrappedType = __wrapperTypeByPrimitiveType.get(type);
-		if (wrappedType != null) {
-			return wrappedType;
-		} else {
-			return type;
-		}
-
-	}
 
 
 	//////////////////////////////////////////////////////////////////////
 
+	@Override
+	public Bundle getBundle() {
+		return Platform.getBundle("org.essentialplatform.domain.runtime");
+	}
 
-	private final IDomainBuilder _primaryBuilder;
-	/**
-	 * Injected in server-side.
-	 */
-	private IPersistenceIdAssigner _sequentialPersistenceIdAssigner; 
-	
+
 	/**
 	 * Saves the primary builder, and sets up a sequential persistence Id assigner.
 	 *
@@ -125,39 +52,7 @@ public final class RuntimeClientBinding extends Binding {
 	 * @throws RuntimeException if a binding has already been set.
 	 */
 	public RuntimeClientBinding(IDomainBuilder primaryBuilder) {
-		_primaryBuilder = primaryBuilder;
-	}
-
-	/**
-	 * Injected.
-	 * 
-	 * @param assigner
-	 */
-	public void setPersistenceIdAssigner(IPersistenceIdAssigner assigner) {
-		_sequentialPersistenceIdAssigner = assigner;
-	}
-	
-	@Override
-	public Bundle getBundle() {
-		return Platform.getBundle("org.essentialplatform.domain.runtime");
-	}
-
-	
-	@Override
-	public IDomainBuilder getPrimaryBuilder() {
-		return _primaryBuilder;
-	}
-
-	@Override
-	public final InDomain getInDomainOf(final Object classRepresentation) {
-		return getInDomainOf((Class<?>)classRepresentation);
-	}
-	private <V> InDomain getInDomainOf(final Class<V> javaClass) {
-		InDomain inDomain = javaClass.getAnnotation(InDomain.class);
-		if (inDomain == null) {
-			return null;
-		}
-		return inDomain;
+		super(primaryBuilder);
 	}
 
 	@Override
@@ -170,7 +65,7 @@ public final class RuntimeClientBinding extends Binding {
 		return binding;
 	}
 	private <V> IClassClientBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
-		return new RuntimeClientClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
+		return new RuntimeClientClassBinding<V>(domainClass, javaClass);
 	}
 	
 	@Override
@@ -192,8 +87,13 @@ public final class RuntimeClientBinding extends Binding {
 
 	//////////////////////////////////////////////////////////////////////
 	
-	public final static class RuntimeClientDomainBinding implements IDomainBinding {
-		private final IDomain _domain;
+	public final class RuntimeClientDomainBinding extends AbstractRuntimeDomainBinding implements IDomainBinding {
+
+		
+		public RuntimeClientDomainBinding(IDomain domain) {
+			super(domain);
+		}
+		
 
 		/**
 		 * Defaults to {@link IAuthorizationManager#NOOP} but can be overridden
@@ -201,65 +101,6 @@ public final class RuntimeClientBinding extends Binding {
 		 */
 		private IAuthorizationManager _authorizationManager = IAuthorizationManager.NOOP;
 		
-		public RuntimeClientDomainBinding(IDomain domain) {
-			_domain = domain;
-		}
-		public IDomain getDomain() {
-			return _domain;
-		}
-		
-		/*
-		 * @see org.essentialplatform.domain.Deployment.IDomainBinding#getPackageNameFor(java.lang.Object)
-		 */
-		public String getPackageNameFor(final Object classRepresentation) {
-			return getPackageNameFor((Class<?>)classRepresentation);
-		}
-		private <V> String getPackageNameFor(final Class<V> javaClass) {
-			Package javaPackage = javaClass.getPackage();
-			return javaPackage.getName();
-		}
-		/*
-		 * @see org.essentialplatform.domain.Deployment.IDomainBinding#getClassSimpleNameFor(java.lang.Object)
-		 */
-		public String getClassSimpleNameFor(final Object classRepresentation) {
-			return getClassSimpleNameFor((Class<?>)classRepresentation);
-		}
-		private <V> String getClassSimpleNameFor(final Class<V> javaClass) {
-			return javaClass.getSimpleName();
-		}
-		/*
-		 * @see org.essentialplatform.domain.Deployment.IDomainBinding#processEClass(org.eclipse.emf.ecore.EClass, java.lang.Object)
-		 */
-		public void processEClass(final EClass eClass, final Object classRepresentation) {
-			processEClass(eClass, (Class<?>)classRepresentation);
-		}
-		private <V> void processEClass(final EClass eClass, final Class<V> javaClass) {
-			eClass.setInstanceClass(javaClass);
-		}
-		/*
-		 * @see org.essentialplatform.domain.Deployment.IDomainBinding#classRepresentationfor(org.eclipse.emf.ecore.EClass)
-		 */
-		public Object classRepresentationFor(final EClass eClass) {
-			return (Class<?>)eClass.getInstanceClass();
-		}
-
-
-		/*
-		 * @see org.essentialplatform.domain.Deployment.IDomainBinding#assertValid(java.lang.Object)
-		 */
-		public void assertValid(final Object classRepresentation) {
-			if (!(classRepresentation instanceof Class)) {
-				throw new IllegalArgumentException(
-					"Class representation is not an instance of java.lang.Class (is a " + classRepresentation.getClass().getCanonicalName() + ")");
-			}
-			assertValid((Class<?>)classRepresentation);
-		}
-		private <V> void assertValid(final Class<V> javaClass) {
-			if ( javaClass.isPrimitive() ) {
-				throw new IllegalArgumentException("Java class is primitive.");
-			}
-		}
-
 		/**
 		 * Authorization manager to enforce constraints.
 		 * 
@@ -288,11 +129,7 @@ public final class RuntimeClientBinding extends Binding {
 
 	}
 	
-	public final static class RuntimeClientClassBinding<T> implements IClassClientBinding<T>, IPersistenceIdAssigner {
-
-		private final IDomainClass _domainClass;
-		private final Class<T> _javaClass;
-		private final IPersistenceIdAssigner _persistenceIdAssigner; 
+	public final class RuntimeClientClassBinding<T> extends AbstractRuntimeClassBinding<T> implements IClassClientBinding<T> {
 
 		/**
 		 * Delegates either to a composite persistence Id assigner or a
@@ -301,55 +138,11 @@ public final class RuntimeClientBinding extends Binding {
 		 * 
 		 * @param domainClass
 		 * @param javaClass
-		 * @param delegatePersistenceIdAssigner
 		 */
-		public RuntimeClientClassBinding(IDomainClass domainClass, Class<T> javaClass, IPersistenceIdAssigner delegatePersistenceIdAssigner) {
-			_domainClass = domainClass;
-			_javaClass = javaClass;
-			domainClass.setBinding(this);
-			_persistenceIdAssigner = new IdSemanticsPersistenceIdAssigner(domainClass, delegatePersistenceIdAssigner);
+		public RuntimeClientClassBinding(IDomainClass domainClass, Class<T> javaClass) {
+			super(domainClass, javaClass);
 		}
 
-		public Class<T> getJavaClass() {
-			return _javaClass;
-		}
-		
-		public T newInstance() throws ProgrammingModelException {
-			try {
-				return getJavaClass().newInstance();
-			} catch(IllegalAccessException ex) {
-				throw new ProgrammingModelException("Cannot instantiate", ex);
-			} catch(InstantiationException ex) {
-				throw new ProgrammingModelException("Cannot instantiate", ex);
-			}
-		}
-		
-		/**
-		 * Returns the specified annotation (if any) on the class.
-		 * 
-		 * @param <T>
-		 * @param annotationClass
-		 * @return
-		 */
-		public <Q extends Annotation> Q getAnnotation(Class<Q> annotationClass) {
-			return _javaClass.getAnnotation(annotationClass);
-		}
-
-		/**
-		 * Just delegates to {@link IdSemanticsPersistenceIdAssigner}.
-		 * 
-		 * @param <T>
-		 * @param domainObject
-		 * @return
-		 */
-		public <T> PersistenceId assignPersistenceIdFor(IDomainObject<T> domainObject) {
-			return _persistenceIdAssigner.assignPersistenceIdFor(domainObject);
-		}
-
-		public IPersistenceIdAssigner nextAssigner() {
-			return null;
-		}
-		
 	}
 
 	/**
@@ -357,55 +150,12 @@ public final class RuntimeClientBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientAttributeBinding implements IAttributeClientBinding {
+	public final class RuntimeClientAttributeBinding extends AbstractRuntimeAttributeBinding implements IAttributeClientBinding {
 
-		private final IDomainClass.IAttribute _attribute;
-		private final EAttribute _eAttribute;
-		
 		public RuntimeClientAttributeBinding(IDomainClass.IAttribute attribute) {
-			_attribute = attribute;
-			_eAttribute = _attribute.getEAttribute();
+			super(attribute);
 		}
 		
-		private Method getAccessor() {
-			return __standardSerializer.getAttributeAccessorMethod(_eAttribute);
-		}
-		private Method getMutator() {
-			return __standardSerializer.getAttributeMutatorMethod(_eAttribute);
-		}
-		private Method getAccessorOrMutator() {
-			return getAccessor()!=null?getAccessor():getMutator();
-		}
-		private Method getAccessorPre() {
-			return __extendedSerializer.getAttributeAccessorPreMethod(_eAttribute);
-		}
-		private Method getMutatorPre() {
-			return __extendedSerializer.getAttributeMutatorPreMethod(_eAttribute);
-		}
-
-		public Object invokeAccessor(final Object pojo) {
-			return invokeInvoker(getAccessor(), pojo, new Object[]{}, "accessor");
-		}
-
-		/**
-		 * There is no need to call to notifyAttributeListeners(newValue);
-		 * the NotifyListeners aspect will do our bidding for us.
-		 */
-		public void invokeMutator(final Object pojo, final Object newValue) {
-			invokeInvoker(getMutator(), pojo, new Object[]{newValue}, "mutator");
-		}
-		
-		/**
-		 * Returns the specified annotation (if any) on the accessor for the
-		 * attribute (or the mutator if this is a write-only attribute).
-		 * 
-		 * @param <T>
-		 * @param annotationClss
-		 * @return
-		 */
-		public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-			return getAccessorOrMutator().getAnnotation(annotationClass);
-		}
 
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _attribute.getDomainClass().getDomain();
@@ -427,27 +177,12 @@ public final class RuntimeClientBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-public static abstract class AbstractRuntimeClientReferenceBinding {
+	public final class DelegateRuntimeClientReferenceBinding extends AbstractRuntimeReferenceBinding {
 		
-		final IDomainClass.IReference _reference;
-		final EReference _eReference;
-
-		public AbstractRuntimeClientReferenceBinding(IDomainClass.IReference reference) {
-			_reference = reference;
-			_eReference = reference.getEReference();
+		public DelegateRuntimeClientReferenceBinding(IDomainClass.IReference reference) {
+			super(reference);
 		}
 		
-		Method getAccessor() {
-			return __standardSerializer.getReferenceAccessor(_eReference);
-		}
-		Method getMutator() {
-			return __standardSerializer.getReferenceMutator(_eReference);
-		}
-		
-		public Object invokeAccessor(final Object pojo) {
-			return invokeInvoker(getAccessor(), pojo, new Object[]{}, "accessor");
-		}
-
 		public IPrerequisites authorizationPrerequisites() {
 			IDomain domain = _reference.getDomainClass().getDomain();
 			RuntimeClientDomainBinding domainBinding = (RuntimeClientDomainBinding)domain.getBinding();
@@ -467,57 +202,37 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientOneToOneReferenceBinding extends AbstractRuntimeClientReferenceBinding implements IOneToOneReferenceClientBinding {
+	public final class RuntimeClientOneToOneReferenceBinding extends AbstractRuntimeOneToOneReferenceBinding implements IOneToOneReferenceClientBinding {
 
-		private final IDomainClass.IOneToOneReference _oneToOneReference;
+		private final DelegateRuntimeClientReferenceBinding _delegateBinding; 
 
 		public RuntimeClientOneToOneReferenceBinding(IDomainClass.IOneToOneReference oneToOneReference) {
 			super(oneToOneReference);
-			_oneToOneReference = oneToOneReference; // downcast
+			_delegateBinding = new DelegateRuntimeClientReferenceBinding(oneToOneReference);
 		}
 
-		private Method getAssociator() {
-			return __standardSerializer.getReferenceOneToOneAssociator(_eReference);
-		}
-		private Method getDissociator() {
-			return __standardSerializer.getReferenceOneToOneDissociator(_eReference);
-		}
-		private Method getMutatorPre() {
-			return __extendedSerializer.getReferenceMutatorPreMethod(_eReference);
+
+		/*
+		 * @see org.essentialplatform.runtime.client.IReferenceClientBinding#authorizationPrerequisites()
+		 */
+		public IPrerequisites authorizationPrerequisites() {
+			return _delegateBinding.authorizationPrerequisites();
 		}
 
 		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canAssociate()
+		 * @see org.essentialplatform.runtime.client.IReferenceClientBinding#accessorPrerequisitesFor(java.lang.Object)
 		 */
-		public boolean canAssociate() {
-			return getAssociator() != null;
+		public IPrerequisites accessorPrerequisitesFor(Object pojo) {
+			return _delegateBinding.accessorPrerequisitesFor(pojo);
 		}
-		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
-		 */
-		public void invokeAssociator(final Object pojo, final Object referencedObject) {
-			invokeInvoker(getAssociator(), pojo, new Object[]{referencedObject}, "associator");
-		}
-		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canDissociate()
-		 */
-		public boolean canDissociate() {
-			return getDissociator() != null;
-		}
-		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
-		 */
-		public void invokeDissociator(final Object pojo, final Object referencedObject) {
-			invokeInvoker(getDissociator(), pojo, new Object[]{referencedObject}, "dissociator");
-		}
-
+		
 		/*
 		 * @see org.essentialplatform.core.deployment.Binding.IOneToOneReferenceBinding#mutatorPrerequisitesFor(java.lang.Object, java.lang.Object)
 		 */
 		public IPrerequisites mutatorPrerequisitesFor(final Object pojo, final Object candidateValue) {
 			return invokePrerequisites(getMutatorPre(), pojo, new Object[]{}, "mutator");
 		}
-		
+
 	}
 		
 	/**
@@ -525,52 +240,28 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientCollectionReferenceBinding extends AbstractRuntimeClientReferenceBinding implements ICollectionReferenceClientBinding {
+	public final class RuntimeClientCollectionReferenceBinding extends AbstractRuntimeCollectionReferenceBinding implements ICollectionReferenceClientBinding {
 
-		private final IDomainClass.ICollectionReference _collectionReference;
+		private final DelegateRuntimeClientReferenceBinding _delegateBinding; 
 
 		public RuntimeClientCollectionReferenceBinding(IDomainClass.ICollectionReference collectionReference) {
 			super(collectionReference);
-			_collectionReference = collectionReference; // downcast
+			_delegateBinding = new DelegateRuntimeClientReferenceBinding(collectionReference);
 		}
 
-		private Method getAssociator() {
-			return __standardSerializer.getReferenceCollectionAssociator(_eReference);
-		}
-		private Method getDissociator() {
-			return __standardSerializer.getReferenceCollectionDissociator(_eReference);
-		}
 
-		private Method getAddToPre() {
-			return __extendedSerializer.getReferenceAddToPreMethod(_eReference);
-		}
-		private Method getRemoveFromPre() {
-			return __extendedSerializer.getReferenceRemoveFromPreMethod(_eReference);
+		/*
+		 * @see org.essentialplatform.runtime.client.IReferenceClientBinding#authorizationPrerequisites()
+		 */
+		public IPrerequisites authorizationPrerequisites() {
+			return _delegateBinding.authorizationPrerequisites();
 		}
 
 		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canAssociate()
+		 * @see org.essentialplatform.runtime.client.IReferenceClientBinding#accessorPrerequisitesFor(java.lang.Object)
 		 */
-		public boolean canAssociate() {
-			return getAssociator() != null;
-		}
-		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeAssociator(java.lang.Object, java.lang.Object)
-		 */
-		public void invokeAssociator(final Object pojo, final Object referencedObject) {
-			invokeInvoker(getAssociator(), pojo, new Object[]{referencedObject}, "associator");
-		}
-		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#canDissociate()
-		 */
-		public boolean canDissociate() {
-			return getDissociator() != null;
-		}
-		/*
-		 * @see org.essentialplatform.core.deployment.Binding.IReferenceBinding#invokeDissociator(java.lang.Object, java.lang.Object)
-		 */
-		public void invokeDissociator(final Object pojo, final Object referencedObject) {
-			invokeInvoker(getDissociator(), pojo, new Object[]{referencedObject}, "dissociator");
+		public IPrerequisites accessorPrerequisitesFor(Object pojo) {
+			return _delegateBinding.accessorPrerequisitesFor(pojo);
 		}
 
 		/*
@@ -588,10 +279,8 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public final static class RuntimeClientOperationBinding implements IOperationClientBinding {
+	public final class RuntimeClientOperationBinding extends AbstractRuntimeOperationBinding implements IOperationClientBinding {
 
-		private final IDomainClass.IOperation _operation;
-		private final EOperation _eOperation;
 		
 		/*
 		 * Extended semantics support.
@@ -600,8 +289,7 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 
 
 		public RuntimeClientOperationBinding(IDomainClass.IOperation operation) {
-			_operation = operation;
-			_eOperation = _operation.getEOperation();
+			super(operation);
 			
 			// extended semantics
 			EList eParameters = _eOperation.getEParameters();
@@ -834,23 +522,5 @@ public static abstract class AbstractRuntimeClientReferenceBinding {
 			throw new UnsupportedOperationException(formattedMessage);
 		}
 	}
-	/**
-	 * Static so can be invoked from instances of the nested static classes.
-	 * 
-	 * @param ex
-	 * @param contextDescription1
-	 * @param contextDescription2
-	 * @param method
-	 * @return
-	 */
-	private static String buildErrorMessage(
-			Throwable ex, 
-			String contextDescription1, String contextDescription2, 
-			Method method) {
-		return String.format(
-				"Problem invoking %s %s method '%s' (ex=%s)", 
-				new Object[]{contextDescription1, contextDescription2, method.getName(), ex.getMessage()});
-	}
-
 
 }

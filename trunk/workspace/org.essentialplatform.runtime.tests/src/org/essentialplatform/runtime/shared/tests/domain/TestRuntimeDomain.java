@@ -6,9 +6,9 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.domain.ClassInDefaultDomainExplicitly;
 import org.essentialplatform.core.fixture.domain.ClassInDefaultDomainImplicitly;
 import org.essentialplatform.core.fixture.domain.ClassInOtherDomain;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestRuntimeDomain extends AbstractRuntimeTestCase {
+public class TestRuntimeDomain extends AbstractRuntimeClientTestCase {
 
 	public void testDefaultDomainCreatedIfRequested() {
 		IDomain domain = getDomainInstance(); 

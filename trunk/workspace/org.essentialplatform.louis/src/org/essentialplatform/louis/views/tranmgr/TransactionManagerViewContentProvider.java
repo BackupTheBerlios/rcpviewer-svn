@@ -5,8 +5,8 @@ package org.essentialplatform.louis.views.tranmgr;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
 
 /**

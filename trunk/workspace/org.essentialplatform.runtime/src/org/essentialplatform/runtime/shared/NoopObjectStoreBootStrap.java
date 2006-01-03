@@ -4,7 +4,7 @@
 package org.essentialplatform.runtime.shared;
 
 import org.eclipse.core.runtime.CoreException;
-import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.server.persistence.IObjectStore;
 
 /**
  * Does nowt.

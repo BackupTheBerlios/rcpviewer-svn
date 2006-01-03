@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.client.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.client.session.event.SessionManagerEvent;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.SessionList;
-import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
-import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
+import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
 
 public final class ClientSessionManager implements IClientSessionManager {
 
@@ -26,11 +24,6 @@ public final class ClientSessionManager implements IClientSessionManager {
 		return __instance;
 	}
 
-	///////////////////////////////////////////////////////////////////
-	//
-	///////////////////////////////////////////////////////////////////
-	
-
 	/**
 	 * Private visibility so can only be instantiated as a singleton.
 	 */
@@ -39,24 +32,21 @@ public final class ClientSessionManager implements IClientSessionManager {
 	}
 
 	///////////////////////////////////////////////////////////////////
-	// Hashes
-	// TODO: should we also hold (SessionBinding,ISession)?  This will
-	// be needed on the ServerSessionManager, but perhaps not on
-	// the client?
+	//
 	///////////////////////////////////////////////////////////////////
 	
-	private Map<String, IClientSession> _sessionsById = new HashMap<String, IClientSession>();
-	
+	private Map<IDomain, ObjectStoreHandleList<IClientSession>> _sessionListByDomain = 
+		new HashMap<IDomain, ObjectStoreHandleList<IClientSession>>();
+
 	/*
 	 * @see org.essentialplatform.runtime.session.ISessionManager#defineSession(org.essentialplatform.core.domain.IDomain, java.lang.String)
 	 */
 	public IClientSession defineSession(SessionBinding sessionBinding) {
 		Domain domain = Domain.instance(sessionBinding.getDomainName());
 		ClientSession session = new ClientSession(sessionBinding);
-		_sessionsById.put(session.getId(), session);
-		SessionList sessionList = _sessionListByDomain.get(domain);
+		ObjectStoreHandleList<IClientSession> sessionList = _sessionListByDomain.get(domain);
 		if (sessionList == null) {
-			sessionList = new SessionList();
+			sessionList = new ObjectStoreHandleList();
 			_sessionListByDomain.put(domain, sessionList);
 		}
 		sessionList.add(session);
@@ -64,17 +54,16 @@ public final class ClientSessionManager implements IClientSessionManager {
 		for(ISessionManagerListener listener: _listeners) {
 			listener.sessionCreated(event);
 		}
-		switchSessionTo(session.getId());						
+		switchSessionTo(domain, session.getObjectStoreId());						
 		return session;
 	}
 
 	
-	private Map<IDomain, SessionList> _sessionListByDomain = new HashMap<IDomain, SessionList>();
 	/*
 	 * @see org.essentialplatform.runtime.session.ISessionManager#getCurrentSession(org.essentialplatform.core.domain.IDomain)
 	 */
 	public IClientSession getCurrentSession(final IDomain domain) {
-		SessionList sessionList = _sessionListByDomain.get(domain);
+		ObjectStoreHandleList<IClientSession> sessionList = _sessionListByDomain.get(domain);
 		if (sessionList == null) {
 			return null;
 		}
@@ -85,40 +74,26 @@ public final class ClientSessionManager implements IClientSessionManager {
 	 * @see org.essentialplatform.runtime.shared.session.ISessionManager#switchSessionTo(org.essentialplatform.core.domain.Domain, java.lang.String)
 	 */
 	public IClientSession switchSessionTo(Domain domain, String objectStoreId) {
-		SessionList sessionList = _sessionListByDomain.get(domain);
-		return sessionList.setCurrent(objectStoreId);
-	}
-
-
-	/**
-	 * Change the current session (for the inferred domain) to that indicated 
-	 * by the session Id.
-	 */
-	public void switchSessionTo(final String currentSessionId) {
-		
-		IClientSession session = _sessionsById.get(currentSessionId);
-		if (session == null) {
-			throw new IllegalArgumentException("No such session id:"+currentSessionId);
-		}
-		IDomain domain = session.getDomain();
-		SessionList sessionList = _sessionListByDomain.get(domain);
-		if (sessionList == null) {
-			throw new IllegalStateException("Could not locate session list for domain '" + domain + "'");
-		}
-		sessionList.setCurrent(session.getId());
+		ObjectStoreHandleList<IClientSession> sessionList = _sessionListByDomain.get(domain);
+		IClientSession session = sessionList.setCurrent(objectStoreId);
 		SessionManagerEvent event = new SessionManagerEvent(this, session);
 		for(ISessionManagerListener listener: _listeners) {
 			listener.sessionNowCurrent(event);
 		}
+		return session;
 	}
 
-	
+
 	///////////////////////////////////////////////////////////////////
 	//
 	///////////////////////////////////////////////////////////////////
 	
 	public Collection<IClientSession> getAllSessions() {
-		return new ArrayList<IClientSession>(_sessionsById.values());
+		Collection<IClientSession> sessions = new ArrayList<IClientSession>();
+		for(ObjectStoreHandleList<IClientSession> sessionList: _sessionListByDomain.values()) {
+			sessions.addAll(sessionList.getAll());
+		}
+		return sessions;
 	}
 
 
@@ -129,10 +104,10 @@ public final class ClientSessionManager implements IClientSessionManager {
 	 * 
 	 */
 	public void reset() {
-		for(IClientSession session: _sessionsById.values()) {
-			session.reset();
+		for(ObjectStoreHandleList<IClientSession> sessionList: _sessionListByDomain.values()) {
+			sessionList.reset();
 		}
-		this._sessionsById.clear();
+		_sessionListByDomain.clear();
 	}
 
 	///////////////////////////////////////////////////////////////////
@@ -146,9 +121,9 @@ public final class ClientSessionManager implements IClientSessionManager {
 		}
 	}
 
-	public void removeSession(String sessionId) {
-		IClientSession session = _sessionsById.get(sessionId);
-		_sessionsById.remove(session);		
+	public void removeSession(IDomain domain, String objectStoreId) {
+		ObjectStoreHandleList<IClientSession> sessionList = _sessionListByDomain.get(domain);
+		IClientSession session = sessionList.remove(objectStoreId);
 		SessionManagerEvent event = new SessionManagerEvent(this, session);
 		for(ISessionManagerListener listener: _listeners) {
 			listener.sessionRemoved(event);

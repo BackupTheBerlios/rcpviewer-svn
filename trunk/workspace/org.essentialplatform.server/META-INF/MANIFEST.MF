@@ -24,4 +24,5 @@ Export-Package: org.essentialplatform.server,
  org.essentialplatform.server.remoting.activemq,
  org.essentialplatform.server.remoting.xactnprocessor,
  org.essentialplatform.server.remoting.xactnprocessor.enqueue,
+ org.essentialplatform.server.remoting.xactnprocessor.hibernate,
  org.essentialplatform.server.remoting.xactnprocessor.noop

@@ -7,21 +7,17 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.client.domain.IObservedFeature;
+import org.essentialplatform.runtime.client.session.event.ISessionListener;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.shared.session.IObjectStoreHandle;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.event.ISessionListener;
 
 /**
- * Binds a {@link IDomain} with an {@link IObjectStore}.
+ * Binds a {@link IDomain} with the Id of an objectstore.
  * 
  * <p>
  * Put another way, it is the client-side equivalent of an object store 
  * with respect to a particular {@link IDomain}.
- * 
- * <p>
- * Note the similarity of the SessionManager's map of domain->SessionList with
- * the StandaloneServer's map of domain->ObjectStoreList.
  * 
  * <p>
  * Some scenarios:
@@ -82,19 +78,8 @@ import org.essentialplatform.runtime.shared.session.event.ISessionListener;
  * 
  * @author Dan Haywood
  */
-public interface IClientSession {
+public interface IClientSession extends IObjectStoreHandle {
 
-	/**
-	 * The id of the object store into which the domain objects managed by this 
-	 * session will be stored.
-	 * 
-	 * <p>
-	 * Typically there will be precisely one session per {@link IDomain}.
-	 * However, the design allows multiple such sessions. 
-	 * 
-	 * @return
-	 */
-	public String getId();
 	
 	/**
 	 * The {@link Domain} (or schema, or metamodel) that holds the
@@ -230,17 +215,6 @@ public interface IClientSession {
 	 * @return true if attached, false otherwise.
 	 */
 	<T> boolean isAttached(IDomainObject<T> domainObject);
-	
-	/**
-	 * Detach all instances.
-	 * 
-	 * <p>
-	 * Note that <i>no</i> {@link ITransactionListener}s will be notified. 
-	 * 
-	 * <p>
-	 * Primarily of use for testing.
-	 */
-	void reset();
 
 	
 	/**

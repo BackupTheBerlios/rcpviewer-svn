@@ -53,10 +53,10 @@ import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
 
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;

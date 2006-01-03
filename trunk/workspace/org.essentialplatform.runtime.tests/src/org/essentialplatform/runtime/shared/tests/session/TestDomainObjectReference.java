@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.shared.tests.session;
 
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestDomainObjectReference extends AbstractRuntimeTestCase  {
+public class TestDomainObjectReference extends AbstractRuntimeClientTestCase  {
 
 	public TestDomainObjectReference() {
 		super(null);

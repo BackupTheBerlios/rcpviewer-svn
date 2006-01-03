@@ -6,11 +6,11 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Employee;
 
-public class TestDomainObjectCollection extends AbstractRuntimeTestCase  {
+public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 
 	public void testCanRemoveFromCollection() {
 		IDomainClass departmentDomainClass = lookupAny(Department.class);

@@ -1,10 +1,10 @@
 package org.essentialplatform.server.persistence.hibernate;
 
+import org.essentialplatform.runtime.server.persistence.AbstractObjectStore;
+import org.essentialplatform.runtime.server.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.AbstractObjectStore;
 import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
-import org.essentialplatform.runtime.shared.persistence.IObjectStore;
 
 public final class HibernateObjectStore extends AbstractObjectStore {
 
@@ -39,6 +39,15 @@ public final class HibernateObjectStore extends AbstractObjectStore {
 	public <T> boolean isPersistent(IDomainObject<T> domainObject) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/*
+	 * Does nothing.
+	 *  
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#reset()
+	 */
+	public void reset() {
+		
 	}
 
 }

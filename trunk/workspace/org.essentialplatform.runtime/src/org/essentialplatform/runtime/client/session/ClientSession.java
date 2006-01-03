@@ -13,12 +13,12 @@ import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.client.domain.IObservedFeature;
+import org.essentialplatform.runtime.client.session.event.ISessionListener;
+import org.essentialplatform.runtime.client.session.event.SessionObjectEvent;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.event.ISessionListener;
-import org.essentialplatform.runtime.shared.session.event.SessionObjectEvent;
 
 /**
  * 
@@ -66,7 +66,7 @@ public final class ClientSession implements IClientSession {
 	/*
 	 * @see org.essentialplatform.session.ISession#getId()
 	 */
-	public String getId() {
+	public String getObjectStoreId() {
 		return _sessionBinding.getObjectStoreId();
 	}
 
@@ -215,10 +215,10 @@ public final class ClientSession implements IClientSession {
 			// the same domain
 			String domainObjectSessionId = domainObject.getSessionId(); 
 			if (domainObjectSessionId != null) {
-				if (!this.getId().equals(domainObject.getSessionId())) {
+				if (!this.getObjectStoreId().equals(domainObject.getSessionId())) {
 				throw new IllegalArgumentException(
 						"Incompatible session _id " +
-						"(this.id = '" + getId() + "', " +
+						"(this.id = '" + getObjectStoreId() + "', " +
 						"domainObject.sessionId = '" + 
 								domainObject.getSessionId() + "')");
 				}

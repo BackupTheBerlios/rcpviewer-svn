@@ -11,6 +11,7 @@ import java.util.Stack;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.changes.ChangeSet;
@@ -36,7 +37,7 @@ public final class Transaction implements ITransaction {
 	///////////////////////////////////////////////////////////////
     
 
-	Transaction(final TransactionManager transactionManager, final IAppContainer appContainer) {
+	public Transaction(final TransactionManager transactionManager, final IAppContainer appContainer) {
 		init(transactionManager, appContainer, ITransaction.State.IN_PROGRESS, new Date());
 	}
 

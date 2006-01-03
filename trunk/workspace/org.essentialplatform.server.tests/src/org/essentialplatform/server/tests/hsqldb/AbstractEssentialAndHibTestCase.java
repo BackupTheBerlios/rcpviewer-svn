@@ -1,6 +1,6 @@
 package org.essentialplatform.server.tests.hsqldb;
 
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,7 +9,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
 
-public abstract class AbstractEssentialAndHibTestCase extends AbstractRuntimeTestCase {
+public abstract class AbstractEssentialAndHibTestCase extends AbstractRuntimeClientTestCase {
 
 	private static SessionFactory hibSessionFactory;
 	private static AnnotationConfiguration hibConfiguration;

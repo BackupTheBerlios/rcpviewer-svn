@@ -4,29 +4,26 @@ import java.util.Collection;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.client.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
 
 /**
  * A (client-side) singleton that keeps track of all {@link IClientSession}s that 
  * have been instantiated, tracking the current session for each {@link IDomain}.
  * 
  * <p>
- * A {@link IClientSession} is a binding between an {@link IDomain} and an
- * {@link IObjectStore} that is capable of storing objects from that domain.
- * Since {@link IObjectStore}s are server-side, the session actually binds 
- * the {@link IDomain} object and the Id of the {@link IObjectStore}.  This binding
+ * A {@link IClientSession} is a binding between an {@link IDomain} and 
+ * an ObjectStore that is capable of storing objects from that domain.
+ * Since ObjectStores are server-side, the session actually binds 
+ * the {@link IDomain} object and the Id of the IObjectStore.  This binding
  * is encapsulated in the (serializable) {@link SessionBinding} that allows
  * the server-side equivalent of {@link IClientSessionManager} to recreate the
- * binding, but this time to the actual {@link IObjectStore} instance.
+ * binding, but this time to the actual ObjectStore instance.
  *  
  * <p>
  * Typically there will be just one {@link IClientSession} per {@link IDomain} (and
  * even, just one {@link IDomain}), meaning that there is never any ambiguity
- * into which {@link IObjectStore} a given newly created domain object should
+ * into which ObjectStore instance a given newly created domain object should
  * be persisted into.  However, the architecture does allow for multiple
  * {@link IClientSession}s for a given {@link IDomain}.  For example, the client
  * application might have instantiated objects from the <tt>Shop</tt> domain
@@ -56,7 +53,7 @@ public interface IClientSessionManager {
 	
 	/**
 	 * Creates an {@link IClientSession} that effectively binds the specified 
-	 * {@link IDomain} with the specified {@link IObjectStore} (through the
+	 * {@link IDomain} with the specified ObjectStore (through the
 	 * latter's own Id)
 	 * 
 	 * <p>
@@ -81,7 +78,7 @@ public interface IClientSessionManager {
 	/**
 	 * Remove a session from the collection of managed sessions.
 	 */
-	public void removeSession(String sessionId);
+	public void removeSession(IDomain domain, String objectStoreId);
 
 	/**
 	 * Returns all sessions currently managed by this session manager.

@@ -3,13 +3,13 @@ package org.essentialplatform.runtime.shared.tests.transaction;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.transaction.fixture.Calculator;
 import org.essentialplatform.runtime.shared.tests.transaction.fixture.Customer;
 import org.essentialplatform.runtime.shared.tests.transaction.fixture.EmailAddress;
 import org.essentialplatform.runtime.shared.tests.transaction.fixture.Order;
 
-public abstract class AbstractTransactionManagerTestCase extends AbstractRuntimeTestCase {
+public abstract class AbstractTransactionManagerTestCase extends AbstractRuntimeClientTestCase {
 
 	protected IDomainClass calculatorDomainClass;
 	protected IDomainClass customerDomainClass;

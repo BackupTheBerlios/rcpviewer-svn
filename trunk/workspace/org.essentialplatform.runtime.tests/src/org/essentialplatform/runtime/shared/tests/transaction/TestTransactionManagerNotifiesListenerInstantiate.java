@@ -1,9 +1,9 @@
 package org.essentialplatform.runtime.shared.tests.transaction;
 
+import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.transaction.fixture.Customer;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.event.TransactionManagerEvent;
 
 /**
  * 

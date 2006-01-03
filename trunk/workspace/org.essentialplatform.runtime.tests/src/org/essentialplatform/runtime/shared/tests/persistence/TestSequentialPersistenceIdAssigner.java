@@ -5,12 +5,12 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdSecond;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
+import org.essentialplatform.runtime.server.persistence.SequentialPersistenceIdAssigner;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
-import org.essentialplatform.runtime.shared.persistence.SequentialPersistenceIdAssigner;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestSequentialPersistenceIdAssigner extends AbstractRuntimeTestCase {
+public class TestSequentialPersistenceIdAssigner extends AbstractRuntimeClientTestCase {
 
 	private SequentialPersistenceIdAssigner assigner;
 

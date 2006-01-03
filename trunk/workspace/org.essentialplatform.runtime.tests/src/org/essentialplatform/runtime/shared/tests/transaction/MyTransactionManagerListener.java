@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.tests.transaction;
 
-import org.essentialplatform.runtime.shared.transaction.event.ITransactionManagerListener;
-import org.essentialplatform.runtime.shared.transaction.event.TransactionManagerEvent;
+import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
+import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
 
 public final class MyTransactionManagerListener implements
 		ITransactionManagerListener {

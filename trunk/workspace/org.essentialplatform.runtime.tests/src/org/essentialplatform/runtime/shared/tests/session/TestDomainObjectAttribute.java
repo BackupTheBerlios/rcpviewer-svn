@@ -9,10 +9,10 @@ import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 
-public class TestDomainObjectAttribute extends AbstractRuntimeTestCase  {
+public class TestDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 
 	public TestDomainObjectAttribute() {
 		super(null);

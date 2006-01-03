@@ -11,10 +11,10 @@ import org.essentialplatform.louis.util.PlatformUtil;
 
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.client.session.IClientSessionManager;
-import org.essentialplatform.runtime.shared.session.event.ISessionListener;
-import org.essentialplatform.runtime.shared.session.event.ISessionManagerListener;
-import org.essentialplatform.runtime.shared.session.event.SessionManagerEvent;
-import org.essentialplatform.runtime.shared.session.event.SessionObjectEvent;
+import org.essentialplatform.runtime.client.session.event.ISessionListener;
+import org.essentialplatform.runtime.client.session.event.ISessionManagerListener;
+import org.essentialplatform.runtime.client.session.event.SessionManagerEvent;
+import org.essentialplatform.runtime.client.session.event.SessionObjectEvent;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
@@ -74,7 +74,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Null method
-	 * @see org.essentialplatform.runtime.shared.session.event.ISessionManagerListener#sessionCreated(org.essentialplatform.runtime.shared.session.event.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.client.session.event.ISessionManagerListener#sessionCreated(org.essentialplatform.runtime.client.session.event.SessionManagerEvent)
 	 */
 	public void sessionCreated(SessionManagerEvent event) {
 		// null method
@@ -82,7 +82,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	
 	/**
 	 * Brings this view to the fore
-	 * @see org.essentialplatform.runtime.shared.session.event.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.runtime.shared.session.event.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.client.session.event.ISessionManagerListener#sessionNowCurrent(org.essentialplatform.runtime.client.session.event.SessionManagerEvent)
 	 */
 	public void sessionNowCurrent(SessionManagerEvent event) {
 		try {
@@ -99,7 +99,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	/**
 	 * Dispose this and the session listener of the removed session is the
 	 * parent session.
-	 * @see org.essentialplatform.runtime.shared.session.event.ISessionManagerListener#sessionRemoved(org.essentialplatform.runtime.shared.session.event.SessionManagerEvent)
+	 * @see org.essentialplatform.runtime.client.session.event.ISessionManagerListener#sessionRemoved(org.essentialplatform.runtime.client.session.event.SessionManagerEvent)
 	 */
 	public void sessionRemoved(SessionManagerEvent event) {
 		if ( event == null ) throw new IllegalArgumentException();
@@ -122,7 +122,7 @@ class SessionListener implements ISessionListener, ISessionManagerListener {
 	 * @return
 	 */
 	String getSessionId() {
-		return _session.getId() ;
+		return _session.getObjectStoreId() ;
 	}
 
 }

@@ -14,9 +14,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.ConfigureWidgetFactory;
 import org.essentialplatform.louis.util.ImageUtil;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
-import org.essentialplatform.runtime.shared.transaction.event.ITransactionManagerListener;
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
+import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 
 /**
  * Displays all current transactions.

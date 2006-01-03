@@ -8,12 +8,15 @@ import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.client.RuntimeClientBinding;
-import org.essentialplatform.runtime.shared.persistence.IObjectStore;
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
+import org.essentialplatform.runtime.server.persistence.IObjectStore;
+import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
+import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
 import org.essentialplatform.server.database.IDatabaseServer;
 import org.essentialplatform.server.database.hsqldb.HsqlDatabaseServer;
 import org.essentialplatform.server.persistence.hibernate.HibernateObjectStore;
@@ -21,6 +24,7 @@ import org.essentialplatform.server.remoting.IRemotingServer;
 import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
 import org.essentialplatform.server.remoting.xactnprocessor.ITransactionProcessor;
 import org.essentialplatform.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor;
+import org.essentialplatform.server.session.hibernate.HibernateServerSessionFactory;
 
 /**
  * Standalone server.
@@ -42,7 +46,8 @@ public class StandaloneServer extends AbstractService {
 	
 	////////////////////////////////////////////////////////////
 
-	private Map<IDomain, ObjectStoreList> objectStoreListByDomain = new HashMap<IDomain, ObjectStoreList>();
+	private Map<IDomain, ObjectStoreHandleList<IServerSessionFactory>> objectStoreListByDomain = 
+		new HashMap<IDomain, ObjectStoreHandleList<IServerSessionFactory>>();
 	
 	public StandaloneServer() {
 
@@ -63,6 +68,7 @@ public class StandaloneServer extends AbstractService {
 		// First, build our Domain(s)
 		// for now, only supporting "default".
 		Binding.setBinding(
+				// TODO: should be using SERVER bindings ... 
 			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
 
 		
@@ -73,9 +79,17 @@ public class StandaloneServer extends AbstractService {
 		//
 		// in the future, intend to pick up the names of domains and map to the
 		// Ids (and possibly implementations) of corresponding lists of objectstores.
+		HibernateServerSessionFactory hssf = 
+			new HibernateServerSessionFactory(PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
 		bind(
 			Domain.instance(DomainConstants.DEFAULT_NAME), 
-			new HibernateObjectStore(PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
+			hssf);
+		for(IDomainClass dc: Domain.instance(DomainConstants.DEFAULT_NAME).classes()) {
+			// TODO: should be using SERVER bindings ... 
+			RuntimeClientBinding.RuntimeClientClassBinding rccb = 
+				(RuntimeClientBinding.RuntimeClientClassBinding)dc.getBinding();
+			hssf.addClass(rccb.getJavaClass());
+		}
 		
 		// tell the transaction processor a
 		// for each SessionBinding tuple.
@@ -93,10 +107,10 @@ public class StandaloneServer extends AbstractService {
 	 * @param domain
 	 * @param objectStore
 	 */
-	private void bind(Domain domain, IObjectStore objectStore) {
-		ObjectStoreList objectStoreList = objectStoreListByDomain.get(domain);
+	private void bind(Domain domain, IServerSessionFactory objectStore) {
+		ObjectStoreHandleList<IServerSessionFactory> objectStoreList = objectStoreListByDomain.get(domain);
 		if (objectStoreList == null) {
-			objectStoreList = new ObjectStoreList();
+			objectStoreList = new ObjectStoreHandleList<IServerSessionFactory>();
 		}
 		objectStoreList.add(objectStore);
 	}

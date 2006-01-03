@@ -9,10 +9,10 @@ import org.apache.commons.io.IOUtils;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
-public class TestXStreamMarshalling extends AbstractRuntimeTestCase {
+public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 
 	private IDomainClass domainClass;
 	

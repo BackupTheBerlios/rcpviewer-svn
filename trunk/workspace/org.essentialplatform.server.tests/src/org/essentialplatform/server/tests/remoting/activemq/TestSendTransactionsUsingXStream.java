@@ -14,13 +14,13 @@ import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
 import org.essentialplatform.server.remoting.activemq.ActiveMqServerConstants;
 import org.essentialplatform.server.remoting.xactnprocessor.enqueue.EnqueuingTransactionProcessor;
 
-public class TestSendTransactionsUsingXStream extends AbstractRuntimeTestCase {
+public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestCase {
 
 	private IDomainClass domainClass;
 	

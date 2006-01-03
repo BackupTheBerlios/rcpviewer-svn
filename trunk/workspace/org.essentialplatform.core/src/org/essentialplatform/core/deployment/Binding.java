@@ -77,13 +77,18 @@ public abstract class Binding {
 	public abstract InDomain getInDomainOf(Object classRepresentation);
 
 	/**
+	 * for class loading.
+	 * 
+	 * @return
+	 */
+	public abstract Bundle getBundle();
+
+	/**
 	 * For testing.
 	 *
 	 */
 	public static void reset() {
 		__binding = null;
 	}
-
-	public abstract Bundle getBundle();
 
 }

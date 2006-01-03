@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.server.RuntimeServerBinding;
+import org.essentialplatform.runtime.server.persistence.AbstractObjectStore;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.AbstractObjectStore;
 import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
@@ -45,8 +45,8 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 		IDomainClass domainClass = domainObject.getDomainClass();
 
 		// get the runtime binding to assign an appropriate persistence Id.
-		RuntimeClientBinding.RuntimeClientClassBinding<T> binding = 
-			(RuntimeClientBinding.RuntimeClientClassBinding)domainClass.getBinding();
+		RuntimeServerBinding.RuntimeServerClassBinding<T> binding = 
+			(RuntimeServerBinding.RuntimeServerClassBinding)domainClass.getBinding();
 		binding.assignPersistenceIdFor(domainObject);
 		Object pojo = domainObject.getPojo();
 		PersistenceId persistenceId = domainObject.getPersistenceId();

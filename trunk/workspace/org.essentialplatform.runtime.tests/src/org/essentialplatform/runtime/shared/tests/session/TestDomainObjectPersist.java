@@ -2,10 +2,10 @@ package org.essentialplatform.runtime.shared.tests.session;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeTestCase;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 
-public class TestDomainObjectPersist extends AbstractRuntimeTestCase  {
+public class TestDomainObjectPersist extends AbstractRuntimeClientTestCase  {
 
 	public TestDomainObjectPersist() {
 		super(null);

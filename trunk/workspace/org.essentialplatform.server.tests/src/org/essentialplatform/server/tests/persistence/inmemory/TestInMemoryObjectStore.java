@@ -12,8 +12,8 @@ import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRunti
 import org.essentialplatform.runtime.client.RuntimeClientBinding;
 import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;
-import org.essentialplatform.runtime.shared.transaction.ITransactionManager;
-import org.essentialplatform.runtime.shared.transaction.TransactionManager;
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.server.persistence.inmemory.InMemoryObjectStore;
 
 /**
