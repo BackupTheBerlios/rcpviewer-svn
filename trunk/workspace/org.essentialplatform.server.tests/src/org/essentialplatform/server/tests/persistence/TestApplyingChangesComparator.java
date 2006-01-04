@@ -1,5 +1,6 @@
 package org.essentialplatform.server.tests.persistence;
 
+import org.essentialplatform.runtime.server.persistence.ApplyingChangesComparator;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.changes.AddToCollectionChange;
 import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
@@ -8,7 +9,6 @@ import org.essentialplatform.runtime.shared.transaction.changes.IChange;
 import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.shared.transaction.changes.OneToOneReferenceChange;
 import org.essentialplatform.runtime.shared.transaction.changes.RemoveFromCollectionChange;
-import org.essentialplatform.server.persistence.ApplyingChangesComparator;
 
 public class TestApplyingChangesComparator extends AbstractRuntimeClientTestCase {
 

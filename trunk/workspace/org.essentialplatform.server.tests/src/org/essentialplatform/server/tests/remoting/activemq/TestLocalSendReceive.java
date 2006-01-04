@@ -17,8 +17,8 @@ import javax.jms.TextMessage;
 
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
-import org.essentialplatform.server.database.hsqldb.HsqlDatabaseServer;
-import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
+import org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer;
+import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
 
 import junit.framework.TestCase;
 

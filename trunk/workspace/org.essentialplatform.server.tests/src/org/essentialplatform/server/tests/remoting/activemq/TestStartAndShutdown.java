@@ -2,7 +2,7 @@ package org.essentialplatform.server.tests.remoting.activemq;
 
 import junit.framework.TestCase;
 
-import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
+import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
 
 public class TestStartAndShutdown extends TestCase {
 

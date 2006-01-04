@@ -14,7 +14,7 @@ import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
-import org.essentialplatform.server.persistence.inmemory.InMemoryObjectStore;
+import org.essentialplatform.runtime.server.persistence.inmemory.InMemoryObjectStore;
 
 /**
  * Have copied down stuff from subclass; need to simplify.

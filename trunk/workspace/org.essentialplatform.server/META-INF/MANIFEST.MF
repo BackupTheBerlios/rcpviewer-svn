@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Essential Platform Standalone Server
 Bundle-SymbolicName: org.essentialplatform.server
 Bundle-Version: 1.0.0
-Bundle-Activator: org.essentialplatform.server.ServerPlugin
+Bundle-Activator: org.essentialplatform.runtime.server.ServerPlugin
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -14,15 +14,16 @@ Require-Bundle: org.eclipse.ui,
  net.sf.plugins.hibernate,
  org.essentialplatform.progmodel.essential.runtime
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.server,
- org.essentialplatform.server.database,
- org.essentialplatform.server.database.hsqldb,
- org.essentialplatform.server.persistence,
- org.essentialplatform.server.persistence.hibernate,
- org.essentialplatform.server.persistence.inmemory,
- org.essentialplatform.server.remoting,
- org.essentialplatform.server.remoting.activemq,
- org.essentialplatform.server.remoting.xactnprocessor,
- org.essentialplatform.server.remoting.xactnprocessor.enqueue,
- org.essentialplatform.server.remoting.xactnprocessor.hibernate,
- org.essentialplatform.server.remoting.xactnprocessor.noop
+Export-Package: org.essentialplatform.runtime.server,
+ org.essentialplatform.runtime.server.database,
+ org.essentialplatform.runtime.server.database.hsqldb,
+ org.essentialplatform.runtime.server.persistence,
+ org.essentialplatform.runtime.server.persistence.hibernate,
+ org.essentialplatform.runtime.server.persistence.inmemory,
+ org.essentialplatform.runtime.server.remoting,
+ org.essentialplatform.runtime.server.remoting.activemq,
+ org.essentialplatform.runtime.server.remoting.xactnprocessor,
+ org.essentialplatform.runtime.server.remoting.xactnprocessor.enqueue,
+ org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate,
+ org.essentialplatform.runtime.server.remoting.xactnprocessor.noop,
+ org.essentialplatform.runtime.server.session.hibernate

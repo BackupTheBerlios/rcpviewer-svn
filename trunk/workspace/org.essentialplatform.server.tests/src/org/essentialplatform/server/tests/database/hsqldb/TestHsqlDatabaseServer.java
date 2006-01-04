@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.essentialplatform.server.database.hsqldb.HsqlDatabaseServer;
+import org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer;
 
 import junit.framework.TestCase;
 

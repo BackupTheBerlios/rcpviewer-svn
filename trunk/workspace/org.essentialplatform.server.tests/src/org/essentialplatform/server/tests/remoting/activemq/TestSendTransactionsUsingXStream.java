@@ -13,12 +13,12 @@ import javax.jms.TextMessage;
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
+import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqServerConstants;
+import org.essentialplatform.runtime.server.remoting.xactnprocessor.enqueue.EnqueuingTransactionProcessor;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.server.remoting.activemq.ActiveMqRemotingServer;
-import org.essentialplatform.server.remoting.activemq.ActiveMqServerConstants;
-import org.essentialplatform.server.remoting.xactnprocessor.enqueue.EnqueuingTransactionProcessor;
 
 public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestCase {
 

@@ -1,6 +1,6 @@
 package org.essentialplatform.server.tests.database.hsqldb;
 
-import org.essentialplatform.server.database.hsqldb.HsqlDatabaseServer;
+import org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer;
 
 import junit.framework.TestCase;
 
