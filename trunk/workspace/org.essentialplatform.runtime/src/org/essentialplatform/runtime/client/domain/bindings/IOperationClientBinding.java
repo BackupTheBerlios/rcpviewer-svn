@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.essentialplatform.runtime.client;
+package org.essentialplatform.runtime.client.domain.bindings;
 
 import java.util.Map;
 

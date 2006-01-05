@@ -1,12 +1,12 @@
 /**
  * 
  */
-package org.essentialplatform.runtime.client;
+package org.essentialplatform.runtime.shared.domain.bindings;
 
 import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IReferenceClientBinding extends IReferenceBinding {
+public interface IReferenceServerBinding extends IReferenceBinding {
 	/**
 	 * Returns the pojo for a 1:1 reference, or a collection of pojos for
 	 * a collection reference.
@@ -19,6 +19,4 @@ public interface IReferenceClientBinding extends IReferenceBinding {
 	boolean canAssociate();
 	boolean canDissociate();
 	void invokeDissociator(Object pojo, Object referencedPojo);
-	IPrerequisites authorizationPrerequisites();
-	IPrerequisites accessorPrerequisitesFor(Object pojo);
 }

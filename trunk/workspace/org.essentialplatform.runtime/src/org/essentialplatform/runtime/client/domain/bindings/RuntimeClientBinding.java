@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.client;
+package org.essentialplatform.runtime.client.domain.bindings;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.essentialplatform.runtime.server;
+package org.essentialplatform.runtime.shared.domain.bindings;
 
 import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;

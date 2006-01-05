@@ -3,7 +3,7 @@ package org.essentialplatform.runtime.server.persistence;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 
