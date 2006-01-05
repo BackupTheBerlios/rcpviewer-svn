@@ -60,11 +60,11 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 		return new RuntimeClientDomainBinding(domain);
 	}
 	@Override
-	public IClassClientBinding bind(IDomainClass domainClass, Object classRepresentation) {
-		IClassClientBinding binding = bind(domainClass, (Class<?>)classRepresentation);
+	public IDomainClassClientBinding bind(IDomainClass domainClass, Object classRepresentation) {
+		IDomainClassClientBinding binding = bind(domainClass, (Class<?>)classRepresentation);
 		return binding;
 	}
-	private <V> IClassClientBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
+	private <V> IDomainClassClientBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
 		return new RuntimeClientClassBinding<V>(domainClass, javaClass);
 	}
 	
@@ -129,7 +129,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 
 	}
 	
-	public final class RuntimeClientClassBinding<T> extends AbstractRuntimeClassBinding<T> implements IClassClientBinding<T> {
+	public final class RuntimeClientClassBinding<T> extends AbstractRuntimeClassBinding<T> implements IDomainClassClientBinding<T> {
 
 		/**
 		 * Delegates either to a composite persistence Id assigner or a

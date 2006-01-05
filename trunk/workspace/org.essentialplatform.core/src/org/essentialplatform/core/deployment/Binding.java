@@ -60,7 +60,7 @@ public abstract class Binding {
 	public abstract IDomainBinding bindingFor(IDomain domain);
 
 	// JAVA5_FIXME: return type
-	public abstract <V extends IClassBinding> V bind(IDomainClass domainClass, Object classRepresentation);
+	public abstract <V extends IDomainClassBinding> V bind(IDomainClass domainClass, Object classRepresentation);
 
 	public abstract <V extends IAttributeBinding> V bindingFor(IAttribute attribute);
 

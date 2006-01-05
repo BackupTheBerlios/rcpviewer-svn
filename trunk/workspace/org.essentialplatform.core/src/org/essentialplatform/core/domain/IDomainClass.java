@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.IClassBinding;
+import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
@@ -143,7 +143,7 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public <V extends IClassBinding> V getBinding();
+	public <V extends IDomainClassBinding> V getBinding();
 
 
 	/**
@@ -151,7 +151,7 @@ public interface IDomainClass {
 	 * 
 	 * @return
 	 */
-	public <V extends IClassBinding> void setBinding( V binding);
+	public <V extends IDomainClassBinding> void setBinding( V binding);
 
 	/**
 	 * Whether this class overall is immutable, meaning that non of its

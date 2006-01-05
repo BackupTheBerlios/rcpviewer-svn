@@ -79,11 +79,11 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 		return new RuntimeServerDomainBinding(domain);
 	}
 	@Override
-	public IClassServerBinding bind(IDomainClass domainClass, Object classRepresentation) {
-		IClassServerBinding binding = bind(domainClass, (Class<?>)classRepresentation);
+	public IDomainClassServerBinding bind(IDomainClass domainClass, Object classRepresentation) {
+		IDomainClassServerBinding binding = bind(domainClass, (Class<?>)classRepresentation);
 		return binding;
 	}
-	private <V> IClassServerBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
+	private <V> IDomainClassServerBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
 		return new RuntimeServerClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
 	}
 	
@@ -134,7 +134,7 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 
 	}
 	
-	public final class RuntimeServerClassBinding<T> extends AbstractRuntimeClassBinding<T> implements IClassServerBinding<T> {
+	public final class RuntimeServerClassBinding<T> extends AbstractRuntimeClassBinding<T> implements IDomainClassServerBinding<T> {
 
 		
 		/**

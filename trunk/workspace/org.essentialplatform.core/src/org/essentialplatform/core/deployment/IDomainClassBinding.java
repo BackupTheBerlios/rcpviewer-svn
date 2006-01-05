@@ -10,7 +10,7 @@ import org.essentialplatform.core.domain.IDomainClass;
  * 
  * @author Dan Haywood
  */
-public interface IClassBinding<T> {
+public interface IDomainClassBinding<T> {
 	
 	/**
 	 * Returns the specified annotation (if any) on the class.

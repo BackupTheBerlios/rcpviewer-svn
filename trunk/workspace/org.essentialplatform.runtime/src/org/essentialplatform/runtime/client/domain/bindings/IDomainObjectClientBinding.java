@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.client.domain.bindings;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.bindings.IObjectClassRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
 
 
 /**
@@ -11,6 +11,6 @@ import org.essentialplatform.runtime.shared.domain.bindings.IObjectClassRuntimeB
  * 
  * @author Dan Haywood
  */
-public interface IObjectClassClientBinding<T> extends IObjectClassRuntimeBinding<T> {
+public interface IDomainObjectClientBinding<T> extends IDomainObjectRuntimeBinding<T> {
 	
 }

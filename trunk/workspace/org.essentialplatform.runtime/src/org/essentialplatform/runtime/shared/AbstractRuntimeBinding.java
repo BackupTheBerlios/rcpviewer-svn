@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.IClassBinding;
+import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
 import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
@@ -238,7 +238,7 @@ public abstract class AbstractRuntimeBinding extends Binding {
 
 	}
 	
-	public abstract static class AbstractRuntimeClassBinding<T> implements IClassBinding<T> {
+	public abstract static class AbstractRuntimeClassBinding<T> implements IDomainClassBinding<T> {
 
 		private final IDomainClass _domainClass;
 		private final Class<T> _javaClass;

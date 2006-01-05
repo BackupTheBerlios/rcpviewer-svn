@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.IClassBinding;
+import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.IReferenceBinding;
 import org.essentialplatform.core.domain.adapters.IAdapterFactory;
@@ -91,12 +91,12 @@ public final class DomainClass implements IDomainClass {
 		this._eClass = eClass;
 	}
 
-	private IClassBinding _binding;
+	private IDomainClassBinding _binding;
 	// JAVA5_FIXME
-	public <V extends IClassBinding> V getBinding() {
+	public <V extends IDomainClassBinding> V getBinding() {
 		return (V)_binding;
 	}
-	public <V extends IClassBinding> void setBinding(V binding) {
+	public <V extends IDomainClassBinding> void setBinding(V binding) {
 		_binding = binding;
 	}
 

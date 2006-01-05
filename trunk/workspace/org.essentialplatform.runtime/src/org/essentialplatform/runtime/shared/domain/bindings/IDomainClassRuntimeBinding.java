@@ -1,6 +1,6 @@
 package org.essentialplatform.runtime.shared.domain.bindings;
 
-import org.essentialplatform.core.deployment.IClassBinding;
+import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 
 /**
@@ -12,6 +12,6 @@ import org.essentialplatform.core.domain.IDomainClass;
  * 
  * @author Dan Haywood
  */
-public interface IClassRuntimeBinding<T> extends IClassBinding<T> {
+public interface IDomainClassRuntimeBinding<T> extends IDomainClassBinding<T> {
 	
 }
