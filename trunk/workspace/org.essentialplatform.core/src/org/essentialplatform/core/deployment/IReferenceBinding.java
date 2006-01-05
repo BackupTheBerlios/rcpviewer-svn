@@ -4,5 +4,5 @@
 package org.essentialplatform.core.deployment;
 
 
-public interface IReferenceBinding {
+public interface IReferenceBinding extends IMemberBinding {
 }

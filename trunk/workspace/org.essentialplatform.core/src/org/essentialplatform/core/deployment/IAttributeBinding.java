@@ -3,7 +3,6 @@
  */
 package org.essentialplatform.core.deployment;
 
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IAttributeBinding {
+public interface IAttributeBinding extends IMemberBinding {
 }
