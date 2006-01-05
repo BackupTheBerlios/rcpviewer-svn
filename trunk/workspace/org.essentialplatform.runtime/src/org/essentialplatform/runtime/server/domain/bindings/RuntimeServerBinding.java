@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.domain.bindings;
+package org.essentialplatform.runtime.server.domain.bindings;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;

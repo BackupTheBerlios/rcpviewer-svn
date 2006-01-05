@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.essentialplatform.runtime.shared.domain.bindings;
+package org.essentialplatform.runtime.server.domain.bindings;
 
 import java.util.Map;
 

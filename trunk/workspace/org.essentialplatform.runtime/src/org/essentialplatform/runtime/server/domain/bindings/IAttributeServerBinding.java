@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.domain.bindings;
+package org.essentialplatform.runtime.server.domain.bindings;
 
 import org.essentialplatform.core.deployment.IAttributeBinding;
 
