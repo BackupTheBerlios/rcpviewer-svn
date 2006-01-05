@@ -1,33 +1,20 @@
 package org.essentialplatform.runtime.shared.util;
 
 
-import org.aspectj.lang.*;
-
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-import java.util.Collection;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.ConstructorSignature;
 import org.aspectj.lang.reflect.FieldSignature;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.aspectj.lang.reflect.ConstructorSignature;
-
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EOperation;
-
-import org.essentialplatform.progmodel.essential.app.InDomain;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-
+import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.domain.IDomainClass;
-
-
-import org.essentialplatform.runtime.client.session.IClientSession;
-import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IPojo;
 
 public final class JoinPointUtil {
 

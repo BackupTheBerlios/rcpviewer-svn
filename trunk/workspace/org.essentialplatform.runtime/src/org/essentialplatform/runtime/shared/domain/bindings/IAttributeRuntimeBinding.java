@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.domain.bindings;
 
 import org.essentialplatform.core.deployment.IAttributeBinding;
-
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 
 /**

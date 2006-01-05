@@ -5,8 +5,6 @@ import java.util.List;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.ITransaction.State;
-import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
 
 /**
  * Creates, tracks and records both in-progress and committed 

@@ -2,6 +2,8 @@ package org.essentialplatform.runtime.shared.transaction;
 
 public class IrreversibleTransactionException extends RuntimeException {
 
+	private static final long serialVersionUID = 1L;
+
 	public IrreversibleTransactionException() {
 		super();
 	}

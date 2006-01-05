@@ -4,7 +4,6 @@ import java.util.EventObject;
 
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 
 
 /**

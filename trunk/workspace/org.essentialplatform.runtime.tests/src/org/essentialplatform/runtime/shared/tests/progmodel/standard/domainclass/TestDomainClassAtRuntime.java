@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.shared.tests.progmodel.standard.domainclas
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithNoAttributes;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 

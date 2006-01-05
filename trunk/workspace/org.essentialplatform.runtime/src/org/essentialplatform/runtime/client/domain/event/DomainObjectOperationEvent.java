@@ -3,7 +3,6 @@ package org.essentialplatform.runtime.client.domain.event;
 import java.util.EventObject;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation;
 
 
 /**

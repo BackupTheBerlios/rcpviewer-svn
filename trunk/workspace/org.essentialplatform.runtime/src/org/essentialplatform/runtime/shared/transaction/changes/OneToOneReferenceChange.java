@@ -2,11 +2,9 @@ package org.essentialplatform.runtime.shared.transaction.changes;
 
 import java.lang.reflect.Field;
 
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
 
 
 /**

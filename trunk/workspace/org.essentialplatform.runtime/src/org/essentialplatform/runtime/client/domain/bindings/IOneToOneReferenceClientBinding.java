@@ -1,5 +1,7 @@
 package org.essentialplatform.runtime.client.domain.bindings;
 
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass.IOneToOneReference;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRuntimeBinding;
 

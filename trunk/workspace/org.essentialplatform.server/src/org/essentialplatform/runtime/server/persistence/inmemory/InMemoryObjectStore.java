@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.runtime.server.RuntimeServerBinding;
+import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
 import org.essentialplatform.runtime.server.persistence.AbstractObjectStore;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;

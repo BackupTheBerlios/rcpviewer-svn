@@ -1,8 +1,6 @@
 package org.essentialplatform.runtime.client.transaction;
 
-import java.lang.reflect.Field;
-
-import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;

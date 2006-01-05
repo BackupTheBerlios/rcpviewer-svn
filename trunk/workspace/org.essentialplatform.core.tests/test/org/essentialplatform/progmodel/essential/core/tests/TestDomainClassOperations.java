@@ -22,7 +22,7 @@ import org.essentialplatform.core.fixture.progmodel.essential.standard.operation
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Priest;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Woman;
 import org.essentialplatform.core.tests.AbstractTestCase;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 
 
 /**

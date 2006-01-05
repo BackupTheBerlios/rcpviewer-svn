@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
@@ -29,10 +28,6 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.runtime.server.persistence.IPersistenceIdAssigner;
-import org.essentialplatform.runtime.server.persistence.IdSemanticsPersistenceIdAssigner;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 import org.osgi.framework.Bundle;
 
 /**

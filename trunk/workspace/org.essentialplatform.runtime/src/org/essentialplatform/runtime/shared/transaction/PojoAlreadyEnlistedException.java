@@ -9,6 +9,8 @@ package org.essentialplatform.runtime.shared.transaction;
  */
 public class PojoAlreadyEnlistedException extends RuntimeException {
 
+	private static final long serialVersionUID = 1L;
+
 	private static String messageFor(final ITransactable transactable, final ITransaction transaction) {
 		return "Pojo '" + transactable + "' already enlisted in transaction '" + transaction + "'";
 	}

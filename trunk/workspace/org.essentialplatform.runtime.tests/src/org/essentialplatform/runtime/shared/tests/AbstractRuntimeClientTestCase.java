@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.tests.AbstractTestCase;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.essentialplatform.runtime.client.session.ClientSession;
 import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;

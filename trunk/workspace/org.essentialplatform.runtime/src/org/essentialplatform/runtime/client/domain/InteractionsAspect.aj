@@ -1,10 +1,10 @@
 package org.essentialplatform.runtime.client.domain;
 
-import org.essentialplatform.progmodel.essential.app.InDomain;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import java.util.Collection;
 
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 
 /**

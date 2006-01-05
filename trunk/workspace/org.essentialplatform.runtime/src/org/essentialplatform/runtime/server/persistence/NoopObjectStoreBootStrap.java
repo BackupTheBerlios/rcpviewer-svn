@@ -1,10 +1,9 @@
 /**
  * 
  */
-package org.essentialplatform.runtime.shared;
+package org.essentialplatform.runtime.server.persistence;
 
 import org.eclipse.core.runtime.CoreException;
-import org.essentialplatform.runtime.server.persistence.IObjectStore;
 
 /**
  * Does nowt.

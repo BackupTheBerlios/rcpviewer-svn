@@ -1,14 +1,11 @@
 package org.essentialplatform.runtime.shared.session;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.runtime.client.session.IClientSession;
-import org.essentialplatform.runtime.server.persistence.IObjectStore;
 
 /**
  * Maintains a set of handles, and the current handle, all for a given domain.

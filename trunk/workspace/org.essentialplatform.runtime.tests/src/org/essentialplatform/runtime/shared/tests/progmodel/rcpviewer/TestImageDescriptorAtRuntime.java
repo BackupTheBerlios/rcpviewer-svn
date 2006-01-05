@@ -4,7 +4,7 @@ import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.progmodel.louis.core.tests.TestImageDescriptor;
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 
 
 /**

@@ -7,7 +7,7 @@ import org.essentialplatform.progmodel.louis.app.ImageUrlAt;
 import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
 import org.essentialplatform.progmodel.louis.core.domain.adapters.LouisProgModelAdapterFactory;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 
 /**
  * Adds annotations specific to the RCPViewer.

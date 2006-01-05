@@ -16,7 +16,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.NoopClassFilter;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.

@@ -1,10 +1,13 @@
-/**
- * 
- */
 package org.essentialplatform.core.deployment;
 
 import org.eclipse.emf.ecore.EClass;
+import org.essentialplatform.core.domain.IDomain;
 
+/**
+ * Placeholder for deployment-specific functionality for an {@link IDomain}.
+ * 
+ * @author Dan Haywood
+ */
 public interface IDomainBinding {
 	public String getPackageNameFor(final Object classRepresentation);
 	public String getClassSimpleNameFor(final Object classRepresentation);

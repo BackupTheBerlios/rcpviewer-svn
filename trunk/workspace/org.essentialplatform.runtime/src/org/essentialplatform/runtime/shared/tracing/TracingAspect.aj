@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.essentialplatform.runtime.shared.tracing;
 
 import org.aspectj.lang.*;

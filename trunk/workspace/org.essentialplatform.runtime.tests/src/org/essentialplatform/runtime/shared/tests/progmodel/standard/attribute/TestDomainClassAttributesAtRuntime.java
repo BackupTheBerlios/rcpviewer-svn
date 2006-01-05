@@ -4,8 +4,8 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.attribute.CustomerWithWriteOnlyAttribute;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientAttributeBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientAttributeBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassAttributes;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 

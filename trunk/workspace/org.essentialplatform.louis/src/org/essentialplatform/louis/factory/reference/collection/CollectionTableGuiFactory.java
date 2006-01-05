@@ -19,7 +19,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.factory.GuiHints;
 import org.essentialplatform.louis.factory.IGuiFactory;
-import org.essentialplatform.runtime.client.IReferenceClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.IReferenceClientBinding;
 
 public class CollectionTableGuiFactory implements IGuiFactory<IDomainClass.IReference> {
 

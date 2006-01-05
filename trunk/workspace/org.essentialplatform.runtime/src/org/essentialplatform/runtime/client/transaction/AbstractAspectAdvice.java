@@ -1,12 +1,9 @@
 package org.essentialplatform.runtime.client.transaction;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.SoftException;
-import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
 
 /**
  * Base class for defining advice executed by aspects.

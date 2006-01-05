@@ -1,7 +1,6 @@
 package org.essentialplatform.runtime.shared.domain;
 
 import org.essentialplatform.progmodel.essential.app.InDomain;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.DomainObject;

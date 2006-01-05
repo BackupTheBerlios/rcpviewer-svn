@@ -1,6 +1,5 @@
 package org.essentialplatform.runtime.client.session.event;
 
-import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.client.session.IClientSessionManager;
 
 /**

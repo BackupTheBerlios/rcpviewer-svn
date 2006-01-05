@@ -6,10 +6,11 @@ import java.util.Set;
 import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
-import org.essentialplatform.runtime.shared.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;
+import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
+import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
 
 /**
  * Represents a transaction either in progress, committed or (potentially)

@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.domain.bindings;
 
 import org.essentialplatform.core.deployment.IClassBinding;
-import org.essentialplatform.runtime.server.persistence.IPersistenceIdAssigner;
+import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Represents runtime-specific functionality for a 

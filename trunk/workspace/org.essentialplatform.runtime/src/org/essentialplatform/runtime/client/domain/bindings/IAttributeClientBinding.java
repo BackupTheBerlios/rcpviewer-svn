@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.essentialplatform.runtime.client.domain.bindings;
 
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;

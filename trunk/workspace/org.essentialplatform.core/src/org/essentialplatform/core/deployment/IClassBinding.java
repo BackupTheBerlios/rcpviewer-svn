@@ -1,10 +1,15 @@
-/**
- * 
- */
 package org.essentialplatform.core.deployment;
 
 import java.lang.annotation.Annotation;
 
+import org.essentialplatform.core.domain.IDomainClass;
+
+/**
+ * Placeholder for deployment-specific functionality for an 
+ * {@link IDomainClass}.
+ * 
+ * @author Dan Haywood
+ */
 public interface IClassBinding<T> {
 	
 	/**

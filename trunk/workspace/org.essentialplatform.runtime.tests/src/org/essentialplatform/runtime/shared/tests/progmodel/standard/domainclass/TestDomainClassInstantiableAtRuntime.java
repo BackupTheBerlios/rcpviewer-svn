@@ -1,7 +1,7 @@
 package org.essentialplatform.runtime.shared.tests.progmodel.standard.domainclass;
 
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClassInstantiable;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 

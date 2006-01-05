@@ -10,7 +10,7 @@ import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.server.database.IDatabaseServer;

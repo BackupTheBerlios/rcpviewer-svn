@@ -3,7 +3,6 @@ package org.essentialplatform.runtime.client.domain;
 import org.apache.log4j.Logger;
 
 import org.essentialplatform.runtime.client.domain.InteractionsAspect;
-
 import org.essentialplatform.runtime.shared.domain.IPojo;
 
 public aspect TraceInteractionsAspect extends InteractionsAspect {

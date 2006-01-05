@@ -6,7 +6,7 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.tests.AbstractTestCase;
 import org.essentialplatform.progmodel.essential.app.ProgModelConstants;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 
 public abstract class AbstractRuntimeSharedTestCase extends AbstractTestCase {
 

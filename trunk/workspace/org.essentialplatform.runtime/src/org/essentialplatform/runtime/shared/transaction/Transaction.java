@@ -18,7 +18,6 @@ import org.essentialplatform.runtime.shared.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;
 import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange.IVisitor;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
 import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
 

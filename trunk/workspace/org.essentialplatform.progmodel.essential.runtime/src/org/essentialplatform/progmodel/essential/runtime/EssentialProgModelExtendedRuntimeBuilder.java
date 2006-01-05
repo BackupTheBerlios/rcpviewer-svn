@@ -26,8 +26,8 @@ import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientAttributeBinding;
-import org.essentialplatform.runtime.client.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientAttributeBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 
 /**
  * Analyzes annotations specific to the extended programming model.

@@ -9,7 +9,6 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.IrreversibleTransactionException;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange.IVisitor;
 
 
 /**

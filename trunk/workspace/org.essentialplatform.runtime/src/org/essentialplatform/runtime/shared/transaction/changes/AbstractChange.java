@@ -1,17 +1,14 @@
 package org.essentialplatform.runtime.shared.transaction.changes;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Collections;
-
-import sun.rmi.runtime.GetThreadPoolAction;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange.IVisitor;
 
 
 /**

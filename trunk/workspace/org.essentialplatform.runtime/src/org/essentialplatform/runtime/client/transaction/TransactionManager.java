@@ -1,8 +1,6 @@
 package org.essentialplatform.runtime.client.transaction;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,19 +15,12 @@ import org.essentialplatform.progmodel.essential.app.AppContainer;
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
 import org.essentialplatform.remoting.IRemoting;
 import org.essentialplatform.remoting.client.ClientRemoting;
-import org.essentialplatform.remoting.server.ServerRemoting;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
 import org.essentialplatform.runtime.shared.transaction.Transaction;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IModificationChange;
-import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
 
 /**

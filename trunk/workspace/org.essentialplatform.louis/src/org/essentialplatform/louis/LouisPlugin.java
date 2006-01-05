@@ -20,7 +20,7 @@ import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.labelproviders.GlobalLabelProvider;
 import org.essentialplatform.louis.log.LogController;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.IDomainBootstrap;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

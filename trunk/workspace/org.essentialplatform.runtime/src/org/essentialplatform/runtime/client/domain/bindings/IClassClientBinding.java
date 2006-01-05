@@ -7,7 +7,7 @@ import org.essentialplatform.runtime.shared.domain.bindings.IClassRuntimeBinding
  * Represents client-specific functionality for a {@link IDomainClass}.
  * 
  * <p>
- * @see IDomainObjectClientBinding. 
+ * @see IObjectClassClientBinding. 
  * 
  * @author Dan Haywood
  */
