@@ -3,12 +3,9 @@
  */
 package org.essentialplatform.runtime.client.domain.bindings;
 
-import org.essentialplatform.core.deployment.IAttributeBinding;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IAttributeClientBinding extends IAttributeBinding {
-	Object invokeAccessor(Object pojo);
-	void invokeMutator(Object pojo, Object newValue);
+public interface IAttributeClientBinding extends IAttributeRuntimeBinding {
 	IPrerequisites accessorPrerequisitesFor(Object pojo);
 	IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
 }

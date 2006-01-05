@@ -5,10 +5,9 @@ package org.essentialplatform.runtime.client.domain.bindings;
 
 import java.util.Map;
 
-import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IOperationClientBinding extends IOperationBinding {
+public interface IOperationClientBinding extends IOperationRuntimeBinding {
 
 	Object invokeOperation(Object pojo, Object[] args);
 
