@@ -6,6 +6,7 @@ package org.essentialplatform.runtime.client.domain.bindings;
 import java.util.Map;
 
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.runtime.shared.domain.bindings.IOperationRuntimeBinding;
 
 public interface IOperationClientBinding extends IOperationRuntimeBinding {
 
