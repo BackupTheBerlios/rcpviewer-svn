@@ -21,7 +21,7 @@ import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
 import org.osgi.framework.Bundle;
 
 /**
- * A binding of {@link IDomainClass} for the runtime environment.
+ * A binding of {@link IDomainClass} for the client environment.
  * 
  * @author Dan Haywood
  */

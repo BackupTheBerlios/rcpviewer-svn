@@ -39,7 +39,7 @@ import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 import org.osgi.framework.Bundle;
 
 /**
- * A binding of {@link IDomainClass} for the runtime environment.
+ * A binding of {@link IDomainClass} for the server environment.
  * 
  * @author Dan Haywood
  */
