@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.essentialplatform.runtime.client.domain.bindings;
 
 import java.util.Map;
@@ -8,7 +5,16 @@ import java.util.Map;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.bindings.IOperationRuntimeBinding;
 
-public interface IOperationClientBinding extends IOperationRuntimeBinding {
+/**
+ * Represents client-specific functionality for an {@link IOperation} of 
+ * a {@link IDomainClass}.
+ * 
+ * <p>
+ * @see IObjectOperationClientBinding. 
+ * 
+ * @author Dan Haywood
+ */
+public interface IOperationClientBinding extends IOperationRuntimeBinding, IMemberClientBinding {
 
 	Object invokeOperation(Object pojo, Object[] args);
 
