@@ -4,9 +4,8 @@
 package org.essentialplatform.runtime.shared.domain.bindings;
 
 import org.essentialplatform.core.deployment.IReferenceBinding;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 
-public interface IReferenceRuntimeBinding extends IReferenceBinding {
+public interface IReferenceRuntimeBinding extends IReferenceBinding, IMemberRuntimeBinding {
 	/**
 	 * Returns the pojo for a 1:1 reference, or a collection of pojos for
 	 * a collection reference.
