@@ -10,6 +10,6 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
  * 
  * @author Dan Haywood
  */
-public interface IObjectClassRuntimeBinding<T> {
+public interface IDomainObjectRuntimeBinding<T> {
 	
 }
