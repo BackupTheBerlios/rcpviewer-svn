@@ -11,12 +11,12 @@ import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
 
 public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 
-	public void testCanAttachToSessionIfIdMatches() {
+	public void testCanAttachToSessionIfBindingMatches() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
 		session.detach(domainObject);
-		assertEquals(session.getObjectStoreId(), domainObject.getSessionId());
+		assertEquals(session.getSessionBinding(), domainObject.getSessionBinding());
 		session.attach(domainObject);
 	}
 
@@ -63,13 +63,13 @@ public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 		assertTrue(session.isAttached(domainObject));
 	}
 
-	public void testDomainObjectSessionIdNotRemovedWhenDetached() {
+	public void testDomainObjectSessionBindingNotRemovedWhenDetached() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
-		String sessionIdBeforeDetach = domainObject.getSessionId();
+		SessionBinding sessionBindingBeforeDetach = domainObject.getSessionBinding();
 		session.detach(domainObject);
-		assertEquals(sessionIdBeforeDetach, domainObject.getSessionId());
+		assertEquals(sessionBindingBeforeDetach, domainObject.getSessionBinding());
 	}
 
 	public void testCannotDetachFromSessionIfAlreadyDetached() {
@@ -86,16 +86,17 @@ public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 		}
 	}
 
-	public void testCannotAttachToSessionIfIdDoesNotMatch() {
+	public void testCannotAttachToSessionIfBindingDoesNotMatch() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
+		assertEquals(session.getSessionBinding(), domainObject.getSessionBinding());
 		session.detach(domainObject);
-		assertEquals(session.getObjectStoreId(), domainObject.getSessionId());
-		session.attach(domainObject);
+		assertEquals(session.getSessionBinding(), domainObject.getSessionBinding()); // unchanged
 		
-		IClientSession session2 = sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), "OBJECTSTORE#2"));
-		assertFalse(session.getObjectStoreId() == session2.getObjectStoreId());
+		IClientSession session2 = sessionManager.defineSession(
+				new SessionBinding(session.getDomain().getName(), "OBJECTSTORE#2"));
+		assertFalse(session.getSessionBinding().equals(session2.getSessionBinding()));
 		
 		try {
 			session2.attach(domainObject);
@@ -111,7 +112,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		try {
-			domainObject.clearSessionId();
+			domainObject.clearSessionBinding();
 			fail("IllegalStateException should have been thrown");
 		} catch(IllegalStateException ex) {
 			// expected
@@ -119,38 +120,39 @@ public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 	}
 
 
-	public void testCanClearDomainObjectSessionIdIfDetached() {
+	public void testCanClearDomainObjectBindingIfDetached() {
 		IDomainClass domainClass = 
 			(IDomainClass)lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		session.detach(domainObject);
-		domainObject.clearSessionId();
-		assertNull(domainObject.getSessionId());
+		domainObject.clearSessionBinding();
+		assertNull(domainObject.getSessionBinding());
 	}
 	
 	/**
-	 * Look up Department (in the "default" domain); clear its session Id, then
-	 * attach to another session referring to the default domain.
+	 * Look up Department (in the "default" domain); clear its session binding,
+	 * then attach to another session referring to the default domain.
 	 *
 	 */
-	public void testDomainObjectCanBeAttachedToSessionForSameDomainIfHasNoSessionId() {
+	public void testDomainObjectCanBeAttachedToSessionForSameDomainIfHasNoSessionBinding() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
 		assertTrue(domainObject.isAttached());
 		session.detach(domainObject);
-		domainObject.clearSessionId();
+		domainObject.clearSessionBinding();
+		assertNull(domainObject.getSessionBinding());
 		
 		IClientSession session2 = 
 			sessionManager.defineSession(new SessionBinding(session.getDomain().getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID + "_2"));
-		String session2Id = session2.getObjectStoreId();
+		String session2ObjectStoreId = session2.getObjectStoreId();
 		
 		session2.attach(domainObject);
 		
 		assertTrue(domainObject.isAttached());
-		assertEquals(session2Id, domainObject.getSessionId());
+		assertEquals(session2.getSessionBinding(), domainObject.getSessionBinding());
 	}
 	
 	public void testDomainObjectCannotBeAttachedToSessionForDifferentDomain() {
@@ -170,7 +172,7 @@ public class TestSessionAttachDetach extends AbstractRuntimeClientTestCase  {
 
 		// detach and clear its session Id
 		sessionForDefaultDomain.detach(departmentDomainObject);
-		departmentDomainObject.clearSessionId();
+		departmentDomainObject.clearSessionBinding();
 
 		try {
 			sessionForMarketingDomain.attach(departmentDomainObject);

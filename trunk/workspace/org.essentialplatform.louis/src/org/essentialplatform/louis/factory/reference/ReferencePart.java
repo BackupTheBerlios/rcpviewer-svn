@@ -13,6 +13,7 @@ import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.util.NullUtil;
 import org.essentialplatform.louis.util.SWTUtil;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectOneToOneReferenceClientBinding;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectReferenceEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectReferenceEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
@@ -23,6 +24,11 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOne
 class ReferencePart extends AbstractFormPart implements IConfigurable {
 
 	private IDomainObject.IObjectOneToOneReference _model;
+	/**
+	 * Binding of the object's 1:1 reference to the client-side environment
+	 * (supporting prereqs, listeners etc).
+	 */
+	private IObjectOneToOneReferenceClientBinding _modelBinding;
 	
 	private final IDomainClass.IReference _classReference;
 	private final IDomainObjectReferenceListener _listener;
@@ -39,6 +45,7 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	 * that we know if there have been changes.
 	 */
 	private IDomainObject<?> _uiValue = null;
+
 
 	
 	/**
@@ -90,8 +97,8 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 	public boolean setFormInput(Object input) {
 		try {
 			// remove listening from old object if any
-			if ( _model != null ) {
-				_model.removeListener( _listener );	
+			if ( _modelBinding != null ) {
+				_modelBinding.removeListener( _listener );	
 			}
 			// derive model from input and our _classReference
 			if (input == null) {
@@ -101,8 +108,9 @@ class ReferencePart extends AbstractFormPart implements IConfigurable {
 				assert input instanceof IDomainObject<?>;
 				IDomainObject domainObject = (IDomainObject)input;
 				_model = domainObject.getOneToOneReference( _classReference );
+				_modelBinding = (IObjectOneToOneReferenceClientBinding)_model.getBinding();
 				// add listening to new object
-				_model.addListener( _listener );
+				_modelBinding.addListener( _listener );
 				return true;
 			}
 		} finally {

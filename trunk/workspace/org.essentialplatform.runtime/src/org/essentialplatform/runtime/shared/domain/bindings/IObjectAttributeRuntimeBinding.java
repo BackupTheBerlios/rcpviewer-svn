@@ -10,4 +10,14 @@ import org.essentialplatform.core.domain.IDomainClass.IAttribute;
  * @author Dan Haywood
  */
 public interface IObjectAttributeRuntimeBinding extends IObjectMemberRuntimeBinding {
+
+	/**
+	 * Invoked after {@link IDomainObject#getAttribute(IDomainClass.IAttribute)}
+	 * so that the binding can perform any further processing.
+	 * 
+	 * <p>
+	 * For example, on the client, can add the attribute to the list of
+	 * observed features.
+	 */
+	void gotAttribute();
 }

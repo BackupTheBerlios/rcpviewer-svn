@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.shared.tests.session;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites.Constraint;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.OrderConstrained;
@@ -19,7 +20,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
-		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+		IPrerequisites prerequisites = atBinding.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 	}
 
@@ -33,7 +35,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
-		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+		IPrerequisites prerequisites = atBinding.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 		assertEquals("Cannot change quantity once shipped", prerequisites.getDescription());
 	}
@@ -48,7 +51,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
-		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+		IPrerequisites prerequisites = atBinding.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.INVISIBLE, prerequisites.getConstraint());
 	}
 
@@ -63,8 +67,9 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
-
-		IPrerequisites prerequisites = attrib.mutatorPrerequisitesFor(new Integer(-1));
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+		
+		IPrerequisites prerequisites = atBinding.mutatorPrerequisitesFor(new Integer(-1));
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 	}
 
@@ -94,10 +99,13 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		// should now be two observed features held by the session.
 		assertEquals(2, session.getObservedFeatures().size());
 		
+		IObjectAttributeClientBinding pingVisibleAtBinding = (IObjectAttributeClientBinding)pingVisibleAttrib.getBinding();
+		IObjectAttributeClientBinding pingUsableAtBinding = (IObjectAttributeClientBinding)pingUsableAttrib.getBinding();
+
 		MyDomainObjectAttributeListener pingVisibleIfAttribListener =
-			pingVisibleAttrib.addListener(new MyDomainObjectAttributeListener());
+			pingVisibleAtBinding.addListener(new MyDomainObjectAttributeListener());
 		MyDomainObjectAttributeListener pingUsableIfAttribListener =
-			pingUsableAttrib.addListener(new MyDomainObjectAttributeListener());
+			pingUsableAtBinding.addListener(new MyDomainObjectAttributeListener());
 		
 		// our listeners should not yet have been called
 		assertNull(pingVisibleIfAttribListener.extendedEvent);

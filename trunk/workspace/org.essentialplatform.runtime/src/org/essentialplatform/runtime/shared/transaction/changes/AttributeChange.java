@@ -2,6 +2,7 @@ package org.essentialplatform.runtime.shared.transaction.changes;
 
 import java.lang.reflect.Field;
 
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
@@ -50,7 +51,8 @@ public final class AttributeChange extends AbstractFieldChange {
 	@Override
 	protected void notifyListeners(boolean execute) {
 		if (_attribute != null) {
-			_attribute.notifyListeners(execute?getPostValue():getPreValue());
+			IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)_attribute.getBinding(); 
+			atBinding.notifyListeners(execute?getPostValue():getPreValue());
 		}
 	}
 

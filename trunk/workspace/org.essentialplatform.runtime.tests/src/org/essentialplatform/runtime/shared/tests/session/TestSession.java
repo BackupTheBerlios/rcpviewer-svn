@@ -38,11 +38,11 @@ public class TestSession extends AbstractRuntimeClientTestCase  {
 		assertTrue(session.isAttached(domainObject));
 	}
 
-	public void testDomainObjectSessionIdTakenFromManagingSession() {
+	public void testDomainObjectSessionBindingTakenFromManagingSession() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = session.create(domainClass);
-		assertEquals(session.getObjectStoreId(), domainObject.getSessionId());
+		assertEquals(session.getSessionBinding(), domainObject.getSessionBinding());
 	}
 
 

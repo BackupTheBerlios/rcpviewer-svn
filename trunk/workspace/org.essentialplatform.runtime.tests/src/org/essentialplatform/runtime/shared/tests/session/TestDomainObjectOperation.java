@@ -4,6 +4,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.CustomerOperationReturningDomainObject;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.CustomerOperationReturningVoid;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Order;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectOperationClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
@@ -15,10 +16,11 @@ public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
 		IDomainObject<CustomerOperationReturningVoid> domainObject = session.create(domainClass);
 		CustomerOperationReturningVoid pojo = domainObject.getPojo();
 		
-		IDomainObject.IObjectOperation placeOrderOperation = 
+		IDomainObject.IObjectOperation op = 
 			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
+		IObjectOperationClientBinding opBinding = (IObjectOperationClientBinding)op.getBinding();
 		assertFalse(pojo.orderPlaced);
-		Object retval = placeOrderOperation.invokeOperation(new Object[] {});
+		Object retval = opBinding.invokeOperation();
 		assertTrue(pojo.orderPlaced);
 		assertNull(retval);
 	}
@@ -28,9 +30,10 @@ public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
 
 		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
 		
-		IDomainObject.IObjectOperation placeOrderOperation = 
+		IDomainObject.IObjectOperation op = 
 			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
-		Object retval = placeOrderOperation.invokeOperation(new Object[] {});
+		IObjectOperationClientBinding opBinding = (IObjectOperationClientBinding)op.getBinding();
+		Object retval = opBinding.invokeOperation();
 		assertNotNull(retval);
 		assertTrue(retval instanceof Order);
 	}
@@ -41,17 +44,19 @@ public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
 		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
 
 		// place a few orders...
-		IDomainObject.IObjectOperation placeOrderOperation = 
+		IDomainObject.IObjectOperation placeOrderOp = 
 			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
-		placeOrderOperation.invokeOperation(new Object[] {});
-		placeOrderOperation.invokeOperation(new Object[] {});
-		placeOrderOperation.invokeOperation(new Object[] {});
+		IObjectOperationClientBinding placeOrderOpBinding = (IObjectOperationClientBinding)placeOrderOp.getBinding();
+		placeOrderOpBinding.invokeOperation();
+		placeOrderOpBinding.invokeOperation();
+		placeOrderOpBinding.invokeOperation();
 
 		// how many?
-		IDomainObject.IObjectOperation numberOfOrdersPlacedOperation = 
+		IDomainObject.IObjectOperation numberOfOrdersPlacedOp = 
 			domainObject.getOperation(domainObject.getIOperationNamed("numberOfOrdersPlaced"));
-		assertNotNull(numberOfOrdersPlacedOperation);
-		Object retval = numberOfOrdersPlacedOperation.invokeOperation(new Object[] {});
+		IObjectOperationClientBinding numberOfOrdersPlacedOpBinding = (IObjectOperationClientBinding)numberOfOrdersPlacedOp.getBinding();
+		assertNotNull(numberOfOrdersPlacedOp);
+		Object retval = numberOfOrdersPlacedOpBinding.invokeOperation();
 		assertNotNull(retval);
 		assertTrue(retval instanceof Integer);
 		assertEquals(3, ((Integer)retval).intValue());

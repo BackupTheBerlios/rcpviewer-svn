@@ -7,6 +7,7 @@ import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientDomainBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
@@ -22,7 +23,9 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
 		
-		IPrerequisites prerequisites = attrib.accessorPrerequisitesFor();
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+
+		IPrerequisites prerequisites = atBinding.accessorPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 	}
 
@@ -54,7 +57,8 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		control.setReturnValue(Prerequisites.none());
 		control.replay();
 		
-		IPrerequisites prerequisites = attrib.authorizationPrerequisitesFor();
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+		IPrerequisites prerequisites = atBinding.authorizationPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.NONE, prerequisites.getConstraint());
 		
 		// verify
@@ -84,7 +88,8 @@ public class TestExtendedDomainObjectAttributeAuthorization extends AbstractRunt
 		control.setReturnValue(returnPrerequisites);
 		control.replay();
 		
-		IPrerequisites prerequisites = attrib.authorizationPrerequisitesFor();
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+		IPrerequisites prerequisites = atBinding.authorizationPrerequisitesFor();
 		assertSame(IPrerequisites.Constraint.UNUSABLE, prerequisites.getConstraint());
 		
 		// verify

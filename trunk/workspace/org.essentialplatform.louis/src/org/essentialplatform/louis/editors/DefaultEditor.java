@@ -50,11 +50,13 @@ import org.eclipse.ui.part.EditorPart;
 
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
@@ -198,7 +200,9 @@ public final class DefaultEditor extends EditorPart {
 			}
 		};
 		for ( IAttribute a : getDomainObject().getDomainClass().iAttributes() ) {
-			getDomainObject().getAttribute( a ).addListener( _titleListener );
+			final IObjectAttribute attrib = getDomainObject().getAttribute( a );
+			IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding(); 
+			atBinding.addListener( _titleListener );
 		}
 		
 		// finally set form input
@@ -247,7 +251,9 @@ public final class DefaultEditor extends EditorPart {
 		if ( _titleListener != null ) {
 			IDomainObject<?> object = getDomainObject();
 			for ( IAttribute a : object.getDomainClass().iAttributes() ) {
-				object.getAttribute( a ).removeListener( _titleListener );
+				final IObjectAttribute attrib = object.getAttribute( a );
+				IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding();
+				atBinding.removeListener( _titleListener );
 			}
 		}
 		super.dispose();

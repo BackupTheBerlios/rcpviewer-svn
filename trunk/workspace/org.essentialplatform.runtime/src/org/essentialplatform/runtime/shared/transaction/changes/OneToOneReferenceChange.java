@@ -2,6 +2,7 @@ package org.essentialplatform.runtime.shared.transaction.changes;
 
 import java.lang.reflect.Field;
 
+import org.essentialplatform.runtime.client.domain.bindings.IObjectOneToOneReferenceClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
@@ -43,7 +44,8 @@ public final class OneToOneReferenceChange extends AbstractFieldChange {
 	@Override
 	protected void notifyListeners(boolean execute) {
 		if (_reference!= null) {
-			_reference.notifyListeners(execute?getPostValue():getPreValue());
+			IObjectOneToOneReferenceClientBinding refBinding = (IObjectOneToOneReferenceClientBinding)_reference.getBinding();
+			refBinding.notifyListeners(execute?getPostValue():getPreValue());
 		}
 	}
 

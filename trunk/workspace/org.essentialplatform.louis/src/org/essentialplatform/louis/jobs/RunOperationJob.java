@@ -7,7 +7,9 @@ import org.eclipse.core.runtime.Status;
 import org.essentialplatform.louis.LouisPlugin;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectOperationClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation;
 
 /**
  * Runs the passed operation on the passed object with the passed arguements.
@@ -70,16 +72,19 @@ public class RunOperationJob extends AbstractDomainObjectJob {
 		}
 		if ( !argsRequired ) {
 			int num = _args.length;
-			Object[] args = new Object[num];
+			final IObjectOperation op = getDomainObject().getOperation( _iOperation );
+			IObjectOperationClientBinding opBinding = (IObjectOperationClientBinding)op;
 			for ( int i=0 ; i < num ; i++ ) {
+				Object arg;
 				if ( _args[i] instanceof IDomainObject ) {
-					args[i] = ((IDomainObject<?>)_args[i]).getPojo();
+					arg = ((IDomainObject<?>)_args[i]).getPojo();
 				}
 				else {
-					args[i] = _args[i];
+					arg = _args[i];
 				}
+				opBinding.setArg(0, arg);
 			}
-			getDomainObject().getOperation( _iOperation ).invokeOperation( args );
+			opBinding.invokeOperation();
 			ReportJob report = new ReportJob(
 					LouisPlugin.getResourceString( "RunOperationJob.Ok"), //$NON-NLS-1$
 					ReportJob.INFO,

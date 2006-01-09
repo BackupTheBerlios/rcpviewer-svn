@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.client.domain.bindings;
 import java.util.Map;
 
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation;
 import org.essentialplatform.runtime.shared.domain.bindings.IOperationRuntimeBinding;
 
 /**
@@ -24,5 +25,7 @@ public interface IOperationClientBinding extends IOperationRuntimeBinding, IMemb
 
 	IPrerequisites prerequisitesFor(Object pojo, Object[] args);
 
-	Object[] reset(Object pojo, Object[] args, Map<Integer, Object> argsByPosition); 
+	Object[] reset(Object pojo, Object[] args, Map<Integer, Object> argsByPosition);
+
+	IObjectOperationClientBinding getObjectBinding(IObjectOperation operation); 
 }

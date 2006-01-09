@@ -15,6 +15,8 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.factory.reference.IReferencePartDisplayListener;
 import org.essentialplatform.louis.util.StringUtil;
 
+import org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectOneToOneReferenceClientBinding;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectReferenceEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectReferenceEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
@@ -26,6 +28,12 @@ import org.essentialplatform.runtime.shared.RuntimePlugin;
 class CollectionPart extends AbstractFormPart implements IConfigurable {
 
 	private IDomainObject.IObjectCollectionReference _model;
+	/**
+	 * Binding of the object's collection reference to the client-side environment
+	 * (supporting prereqs, listeners etc).
+	 */
+	private IObjectCollectionReferenceClientBinding _modelBinding;
+
 	
 	private final IDomainClass.IReference _collectionReference;
 	private final IDomainObjectReferenceListener _domainListener;
@@ -84,7 +92,7 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	public boolean setFormInput(Object input) {
 		try {
 			if ( _model != null ) {
-				_model.removeListener( _domainListener );
+				_modelBinding.removeListener( _domainListener );
 			}
 			if (input == null) {
 				_model = null;
@@ -94,7 +102,8 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 				if ( input instanceof IDomainObject<?> ) {
 					IDomainObject<?> domainObject = (IDomainObject<?>)input;
 					_model = domainObject.getCollectionReference( _collectionReference );
-					_model.addListener( _domainListener );
+					_modelBinding = (IObjectCollectionReferenceClientBinding)_model.getBinding();
+					_modelBinding.addListener( _domainListener );
 					return true;
 				} else {
 					return false;
@@ -159,8 +168,8 @@ class CollectionPart extends AbstractFormPart implements IConfigurable {
 	 */
 	@Override
 	public void dispose() {
-		if ( _model != null ) {
-			_model.removeListener( _domainListener );
+		if ( _modelBinding != null ) {
+			_modelBinding.removeListener( _domainListener );
 		}
 		super.dispose();
 	}

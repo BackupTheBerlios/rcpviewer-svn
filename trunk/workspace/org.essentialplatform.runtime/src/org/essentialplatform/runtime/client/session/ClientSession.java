@@ -58,13 +58,13 @@ public final class ClientSession implements IClientSession {
 
 	private final SessionBinding _sessionBinding;
 	/*
-	 * @see org.essentialplatform.runtime.session.ISession#getSessionBinding()
+	 * @see org.essentialplatform.runtime.client.session.IClientSession#getSessionBinding()
 	 */
 	public SessionBinding getSessionBinding() {
 		return _sessionBinding;
 	}
 	/*
-	 * @see org.essentialplatform.session.ISession#getId()
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#getObjectStoreId()
 	 */
 	public String getObjectStoreId() {
 		return _sessionBinding.getObjectStoreId();
@@ -108,7 +108,7 @@ public final class ClientSession implements IClientSession {
 	 */
 	private <T> IDomainObject<T> createTransient(final ClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.createTransient(pojo, session);
+		IDomainObject<T> domainObject = DomainObject.initAsCreatingTransient(pojo, session);
 		return domainObject;
 	}
 
@@ -118,7 +118,7 @@ public final class ClientSession implements IClientSession {
 	 */
 	private <T> IDomainObject<T> createPersistent(final ClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.createPersistent(pojo, session);
+		IDomainObject<T> domainObject = DomainObject.initAsCreatingPersistent(pojo, session);
 		return domainObject;
 	}
 
@@ -155,7 +155,7 @@ public final class ClientSession implements IClientSession {
 
 	private <T> IDomainObject<T> recreatePersistent(IClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.recreatePersistent(pojo, session);
+		IDomainObject<T> domainObject = DomainObject.initAsRecreatingPersistent(pojo, session);
 		return domainObject;
 	}
 
@@ -211,22 +211,22 @@ public final class ClientSession implements IClientSession {
 	public <T> void attach(IDomainObject<T> iDomainObject) {
 		DomainObject<T> domainObject = (DomainObject<T>)iDomainObject;
 		synchronized(domainObject) {
-			// make sure session id is compatible, or if not set then is in
-			// the same domain
-			String domainObjectSessionId = domainObject.getSessionId(); 
-			if (domainObjectSessionId != null) {
-				if (!this.getObjectStoreId().equals(domainObject.getSessionId())) {
-				throw new IllegalArgumentException(
-						"Incompatible session _id " +
-						"(this.id = '" + getObjectStoreId() + "', " +
-						"domainObject.sessionId = '" + 
-								domainObject.getSessionId() + "')");
-				}
+			// if binding set, make sure is same.  If not set, then make
+			// sure domain is same. 
+			if (domainObject.getSessionBinding() != null) {
+				// binding set
+				if (!getSessionBinding().equals(domainObject.getSessionBinding())) {
+					throw new IllegalArgumentException(
+							"Incompatible session binding " +
+							"(this.binding = '" + getSessionBinding() + "', " +
+							"domainObject.binding = '" + 
+									domainObject.getSessionBinding() + "')");
+					}
 			} else {
-				
+				// binding not set
 				String domainObjectDomainName = 
 					domainObject.getDomainClass().getDomain().getName();
-				String sessionDomainName = this.getDomain().getName();
+				String sessionDomainName = getDomain().getName();
 				if (!domainObjectDomainName.equals(sessionDomainName)) {
 					throw new IllegalArgumentException(
 						"Incorrect domain " +
@@ -235,7 +235,6 @@ public final class ClientSession implements IClientSession {
 							domainObjectDomainName + ")");
 				}
 			}
-
 			// add to session hashes 
 			_pojoByDomainObject.put(domainObject, domainObject.getPojo());
 			_domainObjectByPojo.put(domainObject.getPojo(), domainObject);

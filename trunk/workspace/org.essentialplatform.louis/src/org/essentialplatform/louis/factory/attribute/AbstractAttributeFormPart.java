@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.util.NullUtil;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
@@ -29,6 +30,11 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 * Derived when {@link #setFormInput(Object) is called.
 	 */
 	private IDomainObject.IObjectAttribute _model;
+	/**
+	 * Binding of the object's attribute to the client-side environment
+	 * (supports listening, prerequisites etc).
+	 */
+	private IObjectAttributeClientBinding _modelBinding;
 
 	private final IDomainObjectAttributeListener _listener;
 	
@@ -41,6 +47,7 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	 * that we know if there have been changes.
 	 */
 	private T1 _uiValue = null;
+
 	
 	/**
 	 * Constructor requires attribute and text field used to display the value
@@ -108,8 +115,8 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 	public boolean setFormInput(Object input) {
 		try {
 			// remove listening from old object if any
-			if ( _model != null ) {
-				_model.removeListener( _listener );	
+			if ( _modelBinding != null ) {
+				_modelBinding.removeListener( _listener );	
 			}
 			// derive _model from input and our _classAttribute.
 			if (input == null) {
@@ -119,8 +126,8 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 				assert input instanceof IDomainObject<?>;
 				IDomainObject domainObject = (IDomainObject)input;
 				_model = domainObject.getAttribute( _classAttribute );
-				// add listening to new object
-				_model.addListener( _listener );
+				_modelBinding = (IObjectAttributeClientBinding)_model;
+				_modelBinding.addListener( _listener );
 				return true;
 			}
 		} finally {

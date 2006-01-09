@@ -2,6 +2,7 @@ package org.essentialplatform.runtime.shared.transaction.changes;
 
 import java.util.Collection;
 
+import org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
@@ -47,7 +48,8 @@ public final class RemoveFromCollectionChange<V> extends AbstractCollectionChang
 	protected void notifyListeners(final boolean execute) {
 		boolean beingAdded = !execute;
 		if (_reference != null) {
-			_reference.notifyListeners((Object)_referencedObject, beingAdded);
+			IObjectCollectionReferenceClientBinding refBinding = (IObjectCollectionReferenceClientBinding)_reference.getBinding(); 
+			refBinding.notifyListeners((Object)_referencedObject, beingAdded);
 		}
 	}
 

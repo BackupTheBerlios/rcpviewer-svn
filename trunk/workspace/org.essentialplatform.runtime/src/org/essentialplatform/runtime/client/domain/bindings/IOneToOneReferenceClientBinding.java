@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.client.domain.bindings;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IOneToOneReference;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
 import org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRuntimeBinding;
 
 /**
@@ -17,4 +18,6 @@ import org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRu
 public interface IOneToOneReferenceClientBinding 
 		extends IOneToOneReferenceRuntimeBinding, IReferenceClientBinding {
 	IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
+
+	IObjectOneToOneReferenceClientBinding getObjectBinding(IObjectOneToOneReference oneToOneReference);
 }

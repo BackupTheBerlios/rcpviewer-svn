@@ -7,10 +7,12 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 
 /**
  * Extracts pojo collection contents and wraps in IDomainObjects 
@@ -95,7 +97,9 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 		assert elements != null;
 		for ( IDomainObject<?> element : elements ) {
 			for ( IDomainClass.IAttribute iAttribute : element.getDomainClass().iAttributes() ) {
-				element.getAttribute( iAttribute ).addListener( _attListener );
+				final IObjectAttribute attrib = element.getAttribute( iAttribute );
+				IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding(); 
+				atBinding.addListener( _attListener );
 			}
 		}
 	}
@@ -105,7 +109,9 @@ class CollectionTableContentProvider implements IStructuredContentProvider {
 		assert elements != null;
 		for ( IDomainObject<?> element : elements ) {
 			for ( IDomainClass.IAttribute iAttribute : element.getDomainClass().iAttributes() ) {
-				element.getAttribute( iAttribute ).removeListener( _attListener );
+				final IObjectAttribute attrib = element.getAttribute( iAttribute );
+				IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding(); 
+				atBinding.removeListener( _attListener );
 			}
 		}
 	}

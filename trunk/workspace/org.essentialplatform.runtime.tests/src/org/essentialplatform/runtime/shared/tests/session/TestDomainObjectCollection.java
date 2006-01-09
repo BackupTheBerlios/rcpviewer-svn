@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
@@ -71,8 +73,11 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 			session.recreate(employeeDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
+		IObjectCollectionReferenceClientBinding refBinding = 
+			(IObjectCollectionReferenceClientBinding)employeesCollection.getBinding(); 
+
 		MyDomainObjectReferenceListener l =
-			employeesCollection.addListener(new MyDomainObjectReferenceListener());
+			refBinding.addListener(new MyDomainObjectReferenceListener());
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);
@@ -95,8 +100,11 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 			session.recreate(employeeDomainClass);
 		employeesCollection.addToCollection(employeeDomainObject);
 	
+		IObjectCollectionReferenceClientBinding refBinding = 
+			(IObjectCollectionReferenceClientBinding)employeesCollection.getBinding();
+		
 		MyDomainObjectReferenceListener l =
-			employeesCollection.addListener(new MyDomainObjectReferenceListener());
+			refBinding.addListener(new MyDomainObjectReferenceListener());
 	
 		assertFalse(l.collectionAddedToCallbackCalled);
 		assertFalse(l.collectionRemovedFromCallbackCalled);

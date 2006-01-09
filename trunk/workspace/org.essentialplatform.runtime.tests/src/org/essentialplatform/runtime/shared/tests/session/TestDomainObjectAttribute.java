@@ -8,6 +8,7 @@ import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
+import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.session.fixture.Department;
@@ -47,8 +48,9 @@ public class TestDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 		IDomainClass.IAttribute iAttrib = dobj.getIAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(iAttrib);
 		
+		IObjectAttributeClientBinding atBinding = (IObjectAttributeClientBinding)attrib.getBinding(); 
 		MyDomainObjectAttributeListener l = 
-			attrib.addListener(new MyDomainObjectAttributeListener());
+			atBinding.addListener(new MyDomainObjectAttributeListener());
 		attrib.set("HR");
 		assertTrue(l.attributeChangedCallbackCalled);
 	}
