@@ -14,5 +14,4 @@ import org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionRef
  */
 public interface IObjectCollectionReferenceServerBinding 
 		extends IObjectCollectionReferenceRuntimeBinding, IObjectReferenceServerBinding {
-	IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue, boolean beingAdded);
 }

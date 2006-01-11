@@ -18,6 +18,4 @@ import org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRu
 public interface IOneToOneReferenceClientBinding 
 		extends IOneToOneReferenceRuntimeBinding, IReferenceClientBinding {
 	IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
-
-	IObjectOneToOneReferenceClientBinding getObjectBinding(IObjectOneToOneReference oneToOneReference);
 }

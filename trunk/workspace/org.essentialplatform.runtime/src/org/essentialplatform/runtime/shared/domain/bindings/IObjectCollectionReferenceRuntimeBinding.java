@@ -11,4 +11,24 @@ import org.essentialplatform.core.domain.IDomainClass.ICollectionReference;
  */
 public interface IObjectCollectionReferenceRuntimeBinding 
 		extends IObjectReferenceRuntimeBinding {
+
+	/**
+	 * Hook method notifying the binding that an object has been added to the
+	 * collection.
+	 * 
+	 * <p>
+	 * The binding can perform context-specific processing (eg notifying
+	 * listeners in the UI).
+	 */
+	public void addedToCollection();
+	/**
+	 * Hook method notifying the binding that an object has been added to the
+	 * collection.
+	 * 
+	 * <p>
+	 * The binding can perform context-specific processing (eg notifying
+	 * listeners in the UI).
+	 */
+	public void removedFromCollection();
+
 }

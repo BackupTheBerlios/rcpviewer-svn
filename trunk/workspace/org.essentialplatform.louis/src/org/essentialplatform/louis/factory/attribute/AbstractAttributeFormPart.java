@@ -126,7 +126,7 @@ public abstract class AbstractAttributeFormPart<T1,T2 extends Control>
 				assert input instanceof IDomainObject<?>;
 				IDomainObject domainObject = (IDomainObject)input;
 				_model = domainObject.getAttribute( _classAttribute );
-				_modelBinding = (IObjectAttributeClientBinding)_model;
+				_modelBinding = (IObjectAttributeClientBinding)_model.getBinding();
 				_modelBinding.addListener( _listener );
 				return true;
 			}

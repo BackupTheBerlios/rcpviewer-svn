@@ -18,31 +18,18 @@ import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.IDomainClass.IOperation;
 import org.essentialplatform.core.domain.IDomainClass.IReference;
 import org.essentialplatform.core.domain.adapters.IDomainClassAdapter;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.runtime.client.domain.IObservedFeature;
-import org.essentialplatform.runtime.client.domain.bindings.IAttributeClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.ICollectionReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectOneToOneReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectOperationClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IOneToOneReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IOperationClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientAttributeBinding;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientOperationBinding;
-import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
-import org.essentialplatform.runtime.client.domain.event.DomainObjectReferenceEvent;
-import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
-import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectReferenceEvent;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectListener;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectOperationListener;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
-import org.essentialplatform.runtime.client.session.IClientSession;
-import org.essentialplatform.runtime.shared.domain.adapters.IRuntimeDomainClassAdapter;
-import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.ICollectionReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectOneToOneReferenceRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IOperationRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.adapters.IRuntimeDomainClassAdapter;
+import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
@@ -51,8 +38,8 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
  * platform and the pojo itself.
  * 
  * <p>
- * Additionally, knows its {@link IDomainClass} and also {@link IClientSession} (if
- * any) to which it is currently attached.
+ * Additionally, knows its {@link IDomainClass} and also its 
+ * {@link SessionBinding} (if any) to which it is currently attached.
  * 
  * <p>
  * Implementation note: introduced by {@link PojoAspect}.
@@ -82,8 +69,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	// SessionBinding, ObjectStoreId
-	// TODO: get rid of ObjectStoreId
+	// SessionBinding, isAttached
 	//////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -98,14 +84,24 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	/*
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#setSessionBinding(org.essentialplatform.runtime.shared.session.SessionBinding)
+	 */
+	public void setSessionBinding(SessionBinding sessionBinding) {
+		_sessionBinding = sessionBinding;
+	}
+
+
+	/*
 	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#clearSessionBinding()
 	 */
 	public void clearSessionBinding() {
-		if (isAttached()) {
-			throw new IllegalStateException(
-					"Cannot clear session binding when attached to session");
-		}
+		_runtimeBinding.assertCanClearSessionBinding();
 		_sessionBinding = null;
+	}
+
+
+	public boolean isAttached() {
+		return _runtimeBinding.isAttached();
 	}
 
 
@@ -135,7 +131,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		return domainClass;
 	}
 	
-
+	
 	//////////////////////////////////////////////////////////////////////////
 	// Pojo
 	//////////////////////////////////////////////////////////////////////////
@@ -149,6 +145,34 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	}
 
 	
+
+	//////////////////////////////////////////////////////////////////////////
+	// Bindings (class- and instance-level)
+	//////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * initialized on {@link #init(SessionBinding, PersistState, ResolveState)}
+	 * 
+	 * <p>
+	 * Marked as <tt>transient</tt> because bindings are by definition specific
+	 * to a particular runtime environment and so should not be serialized
+	 * across the network.
+	 */
+	private transient IDomainClassRuntimeBinding<T> _runtimeClassBinding;
+	/**
+	 * initialized on {@link #init(SessionBinding, PersistState, ResolveState)}
+	 * 
+	 * <p>
+	 * Marked as <tt>transient</tt> because bindings are by definition specific
+	 * to a particular runtime environment and so should not be serialized
+	 * across the network.
+	 */
+	private transient IDomainObjectRuntimeBinding<T> _runtimeBinding;
+	public IDomainObjectRuntimeBinding<T> getBinding() {
+		return _runtimeBinding;
+	}
+
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// PersistenceId 
@@ -315,12 +339,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			_referencesByEReference.put(eReference, reference);
 		}
 		if (eReference.isMany()) {
-			IObjectCollectionReferenceClientBinding refBinding = 
-				(IObjectCollectionReferenceClientBinding)((ObjectCollectionReference)reference).getBinding();
+			IObjectCollectionReferenceRuntimeBinding refBinding = 
+				(IObjectCollectionReferenceRuntimeBinding)((ObjectCollectionReference)reference).getBinding();
 			refBinding.gotReference();
 		} else {
-			IObjectOneToOneReferenceClientBinding refBinding = 
-				(IObjectOneToOneReferenceClientBinding)((ObjectOneToOneReference)reference).getBinding();
+			IObjectOneToOneReferenceRuntimeBinding refBinding = 
+				(IObjectOneToOneReferenceRuntimeBinding)((ObjectOneToOneReference)reference).getBinding();
 			refBinding.gotReference();
 		}
 		return reference;
@@ -345,8 +369,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			reference = new ObjectOneToOneReference(eReference);
 			_referencesByEReference.put(eReference, reference);
 		}
-		IObjectOneToOneReferenceClientBinding refBinding = 
-			(IObjectOneToOneReferenceClientBinding)reference.getBinding();
+		IObjectOneToOneReferenceRuntimeBinding refBinding = 
+			(IObjectOneToOneReferenceRuntimeBinding)reference.getBinding();
 		refBinding.gotReference();
 		return reference;
 	}
@@ -370,8 +394,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			reference = new ObjectCollectionReference(eReference);
 			_referencesByEReference.put(eReference, reference);
 		}
-		IObjectCollectionReferenceClientBinding refBinding = 
-			(IObjectCollectionReferenceClientBinding)reference.getBinding();
+		IObjectCollectionReferenceRuntimeBinding refBinding = 
+			(IObjectCollectionReferenceRuntimeBinding)reference.getBinding();
 		refBinding.gotReference();
 		return reference;
 	}
@@ -389,7 +413,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			operation = new ObjectOperation(eOperation);
 			_operationsByEOperation.put(eOperation, operation);
 		}
-		IObjectOperationClientBinding opBinding = (IObjectOperationClientBinding)operation.getBinding();
+		IObjectOperationRuntimeBinding opBinding = (IObjectOperationRuntimeBinding)operation.getBinding();
 		opBinding.gotOperation();
 		return operation;
 	}
@@ -471,8 +495,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private ObjectAttribute(final EAttribute eAttribute) {
 			_eAttribute = eAttribute;
 			_attribute = getDomainClass().getIAttribute(eAttribute);
-			_runtimeClassBinding = (IAttributeClientBinding) _attribute.getBinding(); // JAVA5_FIXME
-			_runtimeBinding = (IObjectAttributeClientBinding)_runtimeClassBinding.getObjectBinding(this);
+			_runtimeClassBinding = (IAttributeRuntimeBinding) _attribute.getBinding(); // JAVA5_FIXME
+			_runtimeBinding = (IObjectAttributeRuntimeBinding)_runtimeClassBinding.getObjectBinding(this);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -504,9 +528,19 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		// Bindings 
 		//////////////////////////////////////////////////////////////////////////
 
-		private final IAttributeClientBinding _runtimeClassBinding;
-		private final IObjectAttributeClientBinding _runtimeBinding;
-		public IObjectAttributeClientBinding getBinding() {
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IAttributeRuntimeBinding _runtimeClassBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IObjectAttributeRuntimeBinding _runtimeBinding;
+		public IObjectAttributeRuntimeBinding getBinding() {
 			return _runtimeBinding;
 		}
 
@@ -557,7 +591,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		private ObjectReference(final EReference eReference) {
 			this._eReference = eReference;
 			this._reference = getDomainClass().getIReference(eReference);
-			this._runtimeClassBinding = (IReferenceClientBinding) _reference.getBinding(); // JAVA5_FIXME
+			this._runtimeClassBinding = (IReferenceRuntimeBinding) _reference.getBinding(); // JAVA5_FIXME
 		}
 
 
@@ -576,7 +610,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		// EReference, IReference 
 		//////////////////////////////////////////////////////////////////////////
 
-		final EReference _eReference;
+		final transient EReference _eReference;
 		final IDomainClass.IReference _reference;
 		
 		/*
@@ -588,9 +622,15 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 
 		//////////////////////////////////////////////////////////////////////////
-		// Class-level binding
+		// Bindings
+		// (class-level only; instance-level in the subclasses)
 		//////////////////////////////////////////////////////////////////////////
-		final IReferenceClientBinding _runtimeClassBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		transient IReferenceRuntimeBinding _runtimeClassBinding;
 
 		//////////////////////////////////////////////////////////////////////////
 		// ResolveState, IResolvable
@@ -614,94 +654,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 
-
-		//////////////////////////////////////////////////////////////////////////
-		// xxxPrerequisitesFor
-		// TODO: move to client-side binding
-		//////////////////////////////////////////////////////////////////////////
-
-		/**
-		 * Holds onto the current accessor prerequisites, if known.
-		 * 
-		 * <p>
-		 * Used to determine whether listeners should be notified (see
-		 * {@link #notifyReferenceListeners(IPrerequisites)}) whenever there is
-		 * some external state change ({@link #externalStateChanged()}).
-		 */
-		private IPrerequisites _currentPrerequisites;
-		
-		/*
-		 * @see org.essentialplatform.session.IDomainObject.IObjectMember#authorizationPrerequisitesFor()
-		 */
-		public IPrerequisites authorizationPrerequisitesFor() {
-			return _runtimeClassBinding.authorizationPrerequisites();
-		}
-
-		/*
-		 * @see org.essentialplatform.session.IDomainObject.IObjectReference#accessorPrerequisitesFor()
-		 */
-		public IPrerequisites accessorPrerequisitesFor() {
-			return _runtimeClassBinding.accessorPrerequisitesFor(getPojo());
-		}
-
-		
-
-		//////////////////////////////////////////////////////////////////////////
-		// Listeners
-		// TODO: move to client-side binding
-		//////////////////////////////////////////////////////////////////////////
-
-		final List<IDomainObjectReferenceListener> _listeners = new ArrayList<IDomainObjectReferenceListener>();
-
-		public <T extends IDomainObjectReferenceListener> T addListener(T listener) {
-			_listeners.add(listener);
-			return listener;
-		}
-
-		public void removeListener(IDomainObjectReferenceListener listener) {
-			_listeners.remove(listener);
-		}
-		
-		/**
-		 * public so that it can be invoked externally by aspects.
-		 * 
-		 * <p>
-		 * Extended semantics.
-		 * 
-		 * @param attribute
-		 * @param newPrerequisites
-		 */
-		public void notifyReferenceListeners(IPrerequisites newPrerequisites) {
-			ExtendedDomainObjectReferenceEvent event = new ExtendedDomainObjectReferenceEvent(
-					this, newPrerequisites);
-			for (IDomainObjectReferenceListener listener : _listeners) {
-				listener.referencePrerequisitesChanged(event);
-			}
-		}
-
-
-		//////////////////////////////////////////////////////////////////////////
-		// externalStateChanged
-		// TODO: move to client-side binding
-		//////////////////////////////////////////////////////////////////////////
-
-		/*
-		 * @see org.essentialplatform.session.IObservedFeature#externalStateChanged()
-		 */
-		public void externalStateChanged() {
-			IPrerequisites prerequisitesPreviously = _currentPrerequisites;
-			IPrerequisites prerequisitesNow = accessorPrerequisitesFor();
-
-			boolean notifyListeners = 
-				prerequisitesPreviously == null || 
-				!prerequisitesPreviously.equals(prerequisitesNow);
-
-			_currentPrerequisites = prerequisitesNow;
-			if (notifyListeners) {
-				notifyReferenceListeners(_currentPrerequisites);
-			}
-		}
-
 		//////////////////////////////////////////////////////////////////////////
 		// toString
 		//////////////////////////////////////////////////////////////////////////
@@ -724,8 +676,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			super(eReference);
 			assert !_reference.isMultiple();
 			_oneToOneReference = (IDomainClass.IOneToOneReference) _reference;
-			_runtimeClassBinding = (IOneToOneReferenceClientBinding) _oneToOneReference.getBinding();
-			_runtimeBinding = (IObjectOneToOneReferenceClientBinding)_runtimeClassBinding.getObjectBinding(this);
+			_runtimeClassBinding = (IOneToOneReferenceRuntimeBinding) _oneToOneReference.getBinding();
+			_runtimeBinding = (IObjectOneToOneReferenceRuntimeBinding)_runtimeClassBinding.getObjectBinding(this);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -733,12 +685,22 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		//////////////////////////////////////////////////////////////////////////
 		
 		private final IDomainClass.IOneToOneReference _oneToOneReference;
-		private final IOneToOneReferenceClientBinding _runtimeClassBinding;
-		private final IObjectOneToOneReferenceClientBinding _runtimeBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IOneToOneReferenceRuntimeBinding _runtimeClassBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IObjectOneToOneReferenceRuntimeBinding _runtimeBinding;
 		/*
 		 * @see org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference#getBinding()
 		 */
-		public IObjectOneToOneReferenceClientBinding getBinding() {
+		public IObjectOneToOneReferenceRuntimeBinding getBinding() {
 			return _runtimeBinding;
 		}
 
@@ -761,12 +723,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		public <Q> void set(IDomainObject<Q> domainObject) {
 			if (domainObject != null) {
 				_runtimeClassBinding.invokeAssociator(getDomainObject().getPojo(), domainObject.getPojo());
-				// TODO: an aspect ought to be doing this for us.
-				_runtimeBinding.notifyListeners(domainObject.getPojo());
+				_runtimeBinding.set(domainObject.getPojo());
 			} else {
 				_runtimeClassBinding.invokeDissociator(getDomainObject().getPojo(), null);
-				// TODO: an aspect ought to be doing this for us.
-				_runtimeBinding.notifyListeners(null);
+				_runtimeBinding.set(null);
 			}
 		}
 
@@ -783,8 +743,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			super(eReference);
 			assert _reference.isMultiple();
 			_collectionReference = (IDomainClass.ICollectionReference) _reference;
-			_runtimeClassBinding = (ICollectionReferenceClientBinding) _collectionReference.getBinding();
-			_runtimeBinding = (IObjectCollectionReferenceClientBinding)_runtimeClassBinding.getObjectBinding(this);
+			_runtimeClassBinding = (ICollectionReferenceRuntimeBinding) _collectionReference.getBinding();
+			_runtimeBinding = (IObjectCollectionReferenceRuntimeBinding)_runtimeClassBinding.getObjectBinding(this);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -792,12 +752,22 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		//////////////////////////////////////////////////////////////////////////
 
 		private final IDomainClass.ICollectionReference _collectionReference;
-		private final ICollectionReferenceClientBinding _runtimeClassBinding;
-		private final IObjectCollectionReferenceClientBinding _runtimeBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient ICollectionReferenceRuntimeBinding _runtimeClassBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IObjectCollectionReferenceRuntimeBinding _runtimeBinding;
 		/*
 		 * @see org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference#getBinding()
 		 */
-		public IObjectCollectionReferenceClientBinding getBinding() {
+		public IObjectCollectionReferenceRuntimeBinding getBinding() {
 			return _runtimeBinding;
 		}
 		
@@ -825,13 +795,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 					.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeClassBinding.invokeAssociator(getPojo(), domainObject.getPojo());
-			// TODO: ideally the notifyListeners aspect should do this for us?
-			// notify _domainObjectListeners
-			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
-					this, getPojo());
-			for (IDomainObjectReferenceListener listener : _listeners) {
-				listener.collectionAddedTo(event);
-			}
+			getBinding().addedToCollection();
 		}
 
 		/*
@@ -842,13 +806,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 					.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeClassBinding.invokeDissociator(getPojo(), domainObject.getPojo());
-			// TODO: ideally the notifyListeners aspect should do this for us?
-			// notify _domainObjectListeners
-			DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(
-					this, getPojo());
-			for (IDomainObjectReferenceListener listener : _listeners) {
-				listener.collectionRemovedFrom(event);
-			}
+			getBinding().removedFromCollection();
 		}
 
 		
@@ -868,8 +826,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		ObjectOperation(final EOperation eOperation) {
 			this._eOperation = eOperation;
 			this._operation = getDomainClass().getIOperation(eOperation);
-			_runtimeClassBinding = (RuntimeClientOperationBinding) _operation.getBinding();
-			_runtimeBinding = (IObjectOperationClientBinding)_runtimeClassBinding.getObjectBinding(this);
+			_runtimeClassBinding = (IOperationRuntimeBinding) _operation.getBinding();
+			_runtimeBinding = (IObjectOperationRuntimeBinding)_runtimeClassBinding.getObjectBinding(this);
 			_runtimeBinding.reset();
 		}
 
@@ -896,8 +854,18 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		// Bindings (class level, instance level)
 		//////////////////////////////////////////////////////////////////////////
 
-		private final IOperationClientBinding _runtimeClassBinding;
-		private final IObjectOperationClientBinding _runtimeBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IOperationRuntimeBinding _runtimeClassBinding;
+		/**
+		 * Marked as <tt>transient</tt> because bindings are by definition specific
+		 * to a particular runtime environment and so should not be serialized
+		 * across the network.
+		 */
+		private transient IObjectOperationRuntimeBinding _runtimeBinding;
 		
 		public IObjectOperationRuntimeBinding getBinding() {
 			return _runtimeBinding;
@@ -934,10 +902,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject<V> initAsCreatingTransient(final V pojo, final IClientSession session) {
+	public static <V> DomainObject<V> initAsCreatingTransient(final V pojo, final SessionBinding sessionBinding) {
 		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
-		domainObject.init(session, PersistState.TRANSIENT, 
-				ResolveState.RESOLVED);
+		domainObject.init(
+			sessionBinding, PersistState.TRANSIENT, ResolveState.RESOLVED);
 		return domainObject;
 	}
 
@@ -953,13 +921,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject<V> initAsCreatingPersistent(final V pojo, final IClientSession session) {
+	public static <V> DomainObject<V> initAsCreatingPersistent(final V pojo, final SessionBinding sessionBinding) {
 		IPojo iPojo = (IPojo)pojo;
 	
 		DomainObject<V> domainObject = (DomainObject<V>)iPojo.domainObject();
 		domainObject.init(
-				session, PersistState.PERSISTED, 
-				ResolveState.RESOLVED);
+			sessionBinding, PersistState.PERSISTED, ResolveState.RESOLVED);
 		return domainObject;
 	}
 
@@ -974,10 +941,10 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param session -
 	 *            to attach to
 	 */
-	public static <V> DomainObject initAsRecreatingPersistent(final V pojo, final IClientSession session) {
+	public static <V> DomainObject initAsRecreatingPersistent(final V pojo, final SessionBinding sessionBinding) {
 		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
-		domainObject.init(session, PersistState.PERSISTED, 
-				ResolveState.UNRESOLVED);
+		domainObject.init(
+			sessionBinding, PersistState.PERSISTED, ResolveState.UNRESOLVED);
 		return domainObject;
 	}
 
@@ -986,128 +953,13 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(final IClientSession session, PersistState persistState, ResolveState resolveState) {
-		_session = session;
-		_sessionBinding = session.getSessionBinding();
+	private void init(final SessionBinding sessionBinding, PersistState persistState, ResolveState resolveState) {
+		_sessionBinding = sessionBinding;
 		_persistState = persistState;
 		_resolveState = resolveState;
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////
-	// title() 
-	// TODO: move to client-side binding
-	//////////////////////////////////////////////////////////////////////////
-
-	/*
-	 * For the title we just return the POJO's <code>toString()</code>.
-	 * 
-	 * @see org.essentialplatform.session.IDomainObject#title()
-	 */
-	public String title() {
-		return _pojo.toString();
+		_runtimeClassBinding = (IDomainClassRuntimeBinding<T>)getDomainClass().getBinding();
+		_runtimeBinding = _runtimeClassBinding.getObjectBinding(this);
 	}
 
 	
-	//////////////////////////////////////////////////////////////////////////
-	// ClientSession 
-	// TODO: move to client-side binding
-	//////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Marked as <tt>transient</tt> so that it is not distributed.
-	 */
-	private transient IClientSession _session;
-
-	/*
-	 * @see org.essentialplatform.session.IDomainObject#getSession()
-	 */
-	public IClientSession getSession() {
-		return _session;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	// attached, detached, isAttached 
-	// TODO: move to client-side binding
-	//////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Ensures that the session binding is compatible.
-	 */
-	public void attached(IClientSession session) {
-		if (session == null) {
-			throw new IllegalArgumentException("Session is null");
-		}
-		if (_sessionBinding == null) {
-			_sessionBinding = session.getSessionBinding();
-		} else {
-			if (!_sessionBinding.equals(session.getSessionBinding())) {
-				throw new IllegalArgumentException("Session's sessionBinding does not match "
-						+ "(session.sessionBinding = '" + session.getSessionBinding() + "', "
-						+ "this (domain object's) sessionBinding = '" + this.getSessionBinding() + "')");
-			}
-		}
-		this._session = session;
-	}
-
-	public void detached() {
-		this._session = null;
-	}
-
-	/*
-	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#isAttached()
-	 */
-	public boolean isAttached() {
-		return _session != null;
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////
-	// Listeners 
-	// TODO: move to client-side binding
-	//////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Marked as <tt>transient</tt> so that it is not distributed.
-	 */
-	private transient List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
-
-	/*
-	 * @see org.essentialplatform.session.IDomainObject#addListener(null)
-	 */
-	public <T extends IDomainObjectListener> T addListener(T listener) {
-		synchronized (_domainObjectListeners) {
-			if (!_domainObjectListeners.contains(listener)) {
-				_domainObjectListeners.add(listener);
-			}
-		}
-		return listener;
-	}
-
-	/*
-	 * @see org.essentialplatform.session.IDomainObject#removeListener(org.essentialplatform.session.IDomainObjectListener)
-	 */
-	public void removeListener(IDomainObjectListener listener) {
-		synchronized (_domainObjectListeners) {
-			_domainObjectListeners.remove(listener);
-		}
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////
-	// externalStateChanged() 
-	// TODO: move to client-side binding
-	//////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Factored out to allow impact to be called when undo/redo changes.
-	 */
-	public void externalStateChanged() {
-		IClientSession session = this.getSession();
-		for(IObservedFeature observedFeature: session.getObservedFeatures()) {
-			observedFeature.externalStateChanged();
-		}
-	}
-
-
 }

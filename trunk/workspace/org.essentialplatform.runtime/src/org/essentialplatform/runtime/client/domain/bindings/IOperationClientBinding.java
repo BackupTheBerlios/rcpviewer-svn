@@ -27,5 +27,4 @@ public interface IOperationClientBinding extends IOperationRuntimeBinding, IMemb
 
 	Object[] reset(Object pojo, Object[] args, Map<Integer, Object> argsByPosition);
 
-	IObjectOperationClientBinding getObjectBinding(IObjectOperation operation); 
 }

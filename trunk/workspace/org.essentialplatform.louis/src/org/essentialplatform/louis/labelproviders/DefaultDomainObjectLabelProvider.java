@@ -4,7 +4,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.essentialplatform.louis.util.ImageUtil;
 
+import org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
 
 /**
  * Can handle any <code>IDomainObject</code>
@@ -28,7 +30,9 @@ class DefaultDomainObjectLabelProvider
 	@Override
 	public String getText(Object element) {
 		if ( element instanceof IDomainObject<?> ) {
-			return ((IDomainObject<?>)element).title();
+			final IDomainObject<?> domainObject = (IDomainObject<?>)element;
+			final IDomainObjectClientBinding<?> binding = (IDomainObjectClientBinding<?>) domainObject.getBinding();
+			return binding.title();
 		}
 		return null;
 	}

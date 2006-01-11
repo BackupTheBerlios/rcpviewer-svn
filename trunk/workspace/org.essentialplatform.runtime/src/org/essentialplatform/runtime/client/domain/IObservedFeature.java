@@ -14,8 +14,12 @@ import org.essentialplatform.progmodel.essential.app.IPrerequisites;
  * mechanism) then all {@link IPrerequisites} can be recomputed.  If there is
  * a change in their result then this can be notified.
  * 
+ * 
+ * <p>
+ * TODO: move back to shared/domain, since AbstractChanged depends upon this. 
+ * 
+ * 
  * @author Dan Haywood
- *
  */
 public interface IObservedFeature {
 	

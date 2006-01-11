@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.shared.domain.bindings;
 import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.ICollectionReference;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
 
 /**
  * Represents runtime-specific functionality for an {@link ICollectionReference} of 
@@ -15,4 +16,7 @@ import org.essentialplatform.core.domain.IDomainClass.ICollectionReference;
  */
 public interface ICollectionReferenceRuntimeBinding 
 		extends ICollectionReferenceBinding, IReferenceRuntimeBinding {
+	
+	IObjectCollectionReferenceRuntimeBinding getObjectBinding(IObjectCollectionReference reference);
+
 }

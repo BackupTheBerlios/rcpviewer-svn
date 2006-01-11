@@ -22,6 +22,7 @@ import org.eclipse.search.ui.ISearchResultListener;
 import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.swt.graphics.Image;
 
+import org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding;
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.server.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
@@ -137,13 +138,16 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 	/*
 	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
 	 */
-	public String getColumnText(Object pElement, int pColumnIndex) {
+	public String getColumnText(Object element, int pColumnIndex) {
+		final IDomainObject<?> domainObject = (IDomainObject<?>)element;
+
 		switch (pColumnIndex) {
 		case 0:
-			return ((IDomainObject)pElement).getDomainClass().getName();
+			return domainObject.getDomainClass().getName();
 
 		default:
-			return ((IDomainObject)pElement).title();
+			final IDomainObjectClientBinding<?> objBinding = (IDomainObjectClientBinding<?>) domainObject.getBinding();
+			return objBinding.title();
 		}
 	}
 	/*

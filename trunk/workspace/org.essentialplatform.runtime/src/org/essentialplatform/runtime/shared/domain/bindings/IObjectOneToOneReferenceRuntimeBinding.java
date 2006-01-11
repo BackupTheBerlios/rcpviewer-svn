@@ -11,4 +11,18 @@ import org.essentialplatform.core.domain.IDomainClass.IOneToOneReference;
  */
 public interface IObjectOneToOneReferenceRuntimeBinding 
 		extends IObjectReferenceRuntimeBinding {
+	
+	
+	/**
+	 * Hook method for the binding that the 1:1 reference has been set 
+	 * (either to a new object or null) so that the binding can perform
+	 * binding-specific functionality.
+	 * 
+	 * <p>
+	 * For example, client-side binding might notify an listeners in the UI. 
+	 * 
+	 * @param newReferencedObjectOrNull
+	 */
+	public void set(Object newReferencedObjectOrNull);
+	
 }

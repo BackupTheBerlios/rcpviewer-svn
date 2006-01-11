@@ -1,10 +1,8 @@
 package org.essentialplatform.runtime.server.domain.bindings;
 
-import java.util.Map;
-
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
+import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass.IOperation;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
-import org.essentialplatform.runtime.shared.domain.bindings.IOperationRuntimeBinding;
 
 /**
  * Represents server-specific functionality for an <i>instance of</i> an 

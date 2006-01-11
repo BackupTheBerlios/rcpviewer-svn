@@ -5,19 +5,11 @@ import java.util.Collection;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
-import org.essentialplatform.runtime.client.domain.IObservedFeature;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.IObjectOneToOneReferenceClientBinding;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectListener;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectOperationListener;
-import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
-import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectOneToOneReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.IPersistable;
 import org.essentialplatform.runtime.shared.persistence.IResolvable;
@@ -58,15 +50,34 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	//////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Denormalized from the {@link IClientSession}.
+	 * Returns the (domain, objectstoreId) to which this domain object
+	 * belongs.
 	 * 
 	 * <p>
-	 * Unlike {@link #getSession()}, this must be serialized by the 
-	 * implementation. 
+	 * Will not normally return <tt>null</tt> unless {@link #clearSessionBinding()}
+	 * has been called.  If has been cleared, then can be set again using
+	 * {@link #setSessionBinding(SessionBinding)}.
 	 * 
 	 * @return
 	 */
 	public SessionBinding getSessionBinding();
+
+	/**
+	 * Set the session binding.
+	 * 
+	 * <p>
+	 * The domain (of the session binding) must be compatible with that
+	 * annotated on the domain object's {@link IDomainClass}.
+	 * 
+	 * <p>
+	 * This method is principally required so that the domain object's runtime 
+	 * binding can set the session binding.
+	 * 
+	 * @param sessionBinding
+	 */
+	public void setSessionBinding(SessionBinding sessionBinding);
+	
+
 
 
 	/**
@@ -76,7 +87,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * <p>
 	 * Normally the binding for a domain object is never changed, 
 	 * representing both the domain and the object store id of the 
-	 * {@link IClientSession} that originally managed the domain object.  Even 
+	 * session that originally managed the domain object.  Even 
 	 * if a domain object is detached from that session, the binding is 
 	 * retained so that - under normal circumstances - the domain object may 
 	 * only be re-attached to the same session.
@@ -84,7 +95,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * <p>
 	 * However, if an object has been detached from a session then it is 
 	 * possible using this method to clear this binding, thereby allowing
-	 * the domain object to be attached to some other {@link IClientSession}. 
+	 * the domain object to be attached to some other session. 
 	 * It is expected that the new session has a binding for the same 
 	 * {@link IDomain}, though this isn't checked.  This capability may be 
 	 * useful for "what-if" analysis and the like.
@@ -97,9 +108,19 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 */
 	public void clearSessionBinding();
 
+	
+
+	/**
+	 * Whether this object is attached to the (binding-specific) session.
+	 * 
+	 * @return
+	 */
+	public boolean isAttached();
+
+
 
 	//////////////////////////////////////////////////////////////////////////
-	// DomainClass, Pojo
+	// DomainClass, Pojo, Binding
 	//////////////////////////////////////////////////////////////////////////
 
 	/**
@@ -121,6 +142,15 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * @return
 	 */
 	public T getPojo();
+	
+
+	/**
+	 * Binding of this domain object to a runtime environment (eg client or 
+	 * server).
+	 * 
+	 * @return
+	 */
+	public IDomainObjectRuntimeBinding<T> getBinding();
 	
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -342,7 +372,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 *  
 		 * @return
 		 */
-		public IObjectAttributeClientBinding getBinding();
+		public IObjectAttributeRuntimeBinding getBinding();
 
 
 	}
@@ -447,7 +477,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 *  
 		 * @return
 		 */
-		public IObjectOneToOneReferenceClientBinding getBinding();
+		public IObjectOneToOneReferenceRuntimeBinding getBinding();
 
 	}
 	
@@ -503,7 +533,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 * @return
 		 */
 
-		public IObjectCollectionReferenceClientBinding getBinding();
+		public IObjectCollectionReferenceRuntimeBinding getBinding();
 
 	}
 	
@@ -555,89 +585,6 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 */
 		public IObjectOperationRuntimeBinding getBinding();
 	}
-
-	
-	///////////////////////////////////////////////////////////
-	// title()
-	// TODO: move to client-side bindings
-	///////////////////////////////////////////////////////////
-	
-	/**
-	 * Distinguishable representation of the domain object in the UI.
-	 * 
-	 * <p>
-	 * TODO: should this be required to be unique.  If not, how
-	 * 
-	 * @return
-	 */
-	public String title();
-
-
-	///////////////////////////////////////////////////////////
-	// ClientSession, isAttached, attach, detach
-	// TODO: move to client-side bindings
-	///////////////////////////////////////////////////////////
-	
-	/**
-	 * The {@link IClientSession} to which this domain object is currently attached.
-	 * 
-	 * <p>
-	 * The implementation is not required to serialize this information.
-	 * 
-	 * @return
-	 */
-	public IClientSession getSession();
-	
-	
-	/**
-	 * Whether this domain object is currently attached to a {@link IClientSession}.
-	 * 
-	 * <p>
-	 * If so, then {#getSession()} will return a non-null result.
-	 *  
-	 * @return
-	 */
-	public boolean isAttached();
-
-
-
-	///////////////////////////////////////////////////////////
-	// Listeners
-	// TODO: move to client-side bindings
-	///////////////////////////////////////////////////////////
-	
-	/**
-	 * Adds domain object listener.
-	 * 
-	 * <p>
-	 * If the listener is already known, does nothing.
-	 * 
-	 * <p>
-	 * Note: we return the listener only because it slightly simplfies the
-	 * implementation of tests.
-	 * 
-	 * @param listener
-	 */
-	public <T extends IDomainObjectListener> T addListener(T listener);
-
-	
-	/**
-	 * Removes domain object listener.
-	 * 
-	 * <p>
-	 * If the listener is unknown, does nothing.
-	 * 
-	 * @param listener
-	 */
-	public void removeListener(IDomainObjectListener listener);
-
-
-	//////////////////////////////////////////////////////////////////////////
-	// externalStateChanged
-	// TODO: move to client-side bindings
-	//////////////////////////////////////////////////////////////////////////
-	
-	public void externalStateChanged();
 
 
 }

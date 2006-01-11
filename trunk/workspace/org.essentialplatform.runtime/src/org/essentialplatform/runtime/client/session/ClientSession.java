@@ -12,6 +12,7 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.client.domain.IObservedFeature;
+import org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding;
 import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.client.session.event.ISessionListener;
 import org.essentialplatform.runtime.client.session.event.SessionObjectEvent;
@@ -108,7 +109,9 @@ public final class ClientSession implements IClientSession {
 	 */
 	private <T> IDomainObject<T> createTransient(final ClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.initAsCreatingTransient(pojo, session);
+		IDomainObject<T> domainObject = DomainObject.initAsCreatingTransient(pojo, _sessionBinding);
+		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
+		binding.attached(this);
 		return domainObject;
 	}
 
@@ -118,7 +121,9 @@ public final class ClientSession implements IClientSession {
 	 */
 	private <T> IDomainObject<T> createPersistent(final ClientSession session, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.initAsCreatingPersistent(pojo, session);
+		IDomainObject<T> domainObject = DomainObject.initAsCreatingPersistent(pojo, _sessionBinding);
+		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
+		binding.attached(this);
 		return domainObject;
 	}
 
@@ -147,15 +152,17 @@ public final class ClientSession implements IClientSession {
 	 * @see org.essentialplatform.session.ISession#recreate(org.essentialplatform.domain.IDomainClass)
 	 */
 	public <T> IDomainObject<T> recreate(IDomainClass domainClass) {
-		IDomainObject<T> domainObject = recreatePersistent(this, domainClass);
+		IDomainObject<T> domainObject = recreatePersistent(this.getSessionBinding(), domainClass);
 		attach(domainObject);
 		recreatedPersistent((IPojo)domainObject.getPojo());
 		return domainObject;
 	}
 
-	private <T> IDomainObject<T> recreatePersistent(IClientSession session, IDomainClass domainClass) {
+	private <T> IDomainObject<T> recreatePersistent(SessionBinding sessionBinding, IDomainClass domainClass) {
 		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.initAsRecreatingPersistent(pojo, session);
+		IDomainObject<T> domainObject = DomainObject.initAsRecreatingPersistent(pojo, sessionBinding);
+		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
+		binding.attached(this);
 		return domainObject;
 	}
 
@@ -180,7 +187,8 @@ public final class ClientSession implements IClientSession {
 	 * @see org.essentialplatform.session.ISession#delete(org.essentialplatform.session.IDomainObject)
 	 */
 	public <T> void delete(IDomainObject<T> domainObject) {
-		if(domainObject.getSession() != this) {
+		final IDomainObjectClientBinding<T> objBinding = (IDomainObjectClientBinding<T>) domainObject.getBinding();
+		if(objBinding.getSession() != this) {
 			throw new IllegalStateException("Domain object is not attached to this session.");
 		}
 		
@@ -247,7 +255,8 @@ public final class ClientSession implements IClientSession {
 			domainObjects.add(domainObject);
 
 			// tell _domain object the session it is attached to
-			domainObject.attached(this);
+			IDomainObjectClientBinding<T> runtimeBinding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
+			runtimeBinding.attached(this);
 		}
 		// notify _listeners
 		SessionObjectEvent<T> event = new SessionObjectEvent(this, domainObject);
@@ -261,6 +270,7 @@ public final class ClientSession implements IClientSession {
 	 */
 	public <T> void detach(IDomainObject<T> iDomainObject) {
 		DomainObject<T> domainObject = (DomainObject<T>)iDomainObject;
+		final IDomainObjectClientBinding<T> objBinding = (IDomainObjectClientBinding<T>) domainObject.getBinding();
 		synchronized(domainObject) {
 			// remove from partitioned hash of objects of this class
 			List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
@@ -274,7 +284,7 @@ public final class ClientSession implements IClientSession {
 			_pojoByDomainObject.remove(domainObject);
 
 			// tell _domain object it is no longer attached to a session
-			domainObject.detached();
+			objBinding.detached();
 		}
 		// notify _listeners
 		SessionObjectEvent event = new SessionObjectEvent(this, domainObject);

@@ -11,4 +11,16 @@ import org.essentialplatform.core.domain.IDomainClass.IReference;
  */
 public interface IObjectReferenceRuntimeBinding 
 		extends IObjectMemberRuntimeBinding {
+	
+
+	/**
+	 * Invoked after {@link IDomainObject#getReference(IDomainClass.IReference)}
+	 * so that the binding can perform any further processing.
+	 * 
+	 * <p>
+	 * For example, on the client, can add the reference to the list of
+	 * observed features.
+	 */
+	public void gotReference();
+
 }

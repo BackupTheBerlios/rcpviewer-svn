@@ -21,4 +21,5 @@ public interface IDomainClassBinding<T> {
 	 */
 	public <Q extends Annotation> Q getAnnotation(Class<Q> annotationClass);
 
+
 }

@@ -73,16 +73,5 @@ public interface IObjectOneToOneReferenceClientBinding
 	 * @return
 	 */
 	public IPrerequisites prerequisitesFor(final Object candidateValue);
-	
-	/**
-	 * Notify listeners of a 1:1 reference that it the reference is now 
-	 * to a new referenced object (or possibly <code>null</code>).
-	 * 
-	 * <p>
-	 * For use by aspects, not general use.
-	 * 
-	 * @param newReferencedObjectOrNull
-	 */
-	public void notifyListeners(Object newReferencedObjectOrNull);
 
 }

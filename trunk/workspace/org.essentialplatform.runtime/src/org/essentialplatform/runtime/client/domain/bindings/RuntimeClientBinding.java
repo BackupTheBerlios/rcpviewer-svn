@@ -27,6 +27,7 @@ import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAtt
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectOperationEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectReferenceEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
+import org.essentialplatform.runtime.client.domain.event.IDomainObjectListener;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectOperationListener;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.client.session.IClientSession;
@@ -36,6 +37,8 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribut
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
 import org.osgi.framework.Bundle;
 
 /**
@@ -177,6 +180,139 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 			super(domainClass, javaClass);
 		}
 
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding#getObjectBinding()
+		 */
+		public IDomainObjectRuntimeBinding<T> getObjectBinding(final IDomainObject domainObject) {
+			return new IDomainObjectClientBinding<T>() {
+
+				//////////////////////////////////////////////////////////////////////////
+				// title() 
+				//////////////////////////////////////////////////////////////////////////
+
+				/*
+				 * For the title we just return the POJO's <code>toString()</code>.
+				 * 
+				 * @see org.essentialplatform.session.IDomainObject#title()
+				 */
+				public String title() {
+					return domainObject.getPojo().toString();
+				}
+
+				
+				//////////////////////////////////////////////////////////////////////////
+				// ClientSession, assertCanClearSessionBinding 
+				//////////////////////////////////////////////////////////////////////////
+				
+				private IClientSession _session;
+
+				/*
+				 * @see org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding#getSession()
+				 */
+				public IClientSession getSession() {
+					return _session;
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding#assertCanClearSessionBinding()
+				 */
+				public void assertCanClearSessionBinding() throws IllegalStateException {
+					if (isAttached()) {
+						throw new IllegalStateException(
+								"Cannot clear session binding when attached to session");
+					}
+				}
+
+				//////////////////////////////////////////////////////////////////////////
+				// attached, detached, isAttached 
+				//////////////////////////////////////////////////////////////////////////
+
+				/*
+				 * @see org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding#attached()
+				 */
+				public void attached(IClientSession session) {
+					if (session == null) {
+						throw new IllegalArgumentException("Session is null");
+					}
+					if (domainObject.getSessionBinding() == null) {
+						domainObject.setSessionBinding(session.getSessionBinding());
+					} else {
+						if (!domainObject.getSessionBinding().equals(session.getSessionBinding())) {
+							throw new IllegalArgumentException("Session's sessionBinding does not match "
+									+ "(session.sessionBinding = '" + session.getSessionBinding() + "', "
+									+ "this (domain object's) sessionBinding = '" + domainObject.getSessionBinding() + "')");
+						}
+					}
+					this._session = session;
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding#detached()
+				 */
+				public void detached() {
+					this._session = null;
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding#isAttached()
+				 */
+				public boolean isAttached() {
+					return _session != null;
+				}
+
+
+				//////////////////////////////////////////////////////////////////////////
+				// Listeners 
+				//////////////////////////////////////////////////////////////////////////
+				
+				/**
+				 * Marked as <tt>transient</tt> so that it is not distributed.
+				 */
+				private transient List<IDomainObjectListener> _domainObjectListeners = new ArrayList<IDomainObjectListener>();
+
+				/*
+				 * @see org.essentialplatform.session.IDomainObject#addListener(null)
+				 */
+				public <T extends IDomainObjectListener> T addListener(T listener) {
+					synchronized (_domainObjectListeners) {
+						if (!_domainObjectListeners.contains(listener)) {
+							_domainObjectListeners.add(listener);
+						}
+					}
+					return listener;
+				}
+
+				/*
+				 * @see org.essentialplatform.session.IDomainObject#removeListener(org.essentialplatform.session.IDomainObjectListener)
+				 */
+				public void removeListener(IDomainObjectListener listener) {
+					synchronized (_domainObjectListeners) {
+						_domainObjectListeners.remove(listener);
+					}
+				}
+
+				//////////////////////////////////////////////////////////////////////////
+				// IObservableFeature (externalStateChanged) 
+				//////////////////////////////////////////////////////////////////////////
+				
+
+				/*
+				 * If the session is unknown (ie the domain object has been
+				 * detached), then does nothing. 
+				 */
+				public void externalStateChanged() {
+					IClientSession session = getSession();
+					if (session == null) {
+						return;
+					}
+					for(IObservedFeature observedFeature: session.getObservedFeatures()) {
+						observedFeature.externalStateChanged();
+					}
+				}
+
+			};
+		}
+
 	}
 
 	/**
@@ -210,7 +346,10 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 					new Object[] { candidateValue }, "mutator");
 		}
 
-		public IObjectAttributeClientBinding getObjectBinding(
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding#getObjectBinding(org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute)
+		 */
+		public IObjectAttributeRuntimeBinding getObjectBinding(
 				final IObjectAttribute objectAttribute) {
 			return new IObjectAttributeClientBinding() {
 				private RuntimeClientAttributeBinding _runtimeClassBinding = RuntimeClientAttributeBinding.this;
@@ -333,8 +472,9 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding#gotAttribute()
 				 */
 				public void gotAttribute() {
-					// TODO: this will need sorting out presently, cos getSession will be moving to the domain object's own binding.
-					IClientSession session = objectAttribute.getDomainObject().getSession();
+					final IDomainObject<?> domainObject = objectAttribute.getDomainObject();
+					IDomainObjectClientBinding<?> objBinding = (IDomainObjectClientBinding)domainObject.getBinding();
+					IClientSession session = objBinding.getSession();
 					session.addObservedFeature(this);
 				}
 
@@ -441,9 +581,9 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 			return _runtimeClassBinding.accessorPrerequisitesFor(_objectReference.getDomainObject().getPojo());
 		}
 
-		// ////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
 		// Listeners
-		// ////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
 
 		final List<IDomainObjectReferenceListener> _listeners = new ArrayList<IDomainObjectReferenceListener>();
 
@@ -460,10 +600,6 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 		/**
 		 * public so that it can be invoked externally by aspects.
 		 * 
-		 * <p>
-		 * Extended semantics.
-		 * 
-		 * @param attribute
 		 * @param newPrerequisites
 		 */
 		public void notifyReferenceListeners(IPrerequisites newPrerequisites) {
@@ -480,11 +616,12 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 
 
 		/*
-		 * @see org.essentialplatform.runtime.client.domain.bindings.IObjectReferenceClientBinding#gotReference()
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectReferenceRuntimeBinding#gotReference()
 		 */
 		public void gotReference() {
-			// TODO: this will need sorting out presently, cos getSession will be moving to the domain object's own binding.
-			IClientSession session = _objectReference.getDomainObject().getSession();
+			final IDomainObject<?> domainObject = _objectReference.getDomainObject();
+			IDomainObjectClientBinding<?> objBinding = (IDomainObjectClientBinding)domainObject.getBinding();
+			IClientSession session = objBinding.getSession();
 			session.addObservedFeature(this);
 		}
 
@@ -622,7 +759,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 				/*
 				 * @see org.essentialplatform.session.IDomainObject.IObjectOneToOneReference#notifyListeners(java.lang.Object)
 				 */
-				public void notifyListeners(Object referencedObject) {
+				public void set(Object referencedObject) {
 					DomainObjectReferenceEvent event = new DomainObjectReferenceEvent(reference, referencedObject);
 					for (IDomainObjectReferenceListener listener : _listeners) {
 						listener.referenceChanged(event);
@@ -698,16 +835,10 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 				// xxxPrerequisitesFor
 				//////////////////////////////////////////////////////////////////////////
 
-				/*
-				 * Extended semantics.
-				 */
 				public IPrerequisites mutatorPrerequisitesFor(Object candidateValue, boolean beingAdded) {
 					return getCollectionRuntimeClassBinding().mutatorPrerequisitesFor(objectReference.getDomainObject().getPojo(), candidateValue, beingAdded);
 				}
 				
-				/*
-				 * Extended semantics.
-				 */
 				public IPrerequisites prerequisitesFor(Object candidateValue,
 						boolean beingAdded) {
 					return accessorPrerequisitesFor().andRequire(
@@ -733,6 +864,32 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 						} else {
 							listener.collectionRemovedFrom(event);
 						}
+					}
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding#addedToCollection()
+				 */
+				public void addedToCollection() {
+					// TODO: ideally the notifyListeners aspect should do this for us?
+					// notify _domainObjectListeners
+					DomainObjectReferenceEvent event = 
+						new DomainObjectReferenceEvent(objectReference, objectReference.getDomainObject().getPojo());
+					for (IDomainObjectReferenceListener listener : _listeners) {
+						listener.collectionAddedTo(event);
+					}
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding#removedFromCollection()
+				 */
+				public void removedFromCollection() {
+					// TODO: ideally the notifyListeners aspect should do this for us?
+					// notify _domainObjectListeners
+					DomainObjectReferenceEvent event = 
+						new DomainObjectReferenceEvent(objectReference, objectReference.getDomainObject().getPojo());
+					for (IDomainObjectReferenceListener listener : _listeners) {
+						listener.collectionRemovedFrom(event);
 					}
 				}
 
@@ -1049,8 +1206,9 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 				 * @see org.essentialplatform.runtime.client.domain.bindings.IObjectOperationClientBinding#gotOperation()
 				 */
 				public void gotOperation() {
-					// TODO: this will need sorting out presently, cos getSession will be moving to the domain object's own binding.
-					IClientSession session = objectOperation.getDomainObject().getSession();
+					final IDomainObject<?> domainObject = objectOperation.getDomainObject();
+					IDomainObjectClientBinding<?> objBinding = (IDomainObjectClientBinding)domainObject.getBinding();
+					IClientSession session = objBinding.getSession();
 					session.addObservedFeature(this);
 				}
 

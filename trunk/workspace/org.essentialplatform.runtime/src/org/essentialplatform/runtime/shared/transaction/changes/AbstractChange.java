@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
@@ -55,6 +56,12 @@ public abstract class AbstractChange implements IChange {
 	}
 
 	private IDomainObject<?> _initiatingPojoDO;
+	/**
+	 * <tt>transient</tt> because bindings are by definition specific to the
+	 * a particular runtime context and so shouldn't be serialized.
+	 */
+	private transient IDomainObjectRuntimeBinding _initiatingPojoDomainObjectBinding; 
+
 	/*
 	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojoDO()
 	 */
@@ -79,6 +86,7 @@ public abstract class AbstractChange implements IChange {
 		_transaction = transaction;
 		_initiatingPojo = transactable;
 		_initiatingPojoDO = ((IPojo)_initiatingPojo).domainObject();
+		_initiatingPojoDomainObjectBinding = _initiatingPojoDO.getBinding();
 		_description = description;
 		_extendedInfo = extendedInfo == null? __EMPTY_OBJECT_ARRAY: extendedInfo;
 		_irreversible = irreversible;
@@ -177,7 +185,7 @@ public abstract class AbstractChange implements IChange {
 		Object retval = doExecute();
 
 		notifyListeners(true);
-		_initiatingPojoDO.externalStateChanged();
+		_initiatingPojoDomainObjectBinding.externalStateChanged();
 
 		return retval; 
 	}
@@ -193,7 +201,7 @@ public abstract class AbstractChange implements IChange {
 	public final void undo() {
 		doUndo();
 		notifyListeners(false);
-		_initiatingPojoDO.externalStateChanged();
+		_initiatingPojoDomainObjectBinding.externalStateChanged();
 	}
 	
 	protected abstract void doUndo();

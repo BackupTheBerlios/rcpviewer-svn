@@ -45,7 +45,7 @@ public final class OneToOneReferenceChange extends AbstractFieldChange {
 	protected void notifyListeners(boolean execute) {
 		if (_reference!= null) {
 			IObjectOneToOneReferenceClientBinding refBinding = (IObjectOneToOneReferenceClientBinding)_reference.getBinding();
-			refBinding.notifyListeners(execute?getPostValue():getPreValue());
+			refBinding.set(execute?getPostValue():getPreValue());
 		}
 	}
 

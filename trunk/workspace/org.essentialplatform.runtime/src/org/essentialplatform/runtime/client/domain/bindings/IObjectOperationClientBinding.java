@@ -36,19 +36,6 @@ public interface IObjectOperationClientBinding
 	void setArg(int position, Object arg);
 
 	/**
-	 * Resets the argument list back to defaults.
-	 * 
-	 * <p>
-	 * If a defaults method has been provided (<code>XxxDefaults(..)</code>),
-	 * then it will be invoked.  Otherwise the built-in defaults for each
-	 * type will be used (null for objects, 0 for int etc).
-	 * 
-	 * @return the reset arguments, same as {@link #getArgs()}.
-	 * 
-	 */
-	Object[] reset();
-
-	/**
 	 * Invoke the operation with the current set of arguments, applying any 
 	 * preconditions before hand.
 	 * 
@@ -107,16 +94,6 @@ public interface IObjectOperationClientBinding
 	void removeListener(IDomainObjectOperationListener listener);
 
 	void notifyOperationListeners(IPrerequisites newPrerequisites);
-
-	/**
-	 * Invoked after {@link IDomainObject#getOperation(IDomainClass.IOperation)}
-	 * so that the binding can perform any further processing.
-	 * 
-	 * <p>
-	 * For example, on the client, can add the operation to the list of
-	 * observed features.
-	 */
-	public void gotOperation();
 
 	
 

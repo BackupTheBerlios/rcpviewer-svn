@@ -1,40 +1,24 @@
 package org.essentialplatform.runtime.server.domain.bindings;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EParameter;
-import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.core.progmodel.ProgrammingModelException;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.progmodel.essential.app.InDomain;
-import org.essentialplatform.progmodel.essential.app.Prerequisites;
-import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.server.persistence.IPersistenceIdAssigner;
 import org.essentialplatform.runtime.server.persistence.IdSemanticsPersistenceIdAssigner;
 import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
+import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectOneToOneReferenceRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 import org.osgi.framework.Bundle;
 
@@ -166,6 +150,38 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 		public IPersistenceIdAssigner nextAssigner() {
 			return null;
 		}
+
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding#getObjectBinding()
+		 */
+		public IDomainObjectRuntimeBinding<T> getObjectBinding(IDomainObject domainObject) {
+			return new IDomainObjectServerBinding<T>() {
+
+				public void externalStateChanged() {
+					// does nothing
+					// (required because on the client, we need to update the
+					// UI.  Called by AbstractChange, shared across client/server).
+				}
+
+				/*
+				 * The session binding on the server cannot be cleared at any time.
+				 *
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding#assertCanClearSessionBinding()
+				 */
+				public void assertCanClearSessionBinding() throws IllegalStateException {
+					throw new IllegalStateException("SessionBinding may not be cleared");
+				}
+
+				/*
+				 * Always attached.
+				 * 
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding#isAttached()
+				 */
+				public boolean isAttached() {
+					return true;
+				}
+			};
+		}
 		
 
 	}
@@ -179,6 +195,22 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 
 		public RuntimeServerAttributeBinding(IDomainClass.IAttribute attribute) {
 			super(attribute);
+		}
+
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding#getObjectBinding(org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute)
+		 */
+		public IObjectAttributeRuntimeBinding getObjectBinding(IObjectAttribute attribute) {
+			return new IObjectAttributeServerBinding() {
+
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding#gotAttribute()
+				 */
+				public void gotAttribute() {
+					// does nothing
+				}
+				
+			};
 		}
 		
 	}
@@ -211,6 +243,30 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 			_delegateBinding = new DelegateRuntimeServerReferenceBinding(oneToOneReference);
 		}
 
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRuntimeBinding#getObjectBinding(org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference)
+		 */
+		public IObjectOneToOneReferenceRuntimeBinding getObjectBinding(IObjectOneToOneReference oneToOneReference) {
+			return new IObjectOneToOneReferenceServerBinding() {
+
+				/*
+				 * 
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectReferenceRuntimeBinding#gotReference()
+				 */
+				public void gotReference() {
+					// does nothing
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectOneToOneReferenceRuntimeBinding#set(java.lang.Object)
+				 */
+				public void set(Object newReferencedObjectOrNull) {
+					// does nothing
+				}
+
+			};
+		}
+
 		
 
 	}
@@ -229,6 +285,32 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 			_delegateBinding = new DelegateRuntimeServerReferenceBinding(collectionReference);
 		}
 
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.ICollectionReferenceRuntimeBinding#getObjectBinding(org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference)
+		 */
+		public IObjectCollectionReferenceRuntimeBinding getObjectBinding(IObjectCollectionReference reference) {
+			return new IObjectCollectionReferenceServerBinding() {
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding#addedToCollection()
+				 */
+				public void addedToCollection() {
+					// does nothing
+				}
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding#removedFromCollection()
+				 */
+				public void removedFromCollection() {
+					// does nothing
+				}
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectReferenceRuntimeBinding#gotReference()
+				 */
+				public void gotReference() {
+					// does nothing
+				}
+			};
+		}
+
 	}
 
 	/**
@@ -241,6 +323,30 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 		
 		public RuntimeServerOperationBinding(IDomainClass.IOperation operation) {
 			super(operation);
+		}
+
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IOperationRuntimeBinding#getObjectBinding(org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOperation)
+		 */
+		public IObjectOperationRuntimeBinding getObjectBinding(IObjectOperation operation) {
+			return new IObjectOperationServerBinding() {
+
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding#gotOperation()
+				 */
+				public void gotOperation() {
+					// does nothing
+				}
+
+				/*
+				 * @see org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding#reset()
+				 */
+				public Object[] reset() {
+					// does nothing
+					return null;
+				}
+				
+			};
 		}
 	}
 

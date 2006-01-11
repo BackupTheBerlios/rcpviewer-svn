@@ -21,7 +21,6 @@ public interface ICollectionReferenceClientBinding
 		extends ICollectionReferenceRuntimeBinding, IReferenceClientBinding {
 
 	IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue, boolean beingAdded);
-	IObjectCollectionReferenceClientBinding getObjectBinding(IObjectCollectionReference reference);
-
+	
 
 }

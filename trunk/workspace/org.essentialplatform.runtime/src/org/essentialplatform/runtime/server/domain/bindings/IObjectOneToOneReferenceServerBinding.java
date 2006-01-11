@@ -12,5 +12,4 @@ import org.essentialplatform.runtime.shared.domain.bindings.IOneToOneReferenceRu
  */
 public interface IObjectOneToOneReferenceServerBinding 
 		extends IObjectOneToOneReferenceRuntimeBinding, IObjectReferenceServerBinding {
-	IPrerequisites mutatorPrerequisitesFor(Object pojo, Object candidateValue);
 }
