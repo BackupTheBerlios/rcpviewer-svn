@@ -13,10 +13,10 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.essentialplatform.progmodel.essential.app.AppContainer;
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
-import org.essentialplatform.remoting.IRemoting;
-import org.essentialplatform.remoting.client.ClientRemoting;
+import org.essentialplatform.runtime.client.remoting.ClientRemoting;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
+import org.essentialplatform.runtime.shared.remoting.IRemoting;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
@@ -64,7 +64,7 @@ public final class TransactionManager implements ITransactionManager {
 	/**
 	 * TODO: this should be injected.
 	 */
-	public void setRemoting(org.essentialplatform.remoting.IRemoting distribution) {
+	public void setRemoting(org.essentialplatform.runtime.shared.remoting.IRemoting distribution) {
 		_remoting = distribution;
 	}
 

@@ -1,4 +1,4 @@
-package org.essentialplatform.remoting.server;
+package org.essentialplatform.runtime.server.remoting;
 
 import javax.jms.JMSException;
 
@@ -6,9 +6,9 @@ import org.activemq.ActiveMQConnection;
 import org.activemq.broker.BrokerContainer;
 import org.activemq.broker.impl.BrokerContainerImpl;
 import org.apache.log4j.Logger;
-import org.essentialplatform.remoting.AbstractRemoting;
-import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
-import org.essentialplatform.remoting.server.transport.ActiveMqTransport;
+import org.essentialplatform.runtime.server.remoting.transport.ActiveMqTransport;
+import org.essentialplatform.runtime.shared.remoting.AbstractRemoting;
+import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 
 public final class ServerRemoting extends AbstractRemoting {
 

@@ -1,10 +1,10 @@
-package org.essentialplatform.remoting.client;
+package org.essentialplatform.runtime.client.remoting;
 
 import java.io.ByteArrayOutputStream;
 
 import org.apache.log4j.Logger;
-import org.essentialplatform.remoting.AbstractRemoting;
-import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
+import org.essentialplatform.runtime.shared.remoting.AbstractRemoting;
+import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 
 public final class ClientRemoting extends AbstractRemoting {
 

@@ -4,12 +4,12 @@ import javax.jms.JMSException;
 
 import org.activemq.ActiveMQConnection;
 import org.apache.log4j.Logger;
-import org.essentialplatform.remoting.marshalling.IMarshalling;
-import org.essentialplatform.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.server.AbstractService;
 import org.essentialplatform.runtime.server.remoting.IRemotingServer;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.noop.NoopTransactionProcessor;
+import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 
 public class ActiveMqRemotingServer extends AbstractService implements IRemotingServer {
 

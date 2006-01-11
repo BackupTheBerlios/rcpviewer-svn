@@ -17,8 +17,8 @@ import javax.jms.TextMessage;
 
 import org.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
-import org.essentialplatform.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
+import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 class TransactionMessageListener extends Thread implements ExceptionListener, MessageListener {

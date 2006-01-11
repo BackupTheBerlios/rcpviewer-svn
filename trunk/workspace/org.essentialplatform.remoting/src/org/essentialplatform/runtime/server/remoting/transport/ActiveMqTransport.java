@@ -1,9 +1,9 @@
-package org.essentialplatform.remoting.server.transport;
+package org.essentialplatform.runtime.server.remoting.transport;
 
 import java.io.OutputStream;
 
-import org.essentialplatform.remoting.marshalling.IMarshalling;
-import org.essentialplatform.remoting.transport.ITransport;
+import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.transport.ITransport;
 
 public final class ActiveMqTransport implements ITransport {
 

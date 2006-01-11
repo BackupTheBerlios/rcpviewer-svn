@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.server.remoting;
 
-import org.essentialplatform.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.server.IService;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
+import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 
 public interface IRemotingServer extends IService {
 

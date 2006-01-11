@@ -1,4 +1,4 @@
-package org.essentialplatform.util;
+package org.essentialplatform.runtime.shared.remoting.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;

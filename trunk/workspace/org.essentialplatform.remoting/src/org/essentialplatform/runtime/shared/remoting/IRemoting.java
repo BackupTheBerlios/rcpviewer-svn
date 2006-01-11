@@ -1,7 +1,7 @@
-package org.essentialplatform.remoting;
+package org.essentialplatform.runtime.shared.remoting;
 
-import org.essentialplatform.remoting.marshalling.IMarshalling;
-import org.essentialplatform.remoting.transport.ITransport;
+import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.transport.ITransport;
 
 public interface IRemoting  {
 	

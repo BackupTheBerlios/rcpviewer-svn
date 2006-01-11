@@ -1,9 +1,9 @@
-package org.essentialplatform.remoting.transport;
+package org.essentialplatform.runtime.shared.remoting.transport;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
-import org.essentialplatform.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 
 /**
  * Facade for different transport mechanisms.
