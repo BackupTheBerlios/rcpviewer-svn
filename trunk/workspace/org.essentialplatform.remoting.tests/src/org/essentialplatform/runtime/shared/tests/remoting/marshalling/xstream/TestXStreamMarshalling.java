@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.tests.remoting;
+package org.essentialplatform.runtime.shared.tests.remoting.marshalling.xstream;
 
 import java.io.CharArrayReader;
 import java.io.FileNotFoundException;

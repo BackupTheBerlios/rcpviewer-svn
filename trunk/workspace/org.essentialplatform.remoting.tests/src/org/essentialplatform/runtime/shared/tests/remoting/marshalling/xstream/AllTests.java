@@ -1,4 +1,5 @@
-package org.essentialplatform.runtime.tests.remoting;
+package org.essentialplatform.runtime.shared.tests.remoting.marshalling.xstream;
+
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
