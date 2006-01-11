@@ -1,4 +1,4 @@
-package org.essentialplatform.remoting.tests;
+package org.essentialplatform.runtime.tests.remoting;
 
 import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.app.Lifecycle;

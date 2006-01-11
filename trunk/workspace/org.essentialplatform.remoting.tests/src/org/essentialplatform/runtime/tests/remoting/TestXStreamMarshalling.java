@@ -1,4 +1,4 @@
-package org.essentialplatform.remoting.tests;
+package org.essentialplatform.runtime.tests.remoting;
 
 import java.io.CharArrayReader;
 import java.io.FileNotFoundException;

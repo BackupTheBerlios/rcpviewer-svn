@@ -16,5 +16,5 @@ Require-Bundle: org.essentialplatform.remoting,
  net.sf.plugins.commons,
  org.essentialplatform.runtime.shared.tests,
  net.sf.plugins.xstream
-Export-Package: org.essentialplatform.remoting.tests
+Export-Package: org.essentialplatform.runtime.tests.remoting
 Eclipse-RegisterBuddy: net.sf.plugins.xstream

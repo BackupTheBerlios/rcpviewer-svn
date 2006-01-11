@@ -20,7 +20,7 @@ public class AllEssentialPlatformTests {
 		//$JUnit-BEGIN$
 		suite.addTest(org.essentialplatform.core.tests.AllTests.suite()); // deployment-neutral
 		suite.addTest(org.essentialplatform.runtime.shared.tests.AllRuntimeTests.suite()); // specific to runtime
-		suite.addTest(org.essentialplatform.remoting.tests.AllRemotingTests.suite()); 
+		suite.addTest(org.essentialplatform.runtime.tests.remoting.AllRemotingTests.suite()); 
 		suite.addTest(org.essentialplatform.server.tests.AllServerTests.suite()); 
 		suite.addTest(org.essentialplatform.progmodel.essential.app.tests.AllTests.suite());
 		//$JUnit-END$
