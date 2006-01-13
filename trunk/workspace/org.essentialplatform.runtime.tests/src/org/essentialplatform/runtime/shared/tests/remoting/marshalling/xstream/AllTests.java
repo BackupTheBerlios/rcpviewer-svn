@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.essentialplatform.remoting.tests");
+		TestSuite suite = new TestSuite("Test for org.essentialplatform.runtime.shared.remoting.marshalling.xstream");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestXStreamMarshalling.class);
 		//$JUnit-END$
