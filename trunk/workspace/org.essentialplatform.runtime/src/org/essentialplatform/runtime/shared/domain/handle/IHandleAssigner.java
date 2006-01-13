@@ -1,10 +1,10 @@
-package org.essentialplatform.runtime.server.persistence;
+package org.essentialplatform.runtime.shared.domain.handle;
 
+import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 
 /**
- * Encapsulates the generation of persistence Ids for domain objects.
+ * Encapsulates the generation of handles for domain objects.
  * 
  * <p>
  * This interface is closely coupled to the semantics of the 
@@ -14,25 +14,25 @@ import org.essentialplatform.runtime.shared.persistence.PersistenceId;
  * @author Dan Haywood
  *
  */
-public interface IPersistenceIdAssigner {
+public interface IHandleAssigner {
 	
 	/**
-	 * Creates and assigns a persistence Id to the supplied domain object.
+	 * Creates and assigns a handle to the supplied domain object.
 	 * 
 	 * <p>
 	 * Depending on the implementation, the state of the domain object may or
 	 * may not be used.
 	 * 
 	 * <p>
-	 * If the implementation is not able to assign a persistence Id, it should
+	 * If the implementation is not able to assign a handle, it should
 	 * delegate to the next in the chain (as returned by 
 	 * {@link #nextAssigner()}).
 	 *  
 	 * @param <T>
 	 * @param domainObject
-	 * @return persistence Id assigned by this (or next in chain).
+	 * @return handle assigned by this (or next in chain).
 	 */
-	<T> PersistenceId assignPersistenceIdFor(IDomainObject<T> domainObject);
+	<T> Handle assignHandleFor(IDomainObject<T> domainObject);
 	
 	/**
 	 * Chain of responsibility pattern; initialized through implementation's
@@ -43,5 +43,5 @@ public interface IPersistenceIdAssigner {
 	 * 
 	 * @return
 	 */
-	IPersistenceIdAssigner nextAssigner();
+	IHandleAssigner nextAssigner();
 }

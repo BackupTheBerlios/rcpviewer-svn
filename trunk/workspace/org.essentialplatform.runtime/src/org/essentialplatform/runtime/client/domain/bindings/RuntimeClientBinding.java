@@ -63,12 +63,8 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 	}
 
 	/**
-	 * Saves the primary builder, and sets up a sequential persistence Id
+	 * Saves the primary builder, and sets up a sequential handle
 	 * assigner.
-	 * 
-	 * <p>
-	 * TODO: at some point, anticipate that the IPersistenceIdAssigner will be
-	 * injected.
 	 * 
 	 * @throws RuntimeException
 	 *             if a binding has already been set.
@@ -168,8 +164,8 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 			IDomainClassClientBinding<T> {
 
 		/**
-		 * Delegates either to a composite persistence Id assigner or a
-		 * sequential persistence Id assigner dependent on the semantics of the
+		 * Delegates either to a composite handle assigner or a
+		 * sequential handle assigner dependent on the semantics of the
 		 * <tt>AssignmentType</tt> of the domain class.
 		 * 
 		 * @param domainClass

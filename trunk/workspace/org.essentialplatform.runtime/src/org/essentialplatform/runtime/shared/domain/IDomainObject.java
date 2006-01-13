@@ -13,7 +13,6 @@ import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntime
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.IPersistable;
 import org.essentialplatform.runtime.shared.persistence.IResolvable;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
 
@@ -154,7 +153,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	
 	
 	//////////////////////////////////////////////////////////////////////////
-	// PersistenceId
+	// Handle
 	//////////////////////////////////////////////////////////////////////////
 
 
@@ -164,22 +163,22 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * 
 	 * @return
 	 */
-	public PersistenceId getPersistenceId();
+	public Handle getHandle();
 
 	
 	/**
 	 * Note this IS shared because both client and server need to be able to
-	 * assign persistence Ids.
+	 * assign handles.
 	 * 
 	 * <p>
-	 * In the former case, this is a temporary persistence Id for a newly
+	 * In the former case, this is a temporary handle for a newly
 	 * created domain object that needs to be persisted.  When the object store
-	 * eventually assigns the actual Id, then the persistence Id is updated
+	 * eventually assigns the actual Id, then the handle is updated
 	 * client-side.
 	 * 
 	 * @param persistenceId
 	 */
-	public void assignPersistenceId(PersistenceId persistenceId);
+	public void assignHandle(Handle persistenceId);
 
 	
 	/**

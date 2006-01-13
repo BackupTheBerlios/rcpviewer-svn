@@ -9,8 +9,10 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.client.domain.IObservedFeature;
 import org.essentialplatform.runtime.client.session.event.ISessionListener;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner;
 import org.essentialplatform.runtime.shared.session.IObjectStoreHandle;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
+import org.essentialplatform.runtime.shared.domain.Handle;
 
 /**
  * Binds a {@link IDomain} with the Id of an objectstore.
@@ -167,6 +169,33 @@ public interface IClientSession extends IObjectStoreHandle {
 	 * @param pojo
 	 */
 	public void delete(Object pojo);
+
+	
+	
+	/**
+	 * Returns the {@link IHandleAssigner} used for assigning {@link Handle}s 
+	 * 
+	 * <p>
+	 * Normally the value of such {@link Handle}s is temporary; the object is
+	 * persisted server-side and the handle updated with the Id from the
+	 * object store.  However, transient-only objects will never have their
+	 * handle updated.
+	 * 
+	 * @return
+	 */
+	public IHandleAssigner getHandleAssigner();
+	/**
+	 * Inject the implementation of the {@link IHandleAssigner}.
+	 * 
+	 * <p>
+	 * Implementations should set up a reasonable default implementation such 
+	 * that it is not mandatory to call this method as part of initialization.
+	 * 
+	 * @see #getHandleAssigner()
+	 * @param handleAssigner
+	 */
+	public void setHandleAssigner(IHandleAssigner handleAssigner);
+	
 
 	
 	/**

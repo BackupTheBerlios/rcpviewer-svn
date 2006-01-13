@@ -173,10 +173,12 @@ public interface ITransactionManager {
 	public void reset();
 
 	/**
-	 * A bit of a hack, but suspends the creation of transactions.
+	 * A bit of a hack, but suspends the real transactions (no-op transactions
+	 * are created instead).
 	 * 
 	 * <p>
-	 * Used while the bootstrapping of domain classes is being done.
+	 * Used while the bootstrapping of domain classes is being done, but also
+	 * useful for unit tests.
 	 *
 	 * @see #resume()
 	 */
@@ -184,11 +186,12 @@ public interface ITransactionManager {
 
 
 	/**
-	 * A bit of a hack, but resumes the creation of transactions following an
-	 * earlier call to {@link #suspend()}.
+	 * A bit of a hack, but resumes the creation of real transactions following 
+	 * an earlier call to {@link #suspend()}.
 	 * 
 	 * <p>
-	 * Used while the bootstrapping of domain classes is being done.
+	 * Used while the bootstrapping of domain classes is being done, but also
+	 * useful for unit tests.
 	 *
 	 * @see #suspend()
 	 */

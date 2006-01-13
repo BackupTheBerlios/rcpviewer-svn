@@ -15,6 +15,8 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
  */
 public interface IDomainClassRuntimeBinding<T> extends IDomainClassBinding<T> {
 	
+	public Class<T> getJavaClass();
+
 	/**
 	 * For the domain class to which <i>this</i> binding is associated, returns
 	 * a binding for an instance of said domain class, in the same runtime
@@ -24,5 +26,16 @@ public interface IDomainClassRuntimeBinding<T> extends IDomainClassBinding<T> {
 	 * @return
 	 */
 	public IDomainObjectRuntimeBinding<T> getObjectBinding(IDomainObject domainObject);
+
+	/**
+	 * Convenience method that creates a new instance of the java class
+	 * (as represented by {@link #getJavaClass()}).
+	 * 
+	 * <p>
+	 * Uses the no-arg constructor.
+	 * 
+	 * @return
+	 */
+	public T newInstance();
 	
 }

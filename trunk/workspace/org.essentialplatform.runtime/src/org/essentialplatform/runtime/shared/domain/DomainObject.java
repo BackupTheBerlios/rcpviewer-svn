@@ -30,7 +30,6 @@ import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBin
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
@@ -175,23 +174,23 @@ public final class DomainObject<T> implements IDomainObject<T> {
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// PersistenceId 
+	// Handle 
 	//////////////////////////////////////////////////////////////////////////
 	
-	private PersistenceId _persistenceId = null;
+	private Handle _handle = null;
 
 	/*
-	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#getPersistenceId()
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#getHandle()
 	 */
-	public PersistenceId getPersistenceId() {
-		return _persistenceId;
+	public Handle getHandle() {
+		return _handle;
 	}
 
 	/*
-	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#assignPersistenceId(org.essentialplatform.runtime.shared.persistence.PersistenceId)
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#assignHandle(org.essentialplatform.runtime.shared.domain.Handle)
 	 */
-	public void assignPersistenceId(PersistenceId persistenceId) {
-		_persistenceId = persistenceId;
+	public void assignHandle(Handle persistenceId) {
+		_handle = persistenceId;
 	}
 
 

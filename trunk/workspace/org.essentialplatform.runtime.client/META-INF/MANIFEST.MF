@@ -5,5 +5,13 @@ Bundle-SymbolicName: org.essentialplatform.runtime.client
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
-Require-Bundle: org.essentialplatform.core,
- org.essentialplatform.runtime.shared
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.essentialplatform.core,
+ org.essentialplatform.runtime.shared,
+ org.apache.log4j,
+ net.sf.plugins.activemq;visibility:=reexport,
+ net.sf.plugins.xstream,
+ net.sf.plugins.commons
+Eclipse-AutoStart: true
+Export-Package: org.essentialplatform.runtime.client.remoting

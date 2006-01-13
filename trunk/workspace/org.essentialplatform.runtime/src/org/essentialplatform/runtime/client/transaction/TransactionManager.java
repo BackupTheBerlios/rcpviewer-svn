@@ -13,15 +13,16 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.essentialplatform.progmodel.essential.app.AppContainer;
 import org.essentialplatform.progmodel.essential.app.IAppContainer;
-import org.essentialplatform.runtime.client.remoting.ClientRemoting;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
 import org.essentialplatform.runtime.shared.remoting.IRemoting;
+import org.essentialplatform.runtime.shared.remoting.noop.NoopRemoting;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
 import org.essentialplatform.runtime.shared.transaction.Transaction;
 import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
+import org.essentialplatform.runtime.shared.transaction.noop.NoopTransaction;
 
 /**
  * Manages {@link ITransaction}s, stored local to thread.
@@ -57,7 +58,7 @@ public final class TransactionManager implements ITransactionManager {
 	public final static ITransactionManager instance() { return __instance; }
 
 	
-	private IRemoting _remoting = new ClientRemoting();
+	private IRemoting _remoting = new NoopRemoting();
 	public IRemoting getRemoting() { 
 		return _remoting;
 	}
@@ -94,13 +95,13 @@ public final class TransactionManager implements ITransactionManager {
 	 * <p>
 	 * Transactions are added to this map even if they cannot be reversed.
 	 */
-	private final Map<String, Transaction> _committedTransactionById = new LinkedHashMap<String, Transaction>();
+	private final Map<String, ITransaction> _committedTransactionById = new LinkedHashMap<String, ITransaction>();
 	/**
 	 * {@link ITransaction}s that have been committed but then
 	 * subsequently reversed({@link ITransaction#reverse()}) and are ready 
 	 * to be reapplied again if necessary.
 	 */
-	private final Map<String, Transaction> _reappliableTransactionById = new LinkedHashMap<String, Transaction>();
+	private final Map<String, ITransaction> _reappliableTransactionById = new LinkedHashMap<String, ITransaction>();
 
 	// TODO: pending dependency injection.
 	public IAppContainer _appContainer = AppContainer.instance();
@@ -138,7 +139,7 @@ public final class TransactionManager implements ITransactionManager {
 	 */
 	public ITransaction createTransaction() {
 		if (isSuspended()) {
-			return null;
+			return new NoopTransaction(this, getAppContainer());
 		}
 		ITransaction transaction = new Transaction(this, getAppContainer());
 		_currentTransactions.add(transaction);
@@ -238,7 +239,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * 
 	 * @param transaction
 	 */
-	public synchronized void committed(Transaction transaction) {
+	public synchronized void committed(ITransaction transaction) {
 		
 		sendTransactionToServer(transaction);
 		unenlistPojosInTransactionAndRemoveTransaction(transaction);
@@ -265,7 +266,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * 
 	 * @param transaction
 	 */
-	private void sendTransactionToServer(Transaction transaction) {
+	private void sendTransactionToServer(ITransaction transaction) {
 		_remoting.send(transaction);
 	}
 
@@ -276,7 +277,7 @@ public final class TransactionManager implements ITransactionManager {
 	 *  
 	 * @param transaction
 	 */
-	private void unenlistPojosInTransactionAndRemoveTransaction(Transaction transaction) {
+	private void unenlistPojosInTransactionAndRemoveTransaction(ITransaction transaction) {
 		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
 		for(ITransactable enlistedPojo: enlistedPojos) {
 			_currentTransactionByEnlistedPojo.remove(enlistedPojo);
@@ -296,7 +297,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * @param transaction
 	 * @param change
 	 */
-	public void undonePendingChange(Transaction transaction, Interaction change) {
+	public void undonePendingChange(ITransaction transaction, Interaction change) {
 		// need to unenlist pojos, though potentially not all of them (since some
 		// pojos may have been changed as the result of a change still in a "done" state.
 		Set<ITransactable> pojosToUnenlist = new HashSet<ITransactable>(change.getModifiedPojos());
@@ -320,7 +321,7 @@ public final class TransactionManager implements ITransactionManager {
 	 *  
 	 * @param transaction
 	 */
-	public void discarded(Transaction transaction) {
+	public void discarded(ITransaction transaction) {
 		
 		unenlistPojosInTransactionAndRemoveTransaction(transaction);
 		
@@ -337,7 +338,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * 
 	 * @param transaction
 	 */
-	public synchronized void reversed(Transaction transaction) {
+	public synchronized void reversed(ITransaction transaction) {
 		_committedTransactionById.remove(transaction.id());
 		_reappliableTransactionById.put(transaction.id(), transaction);
 		TransactionManagerEvent event = new TransactionManagerEvent(this, transaction); 
@@ -353,7 +354,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * 
 	 * @param transaction
 	 */
-	public synchronized void reapplied(Transaction transaction) {
+	public synchronized void reapplied(ITransaction transaction) {
 		_reappliableTransactionById.remove(transaction.id());
 		_committedTransactionById.put(transaction.id(), transaction);
 		TransactionManagerEvent event = new TransactionManagerEvent(this, transaction); 
@@ -383,7 +384,7 @@ public final class TransactionManager implements ITransactionManager {
 		return unmodifiableValues(_reappliableTransactionById);
 	}
 	
-	private List<ITransaction> unmodifiableValues(Map<String, Transaction> transactionsById) {
+	private List<ITransaction> unmodifiableValues(Map<String, ITransaction> transactionsById) {
 		List<ITransaction> transactions = 
 			new ArrayList<ITransaction>(transactionsById.values());
 		return Collections.unmodifiableList(transactions);
@@ -398,7 +399,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * @param transaction
 	 * @return
 	 */
-	public boolean isCurrent(Transaction transaction) {
+	public boolean isCurrent(ITransaction transaction) {
 		return _currentTransactions.contains(transaction);
 	}
 	
@@ -417,7 +418,7 @@ public final class TransactionManager implements ITransactionManager {
 	 *         pojos are enlisted in some other transaction.  The calling 
 	 *         transaction will undone this change.
 	 */
-	public synchronized boolean enlist(Transaction transaction, Set<ITransactable> enlistedPojos) {
+	public synchronized boolean enlist(ITransaction transaction, Set<ITransactable> enlistedPojos) {
 		
 		// first pass; look for any issues before we do anything
 		for(ITransactable transactable: enlistedPojos) {

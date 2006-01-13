@@ -10,6 +10,5 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.essentialplatform.core;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport,
  org.essentialplatform.runtime.shared;visibility:=reexport,
- org.essentialplatform.progmodel.louis.core;visibility:=reexport,
- org.essentialplatform.remoting
+ org.essentialplatform.progmodel.louis.core;visibility:=reexport
 Export-Package: org.essentialplatform.progmodel.louis.runtime

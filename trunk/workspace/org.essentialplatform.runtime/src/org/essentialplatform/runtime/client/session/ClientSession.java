@@ -13,12 +13,15 @@ import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.client.domain.IObservedFeature;
 import org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
 import org.essentialplatform.runtime.client.session.event.ISessionListener;
 import org.essentialplatform.runtime.client.session.event.SessionObjectEvent;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
+import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.handle.GuidHandleAssigner;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
@@ -108,7 +111,7 @@ public final class ClientSession implements IClientSession {
 	 * @return
 	 */
 	private <T> IDomainObject<T> createTransient(final ClientSession session, IDomainClass domainClass) {
-		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
+		T pojo = ((IDomainClassRuntimeBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.initAsCreatingTransient(pojo, _sessionBinding);
 		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
 		binding.attached(this);
@@ -120,7 +123,7 @@ public final class ClientSession implements IClientSession {
 	 * @return
 	 */
 	private <T> IDomainObject<T> createPersistent(final ClientSession session, IDomainClass domainClass) {
-		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
+		T pojo = ((IDomainClassRuntimeBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.initAsCreatingPersistent(pojo, _sessionBinding);
 		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
 		binding.attached(this);
@@ -159,7 +162,7 @@ public final class ClientSession implements IClientSession {
 	}
 
 	private <T> IDomainObject<T> recreatePersistent(SessionBinding sessionBinding, IDomainClass domainClass) {
-		T pojo = ((RuntimeClientClassBinding<T>)domainClass.getBinding()).newInstance();
+		T pojo = ((IDomainClassRuntimeBinding<T>)domainClass.getBinding()).newInstance();
 		IDomainObject<T> domainObject = DomainObject.initAsRecreatingPersistent(pojo, sessionBinding);
 		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
 		binding.attached(this);
@@ -209,6 +212,33 @@ public final class ClientSession implements IClientSession {
 		delete(getDomainObjectFor(pojo, pojo.getClass()));
 	}
 
+	
+	////////////////////////////////////////////////////////////////
+	// HandleAssigner 
+	////////////////////////////////////////////////////////////////
+	
+	
+	/**
+	 * Defaults to the {@link GuidHandleAssigner}.
+	 */
+	private IHandleAssigner _handleAssigner = new GuidHandleAssigner();
+	/*
+	 * @see org.essentialplatform.runtime.client.session.IClientSession#getHandleAssigner()
+	 */
+	public IHandleAssigner getHandleAssigner() {
+		return _handleAssigner;
+	}
+	/*
+	 * As per the interface, if not called then will default to using
+	 * the GuidHandleAssigner.
+	 * 
+	 * @see org.essentialplatform.runtime.client.session.IClientSession#setHandleAssigner(org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner)
+	 */
+	public void setHandleAssigner(IHandleAssigner handleAssigner) {
+		_handleAssigner = handleAssigner;
+	}
+	
+
 	////////////////////////////////////////////////////////////////
 	// ATTACH/DETACH 
 	////////////////////////////////////////////////////////////////
@@ -243,8 +273,13 @@ public final class ClientSession implements IClientSession {
 							domainObjectDomainName + ")");
 				}
 			}
+			// make sure has a handle
+			if (domainObject.getHandle() == null) {
+				getHandleAssigner().assignHandleFor(domainObject);
+			}
+			
 			// add to session hashes 
-			_pojoByDomainObject.put(domainObject, domainObject.getPojo());
+			_pojoByHandle.put(domainObject.getHandle(), domainObject.getPojo());
 			_domainObjectByPojo.put(domainObject.getPojo(), domainObject);
 
 			// add to partitioned hash of objects of this class
@@ -265,6 +300,8 @@ public final class ClientSession implements IClientSession {
 		}
 	}
 
+	
+	
 	/*
 	 * @see org.essentialplatform.session.ISession#detach(org.essentialplatform.session.IDomainObject)
 	 */
@@ -281,7 +318,7 @@ public final class ClientSession implements IClientSession {
 
 			// remove from global hash
 			_domainObjectByPojo.remove(domainObject.getPojo());
-			_pojoByDomainObject.remove(domainObject);
+			_pojoByHandle.remove(domainObject.getHandle());
 
 			// tell _domain object it is no longer attached to a session
 			objBinding.detached();
@@ -294,7 +331,7 @@ public final class ClientSession implements IClientSession {
 	}
 
 	public <T> boolean isAttached(IDomainObject<T> domainObject) {
-		return _pojoByDomainObject.get(domainObject) != null;
+		return _pojoByHandle.get(domainObject.getHandle()) != null;
 	}
 
 	/*
@@ -322,8 +359,8 @@ public final class ClientSession implements IClientSession {
 	 *  
 	 * @see #_domainObjectByPojo
 	 */
-	private Map<IDomainObject<?>, Object> _pojoByDomainObject = 
-		new HashMap<IDomainObject<?>, Object>();
+	private Map<Handle, Object> _pojoByHandle = 
+		new HashMap<Handle, Object>();
 
 	/**
 	 * Mapping of {@link IDomainObject} by the pojo that it wraps.

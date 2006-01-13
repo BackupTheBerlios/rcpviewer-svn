@@ -1,7 +1,5 @@
 package org.essentialplatform.runtime.client.remoting;
 
-import java.io.ByteArrayOutputStream;
-
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.remoting.AbstractRemoting;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;

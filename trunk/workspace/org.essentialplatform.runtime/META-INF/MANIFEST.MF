@@ -15,8 +15,7 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport,
  org.essentialplatform.progmodel.essential.core,
  net.sf.plugins.xstream,
- net.sf.plugins.commons,
- org.essentialplatform.remoting
+ net.sf.plugins.commons
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.client,
  org.essentialplatform.runtime.client.authorization,
@@ -35,12 +34,22 @@ Export-Package: org.essentialplatform.runtime.client,
  org.essentialplatform.runtime.shared.domain,
  org.essentialplatform.runtime.shared.domain.adapters,
  org.essentialplatform.runtime.shared.domain.bindings,
+ org.essentialplatform.runtime.shared.domain.handle,
  org.essentialplatform.runtime.shared.persistence,
+ org.essentialplatform.runtime.shared.remoting,
+ org.essentialplatform.runtime.shared.remoting.marshalling,
+ org.essentialplatform.runtime.shared.remoting.marshalling.xstream,
+ org.essentialplatform.runtime.shared.remoting.noop,
+ org.essentialplatform.runtime.shared.remoting.packaging,
+ org.essentialplatform.runtime.shared.remoting.packaging.standard,
+ org.essentialplatform.runtime.shared.remoting.transport,
+ org.essentialplatform.runtime.shared.remoting.util,
  org.essentialplatform.runtime.shared.session,
  org.essentialplatform.runtime.shared.tracing,
  org.essentialplatform.runtime.shared.transaction,
  org.essentialplatform.runtime.shared.transaction.changes,
  org.essentialplatform.runtime.shared.transaction.event,
+ org.essentialplatform.runtime.shared.transaction.noop,
  org.essentialplatform.runtime.shared.util
 Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin
 Eclipse-RegisterBuddy: net.sf.plugins.xstream

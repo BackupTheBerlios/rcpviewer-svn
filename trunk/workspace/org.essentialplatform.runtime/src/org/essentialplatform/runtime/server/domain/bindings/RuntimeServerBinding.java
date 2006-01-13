@@ -6,9 +6,8 @@ import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.runtime.server.persistence.IPersistenceIdAssigner;
-import org.essentialplatform.runtime.server.persistence.IdSemanticsPersistenceIdAssigner;
 import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
@@ -19,7 +18,8 @@ import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRunt
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOneToOneReferenceRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner;
+import org.essentialplatform.runtime.shared.domain.handle.IdSemanticsHandleAssigner;
 import org.osgi.framework.Bundle;
 
 /**
@@ -45,12 +45,9 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 
 
 	/**
-	 * Saves the primary builder, and sets up a sequential persistence Id assigner.
+	 * Saves the primary builder, and sets up a sequential handle assigner.
 	 *
-	 * <p>
-	 * TODO: at some point, anticipate that the IPersistenceIdAssigner will be 
-	 * injected.
-	 * 
+	 * @param primaryBuilder
 	 * @throws RuntimeException if a binding has already been set.
 	 */
 	public RuntimeServerBinding(IDomainBuilder primaryBuilder) {
@@ -68,7 +65,7 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 		return binding;
 	}
 	private <V> IDomainClassServerBinding<V> bind(IDomainClass domainClass, Class<V> javaClass) {
-		return new RuntimeServerClassBinding<V>(domainClass, javaClass, _sequentialPersistenceIdAssigner);
+		return new RuntimeServerClassBinding<V>(domainClass, javaClass, _sequentialHandleAssigner);
 	}
 	
 	@Override
@@ -93,15 +90,15 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 	/**
 	 * Injected in server-side.
 	 */
-	private IPersistenceIdAssigner _sequentialPersistenceIdAssigner; 
+	private IHandleAssigner _sequentialHandleAssigner; 
 	
 	/**
 	 * Injected.
 	 * 
 	 * @param assigner
 	 */
-	public void setPersistenceIdAssigner(IPersistenceIdAssigner assigner) {
-		_sequentialPersistenceIdAssigner = assigner;
+	public void setHandleAssigner(IHandleAssigner assigner) {
+		_sequentialHandleAssigner = assigner;
 	}
 	
 	//////////////////////////////////////////////////////////////////////
@@ -122,32 +119,29 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 
 		
 		/**
-		 * Delegates either to a composite persistence Id assigner or a
-		 * sequential persistence Id assigner dependent on the semantics of the
+		 * Delegates either to a composite handle assigner or a
+		 * sequential handle assigner dependent on the semantics of the
 		 * <tt>AssignmentType</tt> of the domain class.
 		 * 
 		 * @param domainClass
 		 * @param javaClass
-		 * @param delegatePersistenceIdAssigner
+		 * @param delegateHandleAssigner
 		 */
-		public RuntimeServerClassBinding(IDomainClass domainClass, Class<T> javaClass, IPersistenceIdAssigner delegatePersistenceIdAssigner) {
+		public RuntimeServerClassBinding(IDomainClass domainClass, Class<T> javaClass, IHandleAssigner delegateHandleAssigner) {
 			super(domainClass, javaClass);
-			_persistenceIdAssigner = new IdSemanticsPersistenceIdAssigner(domainClass, delegatePersistenceIdAssigner);
+			_handleAssigner = new IdSemanticsHandleAssigner(domainClass, delegateHandleAssigner);
 		}
 
-		private final IPersistenceIdAssigner _persistenceIdAssigner; 
+		private final IHandleAssigner _handleAssigner; 
 
-		/*
-		 * @see org.essentialplatform.runtime.shared.persistence.IPersistenceIdAssigner#assignPersistenceIdFor(IDomainObject)
-		 */
-		public <V> PersistenceId assignPersistenceIdFor(IDomainObject<V> domainObject) {
-			return _persistenceIdAssigner.assignPersistenceIdFor(domainObject);
+		public <V> Handle assignHandleFor(IDomainObject<V> domainObject) {
+			return _handleAssigner.assignHandleFor(domainObject);
 		}
 
 		/*
-		 * @see org.essentialplatform.runtime.shared.persistence.IPersistenceIdAssigner#nextAssigner()
+		 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner#nextAssigner()
 		 */
-		public IPersistenceIdAssigner nextAssigner() {
+		public IHandleAssigner nextAssigner() {
 			return null;
 		}
 

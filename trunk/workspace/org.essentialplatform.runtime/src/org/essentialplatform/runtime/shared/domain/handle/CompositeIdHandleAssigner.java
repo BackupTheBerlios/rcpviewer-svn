@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.server.persistence;
+package org.essentialplatform.runtime.shared.domain.handle;
 
 import java.util.List;
 
@@ -6,18 +6,17 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.core.domain.filters.IdAttributeFilter;
 import org.essentialplatform.progmodel.essential.core.domain.comparators.IdAttributeComparator;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 
-public final class CompositeIdPersistenceIdAssigner extends AbstractPersistenceIdAssigner {
+public final class CompositeIdHandleAssigner extends AbstractHandleAssigner {
 
 	private final IDomainClass _domainClass;
 	private final Class<?> _javaClass;
 	private List<IAttribute> _idAttributes; 
 
-	public CompositeIdPersistenceIdAssigner(IDomainClass domainClass) {
+	public CompositeIdHandleAssigner(IDomainClass domainClass) {
 		this(domainClass, null);
 	}
 
@@ -26,20 +25,20 @@ public final class CompositeIdPersistenceIdAssigner extends AbstractPersistenceI
 	 * @param domainClass
 	 * @param nextAssigner
 	 */
-	public CompositeIdPersistenceIdAssigner(IDomainClass domainClass, IPersistenceIdAssigner nextAssigner) {
+	public CompositeIdHandleAssigner(IDomainClass domainClass, IHandleAssigner nextAssigner) {
 		super(nextAssigner);
 		_domainClass = domainClass;
-		_javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
+		_javaClass = ((IDomainClassRuntimeBinding)domainClass.getBinding()).getJavaClass();
 	}
 
 	/*
-	 * @see org.essentialplatform.runtime.persistence.AbstractPersistenceIdAssigner#doAssignPersistenceIdFor(org.essentialplatform.runtime.shared.domain.IDomainObject)
+	 * @see org.essentialplatform.runtime.shared.domain.handle.AbstractHandleAssigner#doGenerateHandleFor(org.essentialplatform.runtime.shared.domain.IDomainObject)
 	 */
 	@Override
-	protected <T> PersistenceId doGeneratePersistenceIdFor(IDomainObject<T> domainObject) {
+	protected <T> Handle doGenerateHandleFor(IDomainObject<T> domainObject) {
 		assert _domainClass == domainObject.getDomainClass();
 		cacheIdAttributesIfRequired();
-		PersistenceId persistenceId = new PersistenceId(_javaClass);
+		Handle persistenceId = new Handle(_javaClass);
 		for(IAttribute idAttribute: _idAttributes) {
 			Object attributeValue = domainObject.getAttribute(idAttribute).get();
 			persistenceId.addComponentValue(attributeValue);

@@ -26,8 +26,8 @@ import org.essentialplatform.progmodel.essential.app.Regex;
 import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientAttributeBinding;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 
 /**
  * Analyzes annotations specific to the extended programming model.
@@ -47,7 +47,7 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 	 * (and its bindings).
 	 */
 	public void build(IDomainClass domainClass) {
-		Class<?> javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
+		Class<?> javaClass = ((IDomainClassRuntimeBinding)domainClass.getBinding()).getJavaClass();
 		EClass eClass = domainClass.getEClass();
 		
 
@@ -63,7 +63,7 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 			processMutatorPre(eAttribute, domainClass, javaClass); // setXxxPre(..) method
 
 			// serialize extended semantics as EMF annotations
-			RuntimeClientAttributeBinding attributeBinding = (RuntimeClientAttributeBinding)iAttribute.getBinding();
+			IAttributeRuntimeBinding attributeBinding = (IAttributeRuntimeBinding)iAttribute.getBinding();
 
 			serializer.setAttributeRelativeOrder(eAttribute, attributeBinding.getAnnotation(RelativeOrder.class));
 			serializer.setAttributeId(eAttribute, attributeBinding.getAnnotation(Id.class));

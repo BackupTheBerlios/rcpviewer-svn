@@ -28,6 +28,8 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
+import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.osgi.framework.Bundle;
 
 /**
@@ -108,12 +110,9 @@ public abstract class AbstractRuntimeBinding extends Binding {
 	private final IDomainBuilder _primaryBuilder;
 	
 	/**
-	 * Saves the primary builder, and sets up a sequential persistence Id assigner.
+	 * Saves the primary builder, and sets up a sequential handle assigner.
 	 *
-	 * <p>
-	 * TODO: at some point, anticipate that the IPersistenceIdAssigner will be 
-	 * injected.
-	 * 
+	 * @param primaryBuilder
 	 * @throws RuntimeException if a binding has already been set.
 	 */
 	public AbstractRuntimeBinding(IDomainBuilder primaryBuilder) {
@@ -238,14 +237,14 @@ public abstract class AbstractRuntimeBinding extends Binding {
 
 	}
 	
-	public abstract static class AbstractRuntimeClassBinding<T> implements IDomainClassBinding<T> {
+	public abstract static class AbstractRuntimeClassBinding<T> implements IDomainClassRuntimeBinding<T> {
 
 		private final IDomainClass _domainClass;
 		private final Class<T> _javaClass;
 		
 		/**
-		 * Delegates either to a composite persistence Id assigner or a
-		 * sequential persistence Id assigner dependent on the semantics of the
+		 * Delegates either to a composite handle assigner or a
+		 * sequential handle assigner dependent on the semantics of the
 		 * <tt>AssignmentType</tt> of the domain class.
 		 * 
 		 * @param domainClass
@@ -257,10 +256,16 @@ public abstract class AbstractRuntimeBinding extends Binding {
 			domainClass.setBinding(this);
 		}
 
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding#getJavaClass()
+		 */
 		public Class<T> getJavaClass() {
 			return _javaClass;
 		}
 		
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding#newInstance()
+		 */
 		public T newInstance() throws ProgrammingModelException {
 			try {
 				return getJavaClass().newInstance();
@@ -289,7 +294,7 @@ public abstract class AbstractRuntimeBinding extends Binding {
 	 * say, caching in constructor) because when the binding is first 
 	 * instantiated the EMF meta-model may not have been fully populated.
 	 */
-	public abstract class AbstractRuntimeAttributeBinding implements IAttributeBinding {
+	public abstract class AbstractRuntimeAttributeBinding implements IAttributeRuntimeBinding {
 
 		protected final IDomainClass.IAttribute _attribute;
 		protected final EAttribute _eAttribute;
@@ -327,14 +332,6 @@ public abstract class AbstractRuntimeBinding extends Binding {
 			invokeInvoker(getMutator(), pojo, new Object[]{newValue}, "mutator");
 		}
 		
-		/**
-		 * Returns the specified annotation (if any) on the accessor for the
-		 * attribute (or the mutator if this is a write-only attribute).
-		 * 
-		 * @param <T>
-		 * @param annotationClss
-		 * @return
-		 */
 		public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
 			return getAccessorOrMutator().getAnnotation(annotationClass);
 		}
