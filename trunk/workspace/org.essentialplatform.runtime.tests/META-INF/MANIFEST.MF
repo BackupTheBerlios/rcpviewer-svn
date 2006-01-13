@@ -19,8 +19,11 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
  net.sf.plugins.utils,
+ org.aspectj.runtime,
+ net.sf.plugins.hibernate,
  net.sf.plugins.commons,
  net.sf.plugins.xstream
+Eclipse-RegisterBuddy: net.sf.plugins.xstream
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform.runtime.shared.tests,
@@ -36,6 +39,8 @@ Export-Package: org.essentialplatform.runtime.shared.tests,
  org.essentialplatform.runtime.shared.tests.progmodel.standard.namesanddesc,
  org.essentialplatform.runtime.shared.tests.progmodel.standard.operation,
  org.essentialplatform.runtime.shared.tests.progmodel.standard.reference,
+ org.essentialplatform.runtime.shared.tests.remoting,
+ org.essentialplatform.runtime.shared.tests.remoting.marshalling.xstream,
  org.essentialplatform.runtime.shared.tests.session,
  org.essentialplatform.runtime.shared.tests.session.fixture,
  org.essentialplatform.runtime.shared.tests.transaction,

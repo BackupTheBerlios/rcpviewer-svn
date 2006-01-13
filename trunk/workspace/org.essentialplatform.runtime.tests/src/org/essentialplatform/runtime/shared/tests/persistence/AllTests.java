@@ -8,10 +8,11 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for org.essentialplatform.runtime.persistence");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(TestPersistenceId.class);
-		suite.addTestSuite(TestSequentialPersistenceIdAssigner.class);
-		suite.addTestSuite(TestCompositeIdPersistenceIdAssigner.class);
-		suite.addTestSuite(TestIdSemanticsPersistenceIdAssigner.class);
+		suite.addTestSuite(TestHandle.class);
+		suite.addTestSuite(TestSequentialHandleAssigner.class);
+		suite.addTestSuite(TestGuidHandleAssigner.class);
+		suite.addTestSuite(TestCompositeIdHandleAssigner.class);
+		suite.addTestSuite(TestIdSemanticsHandleAssigner.class);
 		//$JUnit-END$
 		return suite;
 	}

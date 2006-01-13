@@ -23,6 +23,7 @@ public class AllRuntimeTests {
 
 		suite.addTest(org.essentialplatform.runtime.shared.tests.session.AllTests.suite());
 		suite.addTest(org.essentialplatform.runtime.shared.tests.transaction.AllTests.suite());
+		suite.addTest(org.essentialplatform.runtime.shared.tests.persistence.AllTests.suite());
 		
 		//$JUnit-END$
 		return suite;

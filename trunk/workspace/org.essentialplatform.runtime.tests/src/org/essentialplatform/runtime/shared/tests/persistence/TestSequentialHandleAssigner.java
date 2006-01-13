@@ -5,28 +5,28 @@ import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerW
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdSecond;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleStringId;
-import org.essentialplatform.runtime.server.persistence.SequentialPersistenceIdAssigner;
+import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
+import org.essentialplatform.runtime.shared.domain.handle.SequentialHandleAssigner;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
-public class TestSequentialPersistenceIdAssigner extends AbstractRuntimeClientTestCase {
+public class TestSequentialHandleAssigner extends AbstractRuntimeClientTestCase {
 
-	private SequentialPersistenceIdAssigner assigner;
+	private SequentialHandleAssigner assigner;
 
 	private IDomainClass domainClass;
 	private IDomainObject<?> dobj;
-	private PersistenceId persistenceId;
+	private Handle persistenceId;
 	private Object[] componentValues;
 	
-	public TestSequentialPersistenceIdAssigner() {
+	public TestSequentialHandleAssigner() {
 		super(null);
 	}
 	
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		assigner = new SequentialPersistenceIdAssigner();
+		assigner = new SequentialHandleAssigner();
 	}
 
 	@Override
@@ -39,32 +39,32 @@ public class TestSequentialPersistenceIdAssigner extends AbstractRuntimeClientTe
 		super.tearDown();
 	}
 
-	public void testAssignedPersistenceIdHasCorrectJavaClass() {
+	public void testAssignedHandleHasCorrectJavaClass() {
 		domainClass = lookupAny(CustomerWithSimpleStringId.class);
 		dobj = session.create(domainClass);
 
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
+		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(CustomerWithSimpleStringId.class, persistenceId.getJavaClass());
 	}
 
-	public void testEachDomainObjectHasItsPersistenceIdAssigned() {
+	public void testEachDomainObjectHasItsHandleAssigned() {
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 		
 		dobj = session.create(domainClass);
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
-		assertNotNull(dobj.getPersistenceId());
-		assertSame(persistenceId, dobj.getPersistenceId());
+		persistenceId = assigner.assignHandleFor(dobj);
+		assertNotNull(dobj.getHandle());
+		assertSame(persistenceId, dobj.getHandle());
 	}
 
-	public void testPersistenceIdsAreGeneratedSequentially() {
+	public void testHandlesAreGeneratedSequentially() {
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 
 		dobj = session.create(domainClass);
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
+		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(1, persistenceId.getComponentValues()[0]);
 
 		dobj = session.create(domainClass);
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
+		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(2, persistenceId.getComponentValues()[0]);
 	}
 
@@ -73,13 +73,13 @@ public class TestSequentialPersistenceIdAssigner extends AbstractRuntimeClientTe
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 
 		dobj = session.create(domainClass);
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
+		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(1, persistenceId.getComponentValues()[0]);
 
 		domainClass = lookupAny(CustomerWithSimpleIdSecond.class);
 
 		dobj = session.create(domainClass);
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
+		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(1, persistenceId.getComponentValues()[0]);
 	}
 
@@ -87,7 +87,7 @@ public class TestSequentialPersistenceIdAssigner extends AbstractRuntimeClientTe
 		domainClass = lookupAny(CustomerWithNoIdentifier.class);
 		dobj = session.create(domainClass);
 
-		persistenceId = assigner.assignPersistenceIdFor(dobj);
+		persistenceId = assigner.assignHandleFor(dobj);
 
 		componentValues = persistenceId.getComponentValues();
 		assertEquals(1, componentValues.length);

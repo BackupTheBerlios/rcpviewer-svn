@@ -4,7 +4,7 @@ import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithNoAttributes;
 import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.progmodel.essential.core.tests.TestDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 
@@ -33,7 +33,7 @@ public class TestDomainClassAtRuntime extends TestDomainClass {
 	public void testGetJavaClass() {
 		IDomainClass domainClass = lookupAny(CustomerWithNoAttributes.class);
 		
-		RuntimeClientClassBinding binding = (RuntimeClientClassBinding)domainClass.getBinding();
+		IDomainClassRuntimeBinding binding = (IDomainClassRuntimeBinding)domainClass.getBinding();
 		Class<CustomerWithNoAttributes> javaClass = binding.getJavaClass();
 		assertSame(CustomerWithNoAttributes.class, javaClass);
 	}
