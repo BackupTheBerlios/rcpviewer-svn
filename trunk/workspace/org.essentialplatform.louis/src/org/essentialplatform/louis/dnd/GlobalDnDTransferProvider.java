@@ -16,7 +16,7 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.filters.NoopClassFilter;
 import org.essentialplatform.louis.util.ConfigElementSorter;
 import org.essentialplatform.louis.util.DomainRegistryUtil;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 
 /**
  * A global <code>IDndTransferProvider</code> that can handle any object.
@@ -117,7 +117,7 @@ public class GlobalDnDTransferProvider implements IDndTransferProvider {
 		// domain classes
 		for(IDomainClass domainClass: DomainRegistryUtil.allClasses(
 											new NoopClassFilter())) {
-			Class javaClass = ((RuntimeClientClassBinding)domainClass.getBinding()).getJavaClass();
+			Class javaClass = ((IDomainClassRuntimeBinding<?>)domainClass.getBinding()).getJavaClass();
 			getTransfer(javaClass);
 		}
 		

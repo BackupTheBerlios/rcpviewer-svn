@@ -22,7 +22,7 @@ import org.essentialplatform.core.fixture.progmodel.essential.standard.operation
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Priest;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.operation.Woman;
 import org.essentialplatform.core.tests.AbstractTestCase;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding.RuntimeClientClassBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 
 
 /**
@@ -245,7 +245,7 @@ public abstract class TestDomainClassOperations extends AbstractTestCase {
 		assertTrue(operation.isParameterADomainObject(0));
 		// HACK
 		IDomainClass eMarryFirstArgClass = (IDomainClass)operation.getDomainClassFor(0);
-		assertSame(Man.class, ((RuntimeClientClassBinding)eMarryFirstArgClass.getBinding()).getJavaClass());
+		assertSame(Man.class, ((IDomainClassRuntimeBinding)eMarryFirstArgClass.getBinding()).getJavaClass());
 		
 	}
 

@@ -670,7 +670,7 @@ public interface IDomainClass {
 		public II18nData getI18nData();
 
 		/**
-		 * Whether the specified attribute is part of the persistence Id.
+		 * Whether the specified attribute is part of the handle.
 		 * 
 		 * <p>
 		 * The {@link Id} annotation is used to indicate whether an attribute

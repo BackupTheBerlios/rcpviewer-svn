@@ -6,12 +6,11 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.osgi.framework.Bundle;
-
-import org.essentialplatform.core.domain.IDomainClass;
 
 /**
  * Static methods for handling image operations.
@@ -81,8 +80,7 @@ public class ImageUtil {
 	public static final Image getImage( IDomainClass clazz ) {
 		if ( clazz == null ) throw new IllegalArgumentException();
 		
-		RuntimeClientBinding.RuntimeClientClassBinding<?> binding = 
-			(RuntimeClientBinding.RuntimeClientClassBinding<?>)clazz.getBinding();
+		IDomainClassRuntimeBinding<?> binding = (IDomainClassRuntimeBinding<?>)clazz.getBinding();
 		Class javaClass = binding.getJavaClass();
 		
 		Image image = LouisPlugin.getDefault().getImageRegistry().get( javaClass.getSimpleName() );
