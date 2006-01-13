@@ -5,15 +5,3 @@ Bundle-SymbolicName: org.essentialplatform.remoting
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
-Require-Bundle: net.sf.plugins.xstream,
- net.sf.plugins.activemq;visibility:=reexport,
- org.apache.log4j,
- net.sf.plugins.commons
-Export-Package: org.essentialplatform.runtime.client.remoting,
- org.essentialplatform.runtime.server.remoting,
- org.essentialplatform.runtime.server.remoting.transport,
- org.essentialplatform.runtime.shared.remoting,
- org.essentialplatform.runtime.shared.remoting.marshalling,
- org.essentialplatform.runtime.shared.remoting.marshalling.xstream,
- org.essentialplatform.runtime.shared.remoting.transport,
- org.essentialplatform.runtime.shared.remoting.util
