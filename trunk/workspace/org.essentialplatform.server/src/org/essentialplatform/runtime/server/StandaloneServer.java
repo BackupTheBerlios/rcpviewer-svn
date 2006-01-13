@@ -23,6 +23,7 @@ import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransaction
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
 
@@ -85,9 +86,7 @@ public class StandaloneServer extends AbstractService {
 			Domain.instance(DomainConstants.DEFAULT_NAME), 
 			hssf);
 		for(IDomainClass dc: Domain.instance(DomainConstants.DEFAULT_NAME).classes()) {
-			// TODO: should be using SERVER bindings ... 
-			RuntimeClientBinding.RuntimeClientClassBinding rccb = 
-				(RuntimeClientBinding.RuntimeClientClassBinding)dc.getBinding();
+			IDomainClassRuntimeBinding rccb = (IDomainClassRuntimeBinding)dc.getBinding();
 			hssf.addClass(rccb.getJavaClass());
 		}
 		

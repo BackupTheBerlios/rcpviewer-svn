@@ -9,10 +9,10 @@ import java.util.Map;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
 import org.essentialplatform.runtime.server.persistence.AbstractObjectStore;
+import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
-import org.essentialplatform.runtime.shared.persistence.PersistenceId;
 
 /**
  * 
@@ -26,16 +26,16 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 		super(id);
 	}
 
-	private Map<Class<?>, Map<PersistenceId, Object>> _pojoByPersistenceIdByType = 
-		new HashMap<Class<?>, Map<PersistenceId, Object>>();
+	private Map<Class<?>, Map<Handle, Object>> _pojoByHandleByType = 
+		new HashMap<Class<?>, Map<Handle, Object>>();
 	
-	private <V> Map<PersistenceId, Object> pojoByPersistenceIdFor(Class<V> javaClass) {
-		Map<PersistenceId, Object> pojoByPersistenceId = (Map<PersistenceId, Object>)_pojoByPersistenceIdByType.get(javaClass);
-		if (pojoByPersistenceId == null) {
-			pojoByPersistenceId = new HashMap<PersistenceId, Object>();
-			_pojoByPersistenceIdByType.put(javaClass, pojoByPersistenceId);
+	private <V> Map<Handle, Object> pojoByHandleFor(Class<V> javaClass) {
+		Map<Handle, Object> pojosByHandle = (Map<Handle, Object>)_pojoByHandleByType.get(javaClass);
+		if (pojosByHandle == null) {
+			pojosByHandle = new HashMap<Handle, Object>();
+			_pojoByHandleByType.put(javaClass, pojosByHandle);
 		}
-		return pojoByPersistenceId;
+		return pojosByHandle;
 	}		
 
 	/*
@@ -44,22 +44,22 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 	public synchronized <T> void save(IDomainObject<T> domainObject) throws DuplicateObjectException {
 		IDomainClass domainClass = domainObject.getDomainClass();
 
-		// get the runtime binding to assign an appropriate persistence Id.
+		// get the runtime binding to assign an appropriate handle.
 		RuntimeServerBinding.RuntimeServerClassBinding<T> binding = 
 			(RuntimeServerBinding.RuntimeServerClassBinding)domainClass.getBinding();
-		binding.assignPersistenceIdFor(domainObject);
+		binding.assignHandleFor(domainObject);
 		Object pojo = domainObject.getPojo();
-		PersistenceId persistenceId = domainObject.getPersistenceId();
+		Handle persistenceId = domainObject.getHandle();
 
 		// get the hash for this class and make sure this pojo doesn't already exist
-		Map<PersistenceId, Object> pojoByPersistenceId = 
-			pojoByPersistenceIdFor(pojo.getClass());
-		if (pojoByPersistenceId.get(persistenceId) != null) {
+		Map<Handle, Object> pojosByHandle = 
+			pojoByHandleFor(pojo.getClass());
+		if (pojosByHandle.get(persistenceId) != null) {
 			throw new DuplicateObjectException("Pojo '" + persistenceId + "' already exists", pojo);
 		}
 		
 		// put the pojo into the hash.
-		pojoByPersistenceId.put(persistenceId, pojo);
+		pojosByHandle.put(persistenceId, pojo);
 	}
 
 	/*
@@ -69,11 +69,11 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 		Object pojo = domainObject.getPojo();
 
 		// get the hash for this class
-		Map<PersistenceId, Object> pojoByPersistenceId = 
-			pojoByPersistenceIdFor(domainObject.getPojo().getClass());
+		Map<Handle, Object> pojosByHandle = 
+			pojoByHandleFor(domainObject.getPojo().getClass());
 		
 		// look up the stored pojo, to make sure its there
-		Object storedPojo = pojoForPersistenceId(domainObject, pojoByPersistenceId);
+		Object storedPojo = pojosForHandle(domainObject, pojosByHandle);
 		
 		// nothing else to do, though (relying on identity comparison).
 	}
@@ -83,14 +83,14 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 		Object pojo = domainObject.getPojo();
 
 		// get the hash for this class
-		Map<PersistenceId, Object> pojoByPersistenceId = 
-			pojoByPersistenceIdFor(domainObject.getPojo().getClass());
+		Map<Handle, Object> pojosByHandle = 
+			pojoByHandleFor(domainObject.getPojo().getClass());
 		
 		// look up the stored pojo, just to make sure its there.
-		Object storedPojo = pojoForPersistenceId(domainObject, pojoByPersistenceId);
+		Object storedPojo = pojosForHandle(domainObject, pojosByHandle);
 
 		// delete the pojo from the hash
-		_pojoByPersistenceIdByType.remove(domainObject.getPersistenceId());
+		_pojoByHandleByType.remove(domainObject.getHandle());
 	}
 
 	
@@ -118,10 +118,10 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 	 * INCLUDES A CHECK WHICH RELIES UPON IDENTITY COMPARISON...
 	 * ... SO IS INCOMPATIBLE WITH THE REMOTING DESIGN.
 	 */
-	private <T> Object pojoForPersistenceId( 
-			IDomainObject<T> domainObject, Map<PersistenceId, Object> pojoByPersistenceId) throws ConcurrencyException {
-		PersistenceId persistenceId = domainObject.getPersistenceId();
-		Object pojo = pojoByPersistenceId.get(persistenceId);
+	private <T> Object pojosForHandle( 
+			IDomainObject<T> domainObject, Map<Handle, Object> pojosByHandle) throws ConcurrencyException {
+		Handle persistenceId = domainObject.getHandle();
+		Object pojo = pojosByHandle.get(persistenceId);
 		if (pojo == null) {
 			throw new ConcurrencyException("Pojo does not exist (deleted?)", null);
 		}
@@ -139,7 +139,7 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 	 * Not part of the {@link IObjectStore} interface.
 	 */
 	public void reset() {
-		_pojoByPersistenceIdByType.clear();
+		_pojoByHandleByType.clear();
 	}
 	
 	
@@ -157,7 +157,7 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 	 */
 	public Collection<?> allInstances() {
 		List<Object> allInstances = new ArrayList<Object>();
-		for(Class type: _pojoByPersistenceIdByType.keySet()) {
+		for(Class type: _pojoByHandleByType.keySet()) {
 			appendInstances(type, allInstances);
 		}
 		return allInstances;
@@ -167,9 +167,9 @@ public final class InMemoryObjectStore extends AbstractObjectStore {
 	 * JAVA_5_FIXME
 	 */
 	private <V> Collection<V> appendInstances(final Class<V> pojoClass, Collection<V> instances) {
-		Map<PersistenceId, Object> pojoByPersistenceId = pojoByPersistenceIdFor(pojoClass);
-		if (pojoByPersistenceId != null) {
-			instances.addAll((Collection<V>)pojoByPersistenceId.values());
+		Map<Handle, Object> pojosByHandle = pojoByHandleFor(pojoClass);
+		if (pojosByHandle != null) {
+			instances.addAll((Collection<V>)pojosByHandle.values());
 		}
 		return instances;
 	}

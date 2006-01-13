@@ -9,10 +9,10 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.essentialplatform.runtime.shared,
- org.essentialplatform.remoting,
  net.sf.plugins.hsqldb,
  net.sf.plugins.hibernate,
- org.essentialplatform.progmodel.essential.runtime
+ org.essentialplatform.progmodel.essential.runtime,
+ net.sf.plugins.activemq
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.database,
