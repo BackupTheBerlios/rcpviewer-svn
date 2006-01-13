@@ -26,17 +26,11 @@ public final class XStreamMarshalling implements IMarshalling {
 	}
 
 	
-	/*
-	 * @see org.essentialplatform.remoting.marshalling.IMarshaller#marshal(java.lang.Object)
-	 */
 	public String marshal(Object pojo) {
 		return xstream.toXML(pojo);
 	}
 
 
-	/*
-	 * @see org.essentialplatform.remoting.marshalling.IUnmarshaller#unmarshal(java.lang.String)
-	 */
 	public Object unmarshal(String marshalledObject) {
 		return xstream.fromXML(marshalledObject);
 	}
