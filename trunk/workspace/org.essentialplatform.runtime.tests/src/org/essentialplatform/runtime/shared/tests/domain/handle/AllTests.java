@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.tests.persistence;
+package org.essentialplatform.runtime.shared.tests.domain.handle;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -13,6 +13,7 @@ public class AllTests {
 		suite.addTestSuite(TestGuidHandleAssigner.class);
 		suite.addTestSuite(TestCompositeIdHandleAssigner.class);
 		suite.addTestSuite(TestIdSemanticsHandleAssigner.class);
+		suite.addTestSuite(TestHandleMap.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.tests.persistence.fixture;
+package org.essentialplatform.runtime.shared.tests.domain.handle;
 
 import org.essentialplatform.progmodel.essential.app.Id;
 import org.essentialplatform.progmodel.essential.app.InDomain;

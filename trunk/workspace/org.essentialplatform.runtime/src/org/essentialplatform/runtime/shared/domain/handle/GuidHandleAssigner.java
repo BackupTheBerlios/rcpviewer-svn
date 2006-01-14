@@ -27,7 +27,7 @@ public final class GuidHandleAssigner extends AbstractHandleAssigner {
 	protected <T> Handle doGenerateHandleFor(IDomainObject<T> domainObject) {
 		IDomainClassRuntimeBinding<T> binding = (IDomainClassRuntimeBinding<T>)domainObject.getDomainClass().getBinding();
 		Class<?> objectClass = binding.getJavaClass();
-		return new Handle(objectClass, UUID.randomUUID());
+		return new Handle(objectClass, UUID.randomUUID().toString());
 	}
 
 }

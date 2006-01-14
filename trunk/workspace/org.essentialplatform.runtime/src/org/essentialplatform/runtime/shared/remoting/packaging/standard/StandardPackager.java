@@ -7,9 +7,14 @@ import org.essentialplatform.core.domain.filters.OneToOneReferenceFilter;
 import org.essentialplatform.core.domain.filters.CollectionReferenceFilter;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
 import org.essentialplatform.runtime.shared.remoting.packaging.AbstractPackager;
 
 public class StandardPackager extends AbstractPackager {
+
+	public StandardPackager(IHandleMap handleMap) {
+		super(handleMap);
+	}
 
 	@Override
 	public Object pack(IPojo pojo) {

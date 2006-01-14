@@ -1,13 +1,6 @@
 package org.essentialplatform.runtime.shared.tests.session;
 
-import org.easymock.MockControl;
-import org.eclipse.emf.ecore.EAttribute;
-
 import org.essentialplatform.core.domain.IDomainClass;
-import org.essentialplatform.core.features.IFeatureId;
-import org.essentialplatform.progmodel.essential.app.IPrerequisites;
-import org.essentialplatform.progmodel.essential.app.Prerequisites;
-import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
 import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;

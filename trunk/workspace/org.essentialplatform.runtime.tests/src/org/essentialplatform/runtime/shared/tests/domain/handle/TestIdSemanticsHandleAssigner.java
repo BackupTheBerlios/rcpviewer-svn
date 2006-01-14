@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.tests.persistence;
+package org.essentialplatform.runtime.shared.tests.domain.handle;
 
 import java.math.BigInteger;
 
@@ -29,7 +29,6 @@ import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.handle.IdSemanticsHandleAssigner;
 import org.essentialplatform.runtime.shared.domain.handle.SequentialHandleAssigner;
-import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeServerTestCase;
 
 public class TestIdSemanticsHandleAssigner extends AbstractRuntimeServerTestCase {

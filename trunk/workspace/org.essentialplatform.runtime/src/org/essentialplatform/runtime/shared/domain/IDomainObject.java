@@ -176,9 +176,9 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * eventually assigns the actual Id, then the handle is updated
 	 * client-side.
 	 * 
-	 * @param persistenceId
+	 * @param handle
 	 */
-	public void assignHandle(Handle persistenceId);
+	public void assignHandle(Handle handle);
 
 	
 	/**

@@ -1,20 +1,20 @@
-package org.essentialplatform.runtime.shared.tests.persistence;
+package org.essentialplatform.runtime.shared.tests.domain.handle;
 
 import junit.framework.TestCase;
 
 import org.essentialplatform.runtime.shared.domain.Handle;
-import org.essentialplatform.runtime.shared.tests.persistence.fixture.Department;
-import org.essentialplatform.runtime.shared.tests.persistence.fixture.Employee;
+import org.essentialplatform.runtime.shared.tests.AbstractRuntimeServerTestCase;
 
 public class TestHandle extends TestCase {
 
 	private Handle id1;
+
 	private Handle id2;
 
 	public TestHandle() {
 		super(null);
 	}
-	
+
 	@Override
 	public void tearDown() {
 		id1 = null;
@@ -24,10 +24,10 @@ public class TestHandle extends TestCase {
 	public void testWhenEqualForSameTypeSingleComponent() {
 		id1 = new Handle(Department.class);
 		id2 = new Handle(Department.class);
-		
+
 		id1.addComponentValue(new Integer(1));
 		id2.addComponentValue(new Integer(1));
-		
+
 		assertTrue(id1.equals(id2));
 	}
 
@@ -37,7 +37,7 @@ public class TestHandle extends TestCase {
 
 		id1.addComponentValue(new Integer(1));
 		id2.addComponentValue(new Integer(10));
-		
+
 		assertFalse(id1.equals(id2));
 	}
 
@@ -68,7 +68,7 @@ public class TestHandle extends TestCase {
 	public void testWhenNotEqualForDifferentType() {
 		id1 = new Handle(Department.class);
 		id2 = new Handle(Employee.class);
-		
+
 		assertFalse(id1.equals(id2));
 	}
 
@@ -76,7 +76,7 @@ public class TestHandle extends TestCase {
 		id1 = new Handle(Department.class, 1);
 		id2 = new Handle(Department.class);
 		id2.addComponentValue(new Integer(1));
-		
+
 		assertTrue(id1.equals(id2));
 	}
 
@@ -84,7 +84,7 @@ public class TestHandle extends TestCase {
 		id1 = new Handle(Department.class, 1);
 		id2 = new Handle(Department.class);
 		id2.addComponentValue(new Integer(2)); // different
-		
+
 		assertFalse(id1.equals(id2));
 	}
 
@@ -93,19 +93,18 @@ public class TestHandle extends TestCase {
 		assertSame(Department.class, id.getJavaClass());
 	}
 
-
 	public void testUpdateWhenNoValuesDoesNothing() {
 		id1 = new Handle(Department.class);
 		id1.update(1);
 		assertNull(id1.getPrevious());
 		assertFalse(id1.hasPrevious());
-		
+
 		id1 = new Handle(Department.class);
 		id1.update(1, 2);
 		assertNull(id1.getPrevious());
 		assertFalse(id1.hasPrevious());
 	}
-	
+
 	public void testUpdateWhenSameValuesDoesNothing() {
 		id1 = new Handle(Department.class, 1);
 		id1.update(1);
@@ -118,7 +117,6 @@ public class TestHandle extends TestCase {
 		assertFalse(id1.hasPrevious());
 	}
 
-
 	public void testUpdateWhenNewValuesMovesCurrentToOriginal() {
 		id1 = new Handle(Department.class, 1);
 		id1.update();
@@ -128,21 +126,20 @@ public class TestHandle extends TestCase {
 
 	public void testAfterUpdateTheOriginalIsEqualToTheOriginalValue() {
 		id1 = new Handle(Department.class, 1);
-		id2 = new Handle(Department.class, 1);  // acting as our control
+		id2 = new Handle(Department.class, 1); // acting as our control
 		assertTrue(id1.equals(id2));
 		id1.update(123);
 		assertFalse(id1.equals(id2));
 		assertTrue(id2.equals(id1.getPrevious()));
 	}
 
-
 	public void testAfterUpdateCanContinueToAddNewComponentsWhenUpdateWithNone() {
 		id1 = new Handle(Department.class, 1, 2);
 		id1.update();
-		
+
 		id1.addComponentValues(456, 789);
 		id1.addComponentValues(123);
-		
+
 		id2 = new Handle(Department.class, 456, 789, 123);
 		assertTrue(id1.equals(id2));
 	}
@@ -150,9 +147,9 @@ public class TestHandle extends TestCase {
 	public void testAfterUpdateCanContinueToAddNewComponentsWhenUpdateWithSome() {
 		id1 = new Handle(Department.class, 1, 2);
 		id1.update(456);
-		
+
 		id1.addComponentValues(789, 123);
-		
+
 		id2 = new Handle(Department.class, 456, 789, 123);
 		assertTrue(id1.equals(id2));
 	}
@@ -161,32 +158,31 @@ public class TestHandle extends TestCase {
 		id1 = new Handle(Department.class, 1);
 		id1.update(2);
 		Handle id1sFirstPrevious = id1.getPrevious();
-		
+
 		id2 = new Handle(Department.class, 1);
 		assertEquals(id2, id1sFirstPrevious);
-		
+
 		id1.update(3);
 		Handle id1sSecondPrevious = id1.getPrevious();
 
 		id2 = new Handle(Department.class, 2);
 		assertEquals(id2, id1sSecondPrevious);
-		
+
 		// the first previous didn't get shuffle along
 		assertNull(id1sFirstPrevious.getPrevious());
 	}
 
 	public void testPreviousNotUsedInEqualityCheck() {
 		id1 = new Handle(Department.class, 123);
-		id2 = new Handle(Department.class, 456);  
+		id2 = new Handle(Department.class, 456);
 		assertFalse(id1.equals(id2));
-		
+
 		id1.update(789, 123);
 		id2.update(789, 123);
-		
+
 		assertFalse(id1.getPrevious().equals(id2.getPrevious()));
 		assertTrue(id1.equals(id2));
 	}
-
 
 	public void testGetPreviousBeforeUpdateReturnsNothing() {
 		id1 = new Handle(Department.class, 1);
@@ -208,20 +204,19 @@ public class TestHandle extends TestCase {
 	public void testEqualsWithDifferentNumbersOfComponents() {
 		id1 = new Handle(Department.class, 1);
 		id2 = new Handle(Department.class, 1, 2);
-		
+
 		assertFalse(id1.equals(id2));
 		assertFalse(id2.equals(id1));
 	}
-
 
 	public void testEqualsWithOneHandleWithNoComponents() {
 		id1 = new Handle(Department.class);
 		id2 = new Handle(Department.class, 1);
-		
+
 		assertFalse(id1.equals(id2));
 		assertFalse(id2.equals(id1));
 	}
-	
+
 	public void testEqualsWithNullWithNoComponents() {
 		id1 = new Handle(Department.class);
 		assertFalse(id1.equals(null));

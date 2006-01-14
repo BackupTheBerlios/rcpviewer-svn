@@ -21,7 +21,9 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.handle.GuidHandleAssigner;
+import org.essentialplatform.runtime.shared.domain.handle.HandleMap;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
@@ -278,9 +280,8 @@ public final class ClientSession implements IClientSession {
 				getHandleAssigner().assignHandleFor(domainObject);
 			}
 			
-			// add to session hashes 
-			_pojoByHandle.put(domainObject.getHandle(), domainObject.getPojo());
-			_domainObjectByPojo.put(domainObject.getPojo(), domainObject);
+			// add to session hashes
+			_handleMap.add(domainObject);
 
 			// add to partitioned hash of objects of this class
 			List<IDomainObject<?>> domainObjects = getDomainObjectsFor(domainObject);
@@ -317,8 +318,7 @@ public final class ClientSession implements IClientSession {
 			domainObjects.remove(domainObject);
 
 			// remove from global hash
-			_domainObjectByPojo.remove(domainObject.getPojo());
-			_pojoByHandle.remove(domainObject.getHandle());
+			_handleMap.remove(domainObject.getHandle());
 
 			// tell _domain object it is no longer attached to a session
 			objBinding.detached();
@@ -331,7 +331,8 @@ public final class ClientSession implements IClientSession {
 	}
 
 	public <T> boolean isAttached(IDomainObject<T> domainObject) {
-		return _pojoByHandle.get(domainObject.getHandle()) != null;
+		final Handle handle = domainObject.getHandle();
+		return _handleMap.getDomainObject(handle) != null;
 	}
 
 	/*
@@ -347,20 +348,8 @@ public final class ClientSession implements IClientSession {
 	// DOMAIN OBJECT HASHES
 	////////////////////////////////////////////////////////////////
 
-	/**
-	 * Mapping of pojo by its wrapping {@link IDomainObject}.
-	 * 
-	 * <p> 
-	 * An alternative implementation would be a perthis association between a
-	 * pojo and an IDomainObject (indeed this was the initial design).
-	 * 
-	 * <p>
-	 * Reciprocal of {@link #_domainObjectByPojo}
-	 *  
-	 * @see #_domainObjectByPojo
-	 */
-	private Map<Handle, Object> _pojoByHandle = 
-		new HashMap<Handle, Object>();
+	private IHandleMap _handleMap = new HandleMap();
+	
 
 	/**
 	 * Mapping of {@link IDomainObject} by the pojo that it wraps.

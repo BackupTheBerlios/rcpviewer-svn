@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.shared.tests.persistence;
+package org.essentialplatform.runtime.shared.tests.domain.handle;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithNoIdentifier;
