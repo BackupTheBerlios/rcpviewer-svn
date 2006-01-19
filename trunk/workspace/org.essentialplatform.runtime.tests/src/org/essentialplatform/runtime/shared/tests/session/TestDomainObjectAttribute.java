@@ -14,7 +14,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 
 	public void testCanGetAttribute() {
 		IDomainClass dc = lookupAny(Department.class);
-		IDomainObject<Department> dobj = session.create(dc);
+		IDomainObject<Department> dobj = clientSession.create(dc);
 		IDomainClass.IAttribute iAttrib = dobj.getIAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(iAttrib);
 		
@@ -26,7 +26,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 
 	public void testCanSetAttribute() {
 		IDomainClass dc = lookupAny(Department.class);
-		IDomainObject<Department> dobj = session.create(dc);
+		IDomainObject<Department> dobj = clientSession.create(dc);
 		IDomainClass.IAttribute iAttrib = dobj.getIAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(iAttrib);
 		
@@ -37,7 +37,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 
 	public void testSettingAttributeNotifiesListeners() {
 		IDomainClass dc =  lookupAny(Department.class);
-		IDomainObject<Department> dobj = session.create(dc);
+		IDomainObject<Department> dobj = clientSession.create(dc);
 		IDomainClass.IAttribute iAttrib = dobj.getIAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(iAttrib);
 		
@@ -50,7 +50,7 @@ public class TestDomainObjectAttribute extends AbstractRuntimeClientTestCase  {
 
 	public void testCannotSetAttributeToObjectOfWrongType() {
 		IDomainClass dc = lookupAny(Department.class);
-		IDomainObject<Department> dobj = session.create(dc);
+		IDomainObject<Department> dobj = clientSession.create(dc);
 		IDomainClass.IAttribute eAttrib = dobj.getIAttributeNamed("name");
 		IDomainObject.IObjectAttribute attrib = dobj.getAttribute(eAttrib);
 		

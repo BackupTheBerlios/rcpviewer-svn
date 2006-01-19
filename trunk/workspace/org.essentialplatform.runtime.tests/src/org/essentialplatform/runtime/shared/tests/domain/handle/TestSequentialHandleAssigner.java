@@ -41,7 +41,7 @@ public class TestSequentialHandleAssigner extends AbstractRuntimeClientTestCase 
 
 	public void testAssignedHandleHasCorrectJavaClass() {
 		domainClass = lookupAny(CustomerWithSimpleStringId.class);
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 
 		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(CustomerWithSimpleStringId.class, persistenceId.getJavaClass());
@@ -50,7 +50,7 @@ public class TestSequentialHandleAssigner extends AbstractRuntimeClientTestCase 
 	public void testEachDomainObjectHasItsHandleAssigned() {
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 		
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		persistenceId = assigner.assignHandleFor(dobj);
 		assertNotNull(dobj.getHandle());
 		assertSame(persistenceId, dobj.getHandle());
@@ -59,11 +59,11 @@ public class TestSequentialHandleAssigner extends AbstractRuntimeClientTestCase 
 	public void testHandlesAreGeneratedSequentially() {
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(1, persistenceId.getComponentValues()[0]);
 
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(2, persistenceId.getComponentValues()[0]);
 	}
@@ -72,20 +72,20 @@ public class TestSequentialHandleAssigner extends AbstractRuntimeClientTestCase 
 	public void testEachClassIsAssignedSequentially() {
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(1, persistenceId.getComponentValues()[0]);
 
 		domainClass = lookupAny(CustomerWithSimpleIdSecond.class);
 
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		persistenceId = assigner.assignHandleFor(dobj);
 		assertEquals(1, persistenceId.getComponentValues()[0]);
 	}
 
 	public void testSequentialWhenNoIdentifier() {
 		domainClass = lookupAny(CustomerWithNoIdentifier.class);
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 
 		persistenceId = assigner.assignHandleFor(dobj);
 

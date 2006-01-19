@@ -28,8 +28,14 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
+import org.essentialplatform.runtime.shared.domain.DomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
+import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
+import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.osgi.framework.Bundle;
 
 /**
@@ -37,7 +43,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Dan Haywood
  */
-public abstract class AbstractRuntimeBinding extends Binding {
+public abstract class AbstractRuntimeBinding extends Binding implements IRuntimeBinding {
 	
 	private static Logger _logger = Logger.getLogger(AbstractRuntimeBinding.class);
 	protected Logger getLogger() {
@@ -119,17 +125,37 @@ public abstract class AbstractRuntimeBinding extends Binding {
 		_primaryBuilder = primaryBuilder;
 	}
 
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getBundle()
+	 */
 	public abstract Bundle getBundle();
 
 	
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getPrimaryBuilder()
+	 */
 	@Override
 	public IDomainBuilder getPrimaryBuilder() {
 		return _primaryBuilder;
 	}
 
+	/*
+	 * The <tt>classRepresentation</tt> can be either a string or an actual
+	 * class.
+	 * 
+	 * @see org.essentialplatform.core.deployment.Binding#getInDomainOf(java.lang.Object)
+	 */
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getInDomainOf(java.lang.Object)
+	 */
 	@Override
 	public final InDomain getInDomainOf(final Object classRepresentation) {
-		return getInDomainOf((Class<?>)classRepresentation);
+		
+		if (!(classRepresentation instanceof Class)) {
+			throw new IllegalArgumentException("Class representation not recognized (classRepresentation = '" + classRepresentation + "'");
+		}
+		Class<?> javaClass = (Class<?>)classRepresentation;
+		return getInDomainOf(javaClass);
 	}
 	private <V> InDomain getInDomainOf(final Class<V> javaClass) {
 		InDomain inDomain = javaClass.getAnnotation(InDomain.class);
@@ -138,6 +164,25 @@ public abstract class AbstractRuntimeBinding extends Binding {
 		}
 		return inDomain;
 	}
+
+	//////////////////////////////////////////////////////////////////////
+
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#assertValid(java.lang.Object)
+	 */
+	public void assertValid(final Object classRepresentation) {
+		if (!(classRepresentation instanceof Class)) {
+			throw new IllegalArgumentException(
+				"Class representation is not an instance of java.lang.Class (is a " + classRepresentation.getClass().getCanonicalName() + ")");
+		}
+		assertValid((Class<?>)classRepresentation);
+	}
+	private <V> void assertValid(final Class<V> javaClass) {
+		if ( javaClass.isPrimitive() ) {
+			throw new IllegalArgumentException("Java class is primitive.");
+		}
+	}
+
 
 	//////////////////////////////////////////////////////////////////////
 	
@@ -188,22 +233,6 @@ public abstract class AbstractRuntimeBinding extends Binding {
 			return (Class<?>)eClass.getInstanceClass();
 		}
 
-
-		/*
-		 * @see org.essentialplatform.domain.Deployment.IDomainBinding#assertValid(java.lang.Object)
-		 */
-		public void assertValid(final Object classRepresentation) {
-			if (!(classRepresentation instanceof Class)) {
-				throw new IllegalArgumentException(
-					"Class representation is not an instance of java.lang.Class (is a " + classRepresentation.getClass().getCanonicalName() + ")");
-			}
-			assertValid((Class<?>)classRepresentation);
-		}
-		private <V> void assertValid(final Class<V> javaClass) {
-			if ( javaClass.isPrimitive() ) {
-				throw new IllegalArgumentException("Java class is primitive.");
-			}
-		}
 
 //		/**
 //		 * Defaults to {@link IAuthorizationManager#NOOP} but can be overridden
@@ -262,13 +291,16 @@ public abstract class AbstractRuntimeBinding extends Binding {
 		public Class<T> getJavaClass() {
 			return _javaClass;
 		}
-		
+
 		/*
-		 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding#newInstance()
+		 * @see org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding#newInstance(org.essentialplatform.runtime.shared.session.SessionBinding, org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState, org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState)
 		 */
-		public T newInstance() throws ProgrammingModelException {
+		public T newInstance(final SessionBinding sessionBinding, PersistState persistState, ResolveState resolveState) throws ProgrammingModelException {
 			try {
-				return getJavaClass().newInstance();
+				IPojo pojo = (IPojo)getJavaClass().newInstance();
+				IDomainObject<T> domainObject = pojo.domainObject();
+				domainObject.init(sessionBinding, persistState, resolveState, this);
+				return (T)pojo;
 			} catch(IllegalAccessException ex) {
 				throw new ProgrammingModelException("Cannot instantiate", ex);
 			} catch(InstantiationException ex) {

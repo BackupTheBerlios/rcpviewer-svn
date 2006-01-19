@@ -42,7 +42,7 @@ public class TestCompositeIdHandleAssigner extends AbstractRuntimeClientTestCase
 		domainClass = lookupAny(CustomerWithSimpleStringId.class);
 		assigner = new CompositeIdHandleAssigner(domainClass);
 		
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 
 		handle = assigner.assignHandleFor(dobj);
 		assertEquals(CustomerWithSimpleStringId.class, handle.getJavaClass());
@@ -52,7 +52,7 @@ public class TestCompositeIdHandleAssigner extends AbstractRuntimeClientTestCase
 		domainClass = lookupAny(CustomerWithSimpleIdFirst.class);
 		assigner = new CompositeIdHandleAssigner(domainClass);
 
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 
 		handle = assigner.assignHandleFor(dobj);
 		assertNotNull(dobj.getHandle());
@@ -63,7 +63,7 @@ public class TestCompositeIdHandleAssigner extends AbstractRuntimeClientTestCase
 		domainClass = lookupAny(CustomerWithNoIdentifier.class);
 		assigner = new CompositeIdHandleAssigner(domainClass);
 		
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 
 		try {
 			handle = assigner.assignHandleFor(dobj);
@@ -80,7 +80,7 @@ public class TestCompositeIdHandleAssigner extends AbstractRuntimeClientTestCase
 		domainClass = lookupAny(CustomerWithSimpleStringId.class);
 		assigner = new CompositeIdHandleAssigner(domainClass);
 		
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		((CustomerWithSimpleStringId)dobj.getPojo()).setId("foobar");
 
 		handle = assigner.assignHandleFor(dobj);
@@ -94,7 +94,7 @@ public class TestCompositeIdHandleAssigner extends AbstractRuntimeClientTestCase
 		domainClass = lookupAny(CustomerWithCompositeId.class);
 		assigner = new CompositeIdHandleAssigner(domainClass);
 		
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		CustomerWithCompositeId pojo = ((CustomerWithCompositeId)dobj.getPojo());
 		pojo.setFirstName("foo");
 		pojo.setLastName("bar");

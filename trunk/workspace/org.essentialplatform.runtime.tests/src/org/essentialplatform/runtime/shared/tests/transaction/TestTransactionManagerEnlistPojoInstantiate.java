@@ -21,7 +21,7 @@ public class TestTransactionManagerEnlistPojoInstantiate extends AbstractTransac
 
 
 	public void testInstantiatingAnObjectEnlistsObject() {
-		IDomainObject<Customer> domainObject = session.create(customerDomainClass);
+		IDomainObject<Customer> domainObject = clientSession.create(customerDomainClass);
 		Customer customer = domainObject.getPojo();
 		assertEquals(1, transactionManager.getCurrentTransactions().size());
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer);

@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectCollectionReferenceRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOneToOneReferenceRuntimeBinding;
@@ -13,6 +14,8 @@ import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntime
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectOperationRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.IPersistable;
 import org.essentialplatform.runtime.shared.persistence.IResolvable;
+import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
+import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
 
@@ -43,9 +46,19 @@ import org.essentialplatform.runtime.shared.transaction.event.ITransactionListen
  */
 public interface IDomainObject<T> extends IResolvable, IPersistable {
 
+	/**
+	 * TODO: made public for packager functionality, but need to sort out the
+	 * interplay between this and the initAsXxx static methods.
+	 * 
+	 * @param sessionBinding
+	 * @param persistState
+	 * @param resolveState
+	 */
+	public void init(final SessionBinding sessionBinding, PersistState persistState, ResolveState resolveState, IDomainClassRuntimeBinding<T> runtimeClassBinding);
+		
+	
 	//////////////////////////////////////////////////////////////////////////
-	// SessionBinding, ObjectStoreId
-	// TODO: get rid of ObjectStoreId
+	// SessionBinding
 	//////////////////////////////////////////////////////////////////////////
 
 	/**

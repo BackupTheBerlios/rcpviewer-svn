@@ -24,14 +24,14 @@ import org.osgi.framework.Bundle;
  * 
  * @author Dan Haywood
  */
-public abstract class Binding {
+public abstract class Binding implements IBinding {
 	
 	/**
-	 * Sets the binding, as returned by {@link #getDeployment()}.
+	 * Sets the binding, as returned by {@link #getBinding()}.
 	 * 
 	 * @throws RuntimeException if a binding has already been instantiated.
 	 */
-	public synchronized static void setBinding(Binding binding) {
+	public synchronized static void setBinding(IBinding binding) {
 		if (__binding != null) {
 			throw new RuntimeException("Binding already defined.");
 		}
@@ -41,7 +41,7 @@ public abstract class Binding {
 	/**
 	 * The current binding (if any).
 	 */
-	private static Binding __binding;
+	private static IBinding __binding;
 	
 	/**
 	 * Returns the current binding.
@@ -50,7 +50,7 @@ public abstract class Binding {
 	 * @return
 	 * @throws RuntimeException if no binding has been instantiated.
 	 */
-	public static Binding getDeployment() {
+	public static IBinding getBinding() {
 		if (__binding == null) {
 			throw new RuntimeException("No binding set.");
 		}

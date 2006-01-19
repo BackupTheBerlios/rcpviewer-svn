@@ -1,26 +1,38 @@
 package org.essentialplatform.runtime.server.session;
 
+import org.essentialplatform.runtime.shared.session.SessionBinding;
+
 public abstract class AbstractServerSessionFactory<V> implements IServerSessionFactory<V> {
 
-	public AbstractServerSessionFactory() {
+	public AbstractServerSessionFactory(SessionBinding sessionBinding) {
+		_sessionBinding = sessionBinding;
 	}
 
-	public AbstractServerSessionFactory(final String objectStoreId) {
-		_objectStoreId = objectStoreId;
+	private final SessionBinding _sessionBinding;
+	public SessionBinding getSessionBinding() {
+		return _sessionBinding;
 	}
 	
-	private String _objectStoreId;
-	public String getObjectStoreId() {
-		return _objectStoreId;
-	}
+	
+	/////////////////////////////////////////
+	// TODO: make obsolete... 
+	
 	/**
-	 * For dependency injection.
+	 * TODO: to go, if rename IObjectStoreHandle to ISessionBindingProvider
+	 */
+	public String getObjectStoreId() {
+		return _sessionBinding.getObjectStoreId();
+	}
+	
+	/**
+	 * TODO: to get rid of, in favour of session binding.
 	 * 
 	 * @param objectStoreId
 	 */
 	public void setObjectStoreId(String objectStoreId) {
-		_objectStoreId = objectStoreId;
+		throw new IllegalArgumentException("use setSessionBinding instead");
 	}
 
+	/////////////////////////////////////////
 
 }

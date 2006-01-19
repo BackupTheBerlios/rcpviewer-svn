@@ -1,17 +1,20 @@
 package org.essentialplatform.runtime.shared.tests.domain.handle;
 
 import org.essentialplatform.core.deployment.IDomainClassBinding;
+import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.extended.CustomerWithSimpleIdFirst;
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.handle.CompositeIdHandleAssigner;
 import org.essentialplatform.runtime.shared.domain.handle.HandleMap;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 
 public class TestHandleMap extends AbstractRuntimeClientTestCase {
 
-	private HandleMap handleMap = new HandleMap();
+	private HandleMap handleMap;
 	
 	private IDomainClass domainClass;
 	private IDomainObject<?> dobj;
@@ -20,30 +23,32 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		handleMap = new HandleMap(new SessionBinding(DomainConstants.DEFAULT_NAME, "bar"));
 		domainClass = lookupAny(Department.class);
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		domainClass = null;
+		handleMap = null;
 		super.tearDown();
 	}
 
 	public void testAddWhenNotWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		dobj.assignHandle(new Handle(Department.class, 1));
 		assertTrue(handleMap.add(dobj));
 	}
 
 	public void testAddWhenAlreadyWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		dobj.assignHandle(new Handle(Department.class, 1));
 		handleMap.add(dobj);
 		assertFalse(handleMap.add(dobj));
 	}
 
 	public void testAddWhenAlreadyWithinWithADifferentHandle() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		dobj.assignHandle(new Handle(Department.class, 1));
 		handleMap.add(dobj);
 		// change the handle
@@ -63,7 +68,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 
 	public void testGetDomainObjectWhenWithin() {
 		// first add
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		dobj.assignHandle(new Handle(Department.class, 1));
 		handleMap.add(dobj);
 		
@@ -73,7 +78,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 
 	public void testGetHandleWhenWithin() {
 		// first add it
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		dobj.assignHandle(new Handle(Department.class, 1));
 		handleMap.add(dobj);
 		
@@ -82,12 +87,12 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 	}
 
 	public void testGetHandleWhenNotWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		assertNull(handleMap.getHandle(dobj));
 	}
 
 	public void testGetDomainObjectWhenHandleHasPreviousAndWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		Handle handle = new Handle(Department.class, 1);
 		dobj.assignHandle(handle);
 
@@ -111,7 +116,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 	}
 
 	public void testGetDomainObjectWhenHandleHasPreviousAndNotWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		Handle handle = new Handle(Department.class, 1);
 		dobj.assignHandle(handle);
 		
@@ -130,7 +135,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 	}
 
 	public void testRemoveByDomainObjectWhenNotWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		Handle handle = new Handle(Department.class, 1);
 		dobj.assignHandle(handle);
 		
@@ -139,7 +144,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 	}
 
 	public void testRemoveByDomainObjectWhenWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		Handle handle = new Handle(Department.class, 1);
 		dobj.assignHandle(handle);
 		handleMap.add(dobj);
@@ -152,7 +157,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 	}
 
 	public void testRemoveByHandleWhenWithin() {
-		dobj = session.create(domainClass);
+		dobj = clientSession.create(domainClass);
 		dobj.assignHandle(new Handle(Department.class, 1));
 		handleMap.add(dobj);
 		
@@ -172,7 +177,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 
 	public void testAddFailsForDomainObjectWithNoHandle() {
 		try {
-			dobj = session.create(domainClass);
+			dobj = clientSession.create(domainClass);
 			dobj.assignHandle(null);
 			handleMap.add(dobj);
 			fail("IllegalArgumentException should have been thrown");
@@ -183,7 +188,7 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 
 	public void testRemoveByDomainObjectFailsForDomainObjectWithNoHandle() {
 		try {
-			dobj = session.create(domainClass);
+			dobj = clientSession.create(domainClass);
 			dobj.assignHandle(new Handle(Department.class, 1));
 			handleMap.add(dobj);
 			
@@ -191,6 +196,39 @@ public class TestHandleMap extends AbstractRuntimeClientTestCase {
 			handleMap.remove(dobj);
 			fail("IllegalArgumentException should have been thrown");
 		} catch(IllegalArgumentException ex) {
+			// expected
+		}
+	}
+	
+	public void testHandlesWhenEmpty() {
+		assertEquals(0, handleMap.handles().size());
+	}
+
+	public void testHandlesWhenSome() {
+		dobj = clientSession.create(domainClass);
+		dobj.assignHandle(new Handle(Department.class, 1));
+		handleMap.add(dobj);
+		
+		dobj = clientSession.create(domainClass);
+		dobj.assignHandle(new Handle(Department.class, 2));
+		handleMap.add(dobj);
+		
+		dobj = clientSession.create(domainClass);
+		dobj.assignHandle(new Handle(Department.class, 3));
+		handleMap.add(dobj);
+		
+		int i = 0;
+		for(Handle dummy: handleMap.handles()) {
+			i++;
+		}
+		assertEquals(3, i);
+	}
+
+	public void testHandlesAttemptToModify() {
+		try {
+			handleMap.handles().add(new Handle(Department.class, 4));
+			fail("UnsupportedOperationException should have been thrown.");
+		} catch(UnsupportedOperationException ex) {
 			// expected
 		}
 	}

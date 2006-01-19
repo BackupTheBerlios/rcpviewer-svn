@@ -57,7 +57,7 @@ public class Domain implements IDomain {
 		Domain domain = (Domain) domainsByName.get(domainName);
 		if (domain == null) {
 			Domain concreteDomain = new Domain(domainName);
-			concreteDomain.setBinding(Binding.getDeployment().bindingFor(concreteDomain));
+			concreteDomain.setBinding(Binding.getBinding().bindingFor(concreteDomain));
 			domain = concreteDomain;
 			domainsByName.put(domainName, domain);
 		}
@@ -100,7 +100,7 @@ public class Domain implements IDomain {
 	 * @return
 	 */
 	public static Domain domainFor(final Object classRepresentation) {
-		InDomain inDomain = Binding.getDeployment().getInDomainOf(classRepresentation);
+		InDomain inDomain = Binding.getBinding().getInDomainOf(classRepresentation);
 		if (inDomain == null) {
 			return null;
 		}
@@ -173,7 +173,7 @@ public class Domain implements IDomain {
 			throw new IllegalArgumentException("Domain named '" + name + "' already exists.");
 		}
 		this._name = name;
-		this._primaryBuilder = Binding.getDeployment().getPrimaryBuilder();
+		this._primaryBuilder = Binding.getBinding().getPrimaryBuilder();
 		_resourceSet = new ResourceSetImpl(); 
 	}
 	
@@ -270,7 +270,7 @@ public class Domain implements IDomain {
 	 * @return corresponding {@link DomainClass}
 	 */
 	public final IDomainClass lookup(final Object classRepresentation) {
-		InDomain domain = Binding.getDeployment().getInDomainOf(classRepresentation);
+		InDomain domain = Binding.getBinding().getInDomainOf(classRepresentation);
 		if (domain == null) {
 			return null;
 		}
@@ -317,7 +317,7 @@ public class Domain implements IDomain {
 		}
 
 		DomainClass concreteDomainClass = new DomainClass(this, eClass);
-		Binding.getDeployment().bind(concreteDomainClass, classRepresentation);
+		Binding.getBinding().bind(concreteDomainClass, classRepresentation);
 		domainClass = concreteDomainClass;
 
 		// ... but store the domain class itself in a local hash
@@ -335,7 +335,7 @@ public class Domain implements IDomain {
 		if ( classRepresentation == null ) {
 			throw new IllegalArgumentException("Class representation is null");
 		}
-		getBinding().assertValid(classRepresentation);
+		Binding.getBinding().assertValid(classRepresentation);
 		 
 		// check class is in the EMF resource set for this domain ...
 		String packageName = getBinding().getPackageNameFor(classRepresentation);
@@ -359,7 +359,7 @@ public class Domain implements IDomain {
 			// the EMF ResourceSet, we instead re-use them and wrap them in
 			// another DomainClass, bound to the current Binding.
 			domainClass = new DomainClass(domainFor(classRepresentation), eClass);
-			Binding.getDeployment().bind(domainClass, classRepresentation);
+			Binding.getBinding().bind(domainClass, classRepresentation);
 			_domainClassesByClassRepresentation.put(classRepresentation, domainClass);
 		}
 		return domainClass;

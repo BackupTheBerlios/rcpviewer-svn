@@ -20,10 +20,14 @@ import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.handle.DefaultDomainObjectFactory;
 import org.essentialplatform.runtime.shared.domain.handle.GuidHandleAssigner;
 import org.essentialplatform.runtime.shared.domain.handle.HandleMap;
+import org.essentialplatform.runtime.shared.domain.handle.IDomainObjectFactory;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
+import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
+import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
@@ -41,6 +45,7 @@ public final class ClientSession implements IClientSession {
 	ClientSession(SessionBinding sessionBinding) {
 		this._domain = Domain.instance(sessionBinding.getDomainName());
 		this._sessionBinding = sessionBinding;
+		this._handleMap = new HandleMap(sessionBinding);
 	}
 
 
@@ -84,56 +89,33 @@ public final class ClientSession implements IClientSession {
 	////////////////////////////////////////////////////////////////
 
 	/*
-	 * The TransactionInstantionChangeAspect picks up on this method, and adds
-	 * to the transaction as necessary.
+	 * The TransactionInstantionChangeAspect picks up on this method (or rather, the
+	 * hook createdXxx methods), and adds to the transaction as necessary.
 	 *
 	 * @see org.essentialplatform.session.ISession#create(org.essentialplatform.domain.IDomainClass)
 	 */
 	public <T> IDomainObject<T> create(IDomainClass domainClass) {
-		IDomainObject<T> domainObject = create(this, domainClass);
+		IDomainObject<T> domainObject = 
+			(IDomainObject<T>)
+				(domainClass.isTransientOnly()? 
+					createTransient(domainClass):
+					createPersistent(domainClass));
 		attach(domainObject);
-		if (domainClass.isTransientOnly()) {
-			createdTransient((IPojo)domainObject.getPojo());
-		} else {
-			createdPersistent((IPojo)domainObject.getPojo());
-		}
 		return domainObject;
 	}
 	
-	private <T> IDomainObject<T> create(final ClientSession session, IDomainClass domainClass) {
-		if (domainClass.isTransientOnly()) {
-			return session.createTransient(session, domainClass);
-		} else {
-			return session.createPersistent(session, domainClass);
-		}
-	}
-
 	/**
-	 * @param session
 	 * @return
 	 */
-	private <T> IDomainObject<T> createTransient(final ClientSession session, IDomainClass domainClass) {
-		T pojo = ((IDomainClassRuntimeBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.initAsCreatingTransient(pojo, _sessionBinding);
-		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
-		binding.attached(this);
+	private <T> IDomainObject<T> createTransient(IDomainClass domainClass) {
+		IDomainObjectFactory domainObjectFactory = 
+			new DefaultDomainObjectFactory(_sessionBinding, PersistState.TRANSIENT, ResolveState.RESOLVED, getHandleAssigner());
+		IDomainObject<T> domainObject = domainObjectFactory.createDomainObject(domainClass);
+		IPojo pojo = (IPojo)domainObject.getPojo();
+		attach(pojo); // move to attach(IDomainObject)
+		createdTransient(pojo);
 		return domainObject;
 	}
-
-	/**
-	 * @param session
-	 * @return
-	 */
-	private <T> IDomainObject<T> createPersistent(final ClientSession session, IDomainClass domainClass) {
-		T pojo = ((IDomainClassRuntimeBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.initAsCreatingPersistent(pojo, _sessionBinding);
-		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
-		binding.attached(this);
-		return domainObject;
-	}
-
-
-	
 	/**
 	 * Does nothing, but exists as a hook for aspects.
 	 * 
@@ -142,6 +124,20 @@ public final class ClientSession implements IClientSession {
 	private void createdTransient(final IPojo pojo) {
 	}
 
+
+
+	/**
+	 * @return
+	 */
+	private <T> IDomainObject<T> createPersistent(IDomainClass domainClass) {
+		IDomainObjectFactory domainObjectFactory = 
+			new DefaultDomainObjectFactory(_sessionBinding, PersistState.PERSISTED, ResolveState.RESOLVED, getHandleAssigner());
+		IDomainObject<T> domainObject = domainObjectFactory.createDomainObject(domainClass);
+		IPojo pojo = (IPojo)domainObject.getPojo();
+		attach(pojo);  // move to attach(IDomainObject)
+		createdPersistent(pojo);
+		return domainObject;
+	}
 	/**
 	 * Does nothing, but exists as a hook for aspects.
 	 * 
@@ -157,20 +153,15 @@ public final class ClientSession implements IClientSession {
 	 * @see org.essentialplatform.session.ISession#recreate(org.essentialplatform.domain.IDomainClass)
 	 */
 	public <T> IDomainObject<T> recreate(IDomainClass domainClass) {
-		IDomainObject<T> domainObject = recreatePersistent(this.getSessionBinding(), domainClass);
+		IDomainObjectFactory domainObjectFactory = 
+			new DefaultDomainObjectFactory(_sessionBinding, PersistState.PERSISTED, ResolveState.UNRESOLVED, getHandleAssigner());
+		IDomainObject<T> domainObject = domainObjectFactory.createDomainObject(domainClass);
+		IPojo pojo = (IPojo)domainObject.getPojo();
 		attach(domainObject);
-		recreatedPersistent((IPojo)domainObject.getPojo());
+		attach(pojo); // move to attach(IDomainObject)
+		recreatedPersistent(pojo);
 		return domainObject;
 	}
-
-	private <T> IDomainObject<T> recreatePersistent(SessionBinding sessionBinding, IDomainClass domainClass) {
-		T pojo = ((IDomainClassRuntimeBinding<T>)domainClass.getBinding()).newInstance();
-		IDomainObject<T> domainObject = DomainObject.initAsRecreatingPersistent(pojo, sessionBinding);
-		final IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
-		binding.attached(this);
-		return domainObject;
-	}
-
 	/**
 	 * Does nothing, but exists as a hook for aspects.
 	 * 
@@ -181,6 +172,18 @@ public final class ClientSession implements IClientSession {
 	 */
 	private void recreatedPersistent(final IPojo pojo) {
 	}
+
+
+	/*
+	 * TODO: move into create or the attach(IDomainObject) method.
+	 */
+	private <T> IDomainObject<T> attach(T pojo) {
+		IDomainObject<T> domainObject = (DomainObject<T>)((IPojo) pojo).domainObject();
+		IDomainObjectClientBinding<T> binding = (IDomainObjectClientBinding<T>)domainObject.getBinding();
+		binding.attached(this);
+		return domainObject;
+	}
+
 
 	/*
 	 * Deletes the object.
@@ -196,7 +199,6 @@ public final class ClientSession implements IClientSession {
 		if(objBinding.getSession() != this) {
 			throw new IllegalStateException("Domain object is not attached to this session.");
 		}
-		
 		detach(domainObject);
 	}
 
@@ -346,10 +348,49 @@ public final class ClientSession implements IClientSession {
 	
 	////////////////////////////////////////////////////////////////
 	// DOMAIN OBJECT HASHES
+	// IHandleMap implementation
 	////////////////////////////////////////////////////////////////
 
-	private IHandleMap _handleMap = new HandleMap();
+	private final IHandleMap _handleMap;
 	
+	
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#getDomainObject(org.essentialplatform.runtime.shared.domain.Handle)
+	 */
+	public IDomainObject getDomainObject(Handle handle) {
+		return _handleMap.getDomainObject(handle);
+	}
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#getHandle(org.essentialplatform.runtime.shared.domain.IDomainObject)
+	 */
+	public Handle getHandle(IDomainObject domainObject) {
+		return _handleMap.getHandle(domainObject);
+	}
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#add(org.essentialplatform.runtime.shared.domain.IDomainObject)
+	 */
+	public boolean add(IDomainObject domainObject) throws IllegalStateException {
+		return _handleMap.add(domainObject);
+	}
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#remove(org.essentialplatform.runtime.shared.domain.IDomainObject)
+	 */
+	public boolean remove(IDomainObject domainObject) throws IllegalStateException {
+		return _handleMap.remove(domainObject);
+	}
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#remove(org.essentialplatform.runtime.shared.domain.Handle)
+	 */
+	public boolean remove(Handle handle) throws IllegalStateException {
+		return _handleMap.remove(handle);
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#handles()
+	 */
+	public Set<Handle> handles() {
+		return _handleMap.handles();
+	}
 
 	/**
 	 * Mapping of {@link IDomainObject} by the pojo that it wraps.
@@ -473,6 +514,5 @@ public final class ClientSession implements IClientSession {
 			_listeners.remove(listener);
 		}
 	}
-
 
 }

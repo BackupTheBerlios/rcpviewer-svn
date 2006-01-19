@@ -15,6 +15,7 @@ import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.server.database.IDatabaseServer;
 import org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer;
+import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
 import org.essentialplatform.runtime.server.persistence.IObjectStore;
 import org.essentialplatform.runtime.server.persistence.hibernate.HibernateObjectStore;
 import org.essentialplatform.runtime.server.remoting.IRemotingServer;
@@ -26,6 +27,7 @@ import org.essentialplatform.runtime.server.session.hibernate.HibernateServerSes
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
  * Standalone server.
@@ -69,8 +71,7 @@ public class StandaloneServer extends AbstractService {
 		// First, build our Domain(s)
 		// for now, only supporting "default".
 		Binding.setBinding(
-				// TODO: should be using SERVER bindings ... 
-			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeServerBinding(new EssentialProgModelRuntimeBuilder()));
 
 		
 		// build the objectStoreListByDomain.
@@ -80,11 +81,9 @@ public class StandaloneServer extends AbstractService {
 		//
 		// in the future, intend to pick up the names of domains and map to the
 		// Ids (and possibly implementations) of corresponding lists of objectstores.
-		HibernateServerSessionFactory hssf = 
-			new HibernateServerSessionFactory(PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
-		bind(
-			Domain.instance(DomainConstants.DEFAULT_NAME), 
-			hssf);
+		SessionBinding sessionBinding = new SessionBinding(DomainConstants.DEFAULT_NAME, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
+		HibernateServerSessionFactory hssf = new HibernateServerSessionFactory(sessionBinding);
+		bind(Domain.instance(sessionBinding.getDomainName()),hssf);
 		for(IDomainClass dc: Domain.instance(DomainConstants.DEFAULT_NAME).classes()) {
 			IDomainClassRuntimeBinding rccb = (IDomainClassRuntimeBinding)dc.getBinding();
 			hssf.addClass(rccb.getJavaClass());
@@ -104,14 +103,14 @@ public class StandaloneServer extends AbstractService {
 	 * objects from that domain.
 	 * 
 	 * @param domain
-	 * @param objectStore
+	 * @param serverSessionFactory
 	 */
-	private void bind(Domain domain, IServerSessionFactory objectStore) {
-		ObjectStoreHandleList<IServerSessionFactory> objectStoreList = objectStoreListByDomain.get(domain);
-		if (objectStoreList == null) {
-			objectStoreList = new ObjectStoreHandleList<IServerSessionFactory>();
+	private void bind(Domain domain, IServerSessionFactory serverSessionFactory) {
+		ObjectStoreHandleList<IServerSessionFactory> objectStoreHandleList = objectStoreListByDomain.get(domain);
+		if (objectStoreHandleList == null) {
+			objectStoreHandleList = new ObjectStoreHandleList<IServerSessionFactory>();
 		}
-		objectStoreList.add(objectStore);
+		objectStoreHandleList.add(serverSessionFactory);
 	}
 
     ////////////////////////////////////////////////////////////

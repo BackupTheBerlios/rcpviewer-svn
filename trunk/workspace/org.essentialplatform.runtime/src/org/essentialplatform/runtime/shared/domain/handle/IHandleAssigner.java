@@ -16,6 +16,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
  */
 public interface IHandleAssigner {
 	
+	
 	/**
 	 * Creates and assigns a handle to the supplied domain object.
 	 * 

@@ -890,73 +890,18 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	// TODO: need to move to client-side bindings
 	//////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Initializes the domain object to represent a pojo that cannot be 
-	 * persisted, and attaches to the specified session.
-	 * 
-	 * @param domainClass
-	 * @param pojo -
-	 *            the pojo that this domain object wraps and represents the
-	 *            state of
-	 * @param session -
-	 *            to attach to
-	 */
-	public static <V> DomainObject<V> initAsCreatingTransient(final V pojo, final SessionBinding sessionBinding) {
-		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
-		domainObject.init(
-			sessionBinding, PersistState.TRANSIENT, ResolveState.RESOLVED);
-		return domainObject;
-	}
 
 	/**
-	 * Initializes the domain object to represent a pojo that will be 
-	 * persisted when the transaction commits, and attaches to the specified 
-	 * session.
+	 * Only to be called by {@link IDomainClassRuntimeBinding#newInstance(SessionBinding, PersistState, ResolveState)}.
 	 * 
-	 * @param domainClass
-	 * @param pojo -
-	 *            the pojo that this domain object wraps and represents the
-	 *            state of
-	 * @param session -
-	 *            to attach to
-	 */
-	public static <V> DomainObject<V> initAsCreatingPersistent(final V pojo, final SessionBinding sessionBinding) {
-		IPojo iPojo = (IPojo)pojo;
-	
-		DomainObject<V> domainObject = (DomainObject<V>)iPojo.domainObject();
-		domainObject.init(
-			sessionBinding, PersistState.PERSISTED, ResolveState.RESOLVED);
-		return domainObject;
-	}
-
-	/**
-	 * Initializes the domain object to represent a pojo that has been 
-	 * persisted, but not yet resolved, and attaches to the specified session.
-	 * 
-	 * @param domainClass
-	 * @param pojo -
-	 *            the pojo that this domain object wraps and represents the
-	 *            state of
-	 * @param session -
-	 *            to attach to
-	 */
-	public static <V> DomainObject initAsRecreatingPersistent(final V pojo, final SessionBinding sessionBinding) {
-		DomainObject<V> domainObject = (DomainObject<V>) ((IPojo) pojo).domainObject();
-		domainObject.init(
-			sessionBinding, PersistState.PERSISTED, ResolveState.UNRESOLVED);
-		return domainObject;
-	}
-
-	/**
-	 * Initializes the domain object.
 	 * @param _domainClass
 	 * @param _pojo
 	 */
-	private void init(final SessionBinding sessionBinding, PersistState persistState, ResolveState resolveState) {
+	public void init(final SessionBinding sessionBinding, PersistState persistState, ResolveState resolveState, IDomainClassRuntimeBinding<T> runtimeClassBinding) {
 		_sessionBinding = sessionBinding;
 		_persistState = persistState;
 		_resolveState = resolveState;
-		_runtimeClassBinding = (IDomainClassRuntimeBinding<T>)getDomainClass().getBinding();
+		_runtimeClassBinding = runtimeClassBinding;
 		_runtimeBinding = _runtimeClassBinding.getObjectBinding(this);
 	}
 

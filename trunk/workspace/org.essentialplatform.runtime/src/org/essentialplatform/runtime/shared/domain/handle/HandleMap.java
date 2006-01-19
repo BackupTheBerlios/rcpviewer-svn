@@ -1,10 +1,15 @@
 package org.essentialplatform.runtime.shared.domain.handle;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
  * Simple implementation of {@link IHandleMap} that uses hashes.
@@ -15,7 +20,21 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
  * @author Dan Haywood
  */
 public final class HandleMap implements IHandleMap {
+
+
+	public HandleMap(SessionBinding sessionBinding) {
+		_sessionBinding = sessionBinding;
+	}
 	
+	
+	private final SessionBinding _sessionBinding;
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#getSessionBinding()
+	 */
+	public SessionBinding getSessionBinding() {
+		return _sessionBinding;
+	}
+
 	/**
 	 * Mapping of pojo by its {@link Handle} (as managed by uts wrapping 
 	 * {@link IDomainObject}).
@@ -192,6 +211,13 @@ public final class HandleMap implements IHandleMap {
 				return true;
 			}
 		}
+	}
+
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.handle.IHandleMap#getHandles()
+	 */
+	public Set<Handle> handles() {
+		return Collections.unmodifiableSet(_domainObjectsByHandle.keySet());
 	}
 
 	

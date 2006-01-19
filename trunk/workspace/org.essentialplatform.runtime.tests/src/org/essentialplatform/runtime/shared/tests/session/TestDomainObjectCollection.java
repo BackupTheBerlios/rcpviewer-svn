@@ -18,10 +18,10 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 		IDomainClass departmentDomainClass = lookupAny(Department.class);
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
-		IDomainObject<Department> departmentDomainObject = session.recreate(departmentDomainClass);
+		IDomainObject<Department> departmentDomainObject = clientSession.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
-		IDomainObject<Employee> employeeDomainObject = session.recreate(employeeDomainClass);
+		IDomainObject<Employee> employeeDomainObject = clientSession.recreate(employeeDomainClass);
 		
 		employeesCollection.addToCollection(employeeDomainObject);
 		Collection<IDomainObject<Employee>> employeesAfterAdd = employeesCollection.getCollection();
@@ -40,14 +40,14 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 		
 		IDomainObject<Department> departmentDomainObject = 
-			session.create(departmentDomainClass);
+			clientSession.create(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		Collection<IDomainObject<Employee>> employees = 
 			employeesCollection.getCollection();
 		try {
 			IDomainObject<Employee> employeeDomainObject =  
-				session.create(employeeDomainClass);
+				clientSession.create(employeeDomainClass);
 			employees.add(employeeDomainObject);
 			fail("Expected UnsupportedOperationException to have been thrown.");
 		} catch(UnsupportedOperationException ex) {
@@ -68,9 +68,9 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 
 		IDomainObject<Department> departmentDomainObject = 
-			session.recreate(departmentDomainClass);
+			clientSession.recreate(departmentDomainClass);
 		IDomainObject<Employee> employeeDomainObject = 
-			session.recreate(employeeDomainClass);
+			clientSession.recreate(employeeDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		IObjectCollectionReferenceClientBinding refBinding = 
@@ -93,11 +93,11 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 
 		IDomainObject<Department> departmentDomainObject = 
-			session.recreate(departmentDomainClass);
+			clientSession.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
-			session.recreate(employeeDomainClass);
+			clientSession.recreate(employeeDomainClass);
 		employeesCollection.addToCollection(employeeDomainObject);
 	
 		IObjectCollectionReferenceClientBinding refBinding = 
@@ -120,11 +120,11 @@ public class TestDomainObjectCollection extends AbstractRuntimeClientTestCase  {
 		IDomainClass employeeDomainClass = lookupAny(Employee.class);
 
 		IDomainObject<Department> departmentDomainObject = 
-			session.recreate(departmentDomainClass);
+			clientSession.recreate(departmentDomainClass);
 		IDomainObject.IObjectCollectionReference employeesCollection = 
 			departmentDomainObject.getCollectionReference(departmentDomainObject.getIReferenceNamed("employees"));
 		IDomainObject<Employee> employeeDomainObject = 
-			session.recreate(employeeDomainClass);
+			clientSession.recreate(employeeDomainClass);
 		
 		Collection<IDomainObject<Employee>> employeesBeforeAdd = employeesCollection.getCollection();
 		assertEquals(0, employeesBeforeAdd.size());

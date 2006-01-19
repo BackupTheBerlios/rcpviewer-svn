@@ -9,6 +9,7 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.client.session.event.ISessionManagerListener;
 import org.essentialplatform.runtime.client.session.event.SessionManagerEvent;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
 
@@ -133,7 +134,5 @@ public final class ClientSessionManager implements IClientSessionManager {
 	public synchronized void removeSessionManagerListener(ISessionManagerListener pListener) {
 		_listeners.remove(pListener);
 	}
-
-
 
 }

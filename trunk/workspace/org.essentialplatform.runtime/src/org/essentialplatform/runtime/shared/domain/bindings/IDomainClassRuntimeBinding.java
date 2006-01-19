@@ -3,6 +3,9 @@ package org.essentialplatform.runtime.shared.domain.bindings;
 import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
+import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
  * Represents runtime-specific functionality for a 
@@ -36,6 +39,6 @@ public interface IDomainClassRuntimeBinding<T> extends IDomainClassBinding<T> {
 	 * 
 	 * @return
 	 */
-	public T newInstance();
+	public T newInstance(final SessionBinding sessionBinding, PersistState persistState, ResolveState resolveState);
 	
 }

@@ -2,6 +2,7 @@ package org.essentialplatform.runtime.server.session.hibernate;
 
 import org.essentialplatform.runtime.server.session.AbstractServerSessionFactory;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -26,8 +27,12 @@ public class HibernateServerSessionFactory
 	private AnnotationConfiguration _cfg;
 	private SessionFactory _sessionFactory;
 	
-	public HibernateServerSessionFactory(final String objectStoreId) {
-		super(objectStoreId);
+	/**
+	 * 
+	 * @param sessionBinding - available as {@link #getSessionBinding}.
+	 */
+	public HibernateServerSessionFactory(final SessionBinding sessionBinding) {
+		super(sessionBinding);
 		_cfg = new AnnotationConfiguration();
 	}
 	
@@ -69,7 +74,7 @@ public class HibernateServerSessionFactory
 			_sessionFactory = _cfg.buildSessionFactory();
 		}
 		Session session = _sessionFactory.openSession();
-		return new HibernateServerSession(session);
+		return new HibernateServerSession(getSessionBinding(), session);
 	}
 
 	/*

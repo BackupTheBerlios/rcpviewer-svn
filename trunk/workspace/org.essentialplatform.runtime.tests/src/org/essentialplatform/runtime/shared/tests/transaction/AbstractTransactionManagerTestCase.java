@@ -55,14 +55,14 @@ public abstract class AbstractTransactionManagerTestCase extends AbstractRuntime
 		orderDomainClass = Domain.lookupAny(Order.class);
 		
 		if (_setupObjects) {
-			calculatorDomainObject = session.recreate(calculatorDomainClass);
-			customerDomainObject = session.recreate(customerDomainClass);
-			emailAddressDomainObject = session.recreate(emailAddressDomainClass);
-			emailAddress2DomainObject = session.recreate(emailAddressDomainClass);
-			emailAddress3DomainObject = session.recreate(emailAddressDomainClass);
-			orderDomainObject = session.recreate(orderDomainClass);
-			order2DomainObject = session.recreate(orderDomainClass);
-			order3DomainObject = session.recreate(orderDomainClass);
+			calculatorDomainObject = clientSession.recreate(calculatorDomainClass);
+			customerDomainObject = clientSession.recreate(customerDomainClass);
+			emailAddressDomainObject = clientSession.recreate(emailAddressDomainClass);
+			emailAddress2DomainObject = clientSession.recreate(emailAddressDomainClass);
+			emailAddress3DomainObject = clientSession.recreate(emailAddressDomainClass);
+			orderDomainObject = clientSession.recreate(orderDomainClass);
+			order2DomainObject = clientSession.recreate(orderDomainClass);
+			order3DomainObject = clientSession.recreate(orderDomainClass);
 
 			calculator = calculatorDomainObject.getPojo();
 			customer = customerDomainObject.getPojo();

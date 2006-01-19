@@ -38,15 +38,15 @@ public abstract class AbstractRuntimeClientTestCase extends AbstractRuntimeShare
 		super(name, domainBuilder);
 	}
 
-	protected ClientSessionManager sessionManager;
-	protected IClientSession session;
+	protected ClientSessionManager clientSessionManager;
+	protected IClientSession clientSession;
 	protected ITransactionManager transactionManager;
 	
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		sessionManager = ClientSessionManager.instance();
-		session = sessionManager.defineSession(
+		clientSessionManager = ClientSessionManager.instance();
+		clientSession = clientSessionManager.defineSession(
 				new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
 		transactionManager = TransactionManager.instance();
 	}
@@ -57,9 +57,9 @@ public abstract class AbstractRuntimeClientTestCase extends AbstractRuntimeShare
 
 
 	protected void tearDown() throws Exception {
-		sessionManager = null;
-		session.reset();
-		session = null;
+		clientSessionManager = null;
+		clientSession.reset();
+		clientSession = null;
 		ClientSessionManager.instance().reset();
 		transactionManager.reset();
 		transactionManager = null;

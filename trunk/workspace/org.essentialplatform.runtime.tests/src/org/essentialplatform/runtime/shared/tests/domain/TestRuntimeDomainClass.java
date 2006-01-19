@@ -15,7 +15,7 @@ public class TestRuntimeDomainClass extends AbstractRuntimeClientTestCase  {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
 		IDomainObject<Department> domainObject = 
-			session.create(domainClass);
+			clientSession.create(domainClass);
 		assertNotNull(domainObject.getPojo());
 		assertSame(Department.class, domainObject.getPojo().getClass());
 	}
@@ -51,7 +51,7 @@ public class TestRuntimeDomainClass extends AbstractRuntimeClientTestCase  {
 		IDomainClass domainClass = lookupAny(DepartmentWithoutNoArgConstructor.class);
 
 		try {
-			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = session.create(domainClass);
+			IDomainObject<DepartmentWithoutNoArgConstructor> domainObject = clientSession.create(domainClass);
 			fail("Expected exception to have been thrown.");
 		} catch(ProgrammingModelException ex) {
 			// expected

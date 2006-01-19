@@ -15,7 +15,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeClientTest
 	public void testOperationNoArgWithPre() {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithPre.class);
 
-		IDomainObject<CustomerOperationWithPre> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationWithPre> domainObject = clientSession.create(domainClass);
 		CustomerOperationWithPre pojo = domainObject.getPojo();
 		
 		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("placeOrder");
@@ -35,7 +35,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeClientTest
 	public void testOperationArgsAndPre() {
  		IDomainClass domainClass = lookupAny(CustomerOperationWithPreAndArgs.class);
 
-		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = clientSession.create(domainClass);
 		
 		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("computeDifference");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);
@@ -79,7 +79,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeClientTest
 	public void testOperationDefaults() {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithDefaults.class);
 
-		IDomainObject<CustomerOperationWithDefaults> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationWithDefaults> domainObject = clientSession.create(domainClass);
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("placeOrder");
@@ -96,7 +96,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeClientTest
 	public void testOperationResetDefaults() {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithDefaults.class);
 
-		IDomainObject<CustomerOperationWithDefaults> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationWithDefaults> domainObject = clientSession.create(domainClass);
 		CustomerOperationWithDefaults pojo = domainObject.getPojo();
 		
 		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("placeOrder");
@@ -123,7 +123,7 @@ public class TestExtendedDomainObjectOperation extends AbstractRuntimeClientTest
 	public void incompletetestOperationListener() {
 		IDomainClass domainClass = lookupAny(CustomerOperationWithPreAndArgs.class);
 
-		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationWithPreAndArgs> domainObject = clientSession.create(domainClass);
 		
 		IDomainClass.IOperation iOperation = domainObject.getIOperationNamed("computeDifference");
 		IDomainObject.IObjectOperation op = domainObject.getOperation(iOperation);

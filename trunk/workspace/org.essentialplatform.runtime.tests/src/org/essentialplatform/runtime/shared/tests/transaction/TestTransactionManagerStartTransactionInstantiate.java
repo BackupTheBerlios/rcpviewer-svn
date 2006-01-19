@@ -15,7 +15,7 @@ public class TestTransactionManagerStartTransactionInstantiate extends AbstractT
 	}
 
 	public void testInstantiatingAnObjectImplicitlyStartsATransaction() {
-		IDomainObject<Customer> domainObject = session.create(customerDomainClass);
+		IDomainObject<Customer> domainObject = clientSession.create(customerDomainClass);
 		Customer customer = domainObject.getPojo();
 		assertEquals(1, transactionManager.getCurrentTransactions().size());
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(customer);

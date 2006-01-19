@@ -24,16 +24,6 @@ public interface IDomainBinding {
 	public void processEClass(final EClass eClass, final Object classRepresentation);
 	
 	/**
-	 * Ensure that this class representation is valid for this deployment.
-	 * 
-	 * <p>
-	 * The implementation does not need to check for null.
-	 * 
-	 * @param classRepresentation - will be non-null.
-	 */
-	public void assertValid(final Object classRepresentation);
-	
-	/**
 	 * Lookup of this deployment's representation of the class for the
 	 * specified {@link EClass}.
 	 * 

@@ -29,20 +29,20 @@ public class TestSession extends AbstractRuntimeClientTestCase  {
 	public void testCanInstantiateDomainObjectFromSession() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = clientSession.create(domainClass);
 		assertNotNull(domainObject);
 		assertSame(domainObject.getDomainClass(), domainClass);
 		Department pojo = domainObject.getPojo();
 		assertNotNull(pojo);
 		assertSame(Department.class, pojo.getClass());
-		assertTrue(session.isAttached(domainObject));
+		assertTrue(clientSession.isAttached(domainObject));
 	}
 
 	public void testDomainObjectSessionBindingTakenFromManagingSession() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
-		IDomainObject<Department> domainObject = session.create(domainClass);
-		assertEquals(session.getSessionBinding(), domainObject.getSessionBinding());
+		IDomainObject<Department> domainObject = clientSession.create(domainClass);
+		assertEquals(clientSession.getSessionBinding(), domainObject.getSessionBinding());
 	}
 
 
@@ -56,8 +56,8 @@ public class TestSession extends AbstractRuntimeClientTestCase  {
 	public void testSessionListenersNotifiedThatInstantiatedDomainObjectAreAttached() {
 		IDomainClass domainClass = lookupAny(Department.class);
 		
-		MySessionListener l = session.addSessionListener(new MySessionListener());
-		IDomainObject<Department> domainObject = session.create(domainClass);
+		MySessionListener l = clientSession.addSessionListener(new MySessionListener());
+		IDomainObject<Department> domainObject = clientSession.create(domainClass);
 		assertTrue(l.attachedCallbackCalled);
 		assertFalse(l.detachedCallbackCalled);
 	}
@@ -69,7 +69,7 @@ public class TestSession extends AbstractRuntimeClientTestCase  {
 	public void testDomainObjectMarkedAsPersistentIfNotTransientOnly() {
 		IDomainClass domainClass = lookupAny(Department.class);
 
-		IDomainObject<Department> domainObject = session.create(domainClass);
+		IDomainObject<Department> domainObject = clientSession.create(domainClass);
 		assertTrue(domainObject.isPersistent());
 	}
 

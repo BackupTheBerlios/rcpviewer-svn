@@ -15,7 +15,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 	public void testCanSetAttributeIfAccessorPrerequisitesAllow() {
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
+		IDomainObject<OrderConstrained> domainObject = clientSession.create(domainClass);
 
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
@@ -28,7 +28,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 	public void testCannotSetAttributeIfAccessorPrerequisitesMakesUnusable() {
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
+		IDomainObject<OrderConstrained> domainObject = clientSession.create(domainClass);
 		OrderConstrained pojo = domainObject.getPojo();
 		pojo.ship();
 		
@@ -44,7 +44,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 	public void testCannotSetAttributeIfAccessorPrerequisitesMakesInvisible() {
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
+		IDomainObject<OrderConstrained> domainObject = clientSession.create(domainClass);
 		OrderConstrained pojo = domainObject.getPojo();
 		pojo.shipAndRestrict();
 		
@@ -63,7 +63,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 	public void testCannotSetAttributeIfMutatorPrerequisitesPrevent() {
 		IDomainClass domainClass = lookupAny(OrderConstrained.class);
 		
-		IDomainObject<OrderConstrained> domainObject = session.create(domainClass);
+		IDomainObject<OrderConstrained> domainObject = clientSession.create(domainClass);
 		
 		IDomainClass.IAttribute iAttrib = domainObject.getIAttributeNamed("quantity");
 		IDomainObject.IObjectAttribute attrib = domainObject.getAttribute(iAttrib);
@@ -83,8 +83,8 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		IDomainClass pingDomainClass = lookupAny(Ping.class);
 		IDomainClass pongDomainClass = lookupAny(Pong.class);
 		
-		IDomainObject<Ping> pingDomainObject = session.recreate(pingDomainClass);
-		IDomainObject<Pong> pongDomainObject = session.recreate(pongDomainClass);
+		IDomainObject<Ping> pingDomainObject = clientSession.recreate(pingDomainClass);
+		IDomainObject<Pong> pongDomainObject = clientSession.recreate(pongDomainClass);
 
 		Ping ping = pingDomainObject.getPojo();
 		Pong pong = pongDomainObject.getPojo();
@@ -97,7 +97,7 @@ public class TestExtendedDomainObjectAttribute extends AbstractRuntimeClientTest
 		IDomainObject.IObjectAttribute pingUsableAttrib = pingDomainObject.getAttribute(pingUsableEAttrib);
 
 		// should now be two observed features held by the session.
-		assertEquals(2, session.getObservedFeatures().size());
+		assertEquals(2, clientSession.getObservedFeatures().size());
 		
 		IObjectAttributeClientBinding pingVisibleAtBinding = (IObjectAttributeClientBinding)pingVisibleAttrib.getBinding();
 		IObjectAttributeClientBinding pingUsableAtBinding = (IObjectAttributeClientBinding)pingUsableAttrib.getBinding();

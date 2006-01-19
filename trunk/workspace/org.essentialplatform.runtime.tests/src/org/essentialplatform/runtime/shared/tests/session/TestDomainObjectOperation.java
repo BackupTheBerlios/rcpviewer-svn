@@ -13,7 +13,7 @@ public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
 	public void testCanInvokeOperationReturningVoid() {
 		IDomainClass domainClass = lookupAny(CustomerOperationReturningVoid.class);
 
-		IDomainObject<CustomerOperationReturningVoid> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationReturningVoid> domainObject = clientSession.create(domainClass);
 		CustomerOperationReturningVoid pojo = domainObject.getPojo();
 		
 		IDomainObject.IObjectOperation op = 
@@ -28,7 +28,7 @@ public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
  	public void testCanInvokeOperationReturningDomainObject() {
 		IDomainClass domainClass = lookupAny(CustomerOperationReturningDomainObject.class);
 
-		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationReturningDomainObject> domainObject = clientSession.create(domainClass);
 		
 		IDomainObject.IObjectOperation op = 
 			domainObject.getOperation(domainObject.getIOperationNamed("placeOrder"));
@@ -41,7 +41,7 @@ public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
  	public void testCanInvokeOperationReturningPrimitive() {
 		IDomainClass domainClass = lookupAny(CustomerOperationReturningDomainObject.class);
 		
-		IDomainObject<CustomerOperationReturningDomainObject> domainObject = session.create(domainClass);
+		IDomainObject<CustomerOperationReturningDomainObject> domainObject = clientSession.create(domainClass);
 
 		// place a few orders...
 		IDomainObject.IObjectOperation placeOrderOp = 

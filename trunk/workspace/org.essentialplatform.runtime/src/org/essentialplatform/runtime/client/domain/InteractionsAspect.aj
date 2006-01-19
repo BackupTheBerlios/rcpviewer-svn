@@ -35,6 +35,7 @@ public privileged abstract aspect InteractionsAspect {
 		!invokeDissociatorForOneToOneReferenceOnPojo(IPojo, IPojo) &&
 		!invokeAddToCollectionOnPojo(IPojo, IPojo) &&
 		!invokeRemoveFromCollectionOnPojo(IPojo, IPojo) &&
+		!invokeDomainObjectOnPojo(IPojo) &&
 		!within(InteractionsAspect);
 
 	/////////////////////////////////////////////////////////////////////
@@ -69,7 +70,13 @@ public privileged abstract aspect InteractionsAspect {
 
 
 	/////////////////////////////////////////////////////////////////////
-	
+
+	/**
+	 * Captures the invocation of the IPojo#domainObject() method call.
+	 */
+	protected pointcut invokeDomainObjectOnPojo(IPojo pojo): 
+		execution(public !void IPojo+.domainObject()) && this(pojo);
+
 	/**
 	 * Captures the invocation of any accessor (getter) of an attribute on a 
 	 * pojo.

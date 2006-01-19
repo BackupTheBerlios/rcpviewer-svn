@@ -143,6 +143,7 @@ public final class TransactionManager implements ITransactionManager {
 		}
 		ITransaction transaction = new Transaction(this, getAppContainer());
 		_currentTransactions.add(transaction);
+
 		
 		TransactionManagerEvent event = new TransactionManagerEvent(this, transaction); 
 		for(ITransactionManagerListener listener: _listeners) {
@@ -166,7 +167,6 @@ public final class TransactionManager implements ITransactionManager {
 		ITransaction transaction = _currentTransactionByEnlistedPojo.get(transactable);
 		if (transaction == null && autoEnlist) {
 			transaction = createTransaction();
-			_currentTransactions.add(transaction);
 			_currentTransactionByEnlistedPojo.put(transactable, transaction);
 		} 
 		// fail early if (for any reason) we get out of whack. 

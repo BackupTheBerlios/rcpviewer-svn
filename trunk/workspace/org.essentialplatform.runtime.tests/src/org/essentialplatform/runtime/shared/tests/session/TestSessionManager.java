@@ -24,17 +24,17 @@ public class TestSessionManager extends AbstractRuntimeClientTestCase  {
 
 	public void testCreatingSessionAllocatesId() {
 		Domain domain = Domain.instance();
-		IClientSession session = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
+		IClientSession session = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
 		assertNotNull(session.getObjectStoreId());
 	}
 
 	public void testEachSessionGetsADifferentId() {
 		Domain domain = Domain.instance();
-		IClientSession session1 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
-		IClientSession session2 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
-		IClientSession session3 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_3"));
-		IClientSession session4 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_4"));
-		IClientSession session5 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_5"));
+		IClientSession session1 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
+		IClientSession session2 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
+		IClientSession session3 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_3"));
+		IClientSession session4 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_4"));
+		IClientSession session5 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_5"));
 		
 		assertNotSame(session1.getObjectStoreId(), session2.getObjectStoreId());
 		assertNotSame(session1.getObjectStoreId(), session3.getObjectStoreId());
@@ -62,24 +62,24 @@ public class TestSessionManager extends AbstractRuntimeClientTestCase  {
 		Domain domain = Domain.instance();
 		IClientSession[] sessions = new IClientSession[5];
 		for(int i=0; i<sessions.length; i++) {
-			sessions[i] = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_"+i));
+			sessions[i] = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_"+i));
 		}
-		assertEquals(6, sessionManager.getAllSessions().size()); // 1 added in fixture
-		sessionManager.getAllSessions().contains(session); // in the fixture
+		assertEquals(6, clientSessionManager.getAllSessions().size()); // 1 added in fixture
+		clientSessionManager.getAllSessions().contains(clientSession); // in the fixture
 		for(IClientSession session: sessions) {
-			sessionManager.getAllSessions().contains(session);	
+			clientSessionManager.getAllSessions().contains(session);	
 		}
 	}
 
 	public void testCanSwitchCurrentSession() {
 		Domain domain = Domain.instance();
-		IClientSession session1 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
-		assertSame(session1, sessionManager.getCurrentSession(domain));
-		IClientSession session2 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
-		assertSame(session2, sessionManager.getCurrentSession(domain));
+		IClientSession session1 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
+		assertSame(session1, clientSessionManager.getCurrentSession(domain));
+		IClientSession session2 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
+		assertSame(session2, clientSessionManager.getCurrentSession(domain));
 		
-		sessionManager.switchSessionTo(domain, session1.getObjectStoreId());
-		assertSame(session1, sessionManager.getCurrentSession(domain));
+		clientSessionManager.switchSessionTo(domain, session1.getObjectStoreId());
+		assertSame(session1, clientSessionManager.getCurrentSession(domain));
 	}
 	
 	private static class MySessionManagerListener implements ISessionManagerListener {
@@ -105,38 +105,38 @@ public class TestSessionManager extends AbstractRuntimeClientTestCase  {
 
 	public void testSessionManagerListenerCalledWhenCreateSession() {
 		MySessionManagerListener sml = new MySessionManagerListener();
-		sessionManager.addSessionManagerListener(sml);
+		clientSessionManager.addSessionManagerListener(sml);
 		Domain domain = Domain.instance();
 		assertFalse(sml.sessionCreated);
 		assertNull(sml.session);
-		IClientSession session1 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
+		IClientSession session1 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
 		assertTrue(sml.sessionCreated);
 		assertSame(session1, sml.session);
 	}
 	
 	public void testSessionManagerListenerCalledWhenRemoveSession() {
 		MySessionManagerListener sml = new MySessionManagerListener();
-		sessionManager.addSessionManagerListener(sml);
+		clientSessionManager.addSessionManagerListener(sml);
 		Domain domain = Domain.instance();
-		IClientSession session1 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
+		IClientSession session1 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
 
 		sml.session = null; // reset since creating session would have populated
 		assertFalse(sml.sessionRemoved);
 		assertNull(sml.session);
-		sessionManager.removeSession(domain, session1.getObjectStoreId());
+		clientSessionManager.removeSession(domain, session1.getObjectStoreId());
 		assertTrue(sml.sessionRemoved);
 		assertSame(session1, sml.session);
 	}
 	
 	public void testSessionManagerListenerCalledWhenSwitchSession() {
 		MySessionManagerListener sml = new MySessionManagerListener();
-		sessionManager.addSessionManagerListener(sml);
+		clientSessionManager.addSessionManagerListener(sml);
 		Domain domain = Domain.instance();
 		
 		assertFalse(sml.sessionNowCurrent);
 		assertNull(sml.session);
 		// create session; as a byproduct, will get a switch session
-		IClientSession session1 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
+		IClientSession session1 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_1"));
 		assertTrue(sml.sessionNowCurrent);
 		assertSame(session1, sml.session);
 
@@ -144,13 +144,13 @@ public class TestSessionManager extends AbstractRuntimeClientTestCase  {
 		sml.session = null;
 		assertFalse(sml.sessionNowCurrent);
 		assertNull(sml.session);
-		IClientSession session2 = sessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
+		IClientSession session2 = clientSessionManager.defineSession(new SessionBinding(domain.getName(), PersistenceConstants.DEFAULT_OBJECT_STORE_ID+"_2"));
 		assertTrue(sml.sessionNowCurrent);
 		assertSame(session2, sml.session);
 		
 		sml.sessionNowCurrent = false;
 		assertFalse(sml.sessionNowCurrent);
-		sessionManager.switchSessionTo(domain, session1.getObjectStoreId());
+		clientSessionManager.switchSessionTo(domain, session1.getObjectStoreId());
 		assertTrue(sml.sessionNowCurrent);
 		assertSame(session1, sml.session);
 	}

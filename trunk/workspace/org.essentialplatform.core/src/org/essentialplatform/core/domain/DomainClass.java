@@ -350,7 +350,7 @@ public final class DomainClass implements IDomainClass {
 		IAttribute attribute = _attributesByEAttribute.get(eAttribute);
 		if (attribute == null) {
 			Attribute concreteAttribute = new Attribute(eAttribute);
-			concreteAttribute.setBinding(Binding.getDeployment().bindingFor(concreteAttribute));
+			concreteAttribute.setBinding(Binding.getBinding().bindingFor(concreteAttribute));
 			attribute = concreteAttribute;
 			_attributesByEAttribute.put(eAttribute, attribute);
 		}
@@ -751,11 +751,11 @@ public final class DomainClass implements IDomainClass {
 		if (reference == null) {
 			if (eReference.isMany()) {
 				CollectionReference concreteReference = new CollectionReference(eReference);
-				concreteReference.setBinding(Binding.getDeployment().bindingFor(concreteReference));
+				concreteReference.setBinding(Binding.getBinding().bindingFor(concreteReference));
 				reference = concreteReference;
 			} else {
 				OneToOneReference concreteReference = new OneToOneReference(eReference);
-				concreteReference.setBinding(Binding.getDeployment().bindingFor(concreteReference));
+				concreteReference.setBinding(Binding.getBinding().bindingFor(concreteReference));
 				reference = concreteReference;
 			}
 			_referencesByEReference.put(eReference, reference);
@@ -987,7 +987,7 @@ public final class DomainClass implements IDomainClass {
 		IOperation operation = _operationsByEOperation.get(eOperation);
 		if (operation == null) {
 			Operation concreteOperation = new Operation(eOperation);
-			concreteOperation.setBinding(Binding.getDeployment().bindingFor(concreteOperation));
+			concreteOperation.setBinding(Binding.getBinding().bindingFor(concreteOperation));
 			operation = concreteOperation;
 			_operationsByEOperation.put(eOperation, operation);
 		}
@@ -1261,7 +1261,7 @@ public final class DomainClass implements IDomainClass {
 	}
 	protected Class<IAdapterFactory> loadClass(String adapterFactoryName) throws ClassNotFoundException {
 
-		Bundle bundle = Binding.getDeployment().getBundle();
+		Bundle bundle = Binding.getBinding().getBundle();
 		try {
 			return (Class<IAdapterFactory>)Class.forName(adapterFactoryName);
 		} catch (ClassNotFoundException ex) {

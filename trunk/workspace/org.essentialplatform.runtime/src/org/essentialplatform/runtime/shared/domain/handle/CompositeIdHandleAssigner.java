@@ -38,12 +38,12 @@ public final class CompositeIdHandleAssigner extends AbstractHandleAssigner {
 	protected <T> Handle doGenerateHandleFor(IDomainObject<T> domainObject) {
 		assert _domainClass == domainObject.getDomainClass();
 		cacheIdAttributesIfRequired();
-		Handle persistenceId = new Handle(_javaClass);
+		Handle handle = new Handle(_javaClass);
 		for(IAttribute idAttribute: _idAttributes) {
 			Object attributeValue = domainObject.getAttribute(idAttribute).get();
-			persistenceId.addComponentValue(attributeValue);
+			handle.addComponentValue(attributeValue);
 		}
-		return persistenceId;
+		return handle;
 	}
 
 	private synchronized void cacheIdAttributesIfRequired() {

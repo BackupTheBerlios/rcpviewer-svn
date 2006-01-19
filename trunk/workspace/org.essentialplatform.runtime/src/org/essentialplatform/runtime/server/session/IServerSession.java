@@ -1,10 +1,11 @@
 package org.essentialplatform.runtime.server.session;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
 import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
 
-public interface IServerSession {
+public interface IServerSession extends IHandleMap {
 
 	public void attach(IDomainObject<?> domainObject);
 

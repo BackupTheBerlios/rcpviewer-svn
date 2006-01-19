@@ -23,7 +23,7 @@ public class TestTransactionManagerCurrentTransactions extends AbstractTransacti
 	public void testCommitTransactionClearsCurrentTransaction() {
 		IDomainClass domainClass = Domain.lookupAny(Calculator.class);
 		
-		IDomainObject<Calculator> domainObject = session.create(domainClass);
+		IDomainObject<Calculator> domainObject = clientSession.create(domainClass);
 		Calculator calculator = domainObject.getPojo();
 		assertEquals(1, transactionManager.getCurrentTransactions().size());
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);

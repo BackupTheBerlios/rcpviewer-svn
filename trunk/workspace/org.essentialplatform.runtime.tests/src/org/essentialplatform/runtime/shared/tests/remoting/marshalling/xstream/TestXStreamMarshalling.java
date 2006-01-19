@@ -37,7 +37,7 @@ public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 	public void testMarshallTransactionWithInstantiationChange() {
 		domainClass = lookupAny(CustomerWithPrimitiveAttributes.class);
 		
-		IDomainObject<CustomerWithPrimitiveAttributes> dobj = session.create(domainClass);
+		IDomainObject<CustomerWithPrimitiveAttributes> dobj = clientSession.create(domainClass);
 		dobj.getPojo().setInteger(23);
 
 		// TODO: not yet complete
@@ -77,7 +77,7 @@ public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 	public void testMarshallTransactionWithTransientGraphCombinationOfChanges() {
 		IDomainClass departmentDC = lookupAny(Department.class);
 		
-		IDomainObject<Department> departmentDO = session.create(departmentDC);
+		IDomainObject<Department> departmentDO = clientSession.create(departmentDC);
 		Department departmentPojo = departmentDO.getPojo();
 		departmentPojo.setName("HR");
 		departmentPojo.addEmployee("Joe", "Blow");

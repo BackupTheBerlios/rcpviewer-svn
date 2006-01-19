@@ -1,9 +1,13 @@
 package org.essentialplatform.runtime.shared.domain.handle;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
  * Double map for converting {@link Handle}s into {@link IDomainObject}s and 
@@ -17,6 +21,17 @@ import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
  * @author Dan Haywood
  */
 public interface IHandleMap {
+	
+	/**
+	 * The (domain, objectstore) for which the domain objects in this map
+	 * belong.
+	 * 
+	 * <p>
+	 * Implementations are NOT expected to verify the domain.
+	 *  
+	 * @return
+	 */
+	SessionBinding getSessionBinding();
 	
 	/**
 	 * Look up pojo from handle.
@@ -99,5 +114,17 @@ public interface IHandleMap {
 	 * @return true if an object was located and removed, false otherwise.
 	 * @throws IllegalStateException if object could not be located in both hashes.
 	 */
-	boolean remove(Handle handle) throws IllegalStateException;;
+	boolean remove(Handle handle) throws IllegalStateException;
+	
+	/**
+	 * Returns an unmodifiable set of the handles to access the domain 
+	 * objects within the map.
+	 * 
+	 * <p>
+	 * That is, cannot invoke {@link Iterator#remove()}.
+	 *  
+	 * @return
+	 */
+	Set<Handle> handles();
+
 }

@@ -59,7 +59,7 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 		
         // create a xactn
         IDomainClass departmentDC = lookupAny(Department.class);
-		IDomainObject<Department> departmentDO = session.create(departmentDC);
+		IDomainObject<Department> departmentDO = clientSession.create(departmentDC);
 		Department departmentPojo = departmentDO.getPojo();
 		departmentPojo.setName("HR");
 		departmentPojo.addEmployee("Joe", "Blow");
