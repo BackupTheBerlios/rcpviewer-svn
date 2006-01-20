@@ -4,10 +4,11 @@ import java.util.concurrent.SynchronousQueue;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.AbstractTransactionProcessor;
+import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 /**
- * A dummy implementation that just adds each transaction to a synchronous 
+ * A stub implementation that just adds each transaction package to a synchronous 
  * queue.
  * 
  * <p>
@@ -28,13 +29,13 @@ public final class EnqueuingTransactionProcessor extends AbstractTransactionProc
 	 * Only written to if in test mode.
 	 * @see #setTestMode(boolean)
 	 */
-	private final SynchronousQueue<ITransaction> _processedTransactions;
+	private final SynchronousQueue<ITransactionPackage> _processedTransactions;
 
-	public EnqueuingTransactionProcessor(SynchronousQueue<ITransaction> processedTransactions) {
+	public EnqueuingTransactionProcessor(SynchronousQueue<ITransactionPackage> processedTransactions) {
 		_processedTransactions = processedTransactions;
 	}
 	
-	public void process(ITransaction transaction) {
+	public void process(ITransactionPackage transaction) {
 		getLogger().debug("processing transaction: " + transaction);
 		try {
 			_processedTransactions.put(transaction);
@@ -42,7 +43,5 @@ public final class EnqueuingTransactionProcessor extends AbstractTransactionProc
 			getLogger().warn("Failed to enqueue transaction " + transaction);
 		}
 	}
-
-
 
 }

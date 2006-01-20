@@ -14,12 +14,12 @@ public class Calculator {
 	public int getResult() {
 		return result;
 	}
-	public void setInitialResult(int result) {
+	public void assignInitialResult(int result) { // not set otherwise gets picked up as a write-only attribute...
 		this.result = result;
 	}
 	
 	public void reset() {
-		setInitialResult(0);
+		assignInitialResult(0);
 	}
 	
 	public void add(final int amount) {

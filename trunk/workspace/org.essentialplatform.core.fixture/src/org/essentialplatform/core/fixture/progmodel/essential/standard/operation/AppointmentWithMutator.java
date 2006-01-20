@@ -8,6 +8,7 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
 @InDomain
 public class AppointmentWithMutator {
 	private String name;
+	public String getName() { return name; }
 	public void setName(String name) {
 		this.name = name;
 	}

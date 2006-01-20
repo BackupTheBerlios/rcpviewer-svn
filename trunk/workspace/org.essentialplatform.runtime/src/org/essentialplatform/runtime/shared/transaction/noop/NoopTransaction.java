@@ -1,31 +1,11 @@
 package org.essentialplatform.runtime.shared.transaction.noop;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 import org.apache.log4j.Logger;
-import org.essentialplatform.progmodel.essential.app.IAppContainer;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.AbstractTransaction;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.TranMgmtConstants;
 import org.essentialplatform.runtime.shared.transaction.Transaction;
-import org.essentialplatform.runtime.shared.transaction.ITransaction.State;
-import org.essentialplatform.runtime.shared.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
-import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
-import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
-import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
 
 public class NoopTransaction extends AbstractTransaction {
 
@@ -34,8 +14,8 @@ public class NoopTransaction extends AbstractTransaction {
 		return Logger.getLogger(NoopTransaction.class);
 	}
 
-	public NoopTransaction(TransactionManager transactionManager, IAppContainer appContainer) {
-		super(transactionManager, appContainer);
+	public NoopTransaction(TransactionManager transactionManager) {
+		super(transactionManager);
 	}
 
 

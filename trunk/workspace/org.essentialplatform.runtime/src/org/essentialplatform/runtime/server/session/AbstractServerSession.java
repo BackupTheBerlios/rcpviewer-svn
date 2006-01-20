@@ -9,6 +9,7 @@ import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeB
 import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
+import org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 public abstract class AbstractServerSession implements IServerSession {
@@ -34,7 +35,7 @@ public abstract class AbstractServerSession implements IServerSession {
 	 * This is just a sketch of how the server-side will accept and deal with
 	 * an pojo coming across the wire from the client.
 	 */
-	public void accept(Object unmarshalledPackedPojo) {
+	public void accept(IPojoPackage unmarshalledPackedPojo) {
 		SessionBinding sessionBinding = _packager.unpackSessionBinding(unmarshalledPackedPojo);
 		if (!this.getSessionBinding().equals(sessionBinding)) {
 			throw new RuntimeException();

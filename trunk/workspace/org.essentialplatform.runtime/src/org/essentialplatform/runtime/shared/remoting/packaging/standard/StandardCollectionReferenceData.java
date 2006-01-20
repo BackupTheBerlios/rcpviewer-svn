@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.essentialplatform.runtime.shared.domain.Handle;
 
-public class StandardCollectionReferenceData {
+public class StandardCollectionReferenceData implements INamed {
 	
 	private List<Handle> _handles = new ArrayList<Handle>();
 	
@@ -16,6 +16,9 @@ public class StandardCollectionReferenceData {
 	}
 	
 	private String _name;
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.standard.INamed#getName()
+	 */
 	public String getName() {
 		return _name;
 	}

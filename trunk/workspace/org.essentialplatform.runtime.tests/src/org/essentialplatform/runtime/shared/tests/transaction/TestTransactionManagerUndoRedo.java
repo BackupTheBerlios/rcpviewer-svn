@@ -57,11 +57,11 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 
 	public void testSettingAnAttributeUndoRedo() {
 		// set attribute #1
-		calculator.setInitialResult(10);
+		calculator.assignInitialResult(10);
 		assertEquals(10, calculator.getResult());
 		
 		// set attribute #2
-		calculator.setInitialResult(20);
+		calculator.assignInitialResult(20);
 		assertEquals(20, calculator.getResult());
 		
 		// undo last change; back to state after set attribute #1
@@ -77,9 +77,9 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 
 	public void testSettingAnAttributeRedoAll() {
 		// do set attribute #1, #2, #3 
-		calculator.setInitialResult(10);
-		calculator.setInitialResult(20);
-		calculator.setInitialResult(30);
+		calculator.assignInitialResult(10);
+		calculator.assignInitialResult(20);
+		calculator.assignInitialResult(30);
 		assertEquals(30, calculator.getResult());
 		
 		// undo set attribute #3, #2
@@ -319,7 +319,7 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 
 	public void testDeletingAnObjectUndoRedo() {
 		assertNull(transactionManager.getCurrentTransactionFor(calculator, false));
-		calculator.setInitialResult(10); // so when undo there is still a change
+		calculator.assignInitialResult(10); // so when undo there is still a change
 		calculator.delete();
 		assertFalse(calculatorDomainObject.getPersistState().isPersistent());
 		
@@ -340,7 +340,7 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 		assertEquals(120, calculator.getResult());
 
 		// set attribute #2
-		calculator.setInitialResult(20);
+		calculator.assignInitialResult(20);
 		assertEquals(20, calculator.getResult());
 		
 		// do operation #3
@@ -385,7 +385,7 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 		assertFalse(transaction.hasRedoableChanges());
 
 		// set attribute #2
-		calculator.setInitialResult(20);
+		calculator.assignInitialResult(20);
 		assertEquals(20, calculator.getResult());
 		
 		assertEquals(2, transaction.getUndoableChanges().size());
@@ -492,7 +492,7 @@ public class TestTransactionManagerUndoRedo extends AbstractTransactionManagerTe
 		assertEquals(2, transaction.getRedoableChanges().size());
 		assertTrue(transaction.hasRedoableChanges());
 		
-		calculator.setInitialResult(20);
+		calculator.assignInitialResult(20);
 		
 		// undone changes are now gone.
 		assertEquals(0, transaction.getRedoableChanges().size());

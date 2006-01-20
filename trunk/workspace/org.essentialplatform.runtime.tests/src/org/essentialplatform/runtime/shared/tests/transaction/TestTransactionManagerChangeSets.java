@@ -28,7 +28,7 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 
 	public void testSettingAnAttributeAddsChangeSet() {
 		assertNull(transactionManager.getCurrentTransactionFor(calculator, false));
-		calculator.setInitialResult(10);
+		calculator.assignInitialResult(10);
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 
@@ -121,7 +121,7 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		assertEquals(1, transaction1.getUndoableChanges().size());
 
 		// set attribute #2 
-		calculator.setInitialResult(35);
+		calculator.assignInitialResult(35);
 		assertEquals(35, calculator.getResult());
 		ITransaction transaction2 = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertSame(transaction1, transaction2);

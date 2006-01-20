@@ -9,6 +9,8 @@ import org.apache.commons.io.IOUtils;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
+import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
+import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
@@ -17,6 +19,7 @@ public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 	private IDomainClass domainClass;
 	
 	private XStreamMarshalling marshalling;
+	private StandardPackager packager;
 
 	public TestXStreamMarshalling() {
 		super(null);
@@ -26,10 +29,13 @@ public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		marshalling = new XStreamMarshalling();
+		packager = new StandardPackager();
 	}
 
 	@Override
 	public void tearDown() throws Exception {
+		marshalling = null;
+		packager = null;
 		domainClass = null;
 		super.tearDown();
 	}
@@ -88,16 +94,19 @@ public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 		ITransaction xactn = transactionManager.getCurrentTransactionFor(departmentPojo);
 		transactionManager.commit(departmentPojo);
 
-		String marshalledXactn = marshalling.marshal(xactn);
+		ITransactionPackage packagedXactn = packager.pack(xactn);
+		packager.optimize(marshalling);
+		String marshalledPackagedXactn = marshalling.marshal(packagedXactn);
 		
 		// debugging only...
-		dumpTo(marshalledXactn, "test3.xml");
+		dumpTo(marshalledPackagedXactn, "test3.xml");
 
-		Object obj = marshalling.unmarshal(marshalledXactn);
+		Object obj = marshalling.unmarshal(marshalledPackagedXactn);
 		
-		assertTrue(obj instanceof ITransaction);
-		ITransaction unmarshalledXactn = (ITransaction)obj;
-		assertEquals(xactn.getInstantiatedPojos().size(), unmarshalledXactn.getInstantiatedPojos().size());
+		assertTrue(obj instanceof ITransactionPackage);
+		
+		ITransactionPackage unmarshalledPackagedXactn = (ITransactionPackage)obj;
+		assertEquals(xactn.getEnlistedPojos().size(), unmarshalledPackagedXactn.enlistedPojos().size());
 		assertEquals(xactn.getCommittedChanges(), xactn.getCommittedChanges()); // value semantics for changes.
 	}
 	

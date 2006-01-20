@@ -13,6 +13,7 @@ import org.essentialplatform.runtime.server.remoting.xactnprocessor.AbstractTran
 import org.essentialplatform.runtime.server.session.IServerSession;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
@@ -29,40 +30,42 @@ public final class HibernateTransactionProcessor extends AbstractTransactionProc
 	 * @param distribution
 	 * @param baos
 	 */
-	public void process(ITransaction transaction) {
-		List<IChange> committedChanges = transaction.flattenedCommittedChanges();
+	public void process(ITransactionPackage transaction) {
 		
-		Collections.sort(committedChanges, new ApplyingChangesComparator());
-		
-		Map<SessionBinding, IServerSession> openedSessions = new HashMap<SessionBinding, IServerSession>();
-		try {
-			for(IChange change: committedChanges) {
-				IDomainObject initiatingPojoDO = change.getInitiatingPojoDO();
-				if (initiatingPojoDO == null) { // eg IrreversibleChange and other special cases
-					continue;
-				}
-				SessionBinding sessionBinding = initiatingPojoDO.getSessionBinding();
-				IServerSession session = openedSessions.get(sessionBinding);
-				if (session == null) {
-					IServerSessionFactory sessionFactory = lookupSessionFactoryFor(sessionBinding);
-					session = sessionFactory.open();
-					openedSessions.put(sessionBinding, session);
-				}
-				if (change instanceof InstantiationChange) {
-					session.save(initiatingPojoDO);
-				}
-				if (change instanceof IModificationChange) {
-					session.update(initiatingPojoDO);
-				}
-				if (change instanceof DeletionChange) {
-					session.delete(initiatingPojoDO);
-				}
-			}
-		} finally {
-			for(IServerSession session: openedSessions.values()) {
-				session.close();
-			}
-		}
+		// this stuff commented out, being replaced with the package approach.
+//		List<IChange> committedChanges = transaction.flattenedCommittedChanges();
+//		
+//		Collections.sort(committedChanges, new ApplyingChangesComparator());
+//		
+//		Map<SessionBinding, IServerSession> openedSessions = new HashMap<SessionBinding, IServerSession>();
+//		try {
+//			for(IChange change: committedChanges) {
+//				IDomainObject initiatingPojoDO = change.getInitiatingPojoDO();
+//				if (initiatingPojoDO == null) { // eg IrreversibleChange and other special cases
+//					continue;
+//				}
+//				SessionBinding sessionBinding = initiatingPojoDO.getSessionBinding();
+//				IServerSession session = openedSessions.get(sessionBinding);
+//				if (session == null) {
+//					IServerSessionFactory sessionFactory = lookupSessionFactoryFor(sessionBinding);
+//					session = sessionFactory.open();
+//					openedSessions.put(sessionBinding, session);
+//				}
+//				if (change instanceof InstantiationChange) {
+//					session.save(initiatingPojoDO);
+//				}
+//				if (change instanceof IModificationChange) {
+//					session.update(initiatingPojoDO);
+//				}
+//				if (change instanceof DeletionChange) {
+//					session.delete(initiatingPojoDO);
+//				}
+//			}
+//		} finally {
+//			for(IServerSession session: openedSessions.values()) {
+//				session.close();
+//			}
+//		}
 	}
 
 	private IServerSessionFactory lookupSessionFactoryFor(SessionBinding sessionBinding) {

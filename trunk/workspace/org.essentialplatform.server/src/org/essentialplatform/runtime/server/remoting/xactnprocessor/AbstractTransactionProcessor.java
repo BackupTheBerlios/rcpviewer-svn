@@ -3,10 +3,9 @@ package org.essentialplatform.runtime.server.remoting.xactnprocessor;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.runtime.server.persistence.IObjectStore;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
+import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 /**
  * Adapter class.
@@ -20,7 +19,7 @@ public abstract class AbstractTransactionProcessor implements ITransactionProces
 		_objectStoreListByDomain = objectStoreListByDomain;
 	}
 
-	public void process(ITransaction transaction) {
+	public void process(ITransactionPackage transaction) {
 		// does nothing
 	}
 

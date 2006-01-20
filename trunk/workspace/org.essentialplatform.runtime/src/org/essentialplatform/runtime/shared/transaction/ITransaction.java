@@ -552,6 +552,14 @@ public interface ITransaction {
 	public List<Interaction> getCommittedChanges() throws IllegalStateException;
 	
 	/**
+	 * Passes the supplied visitor to all committed changes.
+	 * 
+	 * @throws IllegalStateException if called when not in state of COMMITTED
+	 * @param visitor
+	 */
+	public void traverseCommittedChanges(IChange.IVisitor visitor) throws IllegalStateException;
+
+	/**
 	 * The set of committed interactions, as per {@link #getCommittedChanges()}, 
 	 * flattened to a single list of {@link IChange}s.
 	 * 
@@ -582,55 +590,59 @@ public interface ITransaction {
 
 	
 	
-	/**
-	 * The {@link IDomainObject}s that wrap each of the pojos in the
-	 * {@link #getEnlistedPojos} collection.
-	 * 
-	 * <p>
-	 * NOT SURE IF THIS IS NEEDED AFTER ALL BECAUSE (DUH!) EVERY ICHANGE WILL
-	 * ALWAYS REFERENCE THE INSTANTIATINGPOJO....
-	 * 
-	 * <p>
-	 * Is only required to be populated once the transaction has been committed. 
-	 * 
-	 * <p>
-	 * Unlike the {@link #getEnlistedPojos()} collection, the implementation 
-	 * must ensure that the information in this field survives being serialized 
-	 * and deserialized.  Note that this also means that these DomainObjects are
-	 * orphaned: there is no corresponding pojo for them until such time that
-	 * the association is recreated.
-	 *  
-	 * @return
-	 */
-	public Set<IDomainObject> getEnlistedPojoDOs();
+	// TODO: commented out and will remove once happy that the IPackager
+	// approach works ok.
+//	/**
+//	 * The {@link IDomainObject}s that wrap each of the pojos in the
+//	 * {@link #getEnlistedPojos} collection.
+//	 * 
+//	 * <p>
+//	 * NOT SURE IF THIS IS NEEDED AFTER ALL BECAUSE (DUH!) EVERY ICHANGE WILL
+//	 * ALWAYS REFERENCE THE INSTANTIATINGPOJO....
+//	 * 
+//	 * <p>
+//	 * Is only required to be populated once the transaction has been committed. 
+//	 * 
+//	 * <p>
+//	 * Unlike the {@link #getEnlistedPojos()} collection, the implementation 
+//	 * must ensure that the information in this field survives being serialized 
+//	 * and deserialized.  Note that this also means that these DomainObjects are
+//	 * orphaned: there is no corresponding pojo for them until such time that
+//	 * the association is recreated.
+//	 *  
+//	 * @return
+//	 */
+//	public Set<IDomainObject> getEnlistedPojoDOs();
 
-	
-	/**
-	 * The collection of pojos that have been instantiated by any of the 
-	 * {@link IChange}s (specifically, {@link InstantiationChange}s) that have 
-	 * been performed within this transaction.
-	 * 
-	 * <p>
-	 * The set of pojos will be a subset of those returned by
-	 * {@link #getEnlistedPojos()}.
-	 * 
-	 * <p>
-	 * The implementation must ensure that the information in this field
-	 * survives being serialized and deserialized.
-	 * 
-	 * <h3>Design alternatives</h3>
-	 * <p>
-	 * Ensuring this field is serializable <i>does</i> open up the possibility 
-	 * of sending large object graphs across the wire, something that we hoped
-	 * to not do by allowing {@link #getEnlistedPojos()} to be a <tt>transient</tt>
-	 * collection.  An alternative would be for this collection also to be
-	 * transient (indeed, it could probably be removed), but then to append it
-	 * with a number of (artificially created) {@link AttributeChange}s etc to 
-	 * capture the state of the pojo as it is required to be.
-	 * 
-	 * @return
-	 */
-	public Set<ITransactable> getInstantiatedPojos();
+
+	// TODO: commented out and will remove once happy that the IPackager
+	// approach works ok.
+//	/**
+//	 * The collection of pojos that have been instantiated by any of the 
+//	 * {@link IChange}s (specifically, {@link InstantiationChange}s) that have 
+//	 * been performed within this transaction.
+//	 * 
+//	 * <p>
+//	 * The set of pojos will be a subset of those returned by
+//	 * {@link #getEnlistedPojos()}.
+//	 * 
+//	 * <p>
+//	 * The implementation must ensure that the information in this field
+//	 * survives being serialized and deserialized.
+//	 * 
+//	 * <h3>Design alternatives</h3>
+//	 * <p>
+//	 * Ensuring this field is serializable <i>does</i> open up the possibility 
+//	 * of sending large object graphs across the wire, something that we hoped
+//	 * to not do by allowing {@link #getEnlistedPojos()} to be a <tt>transient</tt>
+//	 * collection.  An alternative would be for this collection also to be
+//	 * transient (indeed, it could probably be removed), but then to append it
+//	 * with a number of (artificially created) {@link AttributeChange}s etc to 
+//	 * capture the state of the pojo as it is required to be.
+//	 * 
+//	 * @return
+//	 */
+//	public Set<ITransactable> getInstantiatedPojos();
 	
 	
 	/**

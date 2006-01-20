@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.shared.remoting.packaging.standard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.essentialplatform.core.domain.Domain;
@@ -17,10 +18,11 @@ import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeB
 import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
 import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
+import org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage;
 import org.essentialplatform.runtime.shared.remoting.packaging.PackagingException;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
-final class StandardPojoPackage {
+final class StandardPojoPackage implements IPojoPackage {
 
 	/////////////////////////////////////////////////////////////////////////
 	// Handle
@@ -30,7 +32,10 @@ final class StandardPojoPackage {
 	void packHandle(Handle handle) {
 		_handle = handle;
 	}
-	Handle unpackHandle() {
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IHandlePackage#unpackHandle()
+	 */
+	public Handle unpackHandle() {
 		return _handle;
 	}
 
@@ -42,7 +47,10 @@ final class StandardPojoPackage {
 	void packSessionBinding(SessionBinding sessionBinding) {
 		_sessionBinding = sessionBinding;
 	}
-	SessionBinding unpackSessionBinding() {
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.ISessionBindingPackage#unpackSessionBinding()
+	 */
+	public SessionBinding unpackSessionBinding() {
 		return _sessionBinding;
 	}
 
@@ -54,7 +62,10 @@ final class StandardPojoPackage {
 	void packPersistState(PersistState persistState) {
 		_persistState = persistState;
 	}
-	PersistState unpackPersistState() {
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage#unpackPersistState()
+	 */
+	public PersistState unpackPersistState() {
 		return _persistState;
 	}
 
@@ -66,7 +77,10 @@ final class StandardPojoPackage {
 	void packResolveState(ResolveState resolveState) {
 		_resolveState = resolveState;
 	}
-	ResolveState unpackResolveState() {
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage#unpackResolveState()
+	 */
+	public ResolveState unpackResolveState() {
 		return _resolveState;
 	}
 
@@ -74,13 +88,24 @@ final class StandardPojoPackage {
 	// Attributes
 	/////////////////////////////////////////////////////////////////////////
 
-	private Map<String, StandardAttributeData> _attributeDataByName = new HashMap<String, StandardAttributeData>();
+	/**
+	 * Attributes are transported as a list, but read back from a hash built lazily on unpacking.
+	 */
+	private List<StandardAttributeData> _attributes = new ArrayList<StandardAttributeData>();
+	/**
+	 * Not serialized; built up lazily when first unpack.
+	 */
+	private transient Map<String, StandardAttributeData> _attributeDataByName;
+	
 	void packAttribute(IObjectAttribute attribute) {
 		final String name = attribute.getAttribute().getName();
 		StandardAttributeData data = new StandardAttributeData(name, attribute.get());
-		_attributeDataByName.put(name, data);
+		_attributes.add(data);
 	}
 	void unpackAttribute(IObjectAttribute attributeToUpdate) {
+		if (_attributeDataByName == null) {
+			_attributeDataByName = map(_attributes);
+		}
 		final String name = attributeToUpdate.getAttribute().getName();
 		StandardAttributeData data = _attributeDataByName.get(name);
 		attributeToUpdate.set(data.getValue());
@@ -90,16 +115,27 @@ final class StandardPojoPackage {
 	// OneToOneReferences
 	/////////////////////////////////////////////////////////////////////////
 	
-	private Map<String, StandardOneToOneReferenceData> _oneToOneReferenceDataByName = new HashMap<String, StandardOneToOneReferenceData>();
+	/**
+	 * 1:1 references are transported as a list, but read back from a hash built lazily on unpacking.
+	 */
+	private List<StandardOneToOneReferenceData> _oneToOneReferences = new ArrayList<StandardOneToOneReferenceData>();
+	/**
+	 * Not serialized; built up lazily when first unpack.
+	 */
+	private transient Map<String, StandardOneToOneReferenceData> _oneToOneReferenceDataByName;
+	
 	void packOneToOneReference(IObjectOneToOneReference reference) {
 		final String name = reference.getReference().getName();
 		final IDomainObject<Object> referencedDomainObject = reference.get();
 		if (referencedDomainObject != null) {
 			StandardOneToOneReferenceData data = new StandardOneToOneReferenceData(name, referencedDomainObject.getHandle());
-			_oneToOneReferenceDataByName.put(name, data);
+			_oneToOneReferences.add(data);
 		}
 	}
 	void unpackOneToOneReference(IObjectOneToOneReference oneToOneReferenceToUpdate, IHandleMap handleMap) {
+		if (_oneToOneReferenceDataByName == null) {
+			_oneToOneReferenceDataByName = map(_oneToOneReferences);
+		}
 		final String name = oneToOneReferenceToUpdate.getReference().getName();
 		final StandardOneToOneReferenceData data = _oneToOneReferenceDataByName.get(name);
 		if (data != null) {
@@ -108,21 +144,28 @@ final class StandardPojoPackage {
 		} else {
 			oneToOneReferenceToUpdate.set(null);
 		}
-		
 	}
 
 	/////////////////////////////////////////////////////////////////////////
 	// CollectionReferences
 	/////////////////////////////////////////////////////////////////////////
 	
-	private Map<String, StandardCollectionReferenceData> _collectionReferenceDataByName = new HashMap<String, StandardCollectionReferenceData>();
+	/**
+	 * Collection references are transported as a list, but read back from a hash built lazily on unpacking.
+	 */
+	private List<StandardCollectionReferenceData> _collectionReferences = new ArrayList<StandardCollectionReferenceData>();
+	/**
+	 * Not serialized; built up lazily when first unpack.
+	 */
+	private transient Map<String, StandardCollectionReferenceData> _collectionReferenceDataByName;
+	
 	void packCollectionReference(IObjectCollectionReference reference) {
 		final String name = reference.getReference().getName();
 		StandardCollectionReferenceData data = new StandardCollectionReferenceData(name);
 		for(IDomainObject<?> domainObjectInCollection: reference.getCollection()) {
 			data.addHandle(domainObjectInCollection.getHandle());
 		}
-		_collectionReferenceDataByName.put(name, data);
+		_collectionReferences.add(data);
 	}
 	/**
 	 * TODO: just dealing with set semantics here, need to support List too I think.
@@ -131,6 +174,9 @@ final class StandardPojoPackage {
 	 * @param handleMap TODO
 	 */
 	void unpackCollectionReference(IObjectCollectionReference collectionReferenceToUpdate, IHandleMap handleMap) {
+		if (_collectionReferenceDataByName == null) {
+			_collectionReferenceDataByName = map(_collectionReferences);
+		}
 		// get the handles of all those DOs in in the collection to be updated
 		Collection<Handle> collectionToUpdateHandles = new ArrayList<Handle>();
 		final Collection<IDomainObject<Object>> collectionToUpdate = 
@@ -171,4 +217,18 @@ final class StandardPojoPackage {
 			collectionReferenceToUpdate.removeFromCollection(handleMap.getDomainObject(handle));
 		}
 	}
+
+	
+	/////////////////////////////////////////////////////////////////////////
+	// Helpers
+	/////////////////////////////////////////////////////////////////////////
+
+	private <V extends INamed> Map map(List<V> list) {
+		Map map = new HashMap();
+		for(INamed namedObject: list) {
+			map.put(namedObject.getName(), namedObject); // JAVA5_FIXME
+		}
+		return map;
+	}
+
 }

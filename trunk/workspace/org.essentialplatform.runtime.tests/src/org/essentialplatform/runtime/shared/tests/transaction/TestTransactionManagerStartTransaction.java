@@ -34,7 +34,7 @@ public class TestTransactionManagerStartTransaction extends AbstractTransactionM
 
 	public void testSettingAnAttributeImplicitlyStartsATransaction() {
 		assertEquals(0, transactionManager.getCurrentTransactions().size());
-		calculator.setInitialResult(10);
+		calculator.assignInitialResult(10);
 		assertEquals(1, transactionManager.getCurrentTransactions().size());
 		
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);

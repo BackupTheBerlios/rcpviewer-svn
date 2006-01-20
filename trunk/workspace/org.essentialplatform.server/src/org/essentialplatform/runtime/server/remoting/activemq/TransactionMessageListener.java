@@ -19,6 +19,7 @@ import org.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 class TransactionMessageListener extends Thread implements ExceptionListener, MessageListener {
@@ -64,11 +65,11 @@ class TransactionMessageListener extends Thread implements ExceptionListener, Me
             getLogger().debug("Text message received: " + messageReceived.length() + " characters");
             Object obj = _remotingServer.getMarshalling().unmarshal(messageReceived);
 			
-			if (!(obj instanceof ITransaction)) {
-				getLogger().warn("Unmarshalled message not a xactn (instead '" + obj.getClass().getName() + "'); discarding");
+			if (!(obj instanceof ITransactionPackage)) {
+				getLogger().warn("Unmarshalled message not a xactn package (instead '" + obj.getClass().getName() + "'); discarding");
 			}
-			ITransaction xactn = (ITransaction)obj;
-			_remotingServer.getTransactionProcessor().process(xactn);
+			ITransactionPackage packagedXactn = (ITransactionPackage)obj;
+			_remotingServer.getTransactionProcessor().process(packagedXactn);
 		} catch (JMSException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();

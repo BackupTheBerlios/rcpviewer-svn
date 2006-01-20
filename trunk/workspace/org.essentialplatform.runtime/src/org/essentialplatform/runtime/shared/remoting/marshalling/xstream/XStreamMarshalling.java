@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardAttributeData;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -33,6 +34,17 @@ public final class XStreamMarshalling implements IMarshalling {
 
 	public Object unmarshal(String marshalledObject) {
 		return xstream.fromXML(marshalledObject);
+	}
+
+
+	/**
+	 * Exposes the alias feature of XStream itself, for more compact XML.
+	 *  
+	 * @param name
+	 * @param type
+	 */
+	public <V> void alias(String name, Class<V> type) {
+		xstream.alias(name, type);
 	}
 
 

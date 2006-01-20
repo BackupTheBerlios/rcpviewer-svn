@@ -35,8 +35,8 @@ public final class Transaction extends AbstractTransaction {
 	///////////////////////////////////////////////////////////////
     
 
-	public Transaction(final TransactionManager transactionManager, final IAppContainer appContainer) {
-		super(transactionManager, appContainer);
+	public Transaction(final TransactionManager transactionManager) {
+		super(transactionManager);
 	}
 
 

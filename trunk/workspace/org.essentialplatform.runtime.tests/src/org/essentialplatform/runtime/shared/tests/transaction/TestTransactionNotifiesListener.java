@@ -30,7 +30,7 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 		listener = new MyTransactionListener(); 
 
 		// create a transaction on calculators to listen to.
-		calculator.setInitialResult(20);
+		calculator.assignInitialResult(20);
 		calculatorTransaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		calculatorTransaction.addTransactionListener(listener);
 
@@ -70,7 +70,7 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 
 	public void testSettingAttributeForTransactionNotifiesListenersOfAddingChange() {
 		assertNull(listener.addedChangeEvent);
-		calculator.setInitialResult(40);
+		calculator.assignInitialResult(40);
 		TransactionEvent event = listener.addedChangeEvent;
 		assertNotNull(event);
 		
@@ -283,7 +283,7 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 	public void testRedoingChangeInTransactionExplicitlyNotifiesTransactionListeners() {
 		// have already done one change in order to set up xactn; do one further
 		// so that performing an undo does not discard the entire xactn.
-		calculator.setInitialResult(40);
+		calculator.assignInitialResult(40);
 		// undo, so that we can redo
 		calculatorTransaction.undoPendingChange();
 
@@ -309,8 +309,8 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 	public void testRedoingChangesInTransactionExplicitlyNotifiesTransactionListenersOfRedonePendingChanges() {
 		// have already done one change in order to set up xactn; do two further
 		// so that performing two undoes does not discard the entire xactn.
-		calculator.setInitialResult(40);
-		calculator.setInitialResult(60);
+		calculator.assignInitialResult(40);
+		calculator.assignInitialResult(60);
 		// undo both, so that we can redo changes
 		calculatorTransaction.undoPendingChange();
 		calculatorTransaction.undoPendingChange();
@@ -329,8 +329,8 @@ public class TestTransactionNotifiesListener extends AbstractTransactionManagerT
 	public void testRedoingChangesInTransactionExplicitlyNotifiesTransactionListenersOfRedonePendingChangeMultipleTimes() {
 		// have already done one change in order to set up xactn; do two further
 		// so that performing two undoes does not discard the entire xactn.
-		calculator.setInitialResult(40);
-		calculator.setInitialResult(60);
+		calculator.assignInitialResult(40);
+		calculator.assignInitialResult(60);
 		// undo both, so that we can redo changes
 		calculatorTransaction.undoPendingChange();
 		calculatorTransaction.undoPendingChange();

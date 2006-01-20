@@ -187,11 +187,9 @@ public final class Handle {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("ID: ");
-		buf.append(_componentValues);
-		buf.append(" ");
-		buf.append("{")
-           .append(getJavaClass().getName())
-	       .append("}");
+		buf.append(getJavaClass().getSimpleName())
+		   .append(" ")
+		   .append(_componentValues);
 		return buf.toString();
 	}
 	

@@ -17,6 +17,8 @@ import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingSe
 import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqServerConstants;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.enqueue.EnqueuingTransactionProcessor;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
+import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
@@ -25,8 +27,9 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 	private IDomainClass domainClass;
 	
 	private ActiveMqRemotingServer remotingServer;
-	private SynchronousQueue<ITransaction> processedTransactions;
+	private SynchronousQueue<ITransactionPackage> processedTransactions;
 	private EnqueuingTransactionProcessor transactionProcessor;
+    private StandardPackager packager;
 	
 	public TestSendTransactionsUsingXStream() {
 		super(null);
@@ -37,8 +40,9 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 		super.setUp();
 		remotingServer = new ActiveMqRemotingServer();
 		remotingServer.setMessageListenerEnabled(true);
-		processedTransactions = new SynchronousQueue<ITransaction>();
+		processedTransactions = new SynchronousQueue<ITransactionPackage>();
 		transactionProcessor = new EnqueuingTransactionProcessor(processedTransactions);
+		packager = new StandardPackager();
 		remotingServer.setTransactionProcessor(transactionProcessor);
 		remotingServer.start();
 	}
@@ -50,6 +54,7 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 		if (remotingServer != null) {
 			remotingServer.shutdown();
 		}
+		packager = null;
 		super.tearDown();
 	}
 	
@@ -78,7 +83,8 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
         MessageProducer producer = session.createProducer(destination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-		String marshalledXactn = this.remotingServer.getMarshalling().marshal(xactn);
+        ITransactionPackage packagedXactn = packager.pack(xactn);
+		String marshalledXactn = this.remotingServer.getMarshalling().marshal(packagedXactn);
         
         TextMessage message = session.createTextMessage(marshalledXactn);
         producer.send(message);
@@ -86,8 +92,8 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
         connection.close();
 
         // see if our object came through
-        ITransaction unmarshalledXactn = processedTransactions.take();
-		assertEquals(xactn.getInstantiatedPojos().size(), unmarshalledXactn.getInstantiatedPojos().size());
+        ITransactionPackage unmarshalledXactnPackage = processedTransactions.take();
+		assertEquals(xactn.getEnlistedPojos().size(), unmarshalledXactnPackage.enlistedPojos().size());
 		assertEquals(xactn.getCommittedChanges(), xactn.getCommittedChanges()); // value semantics for changes.
 
 	            

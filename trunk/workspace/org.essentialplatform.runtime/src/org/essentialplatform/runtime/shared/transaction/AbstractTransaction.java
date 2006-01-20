@@ -8,15 +8,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.essentialplatform.progmodel.essential.app.IAppContainer;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.changes.ChangeSet;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
 import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
 import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
@@ -34,13 +31,11 @@ public abstract class AbstractTransaction implements ITransaction {
 	protected abstract Logger getLogger(); 
 
 
-
-
 	///////////////////////////////////////////////////////////////
     
 
-	public AbstractTransaction(final TransactionManager transactionManager, final IAppContainer appContainer) {
-		init(transactionManager, appContainer, ITransaction.State.IN_PROGRESS, new Date());
+	public AbstractTransaction(final TransactionManager transactionManager) {
+		init(transactionManager, ITransaction.State.IN_PROGRESS, new Date());
 	}
 
 	/**
@@ -48,27 +43,20 @@ public abstract class AbstractTransaction implements ITransaction {
 	 * serialization.
 	 * 
 	 * @param transactionManager
-	 * @param appContainer
 	 * @param state
 	 * @param startedAt
 	 */
-	private void init(final TransactionManager transactionManager, final IAppContainer appContainer, final ITransaction.State state, final Date startedAt) {
+	private void init(final TransactionManager transactionManager, final ITransaction.State state, final Date startedAt) {
 		this._transactionManager   = transactionManager;
-		this._appContainer = appContainer;
 		this._state = state;
 		this._startedAt = startedAt;
+		this._id = UUID.randomUUID().toString();
 	}
 
 	///////////////////////////////////////////////////////////////
-	// Injected dependencies (possibly) 
+	// TransactionManager 
 	///////////////////////////////////////////////////////////////
 	
-	/**
-	 * Marked as <tt>transient</tt> for serialization.
-	 */
-	private transient IAppContainer _appContainer;
-
-
 	/**
 	 * needs reference to actual implementation to get a hold
 	 * of {@link TransactionManager#committed(AbstractTransaction)}.
@@ -77,12 +65,13 @@ public abstract class AbstractTransaction implements ITransaction {
 	 * Marked as <tt>transient</tt> for serialization.
 	 */
 	private transient TransactionManager _transactionManager;
-
 	protected void checkCurrentTransactionOfTransactionManager() {
 		if (!_transactionManager.isCurrent(this)) {
 			throw new IllegalStateException("Not current transaction.");
 		}
 	}
+
+
 
 	///////////////////////////////////////////////////////////////
 	// Id, State Management
@@ -99,11 +88,12 @@ public abstract class AbstractTransaction implements ITransaction {
 	 */
 	private Date _endedAt;
 	
+	private String _id;
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#id()
 	 */
 	public String id() {
-		return TranMgmtConstants.TRANSACTION_ID_FORMAT.format(_appContainer.now());
+		return _id;
 	}
 
 
@@ -117,7 +107,6 @@ public abstract class AbstractTransaction implements ITransaction {
     public State getState() {
 		return _state;
 	}
-
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#checkInState(org.essentialplatform.transaction.ITransaction.State[])
 	 */
@@ -125,10 +114,8 @@ public abstract class AbstractTransaction implements ITransaction {
 		if (!isInState(requiredStates)) {
 			throw new IllegalStateException("Transaction must be in state of " + Arrays.asList(requiredStates) + ", instead is " + _state);
 		}
-		
 		return this;
 	}
-
 	/*
 	 * @see org.essentialplatform.transaction.ITransaction#isInState(org.essentialplatform.transaction.ITransaction.State[])
 	 */
@@ -434,15 +421,19 @@ public abstract class AbstractTransaction implements ITransaction {
 		checkInState(ITransaction.State.IN_PROGRESS, ITransaction.State.BUILDING_CHANGE);
 		_committedChanges = Collections.unmodifiableList(new ArrayList(_changes));
 		getLogger().debug("committing xactn of " + _changes.size() + " separate ChangeSets");
-		
-		// populate for serialization.
-		_instantiatedPojos = Collections.unmodifiableSet(getInstantiatedPojos());
-		
-		Set<IDomainObject> enlistedPojoDOs = new LinkedHashSet<IDomainObject>(); 
-		for(ITransactable enlistedPojo: getEnlistedPojos()) {
-			enlistedPojoDOs.add(((IPojo)enlistedPojo).domainObject());
-		}
-		_enlistedPojoDOs = Collections.unmodifiableSet(enlistedPojoDOs);
+
+		_state = ITransaction.State.COMMITTED;
+
+		// TODO: remove this stuff, once happy that the IPackager approach 
+		// will give us what we want.
+//		// populate for serialization.
+//		_instantiatedPojos = Collections.unmodifiableSet(getInstantiatedPojos());
+//		
+//		Set<IDomainObject> enlistedPojoDOs = new LinkedHashSet<IDomainObject>(); 
+//		for(ITransactable enlistedPojo: getEnlistedPojos()) {
+//			enlistedPojoDOs.add(((IPojo)enlistedPojo).domainObject());
+//		}
+//		_enlistedPojoDOs = Collections.unmodifiableSet(enlistedPojoDOs);
 
 		// we notify the transaction manager before we clear _changes because
 		// the transaction manager is going to ask this transaction which pojos
@@ -451,7 +442,6 @@ public abstract class AbstractTransaction implements ITransaction {
 		
 		// okay, now we can tidy up.
 		_changes.clear();
-		_state = ITransaction.State.COMMITTED;
 		
 		// notify listeners
 		TransactionEvent event = new TransactionEvent(this);
@@ -488,6 +478,12 @@ public abstract class AbstractTransaction implements ITransaction {
 		checkInState(ITransaction.State.COMMITTED);
 		return _committedChanges;
 	}
+	public void traverseCommittedChanges(IChange.IVisitor visitor) {
+		this.checkInState(ITransaction.State.COMMITTED);
+		for(IChange change: _committedChanges) {
+			change.accept(visitor);
+		}
+	}
 
 
 	/*
@@ -504,6 +500,7 @@ public abstract class AbstractTransaction implements ITransaction {
 				flattenedChanges.add(change);
 			}
 		};
+		traverseCommittedChanges(flatteningVisitor);
 		return flattenedChanges;
 	}
 
@@ -512,6 +509,8 @@ public abstract class AbstractTransaction implements ITransaction {
 	// Enlisted Pojos, EnlistedPojoDOs, Instantiated Pojos
 	///////////////////////////////////////////////////////////////
 
+
+
 	/*
 	 * Derived from the modified pojos of each changeset.
 	 *  
@@ -519,67 +518,72 @@ public abstract class AbstractTransaction implements ITransaction {
 	 */
 	public Set<ITransactable> getEnlistedPojos() {
 		Set<ITransactable> enlistedPojos = new LinkedHashSet<ITransactable>();
-		for(Interaction interaction: _changes) {
+		for(Interaction interaction: isInState(ITransaction.State.COMMITTED)?_committedChanges:_changes) {
 			enlistedPojos.addAll(interaction.getModifiedPojos());
 		}
 		return enlistedPojos;
 	}
 
 
-	private Set<IDomainObject> _enlistedPojoDOs; 
+	// TODO: remove this stuff, once happy that the IPackager approach 
+	// will give us what we want.
 
-	/*
-	 * Populated only when the transaction is committed.
-	 * 
-	 * @see org.essentialplatform.runtime.transaction.ITransaction#getEnlistedPojoDOs()
-	 */
-	public Set<IDomainObject> getEnlistedPojoDOs() {
-		return _enlistedPojoDOs;
-	}
+//	private Set<IDomainObject> _enlistedPojoDOs; 
+//
+//	/*
+//	 * Populated only when the transaction is committed.
+//	 * 
+//	 * @see org.essentialplatform.runtime.transaction.ITransaction#getEnlistedPojoDOs()
+//	 */
+//	public Set<IDomainObject> getEnlistedPojoDOs() {
+//		return _enlistedPojoDOs;
+//	}
 
 
-	
-	/**
-	 * Only populated when the transaction is committed. 
-	 * 
-	 * <p>
-	 * Required for serialization; populated on commit.
-	 * 
-	 * <p>
-	 * Implementation note: this appears lexically before <tt>_committedChanges</tt>
-	 * so that XStream serialization lists all the pojos and then the
-	 * changes just reference them.  There is no functional difference, but it
-	 * is easier to review the serialized form with pojos dumped out first.
-	 */
-	private Set<ITransactable> _instantiatedPojos;
 
-	/*
-	 * If the transaction has not been serialized, then this method determines 
-	 * the set of pojos on the fly (from the <tt>_changes</tt> collection.
-	 * But if the transaction HAS been serialized, then <tt>_changes</tt> will
-	 * be empty, and so the method just returns the 
-	 * <tt>_instantiatedPojos<tt> collection, populated when the 
-	 * transaction is committed.
-	 * 
-	 * @see org.essentialplatform.runtime.transaction.ITransaction#getInstantiatedPojos()
-	 */
-	public Set<ITransactable> getInstantiatedPojos() {
-		if (_changes == null) {
-			return _instantiatedPojos;
-		}
-		final Set<ITransactable> instantiatedPojos = new LinkedHashSet<ITransactable>();
-		IChange.IVisitor changeVisitor = new IChange.IVisitor(){
-			public void visit(IChange change) {
-				if (!(change instanceof InstantiationChange)) {
-					return;
-				}
-				instantiatedPojos.addAll(change.getModifiedPojos());
-			}};
-		for(Interaction interaction: _committedChanges) {
-			interaction.accept(changeVisitor);
-		}
-		return instantiatedPojos; 
-	}
+	// TODO: remove this stuff, once happy that the IPackager approach 
+	// will give us what we want.
+//	/**
+//	 * Only populated when the transaction is committed. 
+//	 * 
+//	 * <p>
+//	 * Required for serialization; populated on commit.
+//	 * 
+//	 * <p>
+//	 * Implementation note: this appears lexically before <tt>_committedChanges</tt>
+//	 * so that XStream serialization lists all the pojos and then the
+//	 * changes just reference them.  There is no functional difference, but it
+//	 * is easier to review the serialized form with pojos dumped out first.
+//	 */
+//	private Set<ITransactable> _instantiatedPojos;
+//
+//	/*
+//	 * If the transaction has not been serialized, then this method determines 
+//	 * the set of pojos on the fly (from the <tt>_changes</tt> collection.
+//	 * But if the transaction HAS been serialized, then <tt>_changes</tt> will
+//	 * be empty, and so the method just returns the 
+//	 * <tt>_instantiatedPojos<tt> collection, populated when the 
+//	 * transaction is committed.
+//	 * 
+//	 * @see org.essentialplatform.runtime.transaction.ITransaction#getInstantiatedPojos()
+//	 */
+//	public Set<ITransactable> getInstantiatedPojos() {
+//		if (_changes == null) {
+//			return _instantiatedPojos;
+//		}
+//		final Set<ITransactable> instantiatedPojos = new LinkedHashSet<ITransactable>();
+//		IChange.IVisitor changeVisitor = new IChange.IVisitor(){
+//			public void visit(IChange change) {
+//				if (!(change instanceof InstantiationChange)) {
+//					return;
+//				}
+//				instantiatedPojos.addAll(change.getModifiedPojos());
+//			}};
+//		for(Interaction interaction: _committedChanges) {
+//			interaction.accept(changeVisitor);
+//		}
+//		return instantiatedPojos; 
+//	}
 
 
 	///////////////////////////////////////////////////////////////
@@ -664,7 +668,7 @@ public abstract class AbstractTransaction implements ITransaction {
 		_listeners.remove(listener);
 	}
 
-	
+
 	///////////////////////////////////////////////////////////////
 	// toString
 	///////////////////////////////////////////////////////////////
@@ -691,13 +695,11 @@ public abstract class AbstractTransaction implements ITransaction {
     	} else {
     		buf.append(", ")
     		   .append(getCommittedChanges().size()).append(" committed changes, ")
-    		   .append(getInstantiatedPojos().size()).append(" instantiated pojos");
+    		   .append(getEnlistedPojos().size()).append(" enlisted pojos");
     	}
     	
     	return buf.toString();
     }
-
-
 
 
 }

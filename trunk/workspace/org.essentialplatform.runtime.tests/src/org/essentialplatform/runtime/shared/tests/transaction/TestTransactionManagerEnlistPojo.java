@@ -51,7 +51,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 
 	public void testSettingAnAttributeEnlistedPojo() {
 		assertNull(transactionManager.getCurrentTransactionFor(calculator, false));
-		calculator.setInitialResult(10);
+		calculator.assignInitialResult(10);
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		
@@ -229,7 +229,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		assertNull(transactionManager.getCurrentTransactionFor(calculator, false));
 
 		// first change; object is enlisted
-		calculator.setInitialResult(10);
+		calculator.assignInitialResult(10);
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		assertEquals(1, transaction.getUndoableChanges().size());
@@ -255,7 +255,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 	public void testCanHaveTwoConcurrentTransactions() {
 		assertNull(transactionManager.getCurrentTransactionFor(calculator, false));
 		assertNull(transactionManager.getCurrentTransactionFor(customer, false));
-		calculator.setInitialResult(10);
+		calculator.assignInitialResult(10);
 		customer.useEmailAddress(emailAddress);
 		ITransaction calculatorTransaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		ITransaction customerTransaction = transactionManager.getCurrentTransactionFor(customer, false);

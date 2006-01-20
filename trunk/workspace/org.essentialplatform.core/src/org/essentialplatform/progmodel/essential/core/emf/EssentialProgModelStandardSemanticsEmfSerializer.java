@@ -78,6 +78,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(attribute),
 				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_ACCESSOR_METHOD_NAME_KEY);
+		if (methodName == null) {
+			throw new IllegalArgumentException(
+					String.format("Could not locate attribute accessor method for %s#%s", 
+							attribute.getEContainingClass().getInstanceClassName(), attribute.getName()));
+		}
 		return findMethod(javaClassFor(attribute), methodName);
 	}
 	public void setAttributeAccessorMethod(final EAttribute attribute, Method method) {
@@ -93,6 +98,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(attribute),
 				EssentialProgModelStandardSemanticsConstants.ANNOTATION_ATTRIBUTE_MUTATOR_METHOD_NAME_KEY);
+//		if (methodName == null) {
+//			throw new IllegalArgumentException(
+//					String.format("Could not locate attribute mutator method for %s#%s", 
+//							attribute.getEContainingClass().getInstanceClassName(), attribute.getName()));
+//		}
 		return findMethod(javaClassFor(attribute), methodName, typeAsArrayFor(attribute));
 	}
 	public void setAttributeMutatorMethod(final EAttribute attribute, Method method) {
@@ -152,6 +162,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
 				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ACCESSOR_NAME_KEY);
+		if (accessorMethodName == null) {
+			throw new IllegalArgumentException(
+					String.format("Could not locate reference accessor method for %s#%s", 
+							reference.getEContainingClass().getInstanceClassName(), reference.getName()));
+		}
 		return findMethod(javaClassFor(reference), accessorMethodName);
 	}
 	public void setReferenceAccessor(final EReference reference, Method method) {
@@ -170,6 +185,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 				_emfAnnotations.methodNamesAnnotationFor(reference), 
 				EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_MUTATOR_NAME_KEY);
+//		if (mutatorMethodName == null) {
+//			throw new IllegalArgumentException(
+//					String.format("Could not locate reference mutator method for %s#%s", 
+//							reference.getEContainingClass().getInstanceClassName(), reference.getName()));
+//		}
 		return findMethod(
 				javaClassFor(reference), 
 				mutatorMethodName,
@@ -181,6 +201,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
 					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ASSOCIATE_NAME_KEY);
+		if (associatorMethodName == null) {
+			throw new IllegalArgumentException(
+					String.format("Could not locate reference associator method for %s#%s", 
+							reference.getEContainingClass().getInstanceClassName(), reference.getName()));
+		}
 		return findMethod(
 				javaClassFor(reference), 
 				associatorMethodName, 
@@ -199,6 +224,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
 					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_ADD_TO_NAME_KEY);
+//		if (associatorMethodName == null) {
+//			throw new IllegalArgumentException(
+//					String.format("Could not locate collection addTo method for %s#%s", 
+//							reference.getEContainingClass().getInstanceClassName(), reference.getName()));
+//		}
 		return findMethod(
 				javaClassFor(reference), 
 				associatorMethodName, 
@@ -217,6 +247,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
 					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_DISSOCIATE_NAME_KEY);
+//		if (dissociatorMethodName == null) {
+//			throw new IllegalArgumentException(
+//					String.format("Could not locate reference dissociator method for ${0}#${1}", 
+//							reference.getEContainingClass().getInstanceClassName(), reference.getName()));
+//		}
 		return findMethod(
 				javaClassFor(reference), 
 				dissociatorMethodName, 
@@ -235,6 +270,11 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 			_emfAnnotations.getAnnotationDetail(
 					_emfAnnotations.methodNamesAnnotationFor(reference),
 					EssentialProgModelStandardSemanticsConstants.ANNOTATION_REFERENCE_REMOVE_FROM_NAME_KEY);
+//		if (dissociatorMethodName == null) {
+//			throw new IllegalArgumentException(
+//					String.format("Could not locate collection removeFrom method for %s#%s", 
+//							reference.getEContainingClass().getInstanceClassName(), reference.getName()));
+//		}
 		return findMethod(
 				javaClassFor(reference), 
 				dissociatorMethodName, 
@@ -249,12 +289,17 @@ public final class EssentialProgModelStandardSemanticsEmfSerializer extends Abst
 	}
 	
 	// operations
-	public Method getOperationMethod(final EOperation eOperation) {
+	public Method getOperationMethod(final EOperation operation) {
 		String invokerMethodName = 
 			_emfAnnotations.getAnnotationDetail(
-				_emfAnnotations.methodNamesAnnotationFor(eOperation),
+				_emfAnnotations.methodNamesAnnotationFor(operation),
 				EssentialProgModelStandardSemanticsConstants.ANNOTATION_OPERATION_METHOD_NAME_KEY);
-		return findMethod(javaClassFor(eOperation), invokerMethodName, parameterTypesFor(eOperation));
+		if (invokerMethodName == null) {
+			throw new IllegalArgumentException(
+					String.format("Could not locate operation invoker method for %s#%s", 
+							operation.getEContainingClass().getInstanceClassName(), operation.getName()));
+		}
+		return findMethod(javaClassFor(operation), invokerMethodName, parameterTypesFor(operation));
 	}
 	public void setOperationMethod(final EOperation eOperation, Method method) {
 		_emfAnnotations.putAnnotationDetails(	
