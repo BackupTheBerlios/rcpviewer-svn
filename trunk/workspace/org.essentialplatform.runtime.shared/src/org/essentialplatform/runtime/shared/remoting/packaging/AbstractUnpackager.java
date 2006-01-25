@@ -14,7 +14,7 @@ import org.essentialplatform.runtime.shared.transaction.ITransaction;
  * 
  * @author Dan Haywood
  */
-public abstract class AbstractPackager implements IPackager {
+public abstract class AbstractUnpackager implements IPackager {
 
 	protected abstract Logger getLogger(); 
 	
@@ -36,6 +36,23 @@ public abstract class AbstractPackager implements IPackager {
 	protected abstract <V extends ITransactionPackage> V doPack(ITransaction transaction);
 
 	
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#unpackSessionBinding(org.essentialplatform.runtime.shared.remoting.packaging.ISessionBindingPackage)
+	 */
+	public abstract SessionBinding unpackSessionBinding(ISessionBindingPackage packagedSessionBinding);
+
+
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#unpackHandle(org.essentialplatform.runtime.shared.remoting.packaging.IHandlePackage)
+	 */
+	public abstract Handle unpackHandle(IHandlePackage handlePackage);
+
+
+	/*
+	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#merge(org.essentialplatform.runtime.shared.domain.IDomainObject, org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage, org.essentialplatform.runtime.shared.domain.handle.IHandleMap)
+	 */
+	public abstract void merge(IDomainObject domainObject, IPojoPackage packagedPojo, IHandleMap handleMap);
+
 	
 	/*
 	 * Default implementation does nothing.

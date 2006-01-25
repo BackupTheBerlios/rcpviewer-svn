@@ -2,8 +2,6 @@ package org.essentialplatform.runtime.shared.remoting.packaging;
 
 import java.util.List;
 
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-
 
 /**
  * Represents an {@link ITransaction} that has been packaged up.
