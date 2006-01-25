@@ -107,52 +107,11 @@ public class StandardPackager extends AbstractPackager {
 		return (V)transactionPackage;
 	}
 
-	@Override
-	public SessionBinding unpackSessionBinding(ISessionBindingPackage sessionBindingPackage) {
-		return sessionBindingPackage.unpackSessionBinding();
-	}
-	
-	@Override
-	public Handle unpackHandle(IHandlePackage handlePackage) {
-		return handlePackage.unpackHandle();
-	}
-	
-	@Override
-	public void merge(IDomainObject domainObject, IPojoPackage iPojoPackage, IHandleMap handleMap) {
-		StandardPojoPackage pojoPackage = (StandardPojoPackage)iPojoPackage;
 
-		SessionBinding sessionBinding = pojoPackage.unpackSessionBinding();
-		
-		PersistState persistState = pojoPackage.unpackPersistState();
-		ResolveState resolveState = pojoPackage.unpackResolveState();
-
-		Handle handle = pojoPackage.unpackHandle();
-		Class<?> javaClass = handle.getJavaClass();
-		IDomainClass dc = Domain.lookupAny(javaClass);
-		
-		// update state (this is a merge if the dObj already existed).
-		for(IAttribute iAttrib: dc.iAttributes()) {
-			pojoPackage.unpackAttribute(domainObject.getAttribute(iAttrib));
-		}
-		for(IReference iReference: dc.iReferences(new OneToOneReferenceFilter())) {
-			pojoPackage.unpackOneToOneReference(domainObject.getOneToOneReference(iReference), handleMap);
-		}
-		for(IReference iReference: dc.iReferences(new CollectionReferenceFilter())) {
-			pojoPackage.unpackCollectionReference(domainObject.getCollectionReference(iReference), handleMap);
-		}
-	}
-
-	@Override
 	public void optimize(IMarshalling marshalling) {
 		if (marshalling instanceof XStreamMarshalling) {
-			XStreamMarshalling xstreamMarshalling = (XStreamMarshalling)marshalling;
-			xstreamMarshalling.alias("attribute", StandardAttributeData.class);
-			xstreamMarshalling.alias("reference", StandardOneToOneReferenceData.class);
-			xstreamMarshalling.alias("collection", StandardCollectionReferenceData.class);
-			xstreamMarshalling.alias("pojo", StandardPojoPackage.class);
-			xstreamMarshalling.alias("xactn", StandardTransactionPackage.class);
+			new StandardXMarshallingOptimizer().optimize(marshalling);
 		}
-		
 	}
 
 
