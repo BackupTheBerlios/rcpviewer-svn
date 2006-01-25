@@ -3,7 +3,7 @@ package org.essentialplatform.runtime.client.domain.bindings;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
-import org.essentialplatform.runtime.client.domain.IObservedFeature;
+import org.essentialplatform.runtime.shared.domain.IObservedFeature;
 
 /**
  * Represents client-specific functionality for an <i>instance of</i> a member 

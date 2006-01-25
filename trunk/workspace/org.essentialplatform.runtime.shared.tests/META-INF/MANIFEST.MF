@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
  org.essentialplatform.runtime.client,
- org.essentialplatform.runtime.shared;visibility:=reexport
+ org.essentialplatform.runtime.shared;visibility:=reexport,
+ org.essentialplatform.runtime.server
 Eclipse-RegisterBuddy: net.sf.plugins.xstream
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team

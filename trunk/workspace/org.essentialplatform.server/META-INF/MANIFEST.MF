@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Essential Platform Standalone Server
-Bundle-SymbolicName: org.essentialplatform.server
+Bundle-SymbolicName: org.essentialplatform.runtime.server
 Bundle-Version: 1.0.0
 Bundle-Activator: org.essentialplatform.runtime.server.ServerPlugin
 Bundle-Vendor: Essential Platform Development Team
@@ -17,6 +17,7 @@ Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.database,
  org.essentialplatform.runtime.server.database.hsqldb,
+ org.essentialplatform.runtime.server.domain.bindings,
  org.essentialplatform.runtime.server.persistence,
  org.essentialplatform.runtime.server.persistence.hibernate,
  org.essentialplatform.runtime.server.persistence.inmemory,
@@ -26,4 +27,6 @@ Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.remoting.xactnprocessor.enqueue,
  org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate,
  org.essentialplatform.runtime.server.remoting.xactnprocessor.noop,
- org.essentialplatform.runtime.server.session.hibernate
+ org.essentialplatform.runtime.server.session,
+ org.essentialplatform.runtime.server.session.hibernate,
+ org.essentialplatform.runtime.server.session.noop

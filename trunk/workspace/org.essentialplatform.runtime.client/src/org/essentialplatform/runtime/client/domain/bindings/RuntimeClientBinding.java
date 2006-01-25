@@ -20,7 +20,6 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.progmodel.essential.app.Prerequisites;
 import org.essentialplatform.runtime.client.authorization.IAuthorizationManager;
-import org.essentialplatform.runtime.client.domain.IObservedFeature;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.DomainObjectReferenceEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
@@ -33,6 +32,7 @@ import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceL
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IObservedFeature;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;

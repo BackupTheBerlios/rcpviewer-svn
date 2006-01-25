@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.server.session;
 
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
-public abstract class AbstractServerSessionFactory<V> implements IServerSessionFactory<V> {
+public abstract class AbstractServerSessionFactory<V extends IServerSession> implements IServerSessionFactory<V> {
 
 	public AbstractServerSessionFactory(SessionBinding sessionBinding) {
 		_sessionBinding = sessionBinding;

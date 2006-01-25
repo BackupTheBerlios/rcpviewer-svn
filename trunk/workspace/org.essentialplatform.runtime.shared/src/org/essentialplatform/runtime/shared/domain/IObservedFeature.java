@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.client.domain;
+package org.essentialplatform.runtime.shared.domain;
 
 /**
  * A feature (attribute, reference or operation) of some domain object that is
