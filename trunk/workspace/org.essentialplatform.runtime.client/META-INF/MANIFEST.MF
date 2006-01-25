@@ -14,5 +14,13 @@ Require-Bundle: org.eclipse.ui,
  net.sf.plugins.xstream,
  net.sf.plugins.commons
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.runtime.client.remoting,
- org.essentialplatform.runtime.client.remoting.transport.activemq
+Export-Package: org.essentialplatform.runtime.client.authorization,
+ org.essentialplatform.runtime.client.domain,
+ org.essentialplatform.runtime.client.domain.bindings,
+ org.essentialplatform.runtime.client.domain.event,
+ org.essentialplatform.runtime.client.remoting,
+ org.essentialplatform.runtime.client.remoting.transport.activemq,
+ org.essentialplatform.runtime.client.session,
+ org.essentialplatform.runtime.client.session.event,
+ org.essentialplatform.runtime.client.transaction,
+ org.essentialplatform.runtime.client.transaction.event
