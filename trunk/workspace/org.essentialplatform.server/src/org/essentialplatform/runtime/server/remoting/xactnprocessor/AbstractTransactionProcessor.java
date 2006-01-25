@@ -19,7 +19,7 @@ public abstract class AbstractTransactionProcessor implements ITransactionProces
 		_objectStoreListByDomain = objectStoreListByDomain;
 	}
 
-	public void process(ITransactionPackage transaction) {
+	public void process(ITransactionPackage transactionPackage) {
 		// does nothing
 	}
 

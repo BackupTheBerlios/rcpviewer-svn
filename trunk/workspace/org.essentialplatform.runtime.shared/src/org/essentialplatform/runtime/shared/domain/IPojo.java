@@ -1,14 +1,17 @@
 package org.essentialplatform.runtime.shared.domain;
 
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
+//import org.essentialplatform.runtime.shared.transaction.ITransactable;
 
 
 
-public interface IPojo extends ITransactable {
+public interface IPojo /*extends ITransactable*/ {
 
 	/**
-	 * Tracks the resolve state, transaction state and other aspects
-	 * on behalf of the pojo.
+	 * Tracks the resolve state and other aspects on behalf of the pojo.
+	 * 
+	 * <p>
+	 * Note that transaction state is relevant only on the client and so is
+	 * no longer part of IPojo. 
 	 * 
 	 * <p>
 	 * Implementation note: previously this method was called <tt>getDomainObject()</tt>.

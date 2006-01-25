@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.remoting.IRemoting;
 import org.essentialplatform.runtime.shared.remoting.noop.NoopRemoting;
 import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
@@ -119,15 +120,12 @@ public final class TransactionManager implements ITransactionManager {
 	// getCurrentTransactionFor()
 	////////////////////////////////////////////////////////////////////
 
-	/*
-	 * @see org.essentialplatform.transaction.ITransactionManager#getCurrentTransaction()
-	 */
 	public ITransaction getCurrentTransactionFor(final ITransactable transactable) {
 		return getCurrentTransactionFor(transactable, true);
 	}
 
 	/*
-	 * @see org.essentialplatform.transaction.ITransactionManager#getCurrentTransaction(boolean)
+	 * @see org.essentialplatform.runtime.client.transaction.ITransactionManager#getCurrentTransactionFor(org.essentialplatform.runtime.shared.transaction.ITransactable, boolean)
 	 */
 	public synchronized ITransaction getCurrentTransactionFor(final ITransactable transactable, final boolean autoEnlist) {
 		ITransaction transaction = _currentTransactionByEnlistedPojo.get(transactable);
@@ -141,6 +139,16 @@ public final class TransactionManager implements ITransactionManager {
 		}
 		return transaction;
 	}
+
+	// hacky
+	public ITransaction getCurrentTransactionFor(final IPojo pojo) {
+		return getCurrentTransactionFor((ITransactable)pojo);
+	}
+	// hacky
+	public synchronized ITransaction getCurrentTransactionFor(final IPojo pojo, final boolean autoEnlist) {
+		return getCurrentTransactionFor((ITransactable)pojo, autoEnlist);
+	}
+
 
 
 	////////////////////////////////////////////////////////////////////
@@ -293,6 +301,10 @@ public final class TransactionManager implements ITransactionManager {
 	// Commit Transaction:
 	// commit(), committed(), getCommittedTransactions() 
 	////////////////////////////////////////////////////////////////////
+
+	public synchronized void commit(IPojo pojo) throws IllegalStateException {
+		commit((ITransactable)pojo);
+	}
 
 	/*
 	 * @see org.essentialplatform.transaction.ITransactionManager#commit(org.essentialplatform.transaction.ITransactable)

@@ -11,7 +11,8 @@ Eclipse-AutoStart: true
 Require-Bundle: org.aspectj.runtime,
  org.essentialplatform.louis,
  org.essentialplatform.progmodel.essential.app,
- org.essentialplatform.progmodel.louis.app
+ org.essentialplatform.progmodel.louis.app,
+ org.essentialplatform.runtime.client
 Export-Package: org.essentialplatform.gui.acme.factory.exts,
  org.essentialplatform.gui.acme.model
 Eclipse-RegisterBuddy: net.sf.plugins.hibernate,

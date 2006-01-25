@@ -2,11 +2,8 @@ package org.essentialplatform.runtime.shared.remoting.packaging;
 
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
-import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 /**
  * Unpackages transactions.

@@ -10,14 +10,9 @@ import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
-import org.essentialplatform.runtime.client.transaction.ITransactionManager;
-import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.server.database.IDatabaseServer;
 import org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer;
 import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
-import org.essentialplatform.runtime.server.persistence.IObjectStore;
-import org.essentialplatform.runtime.server.persistence.hibernate.HibernateObjectStore;
 import org.essentialplatform.runtime.server.remoting.IRemotingServer;
 import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
@@ -45,8 +40,6 @@ public class StandaloneServer extends AbstractService {
 		return Logger.getLogger(StandaloneServer.class);
 	}
 
-	private ITransactionManager _transactionManager;
-	
 	////////////////////////////////////////////////////////////
 
 	private Map<IDomain, ObjectStoreHandleList<IServerSessionFactory>> objectStoreListByDomain = 
@@ -92,9 +85,6 @@ public class StandaloneServer extends AbstractService {
 		// tell the transaction processor a
 		// for each SessionBinding tuple.
 	    _transactionProcessor.init(objectStoreListByDomain);
-
-	    // is a xactnMgr needed?
-		_transactionManager = TransactionManager.instance();
 
 	}
 

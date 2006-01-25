@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
@@ -46,14 +47,9 @@ class SessionBootstrapJob extends AbstractBootstrapJob {
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		try {
-			// FIXME In the future there will be a better way to set sessions
-			IClientSessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
-			IDomainRegistry domainRegistry = RuntimePlugin.getDefault().getDomainRegistry();
-			sessionManager.defineSession(_sessionBinding);
-		} catch (CoreException ce) {
-			return ce.getStatus();
-		}
+		IClientSessionManager sessionManager = ClientSessionManager.instance();
+		IDomainRegistry domainRegistry = RuntimePlugin.getDefault().getDomainRegistry();
+		sessionManager.defineSession(_sessionBinding);
 		return Status.OK_STATUS;
 	}
 }

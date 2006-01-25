@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.essentialplatform.runtime.client.session.IClientSession;
-
 /**
  * Maintains a set of handles, and the current handle, all for a given domain.
  * 
@@ -99,9 +97,8 @@ public final class ObjectStoreHandleList<V extends IObjectStoreHandle> implement
 	/////////////////////////////////////////////////////////////////////
 		
 	/**
-	 * Primarily for testing purposes; resets all sessions (using
-	 * {@link IClientSession#reset()}) and then clears hash of sessions held by the
-	 * list itself.
+	 * Primarily for testing purposes; resets all sessions and then clears 
+	 * hash of sessions held by the list itself.
 	 * 
 	 */
 	public void reset() {

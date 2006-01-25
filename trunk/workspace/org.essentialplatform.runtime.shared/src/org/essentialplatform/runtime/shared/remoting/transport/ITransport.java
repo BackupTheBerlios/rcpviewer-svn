@@ -2,9 +2,6 @@ package org.essentialplatform.runtime.shared.remoting.transport;
 
 import java.io.Serializable;
 
-import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
-
 /**
  * Facade for different transport mechanisms.
  * 

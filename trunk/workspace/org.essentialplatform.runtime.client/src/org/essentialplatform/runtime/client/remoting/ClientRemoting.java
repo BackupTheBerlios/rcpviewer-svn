@@ -1,20 +1,10 @@
 package org.essentialplatform.runtime.client.remoting;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-import org.activemq.ActiveMQConnection;
-import org.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.remoting.AbstractRemoting;
-import org.essentialplatform.runtime.shared.remoting.activemq.ActiveMqServerConstants;
-import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
+import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
+import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 public final class ClientRemoting extends AbstractRemoting {
@@ -50,6 +40,17 @@ public final class ClientRemoting extends AbstractRemoting {
 		String marshalledXactn = getMarshalling().marshal(packagedXactn);
 		getTransport().send(marshalledXactn);
 	}
+
+	
+	private IPackager _packager = new StandardPackager();
+	public IPackager getPackager() {
+		return _packager;
+	}
+	public void setPackager(IPackager packager) {
+		_packager = packager;
+	}
+	
+
 
 
 

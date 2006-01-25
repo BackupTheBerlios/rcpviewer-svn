@@ -32,6 +32,7 @@ import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage;
 import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
+import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardUnpackager;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
@@ -55,6 +56,7 @@ import java.util.Set;
 public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 
 	private StandardPackager packager;
+	private StandardUnpackager unpackager;
 	private IMarshalling marshalling;
 
 	// this stuff is commented out because it is testing at the wrong level
@@ -90,6 +92,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		packager = new StandardPackager();
+		unpackager = new StandardUnpackager();
 		marshalling = new XStreamMarshalling();
 
 		// not needed here, but commented out rather than deleted because
@@ -111,6 +114,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 //		serverSessionFactory = null;
 		
 		marshalling = null;
+		unpackager = null;
 		packager = null;
 		TransactionManager.instance().resume();
 		super.tearDown();
@@ -142,7 +146,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		String marshalledPackedPojo = marshalling.marshal(packedPojo);
 		IPojoPackage unmarshalledPackedPojo = (IPojoPackage) marshalling.unmarshal(marshalledPackedPojo);
 		
-		SessionBinding sessionBinding = packager.unpackSessionBinding(unmarshalledPackedPojo);
+		SessionBinding sessionBinding = unpackager.unpackSessionBinding(unmarshalledPackedPojo);
 		assertNotSame(clientSession.getSessionBinding(), sessionBinding); // different object, but...
 		assertEquals(clientSession.getSessionBinding(), sessionBinding); // ... same value.
 		
@@ -161,7 +165,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		String marshalledPackedPojo = marshalling.marshal(packedPojo);
 		IPojoPackage unmarshalledPackedPojo = (IPojoPackage) marshalling.unmarshal(marshalledPackedPojo);
 		
-		Handle handle = packager.unpackHandle(unmarshalledPackedPojo);
+		Handle handle = unpackager.unpackHandle(unmarshalledPackedPojo);
 		assertNotSame(departmentDO.getHandle(), handle); // different object, but...
 		assertEquals(departmentDO.getHandle(), handle); // ... same value.
 	}
@@ -181,7 +185,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 
 		departmentPojo.setRank(34);
 		assertEquals(34, departmentPojo.getRank()); // reset back
-		packager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
 		assertEquals(33, departmentPojo.getRank()); // reset back
 	}
 	
@@ -200,7 +204,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 
 		departmentPojo.setName(null);
 		assertNull(departmentPojo.getName()); // set to null
-		packager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
 		assertEquals("HR", departmentPojo.getName()); // reset back
 	}
 	
@@ -219,7 +223,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 
 		departmentPojo.setName("HR");
 		assertEquals("HR", departmentPojo.getName());
-		packager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
 		assertNull(departmentPojo.getName()); // reset back
 	}
 	
@@ -236,7 +240,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		String marshalledPackedPojo = marshalling.marshal(packedPojo);
 		IPojoPackage unmarshalledPackedPojo = (IPojoPackage) marshalling.unmarshal(marshalledPackedPojo);
 
-		packager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
 		assertEquals(33, departmentPojo.getRank()); // same
 	}
 	
@@ -253,7 +257,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		IPojoPackage unmarshalledPackedPojo = (IPojoPackage) marshalling.unmarshal(marshalledPackedPojo);
 
 		assertNull(departmentPojo.getName());
-		packager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, clientSession);
 		assertNull(departmentPojo.getName()); // same
 	}
 
@@ -279,7 +283,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 			new DefaultDomainObjectFactory(sessionBinding, PersistState.UNKNOWN, ResolveState.UNRESOLVED, handleAssigner);
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		assertNull(departmentPojo.getCity());
 		
 		assertEquals(0, autoAddingHandleMap.getAdditions().handles().size()); // nothing added
@@ -311,7 +315,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 			new DefaultDomainObjectFactory(sessionBinding, PersistState.UNKNOWN, ResolveState.UNRESOLVED, handleAssigner);
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		assertEquals(londonPojo, departmentPojo.getCity()); // no change
 		
 		assertEquals(0, autoAddingHandleMap.getAdditions().handles().size()); // nothing added, since was backed by client session.
@@ -348,7 +352,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 			new DefaultDomainObjectFactory(sessionBinding, PersistState.UNKNOWN, ResolveState.UNRESOLVED, handleAssigner);
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		assertEquals(londonPojo, departmentPojo.getCity()); // reset back
 		
 		assertEquals(0, autoAddingHandleMap.getAdditions().handles().size()); // nothing added, since was backed by client session.
@@ -382,7 +386,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 			new DefaultDomainObjectFactory(sessionBinding, PersistState.UNKNOWN, ResolveState.UNRESOLVED, handleAssigner);
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		assertNull(departmentPojo.getCity()); // reset back to null
 		
 		assertEquals(0, autoAddingHandleMap.getAdditions().handles().size()); // nothing added
@@ -418,7 +422,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 			new DefaultDomainObjectFactory(sessionBinding, PersistState.UNKNOWN, ResolveState.UNRESOLVED, handleAssigner);
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		assertEquals(londonPojo, departmentPojo.getCity()); // reset back
 		
 		assertEquals(0, autoAddingHandleMap.getAdditions().handles().size()); // nothing added, since was backed by client session.
@@ -458,7 +462,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 			new DefaultDomainObjectFactory(sessionBinding, PersistState.UNKNOWN, ResolveState.UNRESOLVED, handleAssigner);
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		// the department should now references a city whose DO has the same handle as that for london Pojo
 		final IDomainObject updatedReferenceDO = ((IPojo)departmentPojo.getCity()).domainObject();
 		assertEquals(londonDO.getHandle(), updatedReferenceDO.getHandle()); // set back.
@@ -494,7 +498,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
 		assertEquals(0, departmentPojo.getEmployees().size());
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		// the department should now references the employee
 		assertEquals(0, departmentPojo.getEmployees().size());
 	}
@@ -532,7 +536,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
 		assertEquals(2, departmentPojo.getEmployees().size());
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		assertEquals(2, departmentPojo.getEmployees().size());
 		
 		final Set<Handle> addedHandles = autoAddingHandleMap.getAdditions().handles();
@@ -566,7 +570,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
 		assertEquals(0, departmentPojo.getEmployees().size());
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		// the department should now references the employee
 		assertEquals(1, departmentPojo.getEmployees().size());
 		final Employee newlyReferencedEmployeePojo = departmentPojo.getEmployees().iterator().next();
@@ -613,7 +617,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		AutoAddingHandleMap autoAddingHandleMap = new AutoAddingHandleMap(clientSession, domainObjectFactory);
 		
 		assertEquals(1, departmentPojo.getEmployees().size());
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		// the department should now references the employee
 		assertEquals(2, departmentPojo.getEmployees().size());
 		
@@ -661,7 +665,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		
 		assertEquals(2, departmentPojo.getEmployees().size());
 		assertTrue(departmentPojo.getEmployees().contains(maryEmployeePojo));
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		// the department should no longer references the employee
 		assertEquals(1, departmentPojo.getEmployees().size());
 		assertFalse(departmentPojo.getEmployees().contains(maryEmployeePojo));
@@ -717,7 +721,7 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 		
 		assertEquals(2, departmentPojo.getEmployees().size());
 		assertTrue(departmentPojo.getEmployees().contains(maryEmployeePojo));
-		packager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
+		unpackager.merge(departmentDO, unmarshalledPackedPojo, autoAddingHandleMap);
 		// so, ideally, the department should no longer references the employee
 		// however, since we remove items by domain object rather than by handle, 
 		// and because the domain object is unknown to us, then in fact the

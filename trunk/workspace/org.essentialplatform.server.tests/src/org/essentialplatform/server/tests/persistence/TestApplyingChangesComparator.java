@@ -1,8 +1,8 @@
 package org.essentialplatform.server.tests.persistence;
 
-import org.essentialplatform.runtime.server.persistence.ApplyingChangesComparator;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 import org.essentialplatform.runtime.shared.transaction.changes.AddToCollectionChange;
+import org.essentialplatform.runtime.shared.transaction.changes.ApplyingChangesComparator;
 import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
 import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.shared.transaction.changes.IChange;

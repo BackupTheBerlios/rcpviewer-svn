@@ -9,10 +9,11 @@ Bundle-Activator: org.essentialplatform.louis.LouisPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.core.runtime;visibility:=reexport,
- org.essentialplatform.core;visibility:=reexport,
  org.eclipse.ui.forms;visibility:=reexport,
  org.eclipse.ui.views;visibility:=reexport,
  org.eclipse.ui.console;visibility:=reexport,
+ org.essentialplatform.core;visibility:=reexport,
+ org.essentialplatform.runtime.client,
  org.essentialplatform.runtime.shared;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,

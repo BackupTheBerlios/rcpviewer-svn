@@ -6,7 +6,6 @@ import java.util.Set;
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**

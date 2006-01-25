@@ -22,6 +22,7 @@ import org.essentialplatform.louis.widgets.ErrorInput;
 
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.Domain;
+import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.client.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
@@ -64,17 +65,11 @@ public class SessionTreeView extends ViewPart {
 		// DnD - logic delegated to a specialist controller
 		new SessionTreeDnDController( _viewer );
 		
-		// tie viewer to current session
-		try {
-			IClientSessionManager sessionManager = RuntimePlugin.getDefault().getSessionManager();
-			// TODO: hard-coded to default domain only.
-			IClientSession session = sessionManager.getCurrentSession(Domain.instance());
-			_sessionListener = new SessionListener(sessionManager, session, _viewer);
-			_viewer.setInput(session);
-		} catch (CoreException ce) {
-			LouisPlugin.getDefault().getLog().log(ce.getStatus());
-			_viewer.setInput(new ErrorInput());
-		}
+		IClientSessionManager sessionManager = ClientSessionManager.instance();
+		// TODO: hard-coded to default domain only.
+		IClientSession session = sessionManager.getCurrentSession(Domain.instance());
+		_sessionListener = new SessionListener(sessionManager, session, _viewer);
+		_viewer.setInput(session);
 
 		// tie viewer to active editors
 		_partListener = new SessionTreePartListener(_viewer);

@@ -27,7 +27,6 @@ class ColourAttributeFormPart extends AbstractAttributeFormPart<Color,Text> {
 	protected void displayValue(Color object, Text control) {
 		// object can be null
 		assert control != null;
-		boolean select;
 		if ( object == null ) {
 			control.setBackground( control.getParent().getBackground() );
 			control.setText( "null" ); //$NON-NLS-1$

@@ -7,8 +7,6 @@ import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.remoting.IRemoting;
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
-import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.remoting.transport.ITransport;
 
 public abstract class AbstractRemoting implements IRemoting {
@@ -32,16 +30,6 @@ public abstract class AbstractRemoting implements IRemoting {
 
 
 	
-	private IPackager _packager = new StandardPackager();
-	public IPackager getPackager() {
-		return _packager;
-	}
-	public void setPackager(IPackager packager) {
-		_packager = packager;
-	}
-	
-
-
 	/*
 	 * @see org.essentialplatform.runtime.shared.remoting.IRemoting#send(java.lang.Object)
 	 */

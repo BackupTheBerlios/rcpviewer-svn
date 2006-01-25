@@ -17,7 +17,7 @@ import org.essentialplatform.runtime.shared.persistence.IResolvable;
 import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
+
 
 /**
  * A wrapper around a pojo, allowing reflective and generic access to that
@@ -36,7 +36,7 @@ import org.essentialplatform.runtime.shared.transaction.event.ITransactionListen
  * <p>
  * Moreover, the IDomainObject also plays the role of <i>model</i> within the 
  * MVC pattern.  Again, the UI layer is the archetypal <i>view</i>, being
- * notified of changes through the {@link ITransactionListener} interface. 
+ * notified of changes through the <tt>ITransactionListener</tt> interface. 
  * 
  * <p>
  * TODO: should validate the EOperations and EAttributes, just as we do
@@ -517,7 +517,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 		 * collection.
 		 * 
 		 * <p>
-		 * Any {@link ITransactionListener}s will be notified.
+		 * In the UI, any <tt>ITransactionListener</tt>s will be notified.
 		 * 
 		 * @param collection
 		 * @param domainObject

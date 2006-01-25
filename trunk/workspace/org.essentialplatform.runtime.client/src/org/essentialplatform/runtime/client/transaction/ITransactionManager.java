@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.List;
 
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.transaction.ITransactable;
 import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
@@ -75,6 +76,14 @@ public interface ITransactionManager {
 	 */
 	public ITransaction getCurrentTransactionFor(ITransactable transactable);
 
+	/**
+	 * A bit of a kludge.  However, IPojos extend from ITransactable (thanks
+	 * to aspect introduction).
+	 * 
+	 * @param pojo
+	 * @return
+	 */
+	public ITransaction getCurrentTransactionFor(IPojo pojo);
 	
 	/**
 	 * Returns the current {@link ITransaction} for the specified pojo, creating
@@ -91,6 +100,15 @@ public interface ITransactionManager {
 	 * @return
 	 */
 	public ITransaction getCurrentTransactionFor(ITransactable transactable, final boolean autoEnlist);
+
+	/**
+	 * A bit of a kludge.  However, IPojos extend from ITransactable (thanks
+	 * to aspect introduction).
+	 * 
+	 * @param pojo
+	 * @return
+	 */
+	public ITransaction getCurrentTransactionFor(IPojo pojo, final boolean autoEnlist);
 
 	/**
 	 * Commit a transaction for an enlisted pojo.
@@ -112,7 +130,16 @@ public interface ITransactionManager {
 	 * @throws RuntimeException if transaction could not be reversed.
 	 */
 	public void commit(ITransactable transactable) throws IllegalStateException, IllegalArgumentException;
-	
+
+	/**
+	 * Bit of a hack.
+	 * 
+	 * @param pojo
+	 * @throws IllegalStateException
+	 * @throws IllegalArgumentException
+	 */
+	public void commit(IPojo pojo) throws IllegalStateException, IllegalArgumentException;
+
 	/**
 	 * Reverse a transaction.
 	 * 

@@ -1,26 +1,12 @@
 package org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.runtime.server.persistence.ApplyingChangesComparator;
-import org.essentialplatform.runtime.server.persistence.IObjectStore;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.AbstractTransactionProcessor;
-import org.essentialplatform.runtime.server.session.IServerSession;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IModificationChange;
-import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
 
 public final class HibernateTransactionProcessor extends AbstractTransactionProcessor {
 

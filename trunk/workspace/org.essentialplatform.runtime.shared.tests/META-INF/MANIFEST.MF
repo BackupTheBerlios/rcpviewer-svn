@@ -8,21 +8,22 @@ Bundle-ClassPath: tests.jar,
  etc/log4j.properties
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ org.junit;visibility:=reexport,
+ org.aspectj.runtime,
+ net.sf.plugins.easymock;visibility:=reexport,
+ net.sf.plugins.utils,
+ net.sf.plugins.hibernate,
+ net.sf.plugins.commons,
+ net.sf.plugins.xstream,
+ org.essentialplatform.core;visibility:=reexport,
  org.essentialplatform.core.fixture;visibility:=reexport,
  org.essentialplatform.domain.tests;visibility:=reexport,
- org.essentialplatform.runtime.shared;visibility:=reexport,
- org.essentialplatform.core;visibility:=reexport,
- org.junit;visibility:=reexport,
- net.sf.plugins.easymock;visibility:=reexport,
  org.essentialplatform.progmodel.essential.app;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
- net.sf.plugins.utils,
- org.aspectj.runtime,
- net.sf.plugins.hibernate,
- net.sf.plugins.commons,
- net.sf.plugins.xstream
+ org.essentialplatform.runtime.client,
+ org.essentialplatform.runtime.shared;visibility:=reexport
 Eclipse-RegisterBuddy: net.sf.plugins.xstream
 Eclipse-AutoStart: true
 Bundle-Vendor: Essential Platform Development Team

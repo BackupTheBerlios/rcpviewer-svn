@@ -31,7 +31,7 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 
 		getLogger().debug("invokeAddToCollectionOnPojo(pojo=" + pojo+"): start");
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(pojo);
+		ITransaction transaction = currentTransaction((ITransactable)pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);

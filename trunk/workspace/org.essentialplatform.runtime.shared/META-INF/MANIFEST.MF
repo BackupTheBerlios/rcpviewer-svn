@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  net.sf.plugins.xstream,
  net.sf.plugins.commons
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.runtime.server,
+Export-Package: org.essentialplatform.runtime.client.domain,
+ org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.domain.bindings,
  org.essentialplatform.runtime.server.persistence,
  org.essentialplatform.runtime.server.session,
@@ -39,10 +40,6 @@ Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.shared.remoting.util,
  org.essentialplatform.runtime.shared.session,
  org.essentialplatform.runtime.shared.tracing,
- org.essentialplatform.runtime.shared.transaction,
- org.essentialplatform.runtime.shared.transaction.changes,
- org.essentialplatform.runtime.shared.transaction.event,
- org.essentialplatform.runtime.shared.transaction.noop,
  org.essentialplatform.runtime.shared.util
 Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin
 Eclipse-RegisterBuddy: net.sf.plugins.xstream

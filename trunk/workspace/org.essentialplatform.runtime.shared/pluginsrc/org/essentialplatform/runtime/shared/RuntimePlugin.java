@@ -7,8 +7,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-import org.essentialplatform.runtime.client.session.ClientSessionManager;
-import org.essentialplatform.runtime.client.session.IClientSessionManager;
 import org.essentialplatform.runtime.shared.DomainRegistry;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
@@ -22,7 +20,6 @@ public class RuntimePlugin extends Plugin {
 	private ResourceBundle resourceBundle;
 	
 	private IDomainRegistry _domainRegistry;
-	private IClientSessionManager _sessionManager;
 	
 	/**
 	 * The constructor.
@@ -94,7 +91,4 @@ public class RuntimePlugin extends Plugin {
 		}
 	}
 
-	public synchronized IClientSessionManager getSessionManager() throws CoreException {
-		return ClientSessionManager.instance();
-	}
 }

@@ -23,6 +23,7 @@ import org.eclipse.search.ui.SearchResultEvent;
 import org.eclipse.swt.graphics.Image;
 
 import org.essentialplatform.runtime.client.domain.bindings.IDomainObjectClientBinding;
+import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.server.persistence.IObjectStore;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
@@ -57,27 +58,23 @@ implements ISearchResult, ISearchQuery, ITableLabelProvider, IStructuredContentP
 	 * @see org.eclipse.search.ui.ISearchQuery#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public IStatus run(IProgressMonitor pMonitor) throws OperationCanceledException {
-		try {
 			
-			for (IClientSession session: RuntimePlugin.getDefault().getSessionManager().getAllSessions()) {
-//				IObjectStore objectStore= session.getObjectStore();
-//				if (objectStore instanceof InMemoryObjectStore) {
-//					InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
-//					for (Object pojo: memoryObjectStore.allInstances()) {
-//						IDomainObject<?> domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
-//						_allObjects.add(domainObject);
-//					}
+		for (IClientSession session: ClientSessionManager.instance().getAllSessions()) {
+//			IObjectStore objectStore= session.getObjectStore();
+//			if (objectStore instanceof InMemoryObjectStore) {
+//				InMemoryObjectStore memoryObjectStore= (InMemoryObjectStore)objectStore;
+//				for (Object pojo: memoryObjectStore.allInstances()) {
+//					IDomainObject<?> domainObject= session.getDomainObjectFor(pojo, pojo.getClass()); 
+//					_allObjects.add(domainObject);
 //				}
-			}
-			
-			for (ISearchResultListener listener: _searchListeners)
-				listener.searchResultChanged(new SearchResultEvent(this) { });
-			
-			return new Status(Status.OK, "org.essentialplatform.persistence.inmemory.ui", 0, "", null);
-
-		} catch (CoreException e) {
-			throw new OperationCanceledException(e.getMessage());
+//			}
 		}
+		
+		for (ISearchResultListener listener: _searchListeners)
+			listener.searchResultChanged(new SearchResultEvent(this) { });
+		
+		return new Status(Status.OK, "org.essentialplatform.persistence.inmemory.ui", 0, "", null);
+
 	}			
 	
 	/*

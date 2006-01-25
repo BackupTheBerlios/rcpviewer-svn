@@ -7,34 +7,16 @@ import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 /**
  * Adapter for implementations of {@link IPackager}.
  * 
  * @author Dan Haywood
  */
-public abstract class AbstractUnpackager implements IPackager {
+public abstract class AbstractUnpackager implements IUnpackager {
 
 	protected abstract Logger getLogger(); 
 	
-	/*
-	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#pack(org.essentialplatform.runtime.shared.domain.IPojo)
-	 */
-	public abstract <V extends IPojoPackage> V pack(IPojo pojo);
-
-
-	/*
-	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#pack(org.essentialplatform.runtime.shared.transaction.ITransaction)
-	 */
-
-	public final <V extends ITransactionPackage> V pack(ITransaction transaction) {
-		transaction.checkInState(ITransaction.State.COMMITTED);
-		return doPack(transaction);
-	}
-
-	protected abstract <V extends ITransactionPackage> V doPack(ITransaction transaction);
-
 	
 	/*
 	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#unpackSessionBinding(org.essentialplatform.runtime.shared.remoting.packaging.ISessionBindingPackage)

@@ -8,7 +8,7 @@ import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
+import org.essentialplatform.runtime.shared.remoting.packaging.IUnpackager;
 import org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
@@ -36,11 +36,11 @@ public abstract class AbstractServerSession implements IServerSession {
 	 * an pojo coming across the wire from the client.
 	 */
 	public void accept(IPojoPackage unmarshalledPackedPojo) {
-		SessionBinding sessionBinding = _packager.unpackSessionBinding(unmarshalledPackedPojo);
+		SessionBinding sessionBinding = _unpackager.unpackSessionBinding(unmarshalledPackedPojo);
 		if (!this.getSessionBinding().equals(sessionBinding)) {
 			throw new RuntimeException();
 		}
-		Handle unpackedHandle = _packager.unpackHandle(unmarshalledPackedPojo);
+		Handle unpackedHandle = _unpackager.unpackHandle(unmarshalledPackedPojo);
 		Class<?> javaClass = unpackedHandle.getJavaClass();
 		IDomainClass dc = Domain.lookupAny(javaClass);
 		IDomainObject domainObject = getDomainObject(unpackedHandle);
@@ -62,12 +62,12 @@ public abstract class AbstractServerSession implements IServerSession {
 	// Packager
 	////////////////////////////////////////////////////////////////
 	
-	private IPackager _packager;
-	public IPackager getPackager() {
-		return _packager;
+	private IUnpackager _unpackager;
+	public IUnpackager getUnpackager() {
+		return _unpackager;
 	}
-	public void setPackager(IPackager packager) {
-		_packager = packager;
+	public void setUnpackager(IUnpackager unpackager) {
+		_unpackager = unpackager;
 	}
 
 

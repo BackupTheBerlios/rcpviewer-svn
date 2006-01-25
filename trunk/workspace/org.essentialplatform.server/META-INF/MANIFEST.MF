@@ -8,11 +8,11 @@ Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.essentialplatform.runtime.shared,
  net.sf.plugins.hsqldb,
  net.sf.plugins.hibernate,
+ net.sf.plugins.activemq,
  org.essentialplatform.progmodel.essential.runtime,
- net.sf.plugins.activemq
+ org.essentialplatform.runtime.shared
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.database,
