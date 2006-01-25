@@ -14,7 +14,7 @@ public final class StandardTransactionPackage implements ITransactionPackage {
 	 * 
 	 * @param pojoPackage
 	 */
-	void addEnlistedPojo(IPojoPackage pojoPackage) {
+	public void addEnlistedPojo(IPojoPackage pojoPackage) {
 		_enlistedPojos.add(pojoPackage);
 	}
 

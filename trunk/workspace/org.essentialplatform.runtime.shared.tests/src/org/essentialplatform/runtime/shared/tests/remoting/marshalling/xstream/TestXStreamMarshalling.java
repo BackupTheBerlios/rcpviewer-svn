@@ -7,12 +7,12 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.remoting.packaging.standard.StandardPackager;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
-import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 public class TestXStreamMarshalling extends AbstractRuntimeClientTestCase {
 

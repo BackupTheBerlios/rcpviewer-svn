@@ -1,9 +1,7 @@
 package org.essentialplatform.runtime.client.transaction.event;
 
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.ITransactionManager;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
-import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
 
 
 /**

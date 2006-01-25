@@ -11,20 +11,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.client.remoting.packaging.IPackager;
+import org.essentialplatform.runtime.client.remoting.packaging.standard.StandardPackager;
+import org.essentialplatform.runtime.client.transaction.changes.Interaction;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionManagerEvent;
+import org.essentialplatform.runtime.client.transaction.noop.NoopTransaction;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.remoting.IRemoting;
 import org.essentialplatform.runtime.shared.remoting.noop.NoopRemoting;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
-import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
-import org.essentialplatform.runtime.shared.transaction.Transaction;
-import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
-import org.essentialplatform.runtime.shared.transaction.noop.NoopTransaction;
 
 /**
  * Manages {@link ITransaction}s, stored local to thread.

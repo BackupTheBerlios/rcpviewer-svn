@@ -21,7 +21,7 @@ import org.essentialplatform.louis.configure.IConfigurable;
 import org.essentialplatform.louis.widgets.AbstractFormDisplay;
 import org.essentialplatform.louis.widgets.BooleanORFilter;
 import org.essentialplatform.louis.widgets.DefaultSelectionAdapter;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 
 /**
  * @author Mike

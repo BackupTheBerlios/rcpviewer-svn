@@ -14,11 +14,11 @@ import javax.jms.TextMessage;
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.client.remoting.packaging.IPackager;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.remoting.activemq.ActiveMqServerConstants;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.remoting.transport.AbstractTransport;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 public final class ActiveMqTransport extends AbstractTransport {
 

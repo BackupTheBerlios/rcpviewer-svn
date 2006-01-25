@@ -1,14 +1,14 @@
 package org.essentialplatform.runtime.shared.tests.transaction;
 
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.changes.AddToCollectionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
-import org.essentialplatform.runtime.shared.transaction.changes.OneToOneReferenceChange;
-import org.essentialplatform.runtime.shared.transaction.changes.RemoveFromCollectionChange;
-import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.changes.AddToCollectionChange;
+import org.essentialplatform.runtime.client.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.client.transaction.changes.DeletionChange;
+import org.essentialplatform.runtime.client.transaction.changes.IChange;
+import org.essentialplatform.runtime.client.transaction.changes.Interaction;
+import org.essentialplatform.runtime.client.transaction.changes.OneToOneReferenceChange;
+import org.essentialplatform.runtime.client.transaction.changes.RemoveFromCollectionChange;
+import org.essentialplatform.runtime.client.transaction.event.TransactionEvent;
 
 /**
  * 

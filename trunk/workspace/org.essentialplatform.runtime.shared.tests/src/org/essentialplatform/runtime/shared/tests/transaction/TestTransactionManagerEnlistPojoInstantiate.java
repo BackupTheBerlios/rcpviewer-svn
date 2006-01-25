@@ -2,10 +2,10 @@ package org.essentialplatform.runtime.shared.tests.transaction;
 
 import java.util.Set;
 
+import org.essentialplatform.runtime.client.transaction.ITransactable;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.tests.transaction.fixture.Customer;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 /**
  * @see TestTransactionManagerEnlistPojo

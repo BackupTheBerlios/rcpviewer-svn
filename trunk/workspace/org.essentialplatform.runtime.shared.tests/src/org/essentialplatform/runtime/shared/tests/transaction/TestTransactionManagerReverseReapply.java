@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.shared.tests.transaction;
 
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.IrreversibleTransactionException;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.IrreversibleTransactionException;
+import org.essentialplatform.runtime.client.transaction.changes.IChange;
 
 
 public class TestTransactionManagerReverseReapply extends AbstractTransactionManagerTestCase {

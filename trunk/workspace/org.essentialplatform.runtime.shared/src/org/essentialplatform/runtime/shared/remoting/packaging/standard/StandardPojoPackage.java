@@ -22,14 +22,14 @@ import org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage;
 import org.essentialplatform.runtime.shared.remoting.packaging.PackagingException;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
-final class StandardPojoPackage implements IPojoPackage {
+public final class StandardPojoPackage implements IPojoPackage {
 
 	/////////////////////////////////////////////////////////////////////////
 	// Handle
 	/////////////////////////////////////////////////////////////////////////
 	
 	private Handle _handle;
-	void packHandle(Handle handle) {
+	public void packHandle(Handle handle) {
 		_handle = handle;
 	}
 	/*
@@ -44,7 +44,7 @@ final class StandardPojoPackage implements IPojoPackage {
 	/////////////////////////////////////////////////////////////////////////
 	
 	private SessionBinding _sessionBinding;
-	void packSessionBinding(SessionBinding sessionBinding) {
+	public void packSessionBinding(SessionBinding sessionBinding) {
 		_sessionBinding = sessionBinding;
 	}
 	/*
@@ -59,7 +59,7 @@ final class StandardPojoPackage implements IPojoPackage {
 	/////////////////////////////////////////////////////////////////////////
 
 	private PersistState _persistState;
-	void packPersistState(PersistState persistState) {
+	public void packPersistState(PersistState persistState) {
 		_persistState = persistState;
 	}
 	/*
@@ -74,7 +74,7 @@ final class StandardPojoPackage implements IPojoPackage {
 	/////////////////////////////////////////////////////////////////////////
 
 	private ResolveState _resolveState;
-	void packResolveState(ResolveState resolveState) {
+	public void packResolveState(ResolveState resolveState) {
 		_resolveState = resolveState;
 	}
 	/*
@@ -97,12 +97,12 @@ final class StandardPojoPackage implements IPojoPackage {
 	 */
 	private transient Map<String, StandardAttributeData> _attributeDataByName;
 	
-	void packAttribute(IObjectAttribute attribute) {
+	public void packAttribute(IObjectAttribute attribute) {
 		final String name = attribute.getAttribute().getName();
 		StandardAttributeData data = new StandardAttributeData(name, attribute.get());
 		_attributes.add(data);
 	}
-	void unpackAttribute(IObjectAttribute attributeToUpdate) {
+	public void unpackAttribute(IObjectAttribute attributeToUpdate) {
 		if (_attributeDataByName == null) {
 			_attributeDataByName = map(_attributes);
 		}
@@ -124,7 +124,7 @@ final class StandardPojoPackage implements IPojoPackage {
 	 */
 	private transient Map<String, StandardOneToOneReferenceData> _oneToOneReferenceDataByName;
 	
-	void packOneToOneReference(IObjectOneToOneReference reference) {
+	public void packOneToOneReference(IObjectOneToOneReference reference) {
 		final String name = reference.getReference().getName();
 		final IDomainObject<Object> referencedDomainObject = reference.get();
 		if (referencedDomainObject != null) {
@@ -132,7 +132,7 @@ final class StandardPojoPackage implements IPojoPackage {
 			_oneToOneReferences.add(data);
 		}
 	}
-	void unpackOneToOneReference(IObjectOneToOneReference oneToOneReferenceToUpdate, IHandleMap handleMap) {
+	public void unpackOneToOneReference(IObjectOneToOneReference oneToOneReferenceToUpdate, IHandleMap handleMap) {
 		if (_oneToOneReferenceDataByName == null) {
 			_oneToOneReferenceDataByName = map(_oneToOneReferences);
 		}
@@ -159,7 +159,7 @@ final class StandardPojoPackage implements IPojoPackage {
 	 */
 	private transient Map<String, StandardCollectionReferenceData> _collectionReferenceDataByName;
 	
-	void packCollectionReference(IObjectCollectionReference reference) {
+	public void packCollectionReference(IObjectCollectionReference reference) {
 		final String name = reference.getReference().getName();
 		StandardCollectionReferenceData data = new StandardCollectionReferenceData(name);
 		for(IDomainObject<?> domainObjectInCollection: reference.getCollection()) {
@@ -173,7 +173,7 @@ final class StandardPojoPackage implements IPojoPackage {
 	 * @param collectionReferenceToUpdate
 	 * @param handleMap TODO
 	 */
-	void unpackCollectionReference(IObjectCollectionReference collectionReferenceToUpdate, IHandleMap handleMap) {
+	public void unpackCollectionReference(IObjectCollectionReference collectionReferenceToUpdate, IHandleMap handleMap) {
 		if (_collectionReferenceDataByName == null) {
 			_collectionReferenceDataByName = map(_collectionReferences);
 		}

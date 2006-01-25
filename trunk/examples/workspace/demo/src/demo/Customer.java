@@ -19,9 +19,9 @@ import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
 import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;
+import org.essentialplatform.runtime.client.transaction.ITransactable;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 @Lifecycle(instantiable=true)
 @InDomain

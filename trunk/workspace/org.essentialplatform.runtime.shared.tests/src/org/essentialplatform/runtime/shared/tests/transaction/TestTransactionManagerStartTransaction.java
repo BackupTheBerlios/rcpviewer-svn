@@ -2,7 +2,7 @@ package org.essentialplatform.runtime.shared.tests.transaction;
 
 import java.util.Iterator;
 
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 
 /**
  * @see TestTransactionManagerStartTransactionInstantiate

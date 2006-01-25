@@ -2,8 +2,8 @@ package org.essentialplatform.runtime.client.transaction.event;
 
 import java.util.EventObject;
 
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.ITransactionManager;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 
 /**

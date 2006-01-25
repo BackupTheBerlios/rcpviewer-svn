@@ -1,6 +1,6 @@
 package org.essentialplatform.runtime.shared.tests.transaction;
 
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 
 
 public class TestTransactionManager extends AbstractTransactionManagerTestCase {

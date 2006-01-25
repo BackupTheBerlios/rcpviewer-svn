@@ -3,9 +3,6 @@ package org.essentialplatform.runtime.client.transaction;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
 
 /**
  * Mirroring capabilities of TransactionAspect super-aspect.

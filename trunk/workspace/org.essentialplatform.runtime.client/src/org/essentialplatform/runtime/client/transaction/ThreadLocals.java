@@ -1,7 +1,6 @@
 package org.essentialplatform.runtime.client.transaction;
 
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 public final class ThreadLocals {
 

@@ -3,9 +3,9 @@ package org.essentialplatform.runtime.shared.tests.transaction;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.PojoAlreadyEnlistedException;
+import org.essentialplatform.runtime.client.transaction.ITransactable;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.PojoAlreadyEnlistedException;
 
 /**
  * Modifying pojos enrols them in the transaction.

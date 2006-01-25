@@ -3,11 +3,9 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.client.transaction.changes.DeletionChange;
+import org.essentialplatform.runtime.client.transaction.changes.IChange;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
 
 class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 

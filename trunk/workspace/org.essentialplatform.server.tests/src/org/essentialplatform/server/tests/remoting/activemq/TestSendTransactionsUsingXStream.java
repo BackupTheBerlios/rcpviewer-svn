@@ -14,15 +14,15 @@ import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.BasicConfigurator;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.client.remoting.transport.activemq.ActiveMqTransport;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.enqueue.EnqueuingTransactionProcessor;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.remoting.activemq.ActiveMqServerConstants;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
-import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestCase {
 

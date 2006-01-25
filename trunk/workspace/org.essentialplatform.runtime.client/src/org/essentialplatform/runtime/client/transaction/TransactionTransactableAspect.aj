@@ -1,8 +1,8 @@
 package org.essentialplatform.runtime.client.transaction;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.ITransactable;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 
 /**

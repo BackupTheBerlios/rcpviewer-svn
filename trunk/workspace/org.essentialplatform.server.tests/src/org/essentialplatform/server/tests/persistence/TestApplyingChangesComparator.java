@@ -1,14 +1,14 @@
 package org.essentialplatform.server.tests.persistence;
 
+import org.essentialplatform.runtime.client.transaction.changes.AddToCollectionChange;
+import org.essentialplatform.runtime.client.transaction.changes.ApplyingChangesComparator;
+import org.essentialplatform.runtime.client.transaction.changes.AttributeChange;
+import org.essentialplatform.runtime.client.transaction.changes.DeletionChange;
+import org.essentialplatform.runtime.client.transaction.changes.IChange;
+import org.essentialplatform.runtime.client.transaction.changes.InstantiationChange;
+import org.essentialplatform.runtime.client.transaction.changes.OneToOneReferenceChange;
+import org.essentialplatform.runtime.client.transaction.changes.RemoveFromCollectionChange;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
-import org.essentialplatform.runtime.shared.transaction.changes.AddToCollectionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.ApplyingChangesComparator;
-import org.essentialplatform.runtime.shared.transaction.changes.AttributeChange;
-import org.essentialplatform.runtime.shared.transaction.changes.DeletionChange;
-import org.essentialplatform.runtime.shared.transaction.changes.IChange;
-import org.essentialplatform.runtime.shared.transaction.changes.InstantiationChange;
-import org.essentialplatform.runtime.shared.transaction.changes.OneToOneReferenceChange;
-import org.essentialplatform.runtime.shared.transaction.changes.RemoveFromCollectionChange;
 
 public class TestApplyingChangesComparator extends AbstractRuntimeClientTestCase {
 

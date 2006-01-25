@@ -12,6 +12,8 @@ import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
+import org.essentialplatform.runtime.client.remoting.packaging.standard.StandardPackager;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
 import org.essentialplatform.runtime.server.session.IServerSession;
@@ -31,11 +33,9 @@ import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage;
-import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardUnpackager;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 import java.io.Serializable;
 import java.util.Set;
 

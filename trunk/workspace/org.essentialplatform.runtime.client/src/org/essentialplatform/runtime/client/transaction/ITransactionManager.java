@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.essentialplatform.runtime.client.transaction.event.ITransactionManagerListener;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 /**
  * Creates, tracks and records both in-progress and committed 

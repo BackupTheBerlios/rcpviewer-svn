@@ -15,8 +15,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.essentialplatform.louis.editors.DefaultEditor;
 import org.essentialplatform.louis.util.ActionUtil;
 import org.essentialplatform.louis.util.EditorUtil;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 /**
  * Displays the current transaction (if any) for the selected pojo.
  * 

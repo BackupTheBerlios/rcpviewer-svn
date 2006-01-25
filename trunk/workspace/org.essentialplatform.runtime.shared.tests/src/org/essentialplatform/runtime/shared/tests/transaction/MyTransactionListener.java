@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.shared.tests.transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.essentialplatform.runtime.shared.transaction.event.ITransactionListener;
-import org.essentialplatform.runtime.shared.transaction.event.TransactionEvent;
+import org.essentialplatform.runtime.client.transaction.event.ITransactionListener;
+import org.essentialplatform.runtime.client.transaction.event.TransactionEvent;
 
 public final class MyTransactionListener implements
 		ITransactionListener {

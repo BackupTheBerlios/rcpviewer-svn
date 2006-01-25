@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.essentialplatform.runtime.shared.transaction.ITransactable;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
-import org.essentialplatform.runtime.shared.transaction.changes.Interaction;
+import org.essentialplatform.runtime.client.transaction.ITransactable;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
+import org.essentialplatform.runtime.client.transaction.changes.Interaction;
 
 public class TestTransactionManagerChangeSets extends AbstractTransactionManagerTestCase {
 

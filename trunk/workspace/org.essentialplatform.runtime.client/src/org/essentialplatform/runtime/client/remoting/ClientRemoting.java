@@ -1,11 +1,11 @@
 package org.essentialplatform.runtime.client.remoting;
 
 import org.apache.log4j.Logger;
+import org.essentialplatform.runtime.client.remoting.packaging.IPackager;
+import org.essentialplatform.runtime.client.remoting.packaging.standard.StandardPackager;
+import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.remoting.AbstractRemoting;
-import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
-import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
-import org.essentialplatform.runtime.shared.transaction.ITransaction;
 
 public final class ClientRemoting extends AbstractRemoting {
 
