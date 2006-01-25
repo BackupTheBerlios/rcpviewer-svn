@@ -2,6 +2,7 @@ package org.essentialplatform.core.tests;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.BasicConfigurator;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
@@ -51,6 +52,8 @@ public abstract class AbstractTestCase extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
+		BasicConfigurator.resetConfiguration();
+		BasicConfigurator.configure();
 	}
 
 	protected void tearDown() throws Exception {

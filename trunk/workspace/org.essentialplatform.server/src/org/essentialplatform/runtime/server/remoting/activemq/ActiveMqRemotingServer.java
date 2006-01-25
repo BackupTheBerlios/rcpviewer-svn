@@ -8,6 +8,7 @@ import org.essentialplatform.runtime.server.AbstractService;
 import org.essentialplatform.runtime.server.remoting.IRemotingServer;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.noop.NoopTransactionProcessor;
+import org.essentialplatform.runtime.shared.remoting.activemq.ActiveMqServerConstants;
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 
@@ -18,6 +19,9 @@ public class ActiveMqRemotingServer extends AbstractService implements IRemoting
 		return Logger.getLogger(ActiveMqRemotingServer.class);
 	}
 
+	/**
+	 * Non null iff the broker is running.
+	 */
 	private Thread brokerThread;
 
     /**
@@ -125,10 +129,16 @@ public class ActiveMqRemotingServer extends AbstractService implements IRemoting
     
     @Override
 	public boolean doStart() {
-		ActiveMqBroker broker = new ActiveMqBroker(this);
-		brokerThread = new Thread(broker);
-		brokerThread.start();
-        System.out.println("ActiveMqRemotingServer: broker started");
+		ActiveMqBrokerWrapper brokerWrapper;
+		try {
+			brokerWrapper = new ActiveMqBrokerWrapper(this);
+		} catch (JMSException ex) {
+			getLogger().error("ActiveMqRemotingServer: broker failed to start", ex);
+			return false;
+		}
+		brokerThread = brokerWrapper.start();
+		
+		getLogger().info("ActiveMqRemotingServer: broker started");
 	
 		if (_startListener) {
 			try {
@@ -146,16 +156,33 @@ public class ActiveMqRemotingServer extends AbstractService implements IRemoting
 
     @Override
 	public boolean doShutdown() {
+		if (brokerThread == null) {
+			// should never happen.
+			throw new IllegalStateException("Shutdown requested (isStarted() = true), but brokerThread is null");
+		}
+		
 		if (_messageListener != null) {
 			_messageListener.uninstallListener();
 		}
-		if (brokerThread != null) {
-			brokerThread.interrupt();
+		
+		brokerThread.interrupt();
+		
+		// wait for the broker thread to finish.
+		boolean rejoined = false;
+		int i=0;
+		while(!rejoined) {
+			try {
+				brokerThread.join(1000);
+			} catch (InterruptedException ex) {
+				getLogger().warn("Ignoring interrupt - waiting for brokerThread to terminate");
+			}
+			rejoined = !brokerThread.isAlive();
+			if (!rejoined) {
+				++i;
+				getLogger().info(String.format("Waiting for broker to quit (%d seconds)", i));
+			}
 		}
 		return true;
 	}
-
-
-
 
 }

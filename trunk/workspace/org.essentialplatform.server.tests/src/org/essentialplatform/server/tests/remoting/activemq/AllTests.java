@@ -6,7 +6,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.essentialplatform.server.test.database.hsqldb");
+		TestSuite suite = new TestSuite("Test for org.essentialplatform.server.test.remoting.activemq");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestStartAndShutdown.class);
 		suite.addTestSuite(TestLocalSendReceive.class);

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Reusable Aspects Library
+Bundle-SymbolicName: org.essentialplatform.runtime.aoplib
+Bundle-Version: 0.0.1
+Bundle-Vendor: Essential Platform Development Team
+Bundle-Localization: plugin

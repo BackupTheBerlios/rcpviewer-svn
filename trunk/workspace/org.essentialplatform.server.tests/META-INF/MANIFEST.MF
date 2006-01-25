@@ -15,6 +15,7 @@ Require-Bundle: org.essentialplatform.server,
  net.sf.plugins.xstream,
  net.sf.plugins.activemq,
  org.essentialplatform.runtime.shared.tests,
- org.essentialplatform.runtime.shared
+ org.essentialplatform.runtime.shared,
+ org.essentialplatform.runtime.client
 Bundle-Vendor: Essential Platform Development Team
 Export-Package: org.essentialplatform.server.tests

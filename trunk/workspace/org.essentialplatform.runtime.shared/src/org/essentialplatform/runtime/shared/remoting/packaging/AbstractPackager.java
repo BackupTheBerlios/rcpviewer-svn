@@ -1,5 +1,6 @@
 package org.essentialplatform.runtime.shared.remoting.packaging;
 
+import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
@@ -15,6 +16,8 @@ import org.essentialplatform.runtime.shared.transaction.ITransaction;
  */
 public abstract class AbstractPackager implements IPackager {
 
+	protected abstract Logger getLogger(); 
+	
 	/*
 	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPackager#pack(org.essentialplatform.runtime.shared.domain.IPojo)
 	 */

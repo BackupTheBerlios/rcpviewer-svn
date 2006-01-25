@@ -12,11 +12,13 @@ import javax.jms.TextMessage;
 
 import org.activemq.ActiveMQConnection;
 import org.activemq.ActiveMQConnectionFactory;
+import org.apache.log4j.BasicConfigurator;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.client.remoting.transport.activemq.ActiveMqTransport;
 import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
-import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqServerConstants;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.enqueue.EnqueuingTransactionProcessor;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.remoting.activemq.ActiveMqServerConstants;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
 import org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardPackager;
 import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
@@ -30,7 +32,10 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 	private SynchronousQueue<ITransactionPackage> processedTransactions;
 	private EnqueuingTransactionProcessor transactionProcessor;
     private StandardPackager packager;
-	
+
+	private ActiveMqTransport clientTransport;
+
+
 	public TestSendTransactionsUsingXStream() {
 		super(null);
 	}
@@ -45,10 +50,16 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 		packager = new StandardPackager();
 		remotingServer.setTransactionProcessor(transactionProcessor);
 		remotingServer.start();
+		
+		clientTransport = new ActiveMqTransport();
+		clientTransport.start();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
+		if (clientTransport != null) {
+			clientTransport.shutdown();
+		}
 		processedTransactions = null;
 		transactionProcessor = null;
 		if (remotingServer != null) {
@@ -74,22 +85,9 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 		transactionManager.commit(departmentPojo);
 
 		// send it (this needs to go through a ClientRemoting object...)
-        ActiveMQConnectionFactory connectionFactory = 
-        	new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
-        Connection connection = connectionFactory.createConnection();
-        connection.start();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		Destination destination = session.createQueue(ActiveMqServerConstants.TRANSACTION_QUEUE);
-        MessageProducer producer = session.createProducer(destination);
-        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
         ITransactionPackage packagedXactn = packager.pack(xactn);
 		String marshalledXactn = this.remotingServer.getMarshalling().marshal(packagedXactn);
-        
-        TextMessage message = session.createTextMessage(marshalledXactn);
-        producer.send(message);
-        session.close();
-        connection.close();
+		clientTransport.send(marshalledXactn);
 
         // see if our object came through
         ITransactionPackage unmarshalledXactnPackage = processedTransactions.take();

@@ -1,5 +1,6 @@
 package org.essentialplatform.runtime.shared.remoting.packaging.standard;
 
+import org.apache.log4j.Logger;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.IDomainClass.IAttribute;
@@ -31,6 +32,14 @@ import org.essentialplatform.runtime.shared.transaction.changes.OneToOneReferenc
 import org.essentialplatform.runtime.shared.transaction.changes.RemoveFromCollectionChange;
 
 public class StandardPackager extends AbstractPackager {
+
+	private static Logger LOG = Logger.getLogger(StandardPackager.class);
+	
+	@Override
+	protected Logger getLogger() {
+		return LOG;
+	}
+	
 
 	@Override
 	public <V extends IPojoPackage> V pack(IPojo pojo) {
@@ -145,5 +154,6 @@ public class StandardPackager extends AbstractPackager {
 		}
 		
 	}
-	
+
+
 }

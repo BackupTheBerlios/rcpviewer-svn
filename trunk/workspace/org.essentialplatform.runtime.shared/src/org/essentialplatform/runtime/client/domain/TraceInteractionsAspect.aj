@@ -11,7 +11,7 @@ public aspect TraceInteractionsAspect extends InteractionsAspect {
 	
 	private final static Logger LOG = Logger.getLogger(TraceInteractionsAspect.class);
 	
-	Object around(IPojo pojo): invokeGetterForAttributeOnPojo(pojo) {
+	Object around(IPojo pojo): invokeGetterForAttributeOnPojo(pojo) && if(ENABLED){
 		LOG.debug("getter attrib >> " + thisJoinPoint.toLongString());
 		try {
 			return proceed(pojo);
@@ -20,7 +20,7 @@ public aspect TraceInteractionsAspect extends InteractionsAspect {
 		}
 	}
 	
-	Object around(IPojo pojo, Object newValue): changingAttributeOnPojo(pojo, newValue) {
+	Object around(IPojo pojo, Object newValue): changingAttributeOnPojo(pojo, newValue)  && if(ENABLED){
 		LOG.debug("changing attrib >> " + thisJoinPoint.toLongString());
 		try {
 			return proceed(pojo, newValue);

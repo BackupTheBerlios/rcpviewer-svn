@@ -1,9 +1,9 @@
 package org.essentialplatform.runtime.shared.remoting.transport;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.Serializable;
 
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
+import org.essentialplatform.runtime.shared.remoting.packaging.IPackager;
 
 /**
  * Facade for different transport mechanisms.
@@ -13,20 +13,21 @@ import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
  */
 public interface ITransport {
 
-	/**
-	 * The marshalling mechanism to use.
-	 * 
-	 * <p>
-	 * Provided using dependency injection.
-	 * 
-	 * @param marshalling
-	 */
-	void setMarshalling(IMarshalling marshalling);
+	void start();
+	
+	void shutdown();
+	
+	void send(Serializable object);
 
 	/**
+	 * If sending an object known to be a string.
 	 * 
-	 * @param os
+	 * <p>
+	 * Implementations that have no specific optimization should simply 
+	 * delegate to {@link #send(Serializable)}.
+	 * 
+	 * @param string
 	 */
-	void send(OutputStream os);
+	void send(String string);
 
 }
