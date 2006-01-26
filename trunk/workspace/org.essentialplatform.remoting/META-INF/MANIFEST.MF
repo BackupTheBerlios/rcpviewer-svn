@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Remoting
-Bundle-SymbolicName: org.essentialplatform.remoting
-Bundle-Version: 0.0.1
-Bundle-Vendor: Essential Platform Development Team
-Bundle-Localization: plugin
