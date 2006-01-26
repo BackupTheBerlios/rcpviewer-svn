@@ -39,7 +39,7 @@ class TransactionMessageListener extends Thread implements ExceptionListener, Me
 		_connection = _connectionFactory.createConnection();
 		_connection.start();
         _connection.setExceptionListener(this);
-        _session = _connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        _session = _connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
 		_destination = _session.createQueue(_remotingServer.getQueue());
 		_consumer = _session.createConsumer(_destination);
 		installListener();
@@ -65,9 +65,16 @@ class TransactionMessageListener extends Thread implements ExceptionListener, Me
 			}
 			ITransactionPackage packagedXactn = (ITransactionPackage)obj;
 			_remotingServer.getTransactionProcessor().process(packagedXactn);
+			_session.commit();
 		} catch (JMSException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
+			getLogger().error("Failed to process - rolling back", ex);
+			try {
+				_session.rollback();
+			} catch (JMSException ex1) {
+				// TODO Auto-generated catch block
+				ex1.printStackTrace();
+			}
 		}
 	}
 

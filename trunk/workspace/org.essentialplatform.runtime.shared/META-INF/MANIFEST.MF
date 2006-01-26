@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  org.essentialplatform.progmodel.louis.app;visibility:=reexport,
  org.essentialplatform.progmodel.essential.core,
  net.sf.plugins.xstream,
- net.sf.plugins.commons
+ net.sf.plugins.commons,
+ net.sf.plugins.activemq
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.shared,
  org.essentialplatform.runtime.shared.domain,

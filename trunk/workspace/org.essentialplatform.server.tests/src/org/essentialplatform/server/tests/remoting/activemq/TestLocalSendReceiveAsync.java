@@ -26,19 +26,19 @@ import org.essentialplatform.runtime.shared.util.SleepUtil;
 
 import junit.framework.TestCase;
 
-public class TestLocalSendReceive extends TestCase {
+public class TestLocalSendReceiveAsync extends TestCase {
 
 	private ActiveMqRemotingServer remotingServer;
 	private ActiveMqTransport clientTransport;
 
-    private final String _queue = "org.essentialplatform.receiver";
+    private final String _queue = "org.essentialplatform.listener";
 
 	@Override
 	protected void setUp() throws Exception {
 		BasicConfigurator.resetConfiguration();
 		BasicConfigurator.configure();
 		super.setUp();
-
+		
 		remotingServer = new ActiveMqRemotingServer();
 		remotingServer.setMessageListenerEnabled(false);
 		remotingServer.start();
@@ -48,7 +48,6 @@ public class TestLocalSendReceive extends TestCase {
 		clientTransport = new ActiveMqTransport();
     	clientTransport.setDestinationName(_queue);
     	clientTransport.start();
-    	
 	}
 
 	@Override
@@ -62,7 +61,9 @@ public class TestLocalSendReceive extends TestCase {
 		super.tearDown();
 	}
 	
-	public void testCanSendAndReceiveFromJmsQueue() throws InterruptedException {
+	
+
+	public void testCanSendAndReceiveFromJmsQueueUsingMessageListener() throws InterruptedException, JMSException {
 		final String messageToSend = UUID.randomUUID().toString();
 		class OneShotSender extends Thread {
 			String failedReason;
@@ -75,61 +76,58 @@ public class TestLocalSendReceive extends TestCase {
 	            }
 	        }
 		}
-	    class OneShotReceiver extends Thread implements ExceptionListener {
-	    	OneShotReceiver() {
-                _connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
-				try {
-					_connection = _connectionFactory.createConnection();
-					_connection.start();
-	                System.out.println("OneShotReceiver: connected");
-	                _connection.setExceptionListener(this);
-	                _session = _connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
-					_destination = _session.createQueue(_queue);
-					_consumer = _session.createConsumer(_destination);
-				} catch (JMSException ex) {
-					throw new RuntimeException(ex);
-				}
-	    	}
+	    class OneShotListener implements MessageListener, ExceptionListener {
 			String failedReason;
 			String messageReceived;
 			private ActiveMQConnectionFactory _connectionFactory;
 			private Connection _connection;
 			private Session _session;
-			private Destination _destination;
 			private MessageConsumer _consumer;
-	    	@Override
-	        public void run() {
-	            try {
-	                Message message = _consumer.receive();
-	                if (message instanceof TextMessage) {
-	                    TextMessage textMessage = (TextMessage) message;
-	                    messageReceived = textMessage.getText();
-		                System.out.println("OneShotReceiver: message received");
-	                } else {
-	                    failedReason = "message received was not a TextMessage";
-	                }
-	                _session.commit();
-	                _consumer.close();
-	                _session.close();
-	                _connection.close();
-	                System.out.println("OneShotSender: connection closed");
-	            } catch (Exception ex) {
-	                failedReason = ex.getMessage();
-	            }
+			private Destination _destination;
+
+	        public OneShotListener() throws JMSException {
+                _connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_BROKER_URL);
+				_connection = _connectionFactory.createConnection();
+				_connection.start();
+                System.out.println("OneShotListener: connected");
+                _connection.setExceptionListener(this);
+                _session = _connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+				_destination = _session.createQueue(_queue);
+				_consumer = _session.createConsumer(_destination);
+                
+                System.out.println("OneShotListener: consumer obtained");
+                
+				_consumer.setMessageListener(this);
 	        }
 			public void onException(JMSException ex) {
 				failedReason = "Caught exception: " + ex.getMessage();
 			}
+			public void onMessage(Message message) {
+                try {
+	                if (message instanceof TextMessage) {
+	                    TextMessage textMessage = (TextMessage) message;
+	                    messageReceived = textMessage.getText();
+	                } else {
+	                    failedReason = "message received was not a TextMessage";
+	                }
+	                _session.commit();
+	                System.out.println("OneShotListener: message received");
+					_consumer.close();
+	                _session.close();
+	                _connection.close();
+	                System.out.println("OneShotListener: connection closed");
+				} catch (JMSException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
 	    }
 		OneShotSender oneShotSender = new OneShotSender();
-		OneShotReceiver oneShotReceiver = new OneShotReceiver();
-		oneShotReceiver.start();
-		oneShotSender.run();  // can just run synchronously
+		OneShotListener oneShotReceiver = new OneShotListener();
+		oneShotSender.run(); // can just run synchronously
+		SleepUtil.sleepUninterrupted(50); // give listener time to process.
 		assertNull(oneShotReceiver.failedReason, oneShotReceiver.failedReason);
-		assertNull(oneShotReceiver.failedReason, oneShotSender.failedReason);
-		oneShotReceiver.join();
+		assertNull(oneShotSender.failedReason, oneShotSender.failedReason);
 		assertEquals(messageToSend, oneShotReceiver.messageReceived);
 	}
-	
-
 }

@@ -9,6 +9,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite("Test for org.essentialplatform.server.test.remoting.activemq");
 		//$JUnit-BEGIN$
 		suite.addTestSuite(TestStartAndShutdown.class);
+		suite.addTestSuite(TestLocalSendReceiveAsync.class);
 		suite.addTestSuite(TestLocalSendReceive.class);
 		suite.addTestSuite(TestSendTransactionsUsingXStream.class);
 		//$JUnit-END$
