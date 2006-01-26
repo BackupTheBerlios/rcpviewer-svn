@@ -3,9 +3,9 @@ package org.essentialplatform.runtime.shared.tests.transaction;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.PojoAlreadyEnlistedException;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 /**
  * Modifying pojos enrols them in the transaction.
@@ -43,7 +43,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = transaction.getEnlistedPojos();
 		assertEquals(1, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(calculator));
 	}
@@ -55,7 +55,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 		
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = transaction.getEnlistedPojos();
 		assertEquals(1, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(calculator));
 	}
@@ -69,7 +69,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		assertNotNull(emailAddressTransaction);
 		assertSame(customerTransaction, emailAddressTransaction);
 		
-		Set<ITransactable> enlistedPojos = customerTransaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = customerTransaction.getEnlistedPojos();
 		assertEquals(2, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(customer));
 		assertTrue(enlistedPojos.contains(emailAddress));
@@ -84,7 +84,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		assertNotNull(orderTransaction);
 		assertSame(customerTransaction, orderTransaction);
 
-		Set<ITransactable> enlistedPojos = customerTransaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = customerTransaction.getEnlistedPojos();
 		assertEquals(2, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(customer));
 		assertTrue(enlistedPojos.contains(order));
@@ -104,7 +104,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		assertNotNull(orderTransaction);
 		assertSame(customerTransaction, orderTransaction);
 
-		Set<ITransactable> enlistedPojos = customerTransaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = customerTransaction.getEnlistedPojos();
 		assertEquals(2, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(customer));
 		assertTrue(enlistedPojos.contains(order));
@@ -129,7 +129,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		assertNotNull(orderTransaction);
 		assertSame(customerTransaction, orderTransaction);
 		
-		Set<ITransactable> enlistedPojos = customerTransaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = customerTransaction.getEnlistedPojos();
 		assertEquals(2, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(customer));
 		assertTrue(enlistedPojos.contains(order));
@@ -141,7 +141,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 		ITransaction transaction = transactionManager.getCurrentTransactionFor(calculator, false);
 		assertNotNull(transaction);
 
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = transaction.getEnlistedPojos();
 		assertEquals(1, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(calculator));
 	}	
@@ -283,7 +283,7 @@ public class TestTransactionManagerEnlistPojo extends AbstractTransactionManager
 			fail("Should have thrown an exception.");
 		} catch(PojoAlreadyEnlistedException ex) {
 			// expected
-			assertSame(customer, ex.getTransactable());
+			assertSame(customer, ex.getPojo());
 			assertSame(emailAddressTransaction, ex.getTransaction());
 		} catch(Exception ex) {
 			fail("Expected to throw SomeVerySpecificException - instead got a " + ex.getClass().getName());

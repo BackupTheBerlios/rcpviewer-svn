@@ -10,6 +10,7 @@ import org.essentialplatform.runtime.client.transaction.changes.Interaction;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionEvent;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 /**
  * Represents a transaction either in progress, committed or (potentially)
@@ -585,7 +586,7 @@ public interface ITransaction {
 	 * @see #getEnlistedPojoDOs()
 	 * @return
 	 */
-	public Set<ITransactable> getEnlistedPojos();
+	public Set<IPojo> getEnlistedPojos();
 
 	
 	

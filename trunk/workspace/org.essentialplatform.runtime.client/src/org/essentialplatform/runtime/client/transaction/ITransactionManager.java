@@ -72,16 +72,7 @@ public interface ITransactionManager {
 	 * @param transactable - the object enlisted in a transaction.
 	 * @return
 	 */
-	public ITransaction getCurrentTransactionFor(ITransactable transactable);
-
-	/**
-	 * A bit of a kludge.  However, IPojos extend from ITransactable (thanks
-	 * to aspect introduction).
-	 * 
-	 * @param pojo
-	 * @return
-	 */
-	public ITransaction getCurrentTransactionFor(IPojo pojo);
+	public ITransaction getCurrentTransactionFor(Object pojo);
 	
 	/**
 	 * Returns the current {@link ITransaction} for the specified pojo, creating
@@ -97,16 +88,7 @@ public interface ITransactionManager {
 	 * @param autoEnlist - whether to automatically create a transaction if none exists.
 	 * @return
 	 */
-	public ITransaction getCurrentTransactionFor(ITransactable transactable, final boolean autoEnlist);
-
-	/**
-	 * A bit of a kludge.  However, IPojos extend from ITransactable (thanks
-	 * to aspect introduction).
-	 * 
-	 * @param pojo
-	 * @return
-	 */
-	public ITransaction getCurrentTransactionFor(IPojo pojo, final boolean autoEnlist);
+	public ITransaction getCurrentTransactionFor(Object pojo, final boolean autoEnlist);
 
 	/**
 	 * Commit a transaction for an enlisted pojo.
@@ -127,16 +109,7 @@ public interface ITransactionManager {
 	 *         for the pojo
 	 * @throws RuntimeException if transaction could not be reversed.
 	 */
-	public void commit(ITransactable transactable) throws IllegalStateException, IllegalArgumentException;
-
-	/**
-	 * Bit of a hack.
-	 * 
-	 * @param pojo
-	 * @throws IllegalStateException
-	 * @throws IllegalArgumentException
-	 */
-	public void commit(IPojo pojo) throws IllegalStateException, IllegalArgumentException;
+	public void commit(Object pojo) throws IllegalStateException, IllegalArgumentException;
 
 	/**
 	 * Reverse a transaction.

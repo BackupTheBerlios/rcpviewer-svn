@@ -3,9 +3,9 @@ package org.essentialplatform.runtime.client.transaction.changes;
 import java.lang.reflect.Field;
 
 import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClientBinding;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 
 
@@ -34,7 +34,7 @@ public final class AttributeChange extends AbstractFieldChange {
 	 */
 	public AttributeChange(
 			final ITransaction transaction,
-			final ITransactable transactable,
+			final IPojo transactable,
 			final Field field,
 			final Object postValue, 
 			final IDomainObject.IObjectAttribute attribute) {

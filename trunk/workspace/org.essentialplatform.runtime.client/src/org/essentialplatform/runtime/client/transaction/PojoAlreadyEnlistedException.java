@@ -1,5 +1,7 @@
 package org.essentialplatform.runtime.client.transaction;
 
+import org.essentialplatform.runtime.shared.domain.IPojo;
+
 /**
  * Thrown if an attempt is made to perform an operation that would enlist
  * a pojo in a transaction when that pojo is already enlisted in some
@@ -11,11 +13,11 @@ public class PojoAlreadyEnlistedException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	private static String messageFor(final ITransactable transactable, final ITransaction transaction) {
-		return "Pojo '" + transactable + "' already enlisted in transaction '" + transaction + "'";
+	private static String messageFor(final IPojo pojo, final ITransaction transaction) {
+		return "Pojo '" + pojo + "' already enlisted in transaction '" + transaction + "'";
 	}
 
-	private ITransactable _transactable;
+	private IPojo _pojo;
 	private ITransaction _transaction;
 	
 	public PojoAlreadyEnlistedException() {
@@ -26,14 +28,14 @@ public class PojoAlreadyEnlistedException extends RuntimeException {
 		super(message);
 	}
 
-	public PojoAlreadyEnlistedException(final ITransactable transactable, final ITransaction transaction) {
-		super(messageFor(transactable, transaction));
-		_transactable = transactable;
+	public PojoAlreadyEnlistedException(final IPojo pojo, final ITransaction transaction) {
+		super(messageFor(pojo, transaction));
+		_pojo = pojo;
 		_transaction = transaction;
 	}
 	
-	public final ITransactable getTransactable() {
-		return _transactable;
+	public final IPojo getPojo() {
+		return _pojo;
 	}
 	
 	public final ITransaction getTransaction() {

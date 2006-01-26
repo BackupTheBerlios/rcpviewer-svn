@@ -29,7 +29,7 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 
 		getLogger().debug("invokeAddToCollectionOnPojo(pojo=" + pojo+"): start");
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction((ITransactable)pojo);
+		ITransaction transaction = TransactionManager.instance().getCurrentTransactionFor(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -80,9 +80,8 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 	Object around$addingToCollectionOnPojo(
 			IPojo pojo, Collection collection, Object addedObj) {
 		getLogger().debug("addingToCollectionOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new AddToCollectionChange(transaction, transactable, collection, addedObj, ThreadLocals.getCollectionReferenceForThreadIfAny());
+		ITransaction transaction = currentTransaction(pojo);
+		IChange change = new AddToCollectionChange(transaction, pojo, collection, addedObj, ThreadLocals.getCollectionReferenceForThreadIfAny());
 		try {
 			return change.execute();
 		} finally {

@@ -5,13 +5,7 @@ package org.essentialplatform.louis.views.currtran;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.ui.IEditorPart;
-import org.essentialplatform.louis.jobs.SaveJob;
 import org.essentialplatform.louis.views.currtran.CurrentTransactionView.AbstractCurrentTransactionViewAction;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionListener;
@@ -56,8 +50,7 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	void startListeningOnTransactionFor(IDomainObject domainObject) {
 		_control.setInput(domainObject);
 
-		ITransactable transactable = (ITransactable)domainObject.getPojo();
-		_transaction = transactable.currentTransaction(false);
+		_transaction = TransactionManager.instance().getCurrentTransactionFor(domainObject.getPojo(), false);
 		if (_transaction != null) {
 			_transaction.addTransactionListener(this);
 		}
@@ -190,12 +183,12 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	 * @param event
 	 */
 	private void startListening(TransactionManagerEvent event) {
-		if (getTransactable() == null) {
+		if (getPojo() == null) {
 			return;
 		}
 		ITransaction transaction = event.getTransaction();
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
-		if (enlistedPojos.contains(getTransactable())) {
+		Set<IPojo> enlistedPojos = transaction.getEnlistedPojos();
+		if (enlistedPojos.contains(getPojo())) {
 			stopListeningOnCurrentTransaction(); // shouldn't really do anything, can't harm.
 			_transaction = transaction;
 			transaction.addTransactionListener(this);
@@ -210,12 +203,12 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	 * @param event
 	 */
 	private void stopListening(TransactionManagerEvent event) {
-		if (getTransactable() == null) {
+		if (getPojo() == null) {
 			return;
 		}
 		ITransaction transaction = event.getTransaction();
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
-		if (enlistedPojos.contains(getTransactable())) {
+		Set<IPojo> enlistedPojos = transaction.getEnlistedPojos();
+		if (enlistedPojos.contains(getPojo())) {
 			stopListeningOnCurrentTransaction();
 		}
 	}
@@ -238,7 +231,7 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 	 * 
 	 * @return
 	 */
-	private ITransactable getTransactable() {
+	private IPojo getPojo() {
 		Object viewerInput = _control.getInput();
 		if (viewerInput == null) {
 			return null;
@@ -246,7 +239,7 @@ class CurrentTransactionViewListener implements ITransactionListener, ITransacti
 		assert viewerInput instanceof IDomainObject;
 		IDomainObject domainObject = (IDomainObject)viewerInput;
 		
-		return (ITransactable) domainObject.getPojo();
+		return (IPojo)domainObject.getPojo();
 	}
 
 

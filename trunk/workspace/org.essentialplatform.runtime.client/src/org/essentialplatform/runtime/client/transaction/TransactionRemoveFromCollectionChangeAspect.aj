@@ -5,12 +5,15 @@ import java.util.concurrent.Callable;
 
 import org.aspectj.lang.JoinPoint;
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.client.domain.PojoAspect;
 import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 public aspect TransactionRemoveFromCollectionChangeAspect extends InteractionsAspect {
 	
 	private TransactionRemoveFromCollectionChangeAspectAdvice advice = 
 		new TransactionRemoveFromCollectionChangeAspectAdvice();
+
+	declare precedence: PojoAspect, TransactionRemoveFromCollectionChangeAspect; 
 
 	/**
 	 * @see org.essentialplatform.runtime.transaction.internal.TransactionRemoveFromCollectionChangeAspectAdvice#around$invokeRemoveFromCollectionOnPojo(IPojo, Object, JoinPoint.StaticPart, Callable)

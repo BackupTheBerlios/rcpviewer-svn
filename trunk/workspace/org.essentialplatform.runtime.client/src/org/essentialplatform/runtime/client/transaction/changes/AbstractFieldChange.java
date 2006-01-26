@@ -2,9 +2,9 @@ package org.essentialplatform.runtime.client.transaction.changes;
 
 import java.lang.reflect.Field;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 
 /**
@@ -50,7 +50,7 @@ public abstract class AbstractFieldChange extends AbstractChange implements IMod
 		return "changed " + field.getName();
 	}
 	
-	protected static Object[] extendedInfo(final ITransactable transactable, final Field field, final Object postValue) {
+	protected static Object[] extendedInfo(final IPojo transactable, final Field field, final Object postValue) {
 		field.setAccessible(true);
 		String preValueStr = "pre: ";
 		try {
@@ -82,7 +82,7 @@ public abstract class AbstractFieldChange extends AbstractChange implements IMod
 	 */
 	public AbstractFieldChange(
 			final ITransaction transaction,
-			final ITransactable transactable,
+			final IPojo transactable,
 			final Field field,
 			final Object postValue) {
 		super(transaction, transactable, description(field), extendedInfo(transactable, field, postValue), false);
@@ -96,8 +96,8 @@ public abstract class AbstractFieldChange extends AbstractChange implements IMod
 			throw new RuntimeException(e);
 		}
 		_postValue = postValue;
-		if (postValue instanceof ITransactable) {
-			modifies((ITransactable)postValue);	
+		if (postValue instanceof IPojo) {
+			modifies((IPojo)postValue);	
 		}
 	}
 

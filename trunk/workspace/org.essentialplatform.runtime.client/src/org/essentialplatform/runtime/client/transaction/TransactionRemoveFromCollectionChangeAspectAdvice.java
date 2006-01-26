@@ -26,9 +26,8 @@ class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspec
 	Object around$invokeRemoveFromCollectionOnPojo(IPojo pojo, Object removedObject, JoinPoint.StaticPart thisJoinPointStaticPart, Callable proceed) { 
 
 		getLogger().debug("invokeRemoveFromCollectionOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -75,9 +74,8 @@ class TransactionRemoveFromCollectionChangeAspectAdvice extends TransactionAspec
 	 */
 	Object around$removingFromCollectionOnPojo(IPojo pojo, Collection collection, Object removedObj) {
 		getLogger().debug("removingFromCollectionOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new RemoveFromCollectionChange(transaction, transactable, collection, removedObj, ThreadLocals.getCollectionReferenceForThreadIfAny());
+		ITransaction transaction = currentTransaction(pojo);
+		IChange change = new RemoveFromCollectionChange(transaction, pojo, collection, removedObj, ThreadLocals.getCollectionReferenceForThreadIfAny());
 		try {
 			return change.execute();
 		} finally {

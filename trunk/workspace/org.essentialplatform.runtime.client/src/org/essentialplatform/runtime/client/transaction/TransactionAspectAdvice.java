@@ -14,7 +14,7 @@ abstract class TransactionAspectAdvice extends AbstractAspectAdvice {
 
 	/**
 	 * Returns either the current transaction for this thread or the transaction
-	 * in which the {@link ITransactable} has already been enlisted.
+	 * in which the {@link IPojo} has already been enlisted.
 	 * 
 	 * <p>
 	 * If there is already a current transaction for both the thread and for
@@ -25,14 +25,14 @@ abstract class TransactionAspectAdvice extends AbstractAspectAdvice {
 	 * Before returning, also ensures that the transaction is in a state of
 	 * either in progress or building state.
 	 */
-	protected ITransaction currentTransaction(ITransactable transactable) throws RuntimeException {
+	protected ITransaction currentTransaction(IPojo pojo) throws RuntimeException {
 		ITransaction transaction = ThreadLocals.getTransactionForThreadIfAny();
-		ITransaction pojoTransaction = transactable.currentTransaction(false);
+		ITransaction pojoTransaction = TransactionManager.instance().getCurrentTransactionFor(pojo, false);
 		if (transaction != null && 
 		    pojoTransaction != null) {
 			if (transaction != pojoTransaction) {
 				// this mustn't happen
-				throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
+				throw new PojoAlreadyEnlistedException(pojo, pojoTransaction);
 			}
 			return transaction;
 		} else if (transaction     != null &&

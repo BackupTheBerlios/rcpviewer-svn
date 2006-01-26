@@ -3,17 +3,7 @@
  */
 package org.essentialplatform.louis.views.currtran;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
-import org.essentialplatform.runtime.client.transaction.TransactionManager;
-import org.essentialplatform.runtime.client.transaction.changes.Interaction;
-import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Returns either undoable or redoable changes of an in-progress transaction, 

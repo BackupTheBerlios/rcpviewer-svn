@@ -2,9 +2,9 @@ package org.essentialplatform.runtime.client.transaction.changes;
 
 import java.util.Collection;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
 
 
@@ -28,7 +28,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollecti
  */
 public abstract class AbstractCollectionChange<V> extends AbstractChange implements IModificationChange {
 
-	protected static Object[] extendedInfo(final ITransactable transactable, final Object referencedObject) {
+	protected static Object[] extendedInfo(final IPojo transactable, final Object referencedObject) {
 		String referencedObj = "obj: '" + referencedObject; 
 		return new Object[]{referencedObj};
 	}
@@ -61,7 +61,7 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange impleme
 	 */
 	public AbstractCollectionChange(
 			final ITransaction transaction,
-			final ITransactable transactable,
+			final IPojo transactable,
 			final Collection<V> collection,
 			final V referencedObject, 
 			final IDomainObject.IObjectCollectionReference reference) {
@@ -70,8 +70,8 @@ public abstract class AbstractCollectionChange<V> extends AbstractChange impleme
 		if (collection == null) {
 			throw new RuntimeException("No collection!");
 		}
-		if (referencedObject instanceof ITransactable) {
-			modifies((ITransactable)referencedObject);
+		if (referencedObject instanceof IPojo) {
+			modifies((IPojo)referencedObject);
 		}
 		_referencedObject = referencedObject;
 		_reference = reference;

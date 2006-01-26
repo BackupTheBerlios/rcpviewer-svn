@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.changes.Interaction;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 public class TestTransactionManagerChangeSets extends AbstractTransactionManagerTestCase {
 
@@ -146,7 +146,7 @@ public class TestTransactionManagerChangeSets extends AbstractTransactionManager
 		assertNotNull(emailAddressTransaction);
 		assertSame(customerTransaction, emailAddressTransaction);
 
-		Set<ITransactable> enlistedPojos = customerTransaction.getEnlistedPojos();
+		Set<IPojo> enlistedPojos = customerTransaction.getEnlistedPojos();
 		assertEquals(2, enlistedPojos.size());
 		assertTrue(enlistedPojos.contains(customer));
 		assertTrue(enlistedPojos.contains(emailAddress));

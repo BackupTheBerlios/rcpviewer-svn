@@ -17,9 +17,8 @@ class TransactionInvokeOperationAspectAdvice extends TransactionAspectAdvice {
 	 */
 	Object around$transactionalChange(IPojo pojo, Callable proceed) {
 		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);

@@ -9,7 +9,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.forms.IManagedForm;
 import org.essentialplatform.louis.LouisPlugin;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
@@ -51,10 +50,9 @@ public class SaveJob extends AbstractDomainObjectJob {
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		_form.commit(true);
-		ITransactable transactable = (ITransactable)getDomainObject().getPojo();
 		ITransaction transaction
 			= TransactionManager.instance().getCurrentTransactionFor(
-					transactable);
+												getDomainObject().getPojo());
 		if ( transaction != null ) {
 			transaction.commit();
 		}

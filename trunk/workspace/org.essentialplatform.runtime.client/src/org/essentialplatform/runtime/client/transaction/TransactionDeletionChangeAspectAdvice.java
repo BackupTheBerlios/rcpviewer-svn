@@ -14,9 +14,8 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 	 */
 	Object around$transactionalChange(IPojo pojo, Callable proceed) {
 		getLogger().debug("transactionalChange(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -49,9 +48,8 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 	 */
 	Object around$deletingPojoUsingDeleteMethod(IPojo pojo) {
 		getLogger().debug("deletingPojoUsingDeleteMethod(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
-		IChange change = new DeletionChange(transaction, transactable);
+		ITransaction transaction = currentTransaction(pojo);
+		IChange change = new DeletionChange(transaction, pojo);
 		try {
 			return change.execute();
 		} finally {

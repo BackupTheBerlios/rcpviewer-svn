@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.client.domain.PojoAspect;
 import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 /**
@@ -18,6 +19,7 @@ public aspect TransactionDeletionChangeAspect extends InteractionsAspect {
 		deletingPojoUsingDeleteMethod(pojo) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
+	declare precedence: PojoAspect, TransactionDeletionChangeAspect; 
 
 	/**
 	 * @see org.essentialplatform.runtime.transaction.internal.TransactionDeletionChangeAspectAdvice#around$transactionalChange(IPojo, Callable)

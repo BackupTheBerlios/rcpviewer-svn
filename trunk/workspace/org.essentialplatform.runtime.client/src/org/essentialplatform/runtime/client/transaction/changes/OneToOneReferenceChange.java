@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.client.transaction.changes;
 import java.lang.reflect.Field;
 
 import org.essentialplatform.runtime.client.domain.bindings.IObjectOneToOneReferenceClientBinding;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectOneToOneReference;
 
 
@@ -23,11 +23,11 @@ public final class OneToOneReferenceChange extends AbstractFieldChange {
 	 * <tt>transient</tt> for serialization.
 	 */
 	private transient IObjectOneToOneReference _reference;
-	private ITransactable _referencedObjOrNull;
+	private IPojo _referencedObjOrNull;
 	
 	public OneToOneReferenceChange(
 			final ITransaction transaction,
-			final ITransactable transactable,
+			final IPojo transactable,
 			final Field field,
 			final Object referencedObjOrNull,
 			final IObjectOneToOneReference reference) {

@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.client.domain.PojoAspect;
 import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 /**
@@ -14,6 +15,7 @@ public aspect TransactionAttributeChangeAspect extends InteractionsAspect {
 	private TransactionAttributeChangeAspectAdvice advice = 
 		new TransactionAttributeChangeAspectAdvice();
 	
+	declare precedence: PojoAspect, TransactionAttributeChangeAspect; 
 
 	/**
 	 * @see org.essentialplatform.runtime.transaction.internal.TransactionOneToOneReferenceChangeAspectAdvice#

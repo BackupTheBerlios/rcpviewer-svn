@@ -5,12 +5,15 @@ import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 
-/**
- * Makes {@link IPojo}s implement {@link ITransactable}.
- */
 public aspect TransactionTransactableAspect {
 
-	declare parents: IPojo implements ITransactable;
+	//declare parents: IPojo implements ITransactable;
+//	/**
+//	 * All pojos that are have an {@link InDomain} annotation should implement 
+//	 * {@link IPojo}. 
+//	 */
+//	declare parents: (@InDomain *) implements IPojo;
+
 
 	declare precedence: TransactionTransactableAspect, TransactionInvokeOperationAspect;
 	declare precedence: TransactionTransactableAspect, TransactionAttributeChangeAspect;

@@ -116,33 +116,23 @@ public final class TransactionManager implements ITransactionManager {
 	// getCurrentTransactionFor()
 	////////////////////////////////////////////////////////////////////
 
-	public ITransaction getCurrentTransactionFor(final ITransactable transactable) {
-		return getCurrentTransactionFor(transactable, true);
+
+	public ITransaction getCurrentTransactionFor(final Object obj) {
+		return getCurrentTransactionFor(obj, true);
 	}
 
-	/*
-	 * @see org.essentialplatform.runtime.client.transaction.ITransactionManager#getCurrentTransactionFor(org.essentialplatform.runtime.shared.transaction.ITransactable, boolean)
-	 */
-	public synchronized ITransaction getCurrentTransactionFor(final ITransactable transactable, final boolean autoEnlist) {
-		ITransaction transaction = _currentTransactionByEnlistedPojo.get(transactable);
+	public synchronized ITransaction getCurrentTransactionFor(final Object obj, final boolean autoEnlist) {
+		final IPojo pojo = (IPojo)obj;
+		ITransaction transaction = _currentTransactionByEnlistedPojo.get(pojo);
 		if (transaction == null && autoEnlist) {
 			transaction = createTransaction();
-			_currentTransactionByEnlistedPojo.put(transactable, transaction);
+			_currentTransactionByEnlistedPojo.put(pojo, transaction);
 		} 
 		// fail early if (for any reason) we get out of whack. 
 		if (transaction != null && !_currentTransactions.contains(transaction)) {
 			throw new IllegalStateException("Transaction is in _currentTransactionByEnlistedPojo but not in _currentTransactions");
 		}
 		return transaction;
-	}
-
-	// hacky
-	public ITransaction getCurrentTransactionFor(final IPojo pojo) {
-		return getCurrentTransactionFor((ITransactable)pojo);
-	}
-	// hacky
-	public synchronized ITransaction getCurrentTransactionFor(final IPojo pojo, final boolean autoEnlist) {
-		return getCurrentTransactionFor((ITransactable)pojo, autoEnlist);
 	}
 
 
@@ -191,8 +181,8 @@ public final class TransactionManager implements ITransactionManager {
 	 * as in {@link #_currentTransactions}.
 	 * 
 	 */
-	private Map<ITransactable, ITransaction> _currentTransactionByEnlistedPojo = 
-		new HashMap<ITransactable, ITransaction>();
+	private Map<IPojo, ITransaction> _currentTransactionByEnlistedPojo = 
+		new HashMap<IPojo, ITransaction>();
 
 	/**
 	 * Ensure that the pojo(s) are enlisted in the transaction.
@@ -208,22 +198,20 @@ public final class TransactionManager implements ITransactionManager {
 	 *         pojos are enlisted in some other transaction.  The calling 
 	 *         transaction will undone this change.
 	 */
-	public synchronized boolean enlist(ITransaction transaction, Set<ITransactable> enlistedPojos) {
+	public synchronized boolean enlist(ITransaction transaction, Set<IPojo> enlistedPojos) {
 		
 		// first pass; look for any issues before we do anything
-		for(ITransactable transactable: enlistedPojos) {
-			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
+		for(IPojo pojo: enlistedPojos) {
+			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(pojo);
 			if (pojoTransaction != null && pojoTransaction != transaction) {
 				// already enlisted elsewhere.
 				
-				// REVIEW_CHANGE MikeE 20051014 
-				throw new PojoAlreadyEnlistedException(transactable, pojoTransaction);
-				// return false;
+				throw new PojoAlreadyEnlistedException(pojo, pojoTransaction);
 			}
 		}
 		
 		// second pass; do the work
-		for(ITransactable transactable: enlistedPojos) {
+		for(IPojo transactable: enlistedPojos) {
 			ITransaction pojoTransaction = _currentTransactionByEnlistedPojo.get(transactable);
 			if (pojoTransaction == null) {
 				_currentTransactionByEnlistedPojo.put(transactable, transaction);
@@ -254,13 +242,13 @@ public final class TransactionManager implements ITransactionManager {
 	public void undonePendingChange(ITransaction transaction, Interaction change) {
 		// need to unenlist pojos, though potentially not all of them (since some
 		// pojos may have been changed as the result of a change still in a "done" state.
-		Set<ITransactable> pojosToUnenlist = new HashSet<ITransactable>(change.getModifiedPojos());
+		Set<IPojo> pojosToUnenlist = new HashSet<IPojo>(change.getModifiedPojos());
 
 		// get the pojos still unlisted, and eject from our list (an asymmetric set difference)
-		Set<ITransactable> stillEnlistedPojos = transaction.getEnlistedPojos();
+		Set<IPojo> stillEnlistedPojos = transaction.getEnlistedPojos();
 		pojosToUnenlist.removeAll(stillEnlistedPojos);
 		
-		for(ITransactable transactable: pojosToUnenlist) {
+		for(IPojo transactable: pojosToUnenlist) {
 			_currentTransactionByEnlistedPojo.remove(transactable);
 		}
 		
@@ -298,19 +286,12 @@ public final class TransactionManager implements ITransactionManager {
 	// commit(), committed(), getCommittedTransactions() 
 	////////////////////////////////////////////////////////////////////
 
-	public synchronized void commit(IPojo pojo) throws IllegalStateException {
-		commit((ITransactable)pojo);
-	}
-
-	/*
-	 * @see org.essentialplatform.transaction.ITransactionManager#commit(org.essentialplatform.transaction.ITransactable)
-	 */
-	public synchronized void commit(ITransactable transactable) throws IllegalStateException {
+	public synchronized void commit(Object pojo) throws IllegalStateException {
 		
 		// get the transaction for this transactable.
-		ITransaction transaction = getCurrentTransactionFor(transactable);
+		ITransaction transaction = getCurrentTransactionFor(pojo);
 		if (transaction == null) {
-			throw new IllegalArgumentException("No transaction for pojo '" + transactable + "'");
+			throw new IllegalArgumentException("No transaction for pojo '" + pojo + "'");
 		}
 		
 		// just check that the Id that this transaction wishes to be identified by
@@ -397,8 +378,8 @@ public final class TransactionManager implements ITransactionManager {
 	 * @param transaction
 	 */
 	private void unenlistPojosInTransactionAndRemoveTransaction(ITransaction transaction) {
-		Set<ITransactable> enlistedPojos = transaction.getEnlistedPojos();
-		for(ITransactable enlistedPojo: enlistedPojos) {
+		Set<IPojo> enlistedPojos = transaction.getEnlistedPojos();
+		for(IPojo enlistedPojo: enlistedPojos) {
 			_currentTransactionByEnlistedPojo.remove(enlistedPojo);
 		}
 		_currentTransactions.remove(transaction);

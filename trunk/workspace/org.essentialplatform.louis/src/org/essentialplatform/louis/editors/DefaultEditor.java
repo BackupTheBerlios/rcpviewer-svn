@@ -54,7 +54,6 @@ import org.essentialplatform.runtime.client.domain.bindings.IObjectAttributeClie
 import org.essentialplatform.runtime.client.domain.event.DomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.ExtendedDomainObjectAttributeEvent;
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectAttributeListener;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
@@ -282,9 +281,7 @@ public final class DefaultEditor extends EditorPart {
 	 * @return
 	 */
 	private ITransaction getCurrentTransaction() {
-		ITransactable transactable = (ITransactable)getDomainObject().getPojo();
-		return  
-			TransactionManager.instance().getCurrentTransactionFor(transactable, false);
+		return TransactionManager.instance().getCurrentTransactionFor(getDomainObject().getPojo(), false);
 	}
 
 	private boolean isEnlistedInTransaction() {

@@ -3,10 +3,10 @@ package org.essentialplatform.runtime.client.transaction.changes;
 import java.util.Collections;
 import java.util.Set;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.IrreversibleTransactionException;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 /**
  * An abstraction of some work performed in the domain.
@@ -102,7 +102,7 @@ public interface IChange {
 	 * 
 	 * @return
 	 */
-	public ITransactable getInitiatingPojo();
+	public IPojo getInitiatingPojo();
 
 	
 	/**
@@ -138,7 +138,7 @@ public interface IChange {
 	 * 
 	 * @return
 	 */
-	public Set<ITransactable> getModifiedPojos();
+	public Set<IPojo> getModifiedPojos();
 	
 	
 	/**
@@ -247,14 +247,14 @@ public interface IChange {
 		/*
 		 * @see org.essentialplatform.transaction.IChange#getModifiedPojos()
 		 */
-		public Set<ITransactable> getModifiedPojos() {
+		public Set<IPojo> getModifiedPojos() {
 			return Collections.EMPTY_SET;
 		}
 
 		/*
 		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
 		 */
-		public ITransactable getInitiatingPojo() {
+		public IPojo getInitiatingPojo() {
 			return null;
 		}
 
@@ -378,14 +378,14 @@ public interface IChange {
 		/*
 		 * @see org.essentialplatform.transaction.IChange#getModifiedPojos()
 		 */
-		public Set<ITransactable> getModifiedPojos() {
+		public Set<IPojo> getModifiedPojos() {
 			return Collections.EMPTY_SET;
 		}
 
 		/*
 		 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
 		 */
-		public ITransactable getInitiatingPojo() {
+		public IPojo getInitiatingPojo() {
 			return null;
 		}
 		/*

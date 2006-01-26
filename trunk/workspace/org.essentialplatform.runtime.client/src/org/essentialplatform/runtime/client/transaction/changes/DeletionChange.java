@@ -1,6 +1,5 @@
 package org.essentialplatform.runtime.client.transaction.changes;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
@@ -15,17 +14,17 @@ import org.essentialplatform.runtime.shared.domain.IPojo;
  */
 public final class DeletionChange extends AbstractChange {
 
-	private static String description(final ITransactable transactable) {
+	private static String description(final IPojo transactable) {
 		IPojo pojo = (IPojo)transactable;
 		IDomainObject domainObject = pojo.domainObject();
 		return "deleted " + domainObject.getDomainClass().getName();
 	}
 	
-	private static Object[] extendedInfo(final ITransactable transactable) {
+	private static Object[] extendedInfo(final IPojo transactable) {
 		return new Object[]{};
 	}
 
-	public DeletionChange(final ITransaction transaction, final ITransactable transactable) {
+	public DeletionChange(final ITransaction transaction, final IPojo transactable) {
 		super(transaction, transactable, description(transactable), extendedInfo(transactable), false);
 	}
 	

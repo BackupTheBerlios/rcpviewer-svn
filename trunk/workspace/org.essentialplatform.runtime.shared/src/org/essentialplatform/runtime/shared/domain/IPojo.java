@@ -1,10 +1,7 @@
 package org.essentialplatform.runtime.shared.domain;
 
-//import org.essentialplatform.runtime.shared.transaction.ITransactable;
 
-
-
-public interface IPojo /*extends ITransactable*/ {
+public interface IPojo {
 
 	/**
 	 * Tracks the resolve state and other aspects on behalf of the pojo.

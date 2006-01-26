@@ -3,9 +3,9 @@ package org.essentialplatform.runtime.client.transaction.changes;
 import java.util.Collection;
 
 import org.essentialplatform.runtime.client.domain.bindings.IObjectCollectionReferenceClientBinding;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 
 /**
@@ -21,7 +21,7 @@ public final class AddToCollectionChange<V> extends AbstractCollectionChange<V> 
 
 	public AddToCollectionChange(
 			final ITransaction transaction,
-			final ITransactable transactable,
+			final IPojo transactable,
 			final Collection<V> collection,
 			final V addedValue, 
 			final IDomainObject.IObjectCollectionReference reference) {

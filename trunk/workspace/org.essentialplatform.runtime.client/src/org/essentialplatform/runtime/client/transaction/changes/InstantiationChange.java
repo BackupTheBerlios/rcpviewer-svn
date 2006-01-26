@@ -1,6 +1,5 @@
 package org.essentialplatform.runtime.client.transaction.changes;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
@@ -15,22 +14,21 @@ import org.essentialplatform.runtime.shared.domain.IPojo;
  */
 public final class InstantiationChange extends AbstractChange {
 
-	private static String description(final ITransactable transactable) {
-		IPojo pojo = (IPojo)transactable;
+	private static String description(final IPojo pojo) {
 		IDomainObject domainObject = pojo.domainObject();
 		return "instantiated " + domainObject.getDomainClass().getName();
 	}
 	
-	private static Object[] extendedInfo(final ITransactable transactable) {
+	private static Object[] extendedInfo(final IPojo transactable) {
 		return new Object[]{};
 	}
 
 	/**
 	 * Stored so that the transactable object will be serialized.
 	 */
-	private ITransactable _transactable;
+	private IPojo _transactable;
 
-	public InstantiationChange(final ITransaction transaction, final ITransactable transactable) {
+	public InstantiationChange(final ITransaction transaction, final IPojo transactable) {
 		super(transaction, transactable, description(transactable), extendedInfo(transactable), false);
 		_transactable = transactable;
 	}

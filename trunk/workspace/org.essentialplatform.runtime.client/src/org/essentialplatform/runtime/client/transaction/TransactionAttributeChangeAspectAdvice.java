@@ -20,9 +20,8 @@ class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 	 */
 	<V> V around$invokeSetterForAttributeOnPojo(IPojo pojo, Object postValue, Callable<V> proceed) {
 		getLogger().debug("invokeSetterForAttributeOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -74,15 +73,14 @@ class TransactionAttributeChangeAspectAdvice extends TransactionAspectAdvice {
 		try {
 			Field field = JoinPointUtil.getFieldFor(thisJoinPointStaticPart);
 			
-			ITransactable transactable = (ITransactable)pojo;
-			ITransaction transaction = currentTransaction(transactable);
+			ITransaction transaction = currentTransaction(pojo);
 			
 			IDomainObject domainObject = pojo.domainObject();
 			IDomainObject.IObjectAttribute attribute = null;
 			if (domainObject.getPersistState() != PersistState.UNKNOWN) {
 				attribute = JoinPointUtil.getAttributeFor(domainObject, thisJoinPointStaticPart);
 			}
-			IChange change = new AttributeChange(transaction, transactable, field, postValue, attribute);
+			IChange change = new AttributeChange(transaction, pojo, field, postValue, attribute);
 			
 			return change.execute();
 		} finally {

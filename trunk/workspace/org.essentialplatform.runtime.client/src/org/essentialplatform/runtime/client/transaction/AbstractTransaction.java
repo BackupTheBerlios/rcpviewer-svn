@@ -17,6 +17,7 @@ import org.essentialplatform.runtime.client.transaction.changes.Interaction;
 import org.essentialplatform.runtime.client.transaction.event.ITransactionListener;
 import org.essentialplatform.runtime.client.transaction.event.TransactionEvent;
 import org.essentialplatform.runtime.client.transaction.noop.NoopTransaction;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 /**
  * Complete (but overridable) implementation of {@link ITransaction} as used 
  * by {@link org.essentialplatform.transaction.TransactionManager}.
@@ -515,8 +516,8 @@ public abstract class AbstractTransaction implements ITransaction {
 	 *  
 	 * @see org.essentialplatform.transaction.ITransaction#getEnlistedPojos()
 	 */
-	public Set<ITransactable> getEnlistedPojos() {
-		Set<ITransactable> enlistedPojos = new LinkedHashSet<ITransactable>();
+	public Set<IPojo> getEnlistedPojos() {
+		Set<IPojo> enlistedPojos = new LinkedHashSet<IPojo>();
 		for(Interaction interaction: isInState(ITransaction.State.COMMITTED)?_committedChanges:_changes) {
 			enlistedPojos.addAll(interaction.getModifiedPojos());
 		}
@@ -686,7 +687,7 @@ public abstract class AbstractTransaction implements ITransaction {
     	buf.append(" ").append(_state.name().toLowerCase()).append(" ");
     	
     	if (_state != State.COMMITTED) {
-        	Set<ITransactable> enlistedPojos = getEnlistedPojos();
+        	Set<IPojo> enlistedPojos = getEnlistedPojos();
         	if (enlistedPojos.size() > 0) {
     	    	buf.append(enlistedPojos.size()).append(" objects, ")
     	    	   .append(_changes.size()).append(" changes");

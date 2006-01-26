@@ -1,9 +1,11 @@
 package org.essentialplatform.runtime.client.transaction;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.Callable;
 
-import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.shared.domain.IPojo;
+import org.essentialplatform.runtime.client.domain.PojoAspect;
 import org.essentialplatform.runtime.client.domain.InteractionsAspect;
 
 /**
@@ -15,14 +17,17 @@ import org.essentialplatform.runtime.client.domain.InteractionsAspect;
  */
 public aspect TransactionInvokeOperationAspect extends InteractionsAspect {
 
+	private final static Logger LOG = Logger.getLogger(TransactionInvokeOperationAspect.class);
+	protected Logger getLogger() { return LOG; }
+
+	private static boolean ENABLED = true;
+	protected boolean isEnabled() { return ENABLED; }
+
 	private TransactionInvokeOperationAspectAdvice advice = 
 		new TransactionInvokeOperationAspectAdvice();
 	
-	private final static Logger LOG = Logger.getLogger(TransactionInvokeOperationAspect.class);
-	private static boolean ENABLED = true;
-	protected Logger getLogger() { return LOG; }
-	protected boolean isEnabled() { return ENABLED; }
-	
+	declare precedence: PojoAspect, TransactionInvokeOperationAspect; 
+
 	declare precedence: TransactionInvokeOperationAspect, TransactionAttributeChangeAspect; 
 	declare precedence: TransactionInvokeOperationAspect, TransactionOneToOneReferenceChangeAspect; 
 	declare precedence: TransactionInvokeOperationAspect, TransactionAddToCollectionChangeAspect; 

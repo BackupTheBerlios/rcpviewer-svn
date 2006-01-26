@@ -20,9 +20,8 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 	 */
 	Object around$invokeAssociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObject, Callable proceed) {
 		getLogger().debug("invokeAssociatorForOneToOneReferenceOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -50,9 +49,8 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 	 */
 	Object around$invokeDissociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo existingReferencedObject, Callable proceed) {
 		getLogger().debug("invokeDissociatorForOneToOneReferenceOnPojo(pojo=" + pojo+"): start");
-		ITransactable transactable = (ITransactable)pojo;
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 		if (!transactionOnThread) {
 			getLogger().debug("no xactn for thread, setting; xactn=" + transaction);
 			ThreadLocals.setTransactionForThread(transaction);
@@ -88,15 +86,14 @@ class TransactionOneToOneReferenceChangeAspectAdvice extends TransactionAspectAd
 			final IPojo pojo, final IPojo referencedObjOrNull, JoinPoint.StaticPart thisJoinPointStaticPart) {
 		getLogger().debug("changingOneToOneReferenceOnPojo(pojo=" + pojo+"): start");
 		Field field = JoinPointUtil.getFieldFor(thisJoinPointStaticPart);
-		ITransactable transactable = (ITransactable)pojo;
-		ITransaction transaction = currentTransaction(transactable);
+		ITransaction transaction = currentTransaction(pojo);
 
 		IDomainObject domainObject = pojo.domainObject();
 		IDomainObject.IObjectOneToOneReference reference = null;
 		if (domainObject.getPersistState() != PersistState.UNKNOWN) {
 			reference = JoinPointUtil.getOneToOneReferenceFor(domainObject, thisJoinPointStaticPart);
 		}
-		IChange change = new OneToOneReferenceChange(transaction, transactable, field, referencedObjOrNull, reference);
+		IChange change = new OneToOneReferenceChange(transaction, pojo, field, referencedObjOrNull, reference);
 		try {
 			return change.execute();
 		} finally {

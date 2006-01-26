@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.IrreversibleTransactionException;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IPojo;
 
 
 /**
@@ -204,8 +204,8 @@ public class ChangeSet implements IChange {
 	 * 
 	 * @see org.essentialplatform.transaction.IChange#getModifiedPojos()
 	 */
-	public Set<ITransactable> getModifiedPojos() {
-		Set<ITransactable> pojos = new HashSet<ITransactable>();
+	public Set<IPojo> getModifiedPojos() {
+		Set<IPojo> pojos = new HashSet<IPojo>();
 		for (IChange change: _changes) {
 			pojos.addAll(change.getModifiedPojos());
 		}
@@ -217,7 +217,7 @@ public class ChangeSet implements IChange {
 	 * 
 	 * @see org.essentialplatform.runtime.transaction.changes.IChange#getInitiatingPojo()
 	 */
-	public ITransactable getInitiatingPojo() {
+	public IPojo getInitiatingPojo() {
 		return null;
 	}
 

@@ -1,13 +1,10 @@
 package demo;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.AccessType;
-import javax.persistence.Entity;
 import javax.persistence.GeneratorType;
-import javax.persistence.Transient;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
@@ -19,8 +16,6 @@ import org.essentialplatform.progmodel.essential.app.RelativeOrder;
 import org.essentialplatform.progmodel.essential.app.TypeOf;
 import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSession;
-import org.essentialplatform.runtime.client.transaction.ITransactable;
-import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 @Lifecycle(instantiable=true)

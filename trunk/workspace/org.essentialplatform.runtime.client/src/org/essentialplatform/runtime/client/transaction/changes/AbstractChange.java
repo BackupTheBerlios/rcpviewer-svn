@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.essentialplatform.runtime.client.transaction.ITransactable;
 import org.essentialplatform.runtime.client.transaction.ITransaction;
 import org.essentialplatform.runtime.client.transaction.PojoAlreadyEnlistedException;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
@@ -38,7 +37,7 @@ public abstract class AbstractChange implements IChange {
 	 * The object on which this change was initiated (ie as returned by
 	 * {@link #getInitiatingPojo()}).
 	 */
-	private transient ITransactable _initiatingPojo;
+	private transient IPojo _initiatingPojo;
 	/**
 	 * The object on which the change was initiated.
 	 * 
@@ -51,7 +50,7 @@ public abstract class AbstractChange implements IChange {
 	 *  
 	 * @return
 	 */
-	public ITransactable getInitiatingPojo() {
+	public IPojo getInitiatingPojo() {
 		return _initiatingPojo;
 	}
 
@@ -72,7 +71,7 @@ public abstract class AbstractChange implements IChange {
 	/**
 	 * <tt>transient</tt> for serialization.
 	 */
-	private transient Set<ITransactable> _transactableAsSet = new HashSet<ITransactable>();
+	private transient Set<IPojo> _transactableAsSet = new HashSet<IPojo>();
 
 	/**
 	 * 
@@ -82,15 +81,15 @@ public abstract class AbstractChange implements IChange {
 	 * @param extendedInfo
 	 * @param irreversible
 	 */
-	protected AbstractChange(final ITransaction transaction, final ITransactable transactable, final String description, final Object[] extendedInfo, final boolean irreversible) {
+	protected AbstractChange(final ITransaction transaction, final IPojo pojo, final String description, final Object[] extendedInfo, final boolean irreversible) {
 		_transaction = transaction;
-		_initiatingPojo = transactable;
+		_initiatingPojo = pojo;
 		_initiatingPojoDO = ((IPojo)_initiatingPojo).domainObject();
 		_initiatingPojoDomainObjectBinding = _initiatingPojoDO.getBinding();
 		_description = description;
 		_extendedInfo = extendedInfo == null? __EMPTY_OBJECT_ARRAY: extendedInfo;
 		_irreversible = irreversible;
-		modifies(transactable); // the transactable is always in the modifiedPojos set.
+		modifies(pojo); // the transactable is always in the modifiedPojos set.
 	}
 	
 	/**
@@ -113,12 +112,12 @@ public abstract class AbstractChange implements IChange {
 	}
 	
 	/**
-	 * The provided {@link ITransactable} will be included in the set returned
+	 * The provided {@link IPojo} will be included in the set returned
 	 * by {@link #getModifiedPojos()}.
 	 * 
 	 * @param transactable
 	 */
-	protected final void modifies(final ITransactable transactable) {
+	protected final void modifies(final IPojo transactable) {
 		_transactableAsSet.add(transactable);
 	}
 
@@ -126,7 +125,7 @@ public abstract class AbstractChange implements IChange {
 	/*
 	 * @see org.essentialplatform.transaction.IChange#getModifiedPojos()
 	 */
-	public Set<ITransactable> getModifiedPojos() {
+	public Set<IPojo> getModifiedPojos() {
 		return Collections.unmodifiableSet(_transactableAsSet);
 	}
 
