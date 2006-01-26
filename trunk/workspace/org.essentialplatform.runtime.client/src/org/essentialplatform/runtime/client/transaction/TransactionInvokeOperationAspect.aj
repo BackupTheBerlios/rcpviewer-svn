@@ -5,8 +5,8 @@ import org.apache.log4j.Logger;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.client.domain.PojoAspect;
-import org.essentialplatform.runtime.client.domain.InteractionsAspect;
+import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.shared.domain.InteractionsAspect;
 
 /**
  * One change per invoked operation that hasn't been called from another

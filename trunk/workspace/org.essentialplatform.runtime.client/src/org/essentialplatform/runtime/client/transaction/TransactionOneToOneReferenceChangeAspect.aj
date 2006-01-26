@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.client.domain.PojoAspect;
-import org.essentialplatform.runtime.client.domain.InteractionsAspect;
+import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.shared.domain.InteractionsAspect;
 
 /**
  * One change per modified 1:1 reference performed directly (ie not programmatically

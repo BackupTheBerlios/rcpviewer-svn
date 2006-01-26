@@ -98,10 +98,10 @@ public final class TransactionManager implements ITransactionManager {
 	 * @return
 	 */
 	public ITransaction createTransaction() {
-		if (isSuspended()) {
-			return new NoopTransaction(this);
-		}
-		ITransaction transaction = new Transaction(this);
+		ITransaction transaction = 
+			isSuspended()
+				?new NoopTransaction(this)
+				:new Transaction(this);
 		_currentTransactions.add(transaction);
 		
 		TransactionManagerEvent event = new TransactionManagerEvent(this, transaction); 

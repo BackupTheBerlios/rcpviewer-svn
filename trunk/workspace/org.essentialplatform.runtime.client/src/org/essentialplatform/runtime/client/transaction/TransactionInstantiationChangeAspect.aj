@@ -3,8 +3,8 @@ package org.essentialplatform.runtime.client.transaction;
 import java.util.concurrent.Callable;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.client.domain.PojoAspect;
-import org.essentialplatform.runtime.client.domain.InteractionsAspect;
+import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.shared.domain.InteractionsAspect;
 import org.essentialplatform.runtime.client.session.IClientSession;
 
 

@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.client.domain;
+package org.essentialplatform.runtime.shared.domain;
 
 import java.util.Collection;
 
@@ -6,7 +6,7 @@ import org.essentialplatform.progmodel.essential.app.IPrerequisites;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.client.domain.PojoAspect;
+import org.essentialplatform.runtime.shared.domain.PojoAspect;
 
 /**
  * Captures interactions on {@link IPojo}s.

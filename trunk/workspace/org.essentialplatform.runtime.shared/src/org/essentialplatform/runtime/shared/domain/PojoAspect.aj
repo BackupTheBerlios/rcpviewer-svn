@@ -1,4 +1,4 @@
-package org.essentialplatform.runtime.client.domain;
+package org.essentialplatform.runtime.shared.domain;
 
 import org.essentialplatform.progmodel.essential.app.InDomain;
 

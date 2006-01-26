@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 
 import org.essentialplatform.runtime.shared.domain.IPojo;
-import org.essentialplatform.runtime.client.domain.PojoAspect;
-import org.essentialplatform.runtime.client.domain.InteractionsAspect;
+import org.essentialplatform.runtime.shared.domain.PojoAspect;
+import org.essentialplatform.runtime.shared.domain.InteractionsAspect;
 
 public aspect TransactionAddToCollectionChangeAspect extends InteractionsAspect {
 	
