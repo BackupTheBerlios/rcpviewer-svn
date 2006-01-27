@@ -18,7 +18,20 @@ Require-Bundle: org.eclipse.core.runtime.compatibility;visibility:=reexport,
  net.sf.plugins.commons,
  net.sf.plugins.activemq
 Eclipse-AutoStart: true
-Export-Package: org.essentialplatform.runtime.shared,
+Export-Package: org.essentialplatform.runtime.client.authorization,
+ org.essentialplatform.runtime.client.domain.bindings,
+ org.essentialplatform.runtime.client.domain.event,
+ org.essentialplatform.runtime.client.remoting,
+ org.essentialplatform.runtime.client.remoting.packaging,
+ org.essentialplatform.runtime.client.remoting.packaging.standard,
+ org.essentialplatform.runtime.client.remoting.transport.activemq,
+ org.essentialplatform.runtime.client.session,
+ org.essentialplatform.runtime.client.session.event,
+ org.essentialplatform.runtime.client.transaction,
+ org.essentialplatform.runtime.client.transaction.changes,
+ org.essentialplatform.runtime.client.transaction.event,
+ org.essentialplatform.runtime.client.transaction.noop,
+ org.essentialplatform.runtime.shared,
  org.essentialplatform.runtime.shared.domain,
  org.essentialplatform.runtime.shared.domain.adapters,
  org.essentialplatform.runtime.shared.domain.bindings,
@@ -36,5 +49,5 @@ Export-Package: org.essentialplatform.runtime.shared,
  org.essentialplatform.runtime.shared.session,
  org.essentialplatform.runtime.shared.tracing,
  org.essentialplatform.runtime.shared.util
-Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin
 Eclipse-RegisterBuddy: net.sf.plugins.xstream
+Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin

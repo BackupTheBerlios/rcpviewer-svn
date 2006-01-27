@@ -8,14 +8,20 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.ui.forms,
- de.berlios.rcpviewer.domain,
- de.berlios.rcpviewer.rcp,
  net.sf.plugins.acegisecurity,
  net.sf.plugins.springframework,
  org.eclipse.ui.editors,
- de.berlios.rcpviewer.domain.runtime,
- de.berlios.rcpviewer.persistence.inmemory.ui,
- net.sf.plugins.utils
+ net.sf.plugins.utils,
+ org.essentialplatform.core,
+ org.essentialplatform.persistence.inmemory.ui,
+ org.essentialplatform.progmodel.essential.app,
+ org.essentialplatform.progmodel.essential.core,
+ org.essentialplatform.progmodel.essential.runtime,
+ org.essentialplatform.progmodel.louis.app,
+ org.essentialplatform.progmodel.louis.core,
+ org.essentialplatform.progmodel.louis.runtime,
+ org.essentialplatform.runtime.client,
+ org.essentialplatform.runtime.shared
 Eclipse-AutoStart: true
 Bundle-Vendor: Mike
 Bundle-Activator: mikespike3.application.EasyBeanPlugin

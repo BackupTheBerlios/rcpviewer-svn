@@ -11,6 +11,12 @@ import org.essentialplatform.runtime.shared.tests.AbstractRuntimeClientTestCase;
 public class TestDomainObjectOperation extends AbstractRuntimeClientTestCase {
 
 	public void testCanInvokeOperationReturningVoid() {
+		try {
+			Class.forName("org.essentialplatform.runtime.client.transaction.TransactionInvokeOperationAspect");
+		} catch (ClassNotFoundException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 		IDomainClass domainClass = lookupAny(CustomerOperationReturningVoid.class);
 
 		IDomainObject<CustomerOperationReturningVoid> domainObject = clientSession.create(domainClass);

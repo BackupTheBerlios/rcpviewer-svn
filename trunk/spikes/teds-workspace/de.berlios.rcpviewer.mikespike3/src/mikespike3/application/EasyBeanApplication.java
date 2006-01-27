@@ -7,12 +7,6 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.PlatformUI;
 
-import de.berlios.rcpviewer.domain.IDomain;
-import de.berlios.rcpviewer.domain.IDomainRegistry;
-import de.berlios.rcpviewer.domain.runtime.RuntimePlugin;
-import de.berlios.rcpviewer.persistence.inmemory.InMemoryObjectStore;
-import de.berlios.rcpviewer.session.ISession;
-import de.berlios.rcpviewer.session.ISessionManager;
 
 
 public class EasyBeanApplication
@@ -37,7 +31,7 @@ implements IPlatformRunnable
 			
 			
 			//FIXME In the future there will be a better way to set sessions
-			ISessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
+			IClientSessionManager sessionManager= RuntimePlugin.getDefault().getSessionManager();
 			IDomainRegistry domainRegistry= RuntimePlugin.getDefault().getDomainRegistry();
 			IDomain domain= domainRegistry.getDomain("default");
 			ISession session = sessionManager.createSession(domain, new InMemoryObjectStore());

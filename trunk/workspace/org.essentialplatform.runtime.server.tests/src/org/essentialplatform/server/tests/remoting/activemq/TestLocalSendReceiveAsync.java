@@ -125,7 +125,7 @@ public class TestLocalSendReceiveAsync extends TestCase {
 		OneShotSender oneShotSender = new OneShotSender();
 		OneShotListener oneShotReceiver = new OneShotListener();
 		oneShotSender.run(); // can just run synchronously
-		SleepUtil.sleepUninterrupted(50); // give listener time to process.
+		SleepUtil.sleepUninterrupted(500); // give listener time to process.
 		assertNull(oneShotReceiver.failedReason, oneShotReceiver.failedReason);
 		assertNull(oneShotSender.failedReason, oneShotSender.failedReason);
 		assertEquals(messageToSend, oneShotReceiver.messageReceived);

@@ -11,9 +11,6 @@ import org.essentialplatform.runtime.shared.domain.InteractionsAspect;
 /**
  * One change per invoked operation that hasn't been called from another
  * invoked operation.
- * 
- * <p>
- * TODO: this aspect may be wholly redundant?? 
  */
 public aspect TransactionInvokeOperationAspect extends InteractionsAspect {
 
