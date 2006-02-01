@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Reusable Aspects Library
-Bundle-SymbolicName: org.essentialplatform.aop
+Bundle-Name: Aop Tests Plug-in
+Bundle-SymbolicName: org.essentialplatform.aop.tests
 Bundle-Version: 0.0.1
 Bundle-Vendor: Essential Platform Development Team
 Bundle-Localization: plugin
-Export-Package: org.essentialplatform.aop.param
+Require-Bundle: org.essentialplatform.aop,
+ org.junit
