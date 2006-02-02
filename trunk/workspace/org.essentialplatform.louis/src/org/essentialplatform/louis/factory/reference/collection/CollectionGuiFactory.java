@@ -116,7 +116,7 @@ public class CollectionGuiFactory implements IGuiFactory<IDomainClass.IReference
 		pageBook.setBackground( sectionArea.getBackground() );
 		
 		// find all sub-factories and create page for each
-		List<IGuiFactory<?>> factories = LouisPlugin.getDefault().getGuiFactories(
+		List<IGuiFactory<?>> factories = LouisPlugin.getApplication().getGuiFactories(
 				model, this );
 		assert !factories.isEmpty();
 		List<CollectionGuiPage> pages = new ArrayList<CollectionGuiPage>();

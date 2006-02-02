@@ -18,16 +18,10 @@ import org.essentialplatform.runtime.shared.RuntimePlugin;
  * 
  * @author Mike
  */
-class SessionBootstrapJob extends AbstractBootstrapJob {
+public class SessionBootstrapJob extends AbstractBootstrapJob {
 
 	private final SessionBinding _sessionBinding;
 
-	/**
-	 * Bootstraps a session on the default domain using the passed object store
-	 */
-	SessionBootstrapJob() {
-		this(new SessionBinding(DomainConstants.DEFAULT_NAME, PersistenceConstants.DEFAULT_OBJECT_STORE_ID));
-	}
 
 	/**
 	 * Bootstraps a session on the domain name and (id of the) objectstore
@@ -35,7 +29,7 @@ class SessionBootstrapJob extends AbstractBootstrapJob {
 	 * 
 	 * @param sessionBinding
 	 */
-	SessionBootstrapJob(SessionBinding sessionBinding) {
+	public SessionBootstrapJob(SessionBinding sessionBinding) {
 		super(SessionBootstrapJob.class.getSimpleName());
 		if (sessionBinding == null)
 			throw new IllegalArgumentException();
@@ -48,7 +42,6 @@ class SessionBootstrapJob extends AbstractBootstrapJob {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		IClientSessionManager sessionManager = ClientSessionManager.instance();
-		IDomainRegistry domainRegistry = RuntimePlugin.getDefault().getDomainRegistry();
 		sessionManager.defineSession(_sessionBinding);
 		return Status.OK_STATUS;
 	}

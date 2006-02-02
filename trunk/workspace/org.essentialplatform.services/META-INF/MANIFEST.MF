@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Essential Platform Services Plug-in
+Bundle-SymbolicName: org.essentialplatform.services
+Bundle-Version: 0.0.1
+Bundle-Vendor: Essential Platform Development Team
+Bundle-Localization: plugin
+Require-Bundle: net.sf.plugins.acegisecurity,
+ net.sf.plugins.springframework
+Export-Package: org.essentialplatform.services.authentication.foobar,
+ org.essentialplatform.services.authentication.noop

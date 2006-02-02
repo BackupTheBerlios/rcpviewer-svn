@@ -7,21 +7,11 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-              class="org.essentialplatform.louis.app.Application">
+              class="org.essentialplatform.louis.Bootstrap">
          </run>
       </application>
    </extension>
-   
-   <extension-point id="domainclass" 
-                    name="Domain Class" 
-                    schema="schema/domainclass.exsd"/>
-  <extension-point id="guifactory" 
-                    name="Gui Factory" 
-                    schema="schema/guifactory.exsd"/>
-  <extension-point id="labelprovider" 
-                    name="Label Provider" 
-                    schema="schema/labelprovider.exsd"/>
-                    
+
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -90,5 +80,19 @@
             id="org.essentialplatform.louis.log.LogPreferencePage">
       </page>
    </extension>
+
+   
+   <extension-point id="domainclass" 
+                    name="Domain Class" 
+                    schema="schema/domainclass.exsd"/>
+   <extension-point id="guifactory" 
+                    name="Gui Factory" 
+                    schema="schema/guifactory.exsd"/>
+   <extension-point id="labelprovider" 
+                    name="Label Provider" 
+                    schema="schema/labelprovider.exsd"/>
+   <extension-point id="springcontext" 
+                    name="Spring Context" 
+                    schema="schema/springcontext.exsd"/>
 
 </plugin>

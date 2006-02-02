@@ -19,7 +19,7 @@ import org.essentialplatform.runtime.server.persistence.IObjectStoreBootStrap;
  * <code>populate()</code> methods.
  * @author Mike
  */
-class ObjectStoreBootstrapJob extends AbstractBootstrapJob {
+public class ObjectStoreBootstrapJob extends AbstractBootstrapJob {
 	
 	private final IObjectStore _store;
 	

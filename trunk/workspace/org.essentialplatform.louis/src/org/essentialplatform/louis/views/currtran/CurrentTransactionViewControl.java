@@ -60,7 +60,7 @@ public class CurrentTransactionViewControl extends SashForm implements ISelectio
 	 * {@link AbstractCurrTranContentProvider} using a mode of 
 	 * {@link Mode#ENLISTED_POJOS}.
 	 */
-	private TableViewer _enlistedPojosTreeViewer = null;
+	private TableViewer _enlistedPojosTableViewer = null;
 	private AbstractCurrTranContentProvider _enlistedPojosContentProvider;
 
 	/**
@@ -97,6 +97,7 @@ public class CurrentTransactionViewControl extends SashForm implements ISelectio
 			new TreeViewer(undoableChangesForm, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 		undoableChangesForm.setContent(_undoableChangesTreeViewer.getControl());
 		_undoableChangesTreeViewer.setLabelProvider(new TransactionLabelProvider());
+		
 		_undoableChangesContentProvider = new ChangesContentProvider(Mode.UNDOABLE_CHANGES);
 		_undoableChangesTreeViewer.setContentProvider(_undoableChangesContentProvider);
 		
@@ -109,12 +110,12 @@ public class CurrentTransactionViewControl extends SashForm implements ISelectio
 		_redoableChangesTreeViewer.setContentProvider(_redoableChangesContentProvider);
 
 		// enlisted pojos
-		_enlistedPojosTreeViewer = 
+		_enlistedPojosTableViewer = 
 			new TableViewer(enlistedPojosForm, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
-		enlistedPojosForm.setContent(_enlistedPojosTreeViewer.getControl());
-		_enlistedPojosTreeViewer.setLabelProvider(new EnlistedPojosLabelProvider());
+		enlistedPojosForm.setContent(_enlistedPojosTableViewer.getControl());
+		_enlistedPojosTableViewer.setLabelProvider(new EnlistedPojosLabelProvider());
 		_enlistedPojosContentProvider = new EnlistedPojosContentProvider();
-		_enlistedPojosTreeViewer.setContentProvider(_enlistedPojosContentProvider);
+		_enlistedPojosTableViewer.setContentProvider(_enlistedPojosContentProvider);
 
 	}
 
@@ -219,15 +220,16 @@ public class CurrentTransactionViewControl extends SashForm implements ISelectio
 	void setInput(IDomainObject domainObject) {
 		_undoableChangesTreeViewer.setInput(domainObject);
 		_redoableChangesTreeViewer.setInput(domainObject);
-		_enlistedPojosTreeViewer.setInput(domainObject);
+		_enlistedPojosTableViewer.setInput(domainObject);
 	}
 
 	void refresh() {
 		_undoableChangesTreeViewer.refresh();
 		_redoableChangesTreeViewer.refresh();
-		_enlistedPojosTreeViewer.refresh();
+		_enlistedPojosTableViewer.refresh();
 	}
 
+	
 	/////////////////////////////////////////////////////////////////////
 	// Helpers
 	
@@ -236,5 +238,7 @@ public class CurrentTransactionViewControl extends SashForm implements ISelectio
 		label.setText(text);
 		viewForm.setTopLeft(label);
 	}
+
+
 
 }

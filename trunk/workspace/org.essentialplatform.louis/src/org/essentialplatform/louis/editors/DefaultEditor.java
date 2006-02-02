@@ -169,7 +169,7 @@ public final class DefaultEditor extends EditorPart {
 		tabFolder.setSelection(0);
 		
 		// main gui creation (on the editor tab)
-		IGuiFactory factory = LouisPlugin.getDefault().getGuiFactory(
+		IGuiFactory factory = LouisPlugin.getApplication().getGuiFactory(
 				getDomainObject().getDomainClass(), null );
 		IFormPart part = factory.createGui(
 				getDomainObject().getDomainClass(),

@@ -7,6 +7,7 @@ import org.eclipse.swt.dnd.TransferData;
 
 /**
  * Used for transferring an arbitary class within the application.
+ * 
  * @author Mike
  */
 public class GenericTransfer extends ByteArrayTransfer 
@@ -16,10 +17,12 @@ public class GenericTransfer extends ByteArrayTransfer
 	private final String[] _typeNames;
 	private final int[] _typeIds;
 	
-	// yuk! - only works within app.
+	/**
+	 * TODO: fix this (yuk! - only works within app)
+	 */
 	private Object _obj = null;
 	
-	GenericTransfer( Class clazz ) {
+	public GenericTransfer( Class clazz ) {
 		super();
 		assert clazz != null;
 		_clazz = clazz;

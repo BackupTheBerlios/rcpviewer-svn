@@ -11,6 +11,7 @@ import org.essentialplatform.louis.util.PrimitiveUtil;
 
 /**
  * Descriptions and icons for primitive and some other base classes.
+ * 
  * @author Mike
  */
 class BaseClassLabelProvider extends LabelProvider implements ILouisLabelProvider{
@@ -22,6 +23,12 @@ class BaseClassLabelProvider extends LabelProvider implements ILouisLabelProvide
 		super();
 	}
 
+	/*
+	 * @see org.essentialplatform.louis.labelproviders.ILouisLabelProvider#init()
+	 */
+	public void init() {
+		// does nothing
+	}
 
 	/**
 	 * Returns descriptions.

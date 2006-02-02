@@ -7,10 +7,10 @@ import org.essentialplatform.louis.util.ImageUtil;
 
 /**
  * Descriptions and icons for primitive classes.
+ * 
  * @author Mike
  */
-class ClassLabelProvider
-		extends LabelProvider implements ILouisLabelProvider{
+class ClassLabelProvider extends LabelProvider implements ILouisLabelProvider{
 	
 	/**
 	 * Package-private constructor.
@@ -19,7 +19,13 @@ class ClassLabelProvider
 		super();
 	}
 
-
+	/*
+	 * @see org.essentialplatform.louis.labelproviders.ILouisLabelProvider#init()
+	 */
+	public void init() {
+		// does nothing
+	}
+	
 	/**
 	 * Returns descriptions for primitive classes.
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)

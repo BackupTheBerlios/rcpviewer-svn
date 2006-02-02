@@ -10,9 +10,10 @@ import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntime
 
 /**
  * Can handle any <code>IDomainObject</code>
+ * 
  * @author Mike
  */
-class DefaultDomainObjectLabelProvider
+public class DefaultDomainObjectLabelProvider 
 		extends LabelProvider implements ILouisLabelProvider{
 	
 	/**
@@ -20,6 +21,14 @@ class DefaultDomainObjectLabelProvider
 	 */
 	DefaultDomainObjectLabelProvider() {
 		super();
+	}
+
+
+	/*
+	 * @see org.essentialplatform.louis.labelproviders.ILouisLabelProvider#init()
+	 */
+	public void init() {
+		// does nothing
 	}
 
 
@@ -50,5 +59,6 @@ class DefaultDomainObjectLabelProvider
 		}
 		return null;
 	}
+
 
 }

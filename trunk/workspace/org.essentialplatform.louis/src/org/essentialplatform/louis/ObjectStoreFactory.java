@@ -9,7 +9,7 @@ import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
  * Creates <code>IObjectStore</code>.
  * @author Mike
  */
-class ObjectStoreFactory {
+public class ObjectStoreFactory {
 	
 	/**
 	 * Creates the objects store for the application.

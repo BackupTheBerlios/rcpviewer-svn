@@ -19,7 +19,8 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 	 * @param context
 	 * @return
 	 */
-	public boolean isApplicable(Object model, IGuiFactory context) {
+	public boolean isApplicable(
+			final Object model, IGuiFactory context) {
 		if( model == null ) throw new IllegalArgumentException();
 		return ( model instanceof IDomainClass );
 	}
@@ -84,7 +85,7 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 				
 				// call factory method
 				IGuiFactory factory = 
-					LouisPlugin.getDefault().getGuiFactory(iAttribute, this );
+					LouisPlugin.getApplication().getGuiFactory(iAttribute, this );
 				IFormPart attributePart = 
 					factory.createGui(iAttribute, toolkit, composite, hints ) ;
 				part.addChildPart( attributePart );
@@ -106,7 +107,7 @@ public class DomainClassGuiFactory implements IGuiFactory<IDomainClass> {
 				
 				// call factory method
 				IGuiFactory factory = 
-					LouisPlugin.getDefault().getGuiFactory( iReference, this );
+					LouisPlugin.getApplication().getGuiFactory( iReference, this );
 				IFormPart referencePart = 
 					factory.createGui( iReference, toolkit, composite, hints );
 				part.addChildPart( referencePart );

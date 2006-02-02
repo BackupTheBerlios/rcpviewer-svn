@@ -11,9 +11,16 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public interface IDndTransferProvider {
 	
-	public static final String EXTENSION_POINT_ID
-		= "org.essentialplatform.gui.transferprovider"; //$NON-NLS-1$
-
+	/**
+	 * Initialize.
+	 * 
+	 * <p>
+	 * Separates out the reading of the information from the creating of the
+	 * <tt>Transfer</tt> objects.
+	 *
+	 */
+	public void init();
+	
 	/**
 	 * 
 	 * @param element

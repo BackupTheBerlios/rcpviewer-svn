@@ -3,23 +3,29 @@ package org.essentialplatform.runtime.shared;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-import org.essentialplatform.runtime.shared.DomainRegistry;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class RuntimePlugin extends Plugin {
-	//The shared instance.
-	private static RuntimePlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
 	
-	private IDomainRegistry _domainRegistry;
+	/**
+	 * ResourceBundle identifier.
+	 */
+	public static final String RUNTIME_PLUGIN_RESOURCES = 
+		"org.essentialplatform.runtime.RuntimePluginResources";
+
+	
+	////////////////////////////////////////////////////////////////////
+	// Singleton, constructor
+	////////////////////////////////////////////////////////////////////
+
+	private static RuntimePlugin plugin;
+	
 	
 	/**
 	 * The constructor.
@@ -28,6 +34,18 @@ public class RuntimePlugin extends Plugin {
 		super();
 		plugin = this;
 	}
+
+	/**
+	 * Returns the shared instance.
+	 */
+	public static RuntimePlugin getDefault() {
+		return plugin;
+	}
+
+	
+	////////////////////////////////////////////////////////////////////
+	// Lifecycle methods
+	////////////////////////////////////////////////////////////////////
 
 	/**
 	 * This method is called upon plug-in activation
@@ -45,19 +63,34 @@ public class RuntimePlugin extends Plugin {
 		resourceBundle = null;
 	}
 
+
+
+	////////////////////////////////////////////////////////////////////
+	// ResourceBundle
+	////////////////////////////////////////////////////////////////////
+
+	private ResourceBundle resourceBundle;
+	
 	/**
-	 * Returns the shared instance.
+	 * Returns the plugin's resource bundle,
 	 */
-	public static RuntimePlugin getDefault() {
-		return plugin;
+	public ResourceBundle getResourceBundle() {
+		try {
+			if (resourceBundle == null)
+				resourceBundle = ResourceBundle.getBundle(RUNTIME_PLUGIN_RESOURCES);
+		} catch (MissingResourceException x) {
+			resourceBundle = null;
+		}
+		return resourceBundle;
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * Convenience method that returns the string from the {@link #getDefault()}'s 
+	 * plugin's resource bundle, or the <tt>key</tt> originally provided if not 
+	 * found.
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = RuntimePlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = getDefault().getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
@@ -65,30 +98,45 @@ public class RuntimePlugin extends Plugin {
 		}
 	}
 
+
+	////////////////////////////////////////////////////////////////////
+	// DomainRegistry
+	////////////////////////////////////////////////////////////////////
+	
+	private IDomainRegistry _domainRegistry;
+	
 	/**
-	 * Returns the plugin's resource bundle,
+	 * Returns the domain registry of the {@link #getDefault()}'s plugin.
+	 * 
+	 * <p>
+	 * Will throw an {@link IllegalStateException} if still null.  That is, 
+	 * the {@link IDomainRegistry} must have previously been provided using
+	 * {@link #setDomainRegistry(IDomainRegistry)}.
+	 * 
+	 * <p>
+	 * This method is <tt>static</tt> as a convenience, to save having to
+	 * write <tt>getDefault().getDomainRegistry()</tt>.  Admittedly this does
+	 * introduce an asymmetry with the setter.
 	 */
-	public ResourceBundle getResourceBundle() {
-		try {
-			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("org.essentialplatform.runtime.RuntimePluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
+	public static IDomainRegistry getDomainRegistry() {
+		final IDomainRegistry domainRegistry = getDefault()._domainRegistry;
+		if (domainRegistry == null) {
+			throw new IllegalStateException("DomainRegistry is null");
 		}
-		return resourceBundle;
+		return domainRegistry;
 	}
-
-	public synchronized IDomainRegistry getDomainRegistry() {
-		try {
-			if (_domainRegistry == null) {
-				_domainRegistry= new DomainRegistry();
-			}
-			return _domainRegistry;
-		}
-		catch (CoreException x) {
-			getLog().log(x.getStatus());
-			throw new RuntimeException(x);
-		}
+	/**
+	 * Provides an implementation of the {@link IDomainRegistry} for the
+	 * plugin to hold onto.
+	 * 
+	 * <p>
+	 * This design allows us to set up the runtime in different ways as
+	 * appropriate.  For example, client vs server vs test framework vs prototyping. 
+	 * 
+	 * @param domainRegistry
+	 */
+	public void setDomainRegistry(IDomainRegistry domainRegistry) {
+		_domainRegistry = domainRegistry;
 	}
-
+	
 }

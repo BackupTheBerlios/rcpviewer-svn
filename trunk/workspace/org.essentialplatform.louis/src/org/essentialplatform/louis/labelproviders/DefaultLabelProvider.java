@@ -11,15 +11,11 @@ import org.essentialplatform.louis.LouisPlugin;
  * Can handle any object. See <code>getText()</code> for rules applied.
  * @author Mike
  */
-class DefaultLabelProvider
-		extends LabelProvider implements ILouisLabelProvider{
+public class DefaultLabelProvider extends LabelProvider implements ILouisLabelProvider{
 	
 	private Image _missing = null;
 	
-	/**
-	 * Package-private constructor.
-	 */
-	DefaultLabelProvider() {
+	public DefaultLabelProvider() {
 		super();
 	}
 
@@ -41,7 +37,15 @@ class DefaultLabelProvider
 			return String.valueOf( element );
 		}
 	}
-	
+
+	/*
+	 * Does nothing.
+	 * 
+	 * @see org.essentialplatform.louis.labelproviders.ILouisLabelProvider#init()
+	 */
+	public void init() {
+		// does nothing
+	}
 
 	/**
 	 * Returns the platform's default missing image 
@@ -65,4 +69,5 @@ class DefaultLabelProvider
 		}
 		super.dispose();
 	}
+
 }

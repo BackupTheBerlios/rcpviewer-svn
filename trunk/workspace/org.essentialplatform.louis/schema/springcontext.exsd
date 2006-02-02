@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.essentialplatform.louis">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.essentialplatform.louis" id="springcontext" name="Spring Context"/>
+      </appInfo>
+      <documentation>
+         Supplies detail of a spring context file in order to boot a domain application.
+      </documentation>
+   </annotation>
+
+   <element name="springcontext">
+      <annotation>
+         <documentation>
+            Represents a spring context as contributed by an application plugin (gui.acme etc).
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifier for this Spring Context.  As passed as an argument to -appId when starting the Essential client.
+Should be unique across any and all domain application plugins, so it is recommended that it be the same value as the ID of domain application plugin itself (eg &quot;org.essentialplatform.gui.acme&quot;).
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="file" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name of the spring context configuration file, relative to the root of the plugin.  For example, if stored in root (which is typical), would be something like &lt;tt&gt;spring-context.xml&lt;/tt&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         0.0.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following should appear in the domain application plugin&apos;s plugin.xml:
+
+   &lt;extension
+         point=&quot;org.essentialplatform.louis.springcontext&quot;&gt;
+         &lt;springcontext 
+          id=&quot;org.essentialplatform.gui.acme&quot;
+          file=&quot;spring-context.xml&quot;/&gt;
+   &lt;/extension&gt;
+
+where spring-context.xml resides in the root of that plugin.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         (None)
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         n/a.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         (c) 2006 Essential Platform Development Team.
+      </documentation>
+   </annotation>
+
+</schema>

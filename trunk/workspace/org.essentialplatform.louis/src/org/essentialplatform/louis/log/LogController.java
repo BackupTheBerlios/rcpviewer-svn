@@ -3,6 +3,7 @@
  */
 package org.essentialplatform.louis.log;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.net.SocketAppender;
 import org.apache.log4j.varia.NullAppender;
@@ -12,20 +13,18 @@ import org.essentialplatform.louis.LouisPlugin;
 
 /**
  * Sets up and controls logging.
+ * 
+ * <p>
+ * Instantiate once and throw away.  It registers itself with the 
+ * {@link IPreferenceStore} which will hold a 
+ * strong reference to it.  (Does this constitute a memory leak?)
+ * 
+ * <p>
+ * TODO: factor out the common stuff here into IAppenderController (currently empty).
+ * 
  * @author Mike
  */
 public class LogController implements IPropertyChangeListener {
-	
-	public static final String CONSOLE_APPENDER_KEY = "LogController.ShowConsole";
-	public static final String SOCKET_APPENDER_KEY = "LogController.SocketAppender";
-	public static final String SOCKET_APPENDER_HOST_NAME_KEY = "LogController.SocketAppenderHostName";
-	public static final String SOCKET_APPENDER_PORT_KEY = "LogController.SocketAppenderPort";
-	
-	public static final String SOCKET_APPENDER_DEFAULT_HOST_NAME = "localhost";
-	public static final int SOCKET_APPENDER_DEFAULT_PORT = 4445;
-	
-	private MessageConsoleAppender _consoleAppender = null;
-	private SocketAppender _socketAppender = null;
 	
 	/**
 	 * Constructor starts listening on preference store and sets up initial
@@ -53,6 +52,7 @@ public class LogController implements IPropertyChangeListener {
 		}
 	}
 
+	
 	/**
 	 * Adds/removes appenders based on changes to preferences
 	 * @see org.eclipse.core.runtime.Preferences$IPropertyChangeListener#propertyChange(org.eclipse.core.runtime.Preferences.PropertyChangeEvent)
@@ -91,6 +91,14 @@ public class LogController implements IPropertyChangeListener {
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////
+	// ConsoleAppender
+	///////////////////////////////////////////////////////////////////
+
+	public static final String CONSOLE_APPENDER_KEY = "LogController.ShowConsole";
+
+	private MessageConsoleAppender _consoleAppender = null;
+
 	private void addConsoleAppender() {
 		assert _consoleAppender == null;
 		_consoleAppender = new MessageConsoleAppender();
@@ -103,7 +111,20 @@ public class LogController implements IPropertyChangeListener {
 		Logger.getRootLogger().removeAppender( _consoleAppender );
 		_consoleAppender = null;
 	}
+
+	///////////////////////////////////////////////////////////////////
+	// SocketAppender
+	///////////////////////////////////////////////////////////////////
+
+	public static final String SOCKET_APPENDER_KEY = "LogController.SocketAppender";
+	public static final String SOCKET_APPENDER_HOST_NAME_KEY = "LogController.SocketAppenderHostName";
+	public static final String SOCKET_APPENDER_PORT_KEY = "LogController.SocketAppenderPort";
 	
+	public static final String SOCKET_APPENDER_DEFAULT_HOST_NAME = "localhost";
+	public static final int SOCKET_APPENDER_DEFAULT_PORT = 4445;
+
+	private SocketAppender _socketAppender = null;
+
 	private void addSocketAppender() {
 		assert _socketAppender == null;
 

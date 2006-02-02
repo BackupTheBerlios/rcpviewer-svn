@@ -29,7 +29,7 @@ class OpsViewDnDController {
 				viewer.getTree(), 
 				DND.DROP_MOVE | DND.DROP_COPY );
 		target.setTransfer( 
-				LouisPlugin.getDefault().getTransferProvider().getAllTransfers() ) ;
+				LouisPlugin.getApplication().getGlobalTransferProvider().getAllTransfers() ) ;
 		target.addDropListener ( new DropTargetAdapter() {
 			public void dragEnter(DropTargetEvent event){
 				if ( event.detail == DND.DROP_NONE ) {

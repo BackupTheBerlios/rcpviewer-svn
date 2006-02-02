@@ -7,17 +7,17 @@ import org.eclipse.core.runtime.Status;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.IDomainBootstrap;
+import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.
  * @author Mike
  */
-class DomainBootstrapJob extends AbstractBootstrapJob {
+public class DomainBootstrapJob extends AbstractBootstrapJob {
 	
 	private final IDomainBootstrap _bootstrap;
 	
-	DomainBootstrapJob( IDomainBootstrap bootstrap ) {
+	public DomainBootstrapJob( IDomainBootstrap bootstrap ) {
 		super( DomainBootstrapJob.class.getSimpleName() );
 		assert bootstrap != null;
 		this._bootstrap = bootstrap;

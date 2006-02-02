@@ -5,6 +5,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
 
 /**
  * Used for transferring an arbitary class within the application.
+ * 
  * @author Mike
  */
 public class DomainClassTransfer extends GenericTransfer {
@@ -13,7 +14,7 @@ public class DomainClassTransfer extends GenericTransfer {
 	 * Due to autoboxing must use wrapper class.
 	 * @param clazz
 	 */
-	DomainClassTransfer( Class clazz ) {
+	public DomainClassTransfer( Class clazz ) {
 		super( clazz );
 	}
 	

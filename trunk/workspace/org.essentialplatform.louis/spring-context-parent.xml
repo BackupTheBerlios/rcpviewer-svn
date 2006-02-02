@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="app" 
+		class="org.essentialplatform.louis.app.SecureApplication">
+		<property name="authenticationCommand" ref="loginWizardAuthenticationCommand" />
+		<property name="display" ref="display"/>
+	</bean>
+	
+	<bean id="loginWizardAuthenticationCommand" 
+		class="org.essentialplatform.louis.authentication.loginwizard.LoginWizardAuthenticationCommand">
+		<property name="toolkit" ref="formToolkit" />
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="windowText" value="ACME Example Application"/>
+		<property name="titleText" value="Please Sign In"/>
+	</bean>
+
+	<bean id="authenticationManager" 
+		class="org.essentialplatform.services.authentication.noop.NoopAuthenticationManager">
+	</bean>
+
+	<bean id="formToolkit" class="net.sf.plugins.utils.ui.forms.DialogFormToolkit" singleton="false" >
+		<constructor-arg ref="display" />
+	</bean>
+
+	<bean id="display" 
+		class="org.essentialplatform.louis.app.springsupport.DisplayFactoryBean" >
+	</bean>
+
+
+</beans>

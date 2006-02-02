@@ -16,9 +16,10 @@ import org.essentialplatform.louis.util.StringUtil;
 
 /**
  * Used when no other factory can be found - displays an error message.
+ * 
  * @author Mike
  */
-class DefaultGuiFactory implements IGuiFactory<Object> {
+public class DefaultGuiFactory implements IGuiFactory<Object> {
 	
 	/**
 	 * Always <code>true</code>.

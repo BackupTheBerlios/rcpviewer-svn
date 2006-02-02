@@ -18,7 +18,11 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.essentialplatform.progmodel.louis.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.runtime;visibility:=reexport,
  org.essentialplatform.progmodel.essential.app;visibility:=reexport,
- org.essentialplatform.runtime.server
+ org.essentialplatform.runtime.server,
+ net.sf.plugins.springframework,
+ net.sf.plugins.acegisecurity,
+ net.sf.plugins.utils,
+ org.essentialplatform.services
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.louis,
  org.essentialplatform.louis.dnd,
@@ -28,3 +32,6 @@ Export-Package: org.essentialplatform.louis,
  org.essentialplatform.louis.util,
  org.essentialplatform.louis.widgets
 Bundle-Vendor: Essential Platform Development Team
+Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
+ net.sf.plugins.xstream, 
+ net.sf.plugins.springframework

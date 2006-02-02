@@ -16,14 +16,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IGuiFactory<T> {
 	
-	/* constants  */
-	
-	/**
-	 * Extension point
-	 */
-	public static final String EXTENSION_POINT_ID
-		= "org.essentialplatform.guifactory"; //$NON-NLS-1$
-	
 	/**
 	 * Default style for sections.
 	 */

@@ -103,7 +103,7 @@ public class ReferenceGuiFactory implements IGuiFactory<IDomainClass.IReference>
 		
 		// create attribute list gui
 		IDomainClass dClass = model.getReferencedDomainClass();
-		IGuiFactory detailsFactory = LouisPlugin.getDefault().getGuiFactory(
+		IGuiFactory detailsFactory = LouisPlugin.getApplication().getGuiFactory(
 				dClass, this );
 		IFormPart detailsPart = detailsFactory.createGui( 
 				dClass, 

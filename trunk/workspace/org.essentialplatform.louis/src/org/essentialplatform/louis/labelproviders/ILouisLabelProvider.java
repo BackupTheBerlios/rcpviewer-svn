@@ -10,8 +10,11 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface ILouisLabelProvider extends ILabelProvider {
 	
-	public static final String EXTENSION_POINT_ID
-		= "org.essentialplatform.louis.labelprovider"; //$NON-NLS-1$
+	/**
+	 * Initialized by Essential.
+	 *
+	 */
+	public void init();
 	
 	/**
 	 * As parent interface but a <code>null</code> indicates that this 

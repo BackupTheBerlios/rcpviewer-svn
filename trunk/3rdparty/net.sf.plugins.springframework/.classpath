@@ -4,7 +4,7 @@
 	<classpathentry exported="true" sourcepath="C:/tools/spring-framework-1.2-rc2/src" kind="lib" path="dist/spring-core.jar"/>
 	<classpathentry exported="true" sourcepath="C:/tools/spring-framework-1.2-rc2/src" kind="lib" path="dist/spring-beans.jar"/>
 	<classpathentry exported="true" sourcepath="C:/tools/spring-framework-1.2-rc2/src" kind="lib" path="dist/spring-aop.jar"/>
-	<classpathentry exported="true" sourcepath="C:/tools/spring-framework-1.2-rc2/src" kind="lib" path="dist/spring-context.jar"/>
+	<classpathentry exported="true" sourcepath="src" kind="lib" path="dist/spring-context.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-dao.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-jdbc.jar"/>
 	<classpathentry exported="true" kind="lib" path="dist/spring-mock.jar"/>
