@@ -22,6 +22,6 @@ public interface IDomainBootstrap {
 	 * 
 	 * @throws CoreException if fail to register.
 	 */
-	void registerClasses() throws CoreException;
+	void registerClasses() throws DomainBootstrapException;
 
 }

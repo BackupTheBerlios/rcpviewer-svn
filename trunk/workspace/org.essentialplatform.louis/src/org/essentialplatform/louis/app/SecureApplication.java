@@ -22,6 +22,7 @@ import org.essentialplatform.louis.util.JobUtil;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 import org.essentialplatform.runtime.shared.domain.ExtensionPointReadingDomainRegistry;
 import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
+import org.essentialplatform.runtime.shared.domain.SingleDomainRegistry;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 public final class SecureApplication implements IApplication {
@@ -65,7 +66,8 @@ public final class SecureApplication implements IApplication {
 	 */
 	public Object run(Object args) throws Exception {
 		
-		RuntimePlugin.getDefault().setDomainRegistry(new ExtensionPointReadingDomainRegistry());
+		RuntimePlugin.getDefault().setDomainRegistry(
+				new SingleDomainRegistry(_domainDefinition.getDomainBootstrap()));
 		try {
 			// authenticate the user
 			if (_authenticationCommand.run() == null) {
@@ -73,6 +75,10 @@ public final class SecureApplication implements IApplication {
 			}
 
 			// Register self with plugin.
+			// TODO: this needs to move out of LouisPlugin and into the
+			// IClientDomainBinding.  Louis should then look at the object that
+			// it is interacting with and pick up the information from its
+			// domainClass' domain's binding.
 			LouisPlugin.getDefault().setApplication(this);
 
 			// domain initialisation

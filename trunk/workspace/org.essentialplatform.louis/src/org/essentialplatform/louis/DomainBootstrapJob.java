@@ -1,16 +1,15 @@
 package org.essentialplatform.louis;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.
+ * 
  * @author Mike
  */
 public class DomainBootstrapJob extends AbstractBootstrapJob {
@@ -31,14 +30,9 @@ public class DomainBootstrapJob extends AbstractBootstrapJob {
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {  
-		try {
-			_bootstrap.registerClasses();
-			Domain.instance().addBuilder( 
-					new LouisProgModelRuntimeBuilder() );
-		}
-		catch ( CoreException ce ) {
-			return ce.getStatus();	
-		}
+		_bootstrap.registerClasses();
+		Domain.instance().addBuilder( 
+				new LouisProgModelRuntimeBuilder() );
 		Domain.instance().done();	
 		return Status.OK_STATUS;	
 	}

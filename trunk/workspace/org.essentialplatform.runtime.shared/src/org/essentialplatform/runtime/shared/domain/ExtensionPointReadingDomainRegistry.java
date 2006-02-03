@@ -12,6 +12,25 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
+/**
+ * THIS IMPLEMENTATION IS CURRENTLY NOT SUPPORTED NOR INTEGRATED WITH THE
+ * REST OF THE BOOTSTRAP IMPLEMENTATION.
+ * 
+ * <p>
+ * If it is set up to be the IDomainRegistry (as RuntimePlugin#setDomainRegistry)
+ * then it will read an extension point to locate <tt>IDomainBootstrap</tt>s, and
+ * run 'em.  However, the DomainBootstrap is only part of the picture - there is
+ * other stuff needed to define a domain, see <tt>IDomainDefinition</tt>.
+ * 
+ * <p>
+ * For now, this registry is not being used.  Instead we are using 
+ * SingleDomainRegistry that is simply given (by LouisPlugin) an IDomainBootstrap
+ * from the IDomainDefinition provided by the domain application plugin (eg acme).
+ *
+ * @author Dan Haywood
+ * @deprecated
+ * 
+ */
 public final class ExtensionPointReadingDomainRegistry implements IDomainRegistry {
 	
 	protected Logger getLogger() { return Logger.getLogger(ExtensionPointReadingDomainRegistry.class); }
