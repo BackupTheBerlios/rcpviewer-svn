@@ -1,12 +1,11 @@
 package org.essentialplatform.louis.app;
 
-import org.essentialplatform.core.domain.DomainConstants;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.louis.dnd.IDndTransferProvider;
 import org.essentialplatform.louis.factory.IGuiFactories;
 import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
-import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
  * Implementation of {@link IDomainDefinition} designed for configuration
@@ -15,6 +14,58 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
  * @author Dan Haywood
  */
 public class DomainDefinition implements IDomainDefinition {
+
+
+	////////////////////////////////////////////////////////////////////
+	// Name
+	////////////////////////////////////////////////////////////////////
+
+	private String _name;
+	/*
+	 * @see org.essentialplatform.louis.app.IDomainDefinition#getName()
+	 */
+	public String getName() {
+		return _name;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Mandatory.  Should be the same name as those of the domain classes being
+	 * registered.  For example, if using the 
+	 * {@link EssentialProgModelRuntimeBuilder}, then the domain classes should
+	 * be annotated using <tt>@InDomain("xxx")</tt> where <tt>"xxx"</tt> is the
+	 * name provided here.
+	 *  
+	 * @param domainBootstrap
+	 */
+	public void setName(String name) {
+		_name = name;
+	}
+
+	
+	////////////////////////////////////////////////////////////////////
+	// DomainBuilder
+	////////////////////////////////////////////////////////////////////
+
+	private IDomainBuilder _domainBuilder = new EssentialProgModelRuntimeBuilder();
+	/*
+	 * @see org.essentialplatform.louis.app.IDomainDefinition#getDomainBuilder()
+	 */
+	public IDomainBuilder getDomainBuilder() {
+		return _domainBuilder;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Optional; if not specified then defaults to {@link EssentialProgModelRuntimeBuilder}.
+	 * 
+	 * @param domainBuilder
+	 */
+	public void setDomainBuilder(IDomainBuilder domainBuilder) {
+		_domainBuilder = domainBuilder;
+	}
 
 
 	////////////////////////////////////////////////////////////////////
@@ -35,30 +86,6 @@ public class DomainDefinition implements IDomainDefinition {
 	}
 	
 	
-	////////////////////////////////////////////////////////////////////
-	// SessionBinding
-	////////////////////////////////////////////////////////////////////
-	
-	private SessionBinding _sessionBinding = 
-		new SessionBinding(DomainConstants.DEFAULT_NAME, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
-	public SessionBinding getSessionBinding() {
-		return _sessionBinding;
-	}
-	/**
-	 * For dependency injection.
-	 * 
-	 * <p>
-	 * Optional.  If not specified, defaults to a binding for 
-	 * {@link DomainConstants#DEFAULT_NAME} and 
-	 * {@link PersistenceConstants#DEFAULT_OBJECT_STORE_ID)}
-	 * 
-	 * @param sessionBinding
-	 */
-	public void setSessionBinding(SessionBinding sessionBinding) {
-		_sessionBinding = sessionBinding;
-	}
-	
-
 	////////////////////////////////////////////////////////////////////
 	// GuiFactories
 	////////////////////////////////////////////////////////////////////
@@ -112,5 +139,6 @@ public class DomainDefinition implements IDomainDefinition {
 	public void setGlobalDnDTransferProvider(IDndTransferProvider globalDnDTransferProvider) {
 		_globalDnDTransferProvider = globalDnDTransferProvider;
 	}
-
+	
+	
 }

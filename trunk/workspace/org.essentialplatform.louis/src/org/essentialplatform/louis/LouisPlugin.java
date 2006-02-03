@@ -108,6 +108,14 @@ public class LouisPlugin extends AbstractUIPlugin {
 	public static SecureApplication getApplication() {
 		return getDefault()._application;
 	}
+	/**
+	 * TODO: this needs to be removed.  The LouisPlugin should be able to support
+	 * multiple domain applications at the same time.  It should look at the
+	 * object it is interacting with, look up the IClientDomainBinding from its
+	 * IDomainClass, and then get the GuiFactories etc that it needs.
+	 * 
+	 * @param application
+	 */
 	public void setApplication(SecureApplication application) {
 		_application = application;
 	}

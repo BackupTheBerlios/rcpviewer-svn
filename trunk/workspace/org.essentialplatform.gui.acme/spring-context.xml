@@ -3,9 +3,16 @@
 
 <beans>
 
-
-	<bean id="authenticationManager" 
-		class="org.essentialplatform.services.authentication.foobar.FooBarAuthenticationManager">
+	<!-- must supply a 'domain' bean (implementing IDomainDefinition) -->
+	<bean id="domain" class="org.essentialplatform.louis.app.ExtensionPointReadingDomainDefinition">
+		<property name="name" value="default"/>
 	</bean>
 
+	<!-- potentially override the authenticationManager defined in 
+	     spring-context-parent.xml in LouisPlugin -->
+	<bean id="authenticationManager" 
+		class="org.essentialplatform.services.authentication.noop.NoopAuthenticationManager">
+	</bean>
+
+	
 </beans>

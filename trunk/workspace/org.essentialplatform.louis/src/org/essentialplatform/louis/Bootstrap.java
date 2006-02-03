@@ -10,7 +10,10 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
+import org.essentialplatform.louis.app.IApplication;
+import org.essentialplatform.louis.app.IDomainDefinition;
 import org.osgi.framework.Bundle;
+import org.springframework.beans.BeansException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
@@ -30,10 +33,12 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final int ERROR_NO_STORE_FLAG = 102;
 	
 	private static final int ERROR_NO_SPRINGCONTEXT_EXTENSION_POINT = 110;
-	private static final int ERROR_NO_APP_BEAN = 120;
-	private static final int ERROR_APP_NOT_IPLATFORMRUNNABLE = 130;
+	private static final int ERROR_BEAN_WRONG_TYPE = 110;
 
+	private static final int ERROR_NO_APP_BEAN = 200;
 	private static final String BEAN_APP_ID = "app";
+	private static final int ERROR_NO_DOMAIN_BEAN = 210;
+	private static final String BEAN_DOMAIN_ID = "domain";
 
 	private static final String SPRINGCONTEXT_PARENT_XML = "spring-context-parent.xml";
 	private static final String SPRINGCONTEXT_EXTENSION_POINT = "org.essentialplatform.louis.springcontext";
@@ -95,16 +100,15 @@ public class Bootstrap implements IPlatformRunnable {
 			FileSystemXmlApplicationContext context = 
 				new FileSystemXmlApplicationContext(new String[]{parentFilePath, filePath});
 
-
-			// locate the bean called "app", and check that it implements IPlatformRunnable.
-			final Object appObj = context.getBean(BEAN_APP_ID);
-			if (appObj == null) {
-				throwCoreException(ERROR_NO_APP_BEAN, "Could not locate bean %s", BEAN_APP_ID);
-			}
-			if (!(appObj instanceof IPlatformRunnable)) {
-				throwCoreException(ERROR_APP_NOT_IPLATFORMRUNNABLE, "Object '%s' (from Spring context file) does not implement IPlatformRunnable", BEAN_APP_ID);
-			}
-			final IPlatformRunnable app = (IPlatformRunnable)appObj;
+			// obtain beans from context, checking that implement required type
+			// (throws CoreException otherwise).
+			final IApplication app = 
+				getBeanFrom(context, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
+			// locate the bean called "domain", and check that it implements IDomainDefinition
+			final IDomainDefinition domainDefinition = 
+				getBeanFrom(context, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
+			
+			app.init(domainDefinition, store); // from whence derives SessionBinding
 			
 			return app.run(args);
 		} catch(Exception ex) {
@@ -123,6 +127,17 @@ public class Bootstrap implements IPlatformRunnable {
 				// Therefore, just swallow any exception.
 			}
 		}
+	}
+
+	private <T> T getBeanFrom(FileSystemXmlApplicationContext context, String beanId, int errorNoBean, Class<T> requiredType) throws BeansException, CoreException {
+		final Object bean = context.getBean(beanId);
+		if (bean == null) {
+			throwCoreException(errorNoBean, "Could not locate bean %s", beanId);
+		}
+		if (!(requiredType.isAssignableFrom(bean.getClass()))) {
+			throwCoreException(ERROR_BEAN_WRONG_TYPE, "Application '%s' (from Spring context file) does not implement %s", beanId, requiredType.getSimpleName());
+		}
+		return (T)bean;
 	}
 
 	private void throwCoreException(final int code, final String formatMessage, Object... args) throws CoreException {

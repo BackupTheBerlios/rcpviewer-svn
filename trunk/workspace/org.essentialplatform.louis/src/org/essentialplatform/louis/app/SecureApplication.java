@@ -7,30 +7,58 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.essentialplatform.louis.Bootstrap;
 import org.essentialplatform.louis.DomainBootstrapJob;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.SessionBootstrapJob;
 import org.essentialplatform.louis.app.workbench.ApplicationWorkbenchAdvisor;
 import org.essentialplatform.louis.authentication.IAuthenticationCommand;
 import org.essentialplatform.louis.authentication.noop.NoopAuthenticationCommand;
-import org.essentialplatform.louis.dnd.ExtensionPointReadingGlobalDnDTransferProvider;
 import org.essentialplatform.louis.dnd.IDndTransferProvider;
-import org.essentialplatform.louis.factory.ExtensionPointReadingGuiFactories;
 import org.essentialplatform.louis.factory.IGuiFactories;
 import org.essentialplatform.louis.factory.IGuiFactory;
-import org.essentialplatform.louis.labelproviders.ExtensionPointReadingGlobalLabelProvider;
 import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
 import org.essentialplatform.louis.util.JobUtil;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
-import org.essentialplatform.runtime.shared.domain.ExtensionPointReadingDomainBootstrap;
 import org.essentialplatform.runtime.shared.domain.ExtensionPointReadingDomainRegistry;
 import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
+import org.essentialplatform.runtime.shared.session.SessionBinding;
 
-public final class SecureApplication implements IPlatformRunnable {
+public final class SecureApplication implements IApplication {
 
 	private Logger getLogger() { return Logger.getLogger(SecureApplication.class); }
 	
 	public SecureApplication() {}
+
+
+	////////////////////////////////////////////////////////////////////
+	// init
+	////////////////////////////////////////////////////////////////////
+
+
+	/**
+	 * Provided by {@link Bootstrap}.
+	 */
+	public void init(IDomainDefinition domainDefinition, String objectStoreName) {
+		_domainDefinition = domainDefinition;
+		_sessionBinding = new SessionBinding(domainDefinition.getName(), objectStoreName);
+	}
+
+	private IDomainDefinition _domainDefinition;
+	public IDomainDefinition getDomainDefinition() {
+		return _domainDefinition;
+	}
+	
+	private SessionBinding _sessionBinding;
+	public SessionBinding getSessionBinding() {
+		return _sessionBinding;
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////
+	// run
+	////////////////////////////////////////////////////////////////////
+
 	
 	/*
 	 * @see org.eclipse.core.runtime.IPlatformRunnable#run(java.lang.Object)
@@ -40,34 +68,26 @@ public final class SecureApplication implements IPlatformRunnable {
 		RuntimePlugin.getDefault().setDomainRegistry(new ExtensionPointReadingDomainRegistry());
 		try {
 			// authenticate the user
-			if (_authenticationCommand.run() == null)
+			if (_authenticationCommand.run() == null) {
 				return IPlatformRunnable.EXIT_OK;  
-
+			}
 
 			// Register self with plugin.
 			LouisPlugin.getDefault().setApplication(this);
 
-			// run
-			DomainDefinition domainDef = new DomainDefinition();
-			domainDef.setDomainBootstrap(new ExtensionPointReadingDomainBootstrap());
-			domainDef.setGuiFactories(new ExtensionPointReadingGuiFactories());
-			domainDef.setGlobalLabelProvider(new ExtensionPointReadingGlobalLabelProvider());
-			domainDef.setGlobalDnDTransferProvider(new ExtensionPointReadingGlobalDnDTransferProvider());
-			
-
 			// domain initialisation
-			IDomainBootstrap bootstrap = domainDef.getDomainBootstrap();
+			IDomainBootstrap bootstrap = _domainDefinition.getDomainBootstrap();
 			DomainBootstrapJob domainJob = new DomainBootstrapJob( bootstrap );
 			domainJob.schedule();
 
 			// session initialisation (default domain & store for now )
-			SessionBootstrapJob sessionJob = new SessionBootstrapJob(domainDef.getSessionBinding());
+			SessionBootstrapJob sessionJob = new SessionBootstrapJob(getSessionBinding());
 			sessionJob.schedule();
 
 			// instantiate fields
-			_guiFactories = domainDef.getGuiFactories();
+			_guiFactories = _domainDefinition.getGuiFactories();
 			_guiFactories.init();
-			_globalLabelProvider = domainDef.getGlobalLabelProvider();
+			_globalLabelProvider = _domainDefinition.getGlobalLabelProvider();
 			_globalLabelProvider.init();
 			
 			// effectively running jobs synchronously at the moment
@@ -75,7 +95,7 @@ public final class SecureApplication implements IPlatformRunnable {
 			JobUtil.waitForJob( sessionJob, getLogger() );
 			
 			// this must be run once domain classes known
-			_transferProvider = domainDef.getGlobalDndTransferProvider();
+			_transferProvider = _domainDefinition.getGlobalDndTransferProvider();
 			_transferProvider.init();
 			
 			int returnCode = PlatformUI.createAndRunWorkbench(_display, new ApplicationWorkbenchAdvisor());
@@ -106,7 +126,7 @@ public final class SecureApplication implements IPlatformRunnable {
 
 
 	////////////////////////////////////////////////////////////////////
-	// ExtensionPointReadingGuiFactories
+	// GuiFactories
 	////////////////////////////////////////////////////////////////////
 	
 	private IGuiFactories _guiFactories= null;
@@ -204,6 +224,8 @@ public final class SecureApplication implements IPlatformRunnable {
 	 */
 	public IDndTransferProvider getGlobalTransferProvider() {
 		return _transferProvider;
-	}	
+	}
+
+
 
 }
