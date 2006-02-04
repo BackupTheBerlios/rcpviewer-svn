@@ -16,8 +16,7 @@ Bundle-ClassPath: library.jar,
  dist/spring-mock.jar,
  dist/
 Eclipse-BuddyPolicy: registered
-Export-Package: net.sf.plugins.springframework,
- org.aopalliance.aop,
+Export-Package: org.aopalliance.aop,
  org.aopalliance.intercept,
  org.springframework.aop,
  org.springframework.aop.framework,

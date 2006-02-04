@@ -3,9 +3,7 @@ package org.essentialplatform.louis;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
+import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
 /**
  * Wraps the passed <code>IDomainBootstrap</code>.
@@ -14,12 +12,12 @@ import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
  */
 public class DomainBootstrapJob extends AbstractBootstrapJob {
 	
-	private final IDomainBootstrap _bootstrap;
+	private final IDomainRegistry _registry;
 	
-	public DomainBootstrapJob( IDomainBootstrap bootstrap ) {
+	public DomainBootstrapJob( IDomainRegistry registry ) {
 		super( DomainBootstrapJob.class.getSimpleName() );
-		assert bootstrap != null;
-		this._bootstrap = bootstrap;
+		assert registry != null;
+		_registry = registry;
 	}
 
 
@@ -30,10 +28,7 @@ public class DomainBootstrapJob extends AbstractBootstrapJob {
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {  
-		_bootstrap.registerClasses();
-		Domain.instance().addBuilder( 
-				new LouisProgModelRuntimeBuilder() );
-		Domain.instance().done();	
+		_registry.registerClassesInDomains();
 		return Status.OK_STATUS;	
 	}
 }

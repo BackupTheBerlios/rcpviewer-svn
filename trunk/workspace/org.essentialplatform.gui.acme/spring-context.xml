@@ -4,9 +4,92 @@
 <beans>
 
 	<!-- must supply a 'domain' bean (implementing IDomainDefinition) -->
+	<!-- 
 	<bean id="domain" class="org.essentialplatform.louis.app.ExtensionPointReadingDomainDefinition">
 		<property name="name" value="default"/>
 	</bean>
+	 -->
+
+	<bean id="domain" 
+		class="org.essentialplatform.louis.app.DomainDefinition">
+		<property name="name" value="default"/>
+	    <property name="domainBuilder" ref="essentialProgModelRuntimeBuilder"/>
+	    <property name="domainBootstrap" ref="domainBootstrap"/>
+	    <property name="guiFactories" ref="guiFactories"/>
+	    <property name="globalLabelProvider" ref="globalLabelProvider"/>
+	    <property name="globalDndTransferProvider" ref="globalDndTransferProvider"/>
+	</bean>
+
+	<bean id="essentialProgModelRuntimeBuilder" 
+		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder"/>
+
+	<bean id="domainBootstrap"
+		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainBootstrap">
+		<property name="classes">
+			<list>
+				<value>org.essentialplatform.gui.acme.model.EasiestBean</value>
+		   		<value>org.essentialplatform.gui.acme.model.EasyBean</value>
+		   		<!-- 
+		   		<value>org.essentialplatform.gui.acme.model.AnotherEasyBean</value>
+		   		<value>org.essentialplatform.gui.acme.model.Counter</value>
+		   		 -->
+		        <value>org.essentialplatform.gui.acme.model.PrimitiveBean</value>
+		        <value>org.essentialplatform.gui.acme.model.WrappedPrimitiveBean</value>
+		        <value>org.essentialplatform.gui.acme.model.Beans</value>
+			</list>
+		</property>
+		<property name="secondaryBuilders">
+			<list>
+				<ref bean="louisProgModelRuntimeBuilder"/>
+			</list>
+		</property>
+	</bean>
+	
+	 
+	<bean id="louisProgModelRuntimeBuilder" 
+		class="org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder"/>
+		
+	
+	<bean id="guiFactories"
+		class="org.essentialplatform.louis.factory.SpringConfiguredGuiFactories">
+		<!-- 
+		<property name="guiFactories">
+			<list>
+				<ref bean="colourAttributeGuiFactory"/>
+			</list>
+		</property>
+		 -->
+	</bean>
+	
+	<!-- 
+	<bean id="colourAttributeGuiFactory" 
+		class="org.essentialplatform.gui.acme.factory.exts.ColourAttributeGuiFactory"/>
+	-->
+	
+	<bean id="globalLabelProvider" 
+		class="org.essentialplatform.louis.labelproviders.SpringConfiguredGlobalLabelProvider">
+		<!-- 
+		<property name="labelProviders">
+			<list>
+				<ref bean="someDomainSpecificLabelProvider"/>
+			</list>
+		</property>
+		-->
+	</bean>
+
+	<bean id="globalDndTransferProvider" 
+		class="org.essentialplatform.louis.dnd.SpringConfiguredGlobalDnDTransferProvider">
+		<!-- 
+		<property name="dndTransferProviders">
+			<list>
+				<ref bean="someDomainSpecificDndTransferProvider"/>
+			</list>
+		</property>
+		-->
+	</bean>
+
+
+
 
 	<!-- potentially override the authenticationManager defined in 
 	     spring-context-parent.xml in LouisPlugin -->

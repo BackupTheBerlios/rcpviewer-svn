@@ -57,22 +57,11 @@ public final class SpringConfiguredDomainBootstrap
 		for (String className: _classNames) {
 			Class<?> javaClass;
 			try {
-				javaClass = Class.forName(className);
-				javaClass.newInstance();
+				javaClass = getBundle().loadClass(className);
 				classes.add(javaClass);
 			} catch (ClassNotFoundException ex) {
 				String msg = String.format(
-						"Class#forName(\"%s\") failed", className);   //$NON-NLS-1$
-				getLogger().error(msg);
-				throw new DomainRegistryException(msg, ex);
-			} catch (InstantiationException ex) {
-				String msg = String.format(
-						"Could not instantiate class '%s' - does it have a public no-arg constructor?", className);   //$NON-NLS-1$
-				getLogger().error(msg);
-				throw new DomainRegistryException(msg, ex);
-			} catch (IllegalAccessException ex) {
-				String msg = String.format(
-						"Could not instantiate class '%s' - does it have a public no-arg constructor?", className);   //$NON-NLS-1$
+						"Bundle#loadClass(\"%s\") failed", className);   //$NON-NLS-1$
 				getLogger().error(msg);
 				throw new DomainRegistryException(msg, ex);
 			}

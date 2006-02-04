@@ -51,3 +51,4 @@ Export-Package: org.essentialplatform.runtime.client.authorization,
  org.essentialplatform.runtime.shared.util
 Eclipse-RegisterBuddy: net.sf.plugins.xstream
 Plugin-Class: org.essentialplatform.runtime.shared.RuntimePlugin
+Eclipse-BuddyPolicy: registered

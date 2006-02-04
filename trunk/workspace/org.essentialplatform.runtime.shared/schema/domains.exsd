@@ -3,7 +3,7 @@
 <schema targetNamespace="org.essentialplatform.runtime.shared">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.essentialplatform.runtime.shared.domain" id="domains" name="Essential Platform Domains"/>
+         <meta.schema plugin="org.essentialplatform.runtime.shared.domains" id="domains" name="Essential Platform Domains"/>
       </appInfo>
       <documentation>
          Used to register object sessions with the system.  Object sessions provide access to object domains.
@@ -29,7 +29,7 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="name" type="string">
+         <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
                   

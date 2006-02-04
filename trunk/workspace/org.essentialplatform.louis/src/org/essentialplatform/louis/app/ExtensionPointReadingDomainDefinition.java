@@ -46,7 +46,7 @@ public final class ExtensionPointReadingDomainDefinition extends DomainDefinitio
 		setDomainBootstrap(new ExtensionPointReadingDomainBootstrap());
 		setGuiFactories(new ExtensionPointReadingGuiFactories());
 		setGlobalLabelProvider(new ExtensionPointReadingGlobalLabelProvider());
-		setGlobalDnDTransferProvider(new ExtensionPointReadingGlobalDnDTransferProvider());
+		setGlobalDndTransferProvider(new ExtensionPointReadingGlobalDnDTransferProvider());
 	}
 	
 }

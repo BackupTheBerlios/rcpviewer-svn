@@ -2,11 +2,19 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension-point id="domains" name="Essential Platform Runtime Domains" schema="schema/domains.exsd"/>
-   <extension-point id="objectstorebootstrap" name="ObjectStore BootStrap" schema="schema/objectstorebootstrap.exsd"/>
+   <extension-point id="domains" 
+                    name="Essential Platform Runtime Domains" 
+                    schema="schema/domains.exsd"/>
+   <extension-point id="domainclass" 
+                    name="Domain Class" 
+                    schema="schema/domainclass.exsd"/>
+   <extension-point id="objectstorebootstrap" 
+                    name="ObjectStore BootStrap" 
+                    schema="schema/objectstorebootstrap.exsd"/>
 
    <extension
          point="org.essentialplatform.runtime.shared.objectstorebootstrap">
          <impl class="org.essentialplatform.runtime.shared.persistence.NoopObjectStoreBootStrap"/>
    </extension>
+   
 </plugin>

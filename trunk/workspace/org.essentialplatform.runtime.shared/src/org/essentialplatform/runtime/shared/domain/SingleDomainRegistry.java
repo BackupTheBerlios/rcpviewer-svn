@@ -11,8 +11,9 @@ public final class SingleDomainRegistry implements IDomainRegistry {
 	
 	protected Logger getLogger() { return Logger.getLogger(SingleDomainRegistry.class); }
 	
-	public SingleDomainRegistry(IDomainBootstrap domainBootstrap) {
+	public SingleDomainRegistry(IDomainBootstrap domainBootstrap, String domainName) {
 		_domainBootstrap = domainBootstrap;
+		_domainName = domainName;
 	}
 
 	private final IDomainBootstrap _domainBootstrap;
@@ -20,12 +21,13 @@ public final class SingleDomainRegistry implements IDomainRegistry {
 		return _domainBootstrap;
 	}
 
+	private String _domainName;
 
 	/*
 	 * @see org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry#registerClassesInDomains()
 	 */
 	public void registerClassesInDomains() throws DomainRegistryException {
-		_domainBootstrap.registerClasses();
+		_domainBootstrap.registerClasses(_domainName);
 	}
 
 

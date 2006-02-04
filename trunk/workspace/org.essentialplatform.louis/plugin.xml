@@ -82,9 +82,6 @@
    </extension>
 
    
-   <extension-point id="domainclass" 
-                    name="Domain Class" 
-                    schema="schema/domainclass.exsd"/>
    <extension-point id="guifactory" 
                     name="Gui Factory" 
                     schema="schema/guifactory.exsd"/>

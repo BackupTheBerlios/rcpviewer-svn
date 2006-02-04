@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension point="org.essentialplatform.louis.domainclass">
+   <extension point="org.essentialplatform.runtime.shared.domainclass">
   	 	<impl class="org.essentialplatform.gui.acme.model.EasiestBean"/>
    		<impl class="org.essentialplatform.gui.acme.model.EasyBean"/>
    		<!-- <impl class="org.essentialplatform.gui.acme.model.AnotherEasyBean"/> -->

@@ -70,43 +70,44 @@ public class Bootstrap implements IPlatformRunnable {
 			}
 	
 			// locate the Extension
-			final IConfigurationElement ce = 
+			final IConfigurationElement domainPluginCE = 
 				findDomainConfigConfigurationElement(domainPluginId);
 	
-			if (ce == null) {
+			if (domainPluginCE == null) {
 				throwCoreException( 
 					ERROR_NO_SPRINGCONTEXT_EXTENSION_POINT, "Could not locate application with -%s='%s'", DOMAIN_FLAG, domainPluginId);
 			}
 	
 			// locate the parent (base) config 
-			Bundle parentBundle = LouisPlugin.getDefault().getBundle();
-			URL parentUrl = parentBundle.getEntry(SPRINGCONTEXT_PARENT_XML);
-			parentUrl = Platform.resolve(parentUrl);
-			String parentFilePath = new File(parentUrl.getFile()).getCanonicalPath();
+			Bundle louisPluginBundle = LouisPlugin.getDefault().getBundle();
+			URL louisPluginUrl = louisPluginBundle.getEntry(SPRINGCONTEXT_PARENT_XML);
+			louisPluginUrl = Platform.resolve(louisPluginUrl);
+			String louisPluginFilePath = new File(louisPluginUrl.getFile()).getCanonicalPath();
 
 			// locate the application's config 
 			// this potentially overrides definitions in base config.
-			String filePath = ce.getAttribute("file");
-			Bundle bundle = Platform.getBundle(ce.getNamespace());
-			URL url = bundle.getEntry(filePath);
-			url = Platform.resolve(url);
-			filePath = new File(url.getFile()).getCanonicalPath();
+			String domainPluginFilePath = domainPluginCE.getAttribute("file");
+			Bundle domainPluginBundle = Platform.getBundle(domainPluginCE.getNamespace());
+			URL domainPluginUrl = domainPluginBundle.getEntry(domainPluginFilePath);
+			domainPluginUrl = Platform.resolve(domainPluginUrl);
+			domainPluginFilePath = new File(domainPluginUrl.getFile()).getCanonicalPath();
 			
 			// load the context
 			// the ordering is important - the 2nd filePath will replace any 
 			// definitions in the first.
 			// (the original design was to use parent contexts, but this didn't 
 			// work when I tried it out.  This amounts to much the same thing, anyway).
-			FileSystemXmlApplicationContext context = 
-				new FileSystemXmlApplicationContext(new String[]{parentFilePath, filePath});
+			FileSystemXmlApplicationContext domainPluginContext = 
+				new FileSystemXmlApplicationContext(new String[]{louisPluginFilePath, domainPluginFilePath});
 
 			// obtain beans from context, checking that implement required type
 			// (throws CoreException otherwise).
 			final IApplication app = 
-				getBeanFrom(context, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
+				getBeanFrom(domainPluginContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
 			// locate the bean called "domain", and check that it implements IDomainDefinition
 			final IDomainDefinition domainDefinition = 
-				getBeanFrom(context, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
+				getBeanFrom(domainPluginContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
+			domainDefinition.setBundle(domainPluginBundle);
 			
 			app.init(domainDefinition, store); // from whence derives SessionBinding
 			

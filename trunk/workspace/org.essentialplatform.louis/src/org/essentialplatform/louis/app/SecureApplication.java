@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.louis.Bootstrap;
 import org.essentialplatform.louis.DomainBootstrapJob;
 import org.essentialplatform.louis.LouisPlugin;
@@ -19,6 +20,9 @@ import org.essentialplatform.louis.factory.IGuiFactories;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
 import org.essentialplatform.louis.util.JobUtil;
+import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
+import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
+import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
 import org.essentialplatform.runtime.shared.domain.ExtensionPointReadingDomainRegistry;
 import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
@@ -42,7 +46,7 @@ public final class SecureApplication implements IApplication {
 	 */
 	public void init(IDomainDefinition domainDefinition, String objectStoreName) {
 		_domainDefinition = domainDefinition;
-		_sessionBinding = new SessionBinding(domainDefinition.getName(), objectStoreName);
+		_sessionBinding = new SessionBinding(domainDefinition.getDomainName(), objectStoreName);
 	}
 
 	private IDomainDefinition _domainDefinition;
@@ -66,8 +70,14 @@ public final class SecureApplication implements IApplication {
 	 */
 	public Object run(Object args) throws Exception {
 		
-		RuntimePlugin.getDefault().setDomainRegistry(
-				new SingleDomainRegistry(_domainDefinition.getDomainBootstrap()));
+		Binding.setBinding(
+				new RuntimeClientBinding(_domainDefinition.getDomainBuilder()));
+
+		IDomainBootstrap bootstrap = _domainDefinition.getDomainBootstrap();
+		bootstrap.getSecondaryBuilders().add(new LouisProgModelRuntimeBuilder());
+
+
+		final String domainName = _domainDefinition.getDomainName();
 		try {
 			// authenticate the user
 			if (_authenticationCommand.run() == null) {
@@ -82,8 +92,10 @@ public final class SecureApplication implements IApplication {
 			LouisPlugin.getDefault().setApplication(this);
 
 			// domain initialisation
-			IDomainBootstrap bootstrap = _domainDefinition.getDomainBootstrap();
-			DomainBootstrapJob domainJob = new DomainBootstrapJob( bootstrap );
+			SingleDomainRegistry domainRegistry = 
+				new SingleDomainRegistry(bootstrap, domainName);
+			RuntimePlugin.getDefault().setDomainRegistry(domainRegistry);
+			DomainBootstrapJob domainJob = new DomainBootstrapJob(domainRegistry);
 			domainJob.schedule();
 
 			// session initialisation (default domain & store for now )

@@ -33,7 +33,7 @@ public final class ExtensionPointReadingDomainBootstrap
 	
 	protected Logger getLogger() { return Logger.getLogger(ExtensionPointReadingDomainBootstrap.class); } 
 
-	public static final String DOMAIN_CLASS_EXTENSION_POINT = "org.essentialplatform.louis.domainclass";  //$NON-NLS-1$
+	public static final String DOMAIN_CLASS_EXTENSION_POINT = "org.essentialplatform.runtime.shared.domainclass";  //$NON-NLS-1$
 	public static final String CLASS_PROPERTY = "class"; //$NON-NLS-1$
 
 	@Override

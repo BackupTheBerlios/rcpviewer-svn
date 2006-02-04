@@ -1,17 +1,11 @@
 package org.essentialplatform.louis;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.essentialplatform.core.domain.DomainConstants;
-import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.client.session.ClientSessionManager;
 import org.essentialplatform.runtime.client.session.IClientSessionManager;
-import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
-import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
-import org.essentialplatform.runtime.shared.RuntimePlugin;
 
 /**
  * Starts a new session on a domain

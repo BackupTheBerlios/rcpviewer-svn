@@ -25,7 +25,7 @@ public class LouisPlugin extends AbstractUIPlugin {
 
 
 	///////////////////////////////////////////
-	// Singleton
+	// Singleton / Constructor
 	///////////////////////////////////////////
 	
 	// the shared instance.
@@ -37,25 +37,17 @@ public class LouisPlugin extends AbstractUIPlugin {
 		return __plugin;
 	}
 
+	public LouisPlugin() {
+		super();
+		__plugin = this;
+	}
+
 
 	
 	/////////////////////////////////////////////////////////////////
 	// Lifecycle Methods
 	/////////////////////////////////////////////////////////////////
 
-	/**
-	 * Sets up a runtime client binding using the EssentialProgModelRuntimeBuilder.
-	 * 
-	 * <p>
-	 * TODO: defining the RuntimeBuilder to use should come from Spring.
-	 */
-	public LouisPlugin() {
-		super();
-		Binding.setBinding(
-			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
-		__plugin = this;
-	}
-	
 
 	/**
 	 * Initialises the domain and gui factories - any errors cause a

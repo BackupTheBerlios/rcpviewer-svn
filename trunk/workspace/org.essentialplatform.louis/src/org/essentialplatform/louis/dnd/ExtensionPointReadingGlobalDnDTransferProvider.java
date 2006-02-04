@@ -20,7 +20,7 @@ import org.essentialplatform.louis.util.ConfigElementSorter;
  */
 public final class ExtensionPointReadingGlobalDnDTransferProvider extends AbstractDndTransferProvider {
 	
-	public static final String EXTENSION_POINT_ID = "org.essentialplatform.gui.transferprovider"; //$NON-NLS-1$
+	public static final String EXTENSION_POINT_ID = "org.essentialplatform.louis.dnd.transferprovider"; //$NON-NLS-1$
 
 
 	/**

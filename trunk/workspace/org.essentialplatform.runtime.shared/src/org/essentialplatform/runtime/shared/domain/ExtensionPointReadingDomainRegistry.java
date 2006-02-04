@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
@@ -15,6 +14,8 @@ import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 /**
  * THIS IMPLEMENTATION IS CURRENTLY NOT SUPPORTED NOR INTEGRATED WITH THE
  * REST OF THE BOOTSTRAP IMPLEMENTATION.
+ *  
+ * 
  * 
  * <p>
  * If it is set up to be the IDomainRegistry (as RuntimePlugin#setDomainRegistry)
@@ -51,9 +52,10 @@ public final class ExtensionPointReadingDomainRegistry implements IDomainRegistr
 		for (IConfigurationElement configurationElement: extensionPoint.getConfigurationElements()) {
 			try {
 				// although the 'id' attribute is available to us, we don't need it.
+				final String domainName = configurationElement.getAttribute("domain");
 				IDomainBootstrap domainBootstrap = 
 					(IDomainBootstrap)configurationElement.createExecutableExtension(CLASS_PROPERTY);
-				domainBootstrap.registerClasses();
+				domainBootstrap.registerClasses(domainName);
 			} catch (CoreException ex) {
 				String msg = String.format(
 						"IConfigurationElement#createExecutableExtension(\"%s\") failed for '%s'", CLASS_PROPERTY, configurationElement.getValue());   //$NON-NLS-1$
