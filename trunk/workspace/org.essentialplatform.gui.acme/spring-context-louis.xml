@@ -3,53 +3,21 @@
 
 <beans>
 
-	<!-- must supply a 'domain' bean (implementing IDomainDefinition) -->
-	<!-- 
-	<bean id="domain" class="org.essentialplatform.louis.app.ExtensionPointReadingDomainDefinition">
-		<property name="name" value="default"/>
-	</bean>
-	 -->
+	<!-- must supply a 'louis' bean (implementing ILouisDefinition) -->
 
-	<bean id="domain" 
-		class="org.essentialplatform.louis.app.DomainDefinition">
-		<property name="name" value="default"/>
-	    <property name="domainBuilder" ref="essentialProgModelRuntimeBuilder"/>
-	    <property name="domainBootstrap" ref="domainBootstrap"/>
+	<bean id="louis" 
+		class="org.essentialplatform.louis.domain.SpringConfiguredLouisDefinition">
 	    <property name="guiFactories" ref="guiFactories"/>
 	    <property name="globalLabelProvider" ref="globalLabelProvider"/>
 	    <property name="globalDndTransferProvider" ref="globalDndTransferProvider"/>
-	</bean>
-
-	<bean id="essentialProgModelRuntimeBuilder" 
-		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder"/>
-
-	<bean id="domainBootstrap"
-		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainBootstrap">
-		<property name="classes">
-			<list>
-				<value>org.essentialplatform.gui.acme.model.EasiestBean</value>
-		   		<value>org.essentialplatform.gui.acme.model.EasyBean</value>
-		   		<!-- 
-		   		<value>org.essentialplatform.gui.acme.model.AnotherEasyBean</value>
-		   		<value>org.essentialplatform.gui.acme.model.Counter</value>
-		   		 -->
-		        <value>org.essentialplatform.gui.acme.model.PrimitiveBean</value>
-		        <value>org.essentialplatform.gui.acme.model.WrappedPrimitiveBean</value>
-		        <value>org.essentialplatform.gui.acme.model.Beans</value>
-			</list>
-		</property>
 		<property name="secondaryBuilders">
 			<list>
 				<ref bean="louisProgModelRuntimeBuilder"/>
 			</list>
 		</property>
 	</bean>
-	
-	 
-	<bean id="louisProgModelRuntimeBuilder" 
-		class="org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder"/>
-		
-	
+
+
 	<bean id="guiFactories"
 		class="org.essentialplatform.louis.factory.SpringConfiguredGuiFactories">
 		<!-- 
@@ -88,14 +56,16 @@
 		-->
 	</bean>
 
-
-
+	<bean id="louisProgModelRuntimeBuilder" 
+		class="org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder"/>
 
 	<!-- potentially override the authenticationManager defined in 
 	     spring-context-parent.xml in LouisPlugin -->
 	<bean id="authenticationManager" 
 		class="org.essentialplatform.services.authentication.noop.NoopAuthenticationManager">
 	</bean>
+
+
 
 	
 </beans>

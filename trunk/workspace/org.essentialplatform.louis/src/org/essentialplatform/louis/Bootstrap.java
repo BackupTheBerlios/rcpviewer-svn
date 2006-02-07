@@ -1,6 +1,7 @@
 package org.essentialplatform.louis;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
@@ -11,7 +12,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
 import org.essentialplatform.louis.app.IApplication;
-import org.essentialplatform.louis.app.IDomainDefinition;
+import org.essentialplatform.louis.domain.ILouisDefinition;
+import org.essentialplatform.runtime.server.ServerPlugin;
+import org.essentialplatform.runtime.server.StandaloneServer;
+import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
+import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -26,22 +31,48 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
  */
 public class Bootstrap implements IPlatformRunnable {
 
+	
 	private static final String DOMAIN_FLAG = "-domain";
 	private static final String STORE_FLAG = "-store";
-	
+	private static final String NO_SERVER_FLAG = "-noserver";
+
 	private static final int ERROR_NO_DOMAIN_FLAG = 100;
 	private static final int ERROR_NO_STORE_FLAG = 102;
 	
-	private static final int ERROR_NO_SPRINGCONTEXT_EXTENSION_POINT = 110;
-	private static final int ERROR_BEAN_WRONG_TYPE = 110;
+	private static final int ERROR_NO_SPRINGCONTEXT_LOUIS_EXTENSION_POINT = 110;
+	private static final int ERROR_NO_SPRINGCONTEXT_DOMAIN_EXTENSION_POINT = 112;
+	private static final int ERROR_BEAN_WRONG_TYPE = 150;
 
-	private static final int ERROR_NO_APP_BEAN = 200;
+	private static final int ERROR_NO_SERVER_BEAN = 200;
+	private static final String BEAN_SERVER_ID = "server";
+	
+	private static final int ERROR_NO_APP_BEAN = 300;
+	private static final int ERROR_NO_DOMAIN_BEAN = 310;
+	private static final int ERROR_NO_LOUIS_BEAN = 320;
+	private static final int ERROR_NO_CLIENT_SIDE_DOMAIN_REGISTRAR_BEAN = 330;
+	private static final int ERROR_NO_SERVER_SIDE_DOMAIN_REGISTRAR_BEAN = 340;
 	private static final String BEAN_APP_ID = "app";
-	private static final int ERROR_NO_DOMAIN_BEAN = 210;
 	private static final String BEAN_DOMAIN_ID = "domain";
+	private static final String BEAN_LOUIS_ID = "louis";
+	private static final String BEAN_CLIENT_SIDE_DOMAIN_REGISTRAR_ID = "clientSideDomainRegistrar";
+	private static final String BEAN_SERVER_SIDE_DOMAIN_REGISTRAR_ID = "serverSideDomainRegistrar";
 
-	private static final String SPRINGCONTEXT_PARENT_XML = "spring-context-parent.xml";
 	private static final String SPRINGCONTEXT_EXTENSION_POINT = "org.essentialplatform.louis.springcontext";
+	private static final String LOUIS_FILE = "louis-file";
+	private static final String DOMAIN_FILE = "domain-file";
+	private static final String CLIENTSIDE_SPRINGCONTEXT_BASE_XML = "spring-context-base.xml";
+	private static final String SERVERSIDE_SPRINGCONTEXT_XML = "spring-context.xml";
+
+	private FileSystemXmlApplicationContext _clientContext;
+	private IDomainDefinition _clientDomainDefinition;
+	private ILouisDefinition _louisDefinition;
+	private IDomainRegistrar _clientSideDomainRegistrar;
+	private IApplication _app;
+	
+	private FileSystemXmlApplicationContext _serverContext;
+	private IDomainDefinition _serverDomainDefinition;
+	private IDomainRegistrar _serverSideDomainRegistrar;
+	private StandaloneServer _server;
 
 
 	/*
@@ -53,6 +84,7 @@ public class Bootstrap implements IPlatformRunnable {
 		try {
 			String[] options= (String[])args;
 			String domainPluginId = null;
+			boolean noServer = false;
 			String store = null;
 			for (int i = options.length - 1; 0 < i--;) {
 				if (options[i].equals(DOMAIN_FLAG)) {
@@ -60,6 +92,9 @@ public class Bootstrap implements IPlatformRunnable {
 				}
 				if (options[i].equals(STORE_FLAG)) {
 					store = options[i+1];
+				}
+				if (options[i].equals(NO_SERVER_FLAG)) {
+					noServer = true;
 				}
 			}
 			if (domainPluginId == null) {
@@ -71,47 +106,68 @@ public class Bootstrap implements IPlatformRunnable {
 	
 			// locate the Extension
 			final IConfigurationElement domainPluginCE = 
-				findDomainConfigConfigurationElement(domainPluginId);
-	
+				findLouisSpringContextConfigurationElement(domainPluginId);
 			if (domainPluginCE == null) {
 				throwCoreException( 
-					ERROR_NO_SPRINGCONTEXT_EXTENSION_POINT, "Could not locate application with -%s='%s'", DOMAIN_FLAG, domainPluginId);
+					ERROR_NO_SPRINGCONTEXT_LOUIS_EXTENSION_POINT, "Could not locate application with -%s='%s'", DOMAIN_FLAG, domainPluginId);
 			}
-	
-			// locate the parent (base) config 
+			Bundle domainPluginBundle = Platform.getBundle(domainPluginCE.getNamespace());
+
+			// locate the domain plugin's spring-context-domain.xml context 
+			// this is included in both client- and server-side contexts
+			String domainPluginDomainFilePath = domainPluginCE.getAttribute(DOMAIN_FILE);
+			URL domainPluginDomainUrl = domainPluginBundle.getEntry(domainPluginDomainFilePath);
+			domainPluginDomainUrl = Platform.resolve(domainPluginDomainUrl);
+			domainPluginDomainFilePath = new File(domainPluginDomainUrl.getFile()).getCanonicalPath();
+
+			// locate the server-side context 
+			Bundle serverPluginBundle = ServerPlugin.getDefault().getBundle();
+			URL serverPluginUrl = serverPluginBundle.getEntry(SERVERSIDE_SPRINGCONTEXT_XML);
+			serverPluginUrl = Platform.resolve(serverPluginUrl);
+			String serverPluginFilePath = new File(serverPluginUrl.getFile()).getCanonicalPath();
+			
+			// locate the client-side base context
+			// certain components in this context may be overridden.
 			Bundle louisPluginBundle = LouisPlugin.getDefault().getBundle();
-			URL louisPluginUrl = louisPluginBundle.getEntry(SPRINGCONTEXT_PARENT_XML);
+			URL louisPluginUrl = louisPluginBundle.getEntry(CLIENTSIDE_SPRINGCONTEXT_BASE_XML);
 			louisPluginUrl = Platform.resolve(louisPluginUrl);
 			String louisPluginFilePath = new File(louisPluginUrl.getFile()).getCanonicalPath();
 
-			// locate the application's config 
-			// this potentially overrides definitions in base config.
-			String domainPluginFilePath = domainPluginCE.getAttribute("file");
-			Bundle domainPluginBundle = Platform.getBundle(domainPluginCE.getNamespace());
-			URL domainPluginUrl = domainPluginBundle.getEntry(domainPluginFilePath);
-			domainPluginUrl = Platform.resolve(domainPluginUrl);
-			domainPluginFilePath = new File(domainPluginUrl.getFile()).getCanonicalPath();
-			
-			// load the context
-			// the ordering is important - the 2nd filePath will replace any 
-			// definitions in the first.
-			// (the original design was to use parent contexts, but this didn't 
-			// work when I tried it out.  This amounts to much the same thing, anyway).
-			FileSystemXmlApplicationContext domainPluginContext = 
-				new FileSystemXmlApplicationContext(new String[]{louisPluginFilePath, domainPluginFilePath});
+			// locate the domain plugin's spring-context-louis.xml context (for client-side) 
+			// this potentially overrides definitions in base configs.
+			String domainPluginLouisFilePath = domainPluginCE.getAttribute(LOUIS_FILE);
+			URL domainPluginLouisUrl = domainPluginBundle.getEntry(domainPluginLouisFilePath);
+			domainPluginLouisUrl = Platform.resolve(domainPluginLouisUrl);
+			domainPluginLouisFilePath = new File(domainPluginLouisUrl.getFile()).getCanonicalPath();
 
-			// obtain beans from context, checking that implement required type
-			// (throws CoreException otherwise).
-			final IApplication app = 
-				getBeanFrom(domainPluginContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
-			// locate the bean called "domain", and check that it implements IDomainDefinition
-			final IDomainDefinition domainDefinition = 
-				getBeanFrom(domainPluginContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
-			domainDefinition.setBundle(domainPluginBundle);
+			// create server-side context
+			_serverContext = new FileSystemXmlApplicationContext(new String[]{serverPluginFilePath, domainPluginDomainFilePath});
+			_server = getBeanFrom(_serverContext, BEAN_SERVER_ID, ERROR_NO_SERVER_BEAN, StandaloneServer.class);
+			_serverSideDomainRegistrar = getBeanFrom(_serverContext, BEAN_SERVER_SIDE_DOMAIN_REGISTRAR_ID, ERROR_NO_SERVER_SIDE_DOMAIN_REGISTRAR_BEAN, IDomainRegistrar.class);
+			_server.getDatabaseServer().setDatabaseName(store);
 			
-			app.init(domainDefinition, store); // from whence derives SessionBinding
+			// TODO: give the server-side registar to the server, something like:
+			// _server.setDomainRegistar(_serverSideDomainRegistar); 
+
+			// create client-side context
+			_clientContext = new FileSystemXmlApplicationContext(new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
+			_app = getBeanFrom(_clientContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
+			_clientDomainDefinition = getBeanFrom(_clientContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
+			_louisDefinition = getBeanFrom(_clientContext, BEAN_LOUIS_ID, ERROR_NO_LOUIS_BEAN, ILouisDefinition.class);
+			_clientSideDomainRegistrar = getBeanFrom(_clientContext, BEAN_CLIENT_SIDE_DOMAIN_REGISTRAR_ID, ERROR_NO_CLIENT_SIDE_DOMAIN_REGISTRAR_BEAN, IDomainRegistrar.class);
+
 			
-			return app.run(args);
+			// initialize obtained beans, start server and run client-side app
+			
+// COMMENTED OUT TEMPORARILY BECAUSE OF THE Binding.setBinding SINGLETON PROBLEM.			
+//			_server.start();
+
+			_louisDefinition.setDomainDefinition(_clientDomainDefinition);
+			_clientDomainDefinition.setDomainRegistrar(_clientSideDomainRegistrar);
+			_clientDomainDefinition.setBundle(domainPluginBundle);
+			_app.init(_clientDomainDefinition, _louisDefinition, store); // from whence derives SessionBinding
+			
+			return _app.run(args);
 		} catch(Exception ex) {
 			// propagating an exception here will mean the the platform will ask us if we want to 
 			// inspect the error log (probably not)
@@ -127,10 +183,11 @@ public class Bootstrap implements IPlatformRunnable {
 				
 				// Therefore, just swallow any exception.
 			}
+			_server.shutdown();
 		}
 	}
 
-	private <T> T getBeanFrom(FileSystemXmlApplicationContext context, String beanId, int errorNoBean, Class<T> requiredType) throws BeansException, CoreException {
+	private <T> T  getBeanFrom(FileSystemXmlApplicationContext context, String beanId, int errorNoBean, Class<T> requiredType) throws BeansException, CoreException {
 		final Object bean = context.getBean(beanId);
 		if (bean == null) {
 			throwCoreException(errorNoBean, "Could not locate bean %s", beanId);
@@ -166,7 +223,7 @@ public class Bootstrap implements IPlatformRunnable {
 	 * <p>
 	 * @return the ConfigurationElement or <tt>null</tt> if none could be found.
 	 */
-	private IConfigurationElement findDomainConfigConfigurationElement(String springContextId) {
+	private IConfigurationElement findLouisSpringContextConfigurationElement(String springContextId) {
 		IExtensionPoint extensionPoint = 
 			Platform.getExtensionRegistry().getExtensionPoint(SPRINGCONTEXT_EXTENSION_POINT);
 		for(IConfigurationElement element: extensionPoint.getConfigurationElements()) {

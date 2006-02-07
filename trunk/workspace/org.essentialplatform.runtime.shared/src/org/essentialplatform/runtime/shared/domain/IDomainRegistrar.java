@@ -20,38 +20,19 @@ import org.osgi.framework.Bundle;
  * @author Dan Haywood
  *
  */
-public interface IDomainBootstrap {
+public interface IDomainRegistrar  {
 
-	/**
-	 * TODO: the domainName is temporary until such time that merge with IDomainDefinition
-	 * 
-	 * @param domainName
-	 * @throws DomainBootstrapException
-	 */
-	void registerClasses(String domainName) throws DomainBootstrapException;
-
+	
+	void registerClass(Class<?> javaClass);
+	
 	/**
 	 * Propagated by owning IDomainDefinition.
 	 * 
 	 * <p>
-	 * TODO: will disappear once merge IDomainBootstrap with DomainDefinition.
+	 * TODO: will disappear once merge IDomainRegistrar with DomainDefinition.
 	 * @param domainBundle
 	 */
 	void setBundle(Bundle domainBundle);
-
-	List<IDomainBuilder> getSecondaryBuilders();
-	
-	/**
-	 * Adds the {@link IDomainBuilder} to those returned from {@link #getSecondaryBuilders()}.
-	 * 
-	 * <p>
-	 * If using an implementation that is designed for dependency injection, 
-	 * then this method would <i>not</i> be used.  Instead, the implementation
-	 * would provide a setter for the entire <tt>List</tt>.
-	 * 
-	 * @param domainBuilder
-	 */
-	void addSecondaryBuilder(IDomainBuilder domainBuilder);
 
 	
 }

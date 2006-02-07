@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="server" 
+		class="org.essentialplatform.runtime.server.StandaloneServer">
+		<property name="databaseServer" ref="hsqlDatabaseServer"/>
+		<property name="remoting" ref="remoting"/>
+	</bean>
+	
+	<bean id="hsqlDatabaseServer" 
+		class="org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer">
+		<property name="databaseName" value="essential"/>
+		<property name="password"><null/></property>
+		<property name="port" value="9001"/>
+		<property name="silent" value="true"/>
+		<property name="user" value="sa"/>
+	</bean>
+	
+	<bean id="remoting" 
+		class="org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer">
+		<property name="bindAddress" value="tcp://localhost:61616"/>
+		<property name="messageListenerEnabled" value="true"/>
+		<property name="marshalling" ref="marshalling"/>
+		<property name="transactionProcessor" ref="noopTransactionProcessor"/>
+	</bean>
+	
+	<bean id="marshalling" 
+		class="org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling">
+	</bean>
+	
+	<bean id="hibernateTransactionProcessor" 
+		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor">
+	</bean>
+	
+	<bean id="noopTransactionProcessor" 
+		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.noop.NoopTransactionProcessor">
+	</bean>
+	
+	<bean id="serverSideDomainRegistrar"
+		class="org.essentialplatform.runtime.shared.domain.ServerSideDomainRegistrar">
+	</bean>
+	
+
+
+</beans>

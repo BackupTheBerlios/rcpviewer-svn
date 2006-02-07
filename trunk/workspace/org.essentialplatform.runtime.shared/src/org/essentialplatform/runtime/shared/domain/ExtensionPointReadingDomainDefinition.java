@@ -7,34 +7,59 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-
 import org.essentialplatform.core.domain.Domain;
-import org.essentialplatform.runtime.client.transaction.ITransactionManager;
-import org.essentialplatform.runtime.client.transaction.TransactionManager;
 
 /**
+ * An implementation of {@link IDomainDefinition} whose properties are defaulted
+ * to the implementations that read from various extension points.
+ * 
+ * <p>
+ * Developers who are familiar and comfortable with Eclipse extension points
+ * can register this class in Spring as the definition of <tt>domain</tt> bean,
+ * and thereafter configure their application using the appropriate
+ * extension points documented elsewhere.
+ * 
+ * <p>
+ * Note that the name of the domain must still be provided via Spring.  
+ * 
+ * <p>
  * Initialises the {@link Domain} by looking for implementors of 
  * DOMAIN_CLASS_EXTENSION_POINT.
  * 
  * <p>
- * Note that it isn't necessary to register every domain class; often only one
- * is necessary.  That's because Essential will "walk the graph", registering
- * all related domain classes automatically.
+ * Depending on the implementation chosen, it may or may not be necessary to
+ * register every domain class.  For example, on the client-side it isn't 
+ * because Essential will "walk the graph", registering all related domain 
+ * classes automatically.  However, on the server-side using Hibernate it 
+ * will be, because every annotated class must be added to Hibernate's
+ * configuration.
  * 
  * <p>
- * Also, note that the classes registered are not necessarily the classes that
+ * Note that the classes registered are not necessarily the classes that
  * appear in the classbar view in the UI; that depends upon their annotations
  * specific to the programming model (eg <tt>Lifecycle(instantiable=true)</tt>).
  * 
- * @author Mike
+ * <p>
+ * Example usage:
+ * <pre>
+ * &lt;bean id="domain" class="org.essentialplatform.louis.app.ExtensionPointReadingDomainDefinition">
+ *     &lt;property name="name" value="marketing"/>
+ * &lt;/bean>
+ * </pre>
+ * 
+ * @author Dan Haywood
  */
-public final class ExtensionPointReadingDomainBootstrap 
-	extends AbstractDomainBootstrap {
-	
-	protected Logger getLogger() { return Logger.getLogger(ExtensionPointReadingDomainBootstrap.class); } 
+public final class ExtensionPointReadingDomainDefinition extends AbstractDomainDefinition {
+
+	@Override
+	protected Logger getLogger() {
+		return Logger.getLogger(ExtensionPointReadingDomainDefinition.class);
+	}
 
 	public static final String DOMAIN_CLASS_EXTENSION_POINT = "org.essentialplatform.runtime.shared.domainclass";  //$NON-NLS-1$
 	public static final String CLASS_PROPERTY = "class"; //$NON-NLS-1$
+
+	
 
 	@Override
 	public void doRegisterClasses() throws DomainBootstrapException {
@@ -63,5 +88,6 @@ public final class ExtensionPointReadingDomainBootstrap
 			registerClass(javaClass);
 		}
 	}
+
 
 }

@@ -6,29 +6,36 @@
          <meta.schema plugin="org.essentialplatform.louis" id="springcontext" name="Spring Context"/>
       </appInfo>
       <documentation>
-         Supplies detail of a spring context file in order to boot a domain application.
+         Supplies detail of one 'domain' spring context file and optionally one 'louis' spring context file in order to boot a domain application.
       </documentation>
    </annotation>
 
    <element name="springcontext">
       <annotation>
          <documentation>
-            Represents a spring context as contributed by an application plugin (gui.acme etc).
+            Represents the spring context(s) as contributed by an application plugin (gui.acme etc).
          </documentation>
       </annotation>
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
                <documentation>
-                  Identifier for this Spring Context.  As passed as an argument to -appId when starting the Essential client.
+                  Identifier for these Spring Contexts.  As passed as an argument to -domain when starting the Essential client.
 Should be unique across any and all domain application plugins, so it is recommended that it be the same value as the ID of domain application plugin itself (eg &quot;org.essentialplatform.gui.acme&quot;).
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="file" type="string" use="required">
+         <attribute name="domain-file" type="string" use="required">
             <annotation>
                <documentation>
-                  Name of the spring context configuration file, relative to the root of the plugin.  For example, if stored in root (which is typical), would be something like &lt;tt&gt;spring-context.xml&lt;/tt&gt;
+                  Name of the &apos;domain&apos; spring context configuration file, relative to the root of the plugin.  For example, if stored in root (which is typical), would be something like &lt;tt&gt;spring-context-domain.xml&lt;/tt&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="louis-file" type="string">
+            <annotation>
+               <documentation>
+                  Name of the &apos;louis&apos; spring context configuration file, relative to the root of the plugin.  For example, if stored in root (which is typical), would be something like &lt;tt&gt;spring-context-louis.xml&lt;/tt&gt;
                </documentation>
             </annotation>
          </attribute>
@@ -55,10 +62,12 @@ Should be unique across any and all domain application plugins, so it is recomme
          point=&quot;org.essentialplatform.louis.springcontext&quot;&gt;
          &lt;springcontext 
           id=&quot;org.essentialplatform.gui.acme&quot;
-          file=&quot;spring-context.xml&quot;/&gt;
+          domain-file=&quot;spring-context-domain.xml&quot;
+          louis-file=&quot;spring-context-louis.xml&quot;
+         /&gt;
    &lt;/extension&gt;
 
-where spring-context.xml resides in the root of that plugin.
+where spring-context-domain.xml and spring-context-louis.xml both reside in the root of that plugin.
       </documentation>
    </annotation>
 

@@ -29,5 +29,10 @@
 		class="org.essentialplatform.louis.app.springsupport.DisplayFactoryBean" >
 	</bean>
 
+	<bean id="clientSideDomainRegistrar"
+		class="org.essentialplatform.runtime.shared.domain.ClientSideDomainRegistrar">
+	</bean>
+	
+
 
 </beans>

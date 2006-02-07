@@ -4,11 +4,11 @@ import org.apache.log4j.Logger;
 
 
 /**
- * Skeleton implementation of a {@link Service}.
+ * Skeleton implementation of a {@link IServer}.
  * 
  * @author Dan Haywood
  */
-public abstract class AbstractService implements IService {
+public abstract class AbstractServer implements IServer {
 
 	private boolean _started;
 

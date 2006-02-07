@@ -1,6 +1,8 @@
 package org.essentialplatform.louis.app;
 
 import org.eclipse.core.runtime.IPlatformRunnable;
+import org.essentialplatform.louis.domain.ILouisDefinition;
+import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 public interface IApplication extends IPlatformRunnable {
@@ -16,7 +18,7 @@ public interface IApplication extends IPlatformRunnable {
 	 * @param domainDefinition
 	 * @param objectStoreName 
 	 */
-	void init(IDomainDefinition domainDefinition, String objectStoreName);
+	void init(IDomainDefinition domainDefinition, ILouisDefinition louisDefinition, String objectStoreName);
 
 
 }

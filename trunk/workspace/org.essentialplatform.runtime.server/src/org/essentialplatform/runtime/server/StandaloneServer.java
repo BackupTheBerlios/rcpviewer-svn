@@ -29,11 +29,11 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
  * 
  * <p>
  * Configures the components that make up the server, (eg database server, 
- * JMS broker, transaction processor).
+ * JMS broker, transaction processor), and starts/shutdown.
  * 
  * @author Dan Haywood
  */
-public class StandaloneServer extends AbstractService {
+public final class StandaloneServer extends AbstractServer {
 
 	@Override
 	protected Logger getLogger() {
@@ -41,11 +41,13 @@ public class StandaloneServer extends AbstractService {
 	}
 
 	////////////////////////////////////////////////////////////
+	// Constructor, init
+	////////////////////////////////////////////////////////////
 
-	private Map<IDomain, ObjectStoreHandleList<IServerSessionFactory>> objectStoreListByDomain = 
-		new HashMap<IDomain, ObjectStoreHandleList<IServerSessionFactory>>();
-	
 	public StandaloneServer() {
+	}
+	
+	public void init() {
 
 		//
 		// YIKES.  THE EssentialProgModelRuntimeBuilder will populate the
@@ -54,11 +56,6 @@ public class StandaloneServer extends AbstractService {
 		// ObjectStores are.  Each (domainName, objectStore) then corresponds
 		// to a SessionBinding.
 		//
-		//
-		// ALSO: rename ISessionManager to IClientSessionManager, etc
-		// and consider introducing a new plugin for client-side only stuff 
-		// (now that I've finally identified some stuff that I do want to
-		// use only on the client.
 		//
 
 		// First, build our Domain(s)
@@ -85,8 +82,15 @@ public class StandaloneServer extends AbstractService {
 		// tell the transaction processor a
 		// for each SessionBinding tuple.
 	    _transactionProcessor.init(objectStoreListByDomain);
-
 	}
+
+    ////////////////////////////////////////////////////////////
+	// Domain -> ObjectStoreList
+    ////////////////////////////////////////////////////////////
+
+	private Map<IDomain, ObjectStoreHandleList<IServerSessionFactory>> objectStoreListByDomain = 
+		new HashMap<IDomain, ObjectStoreHandleList<IServerSessionFactory>>();
+	
 
 	/**
 	 * Associates a name with an object store that is capable of supporting
@@ -104,16 +108,27 @@ public class StandaloneServer extends AbstractService {
 	}
 
     ////////////////////////////////////////////////////////////
+	// DomainBuilder
+    ////////////////////////////////////////////////////////////
+
+	
+	
+
+    ////////////////////////////////////////////////////////////
+	// RemotingServer (injected).
+    ////////////////////////////////////////////////////////////
 
 	private IRemotingServer _remotingServer = new ActiveMqRemotingServer();
 	public IRemotingServer getRemotingServer() {
 		return _remotingServer;
 	}
 	/**
-	 * Optionally specify the {@link IRemotingServer} to use, eg by dependency injection.
+	 * For dependency injection.
 	 * 
 	 * <p>
-	 * If not specified will default to {@link ActiveMqRemotingServer}.
+	 * Optional; if not specified will default to 
+	 * {@link ActiveMqRemotingServer}. 
+	 * 
 	 * @param remoting
 	 */
 	public void setRemoting(IRemotingServer remotingServer) {
@@ -122,16 +137,19 @@ public class StandaloneServer extends AbstractService {
 
 
     ////////////////////////////////////////////////////////////
+	// Database Server (injected).
+    ////////////////////////////////////////////////////////////
 	
 	private IDatabaseServer _databaseServer = new HsqlDatabaseServer();
 	public IDatabaseServer getDatabaseServer() {
 		return _databaseServer;
 	}
 	/**
-	 * Optionally specify the {@link IDatabaseServer} to use, eg by dependency injection.
+	 * For dependency injection.
 	 * 
 	 * <p>
-	 * If not specified then will default to {@link HsqlDatabaseServer}.
+	 * Optional; if not specified then will default to 
+	 * {@link HsqlDatabaseServer}.
 	 * 
 	 * @param databaseServer
 	 */
@@ -140,17 +158,21 @@ public class StandaloneServer extends AbstractService {
 	}
 	
     ////////////////////////////////////////////////////////////
+	// TransactionProcessor (injected)
+    ////////////////////////////////////////////////////////////
 	
-	private ITransactionProcessor _transactionProcessor = new HibernateTransactionProcessor();
+	private ITransactionProcessor _transactionProcessor = 
+		new HibernateTransactionProcessor();
 	public ITransactionProcessor getTransactionProcessor() {
 		return _transactionProcessor;
 	}
 	/**
-	 * Optionally specify the {@link ITransactionProcessor} to use, eg by 
-	 * dependency injection.
+	 * For dependency injection.
 	 * 
 	 * <p>
-	 * If not specified will default to {@link HibernateTransactionProcessor}.
+	 * Optional; if not specified will default to 
+	 * {@link HibernateTransactionProcessor}. 
+	 * 
 	 * @param remoting
 	 */
 	public void setTransactionProcessor(
@@ -158,6 +180,8 @@ public class StandaloneServer extends AbstractService {
 		_transactionProcessor = transactionProcessor;
 	}
 	
+    ////////////////////////////////////////////////////////////
+	// Lifecycle methods
     ////////////////////////////////////////////////////////////
 
 	
@@ -179,9 +203,18 @@ public class StandaloneServer extends AbstractService {
 	}
 
     ////////////////////////////////////////////////////////////
+	// main()
+    ////////////////////////////////////////////////////////////
 
+	/**
+	 * Allow the StandaloneServer to be run as a standalone program.
+	 * 
+	 * <p>
+	 * TODO: should process args / should be using the Spring config.
+	 */
 	public static void main(String[] args) {
 		StandaloneServer server = new StandaloneServer();
+		server.init();
 		server.start();
 	}
 	

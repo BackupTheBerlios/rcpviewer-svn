@@ -16,7 +16,8 @@
          point="org.essentialplatform.louis.springcontext">
          <springcontext 
          	id="org.essentialplatform.gui.acme"
-         	file="spring-context.xml"/>
+         	domain-file="spring-context-domain.xml"
+         	louis-file="spring-context-louis.xml"/>
    </extension>
    
    <!--

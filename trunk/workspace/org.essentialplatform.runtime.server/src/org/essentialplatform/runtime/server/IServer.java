@@ -1,6 +1,6 @@
 package org.essentialplatform.runtime.server;
 
-public interface IService {
+public interface IServer {
 
 	public boolean isStarted();
 	

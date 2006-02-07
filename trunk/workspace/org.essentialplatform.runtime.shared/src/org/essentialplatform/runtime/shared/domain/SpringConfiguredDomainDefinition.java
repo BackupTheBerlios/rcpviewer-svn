@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.osgi.framework.Bundle;
 
 /**
  * Initialises the <code>Domain</code> by registering one or several
@@ -16,8 +18,8 @@ import org.apache.log4j.Logger;
  * <p>
  * Typical setup would be something like:
  * <pre>
- * &lt;bean id="domainBootstrap" 
- *     class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainBootstrap">
+ * &lt;bean id="domain" 
+ *     class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainDefinition">
  *     &lt;property name="classes">
  *         &lt;list>
  *             &lt;value>com.example.Customer"&lt;/value>
@@ -41,36 +43,14 @@ import org.apache.log4j.Logger;
  * appear in the classbar view in the UI; that depends upon their annotations
  * specific to the programming model (eg <tt>Lifecycle(instantiable=true)</tt>).
  * 
- * @author Dan
+ * @author Dan Haywood
  */
-public final class SpringConfiguredDomainBootstrap 
-	extends AbstractDomainBootstrap {
-	
-	protected Logger getLogger() { return Logger.getLogger(SpringConfiguredDomainBootstrap.class); } 
+public class SpringConfiguredDomainDefinition extends AbstractDomainDefinition {
+
 
 	@Override
-	public void doRegisterClasses() throws DomainBootstrapException {
-		
-		List<Class<?>> classes = new ArrayList<Class<?>>();
-
-		// check each className represents a no-arg instantiable class ...
-		for (String className: _classNames) {
-			Class<?> javaClass;
-			try {
-				javaClass = getBundle().loadClass(className);
-				classes.add(javaClass);
-			} catch (ClassNotFoundException ex) {
-				String msg = String.format(
-						"Bundle#loadClass(\"%s\") failed", className);   //$NON-NLS-1$
-				getLogger().error(msg);
-				throw new DomainRegistryException(msg, ex);
-			}
-		}
-		
-		// ... then add to domain
-		for (Class<?> javaClass: classes) {
-			registerClass(javaClass);
-		}
+	protected Logger getLogger() {
+		return Logger.getLogger(SpringConfiguredDomainDefinition.class);
 	}
 
 	
@@ -103,4 +83,62 @@ public final class SpringConfiguredDomainBootstrap
 		_classNames = classes;
 	}
 
+
+	///////////////////////////////////////////////////////////////////////
+	// Registration
+	// (or rather, the names of classes).
+	///////////////////////////////////////////////////////////////////////
+	
+
+	@Override
+	public void doRegisterClasses() throws DomainBootstrapException {
+		
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+
+		// check each className represents a no-arg instantiable class ...
+		for (String className: _classNames) {
+			Class<?> javaClass;
+			try {
+				javaClass = getBundle().loadClass(className);
+				classes.add(javaClass);
+			} catch (ClassNotFoundException ex) {
+				String msg = String.format(
+						"Bundle#loadClass(\"%s\") failed", className);   //$NON-NLS-1$
+				getLogger().error(msg);
+				throw new DomainRegistryException(msg, ex);
+			}
+		}
+		
+		// ... then add to domain
+		for (Class<?> javaClass: classes) {
+			registerClass(javaClass);
+		}
+	}
+
+
+	
+	////////////////////////////////////////////////////////////////////
+	// Bundle
+	////////////////////////////////////////////////////////////////////
+	
+	private Bundle _bundle;
+	/**
+	 * The (Eclipse) bundle representing the domain plugin.
+	 * 
+	 * <p>
+	 * Set by Essential itself (rather than through Spring, say), primarily
+	 * to assist the {@link IDomainRegistrar} in the verification of 
+	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
+	 */
+	public Bundle getBundle() {
+		return _bundle;
+	}
+	/*
+	 * Set by Essential itself (rather than through Spring, say).
+	 */
+	public void setBundle(Bundle domainBundle) {
+		_bundle = domainBundle;
+	}
+	
+	
 }

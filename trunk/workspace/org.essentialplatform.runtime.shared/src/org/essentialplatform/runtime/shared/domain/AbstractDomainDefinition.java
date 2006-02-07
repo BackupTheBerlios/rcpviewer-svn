@@ -1,11 +1,13 @@
-package org.essentialplatform.louis.app;
+package org.essentialplatform.runtime.shared.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
-import org.essentialplatform.louis.dnd.IDndTransferProvider;
-import org.essentialplatform.louis.factory.IGuiFactories;
-import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
-import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
+import org.essentialplatform.runtime.client.transaction.ITransactionManager;
+import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.osgi.framework.Bundle;
 
 /**
@@ -14,7 +16,9 @@ import org.osgi.framework.Bundle;
  * 
  * @author Dan Haywood
  */
-public class DomainDefinition implements IDomainDefinition {
+public abstract class AbstractDomainDefinition implements IDomainDefinition {
+
+	protected abstract Logger getLogger(); 
 
 
 	////////////////////////////////////////////////////////////////////
@@ -37,8 +41,6 @@ public class DomainDefinition implements IDomainDefinition {
 	 * {@link EssentialProgModelRuntimeBuilder}, then the domain classes should
 	 * be annotated using <tt>@InDomain("xxx")</tt> where <tt>"xxx"</tt> is the
 	 * name provided here.
-	 *  
-	 * @param domainBootstrap
 	 */
 	public void setName(String name) {
 		_name = name;
@@ -49,7 +51,7 @@ public class DomainDefinition implements IDomainDefinition {
 	// DomainBuilder
 	////////////////////////////////////////////////////////////////////
 
-	private IDomainBuilder _domainBuilder = new EssentialProgModelRuntimeBuilder();
+	private IDomainBuilder _domainBuilder;
 	/*
 	 * @see org.essentialplatform.louis.app.IDomainDefinition#getDomainBuilder()
 	 */
@@ -60,7 +62,9 @@ public class DomainDefinition implements IDomainDefinition {
 	 * For dependency injection.
 	 * 
 	 * <p>
-	 * Optional; if not specified then defaults to {@link EssentialProgModelRuntimeBuilder}.
+	 * Mandatory; there is no default 
+	 * (eg <tt>EssentialProgModelRuntimeBuilder</tt>) to prevent circular 
+	 * dependencies.  However, the LouisDefinition may well define transitively.
 	 * 
 	 * @param domainBuilder
 	 */
@@ -70,77 +74,68 @@ public class DomainDefinition implements IDomainDefinition {
 
 
 	////////////////////////////////////////////////////////////////////
-	// DomainBootstrap
+	// DomainRegistrar
 	////////////////////////////////////////////////////////////////////
 
-	private IDomainBootstrap _domainBootstrap;
-	public IDomainBootstrap getDomainBootstrap() {
-		return _domainBootstrap;
+	private IDomainRegistrar _domainRegistrar;
+	public IDomainRegistrar getDomainRegistrar() {
+		return _domainRegistrar;
 	}
 	/**
 	 * For dependency injection.
 	 * 
-	 * @param domainBootstrap
+	 * @param domainRegistrar
 	 */
-	public void setDomainBootstrap(IDomainBootstrap domainBootstrap) {
-		_domainBootstrap = domainBootstrap;
+	public void setDomainRegistrar(IDomainRegistrar domainRegistrar) {
+		_domainRegistrar = domainRegistrar;
 	}
 	
 	
 	////////////////////////////////////////////////////////////////////
-	// GuiFactories
+	// Registration
 	////////////////////////////////////////////////////////////////////
 	
-
-	private IGuiFactories _guiFactories;
-	public IGuiFactories getGuiFactories() {
-		return _guiFactories;
-	}
 	/**
-	 * For dependency injection.
+	 * Delegates to subclass to do the registration (in {@link #doRegisterClasses()}), 
+	 * but suspending the {@link TransactionManager} before it does so.
 	 * 
-	 * @param guiFactories
+	 * <p>
+	 * The suspending of the <tt>TransactionManager</tt> is done so that 
+	 * subclasses can validate their configuration, eg by checking to see if 
+	 * the classes they are registering can be instantiated.
 	 */
-	public void setGuiFactories(IGuiFactories guiFactories) {
-		_guiFactories = guiFactories;
+	public final void registerClasses() throws DomainBootstrapException {
+		ITransactionManager transactionManager = TransactionManager.instance();
+
+		transactionManager.suspend();
+		doRegisterClasses();
+		transactionManager.resume();
 	}
 	
-
-	////////////////////////////////////////////////////////////////////
-	// GlobalLabelProvider
-	////////////////////////////////////////////////////////////////////
-
-	private ILouisLabelProvider _globalLabelProvider;
-	public ILouisLabelProvider getGlobalLabelProvider() {
-		return _globalLabelProvider;
-	}
 	/**
-	 * For dependency injection.
-	 * 
-	 * @param globalLabelProvider
+	 * Subclasses should implement by simplying calling
+	 * {@link #registerClass(Class)} for each class that needs to be registered
+	 * (one is often enough).
+	 *  
+	 * <p>
+	 * Called by {@link #registerClasses}, with the transaction manager 
+	 * suspended.  
+	 *  
 	 */
-	public void setGlobalLabelProvider(ILouisLabelProvider globalLabelProvider) {
-		_globalLabelProvider = globalLabelProvider;
-	}
-	
+	protected abstract void doRegisterClasses() throws DomainBootstrapException ;
 
-	////////////////////////////////////////////////////////////////////
-	// GlobalDndTransferProvider
-	////////////////////////////////////////////////////////////////////
-	
-	private IDndTransferProvider _globalDndTransferProvider; 
-	public IDndTransferProvider getGlobalDndTransferProvider() {
-		return _globalDndTransferProvider;
-	}
 	/**
-	 * For dependency injection.
+	 * For client-side subclasses to call.
 	 * 
-	 * @param globalDnDTransferProvider
+	 * @param javaClass
+	 * @throws DomainBootstrapException
 	 */
-	public void setGlobalDndTransferProvider(IDndTransferProvider globalDnDTransferProvider) {
-		_globalDndTransferProvider = globalDnDTransferProvider;
+	protected final void registerClass(Class<?> javaClass) throws DomainBootstrapException {
+		getLogger().info("Registering " + javaClass.getName()); //$NON-NLS-1$
+		_domainRegistrar.registerClass(javaClass);
 	}
-	
+
+
 	
 	////////////////////////////////////////////////////////////////////
 	// Bundle
@@ -152,7 +147,7 @@ public class DomainDefinition implements IDomainDefinition {
 	 * 
 	 * <p>
 	 * Set by Essential itself (rather than through Spring, say), primarily
-	 * to assist the {@link IDomainBootstrap} in the verification of 
+	 * to assist the {@link IDomainRegistrar} in the verification of 
 	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
 	 */
 	public Bundle getBundle() {
@@ -163,7 +158,7 @@ public class DomainDefinition implements IDomainDefinition {
 	 */
 	public void setBundle(Bundle domainBundle) {
 		_bundle = domainBundle;
-		_domainBootstrap.setBundle(domainBundle);
+		_domainRegistrar.setBundle(domainBundle);
 	}
 	
 	

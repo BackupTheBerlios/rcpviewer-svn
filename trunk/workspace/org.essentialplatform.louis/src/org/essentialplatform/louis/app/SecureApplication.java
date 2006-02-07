@@ -16,6 +16,7 @@ import org.essentialplatform.louis.app.workbench.ApplicationWorkbenchAdvisor;
 import org.essentialplatform.louis.authentication.IAuthenticationCommand;
 import org.essentialplatform.louis.authentication.noop.NoopAuthenticationCommand;
 import org.essentialplatform.louis.dnd.IDndTransferProvider;
+import org.essentialplatform.louis.domain.ILouisDefinition;
 import org.essentialplatform.louis.factory.IGuiFactories;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
@@ -24,8 +25,8 @@ import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRunti
 import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
 import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
-import org.essentialplatform.runtime.shared.domain.ExtensionPointReadingDomainRegistry;
-import org.essentialplatform.runtime.shared.domain.IDomainBootstrap;
+import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
+import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 import org.essentialplatform.runtime.shared.domain.SingleDomainRegistry;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
@@ -44,8 +45,9 @@ public final class SecureApplication implements IApplication {
 	/**
 	 * Provided by {@link Bootstrap}.
 	 */
-	public void init(IDomainDefinition domainDefinition, String objectStoreName) {
+	public void init(IDomainDefinition domainDefinition, ILouisDefinition louisDefinition, String objectStoreName) {
 		_domainDefinition = domainDefinition;
+		_louisDefinition = louisDefinition;
 		_sessionBinding = new SessionBinding(domainDefinition.getDomainName(), objectStoreName);
 	}
 
@@ -53,6 +55,12 @@ public final class SecureApplication implements IApplication {
 	public IDomainDefinition getDomainDefinition() {
 		return _domainDefinition;
 	}
+	
+	private ILouisDefinition _louisDefinition;
+	public ILouisDefinition getLouisDefinition() {
+		return _louisDefinition;
+	}
+	
 	
 	private SessionBinding _sessionBinding;
 	public SessionBinding getSessionBinding() {
@@ -73,11 +81,6 @@ public final class SecureApplication implements IApplication {
 		Binding.setBinding(
 				new RuntimeClientBinding(_domainDefinition.getDomainBuilder()));
 
-		IDomainBootstrap bootstrap = _domainDefinition.getDomainBootstrap();
-		bootstrap.getSecondaryBuilders().add(new LouisProgModelRuntimeBuilder());
-
-
-		final String domainName = _domainDefinition.getDomainName();
 		try {
 			// authenticate the user
 			if (_authenticationCommand.run() == null) {
@@ -92,8 +95,7 @@ public final class SecureApplication implements IApplication {
 			LouisPlugin.getDefault().setApplication(this);
 
 			// domain initialisation
-			SingleDomainRegistry domainRegistry = 
-				new SingleDomainRegistry(bootstrap, domainName);
+			SingleDomainRegistry domainRegistry = new SingleDomainRegistry(_louisDefinition);
 			RuntimePlugin.getDefault().setDomainRegistry(domainRegistry);
 			DomainBootstrapJob domainJob = new DomainBootstrapJob(domainRegistry);
 			domainJob.schedule();
@@ -102,20 +104,21 @@ public final class SecureApplication implements IApplication {
 			SessionBootstrapJob sessionJob = new SessionBootstrapJob(getSessionBinding());
 			sessionJob.schedule();
 
-			// instantiate fields
-			_guiFactories = _domainDefinition.getGuiFactories();
+			// Louis-specific configuration
+			_guiFactories = _louisDefinition.getGuiFactories();
 			_guiFactories.init();
-			_globalLabelProvider = _domainDefinition.getGlobalLabelProvider();
+			_globalLabelProvider = _louisDefinition.getGlobalLabelProvider();
 			_globalLabelProvider.init();
 			
 			// effectively running jobs synchronously at the moment
-			JobUtil.waitForJob( domainJob, getLogger() );
-			JobUtil.waitForJob( sessionJob, getLogger() );
+			JobUtil.waitForJob(domainJob, getLogger());
+			JobUtil.waitForJob(sessionJob, getLogger());
 			
 			// this must be run once domain classes known
-			_transferProvider = _domainDefinition.getGlobalDndTransferProvider();
+			_transferProvider = _louisDefinition.getGlobalDndTransferProvider();
 			_transferProvider.init();
 			
+			// start the workbench.
 			int returnCode = PlatformUI.createAndRunWorkbench(_display, new ApplicationWorkbenchAdvisor());
 			if (returnCode == PlatformUI.RETURN_RESTART) {
 				return IPlatformRunnable.EXIT_RESTART;
