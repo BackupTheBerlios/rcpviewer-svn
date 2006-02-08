@@ -9,6 +9,8 @@ import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
 import org.essentialplatform.runtime.shared.domain.DomainBootstrapException;
 import org.essentialplatform.runtime.shared.domain.IDomainClassRegistrar;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
+import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
+import org.osgi.framework.Bundle;
 
 /**
  * Encapsulates the definition of an domain to Essential.
@@ -16,6 +18,21 @@ import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 public interface ILouisDefinition extends IDomainClassRegistrar {
 	
 
+
+	/**
+	 * Initialization performed by Essential platform itself.
+	 * 
+	 * <p>
+	 * Although in theory it might be possible to inject this information
+	 * using Spring, we choose to do it manually in order to minimise the
+	 * complexity of the Spring configuration files that must be written by
+	 * the domain programmer. 
+	 * 
+	 * @param domainRegistrar - actually registers the classes in the domain.   
+	 */
+	void init(Bundle bundle, IDomainRegistrar domainRegistrar);
+
+	
 	/**
 	 * The (definition of the) domain for which this UI-specific definition
 	 * applies.

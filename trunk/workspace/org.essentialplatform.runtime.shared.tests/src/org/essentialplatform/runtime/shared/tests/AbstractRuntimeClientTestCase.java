@@ -1,6 +1,7 @@
 package org.essentialplatform.runtime.shared.tests;
 
 import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.tests.AbstractTestCase;
@@ -51,8 +52,8 @@ public abstract class AbstractRuntimeClientTestCase extends AbstractRuntimeShare
 		transactionManager = TransactionManager.instance();
 	}
 
-	protected Binding getBinding() {
-		return new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder());
+	protected IBinding getBinding() {
+		return new RuntimeClientBinding().init(new EssentialProgModelRuntimeBuilder());
 	}
 
 

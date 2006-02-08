@@ -34,7 +34,7 @@ public class SessionBootstrapJob extends AbstractBootstrapJob {
 	 * Creates a session for the passed domain and object store.
 	 */
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	protected IStatus doRun(IProgressMonitor monitor) {
 		IClientSessionManager sessionManager = ClientSessionManager.instance();
 		sessionManager.defineSession(_sessionBinding);
 		return Status.OK_STATUS;

@@ -7,11 +7,50 @@
 		class="org.essentialplatform.runtime.server.StandaloneServer">
 		<property name="databaseServer" ref="hsqlDatabaseServer"/>
 		<property name="remoting" ref="remoting"/>
+		<property name="binding" ref="serverBinding"></property>
+	</bean>
+
+	
+	<bean id="serverBinding"
+		class="org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding">
+		<property name="domainRegistrar" ref="domainRegistrar">
+			<description>
+				The mechanism for registering domain classes.
+			</description>
+		</property>
+		<property name="primaryBuilder">
+			<description>
+				The IDomainBuilder to delegate to when interacting with the
+				domain objects.  In theory the domain plugin could redefine 
+				the 'primaryBuilder' bean, though this will be rare.
+			</description>
+			<ref bean="primaryBuilder"/>
+		</property>
+		<!-- 
+		<property name="handleAssigner" ref="xxx"></property>
+		-->
+	</bean>
+
+
+	<bean id="primaryBuilder" 
+		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder">
+		<description>
+			Default definition of 'primaryBuilder', representing the programming
+			model conventions under which the domain classes have been written.
+			The domain plugin could in theory redefine this bean, though this
+			will be rare.
+		</description>
+	</bean>
+
+	<bean id="domainRegistrar"
+		class="org.essentialplatform.runtime.shared.domain.ServerSideDomainRegistrar">
+		<description>
+			A mechanism for actually registering the domain classes.
+		</description>
 	</bean>
 	
 	<bean id="hsqlDatabaseServer" 
 		class="org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer">
-		<property name="databaseName" value="essential"/>
 		<property name="password"><null/></property>
 		<property name="port" value="9001"/>
 		<property name="silent" value="true"/>
@@ -19,11 +58,13 @@
 	</bean>
 	
 	<bean id="remoting" 
-		class="org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer">
+		class="org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer"
+		init-method="dependenciesInjected">
 		<property name="bindAddress" value="tcp://localhost:61616"/>
 		<property name="messageListenerEnabled" value="true"/>
 		<property name="marshalling" ref="marshalling"/>
 		<property name="transactionProcessor" ref="noopTransactionProcessor"/>
+		<property name="destinationCleaner" ref="destinationCleaner"/>
 	</bean>
 	
 	<bean id="marshalling" 
@@ -38,10 +79,9 @@
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.noop.NoopTransactionProcessor">
 	</bean>
 	
-	<bean id="serverSideDomainRegistrar"
-		class="org.essentialplatform.runtime.shared.domain.ServerSideDomainRegistrar">
+	<bean id="destinationCleaner" 
+		class="org.essentialplatform.runtime.shared.remoting.activemq.DestinationCleaner">
 	</bean>
 	
-
 
 </beans>

@@ -3,13 +3,31 @@
 
 <beans>
 
-	<!-- must supply a 'domain' bean (implementing IDomainDefinition) -->
-
 	<bean id="domain" 
 		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainDefinition">
-		<property name="name" value="default"/>
-	    <property name="domainBuilder" ref="essentialProgModelRuntimeBuilder"/>
+		<description>
+			Must supply a 'domain' bean, implementing IDomainDefinition.
+			Describes the classes that make up the domain, along with the
+			programming model (IDomainBuilder) under which they were written.
+		</description>
+		<property name="name" value="default">
+			<description>
+				The name of the domain, should correspond to @InDomain for the
+				(pojo) domain classes (as per the rules of the primary IDomainBuilder)
+			</description>
+		</property>
+	    <property name="domainBuilder">
+	    	 <description>
+		    	 Reference 'primaryBuilder' from base context (set to
+		    	 EssentialProgModelRuntimeBuilder).  Could in theory redefine
+		    	 'primaryBuilder' if required, though this is rare.
+	    	 </description>
+	    	 <ref bean="primaryBuilder"/>
+	    </property>
 		<property name="classes">
+			<description>
+				The classes that make up this domain.
+			</description>
 			<list>
 				<value>org.essentialplatform.gui.acme.model.EasiestBean</value>
 		   		<value>org.essentialplatform.gui.acme.model.EasyBean</value>
@@ -23,10 +41,5 @@
 			</list>
 		</property>
 	</bean>
-
-	<bean id="essentialProgModelRuntimeBuilder" 
-		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder"/>
-
-
 	
 </beans>

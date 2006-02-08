@@ -20,7 +20,7 @@ public class TestOptionalAtRuntime extends TestOptional {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-			new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().init(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

@@ -27,7 +27,7 @@ public class DomainBootstrapJob extends AbstractBootstrapJob {
 	 * builders.
 	 */
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {  
+	protected IStatus doRun(IProgressMonitor monitor) {  
 		_registry.registerClassesInDomains();
 		return Status.OK_STATUS;	
 	}

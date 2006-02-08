@@ -30,3 +30,6 @@ Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.session,
  org.essentialplatform.runtime.server.session.hibernate,
  org.essentialplatform.runtime.server.session.noop
+Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
+ net.sf.plugins.xstream, 
+ net.sf.plugins.springframework

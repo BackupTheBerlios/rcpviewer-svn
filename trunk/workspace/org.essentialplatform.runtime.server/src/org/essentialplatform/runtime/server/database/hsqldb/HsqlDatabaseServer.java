@@ -57,7 +57,7 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 	 */
 	public HsqlDatabaseServer(int port, String database, boolean silent) {
 		setPort(port);
-		setDatabaseName(database);
+		init(database);
 		setSilent(silent);
 	}
 
@@ -169,7 +169,7 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 	 * 
 	 * @param databaseName
 	 */
-	public void setDatabaseName(String databaseName) {
+	public void init(String databaseName) {
 		_databaseName = databaseName;
 		updateHsqldbProperties();
 	}

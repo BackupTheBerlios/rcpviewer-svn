@@ -21,8 +21,52 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	protected abstract Logger getLogger(); 
 
 
+	//////////////////////////////////////////////////////////////////////
+	// Initialization
+	// Bundle, IDomainRegistrar 
 	////////////////////////////////////////////////////////////////////
-	// Name
+
+
+	/**
+	 * Invoked by {@link org.essentialplatform.louis.Bootstrap}.
+	 */
+	public void init(Bundle bundle, IDomainRegistrar domainRegistrar) {
+		_bundle = bundle;
+		_domainRegistrar = domainRegistrar;
+	}
+
+	private Bundle _bundle;
+	/**
+	 * The (Eclipse) bundle representing the domain plugin.
+	 *
+	 * <p>
+	 * As per {@link #init(Bundle, IDomainRegistrar)}.
+	 *
+	 * <p>
+	 * Set by Essential itself (rather than through Spring, say), primarily
+	 * to assist the {@link IDomainRegistrar} in the verification of 
+	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
+	 */
+	public Bundle getBundle() {
+		return _bundle;
+	}
+
+	private IDomainRegistrar _domainRegistrar;
+	/**
+	 * As per {@link #init(Bundle, IDomainRegistrar)}.
+	 * 
+	 * <p>
+	 * Set by Essential itself (rather than through Spring, say), primarily
+	 * to assist the {@link IDomainRegistrar} in the verification of 
+	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
+	 */
+	public IDomainRegistrar getDomainRegistrar() {
+		return _domainRegistrar;
+	}
+	
+	
+	////////////////////////////////////////////////////////////////////
+	// Name (injected)
 	////////////////////////////////////////////////////////////////////
 
 	private String _name;
@@ -48,7 +92,7 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 
 	
 	////////////////////////////////////////////////////////////////////
-	// DomainBuilder
+	// DomainBuilder (injected)
 	////////////////////////////////////////////////////////////////////
 
 	private IDomainBuilder _domainBuilder;
@@ -73,24 +117,6 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	}
 
 
-	////////////////////////////////////////////////////////////////////
-	// DomainRegistrar
-	////////////////////////////////////////////////////////////////////
-
-	private IDomainRegistrar _domainRegistrar;
-	public IDomainRegistrar getDomainRegistrar() {
-		return _domainRegistrar;
-	}
-	/**
-	 * For dependency injection.
-	 * 
-	 * @param domainRegistrar
-	 */
-	public void setDomainRegistrar(IDomainRegistrar domainRegistrar) {
-		_domainRegistrar = domainRegistrar;
-	}
-	
-	
 	////////////////////////////////////////////////////////////////////
 	// Registration
 	////////////////////////////////////////////////////////////////////
@@ -134,32 +160,5 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 		getLogger().info("Registering " + javaClass.getName()); //$NON-NLS-1$
 		_domainRegistrar.registerClass(javaClass);
 	}
-
-
-	
-	////////////////////////////////////////////////////////////////////
-	// Bundle
-	////////////////////////////////////////////////////////////////////
-	
-	private Bundle _bundle;
-	/**
-	 * The (Eclipse) bundle representing the domain plugin.
-	 * 
-	 * <p>
-	 * Set by Essential itself (rather than through Spring, say), primarily
-	 * to assist the {@link IDomainRegistrar} in the verification of 
-	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
-	 */
-	public Bundle getBundle() {
-		return _bundle;
-	}
-	/*
-	 * Set by Essential itself (rather than through Spring, say).
-	 */
-	public void setBundle(Bundle domainBundle) {
-		_bundle = domainBundle;
-		_domainRegistrar.setBundle(domainBundle);
-	}
-	
 	
 }

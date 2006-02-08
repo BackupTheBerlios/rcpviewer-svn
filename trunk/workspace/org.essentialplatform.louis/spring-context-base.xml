@@ -7,8 +7,46 @@
 		class="org.essentialplatform.louis.app.SecureApplication">
 		<property name="authenticationCommand" ref="loginWizardAuthenticationCommand" />
 		<property name="display" ref="display"/>
+	  	<property name="binding" ref="clientBinding"/>
+	  	<property name="remoting" ref="clientRemoting"></property>
 	</bean>
 	
+	<bean id="clientBinding"
+		class="org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding">
+		<property name="primaryBuilder">
+			<description>
+				The IDomainBuilder to delegate to when interacting with the
+				domain objects.  In theory the domain plugin could redefine 
+				the 'primaryBuilder' bean, though this will be rare.
+			</description>
+			<ref bean="primaryBuilder"/>
+		</property>
+		<property name="domainRegistrar" ref="domainRegistrar">
+			<description>
+				Mechanism for actually registering the domain classes with this
+				runtime context.
+			</description>
+		</property>
+	</bean>
+
+	<bean id="primaryBuilder" 
+		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder">
+		<description>
+			Default definition of 'primaryBuilder', representing the programming
+			model conventions under which the domain classes have been written.
+			The domain plugin could in theory redefine this bean, though this
+			will be rare.
+		</description>
+	</bean>
+
+	<bean id="domainRegistrar"
+		class="org.essentialplatform.runtime.shared.domain.ClientSideDomainRegistrar">
+		<description>
+			A mechanism for actually registering the domain classes.
+		</description>
+	</bean>
+	
+
 	<bean id="loginWizardAuthenticationCommand" 
 		class="org.essentialplatform.louis.authentication.loginwizard.LoginWizardAuthenticationCommand">
 		<property name="toolkit" ref="formToolkit" />
@@ -29,10 +67,30 @@
 		class="org.essentialplatform.louis.app.springsupport.DisplayFactoryBean" >
 	</bean>
 
-	<bean id="clientSideDomainRegistrar"
-		class="org.essentialplatform.runtime.shared.domain.ClientSideDomainRegistrar">
+	<bean id="transactionManager"
+		class="org.essentialplatform.runtime.client.transaction.TransactionManager" 
+		factory-method="instance">
+		<property name="remoting" ref="clientRemoting"/>
 	</bean>
 	
+	<bean id="clientRemoting"
+		class="org.essentialplatform.runtime.client.remoting.ClientRemoting">
+		<property name="marshalling" ref="xstreamMarshalling"/>
+		<property name="packager" ref="standardPackager"/>
+		<property name="transport" ref="activeMqTransport"></property>
+	</bean>
 
+	<bean id="standardPackager"
+		class="org.essentialplatform.runtime.client.remoting.packaging.standard.StandardPackager">
+	</bean>
+	
+	<bean id="xstreamMarshalling"
+		class="org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling"/>
+	
+	<bean id="activeMqTransport"
+		class="org.essentialplatform.runtime.client.remoting.transport.activemq.ActiveMqTransport">
+		<property name="brokerUrl" value="tcp://localhost:61616"/>
+		<property name="destinationName" value="org.essentialplatform.test"/>
+	</bean>
 
 </beans>

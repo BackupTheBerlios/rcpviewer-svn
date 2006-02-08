@@ -20,7 +20,7 @@ public class TestMaxLengthOfAtRuntime extends TestMaxLengthOf {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-				new RuntimeClientBinding(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().init(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

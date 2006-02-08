@@ -11,10 +11,12 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.louis.app.IApplication;
 import org.essentialplatform.louis.domain.ILouisDefinition;
 import org.essentialplatform.runtime.server.ServerPlugin;
 import org.essentialplatform.runtime.server.StandaloneServer;
+import org.essentialplatform.runtime.shared.IRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
@@ -40,7 +42,7 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final int ERROR_NO_STORE_FLAG = 102;
 	
 	private static final int ERROR_NO_SPRINGCONTEXT_LOUIS_EXTENSION_POINT = 110;
-	private static final int ERROR_NO_SPRINGCONTEXT_DOMAIN_EXTENSION_POINT = 112;
+//	private static final int ERROR_NO_SPRINGCONTEXT_DOMAIN_EXTENSION_POINT = 112;
 	private static final int ERROR_BEAN_WRONG_TYPE = 150;
 
 	private static final int ERROR_NO_SERVER_BEAN = 200;
@@ -49,13 +51,10 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final int ERROR_NO_APP_BEAN = 300;
 	private static final int ERROR_NO_DOMAIN_BEAN = 310;
 	private static final int ERROR_NO_LOUIS_BEAN = 320;
-	private static final int ERROR_NO_CLIENT_SIDE_DOMAIN_REGISTRAR_BEAN = 330;
-	private static final int ERROR_NO_SERVER_SIDE_DOMAIN_REGISTRAR_BEAN = 340;
+	
 	private static final String BEAN_APP_ID = "app";
 	private static final String BEAN_DOMAIN_ID = "domain";
 	private static final String BEAN_LOUIS_ID = "louis";
-	private static final String BEAN_CLIENT_SIDE_DOMAIN_REGISTRAR_ID = "clientSideDomainRegistrar";
-	private static final String BEAN_SERVER_SIDE_DOMAIN_REGISTRAR_ID = "serverSideDomainRegistrar";
 
 	private static final String SPRINGCONTEXT_EXTENSION_POINT = "org.essentialplatform.louis.springcontext";
 	private static final String LOUIS_FILE = "louis-file";
@@ -64,14 +63,11 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final String SERVERSIDE_SPRINGCONTEXT_XML = "spring-context.xml";
 
 	private FileSystemXmlApplicationContext _clientContext;
-	private IDomainDefinition _clientDomainDefinition;
 	private ILouisDefinition _louisDefinition;
-	private IDomainRegistrar _clientSideDomainRegistrar;
 	private IApplication _app;
 	
 	private FileSystemXmlApplicationContext _serverContext;
 	private IDomainDefinition _serverDomainDefinition;
-	private IDomainRegistrar _serverSideDomainRegistrar;
 	private StandaloneServer _server;
 
 
@@ -84,7 +80,7 @@ public class Bootstrap implements IPlatformRunnable {
 		try {
 			String[] options= (String[])args;
 			String domainPluginId = null;
-			boolean noServer = false;
+			boolean runServer = true;
 			String store = null;
 			for (int i = options.length - 1; 0 < i--;) {
 				if (options[i].equals(DOMAIN_FLAG)) {
@@ -94,7 +90,7 @@ public class Bootstrap implements IPlatformRunnable {
 					store = options[i+1];
 				}
 				if (options[i].equals(NO_SERVER_FLAG)) {
-					noServer = true;
+					runServer = false;
 				}
 			}
 			if (domainPluginId == null) {
@@ -140,32 +136,26 @@ public class Bootstrap implements IPlatformRunnable {
 			domainPluginLouisUrl = Platform.resolve(domainPluginLouisUrl);
 			domainPluginLouisFilePath = new File(domainPluginLouisUrl.getFile()).getCanonicalPath();
 
-			// create server-side context
-			_serverContext = new FileSystemXmlApplicationContext(new String[]{serverPluginFilePath, domainPluginDomainFilePath});
-			_server = getBeanFrom(_serverContext, BEAN_SERVER_ID, ERROR_NO_SERVER_BEAN, StandaloneServer.class);
-			_serverSideDomainRegistrar = getBeanFrom(_serverContext, BEAN_SERVER_SIDE_DOMAIN_REGISTRAR_ID, ERROR_NO_SERVER_SIDE_DOMAIN_REGISTRAR_BEAN, IDomainRegistrar.class);
-			_server.getDatabaseServer().setDatabaseName(store);
-			
-			// TODO: give the server-side registar to the server, something like:
-			// _server.setDomainRegistar(_serverSideDomainRegistar); 
+			if (runServer) {
+				// create server-side context
+				_serverContext = new FileSystemXmlApplicationContext(new String[]{serverPluginFilePath, domainPluginDomainFilePath});
+				_server = getBeanFrom(_serverContext, BEAN_SERVER_ID, ERROR_NO_SERVER_BEAN, StandaloneServer.class);
+				_serverDomainDefinition = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
+
+				// initialize obtained beans, start server
+				_server.getDatabaseServer().init(store);
+				_serverDomainDefinition.init(domainPluginBundle, _server.getBinding().getDomainRegistrar());
+				_server.start();
+			}
 
 			// create client-side context
 			_clientContext = new FileSystemXmlApplicationContext(new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
 			_app = getBeanFrom(_clientContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
-			_clientDomainDefinition = getBeanFrom(_clientContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
 			_louisDefinition = getBeanFrom(_clientContext, BEAN_LOUIS_ID, ERROR_NO_LOUIS_BEAN, ILouisDefinition.class);
-			_clientSideDomainRegistrar = getBeanFrom(_clientContext, BEAN_CLIENT_SIDE_DOMAIN_REGISTRAR_ID, ERROR_NO_CLIENT_SIDE_DOMAIN_REGISTRAR_BEAN, IDomainRegistrar.class);
 
-			
-			// initialize obtained beans, start server and run client-side app
-			
-// COMMENTED OUT TEMPORARILY BECAUSE OF THE Binding.setBinding SINGLETON PROBLEM.			
-//			_server.start();
-
-			_louisDefinition.setDomainDefinition(_clientDomainDefinition);
-			_clientDomainDefinition.setDomainRegistrar(_clientSideDomainRegistrar);
-			_clientDomainDefinition.setBundle(domainPluginBundle);
-			_app.init(_clientDomainDefinition, _louisDefinition, store); // from whence derives SessionBinding
+			// initialize obtained beans, run client-side app
+			_louisDefinition.init(domainPluginBundle, _app.getBinding().getDomainRegistrar());
+			_app.init(_louisDefinition, store); // from whence derives SessionBinding
 			
 			return _app.run(args);
 		} catch(Exception ex) {
@@ -183,7 +173,9 @@ public class Bootstrap implements IPlatformRunnable {
 				
 				// Therefore, just swallow any exception.
 			}
-			_server.shutdown();
+			if (_server != null && _server.isStarted()) {
+				_server.shutdown();
+			}
 		}
 	}
 

@@ -48,9 +48,11 @@ import org.osgi.framework.Bundle;
  */
 public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 
-	private static Logger _logger = Logger
-			.getLogger(RuntimeClientBinding.class);
-
+	/**
+	 * Provided for nested static classes.
+	 */
+	private static Logger _logger = Logger.getLogger(RuntimeClientBinding.class); 
+	@Override
 	protected Logger getLogger() {
 		return _logger;
 	}
@@ -62,16 +64,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 		return Platform.getBundle("org.essentialplatform.domain.runtime");
 	}
 
-	/**
-	 * Saves the primary builder, and sets up a sequential handle
-	 * assigner.
-	 * 
-	 * @throws RuntimeException
-	 *             if a binding has already been set.
-	 */
-	public RuntimeClientBinding(IDomainBuilder primaryBuilder) {
-		super(primaryBuilder);
-	}
+	
 
 	@Override
 	public IDomainBinding bindingFor(IDomain domain) {

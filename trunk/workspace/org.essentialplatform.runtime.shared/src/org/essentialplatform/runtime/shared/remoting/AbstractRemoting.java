@@ -1,10 +1,6 @@
 package org.essentialplatform.runtime.shared.remoting;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-
 import org.apache.log4j.Logger;
-import org.essentialplatform.runtime.shared.remoting.IRemoting;
 import org.essentialplatform.runtime.shared.remoting.marshalling.IMarshalling;
 import org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling;
 import org.essentialplatform.runtime.shared.remoting.transport.ITransport;
@@ -29,12 +25,11 @@ public abstract class AbstractRemoting implements IRemoting {
 	}
 
 
-	
+
 	/*
 	 * @see org.essentialplatform.runtime.shared.remoting.IRemoting#send(java.lang.Object)
 	 */
-	public void send(Object object) {
-	}
+	public abstract void send(Object object);
 
 	
 	

@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.louis.Bootstrap;
 import org.essentialplatform.louis.DomainBootstrapJob;
 import org.essentialplatform.louis.LouisPlugin;
@@ -21,65 +22,98 @@ import org.essentialplatform.louis.factory.IGuiFactories;
 import org.essentialplatform.louis.factory.IGuiFactory;
 import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
 import org.essentialplatform.louis.util.JobUtil;
-import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
+import org.essentialplatform.runtime.shared.AbstractSimpleLifecycle;
+import org.essentialplatform.runtime.shared.IRuntimeBinding;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
-import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 import org.essentialplatform.runtime.shared.domain.SingleDomainRegistry;
+import org.essentialplatform.runtime.shared.remoting.IRemoting;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
-public final class SecureApplication implements IApplication {
+/**
+ * 
+ * @author Dan Haywood
+ *
+ */
+public final class SecureApplication extends AbstractSimpleLifecycle implements IApplication {
 
-	private Logger getLogger() { return Logger.getLogger(SecureApplication.class); }
+	protected Logger getLogger() { return Logger.getLogger(SecureApplication.class); }
 	
-	public SecureApplication() {}
+	public SecureApplication() {
+		super("APPLICATION");
+	}
 
 
 	////////////////////////////////////////////////////////////////////
 	// init
+	// LouisDefinition, DomainDefinition, SessionBinding
 	////////////////////////////////////////////////////////////////////
-
 
 	/**
 	 * Provided by {@link Bootstrap}.
 	 */
-	public void init(IDomainDefinition domainDefinition, ILouisDefinition louisDefinition, String objectStoreName) {
-		_domainDefinition = domainDefinition;
+	public void init(ILouisDefinition louisDefinition, String objectStoreName) {
 		_louisDefinition = louisDefinition;
-		_sessionBinding = new SessionBinding(domainDefinition.getDomainName(), objectStoreName);
+		_domainDefinition = louisDefinition.getDomainDefinition();
+		_sessionBinding = new SessionBinding(_domainDefinition.getDomainName(), objectStoreName);
 	}
 
 	private IDomainDefinition _domainDefinition;
+	/**
+	 * Populated by {@link #init(ILouisDefinition, String)}.
+	 * @return
+	 */
 	public IDomainDefinition getDomainDefinition() {
 		return _domainDefinition;
 	}
-	
+
 	private ILouisDefinition _louisDefinition;
+	/**
+	 * Populated by {@link #init(ILouisDefinition, String)}.
+	 * @return
+	 */
 	public ILouisDefinition getLouisDefinition() {
 		return _louisDefinition;
 	}
 	
-	
 	private SessionBinding _sessionBinding;
+	/**
+	 * Populated by {@link #init(ILouisDefinition, String)}.
+	 * @return
+	 */
 	public SessionBinding getSessionBinding() {
 		return _sessionBinding;
 	}
+
+	////////////////////////////////////////////////////////////////////
+	// start, shutdown
+	////////////////////////////////////////////////////////////////////
 	
+
+	@Override
+	protected boolean doStart() {
+		_remoting.start();
+		return true;
+	}
+	
+	@Override
+	protected boolean doShutdown() {
+		_remoting.stop();
+		return true;
+	}
+
 	
 	////////////////////////////////////////////////////////////////////
 	// run
 	////////////////////////////////////////////////////////////////////
-
 	
 	/*
 	 * @see org.eclipse.core.runtime.IPlatformRunnable#run(java.lang.Object)
 	 */
 	public Object run(Object args) throws Exception {
 		
-		Binding.setBinding(
-				new RuntimeClientBinding(_domainDefinition.getDomainBuilder()));
+		Binding.setBinding(_binding);
+		start();
 
 		try {
 			// authenticate the user
@@ -141,40 +175,49 @@ public final class SecureApplication implements IApplication {
 			return IPlatformRunnable.EXIT_OK;
 		}
 		finally {
+			shutdown();
 			Platform.endSplash();
 		}
 	}
 
-
-	////////////////////////////////////////////////////////////////////
-	// GuiFactories
-	////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	// Binding (injected)
+	//////////////////////////////////////////////////////////////////
 	
-	private IGuiFactories _guiFactories= null;
-	
-	
-	/**
-	 * Returns first factory that is applicable for the passed arguments.
-	 * @param object
-	 * @param context
-	 * @return gui factory
+	private IRuntimeBinding _binding;
+	/*
+	 * @see org.essentialplatform.louis.app.IApplication#getBinding()
 	 */
-	public IGuiFactory<?> getGuiFactory( Object model, IGuiFactory parent ) {
-		return _guiFactories.getFactory( model, parent );
+	public IRuntimeBinding getBinding() {
+		return _binding;
 	}
-	
 	/**
-	 * Returns all factories that are applicable for the passed arguments.
-	 * <br>Will never be empty as will include the default factory if no
-	 * others found.
-	 * @param object
-	 * @param context
-	 * @return list of gui factories
+	 * For dependency injection.
+	 * 
+	 * @param binding
 	 */
-	public List<IGuiFactory<?>> getGuiFactories( Object model, IGuiFactory parent ) {
-		return _guiFactories.getFactories( model, parent );
+	public void setBinding(IRuntimeBinding binding) {
+		_binding = binding;
 	}
 
+
+	///////////////////////////////////////////////////////////////
+	// Remoting (injected)
+	///////////////////////////////////////////////////////////////
+	
+	private IRemoting _remoting;
+	public IRemoting getRemoting() {
+		return _remoting;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * @param remoting
+	 */
+	public void setRemoting(IRemoting remoting) {
+		_remoting = remoting;
+	}
+	
 
 	///////////////////////////////////////////////////////////////
 	// Display (injected)
@@ -212,6 +255,36 @@ public final class SecureApplication implements IApplication {
 	public void setAuthenticationCommand(
 			IAuthenticationCommand authenticationCommand) {
 		_authenticationCommand = authenticationCommand;
+	}
+
+
+	////////////////////////////////////////////////////////////////////
+	// GuiFactories
+	////////////////////////////////////////////////////////////////////
+	
+	private IGuiFactories _guiFactories= null;
+	
+	
+	/**
+	 * Returns first factory that is applicable for the passed arguments.
+	 * @param object
+	 * @param context
+	 * @return gui factory
+	 */
+	public IGuiFactory<?> getGuiFactory( Object model, IGuiFactory parent ) {
+		return _guiFactories.getFactory( model, parent );
+	}
+	
+	/**
+	 * Returns all factories that are applicable for the passed arguments.
+	 * <br>Will never be empty as will include the default factory if no
+	 * others found.
+	 * @param object
+	 * @param context
+	 * @return list of gui factories
+	 */
+	public List<IGuiFactory<?>> getGuiFactories( Object model, IGuiFactory parent ) {
+		return _guiFactories.getFactories( model, parent );
 	}
 
 

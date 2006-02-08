@@ -37,7 +37,7 @@ public class ObjectStoreBootstrapJob extends AbstractBootstrapJob {
 	 * 
 	 */
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {  
+	protected IStatus doRun(IProgressMonitor monitor) {  
 		try {
 	        IConfigurationElement[] elems
         		= Platform.getExtensionRegistry()

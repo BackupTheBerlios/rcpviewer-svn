@@ -3,8 +3,13 @@
  */
 package org.essentialplatform.louis;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.IBinding;
 
 /**
  * Superclass for all bootstrap jobs - ensures they do not run
@@ -29,6 +34,7 @@ abstract class AbstractBootstrapJob extends Job {
 	protected AbstractBootstrapJob(String name) {
 		super(name);
 		setRule( MUTEX );
+		_binding = Binding.getBinding();
 	}
 
 	/**
@@ -41,6 +47,32 @@ abstract class AbstractBootstrapJob extends Job {
 	}
 	
 	
+	/**
+	 * Sets the {@link IBinding} for this thread and then delegates to
+	 * {@link #doRun(IProgressMonitor)} to actually do the work.
+	 * 
+	 * <p>
+	 * Template pattern.
+	 */
+	@Override
+	protected final IStatus run(IProgressMonitor monitor) {
+		Binding.setBinding(getBinding());
+		return doRun(monitor);
+	}
+
+	
+	protected abstract IStatus doRun(IProgressMonitor monitor);
+
+
+	private IBinding _binding;
+	/**
+	 * Binding of the instantiating thread.
+	 * 
+	 * @return
+	 */
+	protected IBinding getBinding() {
+		return _binding;
+	}
 
 
 }

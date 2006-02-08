@@ -32,16 +32,17 @@ public abstract class Binding implements IBinding {
 	 * @throws RuntimeException if a binding has already been instantiated.
 	 */
 	public synchronized static void setBinding(IBinding binding) {
-		if (__binding != null) {
-			throw new RuntimeException("Binding already defined.");
+		IBinding currentBindingIfAny = __threadLocalBinding.get();
+		if (currentBindingIfAny != null && currentBindingIfAny != binding) {
+			throw new RuntimeException(String.format("A different binding '%s' has already defined for this thread (was trying to set binding '%s')", currentBindingIfAny, binding));
 		}
-		__binding = binding;
+		__threadLocalBinding.set(binding);
 	}
 
 	/**
-	 * The current binding (if any).
+	 * Holds this thread's current binding.
 	 */
-	private static IBinding __binding;
+	private static ThreadLocal<IBinding> __threadLocalBinding = new ThreadLocal();
 	
 	/**
 	 * Returns the current binding.
@@ -51,10 +52,10 @@ public abstract class Binding implements IBinding {
 	 * @throws RuntimeException if no binding has been instantiated.
 	 */
 	public static IBinding getBinding() {
-		if (__binding == null) {
+		if (__threadLocalBinding == null) {
 			throw new RuntimeException("No binding set.");
 		}
-		return __binding;
+		return __threadLocalBinding.get();
 	}
 
 	public abstract IDomainBinding bindingFor(IDomain domain);
@@ -88,7 +89,7 @@ public abstract class Binding implements IBinding {
 	 *
 	 */
 	public static void reset() {
-		__binding = null;
+		__threadLocalBinding = null;
 	}
 
 }

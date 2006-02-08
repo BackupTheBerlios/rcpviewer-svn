@@ -27,24 +27,27 @@ import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPacka
  */
 public final class TransactionManager implements ITransactionManager {
 	
-	final static Logger logger = Logger.getLogger(TransactionManager.class);
-
 	private Logger getLogger() {
-		return logger;
+		return Logger.getLogger(TransactionManager.class);
 	}
 
 	////////////////////////////////////////////////////////////////////
 	// Singleton, Constructor
 	////////////////////////////////////////////////////////////////////
 
-	private final static ITransactionManager __instance = new TransactionManager();
+	private static ThreadLocal<ITransactionManager> __instance = new ThreadLocal<ITransactionManager>();
 	/**
 	 * Pending the use of dependency injection, we expose a singleton.
 	 * 
 	 * <p>
 	 * This is used by the TransactionAspect.
 	 */
-	public final static ITransactionManager instance() { return __instance; }
+	public synchronized final static ITransactionManager instance() {
+		if (__instance.get() == null) {
+			__instance.set(new TransactionManager());
+		}
+		return __instance.get();
+	}
 
 	/**
 	 * Public constructor so that this component can be instantiated and
@@ -366,8 +369,7 @@ public final class TransactionManager implements ITransactionManager {
 	 * @param transaction
 	 */
 	private void sendTransactionToServer(ITransaction transaction) {
-		ITransactionPackage transactionPackage = _packager.pack(transaction);
-		_remoting.send(transactionPackage);
+		_remoting.send(transaction);
 	}
 
 	/**
@@ -530,25 +532,6 @@ public final class TransactionManager implements ITransactionManager {
 	public void setRemoting(org.essentialplatform.runtime.shared.remoting.IRemoting distribution) {
 		_remoting = distribution;
 	}
-
-	
-
-	private IPackager _packager = new StandardPackager();
-	public IPackager getPackager() {
-		return _packager;
-	}
-	/**
-	 * For dependency injection.
-	 * 
-	 * <p>
-	 * If not injected, then defaults to {@link StandardPackager}.
-	 * 
-	 * @param packager
-	 */
-	public void setPackager(IPackager packager) {
-		_packager = packager;
-	}
-
 
 	
 	////////////////////////////////////////////////////////////////////

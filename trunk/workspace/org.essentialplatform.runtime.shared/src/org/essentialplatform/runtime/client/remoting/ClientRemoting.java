@@ -33,14 +33,6 @@ public final class ClientRemoting extends AbstractRemoting {
 		getTransport().shutdown();
 	}
 
-
-	public void send(ITransaction xactn) {
-		getPackager().optimize(getMarshalling());
-        ITransactionPackage packagedXactn = getPackager().pack(xactn);
-		String marshalledXactn = getMarshalling().marshal(packagedXactn);
-		getTransport().send(marshalledXactn);
-	}
-
 	
 	private IPackager _packager = new StandardPackager();
 	public IPackager getPackager() {
@@ -52,6 +44,19 @@ public final class ClientRemoting extends AbstractRemoting {
 	
 
 
+	@Override
+	public void send(Object object) {
+		if (!(object instanceof ITransaction)) {
+			throw new RuntimeException(String.format("Unsupported object '%s'", object));
+		}
+		send((ITransaction)object);
+	}
+	public void send(ITransaction xactn) {
+		//getPackager().optimize(getMarshalling()); // TODO: commented out because server is not unmarshalling correctly, suspect this might be the problem?
+        ITransactionPackage packagedXactn = getPackager().pack(xactn);
+		String marshalledXactn = getMarshalling().marshal(packagedXactn);
+		getTransport().send(marshalledXactn);
+	}
 
 
 }

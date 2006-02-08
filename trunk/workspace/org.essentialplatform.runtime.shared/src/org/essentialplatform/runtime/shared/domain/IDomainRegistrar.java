@@ -24,15 +24,6 @@ public interface IDomainRegistrar  {
 
 	
 	void registerClass(Class<?> javaClass);
-	
-	/**
-	 * Propagated by owning IDomainDefinition.
-	 * 
-	 * <p>
-	 * TODO: will disappear once merge IDomainRegistrar with DomainDefinition.
-	 * @param domainBundle
-	 */
-	void setBundle(Bundle domainBundle);
 
 	
 }

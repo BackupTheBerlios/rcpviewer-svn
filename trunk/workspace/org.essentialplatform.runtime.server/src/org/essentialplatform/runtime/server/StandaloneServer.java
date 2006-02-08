@@ -19,6 +19,7 @@ import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransaction
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory;
+import org.essentialplatform.runtime.shared.IRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
@@ -61,7 +62,7 @@ public final class StandaloneServer extends AbstractServer {
 		// First, build our Domain(s)
 		// for now, only supporting "default".
 		Binding.setBinding(
-			new RuntimeServerBinding(new EssentialProgModelRuntimeBuilder()));
+			new RuntimeServerBinding().init(new EssentialProgModelRuntimeBuilder()));
 
 		
 		// build the objectStoreListByDomain.
@@ -107,10 +108,24 @@ public final class StandaloneServer extends AbstractServer {
 		objectStoreHandleList.add(serverSessionFactory);
 	}
 
-    ////////////////////////////////////////////////////////////
-	// DomainBuilder
-    ////////////////////////////////////////////////////////////
+	
+	//////////////////////////////////////////////////////////////////
+	// Binding
+	//////////////////////////////////////////////////////////////////
+	
+	private IRuntimeBinding _binding;
 
+	public IRuntimeBinding getBinding() {
+		return _binding;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * @param binding
+	 */
+	public void setBinding(IRuntimeBinding binding) {
+		_binding = binding;
+	}
 	
 	
 

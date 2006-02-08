@@ -13,6 +13,8 @@ import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.DomainBootstrapException;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
+import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
+import org.osgi.framework.Bundle;
 
 /**
  * Implementation of {@link IDomainDefinition} designed for configuration
@@ -23,6 +25,13 @@ import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 public abstract class AbstractLouisDefinition implements ILouisDefinition {
 
 	protected abstract Logger getLogger(); 
+
+	/**
+	 * Just passes onto {@link #getDomainDefinition()}.
+	 */
+	public void init (Bundle bundle, IDomainRegistrar domainRegistrar) {
+		getDomainDefinition().init(bundle, domainRegistrar);
+	}
 
 	
 	////////////////////////////////////////////////////////////////////

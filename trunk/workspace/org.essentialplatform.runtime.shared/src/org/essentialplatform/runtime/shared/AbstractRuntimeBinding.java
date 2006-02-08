@@ -30,6 +30,7 @@ import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStan
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
 import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
+import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
@@ -113,24 +114,47 @@ public abstract class AbstractRuntimeBinding extends Binding implements IRuntime
 	//////////////////////////////////////////////////////////////////////
 
 
-	private final IDomainBuilder _primaryBuilder;
-	
 	/**
-	 * Saves the primary builder, and sets up a sequential handle assigner.
-	 *
-	 * @param primaryBuilder
-	 * @throws RuntimeException if a binding has already been set.
+	 * For programmatic configuration.
+	 * 
+	 * @see #setPrimaryBuilder(IDomainBuilder)
 	 */
-	public AbstractRuntimeBinding(IDomainBuilder primaryBuilder) {
+	public IRuntimeBinding init(IDomainBuilder primaryBuilder) {
+		setPrimaryBuilder(primaryBuilder);
+		return this;
+	}
+	/**
+	 * For dependency injection.
+	 * @param primaryBuilder
+	 */
+	public void setPrimaryBuilder(IDomainBuilder primaryBuilder) {
 		_primaryBuilder = primaryBuilder;
 	}
+	
+	
+
+	private IDomainRegistrar _domainRegistrar;
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#getDomainRegistrar()
+	 */
+	public IDomainRegistrar getDomainRegistrar() {
+		return _domainRegistrar;
+	}
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#setDomainRegistrar(org.essentialplatform.runtime.shared.domain.IDomainRegistrar)
+	 */
+	public void setDomainRegistrar(IDomainRegistrar domainRegistrar) {
+		_domainRegistrar = domainRegistrar;
+	}
+
 
 	/*
-	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getBundle()
+	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#getBundle()
 	 */
 	public abstract Bundle getBundle();
 
 	
+	private IDomainBuilder _primaryBuilder;
 	/*
 	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getPrimaryBuilder()
 	 */

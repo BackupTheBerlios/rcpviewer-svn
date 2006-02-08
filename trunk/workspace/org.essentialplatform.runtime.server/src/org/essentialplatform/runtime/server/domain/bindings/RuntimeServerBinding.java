@@ -2,12 +2,23 @@ package org.essentialplatform.runtime.server.domain.bindings;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Platform;
+import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
 import org.essentialplatform.core.deployment.IDomainBinding;
+import org.essentialplatform.core.deployment.IDomainClassBinding;
+import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
+import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.IDomainClass.IAttribute;
+import org.essentialplatform.core.domain.IDomainClass.ICollectionReference;
+import org.essentialplatform.core.domain.IDomainClass.IOneToOneReference;
+import org.essentialplatform.core.domain.IDomainClass.IOperation;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
+import org.essentialplatform.runtime.shared.IRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.Handle;
+import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectCollectionReference;
@@ -40,18 +51,7 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 
 	@Override
 	public Bundle getBundle() {
-		return Platform.getBundle("org.essentialplatform.domain.runtime");
-	}
-
-
-	/**
-	 * Saves the primary builder, and sets up a sequential handle assigner.
-	 *
-	 * @param primaryBuilder
-	 * @throws RuntimeException if a binding has already been set.
-	 */
-	public RuntimeServerBinding(IDomainBuilder primaryBuilder) {
-		super(primaryBuilder);
+		return Platform.getBundle("org.essentialplatform.runtime.server");
 	}
 
 
@@ -59,6 +59,7 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 	public IDomainBinding bindingFor(IDomain domain) {
 		return new RuntimeServerDomainBinding(domain);
 	}
+	
 	@Override
 	public IDomainClassServerBinding bind(IDomainClass domainClass, Object classRepresentation) {
 		IDomainClassServerBinding binding = bind(domainClass, (Class<?>)classRepresentation);
@@ -90,7 +91,7 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 	/**
 	 * Injected in server-side.
 	 */
-	private IHandleAssigner _sequentialHandleAssigner; 
+	private IHandleAssigner _sequentialHandleAssigner;
 	
 	/**
 	 * Injected.
@@ -343,6 +344,12 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 			};
 		}
 	}
+
+
+
+
+
+
 
 
 }

@@ -1,14 +1,21 @@
 package org.essentialplatform.runtime.shared;
 
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.InDomain;
+import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
+import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
 
-public interface IRuntimeBinding {
+public interface IRuntimeBinding extends IBinding {
+
+	public IRuntimeBinding init(IDomainBuilder domainBuilder);
+	
+	public IDomainBuilder getPrimaryBuilder();
+	public void setPrimaryBuilder(IDomainBuilder domainBuilder);
 
 	public Bundle getBundle();
 
-	public IDomainBuilder getPrimaryBuilder();
 
 	/*
 	 * The <tt>classRepresentation</tt> can be either a string or an actual
@@ -21,4 +28,6 @@ public interface IRuntimeBinding {
 	public void assertValid(final Object classRepresentation);
 
 
+	IDomainRegistrar getDomainRegistrar();
+	void setDomainRegistrar(IDomainRegistrar domainRegistrar);
 }

@@ -1,6 +1,7 @@
 package org.essentialplatform.runtime.shared.tests;
 
 import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.tests.AbstractTestCase;
@@ -37,7 +38,7 @@ public abstract class AbstractRuntimeSharedTestCase extends AbstractTestCase {
 		super.tearDown();
 	}
 
-	protected abstract Binding getBinding();
+	protected abstract IBinding getBinding();
 
 
 
