@@ -48,7 +48,7 @@ public class TestSendTransactionsUsingXStream extends AbstractRuntimeClientTestC
 		processedTransactions = new SynchronousQueue<ITransactionPackage>();
 		transactionProcessor = new EnqueuingTransactionProcessor(processedTransactions);
 		packager = new StandardPackager();
-		remotingServer.setTransactionProcessor(transactionProcessor);
+		remotingServer.init(transactionProcessor);
 		remotingServer.start();
 		
 		clientTransport = new ActiveMqTransport();

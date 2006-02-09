@@ -4,8 +4,6 @@ Bundle-Name: Server Tests
 Bundle-SymbolicName: org.essentialplatform.server.tests
 Bundle-Version: 1.0.0
 Bundle-Localization: plugin
-Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
- net.sf.plugins.xstream
 Require-Bundle: org.junit,
  demo,
  net.sf.plugins.hsqldb,

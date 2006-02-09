@@ -2,24 +2,29 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+	<description>
+		Server-side components for the Essential Platform.
+	</description>
 
 	<bean id="app" 
 		class="org.essentialplatform.louis.app.SecureApplication">
+		<description>
+			Main GUI application, implementing the Eclipse RCP IPlatformRunnable interface.
+		</description>
 		<property name="authenticationCommand" ref="loginWizardAuthenticationCommand" />
 		<property name="display" ref="display"/>
 	  	<property name="binding" ref="clientBinding"/>
-	  	<property name="remoting" ref="clientRemoting"></property>
+	  	<property name="remoting" ref="clientRemoting"/>
 	</bean>
 	
 	<bean id="clientBinding"
 		class="org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding">
-		<property name="primaryBuilder">
+		<property name="primaryBuilder" ref="primaryBuilder">
 			<description>
 				The IDomainBuilder to delegate to when interacting with the
 				domain objects.  In theory the domain plugin could redefine 
 				the 'primaryBuilder' bean, though this will be rare.
 			</description>
-			<ref bean="primaryBuilder"/>
 		</property>
 		<property name="domainRegistrar" ref="domainRegistrar">
 			<description>

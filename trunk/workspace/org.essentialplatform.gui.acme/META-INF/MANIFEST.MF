@@ -15,7 +15,3 @@ Require-Bundle: org.aspectj.runtime,
  org.essentialplatform.runtime.client
 Export-Package: org.essentialplatform.gui.acme.factory.exts,
  org.essentialplatform.gui.acme.model
-Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
- net.sf.plugins.xstream, 
- net.sf.plugins.springframework,
- org.essentialplatform.runtime.shared

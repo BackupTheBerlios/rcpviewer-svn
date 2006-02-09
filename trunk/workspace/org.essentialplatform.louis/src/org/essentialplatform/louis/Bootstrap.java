@@ -42,7 +42,6 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final int ERROR_NO_STORE_FLAG = 102;
 	
 	private static final int ERROR_NO_SPRINGCONTEXT_LOUIS_EXTENSION_POINT = 110;
-//	private static final int ERROR_NO_SPRINGCONTEXT_DOMAIN_EXTENSION_POINT = 112;
 	private static final int ERROR_BEAN_WRONG_TYPE = 150;
 
 	private static final int ERROR_NO_SERVER_BEAN = 200;
@@ -149,7 +148,9 @@ public class Bootstrap implements IPlatformRunnable {
 			}
 
 			// create client-side context
-			_clientContext = new FileSystemXmlApplicationContext(new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
+			_clientContext = 
+				new FileSystemXmlApplicationContext(
+					new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
 			_app = getBeanFrom(_clientContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
 			_louisDefinition = getBeanFrom(_clientContext, BEAN_LOUIS_ID, ERROR_NO_LOUIS_BEAN, ILouisDefinition.class);
 

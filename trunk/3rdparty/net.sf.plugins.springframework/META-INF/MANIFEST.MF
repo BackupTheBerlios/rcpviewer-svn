@@ -15,7 +15,6 @@ Bundle-ClassPath: library.jar,
  dist/spring-jdbc.jar,
  dist/spring-mock.jar,
  dist/
-Eclipse-BuddyPolicy: registered
 Export-Package: org.aopalliance.aop,
  org.aopalliance.intercept,
  org.springframework.aop,
@@ -78,3 +77,4 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  net.sf.plugins.commons,
  org.eclipse.swt
 Plugin-Class: net.sf.plugins.springframework.SpringPlugin
+DynamicImport-Package: *

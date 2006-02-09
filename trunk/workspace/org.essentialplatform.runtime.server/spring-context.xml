@@ -2,12 +2,12 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
 	<bean id="server" 
 		class="org.essentialplatform.runtime.server.StandaloneServer">
 		<property name="databaseServer" ref="hsqlDatabaseServer"/>
 		<property name="remoting" ref="remoting"/>
-		<property name="binding" ref="serverBinding"></property>
+		<property name="binding" ref="serverBinding"/>
+		<property name="transactionProcessor" ref="noopTransactionProcessor"/>
 	</bean>
 
 	
@@ -63,7 +63,6 @@
 		<property name="bindAddress" value="tcp://localhost:61616"/>
 		<property name="messageListenerEnabled" value="true"/>
 		<property name="marshalling" ref="marshalling"/>
-		<property name="transactionProcessor" ref="noopTransactionProcessor"/>
 		<property name="destinationCleaner" ref="destinationCleaner"/>
 	</bean>
 	

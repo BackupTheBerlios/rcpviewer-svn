@@ -79,5 +79,4 @@ Export-Package: javax.persistence,
  org.hibernate.util,
  org.hibernate.validator,
  org.hibernate.validator.event
-Eclipse-BuddyPolicy: registered
-Eclipse-RegisterBuddy: net.sf.plugins.hibernate.annotations
+DynamicImport-Package: *

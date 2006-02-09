@@ -27,4 +27,4 @@ Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.mapper,
  org.xmlpull.mxp1,
  org.xmlpull.v1
-Eclipse-BuddyPolicy: registered
+DynamicImport-Package: *

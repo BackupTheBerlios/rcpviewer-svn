@@ -12,7 +12,5 @@ Require-Bundle: org.aspectj.runtime,
  org.essentialplatform.runtime.client,
  org.essentialplatform.runtime.shared
 Eclipse-AutoStart: true
-Eclipse-RegisterBuddy: net.sf.plugins.hibernate,
- net.sf.plugins.xstream
 Export-Package: demo
 Bundle-Vendor: Essential Platform Development Team

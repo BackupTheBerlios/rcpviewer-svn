@@ -205,7 +205,7 @@ public final class StandaloneServer extends AbstractServer {
 	 */
 	protected boolean doStart() {
 		_databaseServer.start();
-		_remotingServer.setTransactionProcessor(_transactionProcessor);
+		_remotingServer.init(_transactionProcessor);
 		_remotingServer.start();
 		return true;
 	}
