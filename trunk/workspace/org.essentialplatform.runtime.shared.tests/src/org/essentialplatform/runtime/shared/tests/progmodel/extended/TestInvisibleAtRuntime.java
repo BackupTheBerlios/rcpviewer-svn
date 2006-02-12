@@ -19,7 +19,7 @@ public class TestInvisibleAtRuntime extends TestInvisible {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-				new RuntimeClientBinding().init(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

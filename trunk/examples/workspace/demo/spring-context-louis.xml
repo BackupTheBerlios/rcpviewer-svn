@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- must supply a 'louis' bean (implementing ILouisDefinition) -->
+
+	<bean id="louis" 
+		class="org.essentialplatform.louis.domain.SpringConfiguredLouisDefinition">
+		<description>
+			Application programmer must supply a 'louis' bean, implementing ILouisDefinition.  
+			It optionally configures the UI with specific capabilities for the domain.
+		</description>
+		<property name="domainDefinition" ref='domain'>
+			<description>
+				The domain to which these UI-specific capabilities refer.  The
+				domain should be defined in 'spring-context-domain.xml', which
+				will also be included in the context.
+			</description>
+		</property>
+	    <property name="guiFactories" ref="guiFactories">
+	    	<description>
+	    		Renderers for attributes and values specific to this domain.
+	    	</description>
+	    </property>
+	    <property name="globalLabelProvider" ref="globalLabelProvider">
+	    	<description>
+	    		Label provider for classes within the domain.
+	    	</description>
+	    </property>
+	    <property name="globalDndTransferProvider" ref="globalDndTransferProvider">
+	    	<description>
+	    		Drag-n-drop support.
+	    	</description>
+	    </property>
+		<property name="secondaryBuilders">
+			<description>
+				Processing of any additional annotations specific to Louis.
+			</description>
+			<list>
+				<ref bean="louisProgModelRuntimeBuilder"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="guiFactories"
+		class="org.essentialplatform.louis.factory.SpringConfiguredGuiFactories">
+		<!-- 
+		<property name="guiFactories">
+			<list>
+				<bean class="org.essentialplatform.gui.acme.factory.exts.ColourAttributeGuiFactory"/>
+			</list>
+		</property>
+		-->
+	</bean>
+
+   	<bean id="globalLabelProvider"
+   		class="org.essentialplatform.louis.labelproviders.SpringConfiguredGlobalLabelProvider">
+		<!-- 
+		<property name="labelProviders">
+			<list>
+				<ref bean="someDomainSpecificLabelProvider"/>
+			</list>
+		</property>
+		-->
+	</bean>
+
+   	<bean id="globalDndTransferProvider" 
+   		class="org.essentialplatform.louis.dnd.SpringConfiguredGlobalDnDTransferProvider">
+		<!-- 
+		<property name="dndTransferProviders">
+			<list>
+				<ref bean="someDomainSpecificDndTransferProvider"/>
+			</list>
+		</property>
+		-->
+	</bean>
+
+	<bean id="authenticationManager" 
+		class="org.essentialplatform.services.authentication.noop.NoopAuthenticationManager">
+		<description>
+			Potentially override the 'authenticationManager' defined in 
+		    spring-context-base.xml (in LouisPlugin).
+		</description>
+	</bean>
+
+	
+</beans>

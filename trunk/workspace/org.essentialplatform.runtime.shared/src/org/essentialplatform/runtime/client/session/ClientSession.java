@@ -75,7 +75,7 @@ public final class ClientSession implements IClientSession {
 		return _sessionBinding;
 	}
 	/*
-	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#getObjectStoreId()
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreRef#getObjectStoreId()
 	 */
 	public String getObjectStoreId() {
 		return _sessionBinding.getObjectStoreId();

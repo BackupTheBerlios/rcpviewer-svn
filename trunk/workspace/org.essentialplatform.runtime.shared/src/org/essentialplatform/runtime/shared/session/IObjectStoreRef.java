@@ -14,7 +14,7 @@ import org.essentialplatform.core.domain.IDomain;
  * @author Dan Haywood
  *
  */
-public interface IObjectStoreHandle {
+public interface IObjectStoreRef {
 	
 	/**
 	 * The id of the object store into which the domain objects managed by 

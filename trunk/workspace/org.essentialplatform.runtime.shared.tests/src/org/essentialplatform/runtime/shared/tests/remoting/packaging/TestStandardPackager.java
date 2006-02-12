@@ -97,8 +97,8 @@ public class TestStandardPackager extends AbstractRuntimeClientTestCase {
 
 		// not needed here, but commented out rather than deleted because
 		// other end-to-end tests might want to copy it.
-//		serverSessionFactory = new NoopServerSessionFactory(
-//				new SessionBinding(DomainConstants.DEFAULT_NAME, "bar"));
+//		serverSessionFactory = new NoopServerSessionFactory();
+//		serverSessionFactory.init(new SessionBinding(DomainConstants.DEFAULT_NAME, "bar")));
 //		serverSession = serverSessionFactory.open();
 		
 		TransactionManager.instance().suspend();

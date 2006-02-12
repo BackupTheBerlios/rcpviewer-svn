@@ -6,7 +6,7 @@ import org.osgi.framework.Bundle;
 /**
  * Encapsulates the definition of an domain to Essential.
  */
-public interface IDomainDefinition extends IDomainClassRegistrar {
+public interface IDomainDefinition  {
 
 	
 	/**
@@ -20,25 +20,14 @@ public interface IDomainDefinition extends IDomainClassRegistrar {
 	 * the domain programmer. 
 	 * 
 	 * @param Bundle - bundle through whose classloader the classes may be loaded
-	 * @param domainRegistrar - actually registers the classes in the domain.   
 	 */
-	void init(Bundle Bundle, IDomainRegistrar domainRegistrar);
+	void init(Bundle Bundle);
 
-	/**
-	 * As provided by {@link #init(IDomainRegistrar)}, to delegate to to
-	 * perform the actual registration.
-	 * 
-	 * @return
-	 */
-	IDomainRegistrar getDomainRegistrar();
-
-	
 	/**
 	 * The name of this domain.
 	 * 
 	 * <p>
-	 * All classes registered by this domain (by the {@link IDomainRegistrar} 
-	 * returned by {@link #getDomainRegistrar()}) should indicate this domain.
+	 * All classes registered by this domain should indicate this domain.
 	 * 
 	 * <p>
 	 * Implementations are expected to provide a corresponding setter such that
@@ -50,8 +39,7 @@ public interface IDomainDefinition extends IDomainClassRegistrar {
 
 	/**
 	 * The (runtime) implementation of a {@link IDomainBuilder} which is
-	 * capable of building a domain out of the classes registed by the 
-	 * {@link IDomainRegistrar} returned by {@link #getDomainRegistrar()}).
+	 * capable of building a domain out of the registered classes.
 	 * 
 	 * <p>
 	 * Implementations are expected to provide a corresponding setter such that
@@ -60,7 +48,19 @@ public interface IDomainDefinition extends IDomainClassRegistrar {
 	 * @return
 	 */
 	IDomainBuilder getDomainBuilder();
-	
 
+	/**
+	 * Register all (or enough) classes in the domain.
+	 * 
+	 * <p>
+	 * Previously there was a design to make the registration pluggable,
+	 * obtaining an <i>IDomainRegistrar</i> from the <tt>RuntimeBinding</tt>.
+	 * However, this isn't needed - the implementation can be wired up
+	 * directly (through Spring) to interact with an appropriate component.
+	 * In the case of a server-side runtime using Hibernate, for example, this 
+	 * is the <tt>HibernateServerSessionFactory</tt> (wrapping a Hibernate
+	 * <tt>AnnotationConfiguration</tt>).
+	 */
+	void registerClasses() throws DomainBootstrapException;
 
 }

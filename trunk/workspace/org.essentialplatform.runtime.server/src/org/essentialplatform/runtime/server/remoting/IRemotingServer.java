@@ -18,5 +18,5 @@ public interface IRemotingServer extends IServer {
 	 * 
 	 * @param transactionProcessor
 	 */
-	public void init(ITransactionProcessor transactionProcessor);
+	public void setTransactionProcessor(ITransactionProcessor transactionProcessor);
 }

@@ -13,7 +13,7 @@ public abstract class AbstractObjectStore implements IObjectStore {
 	}
 
 	/*
-	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#getObjectStoreId()
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreRef#getObjectStoreId()
 	 */
 	public String getObjectStoreId() {
 		return getId();

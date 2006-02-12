@@ -7,17 +7,26 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
+/**
+ * Simple implementation of {@link IDomainRegistry} that can only deal with
+ * a single domain.
+ * 
+ * @author Dan Haywood
+ *
+ */
 public final class SingleDomainRegistry implements IDomainRegistry {
 	
 	protected Logger getLogger() { return Logger.getLogger(SingleDomainRegistry.class); }
 	
-	public SingleDomainRegistry(IDomainClassRegistrar domainClassRegistrar) {
-		_domainClassRegistrar = domainClassRegistrar;
+	public SingleDomainRegistry(IDomainDefinition domainDefinition) {
+		_domainDefinition = domainDefinition;
 	}
 
-	private final IDomainClassRegistrar _domainClassRegistrar;
-	public IDomainClassRegistrar getDomainClassRegistrar() {
-		return _domainClassRegistrar;
+	
+	
+	private final IDomainDefinition _domainDefinition;
+	public IDomainDefinition getDomainClassRegistrar() {
+		return _domainDefinition;
 	}
 
 
@@ -25,7 +34,7 @@ public final class SingleDomainRegistry implements IDomainRegistry {
 	 * @see org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry#registerClassesInDomains()
 	 */
 	public void registerClassesInDomains() throws DomainRegistryException {
-		_domainClassRegistrar.registerClasses();
+		_domainDefinition.registerClasses();
 	}
 
 

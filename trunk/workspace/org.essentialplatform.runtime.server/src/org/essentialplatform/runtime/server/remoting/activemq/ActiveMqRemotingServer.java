@@ -233,7 +233,7 @@ public class ActiveMqRemotingServer extends AbstractServer implements IRemotingS
      * @see NoopTransactionProcessor
      * @param transactionProcessor
      */
-    public void init(ITransactionProcessor transactionProcessor) {
+    public void setTransactionProcessor(ITransactionProcessor transactionProcessor) {
 		this.transactionProcessor = transactionProcessor;
 	}
 

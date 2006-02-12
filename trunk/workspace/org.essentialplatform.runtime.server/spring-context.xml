@@ -4,20 +4,93 @@
 <beans>
 	<bean id="server" 
 		class="org.essentialplatform.runtime.server.StandaloneServer">
-		<property name="databaseServer" ref="hsqlDatabaseServer"/>
-		<property name="remoting" ref="remoting"/>
-		<property name="binding" ref="serverBinding"/>
-		<property name="transactionProcessor" ref="noopTransactionProcessor"/>
-	</bean>
-
-	
-	<bean id="serverBinding"
-		class="org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding">
-		<property name="domainRegistrar" ref="domainRegistrar">
+		<description>
+			Standalone server, for running within or outside of a (J2EE) container.
+		</description>
+		<property name="binding" ref="serverBinding">
 			<description>
-				The mechanism for registering domain classes.
+				So that the server can install the appropriate runtime binding.
+				This isn't hard-coded because the binding depends on the
+				domainBuilder, shared with the 'domain' (domain definition).
 			</description>
 		</property>
+		<property name="remotingServer" ref="activeMqRemotingServer">
+			<description>
+				So that the remoting server can be started and stopped as a 
+				subcomponent of the standalone server overall.
+			</description>
+		</property>
+		<property name="objectStoreRouting" ref="objectStoreRouting">
+			<description>
+				So that the server can set up the routing on behalf of the
+				transactionProcessor (that shares this routing object).
+			</description>
+		</property>
+		<property name="serverSessionFactories">
+			<description>
+				Primarily to populate 'objectStoreRouting', but the server
+				also instruct the factory to initialize itself (meaning register 
+				classes in a manner appropriate to the databaser server that it
+				references).  The server also takes responsibility for starting/shutdown of
+				the database server that the factory references (a transitive
+				dependency). 
+				Note that currently the server holds a single reference, but 
+				will become a list in the future (each providing a SessionBinding
+				based on the domain and database server that it references).
+			</description>
+			<list>
+				<ref bean="hibernateServerSessionFactory"/>
+			</list>
+		</property>
+	</bean>
+
+
+	<bean id="activeMqRemotingServer" 
+		class="org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer"
+		init-method="dependenciesInjected">
+		<property name="bindAddress" value="tcp://localhost:61616"/>
+		<property name="messageListenerEnabled" value="true"/>
+		<property name="marshalling" ref="marshalling"/>
+		<property name="destinationCleaner" ref="destinationCleaner"/>
+		<property name="transactionProcessor" ref="hibernateTransactionProcessor"></property>
+	</bean>
+	
+	<bean id="marshalling" 
+		class="org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling">
+	</bean>
+	
+	<bean id="destinationCleaner" 
+		class="org.essentialplatform.runtime.shared.remoting.activemq.DestinationCleaner">
+	</bean>
+
+	<bean id="hibernateServerSessionFactory" 
+		class="org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory">
+		<property name="domainDefinition" ref="domain"/>
+		<property name="dialect" value="org.hibernate.dialect.HSQLDialect"/>
+		<property name="databaseServer" ref="hsqlDatabaseServer"/>
+	</bean>
+
+	<bean id="hibernateTransactionProcessor" 
+		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor">
+		<property name="objectStoreRouting" ref="objectStoreRouting"/>
+	</bean>
+
+	<bean id="hsqlDatabaseServer" 
+		class="org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer">
+		<property name="password"><null/></property>
+		<property name="port" value="9001"/>
+		<property name="silent" value="true"/>
+		<property name="user" value="sa"/>
+		<property name="databaseDir" value="c:/temp/essential"/>
+	</bean>
+
+	<bean id="objectStoreRouting" 
+		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.ObjectStoreRouting">
+	</bean>
+	 
+
+	<bean id="serverBinding"
+		class="org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding">
 		<property name="primaryBuilder">
 			<description>
 				The IDomainBuilder to delegate to when interacting with the
@@ -27,6 +100,7 @@
 			<ref bean="primaryBuilder"/>
 		</property>
 		<!-- 
+		<property name=""></property>
 		<property name="handleAssigner" ref="xxx"></property>
 		-->
 	</bean>
@@ -42,45 +116,23 @@
 		</description>
 	</bean>
 
-	<bean id="domainRegistrar"
-		class="org.essentialplatform.runtime.shared.domain.ServerSideDomainRegistrar">
-		<description>
-			A mechanism for actually registering the domain classes.
-		</description>
+	<!--  overridden by domain plugin -->
+	<bean id="domain" 
+		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainDefinition">
+		<property name="domainBuilder">
+			<description>
+				The programming model conventions under which the domain classes
+				were written.
+			</description>
+			<ref bean="primaryBuilder"/>
+		</property>
 	</bean>
 	
-	<bean id="hsqlDatabaseServer" 
-		class="org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer">
-		<property name="password"><null/></property>
-		<property name="port" value="9001"/>
-		<property name="silent" value="true"/>
-		<property name="user" value="sa"/>
-	</bean>
 	
-	<bean id="remoting" 
-		class="org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer"
-		init-method="dependenciesInjected">
-		<property name="bindAddress" value="tcp://localhost:61616"/>
-		<property name="messageListenerEnabled" value="true"/>
-		<property name="marshalling" ref="marshalling"/>
-		<property name="destinationCleaner" ref="destinationCleaner"/>
-	</bean>
-	
-	<bean id="marshalling" 
-		class="org.essentialplatform.runtime.shared.remoting.marshalling.xstream.XStreamMarshalling">
-	</bean>
-	
-	<bean id="hibernateTransactionProcessor" 
-		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor">
-	</bean>
-	
+	<!-- 
 	<bean id="noopTransactionProcessor" 
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.noop.NoopTransactionProcessor">
 	</bean>
-	
-	<bean id="destinationCleaner" 
-		class="org.essentialplatform.runtime.shared.remoting.activemq.DestinationCleaner">
-	</bean>
-	
+	 -->
 
 </beans>

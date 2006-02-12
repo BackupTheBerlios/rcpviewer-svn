@@ -13,7 +13,6 @@ import org.essentialplatform.runtime.client.transaction.ITransactionManager;
 import org.essentialplatform.runtime.client.transaction.TransactionManager;
 import org.essentialplatform.runtime.shared.domain.DomainBootstrapException;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
-import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
 
 /**
@@ -29,8 +28,8 @@ public abstract class AbstractLouisDefinition implements ILouisDefinition {
 	/**
 	 * Just passes onto {@link #getDomainDefinition()}.
 	 */
-	public void init (Bundle bundle, IDomainRegistrar domainRegistrar) {
-		getDomainDefinition().init(bundle, domainRegistrar);
+	public void init (Bundle bundle) {
+		getDomainDefinition().init(bundle);
 	}
 
 	
@@ -108,6 +107,21 @@ public abstract class AbstractLouisDefinition implements ILouisDefinition {
 		_domainDefinition = domainDefinition;
 	}
 	
+	
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainDefinition#getDomainName()
+	 */
+	public final String getDomainName() {
+		return getDomainDefinition().getDomainName();
+	}
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainDefinition#getDomainBuilder()
+	 */
+	public final IDomainBuilder getDomainBuilder() {
+		return getDomainDefinition().getDomainBuilder();
+	}
+	
+
 	////////////////////////////////////////////////////////////////////
 	// GuiFactories
 	////////////////////////////////////////////////////////////////////

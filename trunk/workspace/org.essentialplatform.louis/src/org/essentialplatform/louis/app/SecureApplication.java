@@ -52,12 +52,24 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 	/**
 	 * Provided by {@link Bootstrap}.
 	 */
-	public void init(ILouisDefinition louisDefinition, String objectStoreName) {
-		_louisDefinition = louisDefinition;
-		_domainDefinition = louisDefinition.getDomainDefinition();
+	public void init(String objectStoreName) {
 		_sessionBinding = new SessionBinding(_domainDefinition.getDomainName(), objectStoreName);
 	}
 
+	
+	private ILouisDefinition _louisDefinition;
+	/**
+	 * Populated by {@link #init(ILouisDefinition, String)}.
+	 * @return
+	 */
+	public ILouisDefinition getLouisDefinition() {
+		return _louisDefinition;
+	}
+	public void setLouisDefinition(ILouisDefinition louisDefinition) {
+		_louisDefinition = louisDefinition;
+		_domainDefinition = louisDefinition.getDomainDefinition();
+	}
+	
 	private IDomainDefinition _domainDefinition;
 	/**
 	 * Populated by {@link #init(ILouisDefinition, String)}.
@@ -67,14 +79,7 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 		return _domainDefinition;
 	}
 
-	private ILouisDefinition _louisDefinition;
-	/**
-	 * Populated by {@link #init(ILouisDefinition, String)}.
-	 * @return
-	 */
-	public ILouisDefinition getLouisDefinition() {
-		return _louisDefinition;
-	}
+
 	
 	private SessionBinding _sessionBinding;
 	/**

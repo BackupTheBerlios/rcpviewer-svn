@@ -44,7 +44,7 @@ public final class HibernateObjectStore extends AbstractObjectStore {
 	/*
 	 * Does nothing.
 	 *  
-	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#reset()
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreRef#reset()
 	 */
 	public void reset() {
 		

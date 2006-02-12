@@ -16,9 +16,9 @@ import org.essentialplatform.louis.app.IApplication;
 import org.essentialplatform.louis.domain.ILouisDefinition;
 import org.essentialplatform.runtime.server.ServerPlugin;
 import org.essentialplatform.runtime.server.StandaloneServer;
+import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
 import org.essentialplatform.runtime.shared.IRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
-import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -32,7 +32,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
  * <tt>org.essentialplatform.louis.app</tt>.  
  */
 public class Bootstrap implements IPlatformRunnable {
-
 	
 	private static final String DOMAIN_FLAG = "-domain";
 	private static final String STORE_FLAG = "-store";
@@ -64,10 +63,12 @@ public class Bootstrap implements IPlatformRunnable {
 	private FileSystemXmlApplicationContext _clientContext;
 	private ILouisDefinition _louisDefinition;
 	private IApplication _app;
+	private IRuntimeBinding _clientBinding;
 	
 	private FileSystemXmlApplicationContext _serverContext;
 	private IDomainDefinition _serverDomainDefinition;
 	private StandaloneServer _server;
+	private IRuntimeBinding _serverBinding;
 
 
 	/*
@@ -140,23 +141,33 @@ public class Bootstrap implements IPlatformRunnable {
 				_serverContext = new FileSystemXmlApplicationContext(new String[]{serverPluginFilePath, domainPluginDomainFilePath});
 				_server = getBeanFrom(_serverContext, BEAN_SERVER_ID, ERROR_NO_SERVER_BEAN, StandaloneServer.class);
 				_serverDomainDefinition = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
-
+				_serverBinding = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IRuntimeBinding.class);
+				
 				// initialize obtained beans, start server
-				_server.getDatabaseServer().init(store);
-				_serverDomainDefinition.init(domainPluginBundle, _server.getBinding().getDomainRegistrar());
+				_serverBinding.init(louisPluginBundle);
+				_serverDomainDefinition.init(domainPluginBundle); // for classloading
+				
+				// TODO: this is a hack.  Need to decide whether we hard-code the store names within the
+				// Spring file, in which case here we should be validating that there IS a serverSessionFactory
+				// for the (domainName, objectStoreName) ... or we specify it here instead.
+				_server.getServerSessionFactories().get(0).getDatabaseServer().init(store);
 				_server.start();
 			}
 
 			// create client-side context
-			_clientContext = 
-				new FileSystemXmlApplicationContext(
+			_clientContext = new FileSystemXmlApplicationContext(
 					new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
 			_app = getBeanFrom(_clientContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
 			_louisDefinition = getBeanFrom(_clientContext, BEAN_LOUIS_ID, ERROR_NO_LOUIS_BEAN, ILouisDefinition.class);
+			_clientBinding = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IRuntimeBinding.class);
 
 			// initialize obtained beans, run client-side app
-			_louisDefinition.init(domainPluginBundle, _app.getBinding().getDomainRegistrar());
-			_app.init(_louisDefinition, store); // from whence derives SessionBinding
+			_clientBinding.init(louisPluginBundle);
+			_louisDefinition.init(domainPluginBundle);
+			
+			// TODO: like the server booting, this too is a hack.  We
+			// currently only support single SessionBinding.
+			_app.init(store);
 			
 			return _app.run(args);
 		} catch(Exception ex) {

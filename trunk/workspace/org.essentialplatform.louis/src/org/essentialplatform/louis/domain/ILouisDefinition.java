@@ -7,32 +7,15 @@ import org.essentialplatform.louis.dnd.IDndTransferProvider;
 import org.essentialplatform.louis.factory.IGuiFactories;
 import org.essentialplatform.louis.labelproviders.ILouisLabelProvider;
 import org.essentialplatform.runtime.shared.domain.DomainBootstrapException;
-import org.essentialplatform.runtime.shared.domain.IDomainClassRegistrar;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
-import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
 
 /**
  * Encapsulates the definition of an domain to Essential.
  */
-public interface ILouisDefinition extends IDomainClassRegistrar {
+public interface ILouisDefinition extends IDomainDefinition {
 	
 
-
-	/**
-	 * Initialization performed by Essential platform itself.
-	 * 
-	 * <p>
-	 * Although in theory it might be possible to inject this information
-	 * using Spring, we choose to do it manually in order to minimise the
-	 * complexity of the Spring configuration files that must be written by
-	 * the domain programmer. 
-	 * 
-	 * @param domainRegistrar - actually registers the classes in the domain.   
-	 */
-	void init(Bundle bundle, IDomainRegistrar domainRegistrar);
-
-	
 	/**
 	 * The (definition of the) domain for which this UI-specific definition
 	 * applies.
@@ -54,14 +37,12 @@ public interface ILouisDefinition extends IDomainClassRegistrar {
 	 */
 	void registerClasses() throws DomainBootstrapException;
 
-
 	/**
 	 * For dependency injection.
 	 * 
 	 * @return
 	 */
 	List<IDomainBuilder> getSecondaryBuilders();
-	
 	/**
 	 * Adds the {@link IDomainBuilder} to those returned from {@link #getSecondaryBuilders()}.
 	 * 
@@ -74,6 +55,7 @@ public interface ILouisDefinition extends IDomainClassRegistrar {
 	 */
 	void addSecondaryBuilder(IDomainBuilder domainBuilder);
 
+	
 	/**
 	 * Gui-specifics.
 	 * 
@@ -94,7 +76,6 @@ public interface ILouisDefinition extends IDomainClassRegistrar {
 	 * @return
 	 */
 	IDndTransferProvider getGlobalDndTransferProvider();
-
-
+	
 
 }

@@ -227,28 +227,56 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 	}
 
 	////////////////////////////////////////////////////////////////////
+	// DatabaseDir (dependency injected)
+	////////////////////////////////////////////////////////////////////
+
+	private String _databaseDir = System.getProperty("java.io.tmpdir"); 
+	/**
+	 * The directory where the database files will be stored.
+	 */
+	public String getDatabaseDir() {
+		return _password;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Optional; if not specified then defaults to <tt>java.io.tmpdir</tt>.
+	 * @param password
+	 */
+	public void setDatabaseDir(String databaseDir) {
+		_databaseDir = databaseDir;
+		updateHsqldbProperties();
+	}
+
+	
+
+	////////////////////////////////////////////////////////////////////
 	// HSQLDB Startup Properties
 	////////////////////////////////////////////////////////////////////
 
 	private void updateHsqldbProperties() {
-		_properties = overridingProperties(getPort(), getDatabaseName(), isSilent(), true); 
+		_properties = overridingProperties(getPort(), getDatabaseDir(), getDatabaseName(), isSilent(), true); 
 	}
 
 	/**
 	 * Holds the properties used to start the HSQLDB server.
 	 * 
 	 * <p>
-	 * Based on the properties {@link #getPort()}, {@link #getDatabaseName()} 
-	 * and {@link #isSilent()}, and is updated whenever these properties are
-	 * updated.
+	 * Based on the properties {@link #getPort()}, {@link #getDatabaseDir()}, 
+	 * {@link #getDatabaseName()} and {@link #isSilent()}, and is updated 
+	 * whenever these properties are updated.
 	 */
 	private Properties _properties;
 
-
-	private static Properties overridingProperties(int port, String database, boolean silent, boolean noSystemExitOnShutdown) {
+	private static Properties overridingProperties(
+			int port, String database, String dbname, boolean silent, 
+			boolean noSystemExitOnShutdown) {
+		
 		Properties props = new Properties();
 		props.put(ServerConstants.SC_KEY_PORT, ""+port);
 		props.put(ServerConstants.SC_KEY_DATABASE+".0", database);
+		props.put(ServerConstants.SC_KEY_DBNAME+".0", dbname);
 		props.put(ServerConstants.SC_KEY_SILENT, ""+silent);
 		props.put(ServerConstants.SC_KEY_NO_SYSTEM_EXIT, ""+noSystemExitOnShutdown);
 		return props;

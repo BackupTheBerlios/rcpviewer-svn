@@ -3,7 +3,7 @@ package org.essentialplatform.runtime.server.persistence;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.persistence.ConcurrencyException;
 import org.essentialplatform.runtime.shared.persistence.DuplicateObjectException;
-import org.essentialplatform.runtime.shared.session.IObjectStoreHandle;
+import org.essentialplatform.runtime.shared.session.IObjectStoreRef;
 
 /**
  * Abstracts out mechanics of persisting, saving and deleting domain objects.

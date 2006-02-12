@@ -2,10 +2,13 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension point="org.essentialplatform.runtime.shared.domainclass">
-   		<impl class="demo.Customer"/>
-   		<impl class="demo.Order"/>
-   </extension>
 
+   <extension
+         point="org.essentialplatform.louis.springcontext">
+         <springcontext 
+         	id="demo"
+         	domain-file="spring-context-domain.xml"
+         	louis-file="spring-context-louis.xml"/>
+   </extension>
 
 </plugin>

@@ -23,16 +23,15 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 
 	//////////////////////////////////////////////////////////////////////
 	// Initialization
-	// Bundle, IDomainRegistrar 
+	// Bundle
 	////////////////////////////////////////////////////////////////////
 
 
 	/**
 	 * Invoked by {@link org.essentialplatform.louis.Bootstrap}.
 	 */
-	public void init(Bundle bundle, IDomainRegistrar domainRegistrar) {
+	public void init(Bundle bundle) {
 		_bundle = bundle;
-		_domainRegistrar = domainRegistrar;
 	}
 
 	private Bundle _bundle;
@@ -40,29 +39,17 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	 * The (Eclipse) bundle representing the domain plugin.
 	 *
 	 * <p>
-	 * As per {@link #init(Bundle, IDomainRegistrar)}.
+	 * As per {@link #init(Bundle)}.
 	 *
 	 * <p>
 	 * Set by Essential itself (rather than through Spring, say), primarily
-	 * to assist the {@link IDomainRegistrar} in the verification of 
-	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
+	 * to assist in the verification of domain classes (so that it can use 
+	 * the appropriate <tt>ClassLoader</tt>).
 	 */
 	public Bundle getBundle() {
 		return _bundle;
 	}
 
-	private IDomainRegistrar _domainRegistrar;
-	/**
-	 * As per {@link #init(Bundle, IDomainRegistrar)}.
-	 * 
-	 * <p>
-	 * Set by Essential itself (rather than through Spring, say), primarily
-	 * to assist the {@link IDomainRegistrar} in the verification of 
-	 * domain classes (so that it can use the appropriate <tt>ClassLoader</tt>).
-	 */
-	public IDomainRegistrar getDomainRegistrar() {
-		return _domainRegistrar;
-	}
 	
 	
 	////////////////////////////////////////////////////////////////////
@@ -158,7 +145,10 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	 */
 	protected final void registerClass(Class<?> javaClass) throws DomainBootstrapException {
 		getLogger().info("Registering " + javaClass.getName()); //$NON-NLS-1$
-		_domainRegistrar.registerClass(javaClass);
+		if (!(Domain.lookupAny(javaClass) != null)) {
+			String msg= "Failed to register class in domain:"+javaClass.getName();
+			throw new DomainBootstrapException(msg);
+		}
 	}
 	
 }

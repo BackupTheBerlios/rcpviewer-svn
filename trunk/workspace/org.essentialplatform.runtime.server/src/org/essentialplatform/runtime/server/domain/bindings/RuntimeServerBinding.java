@@ -47,13 +47,6 @@ public final class RuntimeServerBinding extends AbstractRuntimeBinding {
 
 
 
-	//////////////////////////////////////////////////////////////////////
-
-	@Override
-	public Bundle getBundle() {
-		return Platform.getBundle("org.essentialplatform.runtime.server");
-	}
-
 
 	@Override
 	public IDomainBinding bindingFor(IDomain domain) {

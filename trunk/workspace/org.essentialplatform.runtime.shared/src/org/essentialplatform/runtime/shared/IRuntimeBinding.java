@@ -3,19 +3,18 @@ package org.essentialplatform.runtime.shared;
 import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.InDomain;
-import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
-import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.osgi.framework.Bundle;
 
 public interface IRuntimeBinding extends IBinding {
 
-	public IRuntimeBinding init(IDomainBuilder domainBuilder);
-	
-	public IDomainBuilder getPrimaryBuilder();
-	public void setPrimaryBuilder(IDomainBuilder domainBuilder);
-
+	/**
+	 * In order to validate class representations.
+	 * @param bundle
+	 */
+	public void init(Bundle bundle);
 	public Bundle getBundle();
 
+	public void assertValid(final Object classRepresentation);
 
 	/*
 	 * The <tt>classRepresentation</tt> can be either a string or an actual
@@ -25,9 +24,7 @@ public interface IRuntimeBinding extends IBinding {
 	 */
 	public InDomain getInDomainOf(final Object classRepresentation);
 
-	public void assertValid(final Object classRepresentation);
+	public IDomainBuilder getPrimaryBuilder();
+	public IRuntimeBinding setPrimaryBuilder(IDomainBuilder domainBuilder);
 
-
-	IDomainRegistrar getDomainRegistrar();
-	void setDomainRegistrar(IDomainRegistrar domainRegistrar);
 }

@@ -14,8 +14,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
-import org.essentialplatform.core.deployment.IAttributeBinding;
-import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
 import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.deployment.IOneToOneReferenceBinding;
@@ -28,9 +26,7 @@ import org.essentialplatform.progmodel.essential.app.InDomain;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelExtendedSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStandardSemanticsEmfSerializer;
 import org.essentialplatform.progmodel.louis.core.emf.LouisProgModelSemanticsEmfSerializer;
-import org.essentialplatform.runtime.shared.domain.DomainObject;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
-import org.essentialplatform.runtime.shared.domain.IDomainRegistrar;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
@@ -109,59 +105,32 @@ public abstract class AbstractRuntimeBinding extends Binding implements IRuntime
 		}
 
 	}
+	
+	
+	//////////////////////////////////////////////////////////////////////
+	// Bundle
+	//////////////////////////////////////////////////////////////////////
+
+	private Bundle _bundle;
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#init(org.osgi.framework.Bundle)
+	 */
+	public void init(Bundle bundle) {
+		_bundle = bundle;
+	}
+
+	/*
+	 * @see org.essentialplatform.core.deployment.IBinding#getBundle()
+	 */
+	public Bundle getBundle() {
+		return _bundle;
+	}
 
 
 	//////////////////////////////////////////////////////////////////////
-
-
-	/**
-	 * For programmatic configuration.
-	 * 
-	 * @see #setPrimaryBuilder(IDomainBuilder)
-	 */
-	public IRuntimeBinding init(IDomainBuilder primaryBuilder) {
-		setPrimaryBuilder(primaryBuilder);
-		return this;
-	}
-	/**
-	 * For dependency injection.
-	 * @param primaryBuilder
-	 */
-	public void setPrimaryBuilder(IDomainBuilder primaryBuilder) {
-		_primaryBuilder = primaryBuilder;
-	}
+	// getInDomainOf
+	//////////////////////////////////////////////////////////////////////
 	
-	
-
-	private IDomainRegistrar _domainRegistrar;
-	/*
-	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#getDomainRegistrar()
-	 */
-	public IDomainRegistrar getDomainRegistrar() {
-		return _domainRegistrar;
-	}
-	/*
-	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#setDomainRegistrar(org.essentialplatform.runtime.shared.domain.IDomainRegistrar)
-	 */
-	public void setDomainRegistrar(IDomainRegistrar domainRegistrar) {
-		_domainRegistrar = domainRegistrar;
-	}
-
-
-	/*
-	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#getBundle()
-	 */
-	public abstract Bundle getBundle();
-
-	
-	private IDomainBuilder _primaryBuilder;
-	/*
-	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getPrimaryBuilder()
-	 */
-	@Override
-	public IDomainBuilder getPrimaryBuilder() {
-		return _primaryBuilder;
-	}
 
 	/*
 	 * The <tt>classRepresentation</tt> can be either a string or an actual
@@ -837,4 +806,35 @@ public abstract class AbstractRuntimeBinding extends Binding implements IRuntime
 	}
 
 
+
+
+
+
+	//////////////////////////////////////////////////////////////////////
+	// PrimaryBuilder (injected)
+	//////////////////////////////////////////////////////////////////////
+
+	private IDomainBuilder _primaryBuilder;
+	/*
+	 * @see org.essentialplatform.runtime.shared.IRuntmieBinding#getPrimaryBuilder()
+	 */
+	@Override
+	public IDomainBuilder getPrimaryBuilder() {
+		return _primaryBuilder;
+	}
+
+	/**
+	 * For either dependency injection, or programmatic configuration.
+	 * 
+	 * <p>
+	 * Returning the object rather than void is for the benefit of
+	 * programmatic configuration.
+	 * 
+	 */
+	public IRuntimeBinding setPrimaryBuilder(IDomainBuilder primaryBuilder) {
+		_primaryBuilder = primaryBuilder;
+		return this;
+	}
+	
+	
 }

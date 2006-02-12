@@ -1,6 +1,7 @@
 package org.essentialplatform.runtime.server;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -16,21 +17,31 @@ import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding
 import org.essentialplatform.runtime.server.remoting.IRemotingServer;
 import org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.ITransactionProcessor;
+import org.essentialplatform.runtime.server.remoting.xactnprocessor.ObjectStoreRouting;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor;
+import org.essentialplatform.runtime.server.session.IServerSession;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory;
 import org.essentialplatform.runtime.shared.IRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
-import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
+import org.essentialplatform.runtime.shared.session.ObjectStoreRefList;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
  * Standalone server.
  * 
  * <p>
- * Configures the components that make up the server, (eg database server, 
- * JMS broker, transaction processor), and starts/shutdown.
+ * The primary responsibilities of the standalone server are:
+ * <ul> 
+ * <li> to control the startup/shutdown lifecycele of the subcomponent servers
+ *      (remoting and database), and
+ * <li> to route requests for different domains to the correct place 
+ *      (internally, the <tt>objectStoreListByDomain</tt> map).
+ * </ul>
+ *
+ * <p>
+ * In addition, it sets up the runtime binding. 
  * 
  * @author Dan Haywood
  */
@@ -47,67 +58,41 @@ public final class StandaloneServer extends AbstractServer {
 
 	public StandaloneServer() {
 	}
-	
-	public void init() {
-
-		//
-		// YIKES.  THE EssentialProgModelRuntimeBuilder will populate the
-		// Domain singleton with a hash of (name,IDomain) tuples.  But I then
-		// need to say, for each of those Domains, what the list of
-		// ObjectStores are.  Each (domainName, objectStore) then corresponds
-		// to a SessionBinding.
-		//
-		//
-
-		// First, build our Domain(s)
-		// for now, only supporting "default".
-		Binding.setBinding(
-			new RuntimeServerBinding().init(new EssentialProgModelRuntimeBuilder()));
-
-		
-		// build the objectStoreListByDomain.
-		//
-		// for now, hard-coded to bind "default" domain to "default" objectstore,
-		// implemented using Hibernate.
-		//
-		// in the future, intend to pick up the names of domains and map to the
-		// Ids (and possibly implementations) of corresponding lists of objectstores.
-		SessionBinding sessionBinding = new SessionBinding(DomainConstants.DEFAULT_NAME, PersistenceConstants.DEFAULT_OBJECT_STORE_ID);
-		HibernateServerSessionFactory hssf = new HibernateServerSessionFactory(sessionBinding);
-		bind(Domain.instance(sessionBinding.getDomainName()),hssf);
-		for(IDomainClass dc: Domain.instance(DomainConstants.DEFAULT_NAME).classes()) {
-			IDomainClassRuntimeBinding rccb = (IDomainClassRuntimeBinding)dc.getBinding();
-			hssf.addClass(rccb.getJavaClass());
-		}
-		
-		// tell the transaction processor a
-		// for each SessionBinding tuple.
-	    _transactionProcessor.init(objectStoreListByDomain);
-	}
-
-    ////////////////////////////////////////////////////////////
-	// Domain -> ObjectStoreList
-    ////////////////////////////////////////////////////////////
-
-	private Map<IDomain, ObjectStoreHandleList<IServerSessionFactory>> objectStoreListByDomain = 
-		new HashMap<IDomain, ObjectStoreHandleList<IServerSessionFactory>>();
-	
 
 	/**
-	 * Associates a name with an object store that is capable of supporting
-	 * objects from that domain.
-	 * 
-	 * @param domain
-	 * @param serverSessionFactory
+	 * Sets up the routing all provided server session factories. 
 	 */
-	private void bind(Domain domain, IServerSessionFactory serverSessionFactory) {
-		ObjectStoreHandleList<IServerSessionFactory> objectStoreHandleList = objectStoreListByDomain.get(domain);
-		if (objectStoreHandleList == null) {
-			objectStoreHandleList = new ObjectStoreHandleList<IServerSessionFactory>();
+	public void init() {
+
+		Binding.setBinding(_binding);
+
+		for(IServerSessionFactory<IServerSession> serverSessionFactory: _serverSessionFactories) {
+			SessionBinding sessionBinding = serverSessionFactory.init();
+			Domain domain = Domain.instance(sessionBinding.getDomainName());
+			_objectStoreRouting.bind(domain,serverSessionFactory);
 		}
-		objectStoreHandleList.add(serverSessionFactory);
+		
 	}
 
+
+	//////////////////////////////////////////////////////////////////
+	// ObjectStoreRouting
+	// (Domain -> ObjectStoreList)
+	//////////////////////////////////////////////////////////////////
+	
+	private ObjectStoreRouting _objectStoreRouting;
+	public ObjectStoreRouting getObjectStoreRouting() {
+		return _objectStoreRouting;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * @param objectStoreListByDomain
+	 */
+	public void setObjectStoreRouting(ObjectStoreRouting objectStoreRouting) {
+		_objectStoreRouting = objectStoreRouting;
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////
 	// Binding
@@ -146,55 +131,30 @@ public final class StandaloneServer extends AbstractServer {
 	 * 
 	 * @param remoting
 	 */
-	public void setRemoting(IRemotingServer remotingServer) {
+	public void setRemotingServer(IRemotingServer remotingServer) {
 		_remotingServer = remotingServer;
 	}
 
 
     ////////////////////////////////////////////////////////////
-	// Database Server (injected).
+	// ServerSessionFactory (injected)
     ////////////////////////////////////////////////////////////
-	
-	private IDatabaseServer _databaseServer = new HsqlDatabaseServer();
-	public IDatabaseServer getDatabaseServer() {
-		return _databaseServer;
+
+	private List<IServerSessionFactory> _serverSessionFactories;
+	public List<IServerSessionFactory> getServerSessionFactories() {
+		return _serverSessionFactories;
 	}
 	/**
 	 * For dependency injection.
 	 * 
-	 * <p>
-	 * Optional; if not specified then will default to 
-	 * {@link HsqlDatabaseServer}.
-	 * 
-	 * @param databaseServer
+	 * @param serverSessionFactories
 	 */
-	public void setDatabaseServer(IDatabaseServer databaseServer) {
-		_databaseServer = databaseServer;
+	public void setServerSessionFactories(
+			List<IServerSessionFactory> serverSessionFactories) {
+		_serverSessionFactories = serverSessionFactories;
 	}
 	
-    ////////////////////////////////////////////////////////////
-	// TransactionProcessor (injected)
-    ////////////////////////////////////////////////////////////
-	
-	private ITransactionProcessor _transactionProcessor = 
-		new HibernateTransactionProcessor();
-	public ITransactionProcessor getTransactionProcessor() {
-		return _transactionProcessor;
-	}
-	/**
-	 * For dependency injection.
-	 * 
-	 * <p>
-	 * Optional; if not specified will default to 
-	 * {@link HibernateTransactionProcessor}. 
-	 * 
-	 * @param remoting
-	 */
-	public void setTransactionProcessor(
-			ITransactionProcessor transactionProcessor) {
-		_transactionProcessor = transactionProcessor;
-	}
-	
+
     ////////////////////////////////////////////////////////////
 	// Lifecycle methods
     ////////////////////////////////////////////////////////////
@@ -203,18 +163,27 @@ public final class StandaloneServer extends AbstractServer {
 	/**
 	 * Starts the database server and the remoting server.
 	 */
-	protected boolean doStart() {
-		_databaseServer.start();
-		_remotingServer.init(_transactionProcessor);
+	protected final boolean doStart() {
+		startDatabaseServers();
 		_remotingServer.start();
 		return true;
 	}
-
-	
-	protected boolean doShutdown()  {
+	protected final boolean doShutdown()  {
 		_remotingServer.shutdown();
-		_databaseServer.shutdown();
+		shutdownDatabaseServers();
 		return true;
+	}
+
+	private void startDatabaseServers() {
+		for(IServerSessionFactory<IServerSession> serverSessionFactory: _serverSessionFactories) {
+			serverSessionFactory.getDatabaseServer().start();
+		}
+	}
+
+	private void shutdownDatabaseServers() {
+		for(IServerSessionFactory<IServerSession> serverSessionFactory: _serverSessionFactories) {
+			serverSessionFactory.getDatabaseServer().shutdown();
+		}
 	}
 
     ////////////////////////////////////////////////////////////

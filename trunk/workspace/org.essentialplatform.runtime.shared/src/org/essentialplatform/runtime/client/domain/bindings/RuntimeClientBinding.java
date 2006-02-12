@@ -57,12 +57,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 		return _logger;
 	}
 
-	// ////////////////////////////////////////////////////////////////////
-
-	@Override
-	public Bundle getBundle() {
-		return Platform.getBundle("org.essentialplatform.domain.runtime");
-	}
+	//////////////////////////////////////////////////////////////////////
 
 	
 

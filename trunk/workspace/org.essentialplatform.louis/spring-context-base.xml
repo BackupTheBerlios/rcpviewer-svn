@@ -15,6 +15,7 @@
 		<property name="display" ref="display"/>
 	  	<property name="binding" ref="clientBinding"/>
 	  	<property name="remoting" ref="clientRemoting"/>
+	  	<property name="louisDefinition" ref="louis"></property>
 	</bean>
 	
 	<bean id="clientBinding"
@@ -26,31 +27,8 @@
 				the 'primaryBuilder' bean, though this will be rare.
 			</description>
 		</property>
-		<property name="domainRegistrar" ref="domainRegistrar">
-			<description>
-				Mechanism for actually registering the domain classes with this
-				runtime context.
-			</description>
-		</property>
 	</bean>
 
-	<bean id="primaryBuilder" 
-		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder">
-		<description>
-			Default definition of 'primaryBuilder', representing the programming
-			model conventions under which the domain classes have been written.
-			The domain plugin could in theory redefine this bean, though this
-			will be rare.
-		</description>
-	</bean>
-
-	<bean id="domainRegistrar"
-		class="org.essentialplatform.runtime.shared.domain.ClientSideDomainRegistrar">
-		<description>
-			A mechanism for actually registering the domain classes.
-		</description>
-	</bean>
-	
 
 	<bean id="loginWizardAuthenticationCommand" 
 		class="org.essentialplatform.louis.authentication.loginwizard.LoginWizardAuthenticationCommand">
@@ -75,7 +53,16 @@
 	<bean id="transactionManager"
 		class="org.essentialplatform.runtime.client.transaction.TransactionManager" 
 		factory-method="instance">
-		<property name="remoting" ref="clientRemoting"/>
+		<description>
+			Creates transactions and maintains a list of all current transaction(s), 
+			each with their own list of enlisted pojos.
+		</description>
+		<property name="remoting" ref="clientRemoting">
+			<description>
+				Used to send committed transactions to the back-end server to be applied 
+				to the backend persistent object store.
+			</description>
+		</property>
 	</bean>
 	
 	<bean id="clientRemoting"
@@ -97,5 +84,59 @@
 		<property name="brokerUrl" value="tcp://localhost:61616"/>
 		<property name="destinationName" value="org.essentialplatform.test"/>
 	</bean>
+
+	<!--  overridden by domain plugin -->
+	<bean id="domain" 
+		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainDefinition">
+		<property name="domainBuilder">
+			<description>
+				The programming model conventions under which the domain classes
+				were written.
+			</description>
+			<ref bean="primaryBuilder"/>
+		</property>
+	</bean>
+
+	<!--  overridden by domain plugin -->
+	<bean id="louis" 
+		class="org.essentialplatform.louis.domain.SpringConfiguredLouisDefinition">
+		<description>
+			Application programmer must supply a 'louis' bean, implementing ILouisDefinition.  
+			It optionally configures the UI with specific capabilities for the domain.
+		</description>
+		<property name="domainDefinition" ref='domain'>
+			<description>
+				The domain to which these UI-specific capabilities refer.  The
+				domain should be defined in 'spring-context-domain.xml', which
+				will also be included in the context.
+			</description>
+		</property>
+		<property name="secondaryBuilders">
+			<description>
+				Processing of any additional annotations specific to Louis.
+			</description>
+			<list>
+				<ref local="louisProgModelRuntimeBuilder"/>
+			</list>
+		</property>
+	</bean>
+
+	
+	<!-- potentially overridden by domain plugin (rare) -->
+	<bean id="primaryBuilder" 
+		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder">
+		<description>
+			Default definition of 'primaryBuilder', representing the programming
+			model conventions under which the domain classes have been written.
+			The domain plugin could in theory redefine this bean, though this
+			will be rare.
+		</description>
+	</bean>
+
+	<!-- potentially overridden by domain plugin (rare) -->
+	<bean id="louisProgModelRuntimeBuilder" 
+		class="org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder"/>
+
+
 
 </beans>

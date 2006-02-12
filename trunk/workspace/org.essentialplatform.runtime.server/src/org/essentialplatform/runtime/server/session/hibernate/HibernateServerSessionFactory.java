@@ -2,6 +2,7 @@ package org.essentialplatform.runtime.server.session.hibernate;
 
 import org.essentialplatform.runtime.server.session.AbstractServerSessionFactory;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
+import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,17 +25,9 @@ import org.hibernate.cfg.AnnotationConfiguration;
 public class HibernateServerSessionFactory 
 		extends AbstractServerSessionFactory<HibernateServerSession> {
 
-	private AnnotationConfiguration _cfg;
+	private final AnnotationConfiguration _cfg = new AnnotationConfiguration();
 	private SessionFactory _sessionFactory;
 	
-	/**
-	 * 
-	 * @param sessionBinding - available as {@link #getSessionBinding}.
-	 */
-	public HibernateServerSessionFactory(final SessionBinding sessionBinding) {
-		super(sessionBinding);
-		_cfg = new AnnotationConfiguration();
-	}
 	
 	/**
 	 * Whether a session has been opened by this factory, meaning that no
@@ -80,10 +73,35 @@ public class HibernateServerSessionFactory
 	/*
 	 * Does nothing.
 	 * 
-	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#reset()
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreRef#reset()
 	 */
 	public void reset() {
 		// does nothing.
 	}
 
+	
+	
+	
+	////////////////////////////////////////////////////////////////////
+	// Dialect (injected)
+	////////////////////////////////////////////////////////////////////
+	
+	private String _dialect;
+	public String getDialect() {
+		return _dialect;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Corresponding to <tt>hibernate.dialect</tt> property.
+	 * 
+	 * @param dialect
+	 */
+	public void setDialect(String dialect) {
+		_dialect = dialect;
+	}
+
+	
+	
 }

@@ -4,12 +4,14 @@ import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.server.remoting.xactnprocessor.AbstractTransactionProcessor;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
+import org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
-import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
+import org.essentialplatform.runtime.shared.session.ObjectStoreRefList;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 public final class HibernateTransactionProcessor extends AbstractTransactionProcessor {
 
+	
 	/**
 	 * 
 	 * @param transaction
@@ -54,18 +56,5 @@ public final class HibernateTransactionProcessor extends AbstractTransactionProc
 //		}
 	}
 
-	private IServerSessionFactory lookupSessionFactoryFor(SessionBinding sessionBinding) {
-		IDomain domain = Domain.instance(sessionBinding.getDomainName());
-		ObjectStoreHandleList<IServerSessionFactory> factoryList = _objectStoreListByDomain.get(domain);
-		if (factoryList == null) {
-			return null;
-		}
-		for(IServerSessionFactory sessionFactory: factoryList) {
-			if (sessionFactory.getObjectStoreId().equals(sessionBinding.getObjectStoreId())) {
-				return sessionFactory;
-			}
-		}
-		return null;
-	}
 
 }

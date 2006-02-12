@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.Status;
 import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
 /**
- * Wraps the passed <code>IDomainRegistrar</code>.
+ * Wraps the passed {@link IDomainRegistry}.
  * 
  * @author Mike
  */
@@ -23,8 +23,7 @@ public class DomainBootstrapJob extends AbstractBootstrapJob {
 
 
 	/**
-	 * Runs the wrapped <code>IDomainRegistrar</code> and adds other necessary 
-	 * builders.
+	 * Registers classes using the wrapped <tt>IDomainRegistry</tt>.
 	 */
 	@Override
 	protected IStatus doRun(IProgressMonitor monitor) {  

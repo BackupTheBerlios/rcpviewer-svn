@@ -19,7 +19,7 @@ public class TestDomainClassAttributesOrderingAtRuntime extends
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-				new RuntimeClientBinding().init(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

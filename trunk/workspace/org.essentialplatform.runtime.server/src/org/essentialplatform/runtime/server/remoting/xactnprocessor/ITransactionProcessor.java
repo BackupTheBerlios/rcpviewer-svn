@@ -5,12 +5,14 @@ import java.util.Map;
 import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
-import org.essentialplatform.runtime.shared.session.ObjectStoreHandleList;
+import org.essentialplatform.runtime.shared.session.ObjectStoreRefList;
 
 public interface ITransactionProcessor {
 	
-	public void init(Map<IDomain, ObjectStoreHandleList<IServerSessionFactory>> serverSessionFactoryListByDomain);
-	
 	public void process(ITransactionPackage transactionPackage);
+
+	
+	public ObjectStoreRouting getObjectStoreRouting();
+	public void setObjectStoreRouting(ObjectStoreRouting objectStoreRouting);
 
 }

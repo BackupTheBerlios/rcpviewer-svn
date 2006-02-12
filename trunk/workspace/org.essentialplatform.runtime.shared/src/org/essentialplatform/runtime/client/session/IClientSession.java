@@ -11,7 +11,7 @@ import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IObservedFeature;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleAssigner;
 import org.essentialplatform.runtime.shared.domain.handle.IHandleMap;
-import org.essentialplatform.runtime.shared.session.IObjectStoreHandle;
+import org.essentialplatform.runtime.shared.session.IObjectStoreRef;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 import org.essentialplatform.runtime.shared.domain.Handle;
 
@@ -81,7 +81,7 @@ import org.essentialplatform.runtime.shared.domain.Handle;
  * 
  * @author Dan Haywood
  */
-public interface IClientSession extends IObjectStoreHandle, IHandleMap {
+public interface IClientSession extends IObjectStoreRef, IHandleMap {
 
 	
 	/**

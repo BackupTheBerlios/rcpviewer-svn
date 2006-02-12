@@ -57,6 +57,22 @@ public class Order {
 	private void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+	/**
+	 * Currently needed for Essential programming model.
+	 * 
+	 * @param customer
+	 */
+	public void associateCustomer(Customer customer) {
+		setCustomer(customer);
+	}
+	/**
+	 * Currently needed for Essential programming model.
+	 * 
+	 * @param customer
+	 */
+	public void dissociateCustomer(Customer customer) {
+		setCustomer(null);
+	}
 	
 	
 	private Date date;

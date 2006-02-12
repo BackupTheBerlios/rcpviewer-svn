@@ -6,54 +6,60 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Maintains a set of handles, and the current handle, all for a given domain.
+ * Maintains a set of {@link IObjectStoreRef}s, and the current ref, all for a 
+ * given domain.
+ * 
+ * <p> 
+ * Although this class is used both client- and server-side, note that the 
+ * "current" ref functionality is only needed for the client-side.
  * 
  * @author Dan Haywood
  */
-public final class ObjectStoreHandleList<V extends IObjectStoreHandle> implements Iterable<V> {
+public final class ObjectStoreRefList<V extends IObjectStoreRef> implements Iterable<V> {
 	
-	private Map<String,V> _handleByObjectStoreId = new HashMap<String,V>();
+	private Map<String,V> _refsByObjectStoreId = new HashMap<String,V>();
 	
 	/////////////////////////////////////////////////////////////////////
 	// add, remove
 	/////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Adds a session and makes it the default.
-	 * @param handle
+	 * Adds a ref and makes it the default.
+	 * 
+	 * @param ref
 	 */
-	public void add(V handle) {
-		_handleByObjectStoreId.put(handle.getObjectStoreId(), handle);
-		_current = handle;
+	public void add(V ref) {
+		_refsByObjectStoreId.put(ref.getObjectStoreId(), ref);
+		_current = ref;
 	}
 	
 	/**
-	 * Removes the session; if it was the current session then that is set to 
+	 * Removes the ref; if it was the current ref then that is set to 
 	 * <tt>null</tt>.
 	 * 
-	 * @param handle
+	 * @param ref
 	 * @return <tt> iff the session was contained in the list.
 	 */
-	public boolean remove(V handle) {
-		if (_current == handle) {
+	public boolean remove(V ref) {
+		if (_current == ref) {
 			_current = null;
 		}
-		return _handleByObjectStoreId.remove(handle.getObjectStoreId()) != null;
+		return _refsByObjectStoreId.remove(ref.getObjectStoreId()) != null;
 	}
 
 	/**
-	 * Looks up the handle by objectStoreId and removes, returning the
+	 * Looks up the ref by objectStoreId and removes, returning the
 	 * handle (or <tt>null</tt> if could not be located).
 	 * 
 	 * @param objectStoreId
 	 * @return
 	 */
 	public V remove(String objectStoreId) {
-		V handle = get(objectStoreId);
-		if (handle != null) {
-			remove(handle);
+		V ref = get(objectStoreId);
+		if (ref != null) {
+			remove(ref);
 		}
-		return handle;
+		return ref;
 	}
 
 	/////////////////////////////////////////////////////////////////////
@@ -61,16 +67,16 @@ public final class ObjectStoreHandleList<V extends IObjectStoreHandle> implement
 	/////////////////////////////////////////////////////////////////////
 
 	public Iterator<V> iterator() {
-		return _handleByObjectStoreId.values().iterator();
+		return _refsByObjectStoreId.values().iterator();
 	}
 
 
 	public V get(String objectStoreId) {
-		return _handleByObjectStoreId.get(objectStoreId);
+		return _refsByObjectStoreId.get(objectStoreId);
 	}
 
 	public Collection<V> getAll() {
-		return _handleByObjectStoreId.values();
+		return _refsByObjectStoreId.values();
 	}
 
 	
@@ -83,7 +89,7 @@ public final class ObjectStoreHandleList<V extends IObjectStoreHandle> implement
 		return _current;
 	}
 	public V setCurrent(String objectStoreId) {
-		V session = _handleByObjectStoreId.get(objectStoreId); 
+		V session = _refsByObjectStoreId.get(objectStoreId); 
 		if (session == null) {
 			throw new IllegalStateException("Could not locate session '" + session + "'");
 		}
@@ -102,10 +108,10 @@ public final class ObjectStoreHandleList<V extends IObjectStoreHandle> implement
 	 * 
 	 */
 	public void reset() {
-		for(V session: _handleByObjectStoreId.values()) {
+		for(V session: _refsByObjectStoreId.values()) {
 			session.reset();
 		}
-		_handleByObjectStoreId.clear();
+		_refsByObjectStoreId.clear();
 	}
 
 

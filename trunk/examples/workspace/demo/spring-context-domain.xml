@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="domain" 
+		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainDefinition">
+		<description>
+			The classes that make up the 'demo' domain, along with the programming model
+			under which they were written
+		</description>
+		<property name="name" value="default">
+			<description>
+				The name of the domain, correspondS to @InDomain for the
+				(pojo) domain classes (as per the rules of the primary IDomainBuilder).
+			</description>
+		</property>
+	    <property name="domainBuilder">
+	    	 <description>
+		    	'primaryBuilder' taken from base context (set to
+		    	EssentialProgModelRuntimeBuilder).
+	    	 </description>
+	    	 <ref bean="primaryBuilder"/>
+	    </property>
+		<property name="classes">
+			<description>
+				The classes that make up this domain.
+			</description>
+			<list>
+				<value>demo.Customer</value>
+		   		<value>demo.Order</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

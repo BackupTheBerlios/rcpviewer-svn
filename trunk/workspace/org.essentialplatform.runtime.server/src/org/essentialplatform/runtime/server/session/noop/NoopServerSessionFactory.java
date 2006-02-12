@@ -8,10 +8,6 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
 public final class NoopServerSessionFactory 
 	extends AbstractServerSessionFactory<NoopServerSession> {
 
-	public NoopServerSessionFactory(final SessionBinding sessionBinding) {
-		super(sessionBinding);
-	}
-	
 
 	/*
 	 * @see org.essentialplatform.runtime.server.session.IServerSessionFactory#open()
@@ -22,10 +18,16 @@ public final class NoopServerSessionFactory
 
 
 	/*
-	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreHandle#reset()
+	 * @see org.essentialplatform.runtime.shared.session.IObjectStoreRef#reset()
 	 */
 	public void reset() {
 		// nothing to do
+	}
+
+
+	public <V> void addClass(Class<V> javaClass) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
