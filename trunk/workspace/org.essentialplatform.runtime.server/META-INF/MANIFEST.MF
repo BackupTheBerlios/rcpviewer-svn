@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  net.sf.plugins.hibernate,
  net.sf.plugins.activemq,
  org.essentialplatform.progmodel.essential.runtime,
- org.essentialplatform.runtime.shared
+ org.essentialplatform.runtime.shared,
+ net.sf.plugins.springframework
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.database,

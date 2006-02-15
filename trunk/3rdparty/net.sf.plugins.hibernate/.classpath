@@ -20,6 +20,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="ejb3-persistence-PublicDraft.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-annotations-3.1beta7.jar"/>
+	<classpathentry exported="true" sourcepath="hibernate-3.1-src.jar" kind="lib" path="hibernate-annotations-3.1beta7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

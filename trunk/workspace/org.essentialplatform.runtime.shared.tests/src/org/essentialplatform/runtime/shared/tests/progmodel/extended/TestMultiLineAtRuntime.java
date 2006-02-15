@@ -18,7 +18,7 @@ public class TestMultiLineAtRuntime extends TestFieldLengthOf {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-				new RuntimeClientBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().initPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

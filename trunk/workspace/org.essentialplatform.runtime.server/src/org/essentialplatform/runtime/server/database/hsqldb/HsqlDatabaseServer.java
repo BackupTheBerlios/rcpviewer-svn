@@ -86,7 +86,7 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 	 * @see org.essentialplatform.server.database.IDatabaseServer#getUrl()
 	 */
 	public String getUrl() {
-		return URL_PREFIX_LOCALHOST + _port;
+		return URL_PREFIX_LOCALHOST + _port + "/" + getDatabaseName();
 	}
 
 	////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 	 * The directory where the database files will be stored.
 	 */
 	public String getDatabaseDir() {
-		return _password;
+		return _databaseDir;
 	}
 	/**
 	 * For dependency injection.

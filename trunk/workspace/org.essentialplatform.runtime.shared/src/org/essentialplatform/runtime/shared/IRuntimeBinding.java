@@ -25,6 +25,6 @@ public interface IRuntimeBinding extends IBinding {
 	public InDomain getInDomainOf(final Object classRepresentation);
 
 	public IDomainBuilder getPrimaryBuilder();
-	public IRuntimeBinding setPrimaryBuilder(IDomainBuilder domainBuilder);
+	public IRuntimeBinding initPrimaryBuilder(IDomainBuilder domainBuilder);
 
 }

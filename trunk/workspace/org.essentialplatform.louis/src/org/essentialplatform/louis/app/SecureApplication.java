@@ -37,16 +37,18 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
  */
 public final class SecureApplication extends AbstractSimpleLifecycle implements IApplication {
 
+	private static final String DESCRIPTION = "APPLICATION"; // as used in logging.
+	
 	protected Logger getLogger() { return Logger.getLogger(SecureApplication.class); }
 	
 	public SecureApplication() {
-		super("APPLICATION");
+		super(DESCRIPTION);
 	}
 
 
 	////////////////////////////////////////////////////////////////////
 	// init
-	// LouisDefinition, DomainDefinition, SessionBinding
+	// Derive SessionBinding
 	////////////////////////////////////////////////////////////////////
 
 	/**
@@ -56,40 +58,17 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 		_sessionBinding = new SessionBinding(_domainDefinition.getDomainName(), objectStoreName);
 	}
 
-	
-	private ILouisDefinition _louisDefinition;
-	/**
-	 * Populated by {@link #init(ILouisDefinition, String)}.
-	 * @return
-	 */
-	public ILouisDefinition getLouisDefinition() {
-		return _louisDefinition;
-	}
-	public void setLouisDefinition(ILouisDefinition louisDefinition) {
-		_louisDefinition = louisDefinition;
-		_domainDefinition = louisDefinition.getDomainDefinition();
-	}
-	
-	private IDomainDefinition _domainDefinition;
-	/**
-	 * Populated by {@link #init(ILouisDefinition, String)}.
-	 * @return
-	 */
-	public IDomainDefinition getDomainDefinition() {
-		return _domainDefinition;
-	}
-
-
-	
 	private SessionBinding _sessionBinding;
 	/**
-	 * Populated by {@link #init(ILouisDefinition, String)}.
+	 * Derived from {@link #init(String)}.
+	 * 
 	 * @return
 	 */
 	public SessionBinding getSessionBinding() {
 		return _sessionBinding;
 	}
 
+	
 	////////////////////////////////////////////////////////////////////
 	// start, shutdown
 	////////////////////////////////////////////////////////////////////
@@ -117,7 +96,6 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 	 */
 	public Object run(Object args) throws Exception {
 		
-		Binding.setBinding(_binding);
 		start();
 
 		try {
@@ -133,12 +111,6 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 			// domainClass' domain's binding.
 			LouisPlugin.getDefault().setApplication(this);
 
-			// domain initialisation
-			SingleDomainRegistry domainRegistry = new SingleDomainRegistry(_louisDefinition);
-			RuntimePlugin.getDefault().setDomainRegistry(domainRegistry);
-			DomainBootstrapJob domainJob = new DomainBootstrapJob(domainRegistry);
-			domainJob.schedule();
-
 			// session initialisation (default domain & store for now )
 			SessionBootstrapJob sessionJob = new SessionBootstrapJob(getSessionBinding());
 			sessionJob.schedule();
@@ -150,7 +122,6 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 			_globalLabelProvider.init();
 			
 			// effectively running jobs synchronously at the moment
-			JobUtil.waitForJob(domainJob, getLogger());
 			JobUtil.waitForJob(sessionJob, getLogger());
 			
 			// this must be run once domain classes known
@@ -184,6 +155,36 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 			Platform.endSplash();
 		}
 	}
+
+	
+	////////////////////////////////////////////////////////////////////
+	// LouisDefinition (injected)
+	// (DomainDefinition is derived)
+	////////////////////////////////////////////////////////////////////
+
+	private ILouisDefinition _louisDefinition;
+	public ILouisDefinition getLouisDefinition() {
+		return _louisDefinition;
+	}
+	/**
+	 * For dependency injection.
+	 */
+	public void setLouisDefinition(ILouisDefinition louisDefinition) {
+		_louisDefinition = louisDefinition;
+		_domainDefinition = louisDefinition.getDomainDefinition();
+	}
+	
+	private IDomainDefinition _domainDefinition;
+	/**
+	 * Populated by {@link #setLouisDefinition(ILouisDefinition)}.
+	 * 
+	 * @return
+	 */
+	public IDomainDefinition getDomainDefinition() {
+		return _domainDefinition;
+	}
+
+
 
 	//////////////////////////////////////////////////////////////////
 	// Binding (injected)

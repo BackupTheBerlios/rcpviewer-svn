@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.widgets.Display;
+import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.louis.app.IApplication;
 import org.essentialplatform.louis.domain.ILouisDefinition;
@@ -18,9 +19,13 @@ import org.essentialplatform.runtime.server.ServerPlugin;
 import org.essentialplatform.runtime.server.StandaloneServer;
 import org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding;
 import org.essentialplatform.runtime.shared.IRuntimeBinding;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
+import org.essentialplatform.runtime.shared.domain.SingleDomainRegistry;
 import org.osgi.framework.Bundle;
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
@@ -43,16 +48,20 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final int ERROR_NO_SPRINGCONTEXT_LOUIS_EXTENSION_POINT = 110;
 	private static final int ERROR_BEAN_WRONG_TYPE = 150;
 
-	private static final int ERROR_NO_SERVER_BEAN = 200;
 	private static final String BEAN_SERVER_ID = "server";
-	
-	private static final int ERROR_NO_APP_BEAN = 300;
-	private static final int ERROR_NO_DOMAIN_BEAN = 310;
-	private static final int ERROR_NO_LOUIS_BEAN = 320;
+	private static final String BEAN_SERVER_DOMAIN_ID = "domain";
+	private static final String BEAN_SERVER_BINDING_ID = "serverBinding";
+	private static final int ERROR_NO_SERVER_BEAN = 200;
+	private static final int ERROR_NO_SERVER_DOMAIN_BEAN = 210;
+	private static final int ERROR_NO_SERVER_BINDING_BEAN = 220;
 	
 	private static final String BEAN_APP_ID = "app";
-	private static final String BEAN_DOMAIN_ID = "domain";
 	private static final String BEAN_LOUIS_ID = "louis";
+	private static final String BEAN_CLIENT_BINDING_ID = "clientBinding";
+	private static final int ERROR_NO_APP_BEAN = 300;
+	private static final int ERROR_NO_LOUIS_BEAN = 310;
+	private static final int ERROR_NO_CLIENT_BINDING_BEAN = 320;
+	
 
 	private static final String SPRINGCONTEXT_EXTENSION_POINT = "org.essentialplatform.louis.springcontext";
 	private static final String LOUIS_FILE = "louis-file";
@@ -60,12 +69,12 @@ public class Bootstrap implements IPlatformRunnable {
 	private static final String CLIENTSIDE_SPRINGCONTEXT_BASE_XML = "spring-context-base.xml";
 	private static final String SERVERSIDE_SPRINGCONTEXT_XML = "spring-context.xml";
 
-	private FileSystemXmlApplicationContext _clientContext;
+	private ApplicationContext _clientContext;
 	private ILouisDefinition _louisDefinition;
 	private IApplication _app;
 	private IRuntimeBinding _clientBinding;
 	
-	private FileSystemXmlApplicationContext _serverContext;
+	private ApplicationContext _serverContext;
 	private IDomainDefinition _serverDomainDefinition;
 	private StandaloneServer _server;
 	private IRuntimeBinding _serverBinding;
@@ -116,19 +125,13 @@ public class Bootstrap implements IPlatformRunnable {
 			domainPluginDomainUrl = Platform.resolve(domainPluginDomainUrl);
 			domainPluginDomainFilePath = new File(domainPluginDomainUrl.getFile()).getCanonicalPath();
 
-			// locate the server-side context 
-			Bundle serverPluginBundle = ServerPlugin.getDefault().getBundle();
-			URL serverPluginUrl = serverPluginBundle.getEntry(SERVERSIDE_SPRINGCONTEXT_XML);
-			serverPluginUrl = Platform.resolve(serverPluginUrl);
-			String serverPluginFilePath = new File(serverPluginUrl.getFile()).getCanonicalPath();
-			
 			// locate the client-side base context
 			// certain components in this context may be overridden.
 			Bundle louisPluginBundle = LouisPlugin.getDefault().getBundle();
 			URL louisPluginUrl = louisPluginBundle.getEntry(CLIENTSIDE_SPRINGCONTEXT_BASE_XML);
 			louisPluginUrl = Platform.resolve(louisPluginUrl);
 			String louisPluginFilePath = new File(louisPluginUrl.getFile()).getCanonicalPath();
-
+			
 			// locate the domain plugin's spring-context-louis.xml context (for client-side) 
 			// this potentially overrides definitions in base configs.
 			String domainPluginLouisFilePath = domainPluginCE.getAttribute(LOUIS_FILE);
@@ -136,13 +139,40 @@ public class Bootstrap implements IPlatformRunnable {
 			domainPluginLouisUrl = Platform.resolve(domainPluginLouisUrl);
 			domainPluginLouisFilePath = new File(domainPluginLouisUrl.getFile()).getCanonicalPath();
 
+			// create client-side context
+			_clientContext = new FileSystemXmlApplicationContext(
+					new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
+			_app = getBeanFrom(_clientContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
+			_louisDefinition = getBeanFrom(_clientContext, BEAN_LOUIS_ID, ERROR_NO_LOUIS_BEAN, ILouisDefinition.class);
+			_clientBinding = getBeanFrom(_clientContext, BEAN_CLIENT_BINDING_ID, ERROR_NO_CLIENT_BINDING_BEAN, IRuntimeBinding.class);
+
+			// initialize obtained beans, run client-side app
+			_clientBinding.init(louisPluginBundle);
+			_louisDefinition.init(domainPluginBundle);
+			
+			// domain initialisation (must use domain from client since need ILouisDomain adapters)
+			Binding.setBinding(_clientBinding); // needed, unfortunately.
+
+			SingleDomainRegistry domainRegistry = 
+				new SingleDomainRegistry(_louisDefinition);
+			RuntimePlugin.getDefault().setDomainRegistry(domainRegistry);
+			domainRegistry.registerClassesInDomains();
+
+			// locate the server-side context 
+			Bundle serverPluginBundle = ServerPlugin.getDefault().getBundle();
+			URL serverPluginUrl = serverPluginBundle.getEntry(SERVERSIDE_SPRINGCONTEXT_XML);
+			serverPluginUrl = Platform.resolve(serverPluginUrl);
+			String serverPluginFilePath = new File(serverPluginUrl.getFile()).getCanonicalPath();
+
+
 			if (runServer) {
 				// create server-side context
 				_serverContext = new FileSystemXmlApplicationContext(new String[]{serverPluginFilePath, domainPluginDomainFilePath});
 				_server = getBeanFrom(_serverContext, BEAN_SERVER_ID, ERROR_NO_SERVER_BEAN, StandaloneServer.class);
-				_serverDomainDefinition = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IDomainDefinition.class);
-				_serverBinding = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IRuntimeBinding.class);
-				
+				_serverDomainDefinition = getBeanFrom(_serverContext, BEAN_SERVER_DOMAIN_ID, ERROR_NO_SERVER_DOMAIN_BEAN, IDomainDefinition.class);
+				_serverBinding = getBeanFrom(_serverContext, BEAN_SERVER_BINDING_ID, ERROR_NO_SERVER_BINDING_BEAN, IRuntimeBinding.class);
+				//URL resource = louisPluginBundle.getResource("hibernate.properties");
+
 				// initialize obtained beans, start server
 				_serverBinding.init(louisPluginBundle);
 				_serverDomainDefinition.init(domainPluginBundle); // for classloading
@@ -151,20 +181,10 @@ public class Bootstrap implements IPlatformRunnable {
 				// Spring file, in which case here we should be validating that there IS a serverSessionFactory
 				// for the (domainName, objectStoreName) ... or we specify it here instead.
 				_server.getServerSessionFactories().get(0).getDatabaseServer().init(store);
+
 				_server.start();
 			}
 
-			// create client-side context
-			_clientContext = new FileSystemXmlApplicationContext(
-					new String[]{louisPluginFilePath, domainPluginDomainFilePath, domainPluginLouisFilePath});
-			_app = getBeanFrom(_clientContext, BEAN_APP_ID, ERROR_NO_APP_BEAN, IApplication.class);
-			_louisDefinition = getBeanFrom(_clientContext, BEAN_LOUIS_ID, ERROR_NO_LOUIS_BEAN, ILouisDefinition.class);
-			_clientBinding = getBeanFrom(_serverContext, BEAN_DOMAIN_ID, ERROR_NO_DOMAIN_BEAN, IRuntimeBinding.class);
-
-			// initialize obtained beans, run client-side app
-			_clientBinding.init(louisPluginBundle);
-			_louisDefinition.init(domainPluginBundle);
-			
 			// TODO: like the server booting, this too is a hack.  We
 			// currently only support single SessionBinding.
 			_app.init(store);
@@ -191,7 +211,7 @@ public class Bootstrap implements IPlatformRunnable {
 		}
 	}
 
-	private <T> T  getBeanFrom(FileSystemXmlApplicationContext context, String beanId, int errorNoBean, Class<T> requiredType) throws BeansException, CoreException {
+	private <T> T  getBeanFrom(ApplicationContext context, String beanId, int errorNoBean, Class<T> requiredType) throws BeansException, CoreException {
 		final Object bean = context.getBean(beanId);
 		if (bean == null) {
 			throwCoreException(errorNoBean, "Could not locate bean %s", beanId);

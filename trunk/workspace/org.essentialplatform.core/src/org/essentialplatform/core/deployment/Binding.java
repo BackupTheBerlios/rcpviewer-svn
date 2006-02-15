@@ -89,7 +89,7 @@ public abstract class Binding implements IBinding {
 	 *
 	 */
 	public static void reset() {
-		__threadLocalBinding = null;
+		__threadLocalBinding.set(null);
 	}
 
 }

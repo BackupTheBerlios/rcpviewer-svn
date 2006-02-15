@@ -39,7 +39,7 @@ public class TestInMemoryObjectStore extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-				new RuntimeClientBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().initPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
 		sessionManager = ClientSessionManager.instance();
 		domain = Domain.instance(ProgModelConstants.DEFAULT_DOMAIN_NAME);
 		//objectStore = new InMemoryObjectStore();

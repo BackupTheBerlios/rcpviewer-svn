@@ -1,5 +1,6 @@
 package org.essentialplatform.runtime.server.session.hibernate;
 
+import java.util.Properties;
 import org.essentialplatform.runtime.server.session.AbstractServerSessionFactory;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.shared.domain.IDomainDefinition;
@@ -25,9 +26,33 @@ import org.hibernate.cfg.AnnotationConfiguration;
 public class HibernateServerSessionFactory 
 		extends AbstractServerSessionFactory<HibernateServerSession> {
 
-	private final AnnotationConfiguration _cfg = new AnnotationConfiguration();
+	/**
+	 * Properties are initialized in {@link #init()}; classes are mapped in
+	 * {@link #addClass(Class)}.
+	 */
+	private final AnnotationConfiguration _configuration = new AnnotationConfiguration();
+
+	/**
+	 * Populated once {@link #open()} has been called.
+	 */
 	private SessionFactory _sessionFactory;
 	
+
+	/**
+	 * Sets the properties on the configuration, either taken from the
+	 * referenced {@link AbstractServerSessionFactory#getDatabaseServer()} or
+	 * directly from {@link #getHibernateProperties()}.
+	 */
+	@Override
+	public SessionBinding init() {
+		_configuration.setProperties(getHibernateProperties());
+		_configuration.setProperty("hibernate.connection.url", getDatabaseServer().getUrl());
+		_configuration.setProperty("hibernate.connection.username", getDatabaseServer().getUser());
+		_configuration.setProperty("hibernate.connection.password", getDatabaseServer().getPassword());
+		_configuration.setProperty("hibernate.connection.driver_class", getDatabaseServer().getDriverClassName());
+		SessionBinding sessionBinding = super.init();
+		return sessionBinding;
+	}
 	
 	/**
 	 * Whether a session has been opened by this factory, meaning that no
@@ -55,7 +80,7 @@ public class HibernateServerSessionFactory
 		if (isFixed()) {
 			throw new IllegalStateException("Cannot add classes since now fixed.");
 		}
-		_cfg.addAnnotatedClass(javaClass);
+		_configuration.addAnnotatedClass(javaClass);
 	}
 
 	/*
@@ -64,7 +89,7 @@ public class HibernateServerSessionFactory
 	public HibernateServerSession open() {
 		if (_sessionFactory == null) {
 			// will effectively move this object into a "fixed" state.
-			_sessionFactory = _cfg.buildSessionFactory();
+			_sessionFactory = _configuration.buildSessionFactory();
 		}
 		Session session = _sessionFactory.openSession();
 		return new HibernateServerSession(getSessionBinding(), session);
@@ -79,29 +104,18 @@ public class HibernateServerSessionFactory
 		// does nothing.
 	}
 
-	
-	
-	
+
 	////////////////////////////////////////////////////////////////////
-	// Dialect (injected)
+	// HibernateProperties
 	////////////////////////////////////////////////////////////////////
-	
-	private String _dialect;
-	public String getDialect() {
-		return _dialect;
-	}
-	/**
-	 * For dependency injection.
-	 * 
-	 * <p>
-	 * Corresponding to <tt>hibernate.dialect</tt> property.
-	 * 
-	 * @param dialect
-	 */
-	public void setDialect(String dialect) {
-		_dialect = dialect;
-	}
 
 	
+	private Properties _hibernateProperties;
+	public Properties getHibernateProperties() {
+		return _hibernateProperties;
+	}
+	public void setHibernateProperties(Properties hibernateProperties) {
+		_hibernateProperties = hibernateProperties;
+	}
 	
 }

@@ -23,7 +23,7 @@ public class TestImageDescriptorAtRuntime extends TestImageDescriptor {
 	protected void setUp() throws Exception {
 		super.setUp();
 		Binding.setBinding(
-				new RuntimeClientBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
+				new RuntimeClientBinding().initPrimaryBuilder(new EssentialProgModelRuntimeBuilder()));
 	}
 	
 	@Override

@@ -824,15 +824,17 @@ public abstract class AbstractRuntimeBinding extends Binding implements IRuntime
 	}
 
 	/**
-	 * For either dependency injection, or programmatic configuration.
-	 * 
-	 * <p>
-	 * Returning the object rather than void is for the benefit of
-	 * programmatic configuration.
-	 * 
+	 * For dependency injection.
 	 */
-	public IRuntimeBinding setPrimaryBuilder(IDomainBuilder primaryBuilder) {
+	public void setPrimaryBuilder(IDomainBuilder primaryBuilder) {
 		_primaryBuilder = primaryBuilder;
+	}
+	
+	/**
+	 * For programmatic configuration.
+	 */
+	public IRuntimeBinding initPrimaryBuilder(IDomainBuilder primaryBuilder) {
+		setPrimaryBuilder(primaryBuilder);
 		return this;
 	}
 	

@@ -57,7 +57,7 @@ public abstract class AbstractRuntimeServerTestCase extends AbstractRuntimeShare
 	}
 
 	protected IBinding getBinding() {
-		return new RuntimeServerBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder());
+		return new RuntimeServerBinding().initPrimaryBuilder(new EssentialProgModelRuntimeBuilder());
 	}
 
 	protected void tearDown() throws Exception {

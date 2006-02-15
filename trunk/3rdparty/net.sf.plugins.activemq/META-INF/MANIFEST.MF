@@ -69,3 +69,4 @@ Export-Package: javax.jms,
  org.activemq.transport.xstream,
  org.activemq.transport.zeroconf,
  org.activemq.util
+Dynamic-Import-Package: *

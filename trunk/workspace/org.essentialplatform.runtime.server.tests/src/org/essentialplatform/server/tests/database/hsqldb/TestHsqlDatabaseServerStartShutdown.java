@@ -30,7 +30,7 @@ public class TestHsqlDatabaseServerStartShutdown extends TestCase {
 	public void testGetUrl() {
 		HsqlDatabaseServer databaseServer;
 		databaseServer = new HsqlDatabaseServer(9001, "foobar", false);
-		assertEquals("jdbc:hsqldb:hsql://localhost:9001", databaseServer.getUrl());
+		assertEquals("jdbc:hsqldb:hsql://localhost:9001/foobar", databaseServer.getUrl());
 	}
 
 	public void testGetUser() {
@@ -48,7 +48,7 @@ public class TestHsqlDatabaseServerStartShutdown extends TestCase {
 	public void testToString() {
 		HsqlDatabaseServer databaseServer;
 		databaseServer = new HsqlDatabaseServer(9001, "foobar", false);
-		assertEquals("jdbc:hsqldb:hsql://localhost:9001", databaseServer.toString());
+		assertEquals("jdbc:hsqldb:hsql://localhost:9001/foobar", databaseServer.toString());
 	}
 	
 

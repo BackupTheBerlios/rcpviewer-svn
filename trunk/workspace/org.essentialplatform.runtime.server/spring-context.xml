@@ -33,17 +33,44 @@
 				classes in a manner appropriate to the databaser server that it
 				references).  The server also takes responsibility for starting/shutdown of
 				the database server that the factory references (a transitive
-				dependency). 
-				Note that currently the server holds a single reference, but 
-				will become a list in the future (each providing a SessionBinding
-				based on the domain and database server that it references).
+				dependency).
+				Each factory (implementing IServerSessionFactory) is keyed by
+				an SessionBinding; this is derived from the combination of the
+				(IDomain corresponding to the) domainDefinition property and
+				the databaseServer.databaseName property.
 			</description>
 			<list>
-				<ref bean="hibernateServerSessionFactory"/>
+				<ref bean="serverSessionFactory.1"/>
 			</list>
 		</property>
 	</bean>
 
+	<bean id="serverSessionFactory.1"
+		class="org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory">
+		<property name="domainDefinition" ref="domain"/>
+		<property name="databaseServer" ref="hsqlDatabaseServer"/>
+		<property name="hibernateProperties" ref="hibernateProperties.1"/>
+	</bean>
+
+	<bean id="hibernateProperties.1"
+	     class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+    		<description>
+    			There is no need to provide 
+    			hibernate.connection.driver_class, hibernate.connection.url, 
+    			hibernate.connection.username and hibernate.connection.password
+    			because these are provided by the serverSessionFactory's
+    			reference to the database server
+	    	</description>
+	    	<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+				<prop key="hibernate.query.substitutions">${hibernate.query.substitutions}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+			</props>
+		</property>
+	</bean>
 
 	<bean id="activeMqRemotingServer" 
 		class="org.essentialplatform.runtime.server.remoting.activemq.ActiveMqRemotingServer"
@@ -63,13 +90,6 @@
 		class="org.essentialplatform.runtime.shared.remoting.activemq.DestinationCleaner">
 	</bean>
 
-	<bean id="hibernateServerSessionFactory" 
-		class="org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory">
-		<property name="domainDefinition" ref="domain"/>
-		<property name="dialect" value="org.hibernate.dialect.HSQLDialect"/>
-		<property name="databaseServer" ref="hsqlDatabaseServer"/>
-	</bean>
-
 	<bean id="hibernateTransactionProcessor" 
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor">
 		<property name="objectStoreRouting" ref="objectStoreRouting"/>
@@ -77,17 +97,16 @@
 
 	<bean id="hsqlDatabaseServer" 
 		class="org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer">
-		<property name="password"><null/></property>
-		<property name="port" value="9001"/>
-		<property name="silent" value="true"/>
-		<property name="user" value="sa"/>
+		<property name="port"><value>${server.port}</value></property>
+		<property name="user"><value>${hibernate.connection.username}</value></property>
+		<property name="password"><value>${hibernate.connection.username}</value></property>
 		<property name="databaseDir" value="c:/temp/essential"/>
+		<property name="silent" value="true"/>
 	</bean>
 
 	<bean id="objectStoreRouting" 
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.ObjectStoreRouting">
 	</bean>
-	 
 
 	<bean id="serverBinding"
 		class="org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding">
@@ -128,7 +147,16 @@
 		</property>
 	</bean>
 	
-	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+       <property name="locations">
+          <list>
+             <value>file:D:/dkhaywood/svn/svn.berlios.de/trunk/workspace/org.essentialplatform.louis/bin/hibernate.properties</value>
+             <value>file:D:/dkhaywood/svn/svn.berlios.de/trunk/workspace/org.essentialplatform.louis/bin/server.properties</value> 
+          </list>
+       </property>
+    </bean>
+
+
 	<!-- 
 	<bean id="noopTransactionProcessor" 
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.noop.NoopTransactionProcessor">

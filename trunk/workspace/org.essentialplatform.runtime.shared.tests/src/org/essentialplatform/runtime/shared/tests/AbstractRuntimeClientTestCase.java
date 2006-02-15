@@ -53,7 +53,7 @@ public abstract class AbstractRuntimeClientTestCase extends AbstractRuntimeShare
 	}
 
 	protected IBinding getBinding() {
-		return new RuntimeClientBinding().setPrimaryBuilder(new EssentialProgModelRuntimeBuilder());
+		return new RuntimeClientBinding().initPrimaryBuilder(new EssentialProgModelRuntimeBuilder());
 	}
 
 

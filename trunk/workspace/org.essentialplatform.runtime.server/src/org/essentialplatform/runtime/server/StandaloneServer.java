@@ -3,6 +3,12 @@ package org.essentialplatform.runtime.server;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.core.deployment.Binding;
@@ -23,6 +29,8 @@ import org.essentialplatform.runtime.server.session.IServerSession;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.server.session.hibernate.HibernateServerSessionFactory;
 import org.essentialplatform.runtime.shared.IRuntimeBinding;
+import org.essentialplatform.runtime.shared.RuntimePlugin;
+import org.essentialplatform.runtime.shared.domain.SingleDomainRegistry;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.essentialplatform.runtime.shared.session.ObjectStoreRefList;
@@ -53,25 +61,10 @@ public final class StandaloneServer extends AbstractServer {
 	}
 
 	////////////////////////////////////////////////////////////
-	// Constructor, init
+	// Constructor
 	////////////////////////////////////////////////////////////
 
 	public StandaloneServer() {
-	}
-
-	/**
-	 * Sets up the routing all provided server session factories. 
-	 */
-	public void init() {
-
-		Binding.setBinding(_binding);
-
-		for(IServerSessionFactory<IServerSession> serverSessionFactory: _serverSessionFactories) {
-			SessionBinding sessionBinding = serverSessionFactory.init();
-			Domain domain = Domain.instance(sessionBinding.getDomainName());
-			_objectStoreRouting.bind(domain,serverSessionFactory);
-		}
-		
 	}
 
 
@@ -159,19 +152,83 @@ public final class StandaloneServer extends AbstractServer {
 	// Lifecycle methods
     ////////////////////////////////////////////////////////////
 
-	
 	/**
-	 * Starts the database server and the remoting server.
+	 * TODO: this design of running the server within its own background
+	 * thread could/should probably be pushed up into the superclass.
+	 */
+	private ExecutorService _serverExecutorService = Executors.newSingleThreadExecutor();
+
+	/**
+	 * Starts the database server and the remoting server, using a background
+	 * ExecutorService.
+	 * 
+	 * executor service.
 	 */
 	protected final boolean doStart() {
-		startDatabaseServers();
-		_remotingServer.start();
-		return true;
+		try {
+			return 
+				_serverExecutorService.submit(
+					new Callable<Boolean>() {
+						public Boolean call() {
+							// make sure binding in place for this thread (in case Executor has been restarted)
+							Binding.setBinding(_binding); 
+							setupRouting();
+							startDatabaseServers();
+							_remotingServer.start();
+							return true;
+						}
+					}).get();
+		} catch (InterruptedException ex) {
+			getLogger().error("Failed to start", ex);
+			return false;
+		} catch (ExecutionException ex) {
+			getLogger().error("Failed to start", ex);
+			return false;
+		}
 	}
+	
+	/**
+	 * Shutsdown the remoting server and database server (using the same
+	 * ExecutorService as was used to start the server), and then shuts down
+	 * that ExecutorService itself.
+	 */
 	protected final boolean doShutdown()  {
-		_remotingServer.shutdown();
-		shutdownDatabaseServers();
-		return true;
+		try {
+			boolean result = 
+				_serverExecutorService.submit(
+					new Callable<Boolean>() {
+						public Boolean call() {
+							// make sure binding in place for this thread (in case Executor has been restarted)
+							Binding.setBinding(_binding);  
+							_remotingServer.shutdown();
+							shutdownDatabaseServers();
+							return true;
+						}
+					}).get();
+			_serverExecutorService.shutdown();
+			return result;
+		} catch (InterruptedException ex) {
+			getLogger().error("Failed to shutdown", ex);
+			return false;
+		} catch (ExecutionException ex) {
+			getLogger().error("Failed to shutdown", ex);
+			return false;
+		}
+	}
+
+	/**
+	 * Sets up the routing all provided server session factories. 
+	 */
+	private void setupRouting() {
+
+		for(IServerSessionFactory<IServerSession> serverSessionFactory: _serverSessionFactories) {
+			SessionBinding sessionBinding = serverSessionFactory.init();
+			
+			Domain domain = Domain.instance(sessionBinding.getDomainName());
+			_objectStoreRouting.bind(domain,serverSessionFactory);
+		}
+		
+		IServerSessionFactory<IServerSession> serverSessionFactory = _serverSessionFactories.get(0);
 	}
 
 	private void startDatabaseServers() {
@@ -198,7 +255,6 @@ public final class StandaloneServer extends AbstractServer {
 	 */
 	public static void main(String[] args) {
 		StandaloneServer server = new StandaloneServer();
-		server.init();
 		server.start();
 	}
 	

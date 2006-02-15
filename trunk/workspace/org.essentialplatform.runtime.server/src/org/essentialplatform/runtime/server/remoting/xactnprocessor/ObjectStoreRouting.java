@@ -36,6 +36,7 @@ public class ObjectStoreRouting {
 		ObjectStoreRefList<IServerSessionFactory> objectStoreHandleList = _objectStoreListByDomain.get(domain);
 		if (objectStoreHandleList == null) {
 			objectStoreHandleList = new ObjectStoreRefList<IServerSessionFactory>();
+			_objectStoreListByDomain.put(domain, objectStoreHandleList);
 		}
 		objectStoreHandleList.add(serverSessionFactory);
 	}
