@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.emf.common;visibility:=reexport,
  org.essentialplatform.aop;visibility:=reexport
 Eclipse-AutoStart: true
 Export-Package: org.essentialplatform,
+ org.essentialplatform.core,
  org.essentialplatform.core.deployment,
  org.essentialplatform.core.domain,
  org.essentialplatform.core.domain.adapters,

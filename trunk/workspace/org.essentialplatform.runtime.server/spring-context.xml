@@ -150,8 +150,8 @@
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
        <property name="locations">
           <list>
-             <value>file:D:/dkhaywood/svn/svn.berlios.de/trunk/workspace/org.essentialplatform.louis/bin/hibernate.properties</value>
-             <value>file:D:/dkhaywood/svn/svn.berlios.de/trunk/workspace/org.essentialplatform.louis/bin/server.properties</value> 
+             <value>bundle-entry:hibernate.properties</value>
+             <value>bundle-entry:server.properties</value> 
           </list>
        </property>
     </bean>

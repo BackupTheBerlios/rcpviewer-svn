@@ -8,11 +8,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.IBundlePeer;
 import org.essentialplatform.louis.app.SecureApplication;
 import org.essentialplatform.louis.log.LogController;
-import org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder;
-import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -21,14 +19,13 @@ import org.osgi.service.packageadmin.PackageAdmin;
 /**
  * The main plugin class for base GUI functionality.
  */
-public class LouisPlugin extends AbstractUIPlugin {
+public class LouisPlugin extends AbstractUIPlugin implements IBundlePeer {
 
 
 	///////////////////////////////////////////
 	// Singleton / Constructor
 	///////////////////////////////////////////
 	
-	// the shared instance.
 	private static LouisPlugin __plugin = null;
 	/**
 	 * Returns the shared instance.
@@ -42,7 +39,16 @@ public class LouisPlugin extends AbstractUIPlugin {
 		__plugin = this;
 	}
 
+	
+	/////////////////////////////////////////////////////////////////
+	// Id
+	/////////////////////////////////////////////////////////////////
 
+	public String getId() {
+		return getClass().getPackage().getName();
+	}
+	
+	
 	
 	/////////////////////////////////////////////////////////////////
 	// Lifecycle Methods
@@ -185,5 +191,7 @@ public class LouisPlugin extends AbstractUIPlugin {
 			return key;
 		}
 	}
+
+
 
 }

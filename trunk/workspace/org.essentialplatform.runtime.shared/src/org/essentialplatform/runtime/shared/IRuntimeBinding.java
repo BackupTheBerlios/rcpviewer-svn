@@ -1,5 +1,6 @@
 package org.essentialplatform.runtime.shared;
 
+import org.essentialplatform.core.IBundlePeer;
 import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.essential.app.InDomain;
@@ -11,7 +12,7 @@ public interface IRuntimeBinding extends IBinding {
 	 * In order to validate class representations.
 	 * @param bundle
 	 */
-	public void init(Bundle bundle);
+	public void init(IBundlePeer bundlePeer);
 	public Bundle getBundle();
 
 	public void assertValid(final Object classRepresentation);

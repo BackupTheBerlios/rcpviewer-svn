@@ -1,45 +1,56 @@
 package org.essentialplatform.runtime.server;
 
-import org.eclipse.ui.plugin.*;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.essentialplatform.core.IBundlePeer;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class to be used in the desktop.
+ * The main __plugin class to be used in the desktop.
  */
-public class ServerPlugin extends AbstractUIPlugin {
+public class ServerPlugin extends AbstractUIPlugin implements IBundlePeer {
 
-	//The shared instance.
-	private static ServerPlugin plugin;
+	///////////////////////////////////////////
+	// Singleton / Constructor
+	///////////////////////////////////////////
 	
-	/**
-	 * The constructor.
-	 */
+	private static ServerPlugin __plugin;
+	
 	public ServerPlugin() {
-		plugin = this;
+		__plugin = this;
 	}
 
-	/**
-	 * This method is called upon plug-in activation
-	 */
+	public static ServerPlugin getDefault() {
+		return __plugin;
+	}
+
+
+	/////////////////////////////////////////////////////////////////
+	// Id
+	/////////////////////////////////////////////////////////////////
+
+	public String getId() {
+		return ServerPlugin.class.getPackage().getName();
+	}
+	
+
+	/////////////////////////////////////////////////////////////////
+	// Lifecycle Methods
+	/////////////////////////////////////////////////////////////////
+
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		plugin = null;
+		__plugin = null;
 	}
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static ServerPlugin getDefault() {
-		return plugin;
-	}
+
+	/////////////////////////////////////////////////////////////////
+	// Localization and Formatting
+	/////////////////////////////////////////////////////////////////
 
 	/**
 	 * Returns an image descriptor for the image file at the given
@@ -49,6 +60,8 @@ public class ServerPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("org.essentialplatform.server", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(getDefault().getId(), path);
 	}
+	
+
 }
