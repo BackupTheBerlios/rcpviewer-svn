@@ -30,5 +30,6 @@ Export-Package: org.essentialplatform.runtime.server,
  org.essentialplatform.runtime.server.remoting.xactnprocessor.noop,
  org.essentialplatform.runtime.server.session,
  org.essentialplatform.runtime.server.session.hibernate,
- org.essentialplatform.runtime.server.session.noop
+ org.essentialplatform.runtime.server.session.noop,
+ org.essentialplatform.runtime.server.springsupport
 DynamicImport-Package: *

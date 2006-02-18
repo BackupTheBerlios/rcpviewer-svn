@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.BindingInstaller;
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.DomainConstants;
 import org.essentialplatform.core.domain.IDomain;
@@ -105,7 +106,17 @@ public final class StandaloneServer extends AbstractServer {
 		_binding = binding;
 	}
 	
+
+    ////////////////////////////////////////////////////////////
+	// BindingInstaller (injected).
+    ////////////////////////////////////////////////////////////
 	
+	private BindingInstaller _bindingInstaller;
+	public void setBindingInstaller(BindingInstaller bindingInstaller) {
+		_bindingInstaller = bindingInstaller;
+	}
+
+
 
     ////////////////////////////////////////////////////////////
 	// RemotingServer (injected).
@@ -171,7 +182,7 @@ public final class StandaloneServer extends AbstractServer {
 					new Callable<Boolean>() {
 						public Boolean call() {
 							// make sure binding in place for this thread (in case Executor has been restarted)
-							Binding.setBinding(_binding); 
+							_bindingInstaller.install(); 
 							setupRouting();
 							startDatabaseServers();
 							_remotingServer.start();

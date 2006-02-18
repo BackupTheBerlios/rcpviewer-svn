@@ -17,29 +17,4 @@ public class SpringConfiguredLouisDefinition extends AbstractLouisDefinition {
 	}
 
 	
-	////////////////////////////////////////////////////////////////////
-	// Bundle
-	////////////////////////////////////////////////////////////////////
-	
-	private Bundle _bundle;
-	/**
-	 * The (Eclipse) bundle representing the domain plugin.
-	 * 
-	 * <p>
-	 * Set by Essential itself (rather than through Spring, say), 
-	 * to assist in the verification of domain classes (so that it can use 
-	 * the appropriate <tt>ClassLoader</tt>).
-	 */
-	public Bundle getBundle() {
-		return _bundle;
-	}
-	/*
-	 * Set by Essential itself (rather than through Spring, say).
-	 */
-	public void setBundle(Bundle domainBundle) {
-		_bundle = domainBundle;
-	}
-	
-	
-	
 }

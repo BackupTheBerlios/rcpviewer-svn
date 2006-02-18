@@ -275,7 +275,7 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 		
 		Properties props = new Properties();
 		props.put(ServerConstants.SC_KEY_PORT, ""+port);
-		props.put(ServerConstants.SC_KEY_DATABASE+".0", database);
+		props.put(ServerConstants.SC_KEY_DATABASE+".0", database+"/"+dbname);
 		props.put(ServerConstants.SC_KEY_DBNAME+".0", dbname);
 		props.put(ServerConstants.SC_KEY_SILENT, ""+silent);
 		props.put(ServerConstants.SC_KEY_NO_SYSTEM_EXIT, ""+noSystemExitOnShutdown);

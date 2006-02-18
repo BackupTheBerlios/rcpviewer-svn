@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
-import org.essentialplatform.core.IBundlePeer;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.ICollectionReferenceBinding;
 import org.essentialplatform.core.deployment.IDomainBinding;
@@ -114,12 +113,11 @@ public abstract class AbstractRuntimeBinding extends Binding implements IRuntime
 
 	private Bundle _bundle;
 	/*
-	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#init(org.osgi.framework.Bundle)
+	 * @see org.essentialplatform.runtime.shared.IRuntimeBinding#setBundle(org.osgi.framework.Bundle)
 	 */
-	public void init(IBundlePeer bundlePeer) {
-		_bundle = bundlePeer.getBundle();
+	public void setBundle(Bundle bundle) {
+		_bundle = bundle;
 	}
-
 	/*
 	 * @see org.essentialplatform.core.deployment.IBinding#getBundle()
 	 */

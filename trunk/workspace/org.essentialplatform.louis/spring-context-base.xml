@@ -3,7 +3,7 @@
 
 <beans>
 	<description>
-		Server-side components for the Essential Platform.
+		Client-side components for the Essential Platform.
 	</description>
 
 	<bean id="app" 
@@ -17,9 +17,26 @@
 	  	<property name="remoting" ref="clientRemoting"/>
 	  	<property name="louisDefinition" ref="louis"></property>
 	</bean>
-	
+
+	<bean id="bindingInstaller"
+		class="org.essentialplatform.core.deployment.BindingInstaller">
+		<description>
+			Installs the supplied binding within thread local storage
+		</description>
+		<property name="binding" ref="clientBinding">
+			<description>
+				The binding to be installed.
+			</description>
+		</property>
+	</bean>
+
 	<bean id="clientBinding"
 		class="org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding">
+		<property name="bundle" ref="domainBundle">
+			<description>
+				For class loading of adapter factories.
+			</description>
+		</property>
 		<property name="primaryBuilder" ref="primaryBuilder">
 			<description>
 				The IDomainBuilder to delegate to when interacting with the
@@ -29,6 +46,54 @@
 		</property>
 	</bean>
 
+	<bean id="louisBundle"
+		class="org.essentialplatform.louis.app.springsupport.LouisBundleFactoryBean">
+		<description>
+			FactoryBean that provides access to the Louis Plugin's OSGi Bundle.
+		</description>
+	</bean>
+
+
+	<bean id="domainBundle"
+		class="org.essentialplatform.core.springsupport.ExtensionPointContributingBundleFactoryBean">
+		<description>
+			FactoryBean that provides access to a Bundle based on extension points that it contributes to.
+			The Bootstrap injects the values prior to refreshing the ApplicationContext.
+		</description>
+		<property name="configurationElementId">
+			<description>
+				The Bootstrap injects the (id of the) configuration element to search for.  This is
+				a constant.
+			</description>
+			<null/>
+		</property>
+		<property name="id">
+			<description>
+				The Bootstrap injects the value of the id attribute to check the contribution against.
+				This will be the same as the id of the plugin itself (eg 'com.mycompany.demo').
+			</description>
+			<null/>
+		</property>
+		<property name="defaultBundle" ref="louisBundle">
+			<description>
+				A default value so that we can refresh the context the first time
+				prior to programmatically setting the other properties (which then re-calculate
+				the Bundle ready for refreshing the context second time).
+			</description>
+		</property>
+	</bean>
+
+	<bean id="domainRegistry"
+		class="org.essentialplatform.runtime.shared.domain.SingleDomainRegistry">
+		<description>
+			FactoryBean that provides access to the Louis Plugin's OSGi Bundle.
+		</description>
+		<property name="domainDefinition" ref="louis">
+			<description>
+				The (single) domain whose classes are to be registered.
+			</description>
+		</property>
+	</bean>
 
 	<bean id="loginWizardAuthenticationCommand" 
 		class="org.essentialplatform.louis.authentication.loginwizard.LoginWizardAuthenticationCommand">
@@ -47,7 +112,7 @@
 	</bean>
 
 	<bean id="display" 
-		class="org.essentialplatform.louis.app.springsupport.DisplayFactoryBean" >
+		class="org.essentialplatform.core.springsupport.DisplayFactoryBean" >
 	</bean>
 
 	<bean id="transactionManager"
@@ -85,24 +150,24 @@
 		<property name="destinationName" value="org.essentialplatform.test"/>
 	</bean>
 
+	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	
 	<!--  overridden by domain plugin -->
 	<bean id="domain" 
 		class="org.essentialplatform.runtime.shared.domain.SpringConfiguredDomainDefinition">
-		<property name="domainBuilder">
-			<description>
-				The programming model conventions under which the domain classes
-				were written.
-			</description>
-			<ref bean="primaryBuilder"/>
-		</property>
+		<description>
+			Application programmer must define a 'domain' bean implementing IDomainDefinition.  
+			It specifies the classes that make up the domain.
+		</description>
 	</bean>
 
-	<!--  overridden by domain plugin -->
+	<!-- optionally overridden by domain plugin -->
 	<bean id="louis" 
 		class="org.essentialplatform.louis.domain.SpringConfiguredLouisDefinition">
 		<description>
-			Application programmer must supply a 'louis' bean, implementing ILouisDefinition.  
-			It optionally configures the UI with specific capabilities for the domain.
+			Application programmer can optionally define a 'louis' bean implementing ILouisDefinition.  
+			It optionally configures the UI with specific capabilities for the domain.  If not
+			supplied, then this definition will be used.
 		</description>
 		<property name="domainDefinition" ref='domain'>
 			<description>
@@ -120,9 +185,8 @@
 			</list>
 		</property>
 	</bean>
-
 	
-	<!-- potentially overridden by domain plugin (rare) -->
+	<!-- optionally overridden by domain plugin (rare) -->
 	<bean id="primaryBuilder" 
 		class="org.essentialplatform.progmodel.essential.runtime.EssentialProgModelRuntimeBuilder">
 		<description>
@@ -133,7 +197,7 @@
 		</description>
 	</bean>
 
-	<!-- potentially overridden by domain plugin (rare) -->
+	<!-- optionally overridden by domain plugin (rare) -->
 	<bean id="louisProgModelRuntimeBuilder" 
 		class="org.essentialplatform.progmodel.louis.runtime.LouisProgModelRuntimeBuilder"/>
 

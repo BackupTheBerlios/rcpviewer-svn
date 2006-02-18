@@ -31,6 +31,7 @@
 		   		<value>demo.Order</value>
 			</list>
 		</property>
+		<property name="bundle" ref="domainBundle"/>
 	</bean>
 	
 </beans>

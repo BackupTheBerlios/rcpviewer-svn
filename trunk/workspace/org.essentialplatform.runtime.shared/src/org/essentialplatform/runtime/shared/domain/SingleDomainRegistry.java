@@ -18,15 +18,19 @@ public final class SingleDomainRegistry implements IDomainRegistry {
 	
 	protected Logger getLogger() { return Logger.getLogger(SingleDomainRegistry.class); }
 	
-	public SingleDomainRegistry(IDomainDefinition domainDefinition) {
-		_domainDefinition = domainDefinition;
-	}
-
 	
 	
-	private final IDomainDefinition _domainDefinition;
-	public IDomainDefinition getDomainClassRegistrar() {
+	private IDomainDefinition _domainDefinition;
+	public IDomainDefinition getDomainDefinition() {
 		return _domainDefinition;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * @param domainDefinition
+	 */
+	public void setDomainDefinition(IDomainDefinition domainDefinition) {
+		_domainDefinition = domainDefinition;
 	}
 
 
@@ -34,6 +38,9 @@ public final class SingleDomainRegistry implements IDomainRegistry {
 	 * @see org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry#registerClassesInDomains()
 	 */
 	public void registerClassesInDomains() throws DomainRegistryException {
+		if (_domainDefinition == null) {
+			throw new IllegalStateException("Domain definition is required");
+		}
 		_domainDefinition.registerClasses();
 	}
 

@@ -30,7 +30,7 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	/**
 	 * Invoked by {@link org.essentialplatform.louis.Bootstrap}.
 	 */
-	public void init(Bundle bundle) {
+	public void setBundle(Bundle bundle) {
 		_bundle = bundle;
 	}
 
@@ -39,7 +39,7 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	 * The (Eclipse) bundle representing the domain plugin.
 	 *
 	 * <p>
-	 * As per {@link #init(Bundle)}.
+	 * As per {@link #setBundle(Bundle)}.
 	 *
 	 * <p>
 	 * Set by Essential itself (rather than through Spring, say), primarily

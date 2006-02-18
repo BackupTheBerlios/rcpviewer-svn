@@ -43,6 +43,11 @@
 				<ref bean="serverSessionFactory.1"/>
 			</list>
 		</property>
+		<property name="bindingInstaller" ref="bindingInstaller">
+			<description>
+				Allows the server to explicitly install the bindings in its own thread.
+			</description>
+		</property>
 	</bean>
 
 	<bean id="serverSessionFactory.1"
@@ -97,7 +102,12 @@
 
 	<bean id="hsqlDatabaseServer" 
 		class="org.essentialplatform.runtime.server.database.hsqldb.HsqlDatabaseServer">
-		<property name="port"><value>${server.port}</value></property>
+		<property name="port">
+			<description>
+				TODO: should pick up from ${server.port}
+			</description>
+			<value>9001</value>
+		</property>
 		<property name="user"><value>${hibernate.connection.username}</value></property>
 		<property name="password"><value>${hibernate.connection.username}</value></property>
 		<property name="databaseDir" value="c:/temp/essential"/>
@@ -106,22 +116,6 @@
 
 	<bean id="objectStoreRouting" 
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.ObjectStoreRouting">
-	</bean>
-
-	<bean id="serverBinding"
-		class="org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding">
-		<property name="primaryBuilder">
-			<description>
-				The IDomainBuilder to delegate to when interacting with the
-				domain objects.  In theory the domain plugin could redefine 
-				the 'primaryBuilder' bean, though this will be rare.
-			</description>
-			<ref bean="primaryBuilder"/>
-		</property>
-		<!-- 
-		<property name=""></property>
-		<property name="handleAssigner" ref="xxx"></property>
-		-->
 	</bean>
 
 
@@ -155,6 +149,72 @@
           </list>
        </property>
     </bean>
+
+	<bean id="bindingInstaller"
+		class="org.essentialplatform.core.deployment.BindingInstaller">
+		<description>
+			Installs the supplied binding within thread local storage
+		</description>
+		<property name="binding" ref="serverBinding">
+			<description>
+				The binding to be installed.
+			</description>
+		</property>
+		<property name="install" value="false"/>
+	</bean>
+
+	<bean id="serverBinding"
+		class="org.essentialplatform.runtime.server.domain.bindings.RuntimeServerBinding">
+		<property name="bundle" ref="domainBundle">
+			<description>
+				For class loading of adapter factories.
+			</description>
+		</property>
+		<property name="primaryBuilder" ref="primaryBuilder">
+			<description>
+				The IDomainBuilder to delegate to when interacting with the
+				domain objects.  In theory the domain plugin could redefine 
+				the 'primaryBuilder' bean, though this will be rare.
+			</description>
+		</property>
+	</bean>
+
+	<bean id="serverBundle"
+		class="org.essentialplatform.runtime.server.springsupport.ServerBundleFactoryBean">
+		<description>
+			FactoryBean that provides access to the Server Plugin's OSGi Bundle.
+		</description>
+	</bean>
+
+
+	<bean id="domainBundle"
+		class="org.essentialplatform.core.springsupport.ExtensionPointContributingBundleFactoryBean">
+		<description>
+			FactoryBean that provides access to a Bundle based on extension points that it contributes to.
+			The Bootstrap injects the values prior to refreshing the ApplicationContext.
+		</description>
+		<property name="configurationElementId">
+			<description>
+				The Bootstrap injects the (id of the) configuration element to search for.  This is
+				a constant.
+			</description>
+			<null/>
+		</property>
+		<property name="id">
+			<description>
+				The Bootstrap injects the value of the id attribute to check the contribution against.
+				This will be the same as the id of the plugin itself (eg 'com.mycompany.demo').
+			</description>
+			<null/>
+		</property>
+		<property name="defaultBundle" ref="serverBundle">
+			<description>
+				A default value so that we can refresh the context the first time
+				prior to programmatically setting the other properties (which then re-calculate
+				the Bundle ready for refreshing the context second time).
+			</description>
+		</property>
+	</bean>
 
 
 	<!-- 

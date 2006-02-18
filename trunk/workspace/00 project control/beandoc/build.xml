@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<project name="spring-beandoc-sample" basedir="." default="dist">
+
+    <property name="louisPlugin"  value="org.essentialplatform.louis"/>
+    <property name="serverPlugin" value="org.essentialplatform.runtime.server"/>
+
+    <property name="louisPlugin.dir" value="../../${louisPlugin}" />
+    <property name="serverPlugin.dir" value="../../${serverPlugin}" />
+
+    <property name="lib.dir" value="lib" />
+    <property name="etc.dir" value="etc" />
+    <property name="dist.dir" value="dist" />
+    
+    <path id="beandoc.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean" description="Clean up all outputs">
+		<!--
+        <delete dir="${dist.dir}"/>
+		-->
+    </target>
+
+    <target name="-init">
+        <taskdef 
+			name="beandoc" 
+			classname="org.springframework.beandoc.client.AntTask">
+            <classpath refid="beandoc.classpath"/>
+        </taskdef>
+    </target>
+
+    <target name="beandoc.louisPlugin" depends="-init">
+		<!--
+        <delete dir="${dist.dir}/${louisPlugin}"/>
+		-->
+        <mkdir dir="${dist.dir}/${louisPlugin}" />
+        
+        <beandoc  
+            outputDir="${dist.dir}/${louisPlugin}"
+            beandocProps="${etc.dir}/beandoc.louisPlugin.properties">
+        	<fileset dir="${louisPlugin.dir}">
+        		<include name="spring-context*.xml"/>
+        	</fileset>
+        </beandoc>
+    </target>
+
+    <target name="beandoc.serverPlugin" depends="-init">
+		<!--
+        <delete dir="${dist.dir}/${serverPlugin}"/>
+		-->
+        <mkdir dir="${dist.dir}/${serverPlugin}" />
+        
+        <beandoc  
+            outputDir="${dist.dir}/${serverPlugin}"
+            beandocProps="${etc.dir}/beandoc.serverPlugin.properties">
+        	<fileset dir="${serverPlugin.dir}">
+        		<include name="spring-context*.xml"/>
+        	</fileset>
+        </beandoc>
+    </target>
+
+    <target name="dist"
+		description="Run beandoc for both louis and server plugins"
+		depends="beandoc.louisPlugin, beandoc.serverPlugin">
+	</target>
+
+</project>

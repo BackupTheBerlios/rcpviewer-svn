@@ -16,11 +16,10 @@ import org.osgi.framework.Bundle;
  * acting as an <i>Abstract Factory</i> (kit) for each.
  * 
  * <p>
- * There are two bindings: RUNTIME and COMPILETIME.  This class also
- * acts as a singleton registry of either (similar to {@link java.util.Calendar}
- * with {@link java.util.GregorianCalendar}
- * 
- * 
+ * There are two a number of bindings: COMPILETIME, CLIENT-SIDE RUNTIME and
+ * SERVER-SIDE RUNTIME.  This class also acts as a thread-local singleton 
+ * registry of either (a little similar to {@link java.util.Calendar}
+ * with {@link java.util.GregorianCalendar}, albeit on a per-thread basis).
  * 
  * @author Dan Haywood
  */
@@ -29,12 +28,21 @@ public abstract class Binding implements IBinding {
 	/**
 	 * Sets the binding, as returned by {@link #getBinding()}.
 	 * 
+	 * <p>
+	 * A binding <i>can</i> be replaced, but <i>only</i> if the replacement is
+	 * the exact same class.  (This constraint is to ensure that a given thread
+	 * runs either client or server.  Previously we didn't allow any replacement
+	 * at all, however the limited replacement does allow us to boot from
+	 * Spring and refresh the context more than once). 
+	 * 
 	 * @throws RuntimeException if a binding has already been instantiated.
 	 */
 	public synchronized static void setBinding(IBinding binding) {
 		IBinding currentBindingIfAny = __threadLocalBinding.get();
 		if (currentBindingIfAny != null && currentBindingIfAny != binding) {
-			throw new RuntimeException(String.format("A different binding '%s' has already defined for this thread (was trying to set binding '%s')", currentBindingIfAny, binding));
+			if (currentBindingIfAny.getClass() != binding.getClass()) {
+				throw new RuntimeException(String.format("A different binding '%s' has already defined for this thread (was trying to set binding '%s')", currentBindingIfAny, binding));
+			}
 		}
 		__threadLocalBinding.set(binding);
 	}
@@ -78,7 +86,13 @@ public abstract class Binding implements IBinding {
 	public abstract InDomain getInDomainOf(Object classRepresentation);
 
 	/**
-	 * for class loading.
+	 * For class loading of adapters (extension object pattern) by
+	 * {@link IDomainClass#getAdapters()}.
+	 * 
+	 * <p>
+	 * Should provide the bundle that holds (or has access to) the adapter
+	 * factory classes (rather than LouisPlugin or ServerPlugin which by
+	 * definition will not).
 	 * 
 	 * @return
 	 */

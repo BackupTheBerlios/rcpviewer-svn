@@ -21,12 +21,6 @@ public interface ILouisDefinition extends IDomainDefinition {
 	 * applies.
 	 */
 	IDomainDefinition getDomainDefinition();
-	/**
-	 * Wire up explicitly.
-	 * 
-	 * @param clientDomainDefinition
-	 */
-	void setDomainDefinition(IDomainDefinition clientDomainDefinition);
 
 	
 	/**

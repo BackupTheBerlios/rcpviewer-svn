@@ -10,20 +10,6 @@ public interface IDomainDefinition  {
 
 	
 	/**
-	 * Initialization performed by Essential platform itself (or 
-	 * ILouisDefinition which delegates to same).
-	 * 
-	 * <p>
-	 * Although in theory it might be possible to inject this information
-	 * using Spring, we choose to do it manually in order to minimise the
-	 * complexity of the Spring configuration files that must be written by
-	 * the domain programmer. 
-	 * 
-	 * @param Bundle - bundle through whose classloader the classes may be loaded
-	 */
-	void init(Bundle Bundle);
-
-	/**
 	 * The name of this domain.
 	 * 
 	 * <p>

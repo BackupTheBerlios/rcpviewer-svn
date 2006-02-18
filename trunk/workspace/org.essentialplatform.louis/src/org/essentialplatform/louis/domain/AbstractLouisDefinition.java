@@ -25,12 +25,6 @@ public abstract class AbstractLouisDefinition implements ILouisDefinition {
 
 	protected abstract Logger getLogger(); 
 
-	/**
-	 * Just passes onto {@link #getDomainDefinition()}.
-	 */
-	public void init (Bundle bundle) {
-		getDomainDefinition().init(bundle);
-	}
 
 	
 	////////////////////////////////////////////////////////////////////
