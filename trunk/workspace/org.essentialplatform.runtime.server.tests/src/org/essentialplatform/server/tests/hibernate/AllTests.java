@@ -1,4 +1,4 @@
-package org.essentialplatform.server.tests.hsqldb;
+package org.essentialplatform.server.tests.hibernate;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

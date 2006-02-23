@@ -1,5 +1,5 @@
 //$Id: BasicHibernateAnnotationsTest.java,v 1.6 2005/11/11 00:03:10 epbernard Exp $
-package org.essentialplatform.server.tests.hsqldb;
+package org.essentialplatform.server.tests.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
