@@ -6,6 +6,8 @@ import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.CustomerExplicitlyInDefaultDomain;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.CustomerImplicitlyInDefaultDomain;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.Customer;
+import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithAbbreviation;
+import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithNoAbbreviation;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.CustomerWithNoAttributes;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.Department;
 import org.essentialplatform.core.fixture.progmodel.essential.standard.domainclass.Prospect;
@@ -33,6 +35,17 @@ public abstract class TestDomainClass extends AbstractTestCase {
 		assertEquals(
 				CustomerWithNoAttributes.class.getPackage().getName(), 
 				ePackage.getName());
+	}
+
+	public void testAbbreviationWhenExplicitlyProvided() {
+		domainClass = lookupAny(CustomerWithNoAbbreviation.class);
+		
+		assertEquals("CustomerWithNoAbbreviation".toUpperCase(), domainClass.getAbbreviation());
+	}
+
+	public void testAbbreviationWhenHasNone() {
+		domainClass = lookupAny(CustomerWithNoAttributes.class);
+		
 	}
 
 	public void testGetDomainClassFromEClass() {

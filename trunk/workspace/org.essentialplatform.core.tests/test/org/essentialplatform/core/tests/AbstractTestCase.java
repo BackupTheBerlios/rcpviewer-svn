@@ -28,9 +28,12 @@ public abstract class AbstractTestCase extends TestCase {
 		this.domainBuilder = domainBuilder != null? domainBuilder: IDomainBuilder.NOOP;
 	}
 
-	private final IDomainBuilder domainBuilder;
+	private IDomainBuilder domainBuilder;
 	protected IDomainBuilder getDomainBuilder() {
 		return domainBuilder;
+	}
+	public void setDomainBuilder(IDomainBuilder domainBuilder) {
+		this.domainBuilder = domainBuilder;
 	}
 
 	protected IDomain getDomainInstance() {
