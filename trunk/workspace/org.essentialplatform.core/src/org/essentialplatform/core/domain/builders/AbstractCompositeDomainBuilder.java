@@ -13,7 +13,6 @@ import org.essentialplatform.core.domain.builders.IDomainBuilder;
  */
 public abstract class AbstractCompositeDomainBuilder implements IDomainBuilder {
 
-	private final List<IDomainBuilder> _builders = new ArrayList<IDomainBuilder>();
 	/**
 	 * Create composite builder with no builders. 
 	 *
@@ -39,6 +38,7 @@ public abstract class AbstractCompositeDomainBuilder implements IDomainBuilder {
 		}
 	}
 
+	private final List<IDomainBuilder> _builders = new ArrayList<IDomainBuilder>();
 	/**
 	 * Adds a {@link IDomainBuilder} to the list of the builders that will be
 	 * used to build the metamodel.
@@ -48,6 +48,15 @@ public abstract class AbstractCompositeDomainBuilder implements IDomainBuilder {
 	protected final void addBuilder(IDomainBuilder builder) {
 		_builders.add(builder);
 	}
+	/**
+	 * 
+	 * @return (a copy of) the builders
+	 */
+	public List<IDomainBuilder> getBuilders() {
+		return _builders;
+	}
+	
+
 	
 	/**
 	 * Invokes build on all builders defined, in the order they were added.

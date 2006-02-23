@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.essentialplatform.core.emf.AbstractProgModelSemanticsEmfSerializer;
 import org.essentialplatform.core.domain.comparators.AbstractEAttributeComparator;
+import org.essentialplatform.progmodel.essential.app.Abbreviated;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
@@ -163,6 +164,25 @@ public final class EssentialProgModelExtendedSemanticsEmfSerializer extends Abst
 				""+lifecycle.saveable());	
 	}
 	
+	
+	public Abbreviated getAbbreviation(EClass eClass) {
+		Map<String,String> attributeDetails = 
+			_emfAnnotations.getAnnotationDetails(eClass, EssentialProgModelExtendedSemanticsConstants.ANNOTATION_CLASS);
+		String abbreviated = attributeDetails.get(EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ABBREVIATED_KEY);
+		if (abbreviated == null) {
+			return null;
+		}
+		return Abbreviated.Factory.create(abbreviated);
+	}
+	public void setAbbreviation(EClass eClass, Abbreviated abbreviated) {
+		if (abbreviated == null) return;
+		_emfAnnotations.putAnnotationDetails(eClass, 
+				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_CLASS, 
+				EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ABBREVIATED_KEY, 
+				""+abbreviated.value());	
+	}
+	
+
 	public ImmutableOncePersisted getClassImmutableOncePersisted(EClass eClass) {
 		Map<String,String> attributeDetails = 
 			_emfAnnotations.getAnnotationDetails(eClass, EssentialProgModelExtendedSemanticsConstants.ANNOTATION_ATTRIBUTE);

@@ -244,32 +244,4 @@ public class Bootstrap implements IPlatformRunnable {
 		throw new CoreException(status);
 	}
 	
-//	/**
-//	 * Searches through all &lt;springcontext> extensions under the
-//	 * &lt;springcontext> extension point and returns the <tt>ConfigurationElement</tt>
-//	 * matching the supplied Id.
-//	 * 
-//	 * <p>
-//	 * The returned <tt>ConfigurationElement</tt> (representing the supplied
-//	 * <tt>&lt;springcontext/></tt> element according to the extension point's 
-//	 * schema) has additional info, in particular the name of the Spring config 
-//	 * file for the contributing plugin.
-//	 * 
-//	 * <p>
-//	 * @return the ConfigurationElement or <tt>null</tt> if none could be found.
-//	 */
-//	private IConfigurationElement findLouisSpringContextConfigurationElement(String springContextId) {
-//		IExtensionPoint extensionPoint = 
-//			Platform.getExtensionRegistry().getExtensionPoint(SPRINGCONTEXT_EXTENSION_POINT);
-//		for(IConfigurationElement element: extensionPoint.getConfigurationElements()) {
-//			String id = element.getAttribute("id");
-//			if (springContextId.equals(id)) {
-//				return element;
-//			}
-//		}
-//		return null; 
-//	}
-
-
-
 }

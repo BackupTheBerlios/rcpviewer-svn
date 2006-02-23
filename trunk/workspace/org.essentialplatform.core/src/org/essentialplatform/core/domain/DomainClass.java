@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.IReferenceBinding;
@@ -35,6 +36,7 @@ import org.essentialplatform.core.emf.EmfAnnotations;
 import org.essentialplatform.core.features.FeatureId;
 import org.essentialplatform.core.features.IFeatureId;
 import org.essentialplatform.core.i18n.II18nData;
+import org.essentialplatform.progmodel.essential.app.Abbreviated;
 import org.essentialplatform.progmodel.essential.app.AssignmentType;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
@@ -54,8 +56,6 @@ import org.osgi.framework.Bundle;
 
 public final class DomainClass implements IDomainClass {
 
-	protected final IDomain _domain;
-	protected final EClass _eClass;
 	
 	/**
 	 * To deserialize semantics from EMF metamodel.
@@ -86,11 +86,31 @@ public final class DomainClass implements IDomainClass {
 	 */
 	private Map<String, Object> adaptersByAnnotationSource = new HashMap<String, Object>();
 	
-	public DomainClass(final IDomain domain, final EClass eClass) {
+	public DomainClass(final IDomain domain, final EClass eClass, final Object classRepresentation) {
 		this._domain = domain;
 		this._eClass = eClass;
+		this._classRepresentation = classRepresentation;
 	}
 
+
+	/////////////////////////////////////////////////////////////////////
+	// Domain
+	/////////////////////////////////////////////////////////////////////
+
+	protected final IDomain _domain;
+	/*
+	 * @see org.essentialplatform.domain.IDomainClass#getDomain()
+	 */
+	public IDomain getDomain() {
+		return _domain;
+	}
+
+
+	
+	/////////////////////////////////////////////////////////////////////
+	// Binding
+	/////////////////////////////////////////////////////////////////////
+	
 	private IDomainClassBinding _binding;
 	// JAVA5_FIXME
 	public <V extends IDomainClassBinding> V getBinding() {
@@ -101,11 +121,39 @@ public final class DomainClass implements IDomainClass {
 	}
 
 	/*
-	 * @see org.essentialplatform.domain.IDomainClass#getDomain()
+	 * @see org.essentialplatform.core.domain.IDomainClass#replaceBindings(org.essentialplatform.core.deployment.IBinding)
 	 */
-	public IDomain getDomain() {
-		return _domain;
+	public void replaceBindings(IBinding binding) {
+		setBinding(binding.bind(this, _classRepresentation));
+		for(IAttribute attrib: _attributesByEAttribute.values()) {
+			attrib.replaceBindings(binding);
+		}
+		for(IReference reference: _referencesByEReference.values()) {
+			reference.replaceBindings(binding);
+		}
+		for(IOperation operation: _operationsByEOperation.values()) {
+			operation.replaceBindings(binding);
+		}
 	}
+
+
+	/////////////////////////////////////////////////////////////////////
+	// ClassRepresentation
+	/////////////////////////////////////////////////////////////////////
+
+	private final Object _classRepresentation;
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#getClassRepresentation()
+	 */
+	public Object getClassRepresentation() {
+		return _classRepresentation;
+	}
+
+
+	/////////////////////////////////////////////////////////////////////
+	// Name, Description, Abbreviation
+	/////////////////////////////////////////////////////////////////////
+	
 
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#getName()
@@ -122,7 +170,6 @@ public final class DomainClass implements IDomainClass {
 		return named.value();
 	}
 
-
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#getDescription()
 	 */
@@ -130,6 +177,25 @@ public final class DomainClass implements IDomainClass {
 		return descriptionOf(_eClass);
 	}
 
+	
+	/*
+	 * @see org.essentialplatform.core.domain.IDomainClass#getAbbreviation()
+	 */
+	public String getAbbreviation(){
+		Abbreviated abbreviated = _extendedSerializer.getAbbreviation(getEClass());
+		if (abbreviated == null) {
+			return getEClassName().toUpperCase();
+		}
+		return abbreviated.value();
+	}
+
+
+
+	/////////////////////////////////////////////////////////////////////
+	// EClass, EClassName
+	/////////////////////////////////////////////////////////////////////
+
+	protected final EClass _eClass;
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#getEClass()
 	 */
@@ -143,6 +209,11 @@ public final class DomainClass implements IDomainClass {
 	public String getEClassName() {
 		return _eClass.getName();
 	}
+
+	
+	/////////////////////////////////////////////////////////////////////
+	// other stuff...
+	/////////////////////////////////////////////////////////////////////
 
 	/*
 	 * @see org.essentialplatform.domain.IDomainClass#isChangeable()
@@ -442,6 +513,12 @@ public final class DomainClass implements IDomainClass {
 		<V extends IAttributeBinding> void setBinding(V binding) {
 			_binding = binding;
 		}
+
+		public void replaceBindings(IBinding binding) {
+			setBinding(binding.bindingFor(this));
+		}
+
+
 		
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IAttribute#isWriteOnly()
@@ -880,6 +957,11 @@ public final class DomainClass implements IDomainClass {
 			super(reference);
 		}
 		
+		public void replaceBindings(IBinding binding) {
+			setBinding(binding.bindingFor(this));
+		}
+
+
 		@Override
 		public String toString() {
 			return "1:1 IReference: " + _eReference.getName();
@@ -910,6 +992,11 @@ public final class DomainClass implements IDomainClass {
 		public CollectionReference(EReference reference) {
 			super(reference);
 		}
+
+		public void replaceBindings(IBinding binding) {
+			setBinding(binding.bindingFor(this));
+		}
+
 
 		@Override
 		public String toString() {
@@ -1000,9 +1087,6 @@ public final class DomainClass implements IDomainClass {
 
 	private final class Operation extends Member implements IDomainClass.IOperation {
 		
-		private final EOperation _eOperation;
-		private IOperationBinding _binding;
-		
 		public Operation(EOperation eOperation) {
 			_eOperation = eOperation;
 		}
@@ -1015,12 +1099,15 @@ public final class DomainClass implements IDomainClass {
 		}
 
 
+		private final EOperation _eOperation;
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IOperation#getEOperation()
 		 */
 		public EOperation getEOperation() {
 			return _eOperation;
 		}
+		
+		private IOperationBinding _binding;
 		
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IOperation#getBinding()
@@ -1031,6 +1118,10 @@ public final class DomainClass implements IDomainClass {
 		<V extends IOperationBinding> void setBinding(V binding) {
 			_binding = binding;
 		}
+		public void replaceBindings(IBinding binding) {
+			setBinding(binding.bindingFor(this));
+		}
+
 
 		/*
 		 * @see org.essentialplatform.domain.IDomainClass.IOperation#isStatic()
@@ -1425,5 +1516,6 @@ public final class DomainClass implements IDomainClass {
 		}
 		return -1;
 	}
+	
 
 }

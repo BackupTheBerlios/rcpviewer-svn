@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import org.essentialplatform.core.deployment.Binding;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.deployment.IDomainBinding;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.domain.filters.IFilter;
@@ -57,7 +58,7 @@ public class Domain implements IDomain {
 		Domain domain = (Domain) domainsByName.get(domainName);
 		if (domain == null) {
 			Domain concreteDomain = new Domain(domainName);
-			concreteDomain.setBinding(Binding.getBinding().bindingFor(concreteDomain));
+			concreteDomain.bindUsing(Binding.getBinding());
 			domain = concreteDomain;
 			domainsByName.put(domainName, domain);
 		}
@@ -195,8 +196,30 @@ public class Domain implements IDomain {
 	public IDomainBinding getBinding() {
 		return _binding;
 	}
-	public void setBinding(IDomainBinding binding) {
+	/**
+	 * Sets the binding.
+	 * 
+	 * @param binding
+	 */
+	private void setBinding(IDomainBinding binding) {
 		_binding = binding;
+	}
+	
+	public void bindUsing(IBinding binding) {
+		setBinding(binding.bindingFor(this));
+	}
+
+	/**
+	 * For testing purposes.
+	 * 
+	 * @param binding
+	 */
+	public void replaceBindings(IBinding binding) {
+		bindUsing(binding);
+		for(Object classRepresentation: _domainClassesByClassRepresentation.keySet()) {
+			IDomainClass domainClass = _domainClassesByClassRepresentation.get(classRepresentation);
+			domainClass.replaceBindings(binding);
+		}
 	}
 
 
@@ -316,7 +339,7 @@ public class Domain implements IDomain {
 			eClass = (EClass)eClassifier;
 		}
 
-		DomainClass concreteDomainClass = new DomainClass(this, eClass);
+		DomainClass concreteDomainClass = new DomainClass(this, eClass, classRepresentation);
 		Binding.getBinding().bind(concreteDomainClass, classRepresentation);
 		domainClass = concreteDomainClass;
 
@@ -358,7 +381,7 @@ public class Domain implements IDomain {
 			// we may be re-using EClasses.  Since they cannot be cleared from
 			// the EMF ResourceSet, we instead re-use them and wrap them in
 			// another DomainClass, bound to the current Binding.
-			domainClass = new DomainClass(domainFor(classRepresentation), eClass);
+			domainClass = new DomainClass(domainFor(classRepresentation), eClass, classRepresentation);
 			Binding.getBinding().bind(domainClass, classRepresentation);
 			_domainClassesByClassRepresentation.put(classRepresentation, domainClass);
 		}

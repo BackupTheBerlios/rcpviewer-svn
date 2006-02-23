@@ -10,7 +10,7 @@ import org.essentialplatform.core.domain.IDomainClass;
  * within it.
  * 
  * <p>
- * The <i>primary</i> domain builder takes responsibliity for building up the
+ * The <i>primary</i> domain builder takes responsibiliity for building up the
  * base structure of the metamodel, identifying classes, attributes, references
  * and so forth.  In addition, <i>secondary</i> domain builders can be 
  * registered to capture additional semantics specific to the programming 
@@ -32,7 +32,7 @@ import org.essentialplatform.core.domain.IDomainClass;
  * <p>
  * TODO: the primary and secondary builders are currently hard-coded; make 
  * into an extension point.  (The former is passed as a constructor to
- * {@link org.essentialplatform.runtime.RuntimeDeployment}; the latter are 
+ * {@link org.essentialplatform.runtime.deployment.Binding}; the latter are 
  * passed in using {@link Domain#addBuilder(IDomainBuilder)}.
  * 
  * @author Dan Haywood
@@ -48,6 +48,10 @@ public interface IDomainBuilder {
 		}
 
 		public void identifyOppositeReferencesFor(IDomainClass domainClass) {
+			// noop
+		}
+
+		public void setClassLoader(IClassLoader classLoader) {
 			// noop
 		}
 	};
@@ -75,4 +79,11 @@ public interface IDomainBuilder {
 	 */
 	public void identifyOppositeReferencesFor(IDomainClass domainClass);
 
+	
+	/**
+	 * Sets the class loader, in case needed.
+	 * 
+	 * @param classLoader
+	 */
+	void setClassLoader(IClassLoader classLoader);
 }

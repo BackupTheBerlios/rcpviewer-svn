@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.deployment.Binding;
 import org.essentialplatform.core.deployment.IAttributeBinding;
+import org.essentialplatform.core.deployment.IBinding;
 import org.essentialplatform.core.deployment.IDomainClassBinding;
 import org.essentialplatform.core.deployment.IOperationBinding;
 import org.essentialplatform.core.deployment.IReferenceBinding;
@@ -125,6 +126,40 @@ public interface IDomainClass {
 	 */
 	public EClass getEClass();
 
+
+	/**
+	 * Abbreviation for this class.
+	 * 
+	 * <p>
+	 * In the standard programming model, provided by 
+	 * <tt>@InDomain(abbreviation)</tt>.
+	 * 
+	 * @return
+	 */
+	public String getAbbreviation();
+
+
+	/**
+	 * The (binding-specific) representation of this class.
+	 * 
+	 * <p>
+	 * For example, in a runtime-context would be a <tt>java.lang.Class</tt>.
+	 * In a compile-time context, would be an AST node.
+	 *
+	 * <p>
+	 * If the binding context is known (which it usually is), then downcasting
+	 * this getter is usually more convenient than going to the binding for
+	 * a type-safe equivalent.
+	 * 
+	 * <p>
+	 * <b>Implementations should hold this reference using a thread-static,
+	 * because different bindings may be in place on different threads</b>. 
+	 * 
+	 * @return
+	 */
+	public Object getClassRepresentation();
+
+
 	/**
 	 * The name of the underlying POJO class.
 	 * 
@@ -140,6 +175,10 @@ public interface IDomainClass {
 	 * Returns the binding of this class to {@link Binding}.
 	 * 
 	 * JAVA5_FIXME: fix return type.
+	 * 
+	 * <p>
+	 * <b>Implementations should hold this reference using a thread-static,
+	 * because different bindings may be in place on different threads</b>. 
 	 * 
 	 * @return
 	 */
@@ -854,9 +893,20 @@ public interface IDomainClass {
 		/**
 		 * Returns the binding of this attribute to parameterized {@link Binding}.
 		 * 
+		 * <p>
+		 * <b>Implementations should hold this reference using a thread-static,
+		 * because different bindings may be in place on different threads</b>. 
+		 * 
 		 * @return
 		 */
 		public <V extends IAttributeBinding> V getBinding();
+
+		/**
+		 * For testing purposes only.
+		 * 
+		 * @param binding
+		 */
+		public void replaceBindings(IBinding binding);
 
 	}
 
@@ -969,9 +1019,20 @@ public interface IDomainClass {
 		 * 
 		 * JAVA5_FIXME: fix return type.
 		 * 
+		 * <p>
+		 * <b>Implementations should hold this reference using a thread-static,
+		 * because different bindings may be in place on different threads</b>. 
+		 * 
 		 * @return
 		 */
 		public <V extends IReferenceBinding> V getBinding();
+
+		/**
+		 * For testing purposes only.
+		 * 
+		 * @param binding
+		 */
+		public void replaceBindings(IBinding binding);
 		
 	}
 
@@ -1334,9 +1395,22 @@ public interface IDomainClass {
 		/**
 		 * Returns the binding of this attribute to parameterized {@link Binding}.
 		 * 
+		 * <p>
+		 * <b>Implementations should hold this reference using a thread-static,
+		 * because different bindings may be in place on different threads</b>. 
+		 * 
 		 * @return
 		 */
 		public <V extends IOperationBinding> V getBinding();
+		
+
+		/**
+		 * For testing purposes only.
+		 * 
+		 * @param binding
+		 */
+		public void replaceBindings(IBinding binding);
+
 	}
 
 	
@@ -1388,6 +1462,15 @@ public interface IDomainClass {
 	 */
 	public <V> void setAdapterFactory(Class<V> adapterClass, IAdapterFactory<? extends V> adapterFactory);
 
+	
+	/**
+	 * For testing purposes only.
+	 * 
+	 * @param binding
+	 */
+	public void replaceBindings(IBinding binding);
+
+	
 
 }
 

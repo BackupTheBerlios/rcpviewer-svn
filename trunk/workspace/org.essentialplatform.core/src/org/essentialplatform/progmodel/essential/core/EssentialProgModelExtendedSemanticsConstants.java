@@ -203,6 +203,15 @@ public final class EssentialProgModelExtendedSemanticsConstants {
 	public static final String ANNOTATION_CLASS_SEARCHABLE_KEY = 
 		"searchable";
 
+
+	/**
+	 * Key to details of EAnnotation with source of 
+	 * {@link EssentialProgModelExtendedSemanticsConstants#ANNOTATION_CLASS} whose presence 
+	 * indicates that the annotated class has an abbreviation. 
+	 */
+	public static final String ANNOTATION_ABBREVIATED_KEY = 
+		"abbreviated";
+
 	/**
 	 * If present in the details of an EAnnotation with source of
 	 * {@link #ANNOTATION_CLASS}, then indicates whether all attributes of 

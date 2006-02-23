@@ -40,9 +40,9 @@ public abstract class AbstractLouisDefinition implements ILouisDefinition {
 		getDomainDefinition().registerClasses();
 
 		for(IDomainBuilder secondaryBuilder: _secondaryBuilders) {
-			Domain.instance(getDomainDefinition().getDomainName()).addBuilder(secondaryBuilder); 
+			Domain.instance(getDomainDefinition().getName()).addBuilder(secondaryBuilder); 
 		}
-		Domain.instance(getDomainDefinition().getDomainName()).done();	
+		Domain.instance(getDomainDefinition().getName()).done();	
 
 	}
 	
@@ -103,10 +103,10 @@ public abstract class AbstractLouisDefinition implements ILouisDefinition {
 	
 	
 	/*
-	 * @see org.essentialplatform.runtime.shared.domain.IDomainDefinition#getDomainName()
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainDefinition#getName()
 	 */
-	public final String getDomainName() {
-		return getDomainDefinition().getDomainName();
+	public final String getName() {
+		return getDomainDefinition().getName();
 	}
 	/*
 	 * @see org.essentialplatform.runtime.shared.domain.IDomainDefinition#getDomainBuilder()

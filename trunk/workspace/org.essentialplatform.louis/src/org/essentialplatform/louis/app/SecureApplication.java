@@ -55,7 +55,7 @@ public final class SecureApplication extends AbstractSimpleLifecycle implements 
 	 * Provided by {@link Bootstrap}.
 	 */
 	public void init(String objectStoreName) {
-		_sessionBinding = new SessionBinding(_domainDefinition.getDomainName(), objectStoreName);
+		_sessionBinding = new SessionBinding(_domainDefinition.getName(), objectStoreName);
 	}
 
 	private SessionBinding _sessionBinding;
