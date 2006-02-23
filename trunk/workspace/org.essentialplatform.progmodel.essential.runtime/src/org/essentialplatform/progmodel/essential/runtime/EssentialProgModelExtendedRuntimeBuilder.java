@@ -10,7 +10,9 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EParameter;
 import org.eclipse.emf.ecore.EReference;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.builders.IClassLoader;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.progmodel.essential.app.Abbreviated;
 import org.essentialplatform.progmodel.essential.app.BusinessKey;
 import org.essentialplatform.progmodel.essential.app.FieldLengthOf;
 import org.essentialplatform.progmodel.essential.app.Id;
@@ -56,6 +58,10 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 		// Saveable (File>Save)
 		Lifecycle lifecycle = javaClass.getAnnotation(Lifecycle.class);
 		serializer.setClassLifecycle(eClass, lifecycle);
+
+		// Abbreviated
+		Abbreviated abbreviated = javaClass.getAnnotation(Abbreviated.class);
+		serializer.setAbbreviation(eClass, abbreviated);
 
 		for(IDomainClass.IAttribute iAttribute: domainClass.iAttributes()) {
 			EAttribute eAttribute = iAttribute.getEAttribute();
@@ -185,6 +191,17 @@ class EssentialProgModelExtendedRuntimeBuilder implements IDomainBuilder {
 	 */
 	public void identifyOppositeReferencesFor(IDomainClass domainClass) {
 		// does nothing		
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////
+	// ClassLoader
+	// (either dependency injected, or propagated by composite). 
+	////////////////////////////////////////////////////////////////////////
+
+	private IClassLoader _classLoader;
+	public void setClassLoader(IClassLoader classLoader) {
+		_classLoader = classLoader;
 	}
 
 }

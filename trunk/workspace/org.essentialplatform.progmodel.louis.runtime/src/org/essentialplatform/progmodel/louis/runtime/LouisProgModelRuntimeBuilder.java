@@ -2,6 +2,7 @@ package org.essentialplatform.progmodel.louis.runtime;
 
 import org.eclipse.emf.ecore.EClass;
 import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.core.domain.builders.IClassLoader;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.progmodel.louis.app.ImageUrlAt;
 import org.essentialplatform.progmodel.louis.core.domain.LouisDomainClass;
@@ -48,4 +49,16 @@ public class LouisProgModelRuntimeBuilder implements IDomainBuilder {
 	public void identifyOppositeReferencesFor(IDomainClass domainClass) {
 		// does nothing
 	}
+	
+	////////////////////////////////////////////////////////////////////////
+	// ClassLoader
+	// (either dependency injected, or propagated by composite). 
+	////////////////////////////////////////////////////////////////////////
+
+	private IClassLoader _classLoader;
+	public void setClassLoader(IClassLoader classLoader) {
+		_classLoader = classLoader;
+	}
+
+
 }

@@ -20,6 +20,7 @@ import org.essentialplatform.core.domain.IDomain;
 import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.core.domain.LinkSemanticsType;
 import org.essentialplatform.core.domain.DomainClass.OppRefState;
+import org.essentialplatform.core.domain.builders.IClassLoader;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
 import org.essentialplatform.core.emf.Emf;
 import org.essentialplatform.core.util.MethodNameHelper;
@@ -41,6 +42,7 @@ import org.essentialplatform.progmodel.essential.core.emf.EssentialProgModelStan
 import org.essentialplatform.progmodel.essential.core.util.EssentialProgModelStandardSemanticsRules;
 import org.essentialplatform.progmodel.essential.core.util.JavaRules;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
+import org.osgi.framework.Bundle;
 
 /**
  * Builds standard domain model.
@@ -675,6 +677,18 @@ final class EssentialProgModelStandardRuntimeBuilder implements IDomainBuilder{
 
 	public void identifyOppositeReferencesFor(IDomainClass domainClass) {
 		new OppositeReferencesIdentifier((DomainClass)domainClass).identify();		
+	}
+
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	// ClassLoader
+	// (either dependency injected, or propagated by composite). 
+	////////////////////////////////////////////////////////////////////////
+
+	private IClassLoader _classLoader;
+	public void setClassLoader(IClassLoader classLoader) {
+		_classLoader = classLoader;
 	}
 
 }
