@@ -36,6 +36,7 @@ public class ActiveMqRemotingServer extends AbstractServer implements IRemotingS
 		System.setProperty("activemq.store.dir", System.getProperty("java.io.tmpdir"));
 	}
 
+	private boolean _dependenciesInjected = false;
 	public void dependenciesInjected() {
 		if (_destinationCleaner != null) {
 			_destinationCleaner.setBrokerUrl(getBindAddress());
@@ -43,7 +44,7 @@ public class ActiveMqRemotingServer extends AbstractServer implements IRemotingS
 			_destinationCleaner.setMessageReceiveTimeout(DESTINATION_CLEANER_TIMEOUT);
 			_destinationCleaner.setTransacted(TRANSACTED);
 		}
-		
+		_dependenciesInjected = true;
 	}
 	
     ////////////////////////////////////////////////////////////
@@ -64,7 +65,11 @@ public class ActiveMqRemotingServer extends AbstractServer implements IRemotingS
 
     @Override
 	public boolean doStart() {
-		ActiveMqBrokerWrapper brokerWrapper;
+    	if (!_dependenciesInjected) {
+    		throw new IllegalStateException("Dependencies not injected.");
+    	}
+
+    	ActiveMqBrokerWrapper brokerWrapper;
 		try {
 			brokerWrapper = new ActiveMqBrokerWrapper(this);
 		} catch (JMSException ex) {
@@ -203,7 +208,7 @@ public class ActiveMqRemotingServer extends AbstractServer implements IRemotingS
      * Marshalling mechanism to use.  
      * 
      * <p>
-     * Can be dependency injected (see {@link #setMarshalling(IMarshalling)}), 
+     * Optional; can be dependency injected (see {@link #setMarshalling(IMarshalling)}), 
      * but will default to using {@link XStreamMarshalling}.
      */
 	public void setMarshalling(IMarshalling marshalling) {
@@ -241,12 +246,12 @@ public class ActiveMqRemotingServer extends AbstractServer implements IRemotingS
     // DestinationCleaner (injected)
     ////////////////////////////////////////////////////////////
 
-    private DestinationCleaner _destinationCleaner;
+    private DestinationCleaner _destinationCleaner = new DestinationCleaner();
     public DestinationCleaner getDestinationCleaner() {
 		return _destinationCleaner;
 	}
     /**
-     * For depedency injection.
+     * For dependency injection.
      * 
      * <p>
      * Optional; if specified then will be auto-configured with same queue

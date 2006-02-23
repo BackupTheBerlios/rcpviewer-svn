@@ -46,12 +46,18 @@ public class HibernateServerSessionFactory
 	@Override
 	public SessionBinding init() {
 		_configuration.setProperties(getHibernateProperties());
-		_configuration.setProperty("hibernate.connection.url", getDatabaseServer().getUrl());
-		_configuration.setProperty("hibernate.connection.username", getDatabaseServer().getUser());
-		_configuration.setProperty("hibernate.connection.password", getDatabaseServer().getPassword());
-		_configuration.setProperty("hibernate.connection.driver_class", getDatabaseServer().getDriverClassName());
+		setConfigurationProperty("hibernate.connection.url", getDatabaseServer().getUrl());
+		setConfigurationProperty("hibernate.connection.username", getDatabaseServer().getUser());
+		setConfigurationProperty("hibernate.connection.password", getDatabaseServer().getPassword());
+		setConfigurationProperty("hibernate.connection.driver_class", getDatabaseServer().getDriverClassName());
 		SessionBinding sessionBinding = super.init();
 		return sessionBinding;
+	}
+	private void setConfigurationProperty(final String propertyKey, final String propertyValue) {
+		if (propertyValue == null) {
+			return;
+		}
+		_configuration.setProperty(propertyKey, propertyValue);
 	}
 	
 	/**

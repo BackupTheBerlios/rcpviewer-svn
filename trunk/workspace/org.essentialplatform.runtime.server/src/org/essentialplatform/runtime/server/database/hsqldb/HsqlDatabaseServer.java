@@ -8,6 +8,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.server.AbstractServer;
 import org.essentialplatform.runtime.server.database.IDatabaseServer;
+import org.essentialplatform.runtime.shared.persistence.PersistenceConstants;
 import org.hsqldb.Server;
 import org.hsqldb.ServerConstants;
 
@@ -153,20 +154,35 @@ public class HsqlDatabaseServer extends AbstractServer implements IDatabaseServe
 	// DatabaseName (dependency injected/directed configuration)
 	////////////////////////////////////////////////////////////////////
 
-	public static final String DEFAULT_DATABASE_NAME = "essential";
+	public static final String DEFAULT_DATABASE_NAME = PersistenceConstants.DEFAULT_OBJECT_STORE_ID;
 
 	private String _databaseName = DEFAULT_DATABASE_NAME;
 	public String getDatabaseName() {
 		return _databaseName;
 	}
 	/**
-	 * For dependency injection, or direction configuration.
+	 * For dependency injection.
 	 * 
 	 * <p>
 	 * Optional; defaults to {@link #DEFAULT_DATABASE_NAME}.  Updates the
 	 * HSQLDB properties to change the database name that HSQLDB will make 
 	 * available when it is started.
 	 * 
+	 * @see #init(String)
+	 * @param databaseName
+	 */
+	public void setDatabaseName(String databaseName) {
+		_databaseName = databaseName;
+	}
+	/**
+	 * For direction configuration.
+	 * 
+	 * <p>
+	 * Optional; defaults to {@link #DEFAULT_DATABASE_NAME}.  Updates the
+	 * HSQLDB properties to change the database name that HSQLDB will make 
+	 * available when it is started.
+	 * 
+	 * @see #setDatabaseName(String)
 	 * @param databaseName
 	 */
 	public void init(String databaseName) {

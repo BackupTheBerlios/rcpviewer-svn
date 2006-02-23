@@ -6,6 +6,7 @@ import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.handle.DelegatingHandleMap;
 import org.essentialplatform.runtime.shared.persistence.IPersistable.PersistState;
 import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState;
 import org.essentialplatform.runtime.shared.remoting.packaging.IUnpackager;

@@ -98,6 +98,11 @@
 	<bean id="hibernateTransactionProcessor" 
 		class="org.essentialplatform.runtime.server.remoting.xactnprocessor.hibernate.HibernateTransactionProcessor">
 		<property name="objectStoreRouting" ref="objectStoreRouting"/>
+		<property name="unpackager" ref="standardUnpackager"/>
+	</bean>
+
+	<bean id="standardUnpackager" 
+		class="org.essentialplatform.runtime.shared.remoting.packaging.standard.StandardUnpackager">
 	</bean>
 
 	<bean id="hsqlDatabaseServer" 

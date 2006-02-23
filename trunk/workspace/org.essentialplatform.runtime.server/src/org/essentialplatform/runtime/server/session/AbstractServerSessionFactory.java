@@ -18,7 +18,7 @@ public abstract class AbstractServerSessionFactory<V extends IServerSession> imp
 	 * @see org.essentialplatform.runtime.server.session.IServerSessionFactory#init()
 	 */
 	public SessionBinding init() {
-		String domainName = getDomainDefinition().getDomainName();
+		String domainName = getDomainDefinition().getName();
 		String objectStoreName = getDatabaseServer().getDatabaseName();
 
 		_sessionBinding = new SessionBinding(domainName, objectStoreName);

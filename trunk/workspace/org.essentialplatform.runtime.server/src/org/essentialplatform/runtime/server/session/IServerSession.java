@@ -39,6 +39,10 @@ public interface IServerSession extends IHandleMap {
 	 * pojo, or will update an already persistent object.
 	 * 
 	 * <p>
+	 * If any id attributes are modified, then the Handle will be automatically
+	 * updated. 
+	 * 
+	 * <p>
 	 * Modelled after Hibernate.
 	 * 
 	 * @see #save(IDomainObject)

@@ -4,8 +4,10 @@ import java.util.Map;
 
 import org.essentialplatform.core.domain.Domain;
 import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.runtime.client.remoting.packaging.IPackager;
 import org.essentialplatform.runtime.server.session.IServerSessionFactory;
 import org.essentialplatform.runtime.shared.remoting.packaging.ITransactionPackage;
+import org.essentialplatform.runtime.shared.remoting.packaging.IUnpackager;
 import org.essentialplatform.runtime.shared.session.ObjectStoreRefList;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
@@ -21,20 +23,35 @@ public abstract class AbstractTransactionProcessor implements ITransactionProces
 		// does nothing
 	}
 
+
+	//////////////////////////////////////////////////////////////////
+	// IPackager
+	//////////////////////////////////////////////////////////////////
 	
+	private IUnpackager unpackager;
+	public IUnpackager getUnpackager() {
+		return unpackager;
+	}
+	public void setUnpackager(IUnpackager unpackager) {
+		this.unpackager = unpackager;
+	}
+
 
 	//////////////////////////////////////////////////////////////////
 	// ObjectStoreRouting
 	//////////////////////////////////////////////////////////////////
 	
-	private ObjectStoreRouting _objectStoreRouting;
+	private ObjectStoreRouting _objectStoreRouting = new ObjectStoreRouting();
 	public ObjectStoreRouting getObjectStoreRouting() {
 		return _objectStoreRouting;
 	}
 	/**
 	 * For dependency injection.
 	 * 
-	 * @param objectStoreListByDomain
+	 * <p>
+	 * Optional; defaults to a vanilla {@link ObjectStoreRouting}.
+	 * 
+	 * @param objectStoreRouting
 	 */
 	public void setObjectStoreRouting(ObjectStoreRouting objectStoreRouting) {
 		_objectStoreRouting = objectStoreRouting;
