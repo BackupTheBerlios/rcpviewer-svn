@@ -28,7 +28,7 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
 public abstract class AbstractRuntimeClientTestCase extends AbstractRuntimeSharedTestCase {
 
 	public AbstractRuntimeClientTestCase() {
-		super(null);
+		super();
 	}
 
 	public AbstractRuntimeClientTestCase(IDomainBuilder domainBuilder) {
@@ -52,8 +52,12 @@ public abstract class AbstractRuntimeClientTestCase extends AbstractRuntimeShare
 		transactionManager = TransactionManager.instance();
 	}
 
+	/**
+	 * Requires domainBuilder to have been specified (defaults to
+	 * {@link EssentialProgModelRuntimeBuilder}.
+	 */
 	protected IBinding getBinding() {
-		return new RuntimeClientBinding().initPrimaryBuilder(new EssentialProgModelRuntimeBuilder());
+		return new RuntimeClientBinding().initPrimaryBuilder(getDomainBuilder());
 	}
 
 

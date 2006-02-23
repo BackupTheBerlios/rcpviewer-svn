@@ -11,8 +11,12 @@ import org.essentialplatform.runtime.client.domain.bindings.RuntimeClientBinding
 
 public abstract class AbstractRuntimeSharedTestCase extends AbstractTestCase {
 
+	/**
+	 * Defaults the domain builder to {@link EssentialProgModelRuntimeBuilder}.
+	 *
+	 */
 	public AbstractRuntimeSharedTestCase() {
-		super(null);
+		this(new EssentialProgModelRuntimeBuilder());
 	}
 
 	public AbstractRuntimeSharedTestCase(IDomainBuilder domainBuilder) {
