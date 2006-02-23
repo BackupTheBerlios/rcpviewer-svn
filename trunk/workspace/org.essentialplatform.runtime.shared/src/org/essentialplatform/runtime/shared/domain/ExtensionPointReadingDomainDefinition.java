@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.essentialplatform.core.domain.Domain;
+import org.osgi.framework.Bundle;
 
 /**
  * An implementation of {@link IDomainDefinition} whose properties are defaulted
@@ -59,6 +60,37 @@ public final class ExtensionPointReadingDomainDefinition extends AbstractDomainD
 	public static final String DOMAIN_CLASS_EXTENSION_POINT = "org.essentialplatform.runtime.shared.domainclass";  //$NON-NLS-1$
 	public static final String CLASS_PROPERTY = "class"; //$NON-NLS-1$
 
+	
+
+	//////////////////////////////////////////////////////////////////////
+	// Initialization
+	// Bundle
+	////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Invoked by {@link org.essentialplatform.louis.Bootstrap}.
+	 */
+	public void setBundle(Bundle bundle) {
+		_bundle = bundle;
+	}
+
+	private Bundle _bundle;
+	/**
+	 * The (Eclipse) bundle representing the domain plugin.
+	 *
+	 * <p>
+	 * As per {@link #setBundle(Bundle)}.
+	 *
+	 * <p>
+	 * Set by Essential itself (rather than through Spring, say), primarily
+	 * to assist in the verification of domain classes (so that it can use 
+	 * the appropriate <tt>ClassLoader</tt>).
+	 */
+	public Bundle getBundle() {
+		return _bundle;
+	}
+
+	
 	
 
 	@Override

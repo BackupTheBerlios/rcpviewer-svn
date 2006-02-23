@@ -36,40 +36,55 @@ public interface IResolvable {
 	public enum ResolveState {
 		
 		/**
-		 * State of a feature is unknown; this state only applies while an
-		 * object is initially being created; it is used by transaction
-		 * aspects to ensure that objects being created are ignored. 
+		 * Feature is in process of being modified, either while it is being
+		 * deserialized (client- or server-side) or while it is being persisted
+		 * by the objectstore.
+		 * 
+		 * <p>
+		 * Transaction aspects use this to ensure that objects being created 
+		 * are ignored.
+		 * 
+		 * <p>
+		 * Implementation note: the Hibernate objectstore in particular will 
+		 * potentially modify an object even as it is being saved.  One reason 
+		 * why this can occur is setting up identifiers.
 		 */
-		UNKNOWN("Unknown"),
+		UPDATING("Updating", "U"),
 		/**
 		 * State of a feature that has previously been persisted but not yet 
 		 * been retrieved; this feature cannot be accessed. 
 		 */
-		UNRESOLVED("Unresolved"),
+		UNRESOLVED("Unresolved", "U"),
 		/**
 		 * State of a feature that has previously been persisted and has now 
 		 * been retrieved; this feature can be accessed. 
 		 */
-		RESOLVED("Resolved"),
+		RESOLVED("Resolved", "R"),
 		;
-		private final String _name;
 		
-		private ResolveState(final String name) {
+		private ResolveState(final String name, final String abbreviation) {
 			_name = name;
+			_abbreviation = abbreviation;
 		}
 		
+		private final String _name;
 		public String getName() {
 			return _name;
 		}
-		
+
+		private final String _abbreviation;
+		public String getAbbreviation() {
+			return _abbreviation;
+		}
+
 		/**
-		 * Whether this state represents an {@link IResolvable} whose
-		 * resolve state is unknown or at least not yet specified.
+		 * Whether this state represents an {@link IResolvable} that is
+		 * in the process of being updated.
 		 * 
 		 * @return
 		 */
-		public boolean isUnknown() {
-			return this == UNKNOWN;
+		public boolean isUpdating() {
+			return this == UPDATING;
 		}
 		
 		/**
@@ -97,6 +112,7 @@ public interface IResolvable {
 		public String toString() {
 			return getName();
 		}
+
 	}
 	
 	/**
@@ -118,7 +134,7 @@ public interface IResolvable {
 	 * <p>
 	 * Preconditions:
 	 * <ul>
-	 * <li> state of UNRESOLVED
+	 * <li> state of UPDATING
 	 * </ul>
 	 * 
 	 * <p>

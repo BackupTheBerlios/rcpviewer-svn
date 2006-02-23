@@ -32,7 +32,7 @@ public aspect TransactionInvokeOperationAspect extends InteractionsAspect {
 	
 	protected pointcut transactionalChange(IPojo pojo): 
 		invokeOperationOnPojo(pojo) &&
-		if(canBeEnlisted(pojo)) &&
+		if(canBeInteractedWith(pojo)) &&
 		!cflowbelow(invokeOperationOnPojo(IPojo)) ; 
 
 	/**

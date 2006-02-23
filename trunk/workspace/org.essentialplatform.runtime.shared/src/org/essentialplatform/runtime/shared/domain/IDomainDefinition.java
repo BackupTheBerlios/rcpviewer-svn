@@ -21,14 +21,14 @@ public interface IDomainDefinition  {
 	 * 
 	 * @return
 	 */
-	String getDomainName();
+	String getName();
 
 	/**
 	 * The (runtime) implementation of a {@link IDomainBuilder} which is
 	 * capable of building a domain out of the registered classes.
 	 * 
 	 * <p>
-	 * Implementations are expected to provide a corresponding setter such that
+	 * A typical implementations would provide a corresponding setter so that
 	 * this value might be injected. 
 	 *   
 	 * @return

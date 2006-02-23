@@ -21,46 +21,15 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	protected abstract Logger getLogger(); 
 
 
-	//////////////////////////////////////////////////////////////////////
-	// Initialization
-	// Bundle
-	////////////////////////////////////////////////////////////////////
-
-
-	/**
-	 * Invoked by {@link org.essentialplatform.louis.Bootstrap}.
-	 */
-	public void setBundle(Bundle bundle) {
-		_bundle = bundle;
-	}
-
-	private Bundle _bundle;
-	/**
-	 * The (Eclipse) bundle representing the domain plugin.
-	 *
-	 * <p>
-	 * As per {@link #setBundle(Bundle)}.
-	 *
-	 * <p>
-	 * Set by Essential itself (rather than through Spring, say), primarily
-	 * to assist in the verification of domain classes (so that it can use 
-	 * the appropriate <tt>ClassLoader</tt>).
-	 */
-	public Bundle getBundle() {
-		return _bundle;
-	}
-
-	
-	
 	////////////////////////////////////////////////////////////////////
 	// Name (injected)
 	////////////////////////////////////////////////////////////////////
 
 	private String _name;
 	/*
-	 * @see org.essentialplatform.louis.app.IDomainDefinition#getName()
+	 * @see org.essentialplatform.louis.app.IDomainDefinition#getDomainName()
 	 */
-	public String getDomainName() {
+	public String getName() {
 		return _name;
 	}
 	/**
@@ -95,7 +64,7 @@ public abstract class AbstractDomainDefinition implements IDomainDefinition {
 	 * <p>
 	 * Mandatory; there is no default 
 	 * (eg <tt>EssentialProgModelRuntimeBuilder</tt>) to prevent circular 
-	 * dependencies.  However, the LouisDefinition may well define transitively.
+	 * dependencies between plugins.
 	 * 
 	 * @param domainBuilder
 	 */

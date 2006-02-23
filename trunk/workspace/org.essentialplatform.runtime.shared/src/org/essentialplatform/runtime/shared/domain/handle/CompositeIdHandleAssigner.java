@@ -38,7 +38,7 @@ public final class CompositeIdHandleAssigner extends AbstractHandleAssigner {
 	protected <T> Handle doGenerateHandleFor(IDomainObject<T> domainObject) {
 		assert _domainClass == domainObject.getDomainClass();
 		cacheIdAttributesIfRequired();
-		Handle handle = new Handle(_javaClass);
+		Handle handle = new Handle(_javaClass).updateAbbreviation(_domainClass.getAbbreviation());
 		for(IAttribute idAttribute: _idAttributes) {
 			Object attributeValue = domainObject.getAttribute(idAttribute).get();
 			handle.addComponentValue(attributeValue);

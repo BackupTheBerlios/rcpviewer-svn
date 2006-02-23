@@ -45,13 +45,11 @@ public privileged abstract aspect InteractionsAspect {
 
 	
 	/**
-	 * Whether the pojo can be enlisted in a transaction.
+	 * Whether the pojo can be interacted with.
 	 * 
 	 * <p>
 	 * Has been moved up from (the now-defunct) TransactionAspect since isn't 
-	 * really to do with transactions and saves us having to have a 
-	 * transactionalXxx version of each of the pointcuts defined in 
-	 * InteractionsAspect. 
+	 * really to do with transactions. 
 	 * 
 	 * <p>
 	 * We mustn't attempt to enlist a pojo that is being constructed.  The
@@ -59,13 +57,13 @@ public privileged abstract aspect InteractionsAspect {
 	 * persistence state and its resolve state at the end of its constructor.
 	 * We will ignore objects whose state is not yet fully specified.
 	 */
-	protected static boolean canBeEnlisted(final IPojo pojo) {
+	protected static boolean canBeInteractedWith(final IPojo pojo) {
 		IDomainObject domainObject = pojo._domainObject;
 		if (domainObject == null) {
 			return false;
 		}
 		return domainObject.getResolveState() != null &&
-		       !domainObject.getResolveState().isUnknown() &&
+		       !domainObject.getResolveState().isUpdating() &&
 		       domainObject.getPersistState() != null &&
 		       !domainObject.getPersistState().isUnknown();
 	}
@@ -111,7 +109,8 @@ public privileged abstract aspect InteractionsAspect {
 	protected pointcut invokeSetterForAttributeOnPojo(IPojo pojo, Object postValue): 
 		execution(public void IPojo+.set*(*)) && 
 		this(pojo) && 
-		args(postValue);
+		args(postValue) &&
+		if(canBeInteractedWith(pojo));
 	
 	
 	/**
@@ -127,7 +126,8 @@ public privileged abstract aspect InteractionsAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeGetterForOneToOneReferenceOnPojo(IPojo pojo): 
-		execution(public IPojo+ IPojo+.get*()) && this(pojo);
+		execution(public IPojo+ IPojo+.get*()) && 
+		this(pojo);
 	
 	
 	/**
@@ -149,7 +149,8 @@ public privileged abstract aspect InteractionsAspect {
 	protected pointcut invokeSetterForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObjectOrNull): 
 		execution(public void IPojo+.set*(IPojo+)) && 
 		this(pojo) && 
-		args(newReferencedObjectOrNull);
+		args(newReferencedObjectOrNull) &&
+		if(canBeInteractedWith(pojo));
 
 	
 	/**
@@ -165,7 +166,11 @@ public privileged abstract aspect InteractionsAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeAssociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo newReferencedObject): 
-		execution(public void IPojo+.associate*(IPojo+)) && this(pojo) && args(newReferencedObject);
+		execution(public void IPojo+.associate*(IPojo+)) && 
+		this(pojo) && 
+		args(newReferencedObject) &&
+		if(canBeInteractedWith(pojo));
+
 	
 	
 	/**
@@ -181,7 +186,10 @@ public privileged abstract aspect InteractionsAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeDissociatorForOneToOneReferenceOnPojo(IPojo pojo, IPojo existingReferencedObject): 
-		execution(public void IPojo+.dissociate*(IPojo+)) && this(pojo) && args(existingReferencedObject);
+		execution(public void IPojo+.dissociate*(IPojo+)) && 
+		this(pojo) && 
+		args(existingReferencedObject) &&
+		if(canBeInteractedWith(pojo));
 	
 	/**
 	 * Captures the invocation of any addTo method for adding objects to an
@@ -200,7 +208,10 @@ public privileged abstract aspect InteractionsAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeAddToCollectionOnPojo(IPojo pojo, IPojo addedObj): 
-		execution(void IPojo+.addTo*(IPojo+)) && this(pojo) && args(addedObj);
+		execution(void IPojo+.addTo*(IPojo+)) && 
+		this(pojo) && 
+		args(addedObj) &&
+		if(canBeInteractedWith(pojo));
 	
 	
 	/**
@@ -215,7 +226,10 @@ public privileged abstract aspect InteractionsAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut invokeRemoveFromCollectionOnPojo(IPojo pojo, IPojo removedObj): 
-		execution(void IPojo+.removeFrom*(IPojo+)) && this(pojo) && args(removedObj);
+		execution(void IPojo+.removeFrom*(IPojo+)) && 
+		this(pojo) && 
+		args(removedObj) &&
+		if(canBeInteractedWith(pojo));
 	
 
 	/**
@@ -232,7 +246,8 @@ public privileged abstract aspect InteractionsAspect {
 		!execution(public IDomainObject IPojo+.getDomainObject()) && 
 		!execution(public IPrerequisites IPojo+.*Pre(..)) && 
 		!execution(public * Object.*()) && 
-		this(pojo);
+		this(pojo) &&
+		if(canBeInteractedWith(pojo));
 	
 
 	/**
@@ -256,7 +271,7 @@ public privileged abstract aspect InteractionsAspect {
 		set((!IPojo+ && !java.util.Collection+) IPojo+.*)  &&
 		args(postValue) && 
 		this(pojo) && 
-		if(canBeEnlisted(pojo)); 
+		if(canBeInteractedWith(pojo));
 
 	
 
@@ -281,7 +296,7 @@ public privileged abstract aspect InteractionsAspect {
 		set(IPojo+ IPojo+.*) && 
 		this(pojo) && 
 		args(referencedObjectOrNull) &&
-		if(canBeEnlisted(pojo));
+		if(canBeInteractedWith(pojo));
 
 	
 
@@ -306,7 +321,7 @@ public privileged abstract aspect InteractionsAspect {
 		this(pojo)  && 
 		target(collection)  && 
 		!within(java.util..*)  &&
-		if(canBeEnlisted(pojo));
+		if(canBeInteractedWith(pojo));
 
 
 
@@ -329,8 +344,8 @@ public privileged abstract aspect InteractionsAspect {
 		args(removedObj) && 
 		this(pojo) && 
 		target(collection) && 
-		!within(java.util..*) &&
-		if(canBeEnlisted(pojo));
+		!within(java.util..*)  &&
+		if(canBeInteractedWith(pojo));
 
 
 	/**
@@ -340,7 +355,9 @@ public privileged abstract aspect InteractionsAspect {
 	 * Protected so that sub-aspects can use.
 	 */
 	protected pointcut instantiatingPojo(IPojo pojo): 
-		execution(public IPojo+.new(..)) && this(pojo);
+		execution(public IPojo+.new(..)) && 
+		this(pojo) &&
+		if(canBeInteractedWith(pojo));
 
 	
 	/**
@@ -351,7 +368,7 @@ public privileged abstract aspect InteractionsAspect {
 	 */
 	protected pointcut deletingPojoUsingDeleteMethod(IPojo pojo): 
 		execution(public void IPojo+.delete()) && 
-		this(pojo) && 
-		if(canBeEnlisted(pojo));
+		this(pojo) &&
+		if(canBeInteractedWith(pojo));
 
 }

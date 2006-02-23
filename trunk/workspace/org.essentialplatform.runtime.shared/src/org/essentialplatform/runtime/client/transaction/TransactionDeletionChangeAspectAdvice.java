@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.client.transaction.changes.DeletionChange;
 import org.essentialplatform.runtime.client.transaction.changes.IChange;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 
 class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
@@ -38,7 +39,7 @@ class TransactionDeletionChangeAspectAdvice extends TransactionAspectAdvice {
 	}
 
 	/**
-	 * Creates an AttributeChange to wrap a change to the attribute, adding it
+	 * Creates a DeletionChange to wrap the delete, adding it
 	 * to the current transaction.
 	 *  
 	 * <p>

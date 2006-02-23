@@ -65,6 +65,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public DomainObject(final T pojo) {
 		this._pojo = pojo;
+		updateCachedToString();
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -191,7 +192,20 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public void assignHandle(Handle persistenceId) {
 		_handle = persistenceId;
+		updateCachedToString();
 	}
+
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.IDomainObject#updateHandle(java.lang.Object[])
+	 */
+	public void updateHandle(Object[] updatedValues) {
+		if (getHandle() == null) {
+			throw new IllegalStateException("A handle has not yet been assigned.");
+		}
+		getHandle().update(updatedValues);
+		updateCachedToString();
+	}
+	
 
 
 	//////////////////////////////////////////////////////////////////////////
@@ -245,7 +259,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	// ResolveState (inherit IResolvable) 
 	//////////////////////////////////////////////////////////////////////////
 
-	private ResolveState _resolveState = ResolveState.UNKNOWN;
+	private ResolveState _resolveState = ResolveState.UPDATING;
 
 	/*
 	 * @see org.essentialplatform.session.IResolvable#getResolveState()
@@ -258,7 +272,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 * @see org.essentialplatform.session.IResolvable#nowResolved()
 	 */
 	public void nowResolved() {
-		checkInState(ResolveState.UNRESOLVED);
 		_resolveState = ResolveState.RESOLVED;
 	}
 
@@ -887,9 +900,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Initialization methods 
-	// TODO: need to move to client-side bindings
 	//////////////////////////////////////////////////////////////////////////
-	
 
 	/**
 	 * Only to be called by {@link IDomainClassRuntimeBinding#newInstance(SessionBinding, PersistState, ResolveState)}.
@@ -903,7 +914,37 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		_resolveState = resolveState;
 		_runtimeClassBinding = runtimeClassBinding;
 		_runtimeBinding = _runtimeClassBinding.getObjectBinding(this);
+		updateCachedToString();
 	}
 
-	
+
+	//////////////////////////////////////////////////////////////////////////
+	// toString 
+	//////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Will be set to false if de-serialized.
+	 */
+	private transient boolean _cachedToStringOk;
+
+	private String _cachedToString;
+	public String toString() {
+		if (!_cachedToStringOk) {
+			updateCachedToString();
+		}
+		return _cachedToString; 
+	}
+
+	private void updateCachedToString() {
+		_cachedToString = 
+			"DO[" + 
+			(getPersistState() != null? getPersistState().getAbbreviation(): "?") + 
+			(getResolveState() != null? getResolveState().getAbbreviation(): "?") + 
+			"]" +
+			(getHandle() != null? getHandle().asString(): "H:NULL"); 
+
+	    _cachedToStringOk = true;
+	}
+
+
 }

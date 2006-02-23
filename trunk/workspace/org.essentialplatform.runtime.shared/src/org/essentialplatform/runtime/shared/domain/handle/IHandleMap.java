@@ -51,7 +51,7 @@ public interface IHandleMap {
 	 * 
 	 * <p>
 	 * TODO: suspect that the implementation will need to ensure that the
-	 * pojo is connected to the correct session (and so cannot actually be
+	 * pojo is connected to the correct session.
 	 *  
 	 * 
 	 * @param handle

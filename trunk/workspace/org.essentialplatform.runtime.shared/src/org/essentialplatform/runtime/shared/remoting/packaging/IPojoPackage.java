@@ -24,6 +24,10 @@ public interface IPojoPackage extends ISessionBindingPackage, IHandlePackage {
 
 	/**
 	 * The {@link ResolveState} of the pojo packaged within.
+	 * 
+	 * <p>
+	 * The resolve state is only relevant client-side, not server-side.  On
+	 * the server it will always be unpacked as {@link ResolveState#UPDATING}.
 	 */
 	ResolveState unpackResolveState();
 }

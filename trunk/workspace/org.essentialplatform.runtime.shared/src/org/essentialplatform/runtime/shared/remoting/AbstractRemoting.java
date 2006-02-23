@@ -16,7 +16,10 @@ public abstract class AbstractRemoting implements IRemoting {
 		return _marshalling;
 	}
 	/**
-	 * Dependency injection.
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Optional; if not specified then defaults to {@link XStreamMarshalling}.
 	 * 
 	 * @param marshalling
 	 */
@@ -38,7 +41,10 @@ public abstract class AbstractRemoting implements IRemoting {
 		return _transport;
 	}
 	/**
-	 * Dependency injection.
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Mandatory.
 	 * 
 	 * @param transport
 	 */

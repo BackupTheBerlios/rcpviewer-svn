@@ -18,11 +18,19 @@ public final class ClientRemoting extends AbstractRemoting {
 	}
 
 
-
 	/*
 	 * @see org.essentialplatform.runtime.shared.remoting.IRemoting#start()
 	 */
 	public void start() {
+		if (getMarshalling() == null) {
+			throw new IllegalStateException("Marshalling is required.");
+		}
+		if (getTransport() == null) {
+			throw new IllegalStateException("Transport is required.");
+		}
+		if (getPackager() == null) {
+			throw new IllegalStateException("Packager is required.");
+		}
 		getTransport().start();
 	}
 
@@ -38,6 +46,14 @@ public final class ClientRemoting extends AbstractRemoting {
 	public IPackager getPackager() {
 		return _packager;
 	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Optional; if not specified then defaults to {@link StandardPackager}.
+	 * 
+	 * @param packager
+	 */
 	public void setPackager(IPackager packager) {
 		_packager = packager;
 	}

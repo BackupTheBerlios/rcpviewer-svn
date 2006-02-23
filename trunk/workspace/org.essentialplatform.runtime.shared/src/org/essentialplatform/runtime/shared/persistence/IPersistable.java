@@ -20,7 +20,7 @@ public interface IPersistable {
 		 * object is initially being created; it is used by transaction
 		 * aspects to ensure that objects being created are ignored. 
 		 */
-		UNKNOWN("Unknown"),
+		UNKNOWN("Unknown", "U"),
 		/**
 		 * Not persisted, either because it has just been created or 
 		 * alternatively was persisted but has now been deleted.
@@ -30,23 +30,28 @@ public interface IPersistable {
 		 * persistent object store (isn't a row in a database table, for
 		 * example).
 		 */
-		TRANSIENT("Transient"),
+		TRANSIENT("Transient", "T"),
 		/**
 		 * Persisted in the persistent object store.
 		 */
-		PERSISTED("Persisted"),
+		PERSISTED("Persisted", "P"),
 		;
 
-		private final String _name;
-		
-		private PersistState(final String name) {
+		private PersistState(final String name, final String abbreviation) {
 			_name = name;
+			_abbreviation = abbreviation;
 		}
 		
+		private final String _name;
 		public String getName() {
 			return _name;
 		}
-		
+
+		private final String _abbreviation;
+		public String getAbbreviation() {
+			return _abbreviation;
+		}
+
 		/**
 		 * Whether this state represents an {@link IPersistable} whose
 		 * persistence state is unknown or at least not yet specified.
@@ -83,6 +88,7 @@ public interface IPersistable {
 		public String toString() {
 			return getName();
 		}
+
 	}
 	
 	/**

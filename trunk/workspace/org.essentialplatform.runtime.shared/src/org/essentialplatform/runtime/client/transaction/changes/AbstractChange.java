@@ -182,7 +182,7 @@ public abstract class AbstractChange implements IChange {
 			}
 		}
 		Object retval = doExecute();
-
+		
 		notifyListeners(true);
 		_initiatingPojoDomainObjectBinding.externalStateChanged();
 

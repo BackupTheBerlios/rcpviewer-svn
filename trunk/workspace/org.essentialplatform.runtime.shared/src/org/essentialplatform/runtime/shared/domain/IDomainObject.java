@@ -193,6 +193,19 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 */
 	public void assignHandle(Handle handle);
 
+
+	/**
+	 * Updates the current handle.
+	 * 
+	 * <p>
+	 * This is done through the domain object so that it can update its own
+	 * state if necessary (even if, trivially, this means just its cached
+	 * toString).
+	 * 
+	 * @param updatedValues
+	 */
+	public void updateHandle(Object[] updatedValues);
+
 	
 	/**
 	 * Whether this object has been persisted.

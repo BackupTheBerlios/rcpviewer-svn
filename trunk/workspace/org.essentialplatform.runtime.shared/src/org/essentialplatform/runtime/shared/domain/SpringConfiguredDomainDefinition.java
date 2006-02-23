@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.essentialplatform.core.domain.builders.IClassLoader;
 import org.essentialplatform.core.domain.builders.IDomainBuilder;
+import org.essentialplatform.runtime.shared.domain.builders.BundleElseStandardClassLoader;
 import org.osgi.framework.Bundle;
 
 /**
@@ -54,6 +56,41 @@ public class SpringConfiguredDomainDefinition extends AbstractDomainDefinition {
 	}
 
 	
+	//////////////////////////////////////////////////////////////////////
+	// Initialization
+	// Bundle
+	////////////////////////////////////////////////////////////////////
+
+	private Bundle _bundle;
+	/**
+	 * The (Eclipse) bundle representing the domain plugin.
+	 *
+	 * <p>
+	 * To assist in the loading of domain classes (so that it can use 
+	 * the appropriate <tt>ClassLoader</tt>).
+	 */
+	public Bundle getBundle() {
+		return _bundle;
+	}
+	/**
+	 * For dependency injection.
+	 * 
+	 * <p>
+	 * Optional, but if not specified then class loading will be attempted 
+	 * using {@link Class#forName(java.lang.String)} rather than
+	 * {@link Bundle#loadClass(java.lang.String)}.
+	 * 
+	 * <p>
+	 * Implementation notes: propagates to a reference to 
+	 * {@link BundleElseStandardClassLoader} that actually does the loading.
+	 */
+	public void setBundle(Bundle bundle) {
+		_bundle = bundle;
+		_classLoader.setBundle(bundle);
+	}
+
+	
+
 	///////////////////////////////////////////////////////////////////////
 	// Classes
 	// (or rather, the names of classes).
@@ -90,6 +127,11 @@ public class SpringConfiguredDomainDefinition extends AbstractDomainDefinition {
 	///////////////////////////////////////////////////////////////////////
 	
 
+	private BundleElseStandardClassLoader _classLoader = new BundleElseStandardClassLoader();
+	
+	/**
+	 * Uses the bundle if provided, else falls back to {@link Class#forName(java.lang.String)}.
+	 */
 	@Override
 	public void doRegisterClasses() throws DomainBootstrapException {
 		
@@ -97,16 +139,8 @@ public class SpringConfiguredDomainDefinition extends AbstractDomainDefinition {
 
 		// check each className represents a no-arg instantiable class ...
 		for (String className: _classNames) {
-			Class<?> javaClass;
-			try {
-				javaClass = getBundle().loadClass(className);
-				classes.add(javaClass);
-			} catch (ClassNotFoundException ex) {
-				String msg = String.format(
-						"Bundle#loadClass(\"%s\") failed", className);   //$NON-NLS-1$
-				getLogger().error(msg);
-				throw new DomainRegistryException(msg, ex);
-			}
+			Class<?> javaClass = _classLoader.loadClass(className);
+			classes.add(javaClass);
 		}
 		
 		// ... then add to domain

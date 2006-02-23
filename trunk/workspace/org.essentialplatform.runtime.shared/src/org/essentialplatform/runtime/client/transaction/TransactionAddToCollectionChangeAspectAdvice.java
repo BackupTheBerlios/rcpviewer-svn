@@ -26,7 +26,6 @@ class TransactionAddToCollectionChangeAspectAdvice extends TransactionAspectAdvi
 	 */
 	Object around$invokeAddToCollectionOnPojo(
 			IPojo pojo, IPojo addedObject, JoinPoint.StaticPart thisJoinPointStaticPart, Callable proceed) {
-
 		getLogger().debug("invokeAddToCollectionOnPojo(pojo=" + pojo+"): start");
 		boolean transactionOnThread = ThreadLocals.hasTransactionForThread();
 		ITransaction transaction = TransactionManager.instance().getCurrentTransactionFor(pojo);

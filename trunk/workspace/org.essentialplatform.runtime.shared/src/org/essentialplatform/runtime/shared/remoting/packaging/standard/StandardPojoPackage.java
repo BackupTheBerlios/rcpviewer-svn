@@ -62,6 +62,7 @@ public final class StandardPojoPackage implements IPojoPackage {
 	public void packPersistState(PersistState persistState) {
 		_persistState = persistState;
 	}
+	
 	/*
 	 * @see org.essentialplatform.runtime.shared.remoting.packaging.IPojoPackage#unpackPersistState()
 	 */
@@ -231,4 +232,15 @@ public final class StandardPojoPackage implements IPojoPackage {
 		return map;
 	}
 
+
+	/////////////////////////////////////////////////////////////////////////
+	// toString
+	/////////////////////////////////////////////////////////////////////////
+
+	public String toString() {
+		if (_handle != null) {
+			return _handle.toString();
+		}
+		return super.toString();
+	}
 }

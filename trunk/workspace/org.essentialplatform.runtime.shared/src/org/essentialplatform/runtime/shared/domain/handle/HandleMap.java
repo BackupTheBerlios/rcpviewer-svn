@@ -108,7 +108,7 @@ public final class HandleMap implements IHandleMap {
 				_handlesByDomainObject.put(domainObject, handleFromDomainObject);
 				return true;
 			} else {
-				throw new IllegalStateException("Located (handle, domainObject but not (domainObject, handle); " +
+				throw new IllegalStateException("Located (handle, domainObject) but not (domainObject, handle); " +
 						"domainObject = '" + domainObject + "', handle = '" + handleFromDomainObject + "'");
 			}
 		} else {

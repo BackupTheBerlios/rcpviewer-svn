@@ -72,7 +72,7 @@ abstract class TransactionAspectAdvice extends AbstractAspectAdvice {
 			return false;
 		}
 		return domainObject.getResolveState() != null &&
-		       !domainObject.getResolveState().isUnknown() &&
+		       !domainObject.getResolveState().isUpdating() &&
 		       domainObject.getPersistState() != null &&
 		       !domainObject.getPersistState().isUnknown();
 	}

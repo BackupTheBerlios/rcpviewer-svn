@@ -37,24 +37,60 @@ import java.util.List;
  */
 public final class Handle {
 
-	private Class _javaClass;
-	private List<Object> _componentValues = new ArrayList<Object>();
 	
+
 	/**
 	 * Convenience constructor for when the components of the Id are known.
 	 * 
-	 * @param javaClass
-	 * @param componentValues - the values of each of the components of this Id.
+	 * @param javaClass       - as per {@link #getJavaClass()}
+	 * @param abbreviation    - as per {@link #getAbbreviation()}.
+	 * @param componentValues - as per {@link #getComponentValues()}.
 	 */
 	public Handle(final Class javaClass, final Object... componentValues) {
 		_javaClass = javaClass;
 		addComponentValues(componentValues);
 	}
+
 	
+	///////////////////////////////////////////////////////////////////////
+	// JavaClass
+	///////////////////////////////////////////////////////////////////////
+
+	private Class _javaClass;
 	public Class getJavaClass() {
 		return _javaClass;
 	}
 
+	
+	///////////////////////////////////////////////////////////////////////
+	// Abbreviation
+	///////////////////////////////////////////////////////////////////////
+
+	private String _abbreviation;
+	/**
+	 * Shortened (and expected to be unique) version of the java Class name.
+	 * 
+	 * <p>
+	 * For example, <tt>DPT</tt> for <tt>Department</tt>, <tt>EMP</tt> for 
+	 * <tt>Employee</tt>.
+	 *  
+	 * @return
+	 */
+	public String getAbbreviation() {
+		return _abbreviation;
+	}
+	public Handle updateAbbreviation(String abbreviation) {
+		_abbreviation = abbreviation;
+		updateCachedHashCodeAndToString();
+		return this;
+	}
+	
+
+	///////////////////////////////////////////////////////////////////////
+	// ComponentValues
+	///////////////////////////////////////////////////////////////////////
+	
+	private List<Object> _componentValues = new ArrayList<Object>();
 	/**
 	 * Adds the value of one or several of the components of this handle.
 	 * 
@@ -64,6 +100,7 @@ public final class Handle {
 		for(Object componentValue: componentValues) {
 			addComponentValue(componentValue);
 		}
+		_cachedHashCodeAndToStringOk = false;
 	}
 	
 	/**
@@ -94,6 +131,12 @@ public final class Handle {
 		return _componentValues.toArray();
 	}
 
+	
+	///////////////////////////////////////////////////////////////////////
+	// update, hasPrevious
+	///////////////////////////////////////////////////////////////////////
+
+
 	/**
 	 * Updates the handle with a new set of values (assuming that they
 	 * are different).
@@ -120,6 +163,11 @@ public final class Handle {
 	 * values, then the {@link #addComponentValue(Object)} method can be called
 	 * (as many times as required) to build up the new values of the handle.
 	 * 
+	 * <p>
+	 * <b>If the handle is being used as a key within a hash, then it should
+	 * be removed prior to calling this method.  This is because the {@link #hashCode} result
+	 * will (almost certainly) change as a result of making this call.</b>
+	 * 
 	 * @param componentValues
 	 */
 	public void update(final Object... componentValues) {
@@ -130,10 +178,11 @@ public final class Handle {
 		if (pending.equals(this)) {
 			return;
 		}
-		_previous = new Handle(_javaClass, _componentValues.toArray());
+		_previous = new Handle(_javaClass, _componentValues.toArray()).updateAbbreviation(getAbbreviation());
 		_componentValues.clear();
 		addComponentValues(componentValues);
 	}
+	
 	
 	private Handle _previous;
 	/**
@@ -154,7 +203,13 @@ public final class Handle {
 	public boolean hasPrevious() {
 		return getPrevious() != null;
 	}
+
 	
+	
+	///////////////////////////////////////////////////////////////////////
+	// equals, hashCode, toString
+	///////////////////////////////////////////////////////////////////////
+
 	@Override
 	public boolean equals(final Object other) {
 		if (!(other instanceof Handle)) { return false; }
@@ -174,23 +229,80 @@ public final class Handle {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * TODO: currently uses just the hashCode of the first component value.
+	 * Will be set to false if de-serialized.
 	 */
+	private transient boolean _cachedHashCodeAndToStringOk;
+	private transient int _cachedHashCode;
 	@Override
 	public int hashCode() {
-		if (_componentValues.size() == 0) { return 0; }
-		return _componentValues.get(0).hashCode();
+		if (!_cachedHashCodeAndToStringOk) {
+			updateCachedHashCodeAndToString();
+		}
+		return _cachedHashCode;
 	}
+	private void updateCachedHashCodeAndToString() {
+	    final int hashMultiplier = 41;
+	    int result = 7;
+		for (Object componentValue: _componentValues) {
+			result = result * hashMultiplier + componentValue.hashCode();
+		}
+	    _cachedHashCode = result;
+	    
+		StringBuffer buf = new StringBuffer();
+		buf.append(getAbbreviation())
+		   .append("|");
+		append(buf, _componentValues);
+
+		_cachedAsString = buf.toString();
+		
+		if (hasPrevious()) {
+			buf.append("<<");
+			append(buf, _previous._componentValues);
+		}
+		_cachedToString = "H:" + _cachedAsString;
+
+	    _cachedHashCodeAndToStringOk = true;
+	}
+	private void append(StringBuffer buf, List<Object> values) {
+		int i=0;
+		for (Object value: values) {
+			buf.append(value);
+			if (++i < values.size()) {
+				buf.append("|");
+			}
+		}
+	}
+
 	
+	private transient String _cachedAsString;
+	/**
+	 * In format <tt>ORD|123|456</tt> (eg Order identified by (123,456)).
+	 * 
+	 * @return
+	 */
+	public String asString() {
+		if (!_cachedHashCodeAndToStringOk) {
+			updateCachedHashCodeAndToString();
+		}
+		return _cachedAsString;
+	}
+
+	private transient String _cachedToString;
+	/**
+	 * In format <tt>ORD|123|456&lt;&lt;6523-A234-801F-123B</tt>  (eg Order identified by 
+	 * (123,456)), where the content after the <tt>&lt;&lt;</tt> is the 
+	 * previous value of the hashcode, if any.
+	 * 
+	 * @return
+	 */
 	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer("ID: ");
-		buf.append(getJavaClass().getSimpleName())
-		   .append(" ")
-		   .append(_componentValues);
-		return buf.toString();
+		if (!_cachedHashCodeAndToStringOk) {
+			updateCachedHashCodeAndToString();
+		}
+		return _cachedToString;
 	}
 	
 }

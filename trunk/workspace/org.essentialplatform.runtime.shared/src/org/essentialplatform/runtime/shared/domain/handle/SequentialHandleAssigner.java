@@ -3,6 +3,7 @@ package org.essentialplatform.runtime.shared.domain.handle;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.essentialplatform.core.domain.IDomainClass.IAttribute;
 import org.essentialplatform.runtime.shared.domain.Handle;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
@@ -52,7 +53,7 @@ public final class SequentialHandleAssigner extends AbstractHandleAssigner {
 			}
 			lastNumber[0]++;
 		}
-		return new Handle(objectClass, new Integer(lastNumber[0]));
+		return new Handle(objectClass, new Integer(lastNumber[0])).updateAbbreviation(domainObject.getDomainClass().getAbbreviation());
 	}
 
 }

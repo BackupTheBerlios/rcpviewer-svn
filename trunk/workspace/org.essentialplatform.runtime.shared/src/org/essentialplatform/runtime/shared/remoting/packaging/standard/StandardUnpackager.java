@@ -53,8 +53,10 @@ public class StandardUnpackager extends AbstractUnpackager {
 		ResolveState resolveState = pojoPackage.unpackResolveState();
 
 		Handle handle = pojoPackage.unpackHandle();
+		domainObject.assignHandle(handle);
 		Class<?> javaClass = handle.getJavaClass();
-		IDomainClass dc = Domain.lookupAny(javaClass);
+		Domain domain = Domain.instance(sessionBinding.getDomainName());
+		IDomainClass dc = domain.lookup(javaClass);
 		
 		// update state (this is a merge if the dObj already existed).
 		for(IAttribute iAttrib: dc.iAttributes()) {

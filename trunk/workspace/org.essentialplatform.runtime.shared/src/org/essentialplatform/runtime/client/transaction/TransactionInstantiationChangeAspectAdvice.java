@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.essentialplatform.runtime.client.transaction.changes.IChange;
 import org.essentialplatform.runtime.client.transaction.changes.InstantiationChange;
+import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IPojo;
 
 class TransactionInstantiationChangeAspectAdvice extends TransactionAspectAdvice {
@@ -47,6 +48,9 @@ class TransactionInstantiationChangeAspectAdvice extends TransactionAspectAdvice
 	 * advices are applied. 
 	 */
 	Object around$creatingOrRecreatingPojo(IPojo pojo) {
+
+		// no guard required, because only fires for IClientSession
+
 		getLogger().debug("creatingOrRecreatingPojo(pojo=" + pojo+"): start");
 		ITransaction transaction = currentTransaction(pojo);
 		IChange change = new InstantiationChange(transaction, pojo);
