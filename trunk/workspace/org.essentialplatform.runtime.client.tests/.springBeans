@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beansProjectDescription>
+	<configs>
+		<config>src/org/essentialplatform/runtime/client/tests/spring-context-client.xml</config>
+		<config>src/org/essentialplatform/runtime/client/tests/spring-context-server.xml</config>
+	</configs>
+	<configSets>
+	</configSets>
+</beansProjectDescription>
