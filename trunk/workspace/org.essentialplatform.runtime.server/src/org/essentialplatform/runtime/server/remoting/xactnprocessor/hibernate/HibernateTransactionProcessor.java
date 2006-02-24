@@ -63,6 +63,7 @@ public final class HibernateTransactionProcessor extends AbstractTransactionProc
 
 		for(IServerSession session: openedSessions.values()) {
 			List<IDomainObject> modifiedObjects = modifiedObjectsBySession.get(session);
+			session.nowPersisting();
 			for(IDomainObject modifiedDO: modifiedObjects) {
 				session.saveOrUpdate(modifiedDO); // don't need to distinguish whether was PersistState transient or not
 			}

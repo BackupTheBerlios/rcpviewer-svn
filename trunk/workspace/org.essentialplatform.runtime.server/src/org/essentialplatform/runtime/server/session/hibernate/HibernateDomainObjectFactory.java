@@ -47,7 +47,9 @@ public class HibernateDomainObjectFactory implements IDomainObjectFactory {
 		Class javaClass = handle.getJavaClass();
 		Domain domain = Domain.instance(_sessionBinding.getDomainName());
 		IDomainClass domainClass = domain.lookup(javaClass);
-		return createDomainObject(domainClass);
+		IDomainObject<T> domainObject = createDomainObject(domainClass);
+		domainObject.assignHandle(handle);
+		return domainObject;
 	}
 
 	/*
@@ -79,7 +81,7 @@ public class HibernateDomainObjectFactory implements IDomainObjectFactory {
 	 * @see org.essentialplatform.runtime.shared.domain.handle.IDomainObjectFactory#getInitialResolveState()
 	 */
 	public ResolveState getInitialResolveState() {
-		return ResolveState.UPDATING;
+		return ResolveState.MUTATING;
 	}
 
 }

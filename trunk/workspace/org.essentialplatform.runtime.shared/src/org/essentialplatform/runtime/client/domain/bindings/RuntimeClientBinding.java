@@ -31,6 +31,7 @@ import org.essentialplatform.runtime.client.domain.event.IDomainObjectOperationL
 import org.essentialplatform.runtime.client.domain.event.IDomainObjectReferenceListener;
 import org.essentialplatform.runtime.client.session.IClientSession;
 import org.essentialplatform.runtime.shared.AbstractRuntimeBinding;
+import org.essentialplatform.runtime.shared.domain.ICachesToString;
 import org.essentialplatform.runtime.shared.domain.IDomainObject;
 import org.essentialplatform.runtime.shared.domain.IObservedFeature;
 import org.essentialplatform.runtime.shared.domain.IDomainObject.IObjectAttribute;
@@ -524,6 +525,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 		}
 
 	}
+	
 
 	private abstract class AbstractObjectReferenceClientBinding implements IObservedFeature {
 
@@ -536,6 +538,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 				IReferenceClientBinding runtimeClassBinding) {
 			_objectReference = operationReference;
 			_runtimeClassBinding = runtimeClassBinding;
+			addListener(new CachesToStringNotifier(_objectReference));
 		}
 
 		// ////////////////////////////////////////////////////////////////////////
@@ -772,8 +775,7 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 		public RuntimeClientCollectionReferenceBinding(
 				IDomainClass.ICollectionReference collectionReference) {
 			super(collectionReference);
-			_delegateBinding = new DelegateRuntimeClientReferenceBinding(
-					collectionReference);
+			_delegateBinding = new DelegateRuntimeClientReferenceBinding(collectionReference);
 		}
 
 		/*
@@ -1305,6 +1307,36 @@ public final class RuntimeClientBinding extends AbstractRuntimeBinding {
 					"prerequisites", method);
 			_logger.error(formattedMessage, ex);
 			throw new UnsupportedOperationException(formattedMessage);
+		}
+	}
+
+	/**
+	 * Attribute and reference bindings install an instance of this simple
+	 * class as a listener to notify their respective attribute/reference when 
+	 * the value contained within has changed.
+	 */
+	class CachesToStringNotifier implements IDomainObjectReferenceListener, IDomainObjectAttributeListener {
+		private final ICachesToString _cachesToString;
+		CachesToStringNotifier(final ICachesToString cachesToString) {
+			_cachesToString = cachesToString;
+		}
+		public void collectionAddedTo(DomainObjectReferenceEvent event) {
+			_cachesToString.updateCachedToString();
+		}
+		public void collectionRemovedFrom(DomainObjectReferenceEvent event) {
+			_cachesToString.updateCachedToString();
+		}
+		public void referenceChanged(DomainObjectReferenceEvent event) {
+			_cachesToString.updateCachedToString();
+		}
+		public void referencePrerequisitesChanged(ExtendedDomainObjectReferenceEvent event) {
+			_cachesToString.updateCachedToString();
+		}
+		public void attributeChanged(DomainObjectAttributeEvent event) {
+			_cachesToString.updateCachedToString();
+		}
+		public void attributePrerequisitesChanged(ExtendedDomainObjectAttributeEvent event) {
+			_cachesToString.updateCachedToString();
 		}
 	}
 

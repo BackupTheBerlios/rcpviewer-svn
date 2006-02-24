@@ -44,7 +44,7 @@ import org.essentialplatform.runtime.shared.session.SessionBinding;
  * 
  * @author Dan Haywood
  */
-public interface IDomainObject<T> extends IResolvable, IPersistable {
+public interface IDomainObject<T> extends IResolvable, IPersistable, ICachesToString {
 
 	/**
 	 * TODO: made public for packager functionality, but need to sort out the
@@ -443,7 +443,7 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	 * </ul>
 	 * 
 	 */
-	public interface IObjectReference extends IResolvable, IObjectMember {
+	public interface IObjectReference extends IResolvable, IObjectMember, ICachesToString  {
 
 		/**
 		 * The owning {@link IDomainObject} for this representation of an
@@ -514,11 +514,13 @@ public interface IDomainObject<T> extends IResolvable, IPersistable {
 	public interface IObjectCollectionReference extends IObjectReference {
 
 		/**
-		 * Returns the contents of this representation of a collection of the
-		 * domain object.
+		 * Returns the contents of this representation of a 
+		 * collection of the domain object.
 		 * 
 		 * <p>
-		 * The returned collection is immutable.
+		 * The returned collection is immutable; think of it as a snapshot of
+		 * the collection at a point in time, expressed in terms of {@link IDomainObject}s
+		 * rather than pojos.
 		 * 
 		 * @param reference
 		 * @return

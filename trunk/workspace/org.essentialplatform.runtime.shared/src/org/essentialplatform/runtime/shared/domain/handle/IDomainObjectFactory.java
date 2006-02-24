@@ -18,7 +18,8 @@ public interface IDomainObjectFactory {
 
 
 	/**
-	 * Create a domain object for the supplied handle.
+	 * Create a domain object for the supplied handle (assigning the handle
+	 * to the newly created domain object, per {@link IDomainObject#assignHandle(Handle)}.
 	 * 
 	 * @param domainClass
 	 * @return

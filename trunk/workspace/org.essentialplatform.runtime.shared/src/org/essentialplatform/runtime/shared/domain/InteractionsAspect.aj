@@ -63,7 +63,7 @@ public privileged abstract aspect InteractionsAspect {
 			return false;
 		}
 		return domainObject.getResolveState() != null &&
-		       !domainObject.getResolveState().isUpdating() &&
+		       !domainObject.getResolveState().isMutating() &&
 		       domainObject.getPersistState() != null &&
 		       !domainObject.getPersistState().isUnknown();
 	}

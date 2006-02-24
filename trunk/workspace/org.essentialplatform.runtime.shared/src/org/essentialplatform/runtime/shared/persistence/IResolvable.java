@@ -49,7 +49,7 @@ public interface IResolvable {
 		 * potentially modify an object even as it is being saved.  One reason 
 		 * why this can occur is setting up identifiers.
 		 */
-		UPDATING("Updating", "U"),
+		MUTATING("Mutating", "M"),
 		/**
 		 * State of a feature that has previously been persisted but not yet 
 		 * been retrieved; this feature cannot be accessed. 
@@ -79,12 +79,12 @@ public interface IResolvable {
 
 		/**
 		 * Whether this state represents an {@link IResolvable} that is
-		 * in the process of being updated.
+		 * in the process of being modified.
 		 * 
 		 * @return
 		 */
-		public boolean isUpdating() {
-			return this == UPDATING;
+		public boolean isMutating() {
+			return this == MUTATING;
 		}
 		
 		/**
@@ -134,7 +134,7 @@ public interface IResolvable {
 	 * <p>
 	 * Preconditions:
 	 * <ul>
-	 * <li> state of UPDATING
+	 * <li> state of MUTATING
 	 * </ul>
 	 * 
 	 * <p>

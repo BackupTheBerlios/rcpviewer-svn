@@ -71,4 +71,10 @@ public interface IServerSession extends IHandleMap {
 	public void close();
 
 
+	/**
+	 * Switch to persisting mode.
+	 */
+	public void nowPersisting();
+
+
 }

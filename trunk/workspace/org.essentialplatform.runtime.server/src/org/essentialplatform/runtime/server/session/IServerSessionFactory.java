@@ -29,6 +29,13 @@ public interface IServerSessionFactory<V extends IServerSession> extends IObject
 	 */
 	public <V> void addClass(Class<V> javaClass);
 		
+	/**
+	 * Creates a new {@link IServerSession} to process a request (eg apply
+	 * a set of changes, or perform a repository query and return its
+	 * results).
+	 * 
+	 * @return
+	 */
 	public V open();
 
 }

@@ -91,5 +91,10 @@ public final class NoopServerSession extends AbstractServerSession {
 		return Collections.EMPTY_SET;
 	}
 
+	public void nowPersisting() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

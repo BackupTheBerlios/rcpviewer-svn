@@ -30,6 +30,8 @@ import org.essentialplatform.runtime.shared.domain.bindings.IAttributeRuntimeBin
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainClassRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IDomainObjectRuntimeBinding;
 import org.essentialplatform.runtime.shared.domain.bindings.IObjectAttributeRuntimeBinding;
+import org.essentialplatform.runtime.shared.persistence.IPersistable;
+import org.essentialplatform.runtime.shared.persistence.IResolvable;
 import org.essentialplatform.runtime.shared.session.SessionBinding;
 
 /**
@@ -65,7 +67,8 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public DomainObject(final T pojo) {
 		this._pojo = pojo;
-		updateCachedToString();
+		_cachedToStringOk = false; // forces cache to be recalculated next time
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -192,7 +195,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	 */
 	public void assignHandle(Handle persistenceId) {
 		_handle = persistenceId;
-		updateCachedToString();
+		_cachedToStringOk = false; // forces cache to be recalculated next time
 	}
 
 	/*
@@ -203,7 +206,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			throw new IllegalStateException("A handle has not yet been assigned.");
 		}
 		getHandle().update(updatedValues);
-		updateCachedToString();
+		_cachedToStringOk = false; // forces cache to be recalculated next time
 	}
 	
 
@@ -259,7 +262,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	// ResolveState (inherit IResolvable) 
 	//////////////////////////////////////////////////////////////////////////
 
-	private ResolveState _resolveState = ResolveState.UPDATING;
+	private ResolveState _resolveState = ResolveState.MUTATING;
 
 	/*
 	 * @see org.essentialplatform.session.IResolvable#getResolveState()
@@ -580,15 +583,54 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		//////////////////////////////////////////////////////////////////////////
 		// toString
 		//////////////////////////////////////////////////////////////////////////
-		
+
+		private transient boolean _cachedToStringOk;
+		private transient String _cachedToString;
+
+		/**
+		 * In format <tt>AT:CUS|123#firstName</tt>
+		 * 
+		 * <p>
+		 * where <tt>AT</tt> indicates an attribute. 
+		 */
 		@Override
 		public String toString() {
-			return getAttribute().toString();
+			updateCachedToStringIfRequired();
+			return _cachedToString;
 		}
 
+		// TODO: make implement ICachesToString
+//		/*
+//		 * @see org.essentialplatform.runtime.shared.domain.ICachesToString#updateCachedToString()
+//		 */
+//		public void updateCachedToString() {
+//			_cachedToStringOk = false; // forces cache to be recalculated next time
+//		}
+
+
+		private void updateCachedToStringIfRequired() {
+			if (_cachedToStringOk) return;
+			StringBuilder buf = 
+				new StringBuilder("AT:")
+			   .append(getDomainObject().getHandle().asString())
+			   .append("#")
+			   .append(_attribute.getName());
+//			   .append(" {");
+//			Object value = get();
+//			if (value != null) {
+//				buf.append(value.toString());
+//			} else {
+//				buf.append("NULL");
+//			}
+//			buf.append("}");
+			_cachedToString = buf.toString(); 
+			_cachedToStringOk = true;
+		}
+		
+		
 	}
 
-	private class ObjectReference implements IDomainObject.IObjectReference {
+	private abstract class ObjectReference implements IDomainObject.IObjectReference {
 
 		//////////////////////////////////////////////////////////////////////////
 		// Constructor 
@@ -666,15 +708,6 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		}
 
 
-		//////////////////////////////////////////////////////////////////////////
-		// toString
-		//////////////////////////////////////////////////////////////////////////
-
-		@Override
-		public String toString() {
-			return _eReference.toString();
-		}
-
 	}
 
 	private class ObjectOneToOneReference extends ObjectReference implements
@@ -742,6 +775,56 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			}
 		}
 
+
+		//////////////////////////////////////////////////////////////////////////
+		// toString
+		//////////////////////////////////////////////////////////////////////////
+
+		private transient boolean _cachedToStringOk;
+		private transient String _cachedToString;
+		/**
+		 * In format <tt>SR:CUS|123#region[R] {REG|654}</tt>
+		 * 
+		 * <p>
+		 * where <tt>SR</tt> indicates a <i>simple</i> (or single) reference, 
+		 * and <tt>[R]</tt> indicates resolved etc.
+		 */
+		@Override
+		public String toString() {
+			updateCachedToStringIfRequired();
+			return _cachedToString;
+		}
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.ICachesToString#updateCachedToString()
+		 */
+		public void updateCachedToString() {
+			_cachedToStringOk = false; // forces cache to be recalculated next time
+		}
+
+		void updateCachedToStringIfRequired() {
+			if (_cachedToStringOk) return;
+			StringBuilder buf = 
+				new StringBuilder("CR:")
+			   .append(getDomainObject().getHandle().asString())
+			   .append("#")
+			   .append(_reference.getName())
+			   .append("[")
+			   .append(resolveStateAbbr(this))
+			   .append("]")
+			   .append(":{");
+			IDomainObject<Object> referencedDO = get();
+			if (referencedDO != null) {
+				buf.append(referencedDO.getHandle().asString());
+			} else {
+				buf.append("null");
+			}
+			buf.append("}");
+			
+			_cachedToString = buf.toString(); 
+			_cachedToStringOk = true;
+		}
+
+
 	}
 
 	private class ObjectCollectionReference extends ObjectReference implements
@@ -789,11 +872,12 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		// getCollection, addToCollection, removeFromCollection
 		//////////////////////////////////////////////////////////////////////////
 
+		/**
+		 * Returns
+		 */
 		public <V> Collection<IDomainObject<V>> getCollection() {
-			Collection<IPojo> pojoCollection = 
-				(Collection<IPojo>) _runtimeClassBinding.invokeAccessor(getPojo());
 			Collection<IDomainObject<V>> collection = new ArrayList<IDomainObject<V>>();
-			for(IPojo pojo: pojoCollection) {
+			for(IPojo pojo: pojoCollection()) {
 				collection.add(pojo.domainObject());
 			}
 			return Collections.unmodifiableCollection(collection);
@@ -803,11 +887,11 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		 * @see org.essentialplatform.session.IDomainObject.IObjectCollectionReference#addToCollection(org.essentialplatform.session.IDomainObject)
 		 */
 		public <Q> void addToCollection(IDomainObject<Q> domainObject) {
-			assert _collectionReference.getReferencedDomainClass() == domainObject
-					.getDomainClass();
+			assert _collectionReference.getReferencedDomainClass() == domainObject.getDomainClass();
 			assert _eReference.isChangeable();
 			_runtimeClassBinding.invokeAssociator(getPojo(), domainObject.getPojo());
 			getBinding().addedToCollection();
+			_cachedToStringOk = false; // TODO: this isn't good enough, we really need to invalidate the cached toString in the aspect
 		}
 
 		/*
@@ -819,8 +903,62 @@ public final class DomainObject<T> implements IDomainObject<T> {
 			assert _eReference.isChangeable();
 			_runtimeClassBinding.invokeDissociator(getPojo(), domainObject.getPojo());
 			getBinding().removedFromCollection();
+			_cachedToStringOk = false; // TODO: this isn't good enough, we really need to invalidate the cached toString in the aspect
 		}
 
+		private Collection<IPojo> pojoCollection() {
+			Collection<IPojo> pojoCollection = 
+				(Collection<IPojo>) _runtimeClassBinding.invokeAccessor(getPojo());
+			return pojoCollection;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		// toString
+		//////////////////////////////////////////////////////////////////////////
+
+		private transient boolean _cachedToStringOk;
+		private transient String _cachedToString;
+		/**
+		 * In format <tt>CR:CUS|123#orders[R] sz=5:{ORD|123|1,ORD|123|2,...}</tt>
+		 * 
+		 * <p>
+		 * where <tt>CR</tt> indicates a <i>collection</i> (or single) reference, 
+		 * and <tt>[R]</tt> indicates resolved etc.
+		 */
+		@Override
+		public String toString() {
+			updateCachedToStringIfRequired();
+			return _cachedToString;
+		}
+		/*
+		 * @see org.essentialplatform.runtime.shared.domain.ICachesToString#updateCachedToString()
+		 */
+		public void updateCachedToString() {
+			_cachedToStringOk = false; // forces cache to be recalculated next time
+		}
+		
+		private void updateCachedToStringIfRequired() {
+			if (_cachedToStringOk) return;
+			StringBuilder buf = 
+				new StringBuilder("CR:")
+			   .append(getDomainObject().getHandle().asString())
+			   .append("#")
+			   .append(_reference.getName())
+			   .append("[")
+			   .append(resolveStateAbbr(this))
+			   .append("]")
+			   .append(" sz=")
+			   .append(pojoCollection().size())
+			   .append(":{");
+			for(IPojo pojo: pojoCollection()) {
+				buf.append(pojo.domainObject().toString())
+				   .append(",");
+			}
+			buf.deleteCharAt(buf.length()-1); // remove that last ','
+			buf.append("}");
+			_cachedToString = buf.toString(); 
+			_cachedToStringOk = true;
+		}
 		
 	}
 
@@ -914,7 +1052,7 @@ public final class DomainObject<T> implements IDomainObject<T> {
 		_resolveState = resolveState;
 		_runtimeClassBinding = runtimeClassBinding;
 		_runtimeBinding = _runtimeClassBinding.getObjectBinding(this);
-		updateCachedToString();
+		_cachedToStringOk = false; // forces cache to be recalculated next time
 	}
 
 
@@ -928,23 +1066,48 @@ public final class DomainObject<T> implements IDomainObject<T> {
 	private transient boolean _cachedToStringOk;
 
 	private String _cachedToString;
+	/**
+	 * In format <tt>DO:CUS|123[PR]</tt>
+	 * 
+	 * <p>
+	 * where <tt>CR</tt> indicates a <i>collection</i> (or single) reference, 
+	 * and <tt>[PR]</tt> indicates persistent resolved etc.
+	 */
 	public String toString() {
-		if (!_cachedToStringOk) {
-			updateCachedToString();
-		}
+		updateCachedToStringIfRequired();
 		return _cachedToString; 
 	}
 
-	private void updateCachedToString() {
+	/*
+	 * @see org.essentialplatform.runtime.shared.domain.ICachesToString#updateCachedToString()
+	 */
+	public void updateCachedToString() {
+		_cachedToStringOk = false; // forces cache to be recalculated next time
+	}
+	
+	private void updateCachedToStringIfRequired() {
+		if (_cachedToStringOk) return;
 		_cachedToString = 
-			"DO[" + 
-			(getPersistState() != null? getPersistState().getAbbreviation(): "?") + 
-			(getResolveState() != null? getResolveState().getAbbreviation(): "?") + 
-			"]" +
-			(getHandle() != null? getHandle().asString(): "H:NULL"); 
+			"DO:" + 
+			(getHandle() != null? getHandle().asString(): "NULL") +
+			"[" + 
+			persistStateAbbr(this) +
+			resolveStateAbbr(this) + 
+			"]"; 
 
 	    _cachedToStringOk = true;
 	}
+	
+	private String persistStateAbbr(final IPersistable persistable) {
+		PersistState persistState = persistable.getPersistState();
+		return persistState != null? persistState.getAbbreviation(): "?"; 
+	}
+
+	private String resolveStateAbbr(final IResolvable resolvable) {
+		ResolveState resolveState = resolvable.getResolveState();
+		return resolveState != null? resolveState.getAbbreviation(): "?"; 
+	}
+
 
 
 }

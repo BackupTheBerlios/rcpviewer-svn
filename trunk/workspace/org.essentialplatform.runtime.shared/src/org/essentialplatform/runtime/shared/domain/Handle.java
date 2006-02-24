@@ -81,7 +81,7 @@ public final class Handle {
 	}
 	public Handle updateAbbreviation(String abbreviation) {
 		_abbreviation = abbreviation;
-		updateCachedHashCodeAndToString();
+		updateCachedHashCodeAndToStringIfRequired();
 		return this;
 	}
 	
@@ -237,12 +237,11 @@ public final class Handle {
 	private transient int _cachedHashCode;
 	@Override
 	public int hashCode() {
-		if (!_cachedHashCodeAndToStringOk) {
-			updateCachedHashCodeAndToString();
-		}
+		updateCachedHashCodeAndToStringIfRequired();
 		return _cachedHashCode;
 	}
-	private void updateCachedHashCodeAndToString() {
+	private void updateCachedHashCodeAndToStringIfRequired() {
+		if (_cachedHashCodeAndToStringOk) return;
 	    final int hashMultiplier = 41;
 	    int result = 7;
 		for (Object componentValue: _componentValues) {
@@ -283,9 +282,7 @@ public final class Handle {
 	 * @return
 	 */
 	public String asString() {
-		if (!_cachedHashCodeAndToStringOk) {
-			updateCachedHashCodeAndToString();
-		}
+		updateCachedHashCodeAndToStringIfRequired();
 		return _cachedAsString;
 	}
 
@@ -299,9 +296,7 @@ public final class Handle {
 	 */
 	@Override
 	public String toString() {
-		if (!_cachedHashCodeAndToStringOk) {
-			updateCachedHashCodeAndToString();
-		}
+		updateCachedHashCodeAndToStringIfRequired();
 		return _cachedToString;
 	}
 	

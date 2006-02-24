@@ -31,6 +31,10 @@ import org.essentialplatform.runtime.shared.persistence.IResolvable.ResolveState
  */
 public final class AutoAddingHandleMap extends DelegatingHandleMap {
 
+	public AutoAddingHandleMap(SessionBinding sessionBinding, IDomainObjectFactory domainObjectFactory) {
+		this(new HandleMap(sessionBinding), domainObjectFactory);
+	}
+
 	public AutoAddingHandleMap(IHandleMap delegateHandleMap, IDomainObjectFactory domainObjectFactory) {
 		super(delegateHandleMap);
 		_domainObjectFactory = domainObjectFactory;

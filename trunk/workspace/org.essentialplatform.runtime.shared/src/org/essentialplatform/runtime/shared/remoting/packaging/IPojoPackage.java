@@ -27,7 +27,7 @@ public interface IPojoPackage extends ISessionBindingPackage, IHandlePackage {
 	 * 
 	 * <p>
 	 * The resolve state is only relevant client-side, not server-side.  On
-	 * the server it will always be unpacked as {@link ResolveState#UPDATING}.
+	 * the server it will always be unpacked as {@link ResolveState#MUTATING}.
 	 */
 	ResolveState unpackResolveState();
 }
