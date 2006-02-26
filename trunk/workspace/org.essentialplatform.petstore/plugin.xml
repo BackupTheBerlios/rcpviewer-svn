@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension point="org.essentialplatform.louis.domainclass">
+   <extension point="org.essentialplatform.runtime.shared.domainclass">
    		<impl class="org.essentialplatform.petstore.domain.Customer"/>
    		<impl class="org.essentialplatform.petstore.domain.CustomerOrder"/>
    		<impl class="org.essentialplatform.petstore.domain.Product"/>

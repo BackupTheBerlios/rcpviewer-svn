@@ -1,8 +1,5 @@
-#Fri Feb 24 23:15:27 GMT 2006
+#Sun Feb 26 09:58:38 GMT 2006
 eclipse.preferences.version=1
 org.eclipse.ajdt.ui.aspectPath.contentKind1=BINARY
-org.eclipse.ajdt.ui.aspectPath.contentKind2=BINARY
 org.eclipse.ajdt.ui.aspectPath.entryKind1=LIBRARY
-org.eclipse.ajdt.ui.aspectPath.entryKind2=LIBRARY
 org.eclipse.ajdt.ui.aspectPath1=/org.essentialplatform.runtime.shared/bin
-org.eclipse.ajdt.ui.aspectPath2=/org.essentialplatform.runtime.client/bin
