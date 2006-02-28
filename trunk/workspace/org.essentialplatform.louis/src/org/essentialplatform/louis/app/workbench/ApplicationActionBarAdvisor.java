@@ -2,39 +2,49 @@ package org.essentialplatform.louis.app.workbench;
 
 import java.util.Map;
 
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.essentialplatform.core.domain.IDomain;
+import org.essentialplatform.core.domain.IDomainClass;
 import org.essentialplatform.louis.LouisPlugin;
 import org.essentialplatform.louis.jobs.JobAction;
 import org.essentialplatform.louis.jobs.NewDomainObjectJob;
 import org.essentialplatform.louis.jobs.ReportJob;
-import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 import org.essentialplatform.runtime.shared.RuntimePlugin;
-
-import org.essentialplatform.core.domain.IDomain;
-import org.essentialplatform.core.domain.IDomainClass;
+import org.essentialplatform.runtime.shared.domain.adapters.IDomainRegistry;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
-	public static final String CONTRIBUTION_ITEM_ID = "org.essentialplatform"; //$NON-NLS-1$
-	
-	private static final String ADDITIONS_GROUP_ID = "additions"; //$NON-NLS-1$
+	private IWorkbenchAction save;
+
+	private IWorkbenchAction refresh;
+
+	private IWorkbenchAction close;
+
+	private IWorkbenchAction closeAll;
+
+	private IWorkbenchAction saveAll;
+
+	private IWorkbenchAction quit;
+
+	private IWorkbenchAction preferences;
+
+	private IContributionItem viewMenuEntries;
 
     /**
      * @param configurer
@@ -47,17 +57,43 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
      * @see org.eclipse.ui.application.ActionBarAdvisor#makeActions(org.eclipse.ui.IWorkbenchWindow)
      */
     protected void makeActions(IWorkbenchWindow window) {
-		// only used with FILL_PROXY flag - not default implementation
+	   	save = ActionFactory.SAVE.create(window);
+	   	register(save);
+	   	
+	   	final String pluginID = LouisPlugin.getDefault().getBundle().getSymbolicName();
+	   	refresh = ActionFactory.REFRESH.create(window);
+	   	refresh.setImageDescriptor(
+	   			AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, 
+	   					"/icons/refresh.png" ) ) ; //$NON-NLS-1$
+	   	refresh.setDisabledImageDescriptor( 
+	   			AbstractUIPlugin.imageDescriptorFromPlugin(pluginID,
+	   					"/icons/refresh_disabled.png" ) ) ; //$NON-NLS-1$
+	   	register(refresh);
+	   	
+	   	close = ActionFactory.CLOSE.create(window);
+	   	register(close);
+	   	
+	   	closeAll = ActionFactory.CLOSE_ALL.create(window);
+	   	register(closeAll);
+	   	
+	   	saveAll = ActionFactory.SAVE_ALL.create(window);
+	   	register(saveAll);
+	   	
+	   	quit = ActionFactory.QUIT.create(window);
+	   	register(quit);
+	   	
+	   	preferences = ActionFactory.PREFERENCES.create(window);
+	   	register(preferences);
+	   	
+	   	viewMenuEntries = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.application.ActionBarAdvisor#fillMenuBar(org.eclipse.jface.action.IMenuManager)
      */
     protected void fillMenuBar(IMenuManager menuBar) {
-    	IWorkbenchWindow window
-    		= getActionBarConfigurer().getWindowConfigurer().getWindow();
-		 menuBar.add( createFileMenu( window ) );
-		 menuBar.add( createWindowMenu( window ) );
+		 menuBar.add( createFileMenu() );
+		 menuBar.add( createWindowMenu() );
     }
 	
 	
@@ -69,39 +105,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	protected void fillCoolBar(ICoolBarManager coolBar) {
         ToolBarManager toolBarManager
         	= new ToolBarManager(SWT.HORIZONTAL | SWT.FLAT);
-        toolBarManager.add( new GroupMarker( ADDITIONS_GROUP_ID ));
-
-	 	IWorkbenchWindow window
- 			= getActionBarConfigurer().getWindowConfigurer().getWindow();
-        
-	    // refresh button - standard action but add images.
-	   	IAction refresh = ActionFactory.REFRESH.create(window);
-	   	refresh.setImageDescriptor( 
-	   			AbstractUIPlugin.imageDescriptorFromPlugin(
-	   					LouisPlugin.getDefault().getBundle().getSymbolicName(),
-	   					"/icons/refresh.png" ) ) ; //$NON-NLS-1$
-	   	refresh.setDisabledImageDescriptor( 
-	   			AbstractUIPlugin.imageDescriptorFromPlugin(
-	   					LouisPlugin.getDefault().getBundle().getSymbolicName(),
-	   					"/icons/refresh_disabled.png" ) ) ; //$NON-NLS-1$
-	    ActionContributionItem refreshContributionItem
-	    	= new ActionContributionItem(refresh);
-	    getActionBarConfigurer().registerGlobalAction(refresh);
-	    toolBarManager.prependToGroup( ADDITIONS_GROUP_ID , refreshContributionItem);	    
-	    
-		// save button
-	   	IAction save = ActionFactory.SAVE.create(window);
-	    ActionContributionItem saveContributionItem
-	    	= new ActionContributionItem(save);
-	    getActionBarConfigurer().registerGlobalAction(save);
-	    toolBarManager.prependToGroup( ADDITIONS_GROUP_ID , saveContributionItem);
-	     
-		// additional contribution items
-	    ToolBarContributionItem tbItem
-	    	= new ToolBarContributionItem( toolBarManager, CONTRIBUTION_ITEM_ID );
-	    coolBar.add(tbItem);
+        toolBarManager.add(save);
+        toolBarManager.add(refresh);        
+	    coolBar.add(toolBarManager);
 	}
-	
 	
 
 	/**
@@ -117,8 +124,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	/**
 	 * As it says.
 	 */
-    private MenuManager createFileMenu( IWorkbenchWindow window ) {
-    	assert window != null;
+    private MenuManager createFileMenu() {
         MenuManager menu = new MenuManager(
 				LouisPlugin.getResourceString( "ApplicationActionBarAdvisor.File" ),  //$NON-NLS-1$
 				IWorkbenchActionConstants.M_FILE);
@@ -129,39 +135,30 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 				ActionFactory.NEW.getId());
 	    menu.add(newmenu);
 	    createClassItems( newmenu );
-	    newmenu.add(new GroupMarker("newStart")); //$NON-NLS-1$
-		newmenu.add( ContributionItemFactory.NEW_WIZARD_SHORTLIST.create(window));
-        
-        menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
         menu.add(new Separator());
-        menu.add(ActionFactory.CLOSE.create(window));
-        menu.add(ActionFactory.CLOSE_ALL.create(window));
-        menu.add(new GroupMarker(IWorkbenchActionConstants.CLOSE_EXT));
+        menu.add(close);
+        menu.add(closeAll);
         menu.add(new Separator());
-        menu.add(ActionFactory.SAVE.create(window));
-        menu.add(ActionFactory.SAVE_ALL.create(window));
-        
-        menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        menu.add(ActionFactory.QUIT.create(window));
-        menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
+        menu.add(save);
+        menu.add(saveAll);
+        menu.add(quit);
         return menu;
     }
     
 	/**
 	 * As it says.
 	 */
-    private MenuManager createWindowMenu(IWorkbenchWindow window ) {
-    	assert window != null;
+    private MenuManager createWindowMenu() {
         MenuManager menu = new MenuManager(
 				LouisPlugin.getResourceString( "ApplicationActionBarAdvisor.Window" ),  //$NON-NLS-1$
 				IWorkbenchActionConstants.M_WINDOW );
         MenuManager viewMenu = new MenuManager(
 				LouisPlugin.getResourceString( "ApplicationActionBarAdvisor.ShowView" ),  //$NON-NLS-1$
 				"ApplicationActionBarAdvisor.ShowView" ); //$NON-NLS-1$
+        viewMenu.add(viewMenuEntries);
         menu.add( viewMenu );
-        viewMenu.add( ContributionItemFactory.VIEWS_SHORTLIST.create( window ) );
         menu.add( new Separator() );
-        menu.add( ActionFactory.PREFERENCES.create( window ) );
+        menu.add(preferences);
         return menu;
     }
 
@@ -172,8 +169,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		assert newMenu != null;
 
 		// get all classes from domain(s)
-    	RuntimePlugin runtimePlugin= RuntimePlugin.getDefault();
-    	IDomainRegistry domainRegistry= runtimePlugin.getDomainRegistry();
+    	IDomainRegistry domainRegistry= RuntimePlugin.getDomainRegistry();
     	Map<String, IDomain> domains= domainRegistry.getDomains();
 		for (IDomain domain: domains.values()) {
     		for (IDomainClass domainClass: domain.classes()) {
@@ -182,8 +178,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 						(IDomainClass)domainClass );
 				JobAction action = new JobAction( job );
 				// overwrite default name for action with class name
+				action.setId(domainClass.getClass().getName() + ".new"); //$NON-NLS-1$
 				action.setText( domainClass.getName() ); 
-				action.setToolTipText( domainClass.getDescription() ); 
+				action.setToolTipText( domainClass.getDescription() );
+				register(action);
 				newMenu.add( action );
     		}
 			newMenu.add( new Separator() );
